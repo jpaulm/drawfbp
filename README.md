@@ -15,7 +15,7 @@ DrawFBP supports groups of related languages: Java and languages using the same 
 
 DrawFBP also generates a network definition in .fbp notation.  This was originally defined by Wayne Stevens, and has been somewhat modified for NoFlo.  It will also be usable as input to the C++ implementation, called CppFBP (under development). 
 
-For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . For information on JavaFBP in particular, see http://www.jpaulmorrison.com/fbp/index.shtml#JavaFBP .
+For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
 To install DrawFBP, extract the included jar files for DrawFBP and jhall.jar from DrawFBPInstaller-2.8.zip, and install them on the same directory.  If you click on Help/Launch Help and DrawFBP cannot process it, go into File/Locate JavaHelp Jar File, and select the jhall file you have just downloaded.  Help should now work.
 
