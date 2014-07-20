@@ -1,6 +1,5 @@
 package com.jpmorrsn.graphics;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -277,25 +276,25 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		}
 	}
 
-	@Override
+	
 	public void windowClosed(WindowEvent arg0) {
 		popup.setVisible(false);
 
 	}
 
-	@Override
+	
 	public void windowDeiconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public void windowIconified(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
 		//jl.repaint();
@@ -303,19 +302,19 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 	}
 
-	@Override
+	
 	public void windowActivated(WindowEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
-	@Override
+	
 	public void windowClosing(WindowEvent e) {
 		popup.setVisible(false);
 
 	}
 
-	@Override
+	
 	public void windowDeactivated(WindowEvent e) {
 		// TODO Auto-generated method stub
 

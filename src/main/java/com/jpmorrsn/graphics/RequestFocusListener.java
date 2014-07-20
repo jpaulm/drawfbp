@@ -49,7 +49,7 @@ public class RequestFocusListener implements AncestorListener
 		this.removeListener = removeListener;
 	}
 
-	@Override
+	
 	public void ancestorAdded(AncestorEvent e)
 	{
 		JComponent component = e.getComponent();
@@ -59,9 +59,9 @@ public class RequestFocusListener implements AncestorListener
 			component.removeAncestorListener( this );
 	}
 
-	@Override
+	
 	public void ancestorMoved(AncestorEvent e) {}
 
-	@Override
+	
 	public void ancestorRemoved(AncestorEvent e) {}
 }

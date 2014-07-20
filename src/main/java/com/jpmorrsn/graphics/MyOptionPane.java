@@ -33,7 +33,8 @@ public class MyOptionPane {
 	     dialog.setVisible(true);	
 	     
 	     Object selectedValue = pane.getValue();
-	     if((int) selectedValue == JOptionPane.CANCEL_OPTION)
+	     Integer in = (Integer) selectedValue;
+	     if (in.intValue() == JOptionPane.CANCEL_OPTION)
 	       return null;
 	     
 	     return pane.getInputValue(); 
