@@ -8,9 +8,6 @@
 *.war
 *.ear
 
-# Add line to tell it NOT to ignore anything in extra folder
-
-!extra/**/*
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -22,3 +19,5 @@ target
 .classpath
 .project
 .settings/
+
+Thumbs.db
