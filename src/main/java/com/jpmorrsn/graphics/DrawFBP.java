@@ -1201,10 +1201,9 @@ public class DrawFBP extends JFrame
 								.showConfirmDialog(
 										frame,
 										"Locate it?",
-										"Specify the location of the DrawFBP-Help jar file -\n"
-												+ "it can be extracted from DrawFBPInstaller zip file, -\n"
-												+ "or downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar",
-
+										"Specify the location of the DrawFBP-Help jar file - it can be \n"
+												+ "extracted from DrawFBPInstaller zip file, - or downloaded from \n"
+												+ "https://github.com/jpaulm/drawfbp/tree/master/extra/extrajars/DrawFBP-Help/0.1.1",
 										JOptionPane.OK_CANCEL_OPTION,
 										JOptionPane.QUESTION_MESSAGE);
 						if (response == JOptionPane.OK_OPTION)
