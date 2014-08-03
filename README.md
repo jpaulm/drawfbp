@@ -17,7 +17,7 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
-To install DrawFBP, do a mvn install on your DrawFBP folder repository loaded from https://github.com/jpaulm/drawfbp .
+To install DrawFBP, do a `mvn package` on your DrawFBP folder repository loaded from https://github.com/jpaulm/drawfbp .
 
 You will need to add the JavaFBP jar file, obtainable from GitHub - https://github.com/jpaulm/javafbp - or J. Paul Morrison's web site www.jpaulmorrison.com/fbp, to the Java Build Path of any projects you create. 
 
