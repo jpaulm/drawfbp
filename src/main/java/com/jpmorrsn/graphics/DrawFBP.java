@@ -1200,10 +1200,8 @@ public class DrawFBP extends JFrame
 						int response =  MyOptionPane
 								.showConfirmDialog(
 										frame,
-										"Locate it?",
-										"Specify the location of the DrawFBP-Help jar file -\n"
-												+ "it can be extracted from DrawFBPInstaller zip file, -\n"
-												+ "or downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar",
+										"Locate it? It can be found in src/main/resources folder",
+										"Specify the location of the DrawFBP-Help jar file",
 										JOptionPane.OK_CANCEL_OPTION,
 										JOptionPane.QUESTION_MESSAGE);
 						if (response == JOptionPane.OK_OPTION)
@@ -1236,8 +1234,7 @@ public class DrawFBP extends JFrame
 					URL[] urls = new URL[]{url};
 
 					// Create a new class loader with the directory
-					cl = new URLClassLoader(urls, this.getClass()
-							.getClassLoader());
+					cl = URLClassLoader.newInstance(urls);
 
 					// Find the HelpSet file and create the HelpSet object
 					helpSetClass = cl.loadClass("javax.help.HelpSet");
@@ -2286,6 +2283,8 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 		gbc.gridy++;
 	}
+	
+	/*
 
 	public final void getSamples() {
 		Enumeration<?> entries;
@@ -2331,9 +2330,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					(new File(entry.getName())).mkdirs();
 				} else {
 					System.out.println("Extracting file: " + entry.getName());
-					f = new File(/*
-								 * currentProject + File.separator +
-								 */entry.getName());
+					f = new File(entry.getName());
 					if (f.exists())
 						f.delete();
 					copyInputStream(zipFile.getInputStream(entry),
@@ -2348,6 +2345,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			return;
 		}
 	}
+	
+	*/
 
 	void checkCompatibility(Arrow a) {
 		Arrow a2 = a.findTerminalArrow();
