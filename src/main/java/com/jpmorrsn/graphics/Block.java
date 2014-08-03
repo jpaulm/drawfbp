@@ -1006,10 +1006,11 @@ public class Block implements ActionListener {
 		}
 
 		for (Arrow arrow : diag.arrows.values()) {
-			if (arrow.endsAtLine)
-				continue;
-			if (id == arrow.toId && arrow.downStreamPort != null
-					&& stem(arrow.downStreamPort).equals(port))
+			//if (arrow.endsAtLine)
+			//	continue;
+			Arrow arr = arrow.findTerminalArrow(); 
+			if (id == arr.toId && arr.downStreamPort != null
+					&& stem(arr.downStreamPort).equals(port))
 				if (input)
 					return 0;
 				else
