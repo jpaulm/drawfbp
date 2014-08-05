@@ -2,7 +2,6 @@ package com.jpmorrsn.graphics;
 
 //import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -19,13 +20,16 @@ import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import javax.swing.JPopupMenu;
+
+
+
+
+
 
 
 import com.jpmorrsn.graphics.DrawFBP.FileChooserParms;
 import com.jpmorrsn.graphics.DrawFBP.GenLang;
-
 import com.jpmorrsn.graphics.DrawFBP.Side;
 
 public class Diagram {
@@ -345,9 +349,15 @@ public class Diagram {
 
 	 
 		if (fCP == fCPArr[DrawFBP.IMAGE]) {
-			String suff = getSuffix(file.getAbsolutePath());
-			BufferedImage bi = (BufferedImage) contents;
+			Path path = file.toPath();
 			try {
+				Files.deleteIfExists(path);
+				file = null;
+				file = path.toFile();
+
+				String suff = getSuffix(file.getAbsolutePath());
+				BufferedImage bi = (BufferedImage) contents;
+
 				ImageIO.write(bi, suff, file);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
