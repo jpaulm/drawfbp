@@ -17,22 +17,20 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
-To install DrawFBP, do a `mvn package` on your DrawFBP folder repository loaded from https://github.com/jpaulm/drawfbp .
+Running and/or Installing DrawFBP
+----
 
-You will need to add the JavaFBP jar file, obtainable from GitHub - https://github.com/jpaulm/javafbp - or J. Paul Morrison's web site www.jpaulmorrison.com/fbp, to the Java Build Path of any projects you create. 
+If you just want to run DrawFBP, you can download the latest version (currently 2.8.15) from J. Paul Morrison's web site www.jpaulmorrison.com/graphicsstuff/drawfbp-2.8.15-SNAPSHOT.jar . 
+
+Alternatively, you can install the code, from https://github.com/jpaulm/drawfbp .  Then do an `mvn package` on your DrawFBP folder repository.  In this case, you can run DrawFBP by going to your DrawFBP project directory, and enter
+
+    java -jar target\drawfbp-2.8.15-SNAPSHOT.jar
+    
+If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP jar file, obtainable from GitHub - https://github.com/jpaulm/javafbp or J. Paul Morrison's web site www.jpaulmorrison.com/fbp, to the Java Build Path of any projects you create. If You want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
 
 DrawFBP Help
 ----
 
-The first time you click on Help/Launch Help, you will get a message asking if you want to locate the DrawFBP-Help jar file.  If you click on OK, you will see a file chooser panel. Go to your project folder, then src/main/resources, and you should see DrawFBP-Help.jar.  Select that, and you should see the Table of Contents of the Help facility and the Overview screen.  From then on, DrawFBP will remember the location of the DrawFBP-Help jar file. This file can be (re)located at any time later by clicking on File/Locate DrawFBP Help File. 
+The first time you click on Help/Launch Help, you will get a message asking if you want to locate the DrawFBP-Help jar file.  If you click on OK, you will see a file chooser panel. Go to your project folder, then target\classes, and you should see DrawFBP-Help.jar.  Select that, and you should see the Table of Contents of the Help facility and the Overview screen.  From then on, DrawFBP will remember the location of the DrawFBP-Help jar file. This file can be (re)located at any time later by clicking on File/Locate DrawFBP Help File. 
 
-
-Running DrawFBP
-----
-
-To run DrawFBP, go to your DrawFBP project directory, and enter
-
-    target\drawfbp-x.x.x-SNAPSHOT.jar
-    
-where x.x.x is currently 2.8.14  
 

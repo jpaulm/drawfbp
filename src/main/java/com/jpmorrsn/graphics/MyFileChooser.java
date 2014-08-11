@@ -603,8 +603,8 @@ public class MyFileChooser extends JFrame
 		if (!inJarTree) {
 			if (listHead.equals(listShowingJarFile)) {
 				s = driver.javaFBPJarFile;
-				int j = s.lastIndexOf(File.separator);
-				s = s.substring(j + 1);
+				//int j = s.lastIndexOf(File.separator);
+				//s = s.substring(j + 1);
 				ll.add(s);
 			}
 		}
@@ -1439,7 +1439,7 @@ public class MyFileChooser extends JFrame
 
 			File f = null;
 
-			if (s.startsWith("JavaFBP") && s.toLowerCase().endsWith(".jar")) {
+			if (/*s.startsWith("JavaFBP") &&*/ s.toLowerCase().endsWith(".jar")) {
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)

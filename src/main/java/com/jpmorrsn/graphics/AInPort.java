@@ -4,7 +4,7 @@ package com.jpmorrsn.graphics;
 public class AInPort {
 
   /* *
-     * Copyright 2008, 2012, J. Paul Morrison.  At your option, you may copy, 
+     * Copyright 2008, 2014, J. Paul Morrison.  At your option, you may copy, 
      * distribute, or make derivative works under the terms of the Clarified Artistic License, 
      * based on the Everything Development Company's Artistic License.  A document describing 
      * this License may be found at http://www.jpaulmorrison.com/fbp/artistic2.htm. 
@@ -16,4 +16,5 @@ public class AInPort {
   Class<?> type;  
   String value;
   boolean fixedSize;
+  boolean optional;
 }

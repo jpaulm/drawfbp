@@ -362,7 +362,9 @@ public class DrawFBP extends JFrame
 
 		//jtp.setFont(fontg);
 
-		java.net.URL imgURL = this.getClass().getClassLoader()
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		java.net.URL imgURL = loader // this.getClass().getClassLoader()	
+		//java.net.URL imgURL = this.getClass().getClassLoader()
 				.getResource("DrawFBP-logo-small.png");
 		if (imgURL != null) {
 			favicon = new ImageIcon(imgURL);
@@ -555,6 +557,10 @@ public class DrawFBP extends JFrame
 		// frame.repaint();
 
 		try {
+			//String s = getClass().getCanonicalName();
+			//System.out.println(s); 
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("DrawFBP-logo-small.jpg");
 			BufferedImage image = ImageIO.read(is);
@@ -563,6 +569,8 @@ public class DrawFBP extends JFrame
 		} catch (IOException e) {
 		}
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("javaIcon.jpg");
 			BufferedImage image = ImageIO.read(is);
@@ -571,6 +579,8 @@ public class DrawFBP extends JFrame
 		} catch (IOException e) {
 		}
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("jarIcon.jpg");
 			BufferedImage image = ImageIO.read(is);
@@ -580,6 +590,8 @@ public class DrawFBP extends JFrame
 		}
 
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("folderIcon.jpg");
 			BufferedImage image = ImageIO.read(is);
@@ -589,6 +601,8 @@ public class DrawFBP extends JFrame
 		}
 
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("classIcon.jpg");
 			BufferedImage image = ImageIO.read(is);
@@ -601,6 +615,8 @@ public class DrawFBP extends JFrame
 		BufferedImage image = null;
 		openPawCursor = null;
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("open_paw.gif");
 			image = ImageIO.read(is);
@@ -611,6 +627,8 @@ public class DrawFBP extends JFrame
 		}
 		closedPawCursor = null;
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("closed_paw.gif");
 			image = ImageIO.read(is);
@@ -1200,7 +1218,7 @@ public class DrawFBP extends JFrame
 						int response =  MyOptionPane
 								.showConfirmDialog(
 										frame,
-										"Locate it? It can be found in src/main/resources folder",
+										"Locate it? It can be found in target/classes/resources folder",
 										"Specify the location of the DrawFBP-Help jar file",
 										JOptionPane.OK_CANCEL_OPTION,
 										JOptionPane.QUESTION_MESSAGE);

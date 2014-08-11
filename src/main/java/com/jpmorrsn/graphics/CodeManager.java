@@ -83,8 +83,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 		frame.repaint();
 
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
-			// .getResourceAsStream("favicon.jpg");
 					.getResourceAsStream("DrawFBP-logo-small.png");
 			BufferedImage image = ImageIO.read(is);
 			frame.setIconImage(image);
@@ -155,6 +156,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 		frame.setJMenuBar(createMenuBar());
 		//frame.repaint();
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream("DrawFBP-logo-small.png");
 			BufferedImage image = ImageIO.read(is);

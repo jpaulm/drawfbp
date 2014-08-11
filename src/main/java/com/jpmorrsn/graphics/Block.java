@@ -10,8 +10,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 import javax.swing.*;
 
@@ -738,6 +737,10 @@ public class Block implements ActionListener {
 			meth = inport.getMethod("fixedSize");
 			b = (Boolean) meth.invoke(a);
 			ipt.fixedSize = b.booleanValue();
+			
+			meth = inport.getMethod("optional");
+			b = (Boolean) meth.invoke(a);
+			ipt.optional = b.booleanValue();
 
 			meth = inport.getMethod("description");
 			ipt.description = (String) meth.invoke(a);
@@ -759,6 +762,7 @@ public class Block implements ActionListener {
 						ipt2.arrayPort = ipt2.arrayPort;
 						ipt2.fixedSize = ipt.fixedSize;
 						ipt2.description = ipt.description;
+						ipt2.optional = ipt.optional;
 						ipt2.type = ipt.type;
 						inputPortAttrs.put(ipt2.value, ipt2);
 					}
@@ -768,9 +772,10 @@ public class Block implements ActionListener {
 					ipt2.arrayPort = ipt2.arrayPort;
 					ipt2.fixedSize = ipt.fixedSize;
 					ipt2.description = ipt.description;
+					ipt2.optional = ipt.optional;
 					ipt2.type = ipt.type;
 					inputPortAttrs.put(ipt2.value, ipt2);
-				}
+					}
 			}
 			if (sa.length == 0)
 				inputPortAttrs.put(ipt.value, ipt);
@@ -797,7 +802,7 @@ public class Block implements ActionListener {
 			meth = outport.getMethod("optional");
 			b = (Boolean) meth.invoke(a);
 			opt.optional = b.booleanValue();
-
+			
 			meth = outport.getMethod("description");
 			opt.description = (String) meth.invoke(a);
 
@@ -844,6 +849,7 @@ public class Block implements ActionListener {
 	}
 
 	void displayPortInfo() {
+		buildMetadata();   
 		final JDialog jdialog = new JDialog();
 		jdialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
@@ -873,7 +879,7 @@ public class Block implements ActionListener {
 		tf0.setBackground(lg);
 		panel.add(tf0);
 
-		gbc.weightx = 0.5;
+		gbc.weightx = 1.5;
 		gbc.weighty = 0.5;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -909,6 +915,8 @@ public class Block implements ActionListener {
 				s += ", array";
 			if (ip.fixedSize)
 				s += ", fixed size";
+			if (ip.optional)
+				s += ", optional";
 			tfi[1] = new JTextField(s);
 			if (ip.type == null)
 				tfi[2] = new JTextField("");
@@ -916,7 +924,7 @@ public class Block implements ActionListener {
 				tfi[2] = new JTextField(ip.type.getName());
 			tfi[3] = new JTextField(ip.description);
 			int res = testMatch(tfi[0].getText(), tfi[1].getText());
-			String results[] = {"OK", "Error", "Optional", "Check if needed"};
+			String results[] = {"Yes", "Missing", "Optional"};
 			tfi[4] = new JTextField(results[res]);
 			gbc.gridx = 0;
 			gbc.weightx = 0.5;
@@ -940,7 +948,7 @@ public class Block implements ActionListener {
 				tfo[2] = new JTextField(op.type.getName());
 			tfo[3] = new JTextField(op.description);
 			int res = testMatch(tfo[0].getText(), tfo[1].getText());
-			String results[] = {"OK", "Error", "Optional", "Not connected"};
+			String results[] = {"Yes", "Missing", "Optional"};
 			tfo[4] = new JTextField(results[res]);
 			displayRow(gbc, gbl, tfo, panel, Color.BLACK);
 		}
@@ -1023,12 +1031,20 @@ public class Block implements ActionListener {
 				else
 					return 1;
 		}
-		if (input)
-			return 3; // If input port missing, that's OK
-		else if (type.indexOf("optional") > -1)
+		//if (input)
+		//	return 3; // If input port missing, that's OK
+		//else if (type.indexOf("optional") > -1)
+		//	return 2;
+		//else
+		//	return 1; // If output port missing, error
+		
+		//if (input)
+		//	return 3; // If input port missing, that's OK
+		//else 
+			if (type.indexOf("optional") > -1)
 			return 2;
 		else
-			return 1; // If output port missing, error
+			return 1; // If port missing, error
 	}
 
 	LinkedList<String> checkUnmatchedPorts() {
@@ -1723,9 +1739,11 @@ public class Block implements ActionListener {
 					fullClassName = res;
 				} else {
 					String fs = fc.getSelectedFile();
-					int j = fs.lastIndexOf(File.separator);
+					
+					//int j = fs.lastIndexOf(File.separator);					
 
-					if (j > -1 && fs.substring(j + 1).startsWith("JavaFBP"))
+					//if (j > -1 && fs.substring(j + 1).startsWith("JavaFBP"))
+					if (fs.endsWith("jar"))
 						cFile = new File(driver.javaFBPJarFile);
 					else {
 						cFile = new File(fc.getSelectedFile());

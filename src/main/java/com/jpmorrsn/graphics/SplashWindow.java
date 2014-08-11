@@ -1,6 +1,7 @@
 package com.jpmorrsn.graphics;
 
 import java.awt.*;
+
 import javax.swing.*;
 
 import java.awt.event.*;
@@ -22,6 +23,8 @@ class SplashWindow extends JWindow {
 
 		Image i = null;
 		try {
+			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			//InputStream is = loader // this.getClass().getClassLoader()	
 			InputStream is = this.getClass().getClassLoader()
 					.getResourceAsStream(filename);
 			if (is == null)
