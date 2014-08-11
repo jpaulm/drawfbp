@@ -26,7 +26,7 @@ Alternatively, you can install the code, from https://github.com/jpaulm/drawfbp 
 
     java -jar target\drawfbp-2.8.15-SNAPSHOT.jar
     
-If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP jar file, obtainable from GitHub - https://github.com/jpaulm/javafbp/releases/download/v1.0/fbp-1.0-SNAPSHOT.jar or J. Paul Morrison's web site www.jpaulmorrison.com/fbp/fbp-1.0-SNAPSHOT.jar, to the Java Build Path of any projects you create. If You want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
+If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP jar file, obtainable from GitHub - https://github.com/jpaulm/javafbp/releases/download/v1.1/fbp-1.1-SNAPSHOT.jar, or from J. Paul Morrison's web site www.jpaulmorrison.com/fbp/fbp-1.1-SNAPSHOT.jar, to the Java Build Path of any projects you create. If You want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
 
 DrawFBP Help
 ----
