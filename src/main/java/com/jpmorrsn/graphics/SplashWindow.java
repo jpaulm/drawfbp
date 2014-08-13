@@ -19,24 +19,14 @@ class SplashWindow extends JWindow {
 	public SplashWindow(String filename, JFrame f, int waitTime,
 			final DrawFBP driver) {
 		super(f);
-		// JLabel l = new JLabel(new ImageIcon(filename));
-
+		
 		Image i = null;
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream(filename);
-			if (is == null)
-				MyOptionPane.showMessageDialog(f, "No splash file:" + filename);
-			BufferedImage image = ImageIO.read(is);
-			int x = image.getWidth();
-			int y = image.getHeight();
-			i = image.getScaledInstance(320, 320 * y / x, Image.SCALE_SMOOTH);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
-
+								
+		BufferedImage image = driver.loadImage(filename);
+		int x = image.getWidth();
+		int y = image.getHeight();
+		i = image.getScaledInstance(320, 320 * y / x, Image.SCALE_SMOOTH);
+		
 		Container c = getContentPane();
 		ImageIcon icon = new ImageIcon(i);
 		JLabel l = new JLabel(icon);

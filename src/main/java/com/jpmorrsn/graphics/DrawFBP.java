@@ -366,11 +366,12 @@ public class DrawFBP extends JFrame
 		java.net.URL imgURL = loader // this.getClass().getClassLoader()	
 		//java.net.URL imgURL = this.getClass().getClassLoader()
 				.getResource("DrawFBP-logo-small.png");
-		if (imgURL != null) {
-			favicon = new ImageIcon(imgURL);
-			Image img = favicon.getImage();
-			frame.setIconImage(img);
-
+		BufferedImage image = loadImage("DrawFBP-logo-small.png");
+		
+		if (image != null) {
+				favicon = new ImageIcon(image);				
+				frame.setIconImage(image);
+			
 		} else {
 			MyOptionPane.showMessageDialog(frame,
 					"Couldn't find file: DrawFBP-logo-small.png");
@@ -504,19 +505,19 @@ public class DrawFBP extends JFrame
 		box5.add(scaleLab);
 		String scale = "100%";
 		scaleLab.setText(scale);
-		//scaleLab.setFont(fontg);
+		// scaleLab.setFont(fontg);
 		Point p = jtp.getLocation();
 		jtp.setLocation(p.x + 100, p.y);
 		box4.add(jtp);
 		box4.add(Box.createRigidArea(new Dimension(50, 0)));
-		//jtp.setBackground(Color.WHITE);
+		// jtp.setBackground(Color.WHITE);
 		// Align the left edges of the components.
 		curDiag.area.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 		diagDesc.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 		// label.setLabelFor(area);
 		box1.add(diagDesc);
-		//Font ft = fontg.deriveFont(Font.BOLD);
-		//diagDesc.setFont(fontg);
+		// Font ft = fontg.deriveFont(Font.BOLD);
+		// diagDesc.setFont(fontg);
 		diagDesc.setPreferredSize(new Dimension(0, fontHeight * 2));
 		diagDesc.setForeground(Color.BLACK);
 
@@ -526,17 +527,17 @@ public class DrawFBP extends JFrame
 		box1.add(box2);
 		box2.add(Box.createHorizontalGlue());
 		ButtonGroup group = new ButtonGroup();
-		
-		String buttonNames[] = {"(none)", "Component", "Initial IP", "Enclosure", "Subnet", 
-				"Ext Port - In", "Ext Port - Out", "Ext Port - Out/In",
-				"Legend", "File", "Person", "Report"};        
+
+		String buttonNames[] = {"(none)", "Component", "Initial IP",
+				"Enclosure", "Subnet", "Ext Port - In", "Ext Port - Out",
+				"Ext Port - Out/In", "Legend", "File", "Person", "Report"};
 
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
 			but[j].addActionListener(this);
 			group.add(but[j]);
 			box2.add(but[j]);
-			//but[j].setFont(fontg);
+			// but[j].setFont(fontg);
 			but[j].setText(buttonNames[j]);
 		}
 
@@ -554,89 +555,54 @@ public class DrawFBP extends JFrame
 			}
 		}
 
-		// frame.repaint();
+		BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
+		frame.setIconImage(image);
+		leafIcon = new ImageIcon(image);
 
-		try {
-			//String s = getClass().getCanonicalName();
-			//System.out.println(s); 
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("DrawFBP-logo-small.jpg");
-			BufferedImage image = ImageIO.read(is);
-			leafIcon = new ImageIcon(image);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("javaIcon.jpg");
-			BufferedImage image = ImageIO.read(is);
-			javaIcon = new ImageIcon(image);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("jarIcon.jpg");
-			BufferedImage image = ImageIO.read(is);
-			jarIcon = new ImageIcon(image);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
+		image = loadImage("javaIcon.jpg");
+		javaIcon = new ImageIcon(image);
 
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("folderIcon.jpg");
-			BufferedImage image = ImageIO.read(is);
-			folderIcon = new ImageIcon(image);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
+		image = loadImage("jarIcon.jpg");
+		jarIcon = new ImageIcon(image);
 
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("classIcon.jpg");
-			BufferedImage image = ImageIO.read(is);
-			classIcon = new ImageIcon(image);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
+		image = loadImage("folderIcon.jpg");
+		folderIcon = new ImageIcon(image);
+
+		image = loadImage("classIcon.jpg");
+		classIcon = new ImageIcon(image);
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		BufferedImage image = null;
+		image = null;
 		openPawCursor = null;
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("open_paw.gif");
-			image = ImageIO.read(is);
-			openPawCursor = tk.createCustomCursor(image, new Point(15, 15),
-					"Paw");
-		} catch (Exception e3) {
-			e3.printStackTrace();
-		}
+
+		image = loadImage("open_paw.gif");
+		openPawCursor = tk.createCustomCursor(image, new Point(15, 15), "Paw");
+
 		closedPawCursor = null;
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("closed_paw.gif");
-			image = ImageIO.read(is);
-			closedPawCursor = tk.createCustomCursor(image, new Point(15, 15),
-					"Paw");
-		} catch (Exception e3) {
-			e3.printStackTrace();
+
+		image = loadImage("closed_paw.gif");
+		closedPawCursor = tk
+				.createCustomCursor(image, new Point(15, 15), "Paw");
+
+	}
+	
+	BufferedImage loadImage(String s) {
+		
+		InputStream is = this.getClass().getClassLoader() 
+				.getResourceAsStream(s);
+		BufferedImage image = null;
+		if (is == null) {
+			MyOptionPane.showMessageDialog(frame, "Missing icon: " + s);			
 		}
+		else {
+			try {
+				image = ImageIO.read(is);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return image;
 	}
 
 	public void createMenuBar() {

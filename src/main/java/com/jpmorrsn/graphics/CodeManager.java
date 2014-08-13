@@ -82,16 +82,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 		frame.setJMenuBar(createMenuBar());
 		frame.repaint();
 
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("DrawFBP-logo-small.png");
-			BufferedImage image = ImageIO.read(is);
-			frame.setIconImage(image);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
+		
+			
+		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
+		frame.setIconImage(image);
+		
 		frame.setSize(1000, 750);
 		frame.setLocation(100, 50);
 		frame.setForeground(Color.WHITE);
@@ -155,16 +150,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		frame.setJMenuBar(createMenuBar());
 		//frame.repaint();
-		try {
-			//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			//InputStream is = loader // this.getClass().getClassLoader()	
-			InputStream is = this.getClass().getClassLoader()
-					.getResourceAsStream("DrawFBP-logo-small.png");
-			BufferedImage image = ImageIO.read(is);
-			frame.setIconImage(image);
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
-		}
+		
+		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
+		frame.setIconImage(image);
 
 		String code = "";
 

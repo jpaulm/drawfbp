@@ -681,7 +681,7 @@ public class MyFileChooser extends JFrame
 
 			while (entries.hasMoreElements()) {
 				JarEntry entry = (JarEntry) entries.nextElement();
-				// System.out.println(entry);
+				//System.out.println(entry);
 
 				if (!(entry.isDirectory())) {
 					String s = entry.getName();
@@ -1447,7 +1447,8 @@ public class MyFileChooser extends JFrame
 					processOK();
 					return;
 				}
-				jarTree = buildJarFileTree(driver.javaFBPJarFile);
+				//jarTree = buildJarFileTree(driver.javaFBPJarFile);
+				jarTree = buildJarFileTree(s);
 				inJarTree = true;
 				butNF.setEnabled(!inJarTree);
 				butDel.setEnabled(!inJarTree);
@@ -1460,7 +1461,8 @@ public class MyFileChooser extends JFrame
 					return;
 				}
 
-				listHead = driver.javaFBPJarFile + "!";
+				//listHead = driver.javaFBPJarFile + "!";
+				listHead = s + "!";
 				text.setText(listHead);
 				// panel.remove(listView);
 				showList();
