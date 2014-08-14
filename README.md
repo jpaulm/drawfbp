@@ -30,6 +30,20 @@ OSX users (using Brew, http://brew.sh) can install Maven by executing the follow
 
     brew install gradle
 
+Eclipse IDE Integration
+---
+
+You can generate Eclipse project using the following mvn command:
+
+    gradle eclipse
+
+If you already created an Eclipse project you can run:
+
+    gradle cleanEclipse Eclipse
+
+You need to install a Gradle plugin for Eclipse as explain here:
+https://github.com/spring-projects/eclipse-integration-gradle/
+Then import a generated project in Eclipse, right (ctrl for OSX) click on the project in Eclipse -> Configure -> Convert to Gradle Project. After the conversion you can Right (ctrl for OSX) click on the project -> Gradle -> Task Quick Launcher and type `build`.
 
 Building from command line
 ---
@@ -61,6 +75,6 @@ If you wish to run any networks that you create with DrawFBP, you will need to a
 DrawFBP Help
 ----
 
-The first time you click on Help/Launch Help, you will get a message asking if you want to locate the DrawFBP-Help jar file.  If you click on OK, you will see a file chooser panel. Go to your DrawFBP project folder, then to `build\resources\main`, and you should see DrawFBP-Help.jar.  Select that, and you should see the Table of Contents of the Help facility and the Overview screen.  From then on, DrawFBP will remember the location of the DrawFBP-Help jar file. This file can be (re)located at any time later by clicking on File/Locate DrawFBP Help File. 
+The first time you click on Help/Launch Help, you will get a message asking if you want to locate the DrawFBP-Help jar file.  If you click on OK, you will see a file chooser panel. Go to your DrawFBP project folder, then to `build\resources\main`, and you should see `DrawFBP-Help.jar`.  Select that, and you should see the Table of Contents of the Help facility and the Overview screen.  From then on, DrawFBP will remember the location of the DrawFBP-Help jar file. This file can be (re)located at any time later by clicking on File/Locate DrawFBP Help File. 
 
 
