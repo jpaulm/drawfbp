@@ -12,8 +12,6 @@ build
 
 # Eclipse project
 bin
-.classpath
-.project
 .settings/
 
 # IDEA project
