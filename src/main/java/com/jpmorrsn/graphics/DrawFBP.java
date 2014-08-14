@@ -1184,7 +1184,7 @@ public class DrawFBP extends JFrame
 						int response =  MyOptionPane
 								.showConfirmDialog(
 										frame,
-										"Locate it? It can be found in target/classes/resources folder",
+										"Locate it? It can be found in build/libs folder",
 										"Specify the location of the DrawFBP-Help jar file",
 										JOptionPane.OK_CANCEL_OPTION,
 										JOptionPane.QUESTION_MESSAGE);
@@ -2255,8 +2255,8 @@ void chooseFonts(MyFontChooser fontChooser){
 		gbc.gridx = 0;
 		gbc.weightx = 0.25;
 		for (int i = 0; i < 4; i++) {
-			// if (i > 0)
-			// gbc.weightx = 0.5;
+			if (i > 1)
+			gbc.weightx = 0.5;
 
 			gbl.setConstraints(tf[i], gbc);
 			tf[i].setBackground(lg);
