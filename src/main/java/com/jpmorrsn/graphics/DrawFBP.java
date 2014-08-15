@@ -1179,8 +1179,17 @@ public class DrawFBP extends JFrame
 
 					jhallJarFile = properties.get("jhallJarFile");
 					boolean res = true;
-
+ 
 					if (jhallJarFile == null) {
+						String ud = System.getProperty("user.dir");
+						jhallJarFile = ud + "/DrawFBP-Help.jar";						
+						File jhf = new File(jhallJarFile);
+						if (jhf.exists()) {
+							properties.put("jhallJarFile", jhallJarFile);
+							propertiesChanged = true;
+                            res = true;
+						}
+						else {
 						int response =  MyOptionPane
 								.showConfirmDialog(
 										frame,										
@@ -1195,6 +1204,7 @@ public class DrawFBP extends JFrame
 									"No DrawFBP Help jar file located");
 							res = false;
 						}
+					}
 					}
 					if (!res)
 						return;
