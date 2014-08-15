@@ -1443,10 +1443,12 @@ public class MyFileChooser extends JFrame
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
-				if (fCParms == driver.curDiag.fCPArr[DrawFBP.JARFILE]) {
+				if (fCParms == driver.curDiag.fCPArr[DrawFBP.JARFILE] || 
+						fCParms == driver.curDiag.fCPArr[DrawFBP.JHALL]) {
 					processOK();
 					return;
 				}
+				
 				//jarTree = buildJarFileTree(driver.javaFBPJarFile);
 				jarTree = buildJarFileTree(s);
 				inJarTree = true;

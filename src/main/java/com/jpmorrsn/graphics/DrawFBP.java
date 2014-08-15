@@ -1183,9 +1183,9 @@ public class DrawFBP extends JFrame
 					if (jhallJarFile == null) {
 						int response =  MyOptionPane
 								.showConfirmDialog(
-										frame,
-										"Locate it? It can be found in build/libs folder",
+										frame,										
 										"Specify the location of the DrawFBP-Help jar file",
+										"Look in project folder",
 										JOptionPane.OK_CANCEL_OPTION,
 										JOptionPane.QUESTION_MESSAGE);
 						if (response == JOptionPane.OK_OPTION)
