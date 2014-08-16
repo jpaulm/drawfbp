@@ -68,7 +68,7 @@ public class DrawFBP extends JFrame
 	JTabbedPaneWithCloseIcons jtp;
 
 	String javaFBPJarFile = null;
-	String jhallJarFile = null;
+	//String jhallJarFile = null;
 
 	Block selBlock = null;  // used only when mousing over 
 	Block selBlockP = null; // permanent select
@@ -113,15 +113,15 @@ public class DrawFBP extends JFrame
 
 	GenLang genLangs[];
 
-	FileChooserParms[] fCPArray = new FileChooserParms[7];
+	FileChooserParms[] fCPArray = new FileChooserParms[6];
 
 	public static int CLASS = 0;
 	public static int DIAGRAM = 1;
 	public static int IMAGE = 2;
 	public static int JARFILE = 3;
-	public static int JHALL = 4;
-	public static int COMPONENT = 5;
-	public static int GENCODE = 6;
+	//public static int JHALL = 4;
+	public static int COMPONENT = 4;
+	public static int GENCODE = 5;
 
 	JCheckBox grid;
 
@@ -151,7 +151,7 @@ public class DrawFBP extends JFrame
 	ImageIcon folderIcon = null;
 	ImageIcon classIcon = null;
 
-	Class<?> jHelpClass = null;
+	//Class<?> jHelpClass = null;
 	Class<?> helpSetClass = null;
 	JSlider zoomControl = null;
 
@@ -268,9 +268,9 @@ public class DrawFBP extends JFrame
 				"Choose a jar file for JavaFBP", ".jar",
 				driver.new JarFileFilter(), "Jar files");
 
-		fCPArray[JHALL] = new FileChooserParms("jhallJarFile",
-				"Choose a directory for DrawFBP-Help.jar (JavaHelp)", ".jar",
-				driver.new JarFileFilter(), "Help files");
+		//fCPArray[JHALL] = new FileChooserParms("jhallJarFile",
+		//		"Choose a directory for DrawFBP-Help.jar (JavaHelp)", ".jar",
+		//		driver.new JarFileFilter(), "Help files");
 
 		
 		createAndShowGUI();
@@ -1015,11 +1015,11 @@ public class DrawFBP extends JFrame
 			return;
 		}
 
-		if (s.equals("Locate DrawFBP Help File")) {
+		//if (s.equals("Locate DrawFBP Help File")) {
 
-			locateJhallJarFile();
-			return;
-		}
+		//	locateJhallJarFile();
+		//	return;
+		//}
 
 		if (s.equals("Change Fonts")) {
 			changeFonts();
@@ -1173,8 +1173,10 @@ public class DrawFBP extends JFrame
 			// docsystem/build/tutorials/javahelp/javahelp.html
 			// plus reflection
 
+									
 			if (jHelpViewer == null) {
 
+				/*
 				if (jhallJarFile == null) {
 
 					jhallJarFile = properties.get("jhallJarFile");
@@ -1209,10 +1211,12 @@ public class DrawFBP extends JFrame
 					if (!res)
 						return;
 				}
-				jHelpClass = null;
+				*/
+				//jHelpClass = null;
 				helpSetClass = null;
-				URLClassLoader cl = null;
-
+				
+				ClassLoader cl = this.getClass().getClassLoader();
+				/*
 				File jFile = new File(jhallJarFile);
 				if (!(jFile.exists())) {
 					MyOptionPane
@@ -1236,7 +1240,14 @@ public class DrawFBP extends JFrame
 				} catch (ClassNotFoundException e2) {
 				} catch (NoClassDefFoundError e2) {
 				}
-
+                */
+				try {
+					helpSetClass = this.getClass().getClassLoader().loadClass("javax.help.HelpSet");
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 				if (helpSetClass == null) {
 					MyOptionPane.showMessageDialog(frame,
 							"HelpSet class not found in jar file");
@@ -1255,7 +1266,7 @@ public class DrawFBP extends JFrame
 
 					Object hs = conhs.newInstance(cl, url2);
 
-					jHelpClass = cl.loadClass("javax.help.JHelp");
+					Class<?> jHelpClass = cl.loadClass("javax.help.JHelp");
 					if (jHelpClass == null) {
 						MyOptionPane.showMessageDialog(frame,
 								"JHelp class not found in jar file");
@@ -1590,8 +1601,8 @@ public class DrawFBP extends JFrame
 		propertyDescriptions.put("Default component language",
 				"defaultCompLang");
 		propertyDescriptions.put("JavaFBP jar file", "javaFBPJarFile");
-		propertyDescriptions
-				.put("DrawFBP Help jar file", "jhallJarFile");
+		//propertyDescriptions
+		//		.put("DrawFBP Help jar file", "jhallJarFile");
 		//propertyDescriptions.put("Select all files", "allFiles");  // always initialized to false
 	}
 
@@ -2212,6 +2223,8 @@ void chooseFonts(MyFontChooser fontChooser){
 	}
 	
 	
+	
+	/*
 	boolean locateJhallJarFile() {
 
 		String s = properties.get("jhallJarFile");
@@ -2242,7 +2255,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		} else
 			return false;
 	}
-
+*/
 	void closeTab() {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 	}

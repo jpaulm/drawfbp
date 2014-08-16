@@ -81,7 +81,7 @@ public class Diagram {
 	JPopupMenu jpm;
 	//String targetLang;
 	
-	FileChooserParms[] fCPArr = new FileChooserParms[7];
+	FileChooserParms[] fCPArr = new FileChooserParms[6];
 	String[] filterOptions = {"", "All (*.*)"};
 	//Rectangle curMenuRect = null;
 	
