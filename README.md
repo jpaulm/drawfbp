@@ -60,21 +60,12 @@ Running and/or Installing DrawFBP
 
 You can run DrawFBP by going to your DrawFBP project directory, and enter
 
-    gradle run
-
-or
-
     gradle build
-    java -jar build/libs/DrawFBP-2.8.15.jar
+    java -cp "build\libs\drawfbp-2.8.15.jar;lib\DrawFBP-Help.jar" com.jpmorrsn.graphics.DrawFBP
+    
+(note the quotes)    
 
-If you just want to run DrawFBP, you can download the latest version (currently 2.8.15) from J. Paul Morrison's web site http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-2.8.15.jar . 
+(Note also, `gradle run` will run the drawing tool, but will not provide the Help facility)
 
 If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP jar file, obtainable from GitHub - https://github.com/jpaulm/javafbp/releases/download/v1.1/fbp-1.1-SNAPSHOT.jar, or from J. Paul Morrison's web site www.jpaulmorrison.com/fbp/fbp-1.1-SNAPSHOT.jar, to the Java Build Path of any projects you create. If You want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
-
-
-DrawFBP Help
-----
-
-The first time you click on Help/Launch Help, you will get a message asking if you want to locate the DrawFBP-Help jar file.  If you click on OK, you will see a file chooser panel. Go to your DrawFBP project folder, then to `build\resources\main`, and you should see `DrawFBP-Help.jar`.  Select that, and you should see the Table of Contents of the Help facility and the Overview screen.  From then on, DrawFBP will remember the location of the DrawFBP-Help jar file. This file can be (re)located at any time later by clicking on File/Locate DrawFBP Help File. 
-
 
