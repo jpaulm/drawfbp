@@ -17,3 +17,7 @@ jar {
         'Main-Class' : mainClassName
     }
 }
+
+dependencies {
+	compile files('lib/DrawFBP-Help.jar') 
+}
