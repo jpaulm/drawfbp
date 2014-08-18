@@ -67,7 +67,7 @@ You can run DrawFBP by going to your DrawFBP project directory, and entering
 
 (Note also, `gradle run` will run the drawing tool, but will not provide the Help facility)
 
-Alternatively, run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin'.
+Alternatively, run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
 
 Running JavaFBP networks
 ---
