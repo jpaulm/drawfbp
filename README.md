@@ -41,7 +41,7 @@ If you already created an Eclipse project you can run:
 
     gradle cleanEclipse Eclipse
 
-You need to install a Gradle plugin for Eclipse as explain here:
+You need to install a Gradle plugin for Eclipse as explained here:
 https://github.com/spring-projects/eclipse-integration-gradle/
 Then import a generated project in Eclipse, right (ctrl for OSX) click on the project in Eclipse -> Configure -> Convert to Gradle Project. After the conversion you can Right (ctrl for OSX) click on the project -> Gradle -> Task Quick Launcher and type `build`.
 
@@ -58,7 +58,7 @@ As a result a `DrawFBP-2.8.15.jar` file will be created in the `build/libs` dire
 Running and/or Installing DrawFBP
 ----
 
-You can run DrawFBP by going to your DrawFBP project directory, and enter
+You can run DrawFBP by going to your DrawFBP project directory, and entering
 
     gradle build
     java -cp "build\libs\drawfbp-2.8.15.jar;lib\DrawFBP-Help.jar" com.jpmorrsn.graphics.DrawFBP
@@ -66,6 +66,11 @@ You can run DrawFBP by going to your DrawFBP project directory, and enter
 (note the quotes)    
 
 (Note also, `gradle run` will run the drawing tool, but will not provide the Help facility)
+
+Alternatively, run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin'.
+
+Running JavaFBP networks
+---
 
 If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP jar file, obtainable from GitHub - https://github.com/jpaulm/javafbp/releases/download/v1.1/javafbp-2.9.jar, or from J. Paul Morrison's web site www.jpaulmorrison.com/fbp/JavaFBP-2.9.jar, to the Java Build Path of any projects you create. If you want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
 
