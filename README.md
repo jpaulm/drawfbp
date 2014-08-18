@@ -69,5 +69,5 @@ Alternatively, run `gradle installApp` and you will find start scripts in `build
 Running JavaFBP networks
 ---
 
-If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP jar file, obtainable from GitHub -  https://github.com/jpaulm/javafbp/releases/download/v2.9/javafbp-2.9.jar, or from J. Paul Morrison's web site www.jpaulmorrison.com/fbp/JavaFBP-2.9.jar, to the Java Build Path of any projects you create. If you want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
+If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP install jar file, obtainable from GitHub -  https://github.com/jpaulm/javafbp/releases/download/v2.9/javafbp-2.9.jar, or from J. Paul Morrison's web site www.jpaulmorrison.com/fbp/JavaFBP-2.9.jar, to the Java Build Path of any projects you create. If you want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
 
