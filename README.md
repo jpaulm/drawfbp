@@ -58,14 +58,11 @@ As a result a `DrawFBP-2.9.1.jar` file will be created in the `build/libs` direc
 Running and/or Installing DrawFBP
 ----
 
-You can run DrawFBP by going to your DrawFBP project directory, and entering
+Note: this jar file will run DrawFBP, but will not provide the Help facility.  However, you can access the Help facility by going to your DrawFBP project directory, and entering
 
-    gradle build
     java -cp "build\libs\drawfbp-2.9.1.jar;lib\DrawFBP-Help.jar" com.jpmorrsn.graphics.DrawFBP
     
 (note the quotes)    
-
-(Note also, `gradle run` will run the drawing tool, but will not provide the Help facility)
 
 Alternatively, run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
 
