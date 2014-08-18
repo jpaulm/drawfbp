@@ -52,7 +52,7 @@ For building the project simply run the following command:
 
     gradle build
 
-As a result a `DrawFBP-2.8.15.jar` file will be created in the `build/libs` directory. 
+As a result a `DrawFBP-2.9.1.jar` file will be created in the `build/libs` directory. 
 
 
 Running and/or Installing DrawFBP
@@ -61,7 +61,7 @@ Running and/or Installing DrawFBP
 You can run DrawFBP by going to your DrawFBP project directory, and entering
 
     gradle build
-    java -cp "build\libs\drawfbp-2.8.15.jar;lib\DrawFBP-Help.jar" com.jpmorrsn.graphics.DrawFBP
+    java -cp "build\libs\drawfbp-2.9.1.jar;lib\DrawFBP-Help.jar" com.jpmorrsn.graphics.DrawFBP
     
 (note the quotes)    
 
