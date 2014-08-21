@@ -844,7 +844,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 	}
 
 	public void changedUpdate(DocumentEvent e) {
-		changed = true;
+		if (e.getOffset() > 0)
+			changed = true;
 
 		if (packageName != null) {
 			if (e.getOffset() >= 8 && e.getOffset() <= 8 + packageName.length()
@@ -852,12 +853,13 @@ public class CodeManager implements ActionListener, DocumentListener {
 				packageNameChanged = true;				
 			}
 		}		
-		nsLabel.setText("Not saved");
+		nsLabel.setText(changed ? "Not saved" : " ");
 		frame.repaint();
 	}
 
 	public void insertUpdate(DocumentEvent e) {
-		changed = true;
+		if (e.getOffset() > 0)
+				changed = true;
 
 		if (packageName != null) {
 			if (e.getOffset() >= 8 && e.getOffset() <= 8 + packageName.length()
@@ -865,12 +867,13 @@ public class CodeManager implements ActionListener, DocumentListener {
 				packageNameChanged = true;	
 			}
 		}		
-		nsLabel.setText("Not saved");
+		nsLabel.setText(changed ? "Not saved" : " ");
 		frame.repaint();
 	}
 
 	public void removeUpdate(DocumentEvent e) {
-		changed = true;
+		if (e.getOffset() > 0)
+			changed = true;
 
 		if (packageName != null) {
 			if (e.getOffset() >= 8 && e.getOffset() <= 8 + packageName.length()
@@ -878,7 +881,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				packageNameChanged = true;
 			}
 		}		
-		nsLabel.setText("Not saved");
+		nsLabel.setText(changed ? "Not saved" : " ");
 		frame.repaint();
 	}
 

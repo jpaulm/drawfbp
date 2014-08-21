@@ -23,7 +23,9 @@ import java.lang.reflect.*;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
+import javax.tools.JavaCompiler;
 //import javax.swing.UIManager.*;
+import javax.tools.ToolProvider;
 
 public class DrawFBP extends JFrame
 		implements
@@ -686,6 +688,10 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Display Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		
+		//menuItem = new JMenuItem("Run Code");
+		//fileMenu.add(menuItem);
+		//menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Generate .fbp code");
@@ -997,6 +1003,41 @@ public class DrawFBP extends JFrame
 			return;
 		}
 		
+		if (s.equals("Run Code")) {
+
+			File cFile = null;
+			GenLang gl = curDiag.diagLang;
+
+			// String ss = properties.get("currentImageDir");
+			String ss = properties.get(gl.netDirProp);
+			File genDir = null;
+			if (ss == null)
+				genDir = new File(System.getProperty("user.home"));
+			else
+				genDir = new File(ss);
+
+			MyFileChooser fc = new MyFileChooser(genDir,
+					curDiag.fCPArr[GENCODE], frame);
+
+			int returnVal = fc.showOpenDialog();
+
+			cFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+				cFile = new File(fc.getSelectedFile());
+			}
+			// }
+			if (cFile == null)
+				return;
+
+			if (!(cFile.exists()))
+				return;
+
+			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			int result = compiler.run(null, null, null,
+			             cFile.getAbsolutePath());
+
+			return;
+		}
 		
 		
 
@@ -2175,12 +2216,11 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		String msg;
 		if (jf != null && !(jf.exists()))
-			msg = "Unable to read JavaFBP jar file " + javaFBPJarFile
-					+ ",\n   specify new JavaFBP jar file";
+			msg = "Unable to read JavaFBP jar file: " + javaFBPJarFile;
 		else
-			msg = "You need to specify a JavaFBP jar file";
+			msg = "JavaFBP jar file missing";
 
-		int response = MyOptionPane.showConfirmDialog(frame, "Locate it?", msg,
+		int response = MyOptionPane.showConfirmDialog(frame, msg, "Specify a JavaFBP jar file",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 		if (response == JOptionPane.OK_OPTION)
 			res = locateJavaFBPJarFile();

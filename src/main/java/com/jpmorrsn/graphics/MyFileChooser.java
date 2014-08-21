@@ -33,10 +33,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-//import javax.swing.event.DocumentEvent;
-//import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -125,7 +121,11 @@ public class MyFileChooser extends JFrame
 	DrawFBP.FileChooserParms fCParms;
 
 	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP, JFrame frm) {
-		listHead = f.getAbsolutePath();
+			
+		if (!f.exists()) 
+			listHead = System.getProperty("user.home");
+		else 	
+			listHead = f.getAbsolutePath();	
 		// fullNodeName = f.getAbsolutePath();
 		driver = DrawFBP.driver;
 
@@ -526,10 +526,8 @@ public class MyFileChooser extends JFrame
 		LinkedList<String> ll2 = null;
 		inJarTree = false;
 		String s = listHead;
-		// if (s.endsWith(".jar")){
-		// listHead = s + "!";
-		// //s = listHead;
-		// }
+				
+		
 		if (s.toLowerCase().endsWith("package.json")) {
 			ll2 = buildListFromJSON(s);
 			
@@ -1444,7 +1442,7 @@ public class MyFileChooser extends JFrame
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
 				if (fCParms == driver.curDiag.fCPArr[DrawFBP.JARFILE] /* || 
-						fCParms == driver.curDiag.fCPArr[DrawFBP.JHALL] */) {
+						fCParms == driver.curDiag.fCPArr[DrawFBP.CLASS] */ ) {					
 					processOK();
 					return;
 				}
