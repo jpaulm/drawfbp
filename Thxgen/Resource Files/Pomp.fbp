@@ -1,0 +1,11 @@
+# thxscan has been converted so .fbp notation no longer requires commas between "clauses"
+# comments follow the noflo convention
+
+'c:\threadn\pompiers.fil' -> OPT Lire("../CppFBPComponents/Components/ThFileRd") OUT -> 
+IN Select("../Pompiers/SelPomp") OUT -> 
+IN Ecrire("../CppFBPComponents/Components/ThFileWt")  
+Select REJECT -> IN Ecrire2("../CppFBPComponents/Components/ThFileWt")  
+'100000' -> SAL Select 
+'c:\threadn\riches.fil' -> 
+     OPT Ecrire 
+'c:\threadn\pauvres.fil' -> OPT Ecrire2;

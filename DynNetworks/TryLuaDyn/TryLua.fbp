@@ -1,0 +1,15 @@
+Gen(ThLua), Gen2(ThLua), 
+#Gen(ThGenIps), Gen2(ThGenIps),
+
+Concat(ThLua), Repl(ThLua), Drop(ThLua),
+
+Gen OUT -> IN[0] Concat, Gen2 OUT -> IN[1] Concat,
+Concat OUT -> IN Repl OUT -> IN Drop,
+
+'500000' -> COUNT Gen,
+'500000' -> COUNT Gen2,
+'C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/gen.lua' -> PROG Gen, 
+'C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/gen.lua' -> PROG Gen2,
+'C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/concat.lua' -> PROG Concat,
+'C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/repl.lua' -> PROG Repl,
+'C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/drop.lua' -> PROG Drop;

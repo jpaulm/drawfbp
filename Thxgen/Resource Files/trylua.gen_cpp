@@ -1,0 +1,36 @@
+/* Generated Code */
+
+#include "stdafx.h"
+#include "thxdef.h"
+#include <stdio.h>
+#include <stdlib.h>
+void  CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
+bool NO_TRACE = false; bool TRACE = true;
+THRCOMP ThLua(anchor anch);
+proc_ent P0 = {0, "Gen", "ThLua", ThLua, 0, 0, NO_TRACE, 0};
+proc_ent P1 = {&P0, "Gen2", "ThLua", ThLua, 0, 0, NO_TRACE, 0};
+proc_ent P2 = {&P1, "Concat", "ThLua", ThLua, 0, 0, NO_TRACE, 0};
+proc_ent P3 = {&P2, "Recvr", "ThLua", ThLua, 0, 0, NO_TRACE, 0};
+proc_ent P4 = {&P3, "Repl", "ThLua", ThLua, 0, 0, NO_TRACE, 0};
+IIP I0 = {"../TryLua/gen.lua"};
+cnxt_ent C0 = {0, "!", " ", 0, "Gen", "PROG", 0, &I0, 0};
+IIP I1 = {"../TryLua/gen.lua"};
+cnxt_ent C1 = {&C0, "!", " ", 0, "Gen2", "PROG", 0, &I1, 0};
+IIP I2 = {"../TryLua/concat.lua"};
+cnxt_ent C2 = {&C1, "!", " ", 0, "Concat", "PROG", 0, &I2, 0};
+IIP I3 = {"../TryLua/recvr.lua"};
+cnxt_ent C3 = {&C2, "!", " ", 0, "Recvr", "PROG", 0, &I3, 0};
+IIP I4 = {"../TryLua/repl.lua"};
+cnxt_ent C4 = {&C3, "!", " ", 0, "Repl", "PROG", 0, &I4, 0};
+IIP I5 = {"50"};
+cnxt_ent C5 = {&C4, "!", " ", 0, "Gen", "COUNT", 0, &I5, 0};
+IIP I6 = {"50"};
+cnxt_ent C6 = {&C5, "!", " ", 0, "Gen2", "COUNT", 0, &I6, 0};
+cnxt_ent C7 = {&C6, "Gen", "OUT", 0, "Concat", "IN", 0, 0, 6};
+cnxt_ent C8 = {&C7, "Gen2", "OUT", 0, "Concat", "IN", 1, 0, 6};
+cnxt_ent C9 = {&C8, "Concat", "OUT", 0, "Repl", "IN", 0, 0, 6};
+cnxt_ent C10 = {&C9, "Repl", "OUT", 0, "Recvr", "IN", 0, 0, 6};
+label_ent LABELTAB = {0, " ", "", &C10, &P4, 'L'};
+void main() {
+CppFBP(&LABELTAB, 0, 0, 0);
+}
