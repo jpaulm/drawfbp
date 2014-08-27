@@ -3,7 +3,7 @@ CppFBP
 
 C++ Implementation of Flow-Based Programming (FBP)
 
-** Compile/link errors right now - working on them....**
+**Compile/link errors right now - working on them....**
 
 
 General
