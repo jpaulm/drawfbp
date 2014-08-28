@@ -13,6 +13,8 @@ In computer programming, flow-based programming (FBP) is a programming paradigm 
 
 FBP is a particular form of dataflow programming based on bounded buffers, information packets with defined lifetimes, named ports, and separate definition of connections.
 
+One interesting aspect of this implementation is that it supports the scripting language `Lua`, so large parts of your networks can be written in a scripting language if desired.
+
 Web sites for FBP: 
 * http://www.jpaulmorrison.com/fbp/
 * https://github.com/flowbased/flowbased.org/wiki
@@ -20,8 +22,11 @@ Web sites for FBP:
 Prerequisites
 ---
 
-Install Visual C++Express
-Download `Boost`
+Download and install Visual C++ 2010 Express
+
+Download and install `Boost`
+
+Download and install `Lua`
 
 Build FBP Project
 ---
@@ -30,11 +35,32 @@ Create empty `cppfbp` directory in your local GitHub directory
 
 Do `git clone https://github.com/jpaulm/cppfbp`
 
-Now go into Visual C++, and `Open Project` `FBP.sln` (in the just cloned directory)
+Now go into Visual C++, and `Open/Project/Solution` `CppFBP.sln` (in the just cloned directory)
 
 There will be a "solution" line, followed by a number of "projects" - two of which are `CppFBPCore` and `CppFBPComponents`.
 
-Right click on these and do a `Build` - _in this order_.
+- Right click on `CppFBPCore`, click on `Properties`
+- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` _include_ library (without `Headers`)
+ 
+For all other subprojects,
+
+- Go to `Configuration Properties`/`Linker`/`Additional Library Directories`
+- Add location of your `Boost` `stage\lib` directory
+- Add `../../Debug/CppFBPCore.lib`
+- Add `../../Debug/CppFBPComponents.lib`
+
+If you are interested in the Lua interface,
+
+- Right click on `CppFBPComponents`, click on `Properties`
+- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ file 
+- Go to `Configuration Properties`/`Linker`/`Input`/`Additional Dependencies`; add location of your `Lua` _lib_ file
+
+
+Right click on `SolutionSettings` and do a `Build`
+
+Right click on `CppFBPCore` and do a `Build`
+
+Right click on `CppFBPComponents` and do a `Build`
 
 Right click on the "solution" line, and do `Build Solution`
 
