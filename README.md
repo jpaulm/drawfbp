@@ -44,8 +44,8 @@ Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add loc
 If you are interested in the Lua interface,
 
 - Right click on `CppFBPComponents`, click on `Properties`
-
-- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ libraries 
+- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ file 
+- Go to `Configuration Properties`/`Linker`/`Input`/`Additional Dependencies`; add location of your `Lua` _lib_ file
 
 
 Right click on `CppFBPCore` and `CppFBPComponents` and do a `Build` - _in this order_.
