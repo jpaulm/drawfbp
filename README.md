@@ -37,9 +37,15 @@ Now go into Visual C++, and `Open/Project/Solution` `CppFBP.sln` (in the just cl
 
 There will be a "solution" line, followed by a number of "projects" - two of which are `CppFBPCore` and `CppFBPComponents`.
 
-Right click on `CppFBPCore`, click on `Properties`
+- Right click on `CppFBPCore`, click on `Properties`
+- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` _include_ library (without `Headers`)
+ 
+For all other subprojects,
 
-Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` libraries
+- Go to `Configuration Properties`/`Linker`/`Additional Library Directories`
+- Add location of your `Boost` `stage\lib` directory
+- Add `../../Debug/CppFBPCore.lib`
+- Add `../../Debug/CppFBPComponents.lib`
 
 If you are interested in the Lua interface,
 
