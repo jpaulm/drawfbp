@@ -13,6 +13,8 @@ In computer programming, flow-based programming (FBP) is a programming paradigm 
 
 FBP is a particular form of dataflow programming based on bounded buffers, information packets with defined lifetimes, named ports, and separate definition of connections.
 
+One interesting aspect of this implementation is that it supports the scripting language `Lua`, so large parts of your networks can be written in a scripting language if desired.
+
 Web sites for FBP: 
 * http://www.jpaulmorrison.com/fbp/
 * https://github.com/flowbased/flowbased.org/wiki
