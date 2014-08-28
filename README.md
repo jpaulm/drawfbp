@@ -21,7 +21,10 @@ Prerequisites
 ---
 
 Install Visual C++Express
+
 Download `Boost`
+
+Download `Lua`
 
 Build FBP Project
 ---
@@ -30,11 +33,22 @@ Create empty `cppfbp` directory in your local GitHub directory
 
 Do `git clone https://github.com/jpaulm/cppfbp`
 
-Now go into Visual C++, and `Open Project` `FBP.sln` (in the just cloned directory)
+Now go into Visual C++, and `Open/Project/Solution` `CppFBP.sln` (in the just cloned directory)
 
 There will be a "solution" line, followed by a number of "projects" - two of which are `CppFBPCore` and `CppFBPComponents`.
 
-Right click on these and do a `Build` - _in this order_.
+Right click on `CppFBPCore`, click on `Properties`
+
+Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` libraries
+
+If you are interested in the Lua interface,
+
+- Right click on `CppFBPComponents`, click on `Properties`
+
+- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ libraries 
+
+
+Right click on `CppFBPCore` and `CppFBPComponents` and do a `Build` - _in this order_.
 
 Right click on the "solution" line, and do `Build Solution`
 
