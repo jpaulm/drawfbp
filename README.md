@@ -22,11 +22,11 @@ Web sites for FBP:
 Prerequisites
 ---
 
-Install Visual C++Express
+Download and install Visual C++ 2010 Express
 
-Download `Boost`
+Download and install `Boost`
 
-Download `Lua`
+Download and install `Lua`
 
 Build FBP Project
 ---
@@ -55,6 +55,8 @@ If you are interested in the Lua interface,
 - Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ file 
 - Go to `Configuration Properties`/`Linker`/`Input`/`Additional Dependencies`; add location of your `Lua` _lib_ file
 
+
+Right click on `SolutionSettings` and do a `Build`
 
 Right click on `CppFBPCore` and do a `Build`
 
