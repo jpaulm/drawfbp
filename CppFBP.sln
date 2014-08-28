@@ -7,11 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppFBPComponents", "CppFBPC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Thxgen", "Thxgen\Thxgen.vcxproj", "{FC15EBBB-A017-4C60-B65E-FB534FD0D6C4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pompiers", "TestNetworks\Pompiers\Pompiers.vcxproj", "{4CA9ED1C-0BF2-43D8-BC78-0D48D1817935}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F} = {DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CopyFile", "TestNetworks\CopyFile\CopyFile.vcxproj", "{D324AC2E-065C-4C89-A889-0A181C7688E3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F} = {DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F}
@@ -34,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryLuaDyn", "DynNetworks\Tr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimingTest3", "TestNetworks\TimingTest3\TimingTest3.vcxproj", "{57AFACD1-A43D-4772-AA8F-521FF0B220DC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SolutionSettings", "SolutionSettings\SolutionSettings.vcxproj", "{A966924A-948A-4DFF-ABCE-2A6188345700}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -50,8 +47,6 @@ Global
 		{FC15EBBB-A017-4C60-B65E-FB534FD0D6C4}.Debug|Win32.Build.0 = Debug|Win32
 		{FC15EBBB-A017-4C60-B65E-FB534FD0D6C4}.Release|Win32.ActiveCfg = Release|Win32
 		{FC15EBBB-A017-4C60-B65E-FB534FD0D6C4}.Release|Win32.Build.0 = Release|Win32
-		{4CA9ED1C-0BF2-43D8-BC78-0D48D1817935}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4CA9ED1C-0BF2-43D8-BC78-0D48D1817935}.Release|Win32.ActiveCfg = Release|Win32
 		{D324AC2E-065C-4C89-A889-0A181C7688E3}.Debug|Win32.ActiveCfg = Debug|Win32
 		{D324AC2E-065C-4C89-A889-0A181C7688E3}.Release|Win32.ActiveCfg = Release|Win32
 		{53C66364-DE90-43E4-A27B-47EBCB96C89A}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -78,6 +73,10 @@ Global
 		{57AFACD1-A43D-4772-AA8F-521FF0B220DC}.Debug|Win32.Build.0 = Debug|Win32
 		{57AFACD1-A43D-4772-AA8F-521FF0B220DC}.Release|Win32.ActiveCfg = Release|Win32
 		{57AFACD1-A43D-4772-AA8F-521FF0B220DC}.Release|Win32.Build.0 = Release|Win32
+		{A966924A-948A-4DFF-ABCE-2A6188345700}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A966924A-948A-4DFF-ABCE-2A6188345700}.Debug|Win32.Build.0 = Debug|Win32
+		{A966924A-948A-4DFF-ABCE-2A6188345700}.Release|Win32.ActiveCfg = Release|Win32
+		{A966924A-948A-4DFF-ABCE-2A6188345700}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
