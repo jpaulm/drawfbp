@@ -48,7 +48,9 @@ If you are interested in the Lua interface,
 - Go to `Configuration Properties`/`Linker`/`Input`/`Additional Dependencies`; add location of your `Lua` _lib_ file
 
 
-Right click on `CppFBPCore` and `CppFBPComponents` and do a `Build` - _in this order_.
+Right click on `CppFBPCore` and do a `Build`
+
+Right click on `CppFBPComponents` and do a `Build`
 
 Right click on the "solution" line, and do `Build Solution`
 
