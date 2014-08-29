@@ -51,7 +51,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../CppFBPCore/Headers;C:\Program Files (x86)\Lua\5.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../CppFBPCore/Headers;$(LUA_INCLUDE)</AdditionalIncludeDirectories>
       <AssemblerOutput>All</AssemblerOutput>
       <AdditionalOptions>/LD %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>

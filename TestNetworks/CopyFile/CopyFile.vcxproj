@@ -84,11 +84,6 @@
     <ClCompile Include="..\..\CppFBPCore\stdafx.cpp" />
     <ClCompile Include="CopyFile.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\CppFBPComponents\CppFBPComponents.vcxproj">
-      <Project>{ddaecf69-dcc6-4ffe-8eec-1641bd277b1f}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -4,7 +4,7 @@
     <ClCompile Include="TimingTest2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\CppFBPCore\stdafx.cpp" />
+    <ClCompile Include="..\..\CppFBPCore\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
