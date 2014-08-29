@@ -3,9 +3,6 @@ CppFBP
 
 C++ Implementation of Flow-Based Programming (FBP)
 
-**Compile/link errors right now - working on them....**
-
-
 General
 ---
 
@@ -22,11 +19,11 @@ Web sites for FBP:
 Prerequisites
 ---
 
-Download and install Visual C++ 2010 Express
+Download and install Visual C++ 2010 Express (or higher version)
 
-Download and install `Boost`
+Download and install `Boost` - http://www.boost.org/
 
-Download and install `Lua`
+Download and install `Lua` - http://www.lua.org/
 
 Build FBP Project
 ---
@@ -44,7 +41,7 @@ There will be a "solution" line, followed by a number of "projects" - two of whi
  
 For all other subprojects,
 
-- Go to `Configuration Properties`/`Linker`/`Additional Library Directories`
+- Go to `Configuration Properties`/`Linker`/`General`/`Additional Library Directories`
 - Add location of your `Boost` `stage\lib` directory
 - Add `../../Debug/CppFBPCore.lib`
 - Add `../../Debug/CppFBPComponents.lib`
