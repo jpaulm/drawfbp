@@ -37,20 +37,20 @@ Now go into Visual C++, and `Open/Project/Solution` `CppFBP.sln` (in the just cl
 There will be a "solution" line, followed by a number of "projects" - two of which are `CppFBPCore` and `CppFBPComponents`.
 
 - Right click on `CppFBPCore`, click on `Properties`
-- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` _include_ library (without `Headers`)
+- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` _include_ library (without `Headers`, e.g. `C:\Program Files\Boost\boost_1_54_0`)
  
 For all other subprojects,
 
 - Go to `Configuration Properties`/`Linker`/`General`/`Additional Library Directories`
-- Add location of your `Boost` `stage\lib` directory
+- Add location of your `Boost` `stage\lib` directory (e.g. `C:\Program Files\Boost\boost_1_54_0\stage\lib`)
 - Add `../../Debug/CppFBPCore.lib`
 - Add `../../Debug/CppFBPComponents.lib`
 
 If you are interested in the Lua interface,
 
 - Right click on `CppFBPComponents`, click on `Properties`
-- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ file 
-- Go to `Configuration Properties`/`Linker`/`Input`/`Additional Dependencies`; add location of your `Lua` _lib_ file
+- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ file (e.g. `C:\Program Files (x86)\Lua\5.1\include`) 
+- Go to `Configuration Properties`/`Linker`/`Input`/`Additional Dependencies`; add location of your `Lua` _lib_ file (e.g. `C:\Program Files (x86)\Lua\5.1\lib\lua51.lib`)
 
 
 Right click on `SolutionSettings` and do a `Build`
