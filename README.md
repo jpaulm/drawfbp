@@ -3,8 +3,6 @@ CppFBP
 
 C++ Implementation of Flow-Based Programming (FBP)
 
-**README to be modified to take account of macros** 
-
 General
 ---
 
@@ -27,7 +25,15 @@ Download and install `Boost` - http://www.boost.org/
 
 Download and install `Lua` - http://www.lua.org/
 
-Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LIB`, `LUA_INCLUDE`, `LUA-LIB` (will be spelled out)
+Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LIB`, `LUA_INCLUDE`, `LUA-LIB`, as follows:
+- Go to `View`/`Property Manager`
+- Under `Property Manager`, select `SolutionSettings`
+- Expand, showing `Debug`
+- Expand, showing `UserMacros`
+- Select `UserMacros`
+- Go to `UserMacros` under `Common Properties`
+- Click on that, revealing the 4 macros; change version numbers if necessary
+- Leave `set this macro as an environment variable in the build environment` set to selected
 
 Build FBP Project
 ---
