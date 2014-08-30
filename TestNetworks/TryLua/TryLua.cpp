@@ -44,24 +44,24 @@ cnxt_ent C025 = {&C01, "Concat", "OUT", 0, "Repl", "IN", 0, 0, 2};
 cnxt_ent C02 = {&C025, "Repl", "OUT", 0, "Drop", "IN", 0, 0, 2};
 
 IIP I00 = {"50000"};
-IIP I01 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/gen.lua"};                                      // creates and sends 'COUNT' IPs  
+IIP I01 = {"gen.lua"};                                      // creates and sends 'COUNT' IPs  
 cnxt_ent C03 = {&C02, "!", "", 0, "Gen", "COUNT", 0, &I00, 0};
 cnxt_ent C04 = {&C03, "!", "", 0, "Gen", "PROG", 0, &I01, 0};
 
  
 IIP I02 = {"50000"};
-IIP I03 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/gen.lua"};                                      // creates and sends 'COUNT' IPs  
+IIP I03 = {"gen.lua"};                                      // creates and sends 'COUNT' IPs  
 cnxt_ent C05 = {&C04, "!", "", 0, "Gen2", "COUNT", 0, &I02, 0};
 cnxt_ent C06 = {&C05, "!", "", 0, "Gen2", "PROG", 0, &I03, 0};
  
 
-IIP I04 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/concat.lua"};                                       // receives from IN[0] then IN[1], etc. sending to OUT
+IIP I04 = {"concat.lua"};                                       // receives from IN[0] then IN[1], etc. sending to OUT
 cnxt_ent C07 = {&C06, "!", "", 0, "Concat", "PROG", 0, &I04, 0};
 
-IIP I05 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/repl.lua"};                                       // creates copies and sends to OUT[0], OUT[1], etc. dropping original
+IIP I05 = {"repl.lua"};                                       // creates copies and sends to OUT[0], OUT[1], etc. dropping original
 cnxt_ent C08 = {&C07, "!", "", 0, "Repl", "PROG", 0, &I05, 0};
 
-IIP I06 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/drop.lua"};                                        // looper
+IIP I06 = {"drop.lua"};                                        // looper
 //IIP I06 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/recvr.lua"};                                      // non-looper receives from IN[0] and drops
 cnxt_ent C09 = {&C08, "!", "", 0, "Drop", "PROG", 0, &I06, 0};
 

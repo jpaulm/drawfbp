@@ -8,7 +8,7 @@
 is a structured representation of the free-form connection list
 
 Using fibres...
-This test case took 26 secs with 1,000,000 IPs on *each* connection, and connection capacities = 6;
+This test case took 26 secs with 1,000,000 IPs on *each* connection (5 connections), and connection capacities = 6;
                     17           1,000,000                                                       20 
 					16           1,000,000                                                       50 
 					64           4,000,000                                                       50 
