@@ -3,6 +3,8 @@ CppFBP
 
 C++ Implementation of Flow-Based Programming (FBP)
 
+**README to be modified to take account of macros**D 
+
 General
 ---
 
@@ -25,6 +27,8 @@ Download and install `Boost` - http://www.boost.org/
 
 Download and install `Lua` - http://www.lua.org/
 
+Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LIB`, `LUA_INCLUDE`, `LUA-LIB` 
+
 Build FBP Project
 ---
 
@@ -39,35 +43,24 @@ There will be a "solution" line, followed by a number of "projects" - two of whi
 - Right click on `CppFBPCore`, click on `Properties`
 - Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` _include_ library (without `Headers`, e.g. `C:\Program Files\Boost\boost_1_54_0`)
  
-For all other subprojects,
-
-- Go to `Configuration Properties`/`Linker`/`General`/`Additional Library Directories`
-- Add location of your `Boost` `stage\lib` directory (e.g. `C:\Program Files\Boost\boost_1_54_0\stage\lib`)
-- Add `../../Debug/CppFBPCore.lib`
-- Add `../../Debug/CppFBPComponents.lib`
-
-If you are interested in the Lua interface,
-
-- Right click on `CppFBPComponents`, click on `Properties`
-- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Lua` _include_ file (e.g. `C:\Program Files (x86)\Lua\5.1\include`) 
-- Go to `Configuration Properties`/`Linker`/`Input`/`Additional Dependencies`; add location of your `Lua` _lib_ file (e.g. `C:\Program Files (x86)\Lua\5.1\lib\lua51.lib`)
-
-
-Right click on `SolutionSettings` and do a `Build`
-
 Right click on `CppFBPCore` and do a `Build`
 
 Right click on `CppFBPComponents` and do a `Build`
 
 Right click on the "solution" line, and do `Build Solution`
 
-If you only get warnings, you can proceed
+If you get errors, you may have to build individual projects (sometimes this will require more than one try); if you only get warnings, you can proceed
 
 
 Testing "TimingTest1" (console application)
 ---
 
 Right click on `TimingTest1` in Solution Explorer; Debug/Start new instance
+
+You should see something like
+
+    Elapsed time in seconds: 35.000
+    Press any key to continue . . .
 
 
 
