@@ -39,9 +39,6 @@ Do `git clone https://github.com/jpaulm/cppfbp`
 Now go into Visual C++, and `Open/Project/Solution` `CppFBP.sln` (in the just cloned directory)
 
 There will be a "solution" line, followed by a number of "projects" - two of which are `CppFBPCore` and `CppFBPComponents`.
-
-- Right click on `CppFBPCore`, click on `Properties`
-- Go to `Configuration Properties`/`C/C++`/`Additional Include Libraries`; add location of your `Boost` _include_ library (without `Headers`, e.g. `C:\Program Files\Boost\boost_1_54_0`)
  
 Right click on `CppFBPCore` and do a `Build`
 
