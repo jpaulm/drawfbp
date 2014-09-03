@@ -30,7 +30,7 @@ Download and install `Boost` - http://www.boost.org/
 
 Download and install `Lua` - http://www.lua.org/
 
-Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LIB`, `LUA_INCLUDE`, `LUA-LIB`, as follows:
+Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LIB`, `LUA_INCLUDE`, `LUA_LIB`, as follows:
 - Go to `View`/`Property Manager`
 - Under `Property Manager`, select `SolutionSettings`
 - Expand, showing `Debug`
