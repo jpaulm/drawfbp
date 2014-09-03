@@ -17,8 +17,10 @@ Web sites for FBP:
 * https://github.com/flowbased/flowbased.org/wiki
 
 Sample Component, Component API and Network Definitions
-
 * http://www.jpaulmorrison.com/fbp/CppFBP.shtml
+ 
+Sample Lua scripts executable by ThLua component
+* http://www.jpaulmorrison.com/fbp/thlua.html
 
 
 Prerequisites
