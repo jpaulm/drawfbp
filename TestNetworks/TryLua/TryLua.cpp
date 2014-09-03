@@ -43,13 +43,13 @@ cnxt_ent C01 = {&C00, "Gen2", "OUT", 0, "Concat", "IN", 1, 0, 2};
 cnxt_ent C025 = {&C01, "Concat", "OUT", 0, "Repl", "IN", 0, 0, 2};
 cnxt_ent C02 = {&C025, "Repl", "OUT", 0, "Drop", "IN", 0, 0, 2};
 
-IIP I00 = {"50000"};
+IIP I00 = {"500000"};
 IIP I01 = {"gen.lua"};                                      // creates and sends 'COUNT' IPs  
 cnxt_ent C03 = {&C02, "!", "", 0, "Gen", "COUNT", 0, &I00, 0};
 cnxt_ent C04 = {&C03, "!", "", 0, "Gen", "PROG", 0, &I01, 0};
 
  
-IIP I02 = {"50000"};
+IIP I02 = {"500000"};
 IIP I03 = {"gen.lua"};                                      // creates and sends 'COUNT' IPs  
 cnxt_ent C05 = {&C04, "!", "", 0, "Gen2", "COUNT", 0, &I02, 0};
 cnxt_ent C06 = {&C05, "!", "", 0, "Gen2", "PROG", 0, &I03, 0};
@@ -62,7 +62,7 @@ IIP I05 = {"repl.lua"};                                       // creates copies 
 cnxt_ent C08 = {&C07, "!", "", 0, "Repl", "PROG", 0, &I05, 0};
 
 IIP I06 = {"drop.lua"};                                        // looper
-//IIP I06 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/recvr.lua"};                                      // non-looper receives from IN[0] and drops
+//IIP I06 = {"C:/Users/Paul/Documents/Business/C++Stuff/CppFBP/TestNetworks/TryLua/recvr.lua"};                                     
 cnxt_ent C09 = {&C08, "!", "", 0, "Drop", "PROG", 0, &I06, 0};
 
 label_ent LABELTAB = {0, " ", "", &C09, &P04, 'L'};
