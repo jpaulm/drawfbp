@@ -39,6 +39,9 @@ Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LI
 - Go to `UserMacros` under `Common Properties`
 - Click on that, revealing the 4 macros; change version numbers if necessary
 - Leave `set this macro as an environment variable in the build environment` set to selected
+ 
+or, more simply, in Windows Explorer, just go to `SolutionSettings`, open it, open `UserMacros.props`, and make and save your changes.
+
 
 Build FBP Project
 ---
