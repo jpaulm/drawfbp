@@ -52,7 +52,7 @@ For building the project simply run the following command:
 
     gradle build
 
-As a result a `DrawFBP-2.9.1.jar` file will be created in the `build/libs` directory. 
+As a result a `DrawFBP-2.10.1.jar` file will be created in the `build/libs` directory. 
 
 
 Running and/or Installing DrawFBP
@@ -60,7 +60,7 @@ Running and/or Installing DrawFBP
 
 Note: this jar file will run DrawFBP, but will not provide the Help facility.  However, you can access the Help facility by going to your DrawFBP project directory, and entering
 
-    java -cp "build\libs\drawfbp-2.9.1.jar;lib\DrawFBP-Help.jar" com.jpmorrsn.graphics.DrawFBP
+    java -cp "build\libs\drawfbp-2.10.1.jar;lib\DrawFBP-Help.jar" com.jpmorrsn.graphics.DrawFBP
     
 (note the quotes)    
 
@@ -69,5 +69,5 @@ Alternatively, run `gradle installApp` and you will find start scripts in `build
 Running JavaFBP networks
 ---
 
-If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP install jar file, obtainable from GitHub -  https://github.com/jpaulm/javafbp/releases/download/v2.9/javafbp-2.9.jar, or from J. Paul Morrison's web site www.jpaulmorrison.com/fbp/JavaFBP-2.9.jar, to the Java Build Path of any projects you create. If you want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
+If you wish to run any networks that you create with DrawFBP, you will need to add the JavaFBP install jar file, obtainable from GitHub -  `https://github.com/jpaulm/javafbp/releases/download/v2.9/javafbp-2.9.jar`, or from J. Paul Morrison's web site `http://www.jpaulmorrison.com/fbp/JavaFBP-2.9.jar`, to the Java Build Path of any projects you create. If you want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the Readme file for the javafbp project on GitHub.
 
