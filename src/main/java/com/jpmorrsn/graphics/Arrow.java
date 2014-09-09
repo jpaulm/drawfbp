@@ -29,6 +29,8 @@ public class Arrow implements ActionListener {
 	static Color ORANGE_RED = new Color(255, 69, 0);
 	boolean headMarked, tailMarked;
 	boolean dropOldest;
+	int capacity;
+	LegendBlock capLegend;   //Legend block associated with Arrow 
 
 	enum Status {
 		UNCHECKED, COMPATIBLE, INCOMPATIBLE
@@ -509,9 +511,17 @@ public class Arrow implements ActionListener {
 			diag.jpm.add(menuItem);
 		}
 		diag.jpm.addSeparator();
+		menuItem = new JMenuItem("Set Capacity");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
+		menuItem = new JMenuItem("Remove Capacity");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
+		diag.jpm.addSeparator();
 		menuItem = new JMenuItem("Toggle Upstream Port Automatic / Normal");
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
+		
 		menuItem = new JMenuItem("Toggle Downstream Port Automatic / Normal");
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
@@ -622,6 +632,47 @@ public class Arrow implements ActionListener {
 				}
 			}
 			driver.frame.repaint();
+			
+		} else if (s.equals("Set Capacity")) {
+			
+			String capString = null;
+			if (capacity == 0)
+				capString = "";
+			else
+				capString = Integer.toString(capacity);
+			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+					"Enter or change text", "Set Capacity",
+					JOptionPane.PLAIN_MESSAGE, null, null, capString);
+			if ((ans != null) && (ans.length() > 0)) {
+				capacity = Integer.parseInt(ans);
+				if (capLegend == null) {
+					capLegend = (LegendBlock) diag.driver.createBlock(
+							Block.Types.LEGEND_BLOCK, false);
+
+					int x = toX;
+					int y = toY;
+					if (bends != null) {
+						Bend bd = bends.peek();
+						x = bd.x;
+						y = bd.y;
+					}
+
+					capLegend.cx = (fromX + x) / 2;
+					capLegend.cy = (fromY + y) / 2 + 20;
+					if (fromX == x)
+						capLegend.cx -= 20;
+				}
+				capLegend.description = "(" + capacity + ")";
+			}
+			driver.frame.repaint();
+			diag.changed = true;
+			
+		} else if (s.equals("Remove Capacity")) {
+			capacity = 0;
+			diag.delBlock(capLegend, false);
+			capLegend = null;
+			driver.frame.repaint();
+			diag.changed = true;
 
 		} else if (s.equals("Toggle Upstream Port Automatic / Normal")) {
 			if (upStreamPort == null || !upStreamPort.equals("*"))

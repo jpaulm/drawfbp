@@ -1552,8 +1552,12 @@ public class DrawFBP extends JFrame
 		frame.repaint();
 
 	}
-
+	
 	Block createBlock(String blkType) {
+		return createBlock(blkType, true);
+	}
+
+	Block createBlock(String blkType, boolean enterDesc) {
 		Block block = null;
 		if (blkType == Block.Types.COMPONENT_BLOCK) {
 			block = new ComponentBlock(curDiag);
@@ -1595,12 +1599,15 @@ public class DrawFBP extends JFrame
 		block.cy = curDiag.ya;
 		if (block.cx == 0 || block.cy == 0)
 			return null; // fudge!
+		
+		if (enterDesc) {
 		if (!block.editDescription(REG_CREATE))
 			return null;
 
 		if (blkType == Block.Types.IIP_BLOCK) {
 			IIPBlock ib = (IIPBlock) block;
 			block.description = ib.checkNestedChars(block.description);
+		}
 		}
 		block.calcEdges();
 		curDiag.maxBlockNo++;
