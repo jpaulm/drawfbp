@@ -376,8 +376,13 @@ public class CodeManager implements ActionListener, DocumentListener {
 				frame.repaint();
 				//String upPort = arrow.upStreamPort;
 				//String dnPort = a2.downStreamPort;
+				
+				String cap = "";
+				if (arrow.capacity > 0)
+					cap = ", " + arrow.capacity;
 				if (from instanceof ComponentBlock
 						&& to instanceof ComponentBlock) {
+					
 					if (!arrow.endsAtLine
 							&& checkDupPort(dnPort, to)) {
 						MyOptionPane.showMessageDialog(frame,
@@ -395,7 +400,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						code += genConnect(arrow) + "(" + component + "(\"" + fromDesc
 								+ ":\" + i), " + _port + "(" + q(upPort) + "), "
 								+ component + "(\"" + toDesc + "\"), " + _port
-								+ "(" + q(dnPort) + ")); \n";
+								+ "(" + q(dnPort) + ")" + cap + "); \n";
 						if (arrow.dropOldest)
 							code += "c" + arrow.id + "." + sDO + "; \n";
 					} else if (to.multiplex) {
@@ -404,14 +409,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 						code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
 								+ "), " + _port + "(" + q(upPort) + ",i), "
 								+ component + "(\"" + toDesc + ":\" + i), "
-								+ _port + "(" + q(dnPort) + ")); \n";
+								+ _port + "(" + q(dnPort) + ")" + cap + "); \n";
 						if (arrow.dropOldest)
 						code += "c" + arrow.id + "." + sDO + "; \n";
 					} else {
 						code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
 								+ "), " + _port + "(" + q(upPort) + "), "
 								+ component + "(\"" + toDesc + "\"), " + _port
-								+ "(" + q(dnPort) + ")); \n";
+								+ "(" + q(dnPort) + ")" + cap + "); \n";
 						if (arrow.dropOldest)
 					code += "c" + arrow.id + "." + sDO + "; \n";
 					}
@@ -428,7 +433,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 					code += initialize + "(" + q(fromDesc) + ", " + component
 							+ "(\"" + toDesc + "\"), " + _port + "("
-							+ q(dnPort) + ")); \n";
+							+ q(dnPort) + ")" + cap + "); \n";
 				}
 
 				if (from instanceof ExtPortBlock) {
@@ -436,7 +441,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
 							+ "), " + _port + "(\"OUT\"), " + component
 							+ "(\"" + toDesc + "\"), " + _port + "("
-							+ q(dnPort) + ")); \n";
+							+ q(dnPort) + ")" + cap + "); \n";
 					if (arrow.dropOldest)
 					code += "c" + arrow.id + "." + sDO + "; \n";
 				} else if (to instanceof ExtPortBlock) {
@@ -444,7 +449,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
 							+ "), " + _port + "(" + q(upPort) + "), " + component
 							+ "(\"" + toDesc + "\"), " + _port
-							+ "(\"IN\")); \n";
+							+ "(\"IN\" " + ")" + cap + "); \n";
 					if (arrow.dropOldest)
 					code += "c" + arrow.id + "." + sDO + "; \n";
 				}
