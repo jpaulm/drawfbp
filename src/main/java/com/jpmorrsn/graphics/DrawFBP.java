@@ -67,7 +67,7 @@ public class DrawFBP extends JFrame
 	JTabbedPaneWithCloseIcons jtp;
 
 	String javaFBPJarFile = null;
-	//String jhallJarFile = null;
+	String jhallJarFile = null;
 
 	Block selBlock = null;  // used only when mousing over 
 	Block selBlockP = null; // permanent select
@@ -112,15 +112,15 @@ public class DrawFBP extends JFrame
 
 	GenLang genLangs[];
 
-	FileChooserParms[] fCPArray = new FileChooserParms[6];
+	FileChooserParms[] fCPArray = new FileChooserParms[7];
 
 	public static int CLASS = 0;
 	public static int DIAGRAM = 1;
 	public static int IMAGE = 2;
 	public static int JARFILE = 3;
-	//public static int JHALL = 4;
-	public static int COMPONENT = 4;
-	public static int GENCODE = 5;
+	public static int JHALL = 4;
+	public static int COMPONENT = 5;
+	public static int GENCODE = 6;
 
 	JCheckBox grid;
 
@@ -150,7 +150,7 @@ public class DrawFBP extends JFrame
 	ImageIcon folderIcon = null;
 	ImageIcon classIcon = null;
 
-	//Class<?> jHelpClass = null;
+	Class<?> jHelpClass = null;
 	Class<?> helpSetClass = null;
 	JSlider zoomControl = null;
 
@@ -267,9 +267,9 @@ public class DrawFBP extends JFrame
 				"Choose a jar file for JavaFBP", ".jar",
 				driver.new JarFileFilter(), "Jar files");
 
-		//fCPArray[JHALL] = new FileChooserParms("jhallJarFile",
-		//		"Choose a directory for DrawFBP-Help.jar (JavaHelp)", ".jar",
-		//		driver.new JarFileFilter(), "Help files");
+		fCPArray[JHALL] = new FileChooserParms("jhallJarFile",
+				"Choose a directory for DrawFBP-Help.jar (JavaHelp)", ".jar",
+				driver.new JarFileFilter(), "Help files");
 
 		
 		createAndShowGUI();
@@ -693,16 +693,16 @@ public class DrawFBP extends JFrame
 		menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
-		if (curDiag != null
-				&&curDiag.diagLang != null
-				&& curDiag.diagLang.label.equals("Java")){
+		//if (curDiag != null
+		//		&&curDiag.diagLang != null
+		//		&& curDiag.diagLang.label.equals("Java")){
 		menuItem = new JMenuItem("Locate JavaFBP Jar File");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		}
+		//}
 		fileMenu.addSeparator();
 
 		menuItem = new JMenuItem("Change Fonts");
@@ -1051,11 +1051,11 @@ public class DrawFBP extends JFrame
 			return;
 		}
 
-		//if (s.equals("Locate DrawFBP Help File")) {
+		if (s.equals("Locate DrawFBP Help File")) {
 
-		//	locateJhallJarFile();
-		//	return;
-		//}
+			locateJhallJarFile();
+			return;
+		}
 
 		if (s.equals("Change Fonts")) {
 			changeFonts();
@@ -1205,108 +1205,135 @@ public class DrawFBP extends JFrame
 		if (s.equals("Launch Help")) {
 
 			// The following is based on
-			// https://supportweb.cs.bham.ac.uk/documentation/tutorials/
-			// docsystem/build/tutorials/javahelp/javahelp.html
-			
+						// https://supportweb.cs.bham.ac.uk/documentation/tutorials/
+						// docsystem/build/tutorials/javahelp/javahelp.html
+						// plus reflection
 
-									
-			if (jHelpViewer == null) {
+						if (jHelpViewer == null) {
 
-				helpSetClass = null;
+							if (jhallJarFile == null) {
 
-				URLClassLoader loader = (URLClassLoader) ClassLoader
-						.getSystemClassLoader();
-				MyClassLoader cl = new MyClassLoader(loader.getURLs());
-				File f = new File("lib" + File.separator + "DrawFBP-Help.jar");
-				try {
-					cl.addURL(f.toURI().toURL());
-				}   catch (MalformedURLException e2) {
-					MyOptionPane.showMessageDialog(frame, "Bad URL");
-					try {
-						cl.close();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					return;
-				} 
-				
-				try {
-					// Find the HelpSet file and create the HelpSet object
-					helpSetClass = cl.loadClass("javax.help.HelpSet");
+								jhallJarFile = properties.get("jhallJarFile");
+								boolean res = true;
 
-					if (helpSetClass == null) {
-						MyOptionPane.showMessageDialog(frame,
-								"HelpSet class not found in jar file");
-						try {
-							cl.close();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
+								if (jhallJarFile == null) {
+									int response =  MyOptionPane
+											.showConfirmDialog(
+													frame,
+													//"Locate it?",
+													"Specify the location of the DrawFBP-Help jar file -\n"
+															+ "it can be found in project lib file, -\n"
+															+ "or downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar",
+													"Locate it?",		
+													JOptionPane.OK_CANCEL_OPTION,
+													JOptionPane.QUESTION_MESSAGE);
+									if (response == JOptionPane.OK_OPTION)
+										res = locateJhallJarFile();
+									else {
+										MyOptionPane.showMessageDialog(frame,
+												"No DrawFBP Help jar file located");
+										res = false;
+									}
+								}
+								if (!res)
+									return;
+							}
+							jHelpClass = null;
+							helpSetClass = null;
+							URLClassLoader cl = null;
+
+							File jFile = new File(jhallJarFile);
+							if (!(jFile.exists())) {
+								MyOptionPane
+										.showMessageDialog(
+												frame,
+												"DrawFBP Help jar file shown in properties does not exist\n"
+														+ "Use File/Locate DrawFBP Help File, and try Help again");
+								return;
+							}
+							try {
+								URI uri = jFile.toURI();
+								URL url = uri.toURL();
+								URL[] urls = new URL[]{url};
+
+								// Create a new class loader with the directory
+								cl = new URLClassLoader(urls, this.getClass()
+										.getClassLoader());
+
+								// Find the HelpSet file and create the HelpSet object
+								helpSetClass = cl.loadClass("javax.help.HelpSet");
+							} catch (MalformedURLException e2) {
+							} catch (ClassNotFoundException e2) {
+							} catch (NoClassDefFoundError e2) {
+							}
+
+							if (helpSetClass == null) {
+								MyOptionPane.showMessageDialog(frame,
+										"HelpSet class not found in jar file");
+								return;
+							}
+
+							URL url2 = null;
+							jHelpViewer = null;
+							try {
+								Method m = helpSetClass.getMethod("findHelpSet",
+										ClassLoader.class, String.class);
+								url2 = (URL) m.invoke(null, cl, "helpSet.hs");
+
+								Constructor conhs = helpSetClass.getConstructor(
+										ClassLoader.class, URL.class);
+
+								Object hs = conhs.newInstance(cl, url2);
+
+								jHelpClass = cl.loadClass("javax.help.JHelp");
+								if (jHelpClass == null) {
+									MyOptionPane.showMessageDialog(frame,
+											"JHelp class not found in jar file");
+									return;
+								}
+								Constructor conjh = jHelpClass.getConstructor(helpSetClass);
+								jHelpViewer = (JComponent) conjh.newInstance(hs);
+
+								
+							} catch (Exception e2) {
+								MyOptionPane.showMessageDialog(frame,
+										"HelpSet could not be processed: " + e2);
+								return;
+							}
 						}
+						// Create a new frame.
+						frame2 = new JFrame();
+						frame2.setTitle("Help DrawFBP");
+						frame2.setIconImage(favicon.getImage());
+						applyOrientation(frame2);
+						
+						 
+						frame2.setFocusable(true);
+						frame2.requestFocusInWindow();
+						
+						frame2.addKeyListener(new KeyAdapter() {
+							public void keyPressed(KeyEvent ev) {
+								if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
+									// frame2.setVisible(false);
+									frame2.dispose();
+								}
+							}
+						});			
+						jHelpViewer.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+								escapeKS, "CLOSE");
+
+						jHelpViewer.getActionMap().put("CLOSE", escapeAction);
+						
+						// Set its size.
+						frame2.setPreferredSize(frame.getPreferredSize());
+						// Add the created helpViewer to it.
+						frame2.getContentPane().add(jHelpViewer);
+						// Set a default close operation.
+						frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						// Make the frame visible.
+						frame2.setVisible(true);
+						frame2.pack();
 						return;
-					}
-					Class jHelpClass = null;
-					URL url2 = null;
-					jHelpViewer = null;
-
-					Method m = helpSetClass.getMethod("findHelpSet",
-							ClassLoader.class, String.class);
-					url2 = (URL) m.invoke(null, cl, "helpSet.hs");
-					Constructor conhs = helpSetClass.getConstructor(
-							ClassLoader.class, URL.class);
-					Object hs = conhs.newInstance(cl, url2);
-					jHelpClass = cl.loadClass("javax.help.JHelp");
-					if (jHelpClass == null) {
-						MyOptionPane.showMessageDialog(frame,
-								"JHelp class not found in jar file");
-						return;
-					}
-					Constructor conjh = jHelpClass.getConstructor(helpSetClass);
-					jHelpViewer = (JComponent) conjh.newInstance(hs);
-				} catch (InvocationTargetException e2) {
-					MyOptionPane.showMessageDialog(frame,
-							"FindHelpSet method failed");
-					return;
-				} catch (NoSuchMethodException e2) {
-					MyOptionPane.showMessageDialog(frame,
-							"FindHelpSet method not found");
-					return;
-				} catch (IllegalAccessException e2) {
-					MyOptionPane.showMessageDialog(frame, "Illegal access");
-					return;
-				} catch (InstantiationException e2) {
-					MyOptionPane.showMessageDialog(frame,
-							"Instantiation failed");
-					return;
-				} catch (ClassNotFoundException e2) {
-					MyOptionPane.showMessageDialog(frame, "Class not found");
-					return;
-				}
-			}
-
-			// Create a new frame.
-			frame2 = new JFrame();
-			frame2.setTitle("Help DrawFBP");
-			frame2.setIconImage(favicon.getImage());
-			applyOrientation(frame2);
-
-			jHelpViewer.getInputMap(
-					JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-					escapeKS, "CLOSE");
-
-			jHelpViewer.getActionMap().put("CLOSE", escapeAction);
-
-			// Set its size.
-			frame2.setPreferredSize(frame.getPreferredSize());
-			// Add the created helpViewer to it.
-			frame2.getContentPane().add(jHelpViewer);
-			// Set a default close operation.
-			frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			// Make the frame visible.
-			frame2.setVisible(true);
-			frame2.pack();
-			return;
 		}
 
 		if (s.equals("About")) {
@@ -1598,8 +1625,8 @@ public class DrawFBP extends JFrame
 		propertyDescriptions.put("Default component language",
 				"defaultCompLang");
 		propertyDescriptions.put("JavaFBP jar file", "javaFBPJarFile");
-		//propertyDescriptions
-		//		.put("DrawFBP Help jar file", "jhallJarFile");
+		propertyDescriptions
+				.put("DrawFBP Help jar file", "jhallJarFile");
 		//propertyDescriptions.put("Select all files", "allFiles");  // always initialized to false
 	}
 
@@ -2212,7 +2239,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			javaFBPJarFile = cFile.getAbsolutePath();
 			properties.put("javaFBPJarFile", javaFBPJarFile);
 			propertiesChanged = true;
-
+			MyOptionPane.showMessageDialog(frame, "JavaFBP jar file location: " + cFile.getAbsolutePath());
 			return true;
 		} else
 			return false;
@@ -2220,7 +2247,7 @@ void chooseFonts(MyFontChooser fontChooser){
 	
 	
 	
-	/*
+	 
 	boolean locateJhallJarFile() {
 
 		String s = properties.get("jhallJarFile");
@@ -2246,12 +2273,12 @@ void chooseFonts(MyFontChooser fontChooser){
 			jhallJarFile = cFile.getAbsolutePath();
 			properties.put("jhallJarFile", jhallJarFile);
 			propertiesChanged = true;
-
+			MyOptionPane.showMessageDialog(frame, "DrawFBP Help jar file location: " + cFile.getAbsolutePath());
 			return true;
 		} else
 			return false;
 	}
-*/
+ 
 	void closeTab() {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 	}
@@ -3008,6 +3035,15 @@ void chooseFonts(MyFontChooser fontChooser){
 	        super.addURL(url);  
 	    }  
 	   
+	    public Class loadClass(String s) throws ClassNotFoundException {
+	    	return super.loadClass(s);
+	    }
+	    
+	    protected Class findClass(String s) throws ClassNotFoundException {
+	    	return super.findClass(s);
+	    }
+	    
+	    	   
 	}  
 
 	public class SelectionArea extends JComponent implements MouseInputListener {
