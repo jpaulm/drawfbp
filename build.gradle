@@ -18,6 +18,9 @@ jar {
         'Main-Class' : mainClassName
     }
     
+    into('lib') {
+        from 'lib'
+    }
     
 }
 
