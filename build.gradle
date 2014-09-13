@@ -18,6 +18,4 @@ jar {
     }
 }
 
-dependencies {
-	compile files('lib/DrawFBP-Help.jar') 
-}
+
