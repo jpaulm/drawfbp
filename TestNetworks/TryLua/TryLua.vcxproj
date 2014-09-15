@@ -81,13 +81,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="concat.lua" />
-    <None Include="drop.lua" />
-    <None Include="gen.lua" />
-    <None Include="recvr.lua" />
-    <None Include="repl.lua" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Helper Code\dfs.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

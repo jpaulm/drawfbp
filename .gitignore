@@ -18,6 +18,7 @@ build
 *.suo
 *.sdf
 *.exe
+*.opensdf
 
 # System's crap
 Thumbs.db

@@ -114,6 +114,10 @@ void   CppFBP( label_ent * label_blk, bool dynam, FILE * fp, bool timereq)    {
 		label_tab->succ = 0;
 		file_name[0] = '\0'; 
 
+		if (fp == 0) {
+			printf("File does not exist\n");
+			exit(4);
+		}
 		if (thxscan(fp, label_tab, file_name) != 0) {
 
 			printf("Scan error\n");
@@ -428,21 +432,26 @@ bool deadlock_test(Appl * appl_ptr) {
 		bool deadlock = TRUE;
 		Process * this_proc = (Process *) appl_ptr -> first_child_proc;
 		//Cnxt * cnp;
+		bool terminated = TRUE;
 		while (this_proc != 0)
 		{
 			char  status [30];
 			switch (this_proc -> status) {
 			case NOT_STARTED:				
 				strcpy(status, "Not Started\n");
+				terminated = FALSE;
 				break;
 			case ACTIVE:				
 				strcpy(status, "Active\n");
+				terminated = FALSE;
 				deadlock = FALSE;
 				break;
 			case DORMANT:				
 				strcpy(status, "Inactive\n");
+				terminated = FALSE;
 				break;
-			case SUSPENDED_ON_SEND:				
+			case SUSPENDED_ON_SEND:	
+				terminated = FALSE;
 				strcpy(status, "Suspended on Send\n");
 				//cnp = (Cnxt *) this_proc -> waiting_cnxt;
 				//if (cnp -> IPcount < cnp ->max_IPcount) {
@@ -450,7 +459,8 @@ bool deadlock_test(Appl * appl_ptr) {
 				//	deadlock = FALSE;
 				//}
 				break;
-			case SUSPENDED_ON_RECV:				
+			case SUSPENDED_ON_RECV:		
+				terminated = FALSE;
 				strcpy(status, "Suspended on Receive\n");
 				break;
 				//case INITIATED:
@@ -477,7 +487,7 @@ bool deadlock_test(Appl * appl_ptr) {
 
 		//if (listCompStatus(msgs)) { // if TRUE, it is a deadlock
 		//          interruptAll();
-		if (deadlock) {
+		if (deadlock && !terminated) {
 
 			for (iterMsg = msgs.begin(); iterMsg != msgs.end(); iterMsg++)
 			{

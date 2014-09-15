@@ -11,7 +11,7 @@ void main() {
 	bool DYNAM = true;
 	bool TIMEREQ = true;
 
-	FILE * f = fopen("..\\CopyFileDyn\\CopyFile.fbp", "r"); 
+	FILE * f = fopen("CopyFile.fbp", "r"); 
 	
 	CppFBP(0, DYNAM, f, TIMEREQ);   
 }

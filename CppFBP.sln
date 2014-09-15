@@ -25,8 +25,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryLua", "TestNetworks\TryL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CopyFileDyn", "DynNetworks\CopyFileDyn\CopyFileDyn.vcxproj", "{E6F3E8BE-FA79-4BEC-AA3B-3B33D8D9876A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryLuaDyn", "DynNetworks\TryLuaDyn\TryLuaDyn.vcxproj", "{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimingTest3", "TestNetworks\TimingTest3\TimingTest3.vcxproj", "{57AFACD1-A43D-4772-AA8F-521FF0B220DC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SolutionSettings", "SolutionSettings\SolutionSettings.vcxproj", "{A966924A-948A-4DFF-ABCE-2A6188345700}"
@@ -65,10 +63,6 @@ Global
 		{E6F3E8BE-FA79-4BEC-AA3B-3B33D8D9876A}.Debug|Win32.Build.0 = Debug|Win32
 		{E6F3E8BE-FA79-4BEC-AA3B-3B33D8D9876A}.Release|Win32.ActiveCfg = Release|Win32
 		{E6F3E8BE-FA79-4BEC-AA3B-3B33D8D9876A}.Release|Win32.Build.0 = Release|Win32
-		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Debug|Win32.Build.0 = Debug|Win32
-		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Release|Win32.ActiveCfg = Release|Win32
-		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Release|Win32.Build.0 = Release|Win32
 		{57AFACD1-A43D-4772-AA8F-521FF0B220DC}.Debug|Win32.ActiveCfg = Debug|Win32
 		{57AFACD1-A43D-4772-AA8F-521FF0B220DC}.Debug|Win32.Build.0 = Debug|Win32
 		{57AFACD1-A43D-4772-AA8F-521FF0B220DC}.Release|Win32.ActiveCfg = Release|Win32

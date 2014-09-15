@@ -1,3 +1,3 @@
 Read(ThFileRt) OUT -> IN Copy(ThCopyNL) OUT -> IN Show(ThFileWt),
-'C:\\Users\\Paul\\Documents\\Business\\THREADN\\POMPIERS.FIL' -> OPT Read,
-'C:\\Users\\Paul\\Documents\\Business\\THREADN\\output.fil' -> OPT Show;
+'..\\..\\TestData\\POMPIERS.FIL' -> OPT Read,
+'..\\..\\TestData\\output.fil' -> OPT Show;
