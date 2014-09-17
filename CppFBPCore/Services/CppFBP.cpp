@@ -114,10 +114,10 @@ void   CppFBP( label_ent * label_blk, bool dynam, FILE * fp, bool timereq)    {
 		label_tab->succ = 0;
 		file_name[0] = '\0'; 
 
-		if (fp == 0) {
-			printf("File does not exist\n");
-			exit(4);
-		}
+		//if (fp == 0) {
+		//	printf("File does not exist: %s\n", fp);
+		//	exit(4);
+		//}
 		if (thxscan(fp, label_tab, file_name) != 0) {
 
 			printf("Scan error\n");

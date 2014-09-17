@@ -15,19 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />
     <None Include="Resource Files\Pomp.fbp" />
-    <None Include="Resource Files\trylua.fbp" />
-    <None Include="Resource Files\trylua.gen_cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Thxgen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\CppFBPCore\Services\thxscan.cpp">
+    <ClCompile Include="Source Files\Thxgen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

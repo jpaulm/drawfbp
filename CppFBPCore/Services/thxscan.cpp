@@ -117,19 +117,14 @@ int thxscan(FILE *fp, label_ent *label_tab, char file_name[10])
 
 	IIPlen = -1;
 	out_num[0] = '\0';
+	cnxt_hold = 0;
 	
 
 netloop:
-
-	cnxt_hold = 0;
-	IIPlen = -1;
+	scan_blanks(fp);  // skip blanks, comments, etc.
 	TCO(X0,'\'');
-	o_ptr = out_str;	
-	goto get_rest_of_IIP;
-
+	goto Xs;
 X0:
-	scan_blanks(fp);
-
 	if (scan_sym(fp, out_str) != 0) {  // this could be a network label or a process name...
 		printf("Name error\n");
 		ret_code = 4;
@@ -141,14 +136,12 @@ X0:
 	printf("Scanning Network: %s\n",out_str);
 
 bigloop:	
-	//TCO(nEOF,EOF);  
-	//printf("End of Network Definition\n");
-	//goto exit;
-
-//nEOF: 
+	
 	scan_blanks(fp);
+	cnxt_hold = 0;
 	IIPlen = -1;
 	TCO(X1,'\'');
+Xs:
 	o_ptr = out_str;	
 	goto get_rest_of_IIP;
 
@@ -159,7 +152,7 @@ X1:
 		goto exit;  
 	}
 X2:
-	strcpy(procname, out_str);   
+	strcpy(procname, out_str);  
 	printf("Procname: %s\n", procname);
 	if (cnxt_hold != 0) {
 		strcpy(cnxt_hold -> downstream_name, procname);

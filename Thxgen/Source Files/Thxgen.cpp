@@ -55,7 +55,7 @@ void main(int argc, char *argv[])  {
 	strcat(fname,".fbp");	
 	fp = fopen(fname,"r");
 	if (fp == NULL) {
-		printf("Cannot open Input Network\n");
+		printf("Cannot open Input Network: %s\n", fname);  
 		res = 8; goto retn;;
 	}
 	   
@@ -83,9 +83,9 @@ void main(int argc, char *argv[])  {
 	strcpy(gen_ptr, "/* Generated Code */\n\n");
 	fputs(gen_area,fpo);
 
-	gen_ptr = gen_area;
-	strcpy(gen_ptr, "#include \"stdafx.h\"\n");
-	fputs(gen_area,fpo);
+	//gen_ptr = gen_area;
+	//strcpy(gen_ptr, "#include \"stdafx.h\"\n");
+	//fputs(gen_area,fpo);
 	
 	gen_ptr = gen_area;
 	strcpy(gen_ptr, "#include \"thxdef.h\"\n");
@@ -107,7 +107,7 @@ void main(int argc, char *argv[])  {
 	fputs(gen_area,fpo);
 
 	gen_ptr = gen_area;
-	strcpy(gen_ptr, "#include <stdlib.h>\n");
+	strcpy(gen_ptr, "#define FILE struct _iobuf\n");
 	fputs(gen_area,fpo);
 
 	gen_ptr = gen_area;

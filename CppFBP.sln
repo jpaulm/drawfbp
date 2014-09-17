@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimingTest3", "TestNetworks
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SolutionSettings", "SolutionSettings\SolutionSettings.vcxproj", "{A966924A-948A-4DFF-ABCE-2A6188345700}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryLuaDyn", "DynNetworks\TryLuaDyn\TryLuaDyn.vcxproj", "{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -71,6 +73,10 @@ Global
 		{A966924A-948A-4DFF-ABCE-2A6188345700}.Debug|Win32.Build.0 = Debug|Win32
 		{A966924A-948A-4DFF-ABCE-2A6188345700}.Release|Win32.ActiveCfg = Release|Win32
 		{A966924A-948A-4DFF-ABCE-2A6188345700}.Release|Win32.Build.0 = Release|Win32
+		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Debug|Win32.Build.0 = Debug|Win32
+		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Release|Win32.ActiveCfg = Release|Win32
+		{9C63CB40-6D7A-43F2-AA85-32A56BE8B1D9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

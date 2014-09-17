@@ -1,6 +1,11 @@
 #include "thxdef.h"
 
 #include <stdio.h>
+#include<cstdlib>
+#include<iostream>
+#include<string.h>
+#include<fstream>
+//#include<dirent.h>
 #define FILE _iobuf
 
 /* This is the interpretive form of CopyFile */
@@ -12,6 +17,11 @@ void main() {
 	bool TIMEREQ = true;
 
 	FILE * f = fopen("CopyFile.fbp", "r"); 
-	
+	if (f == NULL) {
+		printf("Trying to open: CopyFile.fbp\n");
+    perror ("The following error occurred");
+	system("pause");  // to see console
+	}
+  else
 	CppFBP(0, DYNAM, f, TIMEREQ);   
 }

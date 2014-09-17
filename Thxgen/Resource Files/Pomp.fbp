@@ -1,4 +1,5 @@
-# thxscan has been converted so .fbp notation no longer requires commas between "clauses"
+# thxscan has been converted so .fbp notation can use commas or 
+#  end of line between "clauses"
 # comments follow the noflo convention
 
 'c:\threadn\pompiers.fil' -> OPT Lire("../CppFBPComponents/Components/ThFileRd") OUT -> 
