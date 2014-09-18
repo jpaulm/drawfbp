@@ -34,7 +34,7 @@ Additional features
 - Export diagram as image
 - Print diagram
 - ...
-- 
+
 
 Prerequisites
 ---
