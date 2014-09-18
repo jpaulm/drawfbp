@@ -69,7 +69,7 @@ Sample DrawFBP network
 
 Here is a very simple diagram built using DrawFBP, showing process names, names of component source code and class names (used when checking port connections).
 
-![MergeSortDrop](https://github.com/jpaulm/drawfbp/blob/master/docs/MergeSortDrop.png "Simple Network Diagram")
+![MergeSortDrop](https://github.com/jpaulm/drawfbp/blob/master/docs/MergeSortDisplay1.png "Simple Network Diagram")
 
 JavaHelp facility
 ---
