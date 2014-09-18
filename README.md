@@ -33,7 +33,6 @@ Additional features
 - Help facility
 - Export diagram as image
 - Print diagram
-- ...
 
 
 Prerequisites
