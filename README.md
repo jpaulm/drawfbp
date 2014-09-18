@@ -21,7 +21,7 @@ For information about FBP in general, see the FBP web site - http://www.jpaulmor
 Additional features
 ----
 
-- Variety of symbols, including Report, File, Legend (text with no boundary), External ports (for subnets), Human, ...
+- Variety of symbols, including Initial IP, Report, File, Legend (text with no boundary), External ports (for subnets), Human, ...
 - Display subnet in separate tab
 - Convert portion of diagram to subnet ("excise")
 - Specify connection capacity
