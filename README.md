@@ -64,6 +64,13 @@ DrawFBP can be executed directly by executing the jar file on the Java platform.
 
 Alternatively, run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
 
+Sample DrawFBP network
+---
+
+Here is a very simple diagram built using DrawFBP, showing process names, names of component source code and class names (used when checking port connections).
+
+![MergeSortDrop](https://github.com/jpaulm/drawfbp/blob/master/docs/MergeSortDrop.png "Simple Network Diagram")
+
 JavaHelp facility
 ---
 
