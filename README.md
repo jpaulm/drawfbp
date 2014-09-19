@@ -18,6 +18,25 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
 
+Features
+----
+
+- Variety of symbols, including Initial IP, Report, File, Legend (text with no boundary), External ports (for subnets), Human, ...
+- Display subnet in separate tab
+- Convert portion of diagram to subnet ("excise")
+- Specify connection capacity
+- Indicate "drop oldest" for given connection
+- Generate Java, C#, JSON, or .fbp notation
+- Pan, zoom in/out
+- Keyboard-only usage (except positioning of blocks)
+- Choose fonts (fixed size and variable size), font sizes
+- Help facility
+- Export diagram as image
+- Print diagram
+- Drag blocks, heads or tails of arrows, create or drag bends in arrows
+- "Grid" positioning on/off
+
+
 Prerequisites
 ---
 
@@ -69,7 +88,7 @@ Sample DrawFBP network
 
 Here is a very simple diagram built using DrawFBP, showing process names, names of component source code and class names (used when checking port connections).
 
-![MergeSortDrop](https://github.com/jpaulm/drawfbp/blob/master/docs/MergeSortDrop.png "Simple Network Diagram")
+![MergeSortDrop](https://github.com/jpaulm/drawfbp/blob/master/docs/MergeSortDisplay1.png "Simple Network Diagram")
 
 JavaHelp facility
 ---
