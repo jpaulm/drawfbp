@@ -18,7 +18,7 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
 
-Additional features
+Features
 ----
 
 - Variety of symbols, including Initial IP, Report, File, Legend (text with no boundary), External ports (for subnets), Human, ...
@@ -29,10 +29,12 @@ Additional features
 - Generate Java, C#, JSON, or .fbp notation
 - Pan, zoom in/out
 - Keyboard-only usage (except positioning of blocks)
-- Choose fonts, font sizes
+- Choose fonts (fixed size and variable size), font sizes
 - Help facility
 - Export diagram as image
 - Print diagram
+- Drag blocks, heads or tails of arrows, create or drag bends in arrows
+- "Grid" positioning on/off
 
 
 Prerequisites
