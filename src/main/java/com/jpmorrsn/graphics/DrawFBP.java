@@ -1573,8 +1573,8 @@ public class DrawFBP extends JFrame
 
 		block.cx = curDiag.xa;
 		block.cy = curDiag.ya;
-		if (block.cx == 0 || block.cy == 0)
-			return null; // fudge!
+		//if (block.cx == 0 || block.cy == 0)
+		//	return null; // fudge!
 		
 		if (enterDesc) {
 		if (!block.editDescription(REG_CREATE))
