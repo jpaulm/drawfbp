@@ -646,6 +646,8 @@ public class Arrow implements ActionListener {
 			if ((ans != null) && (ans.length() > 0)) {
 				capacity = Integer.parseInt(ans);
 				if (capLegend == null) {
+					diag.xa = 2;  // get around fudge in DrawFBP
+					diag.ya = 2;  // get around fudge in DrawFBP
 					capLegend = (LegendBlock) diag.driver.createBlock(
 							Block.Types.LEGEND_BLOCK, false);
 
