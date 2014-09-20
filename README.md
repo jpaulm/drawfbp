@@ -21,19 +21,22 @@ For information about FBP in general, see the FBP web site - http://www.jpaulmor
 Features
 ----
 
-- Variety of symbols, including Initial IP, Report, File, Legend (text with no boundary), External ports (for subnets), Human, ...
-- Display subnet in separate tab
+- Variety of symbols, including Initial IP, Report, File, Legend (text with no boundary), External ports (for subnets), Human
+- Top-down design supported - although bottom-up is also supported (blocks can be placed on the diagram and connected, and class names filled in later)
+- Display subnets in separate tabs
 - Convert portion of diagram to subnet ("excise")
 - Specify connection capacity
+- "Automatic" ports
+- Checking for valid port names
 - Indicate "drop oldest" for given connection
-- Generate Java, C#, JSON, or .fbp notation
+- Generate complete networks in Java, C#, JSON, or .fbp notation
 - Pan, zoom in/out
 - Keyboard-only usage (except positioning of blocks)
-- Choose fonts (fixed size and variable size), font sizes
-- Help facility
+- Choose fonts (fixed size and variable size, indicating support for Chinese), font sizes
+- Structured Help facility
 - Export diagram as image
 - Print diagram
-- Drag blocks, heads or tails of arrows, create or drag bends in arrows
+- Drag blocks, sections of diagram (using "Enclosure"), heads or tails of arrows; create or drag bends in arrows
 - "Grid" positioning on/off
 
 
@@ -71,7 +74,7 @@ For building the project simply run the following command:
 
     gradle build
 
-As a result a `DrawFBP-2.10.2.jar` file will be created in the `build/libs` directory. 
+As a result a `DrawFBP-2.10.3.jar` file will be created in the `build/libs` directory. 
 
 
 Running DrawFBP
@@ -79,7 +82,7 @@ Running DrawFBP
 
 DrawFBP can be executed directly by executing the jar file on the Java platform.  Alternatively it can be run from the command line by entering 
 
-    java -cp build\libs\drawfbp-2.10.2.jar com.jpmorrsn.graphics.DrawFBP
+    java -cp build\libs\drawfbp-2.10.3.jar com.jpmorrsn.graphics.DrawFBP
 
 Alternatively, run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
 
