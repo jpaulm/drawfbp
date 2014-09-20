@@ -22,6 +22,7 @@ Features
 ----
 
 - Variety of symbols, including Initial IP, Report, File, Legend (text with no boundary), External ports (for subnets), Human
+- Top-down design supported - although bottom-up is also supported (blocks can be placed on the diagram and connected, and class names filled in later)
 - Display subnets in separate tabs
 - Convert portion of diagram to subnet ("excise")
 - Specify connection capacity
