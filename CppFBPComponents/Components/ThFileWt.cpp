@@ -31,7 +31,7 @@
   int value, i;
   long size;
   char *type;
-  char string[256];
+  char fname[256];
   int ch;
   port_ent port_tab[3];
   FILE *fp;
@@ -43,14 +43,18 @@
 /*obtain filename parameter
 */
   value = dfsrecv(proc_anchor, &ptr, &port_tab[0], 0, &size, &type);
-  memcpy(string,ptr,size);
+  memcpy(fname,ptr,size);
   value = dfsdrop(proc_anchor, &ptr);
-  string[size] = '\0';
-   if ((fp = fopen(string,"wt")) == NULL) {
-         printf("Cannot open file %s", string);
-  //       dfsputs(proc_anchor,buffer);
-	 return(8);
-     }
+  fname[size] = '\0';
+  #ifdef WIN32
+    errno_t err;
+    if( (err  = fopen_s( &fp, fname, "w" )) !=0 ) {
+#else
+    if ((f = fopen(fname, "w")) == NULL) {
+#endif
+        fprintf(stderr, "Cannot open file %s!\n", fname);
+		return(8);
+    }
 
     value = dfsrecv(proc_anchor, &ptr, &port_tab[1], 0, &size, &type);
     while (value == 0)

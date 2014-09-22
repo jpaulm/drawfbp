@@ -53,12 +53,16 @@ void main(int argc, char *argv[])  {
 	}
 	strcpy(fname,argv[1]);
 	strcat(fname,".fbp");	
-	fp = fopen(fname,"r");
-	if (fp == NULL) {
-		printf("Cannot open Input Network: %s\n", fname);  
-		res = 8; goto retn;;
-	}
-	   
+	
+	  #ifdef WIN32
+    errno_t err;
+    if( (err  = fopen_s( &fp, fname, "r" )) !=0 ) {
+#else
+    if ((f = fopen(fname, "r")) == NULL) {
+#endif
+        fprintf(stderr, "Cannot open file %s!\n", fname);
+		res = 8; goto retn;
+    }  
 	
 	strcpy(fname,argv[1]);
 	strcat(fname,".cpp");

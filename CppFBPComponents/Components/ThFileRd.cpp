@@ -45,12 +45,16 @@
   value = dfsrecv(proc_anchor, &ptr, &port_tab[0], 0, &size, &type);
   memcpy(fname,ptr,size);
   fname[size] = '\0';
-   if ((fp = fopen(fname,"r")) == NULL) {
-         printf("Cannot open file %s", fname);
-     //    dfsputs(proc_anchor,buffer);
-	 return(8);
-     }
-
+   
+#ifdef WIN32
+    errno_t err;
+    if( (err  = fopen_s( &fp, fname, "r" )) !=0 ) {
+#else
+    if ((f = fopen(fname, "r")) == NULL) {
+#endif
+        fprintf(stderr, "Cannot open file %s!\n", fname);
+		return(8);
+    }
   value = dfsdrop(proc_anchor, &ptr);
 
 /* read records from the input file and create entities from them.  If the
