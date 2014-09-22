@@ -6,7 +6,7 @@
 #include<string.h>
 #include<fstream>
 //#include<dirent.h>
-#define FILE _iobuf
+//#define FILE _iobuf
 
 /* This is the interpretive form of CopyFile */
 
@@ -16,12 +16,23 @@ void main() {
 	bool DYNAM = true;
 	bool TIMEREQ = true;
 
-	FILE * f = fopen("CopyFile.fbp", "r"); 
+	const char* fname =  "CopyFile.fbp";
+	FILE *f;
+
+#ifdef WIN32
+    errno_t err;
+    if( (err  = fopen_s( &f, fname, "r" )) !=0 ) {
+#else
+    if ((fp_config = fopen(configfile, "r")) == NULL) {
+#endif
+        fprintf(stderr, "Cannot open source file %s!\n", fname);
+    }
 	if (f == NULL) {
-		printf("Trying to open: CopyFile.fbp\n");
+		//printf("Trying to open: CopyFile.fbp\n");
     perror ("The following error occurred");
-	system("pause");  // to see console
+	
 	}
   else
-	CppFBP(0, DYNAM, f, TIMEREQ);   
+	CppFBP(0, DYNAM, f, TIMEREQ);  
+	system("pause");  // to see console
 }

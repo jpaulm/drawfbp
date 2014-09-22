@@ -81,7 +81,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="CopyFile.fbp" />
-    <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\CppFBPCore\stdafx.cpp" />
