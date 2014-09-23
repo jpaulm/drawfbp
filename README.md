@@ -64,6 +64,11 @@ Right click on the "solution" line, and do `Build Solution`
 
 If you get errors, you may have to build individual projects (sometimes this will require more than one try); if you only get warnings, you can proceed
 
+"Dynamic" Networks
+---
+
+The projects whose names are of the form `xxxDyn` are "dynamic" versions of the projects named `xxx` - they start by scanning off the `.fbp` network definitions (via the `CppFBP` module with the `DYNAM` parameter set to `true`), and then run the resulting network structures.
+
 
 Testing "TimingTest1" (console application)
 ---
