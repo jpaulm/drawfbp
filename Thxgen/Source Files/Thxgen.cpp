@@ -63,15 +63,37 @@ void main(int argc, char *argv[])  {
         fprintf(stderr, "Cannot open file %s!\n", fname);
 		res = 8; goto retn;
     }  
-	
-	strcpy(fname,argv[1]);
+	char home[255];
+	char * homep = getenv("HOME");
+	if (!homep) {
+		char const *hdrive = getenv("HOMEDRIVE"),
+			*hpath = getenv("HOMEPATH");
+		strcpy(home, hdrive);
+		strcat(home, hpath); 
+	} else
+	    strcpy(home, homep);
+	char sep[2];
+	#ifdef _WIN32
+      strcpy(sep,"\\");
+    #else
+      strcpy(sep,"/");
+    #endif
+	strcpy(fname,home);
+	strcat(fname,sep); 
+	strcat(fname,argv[1]);
 	strcat(fname,".cpp");
 	//FILE** pFile;
-	fpo = fopen(fname,"w");
-	if (fpo == NULL) {
-		printf("Cannot open Output Network Program\n");
-		res = 8; goto retn;;
-	}
+	 #ifdef WIN32
+    
+    if( (err  = fopen_s( &fp, fname, "a" )) !=0 ) {
+#else
+    if ((fp = fopen(fname, "a")) == NULL) {
+#endif
+		printf("Cannot open Output Network: %s\n", fname);
+		res = 8; goto retn; 
+	} 
+	printf("Creating Output Network: %s\n", fname);
+	 
 
 	label_tab = (label_ent *) malloc(sizeof(label_ent));   
 	label_tab ->succ = 0;
