@@ -64,19 +64,15 @@ void main(int argc, char *argv[])  {
 		res = 8; goto retn;
     }  
 	char home[255];
-	char * homep = getenv("HOME");
-	if (!homep) {
-		char const *hdrive = getenv("HOMEDRIVE"),
-			*hpath = getenv("HOMEPATH");
-		strcpy(home, hdrive);
-		strcat(home, hpath); 
-	} else
-	    strcpy(home, homep);
+	
 	char sep[2];
 	#ifdef _WIN32
       strcpy(sep,"\\");
+	  strcpy(home, getenv("HOMEDRIVE"));
+	  strcat(home, getenv("HOMEPATH"));
     #else
       strcpy(sep,"/");
+	  strcpy(home, getenv("HOME"));
     #endif
 	strcpy(fname,home);
 	strcat(fname,sep); 
@@ -85,9 +81,9 @@ void main(int argc, char *argv[])  {
 	//FILE** pFile;
 	 #ifdef WIN32
     
-    if( (err  = fopen_s( &fp, fname, "a" )) !=0 ) {
+    if( (err  = fopen_s( &fpo, fname, "a" )) !=0 ) {
 #else
-    if ((fp = fopen(fname, "a")) == NULL) {
+    if ((fpo = fopen(fname, "a")) == NULL) {
 #endif
 		printf("Cannot open Output Network: %s\n", fname);
 		res = 8; goto retn; 
