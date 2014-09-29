@@ -257,8 +257,8 @@ outport:  // same as upstream port
 	
 
 
-	// now we test for end of branch
-	// if scan_blanks found an EOL, res will be set to 2, not 0 - if so, it is end of branch
+	// now we test for end of clause
+	// if scan_blanks found an EOL, res will be set to 2, not 0 - if so, it is end of clause
 
 	if (res == 2) {
 		//IIPlen = -1;
@@ -509,7 +509,9 @@ Scan off blanks - returns:
 4 if EOF encountered in a comment
 0 otherwise
 
-if end of line encountered, sets EOL_found flag
+if end of line encountered, returns 2 - 
+this is only tested for at one place in the logic, where it can mean end of clause (NoFlo convention); 
+elsewhere it is ignored
 
 */
 
