@@ -1189,24 +1189,30 @@ public class Block implements ActionListener {
 					menuItem.addActionListener(this);
 					diag.jpm.add(menuItem);
 
-					if (diag.diagLang != null
-							&& diag.diagLang.label.equals("Java")) {
+					//if (diag.diagLang != null
+					//		&& diag.diagLang.label.equals("Java")) {
 						// if (diagramFileName == null
 						// || diagramFileName.toLowerCase().endsWith(".java")) {
 						diag.jpm.addSeparator();
-						menuItem = new JMenuItem(
+					JMenuItem menuItem1 = new JMenuItem(
 								"Choose Component/Subnet Java Class");
-						menuItem.addActionListener(this);
-						diag.jpm.add(menuItem);
-						menuItem = new JMenuItem("Display Port Info");
-						menuItem.addActionListener(this);
-						diag.jpm.add(menuItem);
-						menuItem = new JMenuItem("Display Full Java Class Name");
-						menuItem.addActionListener(this);
-						diag.jpm.add(menuItem);
+						menuItem1.addActionListener(this);
+						diag.jpm.add(menuItem1);
+						JMenuItem menuItem2 = new JMenuItem("Display Port Info");
+						menuItem2.addActionListener(this);
+						diag.jpm.add(menuItem2);
+						JMenuItem menuItem3 = new JMenuItem("Display Full Java Class Name");
+						menuItem3.addActionListener(this);
+						diag.jpm.add(menuItem3);
 						// }
+					//}
+					if (diag.diagLang == null
+							|| !( diag.diagLang.label.equals("Java"))) {
+						menuItem1.setEnabled(false);
+						menuItem2.setEnabled(false);
+						menuItem3.setEnabled(false);
 					}
-
+						
 					diag.jpm.addSeparator();
 					menuItem = new JMenuItem(
 							"Clear Associated Diagram and/or Class");
