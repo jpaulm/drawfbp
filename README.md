@@ -74,17 +74,19 @@ For building the project simply run the following command:
 
     gradle build
 
-As a result a `DrawFBP-2.10.3.jar` file will be created in the `build/libs` directory. 
+As a result a `DrawFBP-2.10.5.jar` file will be created in the `build/libs` directory. 
 
 
 Running DrawFBP
 ----
 
-DrawFBP can be executed directly by executing the jar file on the Java platform.  Alternatively it can be run from the command line by entering 
+DrawFBP can be executed directly by executing the jar file on the Java platform.  You can either build the jar file or download it from the project Releases directory in GitHub.
 
-    java -cp build\libs\drawfbp-2.10.3.jar com.jpmorrsn.graphics.DrawFBP
+It can be executed directly if you have the Java platform associated with the .jar extension.  Alternatively it can be run from the command line by entering 
 
-Alternatively, run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
+    java -cp build\libs\drawfbp-2.10.5.jar com.jpmorrsn.graphics.DrawFBP
+
+Another approach is to run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
 
 Sample DrawFBP network
 ---
