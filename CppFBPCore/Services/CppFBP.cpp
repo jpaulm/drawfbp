@@ -273,7 +273,7 @@ void inline Process::run(Process * proc) {
 	for( ; ; ) {
 		if (2 == run_test(proc)  && !proc -> must_run) 
 			break;
-		cp* cpp = proc -> in_cps;
+		cp * cpp = proc -> in_cps;
 	    while (cpp != 0) {	       
 		   for (int i = 0; i < cpp -> elem_count; i++) {
 			  if (cpp -> elem_list[i].gen.connxn == 0)
@@ -296,6 +296,18 @@ void inline Process::run(Process * proc) {
 			printf("%s Deactivated with %d IPs not disposed of\n",
 			proc -> procname, proc -> owned_IPs);
 
+		cpp = proc -> in_cps;
+		while (cpp != 0)
+		{
+			for (int i = 0; i < cpp -> elem_count; i++) {
+				Cnxt * cnp = (Cnxt *)cpp -> elem_list[i].gen.connxn;
+				if (cnp == 0)
+					continue;
+				if (cpp -> elem_list[i].is_IIP) 
+					cpp -> elem_list[i].closed = TRUE;	
+			}
+			cpp = cpp -> succ;
+		}
 		if (proc -> trace)
 			printf("%s Deactivated with retcode %d\n",
 			proc -> procname, proc -> value);

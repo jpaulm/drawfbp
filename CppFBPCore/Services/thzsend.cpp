@@ -175,7 +175,7 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 	IPptr -> next_IP = 0;
 
 
-	if ((cnp -> IPcount) == 0)   /* if it is empty, enable fedproc */
+	if ((cnp -> IPcount) == 0)   /* if it was empty, enable fedproc */
 	{
 		sptr = cnp -> fed_proc;
 
@@ -201,10 +201,10 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 					proc -> value = thzdrop(proc, &proc -> int_ptr);
 				}
 		}
-		else {	
-			cnp->buffer_not_empty.notify_all();
-		}
+		else 	
+			cnp->buffer_not_empty.notify_all();		
 	}
+	
 	++cnp -> IPcount;
 	if (proc -> trace) MSG1("%s Send end\n", proc -> procname);
 	*ptr = 0;

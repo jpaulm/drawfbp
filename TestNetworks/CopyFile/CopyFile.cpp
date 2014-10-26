@@ -12,7 +12,7 @@ void  CppFBP(label_ent* label_blk, bool dynam,  FILE * fp, bool timereq);
 
 
 THRCOMP ThFileWt(_anchor anch);
-THRCOMP ThCopy(_anchor anch);
+//THRCOMP ThCopy(_anchor anch);
 THRCOMP ThCopyNL(_anchor anch);
 THRCOMP ThFileRt(_anchor anch);
 
@@ -26,7 +26,7 @@ int elem0 = 0;
 
 
 proc_ent P0 = {NULL, "Read", "ThFileRt", ThFileRt, NULL, NULL,  !TRACE, !COMPOS};
-proc_ent P1 = {&P0, "Show", "ThFileWt", ThFileWt, NULL, NULL, !TRACE, !COMPOS};
+proc_ent P1 = {&P0, "Show", "ThFileWt", ThFileWt, NULL, NULL,  !TRACE, !COMPOS};
 proc_ent P2 = {&P1, "Copy", "ThCopyNL", ThCopyNL, NULL, NULL,  !TRACE, !COMPOS};
 //proc_ent P2 = {&P1, "Copy", "ThCopy", ThCopy, NULL, NULL,  !TRACE, !COMPOS;
 

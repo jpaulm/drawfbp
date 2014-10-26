@@ -97,6 +97,7 @@ int thzrecv(Process *proc, void **ptr, port_ent *peptr, int elem_no,
 		*ptr = created_ptr;
 		*size = created_IIP_ptr -> IP_size;
 		*typep = created_IIP_ptr -> type;
+		cpp -> elem_list[elem_no].closed = TRUE;
 
 		if (proc -> trace) MSG1("%s Recv end\n", proc -> procname);
 		return(0);

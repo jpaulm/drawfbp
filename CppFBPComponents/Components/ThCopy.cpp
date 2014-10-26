@@ -23,7 +23,7 @@ THRCOMP ThCopy(_anchor proc_anchor)
 		value = dfssend(proc_anchor, &ptr2, &port_tab[1], 0);  
 		dfsdrop(proc_anchor, &ptr);
 		if (value != 0) {
-			dfsdrop(proc_anchor, &ptr);
+			dfsdrop(proc_anchor, &ptr2);
 			return(1);
 		}
 		value = dfsrecv(proc_anchor, &ptr, &port_tab[0], 0, &size, &type);
