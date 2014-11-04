@@ -31,7 +31,10 @@ public class Arrow implements ActionListener {
 	boolean dropOldest;
 	int capacity;
 	LegendBlock capLegend;   //Legend block associated with Arrow 
-
+	
+	//Arrowhead tipArrowhead = null;    
+	Arrowhead extraArrowhead = null;
+	
 	enum Status {
 		UNCHECKED, COMPATIBLE, INCOMPATIBLE
 	}
@@ -202,7 +205,8 @@ public class Arrow implements ActionListener {
 			if ((from instanceof ComponentBlock || from instanceof ExtPortBlock || from instanceof Enclosure)
 					&& (to instanceof ComponentBlock
 							|| to instanceof ExtPortBlock || to instanceof Enclosure)) {
-				drawArrowHead(g, fx, fy, x, toY);
+				Arrowhead ah = new Arrowhead(fx, fy, toX, toY);  
+				ah.draw(g);				
 			}
 
 		} else if (endsAtLine) {
@@ -247,6 +251,9 @@ public class Arrow implements ActionListener {
 				g.setColor(Color.BLACK);
 			}
 		}
+		if (extraArrowhead != null)  
+			extraArrowhead.draw(g); 		
+		 
 	}
 	void calcLimits(int x1, int x2, int y1, int y2) {
 		if (x1 < x2) {
@@ -265,61 +272,7 @@ public class Arrow implements ActionListener {
 		}
 	}
 
-	void drawArrowHead(Graphics2D g, int fx, int fy, int toX, int toY) {
-		// pt is tip and pts is a point on the line -
-		// pts is used to determine direction & angle
-
-		AffineTransform at = AffineTransform.getTranslateInstance(toX, toY);
-		int b = 9;
-		double theta = Math.toRadians(20);
-		// The idea of using a GeneralPath is so we can
-		// create the (three lines that make up the) arrow
-		// (only) one time and then use AffineTransform to
-		// place it anywhere we want.
-		GeneralPath path = new GeneralPath();
-
-		// distance between line and the arrow mark <** not **
-		// Start a new line segment from the position of (0,0).
-		path.moveTo(0, 0);
-		// Create one of the two arrow head lines.
-		int x = (int) (-b * Math.cos(theta));
-		int y = (int) (b * Math.sin(theta));
-		path.lineTo(x, y);
-
-		// distance between line and the arrow mark <** not **
-		// Make the other arrow head line.
-		int x2 = (int) (-b * Math.cos(-theta));
-		int y2 = (int) (b * Math.sin(-theta));
-		// path.moveTo(0,0);
-		path.lineTo(x2, y2);
-		path.closePath();
-
-		// theta is in radians
-		double s, t;
-		s = toY - fy; // calculate slopes.
-		t = toX - fx;
-		if (t != 0) {
-			s = s / t;
-			theta = Math.atan(s);
-			if (t < 0)
-				theta += Math.PI;
-		} else if (s < 0)
-			theta = -(Math.PI / 2);
-		else
-			theta = Math.PI / 2;
-
-		at.rotate(theta);
-		// at.rotate(theta,toX,toY);
-		Shape shape = at.createTransformedShape(path);
-		if (checkStatus == Status.UNCHECKED)
-			g.setColor(Color.BLACK);
-		else if (checkStatus == Status.COMPATIBLE)
-			g.setColor(FOREST_GREEN);
-		else
-			g.setColor(ORANGE_RED);
-		g.fill(shape);
-		g.draw(shape);
-	}
+	
 
 	void drawCircleFrom(Graphics2D g, int fx, int fy, int tx, int ty,
 			Color color, int size) {
@@ -540,6 +493,13 @@ public class Arrow implements ActionListener {
 		menuItem = new JMenuItem("Drag New or Existing Bend");
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
+		diag.jpm.addSeparator();
+		menuItem = new JMenuItem("Add Extra Arrowhead");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
+		menuItem = new JMenuItem("Remove Extra Arrowhead");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
 
 		diag.jpm.addSeparator();
 		menuItem = new JMenuItem("Delete");
@@ -705,7 +665,34 @@ public class Arrow implements ActionListener {
 
 		} else if (s.equals("Drag New or Existing Bend")) {
 			createBend(driver.curx, driver.cury);
-
+			
+		} else if (s.equals("Add Extra Arrowhead")) {
+			Point p = new Point(driver.curx, driver.cury);
+			int fx = fromX;
+			int fy = fromY; 
+			int tx, ty;			
+			if (bends != null) {				
+				for (Bend bend : bends) {
+					tx = bend.x;
+					ty = bend.y;
+					if (pointInLine(p, fx, fy, tx, ty)) {
+						extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);
+						return;
+					}
+					fx = tx;
+					fy = ty;					
+				}				
+			}
+			tx = toX;
+			ty = toY;
+			if (pointInLine(p, fx, fy, tx, ty)) 
+				extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);			
+			return;
+			
+		} else if (s.equals("Remove Extra Arrowhead")) {
+			extraArrowhead = null;
+			return;
+			 
 		} else if (s.equals("Delete")) {
 
 			if (JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
@@ -787,6 +774,11 @@ public class Arrow implements ActionListener {
 
 	boolean sameBend(int x1, int y1, Bend b) {
 		return ((x1 - b.x) * (x1 - b.x) + (y1 - b.y) * (y1 - b.y)) < 6 * 6;
+	}
+	
+	boolean pointInLine(Point p, int fx, int fy, int tx, int ty){
+		double d = Line2D.ptLineDist((double) fx, (double) fy, (double) tx, (double) ty, (double) p.x, (double) p.y);
+		return d <= 6.0;
 	}
 
 	Arrow findTerminalArrow() {
@@ -984,6 +976,73 @@ public class Arrow implements ActionListener {
 		}
 
 	}
+class Arrowhead {
+	int fx, fy, toX, toY;
+		
+	Arrowhead(int fx, int fy, int toX, int toY) {
+		this.fx = fx; 
+		this.fy = fy;
+		this.toX = toX; 
+		this.toY = toY;
+		}
+	
+	void draw(Graphics2D g) {
+		
+			// toX/toY is tip of arrow and fx/fy is a point on the line -
+			// fx/fy is used to determine direction & angle
 
+			AffineTransform at = AffineTransform.getTranslateInstance(toX, toY);
+			int b = 9;
+			double theta = Math.toRadians(20);
+			// The idea of using a GeneralPath is so we can
+			// create the (three lines that make up the) arrow
+			// (only) one time and then use AffineTransform to
+			// place it anywhere we want.
+			GeneralPath path = new GeneralPath();
+
+			// distance between line and the arrow mark <** not **
+			// Start a new line segment from the position of (0,0).
+			path.moveTo(0, 0);
+			// Create one of the two arrow head lines.
+			int x = (int) (-b * Math.cos(theta));
+			int y = (int) (b * Math.sin(theta));
+			path.lineTo(x, y);
+
+			// distance between line and the arrow mark <** not **
+			// Make the other arrow head line.
+			int x2 = (int) (-b * Math.cos(-theta));
+			int y2 = (int) (b * Math.sin(-theta));
+			// path.moveTo(0,0);
+			path.lineTo(x2, y2);
+			path.closePath();
+
+			// theta is in radians
+			double s, t;
+			s = toY - fy; // calculate slopes.
+			t = toX - fx;
+			if (t != 0) {
+				s = s / t;
+				theta = Math.atan(s);
+				if (t < 0)
+					theta += Math.PI;
+			} else if (s < 0)
+				theta = -(Math.PI / 2);
+			else
+				theta = Math.PI / 2;
+
+			at.rotate(theta);
+			// at.rotate(theta,toX,toY);
+			Shape shape = at.createTransformedShape(path);
+			if (checkStatus == Status.UNCHECKED)
+				g.setColor(Color.BLACK);
+			else if (checkStatus == Status.COMPATIBLE)
+				g.setColor(FOREST_GREEN);
+			else
+				g.setColor(ORANGE_RED);
+			g.fill(shape);
+			g.draw(shape);
+		}
+	}
 }
+ 
 

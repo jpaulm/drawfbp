@@ -2063,6 +2063,8 @@ void chooseFonts(MyFontChooser fontChooser){
 		frame.repaint();
 	}
 
+	// between just checks that the value val is >= lim1 and <= lim2 - or the inverse
+	
 	static boolean between(int val, int lim1, int lim2) {
 		return between(val, (double) lim1, (double) lim2);
 	}
@@ -3369,7 +3371,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				// selBlockP = null;
 				arrow.fromX = xa;
 				arrow.fromY = ya;
-
+				
 				arrow.fromId = curDiag.foundBlock.id;
 				curDiag.currentArrow = arrow;
 				curDiag.currentArrow.lastX = xa; // save last x and y
@@ -3932,36 +3934,38 @@ void chooseFonts(MyFontChooser fontChooser){
 					return;
 				}
 
-				curDiag.currentArrow.endsAtBlock = true;
-				curDiag.currentArrow.toId = curDiag.foundBlock.id;
+				Arrow a = curDiag.currentArrow;
+				a.endsAtBlock = true;
+				a.toId = curDiag.foundBlock.id;
 
 				if (xa != curx) { // make sure t not
 					// zero!
-					double s = ya - curDiag.currentArrow.lastY;
-					double t = xa - curDiag.currentArrow.lastX;
+					double s = ya - a.lastY;
+					double t = xa - a.lastX;
 					s = s / t;
 					if (Math.abs(s) < FORCE_HORIZONTAL) // force horizontal
-						ya = curDiag.currentArrow.lastY;
+						ya = a.lastY;
 					if (Math.abs(s) > FORCE_VERTICAL) // force vertical
-						xa = curDiag.currentArrow.lastX;
+						xa = a.lastX;
 				}
 
-				curDiag.currentArrow.toX = xa;
-				curDiag.currentArrow.toY = ya;
+											
+				a.toX = xa;
+				a.toY = ya;
 
-				curDiag.currentArrow.toSide = side;
+				a.toSide = side;
 				from = curDiag.blocks.get(new Integer(
-						curDiag.currentArrow.fromId));
+						a.fromId));
 				Block to = curDiag.blocks.get(new Integer(
-						curDiag.currentArrow.toId));
+						a.toId));
 
-				curDiag.currentArrow.downStreamPort = "";
-				curDiag.currentArrow.upStreamPort = "";
+				a.downStreamPort = "";
+				a.upStreamPort = "";
 
 				
 				Boolean error = false;
 				if (to instanceof IIPBlock && from instanceof ComponentBlock) {
-					curDiag.currentArrow.reverseDirection();
+					a.reverseDirection();
 					// MyOptionPane
 					// .showMessageDialog(frame,
 					// "Direction of arrow has been reversed");
@@ -3969,26 +3973,26 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (from instanceof ExtPortBlock
 						&& (from.type.equals(Block.Types.EXTPORT_OUT_BLOCK) || from.type
 								.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
-								&& curDiag.currentArrow.fromX < from.cx))
+								&& a.fromX < from.cx))
 					error = true;
 				else if (to instanceof ExtPortBlock
 						&& (to.type.equals(Block.Types.EXTPORT_IN_BLOCK) || to.type
 								.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
-								&& curDiag.currentArrow.toX > to.cx))
+								&& a.toX > to.cx))
 					error = true;
 
-				if (!curDiag.currentArrow.checkSides())
+				if (!a.checkSides())
 					error = true;
 
 				if (error) {
 					MyOptionPane
 							.showMessageDialog(frame,
 									"Arrow attached to one or both wrong side(s) of blocks");
-					Integer aid = new Integer(curDiag.currentArrow.id);
+					Integer aid = new Integer(a.id);
 					curDiag.arrows.remove(aid);
 				} else {
 					curDiag.changed = true;
-					checkCompatibility(curDiag.currentArrow);
+					checkCompatibility(a);
 				}
 				curDiag.foundBlock = null;
 
