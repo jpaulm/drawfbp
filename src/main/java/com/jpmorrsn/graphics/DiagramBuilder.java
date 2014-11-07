@@ -220,8 +220,11 @@ public class DiagramBuilder {
 							//}
 
 							if (tag.equals("complang")) {
+								if (saveData.equals("NoFlo"))
+									saveData = "JSON";   // transitional! 
 								diag.diagLang = driver
 										.findGLFromLabel(saveData);
+								 
 								/*
 								driver.jtf.setText(diag.diagLang.showLangs());
 								diag.fCPArr[DrawFBP.COMPONENT] = driver.new FileChooserParms(diag.diagLang.srcDirProp, "Select "

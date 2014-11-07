@@ -71,10 +71,13 @@ following:</p>
   <li style="color: rgb(0, 153, 0);">"Toggle Upstream Port Automatic/Normal"
   </li>
   <li style="color: rgb(0, 153, 0);">"Toggle Downstream Port Automatic/Normal"</li>
+  <li style="color: rgb(0, 153, 0);">"Toggle DropOldest"</li>
 <li style="color: rgb(0, 153, 0);">"Drag Base"</li>
 <li style="color: rgb(0, 153, 0);">"Drag Head"</li>
 <li style="color: rgb(0, 153, 0);">"Drag New or Existing Bend"</li>
-  <li style="color: rgb(0, 153, 0);">"Delete"</li>
+  <li style="color: rgb(0, 153, 0);">"Add Extra Arrowhead"</li>
+   <li style="color: rgb(0, 153, 0);">"Remove Extra Arrowhead"</li>
+   <li style="color: rgb(0, 153, 0);">"Delete"</li>
 </ul>
 <h3 style="color: rgb(0, 0, 153);">Edit Upstream/Downstream Port Name</h3>
 <p>Normally port names are just upper case strings; however, if you need
@@ -92,12 +95,18 @@ it is shown with a blue circle at that end. </p>
 specified a port name for that function.</i>  An automatic input port will delay the process until an IP or 
 close-down signal is detected at that port, again <i>even though the component has not 
 specified a port name for that function.</i>  No receive is required to process it.
+<h3 style="color: rgb(0, 0, 153);">DropOldest</h3>
+<p>This sets a connection attribute which drops the oldest IP on the connection if it would suspend the upstream (sending) 
+process.  DrawFBP displays this kind of connection with a zigzag line. 
 <h3 style="color: rgb(0, 0, 153);">Drag Functions</h3>
 <p>The three drag functions allow you to move, respectively, the tail or head of the selected arrow, 
 or to insert or move a bend in the line.  
 When inserting a new bend, you can drag it until you release the mouse button.</p>
 <p>If the head or tail of an arrow is dragged into contact with a different diagram block, it becomes attached
 to that block.</p>
+<h3 style="color: rgb(0, 0, 153);">Extra Arrowhead </h3>
+<p>DrawFBP supports one additional arrowhead per arrow, anywhere the user wants.  If the line is dragged the arrowhead 
+does not follow it, but it can be repositioned by clicking on this function again.
 <h3 style="color: rgb(0, 0, 153);">One-button Support </h3>
 <p>If desired, the list of arrow-related actions can also be brought up by clicking on Edit/Arrow-related Actions.  For this to work, one of the
 arrows must have been selected (by clicking on it) - it will be coloured blue.  

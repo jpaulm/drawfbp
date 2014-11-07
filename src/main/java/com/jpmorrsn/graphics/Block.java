@@ -65,7 +65,7 @@ public class Block implements ActionListener {
 	String compDescr;
 	boolean isSubnet;
 
-	JMenuItem[] sMenu;
+	//JMenuItem[] sMenu;
 	Color lg = new Color(240, 240, 240); // very light gray
 	int ROWSIZE = 5;
 	String codeFileName;
@@ -425,9 +425,7 @@ public class Block implements ActionListener {
 			if (fullClassName.indexOf("!") == -1) {// if no "!", language is not
 													// Java...
 				driver.tryFindJarFile = false;
-				if (fullClassName.toLowerCase().endsWith(".js")
-						|| fullClassName.toLowerCase().endsWith(".json")
-						|| fullClassName.toLowerCase().endsWith(".coffee")) {
+				if (fullClassName.toLowerCase().endsWith(".json")) {
 					codeFileName = fullClassName;
 					fullClassName = null;
 				}

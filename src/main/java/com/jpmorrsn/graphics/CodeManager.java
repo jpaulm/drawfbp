@@ -186,9 +186,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 		}
 
 		String[] contents;
-		if (langLabel.equals("NoFlo")) {
+		if (langLabel.equals("JSON")) {
 			contents = new String[1];
-			contents[0] = generateNoFloJSON();
+			contents[0] = generateJSON();
 			styles[0] = normalStyle;
 		} else {
 			contents = new String[20];
@@ -1011,7 +1011,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return menuBar;
 	}
 
-	String generateNoFloJSON() {
+	String generateJSON() {
 		String data;
 		data = "{\n\"properties\": {\n\"name\": ";
 		data += q(diag.title) + "\n},\n";
@@ -1292,7 +1292,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				error = true;
 		}
 		if (!error) {
-			if (gl.label.equals("NoFlo")) { // bit of a hack...
+			if (gl.label.equals("JSON")) { // bit of a hack...
 				int i = c.lastIndexOf(File.separator);
 				if (i == -1)
 					i = c.lastIndexOf("/");

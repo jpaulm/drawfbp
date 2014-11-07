@@ -180,6 +180,7 @@ public class DrawFBP extends JFrame
 	JMenu helpMenu = null;
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
+	JMenuItem menuItem1 = null;
 	JTextField jtf = new JTextField();
 	
 	JLabel lab2 = new JLabel("Zoom");
@@ -230,7 +231,7 @@ public class DrawFBP extends JFrame
 		genLangs = new GenLang[]{
 				new GenLang("Java", "java",  new JavaFileFilter()),
 				new GenLang("C#", "cs",  new CsharpFileFilter()),
-				new GenLang("NoFlo", "json", new NoFloFilter()),
+				new GenLang("JSON", "json", new JSONFilter()),
 				new GenLang("FBP", "fbp", new FBPFilter())
 				};
 
@@ -242,8 +243,7 @@ public class DrawFBP extends JFrame
 		Lang lang1[] = new Lang[]{new Lang("C#", "cs")};
 		genLangs[1].langs = lang1;
 
-		Lang lang2[] = new Lang[]{new Lang("JavaScript", "js"),
-				new Lang("Coffee", "coffee"),
+		Lang lang2[] = new Lang[]{
 				new Lang("JSON", "json")};
 		genLangs[2].langs = lang2;
 		
@@ -326,6 +326,8 @@ public class DrawFBP extends JFrame
 			defaultFontSize = Integer.parseInt(dfs);
 
 		String dcl = properties.get("defaultCompLang");
+		if (dcl.equals("NoFlo"))    // transitional!
+			dcl = "JSON";
 		if (dcl == null) {
 			defaultCompLang = findGLFromLabel("Java");
 			propertiesChanged = true;
@@ -696,9 +698,14 @@ public class DrawFBP extends JFrame
 		//if (curDiag != null
 		//		&&curDiag.diagLang != null
 		//		&& curDiag.diagLang.label.equals("Java")){
-		menuItem = new JMenuItem("Locate JavaFBP Jar File");
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		menuItem1 = new JMenuItem("Locate JavaFBP Jar File");
+		if (defaultCompLang == null
+				|| !( defaultCompLang.label.equals("Java")))  
+			menuItem1.setEnabled(false);  
+		else
+			menuItem1.setEnabled(true); 
+		fileMenu.add(menuItem1);
+		menuItem1.addActionListener(this);
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1499,6 +1506,10 @@ public class DrawFBP extends JFrame
 		defaultCompLang = gl;
 		jtf.setText(gl.showLangs());
 		jtf.repaint();
+		if (!defaultCompLang.label.equals("Java"))
+			menuItem1.setEnabled(false);  
+		else
+			menuItem1.setEnabled(true); 
 		
 		fileMenu.remove(gNMenuItem);
 		
@@ -2902,20 +2913,18 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 	}
 
-	public class NoFloFilter extends FileFilter {
+	public class JSONFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".js")
-					|| f.getName().toLowerCase().endsWith(".coffee")
-					|| f.getName().toLowerCase().endsWith("json")
+			return f.getName().toLowerCase().endsWith(".json")
 					|| f.isDirectory();
 
 		}
 
 		@Override
 		public String getDescription() {
-			return "NoFlo source files (*.js, *.coffee, *.json)";
+			return "JSON source files (*.json)";
 		}
 	}
 	/*
