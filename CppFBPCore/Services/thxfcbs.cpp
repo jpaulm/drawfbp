@@ -8,7 +8,7 @@
 
 void thxfcbs(Appl *appl_ptr)
 {
-	cp *cpp, *old_cpp;
+	Port *cpp, *oldPortp;
 	Process *this_proc;
 	Cnxt *this_cnxt;
 
@@ -16,13 +16,13 @@ void thxfcbs(Appl *appl_ptr)
 		this_proc = (Process*) appl_ptr -> first_child_proc;
 	    while (this_proc != 0) {
 		appl_ptr -> first_child_proc = this_proc -> next_proc;
-		  cpp = this_proc -> out_cps;
+		  cpp = this_proc -> out_ports;
 		  while (cpp != 0) {
-			old_cpp = cpp;
+			oldPortp = cpp;
 			cpp = cpp -> succ;
-			free(old_cpp);
+			free(oldPortp);
 		  }
-		  cpp = this_proc -> in_cps;
+		  cpp = this_proc -> in_ports;
 		  while (cpp != 0) {
 			//for (i = 0; i < cpp -> elem_count; i++) {
 				//Cnxt * cnp = (Cnxt *) cpp -> elem_list[i].gen.connxn;
@@ -30,9 +30,9 @@ void thxfcbs(Appl *appl_ptr)
 					//free(cnp);
 				//}
 			//}
-			old_cpp = cpp;
+			oldPortp = cpp;
 			cpp = cpp -> succ;
-			free(old_cpp);
+			free(oldPortp);
 		  }
 		  //old_proc = this_proc;
 		  //this_proc = this_proc -> next_proc;

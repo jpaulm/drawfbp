@@ -18,7 +18,7 @@ int thzelctc(Process *proc, char * port)
 		strncpy (port_name, port, p - r);
 		port_name[p - r] = '\0';
 	}
-	cp * cpp = proc -> in_cps;
+	Port * cpp = proc -> in_ports;
 	while (cpp != 0)
 	{
 
@@ -29,7 +29,7 @@ int thzelctc(Process *proc, char * port)
 		cpp = cpp -> succ;
 	}
 	if (cpp == 0) {
-		cpp = proc -> out_cps;
+		cpp = proc -> out_ports;
 		while (cpp != 0)
 		{
 
@@ -51,7 +51,7 @@ int thzelct(Process *proc, port_ent *peptr)
 {
 	/*  This service returns the no. of elements in a cpp */
 
-	_cp * cpp = (_cp *) peptr ->cpptr;
+	Port * cpp = (Port *) peptr ->cpptr;
 	return cpp->elem_count;
 
 }

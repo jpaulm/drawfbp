@@ -10,7 +10,7 @@
 #define INPUT 0
 #define OUTPUT 1
 
-void extern thziclos(Process *proc, cp  * cpp, int elem_no);
+void extern thziclos(Process *proc, Port  * cpp, int elem_no);
 
 int thzclos(Process *proc, port_ent *peptr, int elem_no);
 
@@ -37,7 +37,7 @@ int thzclosc(Process *proc, char * port ){
 	//port_ent* pe = (port_ent *) malloc(sizeof(port_ent));   
 
 	strcpy(pe.port_name, port_name);
-	cp * cpp = proc -> in_cps;
+	Port * cpp = proc -> in_ports;
 	while (cpp != 0)
 	{
 		
@@ -60,12 +60,12 @@ int thzclosc(Process *proc, char * port ){
 int thzclos(Process *proc, port_ent *peptr, int elem_no)
 {
 	//Process *sptr;
-	cp *cpp;
+	Port *cpp;
 	//Cnxt *cnp;
 	//IPh   *IPptr;
 	//IPh   *nextIP;
 
-	cpp = (cp *)peptr -> cpptr;
+	cpp = (Port *)peptr -> cpptr;
 	if (peptr -> ret_code == 2)
 		return(2);     
 

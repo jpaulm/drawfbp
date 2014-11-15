@@ -25,7 +25,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 
 		*/
 
-		cp *cpp, *cpp2;
+		Port *cpp, *cpp2;
 		Process *this_proc;
 		proc_ent *curr_proc;
 
@@ -61,10 +61,10 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 			this_proc -> proc_anchor.reserved = this_proc;
 			this_proc -> mother_proc = mother;
 			this_proc -> faddr = 0;
-			this_proc -> in_cps = 0;
-			this_proc -> out_cps = 0;
-			this_proc -> begin_cp = 0;
-			this_proc -> end_cp = 0;
+			this_proc -> in_ports = 0;
+			this_proc -> out_ports = 0;
+			this_proc -> begin_port = 0;
+			this_proc -> end_port = 0;
 			strcpy(this_proc -> int_pe.port_name, " ");
 			this_proc -> int_pe.elem_count = 1;
 			this_proc -> int_pe.cpptr = 0;
@@ -84,7 +84,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 		while (curr_cnxt != 0) {
 
 			if (curr_cnxt -> downstream_name[0] == '*') { // something to do with subnets
-				cpp2 = mother -> out_cps;
+				cpp2 = mother -> out_ports;
 				while (cpp2 != 0) {
 					if (strcmp(curr_cnxt -> downstream_port_name, cpp2 -> port_name)
 						== 0)
@@ -100,7 +100,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 						TRUE;
 				}
 
-				goto build_out_cp;
+				goto build_outPort;
 			}
 
 			//  not subnet port...
@@ -109,7 +109,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 			if (downstream_proc == 0)
 				return(4);
 
-			cpp = downstream_proc -> in_cps;
+			cpp = downstream_proc -> in_ports;
 
 			while (cpp != 0) {
 				if (strcmp(curr_cnxt -> downstream_port_name, cpp -> port_name) == 0)
@@ -129,16 +129,16 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 			}
 			else {
 
-				// allocate block comprising a cp followed by MAXELEMNO cpelem's
+				// allocate block comprising a Port followed by MAXELEMNO cpelem's
 
 				// this shouldn't happen more than once for a given port name... 
 
-				cpp =  (cp *)malloc(sizeof(cp) + MAXELEMNO * sizeof(cp_elem));
+				cpp =  (Port *)malloc(sizeof(Port) + MAXELEMNO * sizeof(cp_elem));
 				strcpy(cpp -> port_name, curr_cnxt -> downstream_port_name);
 				cpp -> elem_count = i;
 				cpp -> direction = INPUT;
-				cpp -> succ = downstream_proc -> in_cps;
-				downstream_proc -> in_cps = cpp;
+				cpp -> succ = downstream_proc -> in_ports;
+				downstream_proc -> in_ports = cpp;
 
 				for (i = 0; i < MAXELEMNO; i++) {
 					cpp -> elem_list[i].gen.connxn = 0;
@@ -148,8 +148,8 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 				}
 			}
 
-			if (curr_cnxt -> downstream_port_name[0] == '*')
-				downstream_proc -> begin_cp = cpp;
+			if (curr_cnxt -> downstream_port_name[0] == '*')  // automatic port
+				downstream_proc -> begin_port = cpp;
 
 			i = curr_cnxt -> downstream_elem_no;
 
@@ -159,7 +159,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 					if (cpp -> elem_list[i].is_IIP)
 						printf("Cannot have connection and IIP on same port element\n");
 					if (curr_cnxt -> upstream_name[0] == '*') {
-						cpp2 = mother -> in_cps;
+						cpp2 = mother -> in_ports;
 						while (cpp2 != 0) {
 							if (strcmp(curr_cnxt -> upstream_port_name, cpp2 -> port_name) ==
 								0)
@@ -240,11 +240,11 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 					}
 					//cnxt_ptr -> fedproc_wtg_to_recv = FALSE;
 				}
-build_out_cp:
+build_outPort:
 				upstream_proc = find_proc(label_ptr -> proc_ptr,
 					curr_cnxt -> upstream_name);
 
-				cpp = upstream_proc -> out_cps;
+				cpp = upstream_proc -> out_ports;
 				while (cpp != 0) {
 					if (strcmp(curr_cnxt -> upstream_port_name, cpp -> port_name) == 0)
 						break;
@@ -269,12 +269,12 @@ build_out_cp:
 
 				// this shouldn't happen more than once for a given port name... 
 
-				cpp =  (cp *)malloc(sizeof(cp) + MAXELEMNO * sizeof(cp_elem));
+				cpp =  (Port *)malloc(sizeof(Port) + MAXELEMNO * sizeof(cp_elem));
 				strcpy(cpp -> port_name, curr_cnxt -> upstream_port_name);
 				cpp -> elem_count = i;
 				cpp -> direction = OUTPUT;
-				cpp -> succ = upstream_proc -> out_cps;
-				upstream_proc -> out_cps = cpp;
+				cpp -> succ = upstream_proc -> out_ports;
+				upstream_proc -> out_ports = cpp;
 
 				for (i = 0; i < MAXELEMNO; i++) {
 					cpp -> elem_list[i].gen.connxn = 0;
@@ -286,8 +286,8 @@ build_out_cp:
 			
 
 
-				if (curr_cnxt -> upstream_port_name[0] == '*')
-					upstream_proc -> end_cp = cpp;
+				if (curr_cnxt -> upstream_port_name[0] == '*') //automatic port
+					upstream_proc -> end_port = cpp;  
 
 				i = curr_cnxt -> upstream_elem_no;
 
@@ -320,7 +320,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					appl_ptr,
 					label_tab);
 
-				cpp = this_proc -> out_cps;
+				cpp = this_proc -> out_ports;
 				while (cpp != 0)  {
 					for (i = 0; i < cpp -> elem_count; i++) {
 						cnxt_ptr = (Cnxt *) cpp -> elem_list[i].gen.connxn;
@@ -334,7 +334,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					cpp = cpp -> succ;
 				}
 
-				cpp = this_proc -> in_cps;
+				cpp = this_proc -> in_ports;
 				while (cpp != 0)
 				{
 					for (i = 0; i < cpp -> elem_count; i++) {
@@ -405,7 +405,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 
 				this_proc -> faddr =  curr_proc -> faddr;
 				//this_proc -> must_run = curr_proc -> must_run;
-				cpp = this_proc -> out_cps;
+				cpp = this_proc -> out_ports;
 				while (cpp != 0)  {
 					for (i = 0; i < cpp -> elem_count; i++) {
 						cnxt_ptr = (Cnxt *) cpp -> elem_list[i].gen.connxn;

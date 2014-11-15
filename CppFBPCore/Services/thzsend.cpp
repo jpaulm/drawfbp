@@ -40,7 +40,7 @@ int elem_no = 0;
 	//port_ent* pe = (port_ent *) malloc(sizeof(port_ent));   
 
 	strcpy(pe.port_name, port_name);
-	cp * cpp = proc -> out_cps;
+	Port * cpp = proc -> out_ports;
 	while (cpp != 0)
 	{
 		
@@ -73,7 +73,7 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 	IP   *tptr;
 	long size;
 	char *type;
-	cp *cpp;
+	Port *cpp;
 	Cnxt *cnp;
 	int value = 0;
 
@@ -82,7 +82,7 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 		return(2);
 	}
 
-	cpp = (cp *)peptr -> cpptr;
+	cpp = (Port *)peptr -> cpptr;
 	if (proc -> trace) MSG3("%s Send start %s[%d]\n", proc -> procname,
 		cpp -> port_name, elem_no);
 	
@@ -181,7 +181,7 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 
 		if (sptr -> status == NOT_STARTED || sptr -> status == DORMANT) {
 
-			if (sptr -> begin_cp == 0) {
+			if (sptr -> begin_port == 0) {
 							
 				if (sptr -> trace)
 					printf("%s Initiated\n",sptr -> procname);
@@ -189,13 +189,13 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 				 sptr -> activate();
 			}
 			else
-				if (sptr -> begin_cp -> elem_list[0].gen.connxn == cnp) {
+				if (sptr -> begin_port -> elem_list[0].gen.connxn == cnp) {
 					
 					if (sptr -> trace)
 						printf("%s Initiated\n",sptr -> procname);
 					
 					sptr ->activate();
-					proc -> int_pe.cpptr = proc -> begin_cp;
+					proc -> int_pe.cpptr = proc -> begin_port;
 					proc -> value = thzrecv(proc, &proc -> int_ptr,  //????
 						&proc -> int_pe, 0, &size, &type);
 					proc -> value = thzdrop(proc, &proc -> int_ptr);

@@ -7,13 +7,13 @@
 
 int thzdfpt(Process *pptr, int port_count, port_ent *peptr)
 {
-	cp *cpp;
+	Port *cpp;
 	int i;
 
 	if (pptr->trace) MSG1("%s DFPT Start\n", pptr->procname);
 	for (i = 0; i < port_count; i++)
 	{
-		cpp = pptr -> in_cps;
+		cpp = pptr -> in_ports;
 		while (cpp != 0) {
 			if (strcmp((peptr+i)-> port_name, cpp -> port_name) == 0) break;
 			cpp = cpp -> succ;
@@ -24,7 +24,7 @@ int thzdfpt(Process *pptr, int port_count, port_ent *peptr)
 			(peptr+i)-> ret_code = 0;
 		}
 		else {
-			cpp = pptr -> out_cps;
+			cpp = pptr -> out_ports;
 			while (cpp != 0) {
 
 				if (strcmp((peptr+i) -> port_name, cpp -> port_name) == 0) break;

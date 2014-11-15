@@ -12,10 +12,10 @@
 
 
 
-void thziclos(Process *pptr, cp  * cpp, int elem_no)
+void thziclos(Process *pptr, Port  * cpp, int elem_no)
 {
 	Process *sptr;
-	//cp *cpp;
+	//Port *cpp;
 	//Cnxt *cnp;
 	IPh   *IPptr;
 	IPh   *nextIP;
@@ -80,8 +80,8 @@ void thziclos(Process *pptr, cp  * cpp, int elem_no)
 		cnp -> nonterm_upstream_proc_count--;
 		sptr = cnp -> fed_proc;
 		//term_now = TRUE;
-		if (sptr -> begin_cp != 0 &&
-			sptr -> begin_cp -> elem_list[0].gen.connxn == cnp) {
+		if (sptr -> begin_port != 0 &&
+			sptr -> begin_port -> elem_list[0].gen.connxn == cnp) {
 				cnp -> nonterm_upstream_proc_count = 0;
 				//term_now = FALSE;
 		}

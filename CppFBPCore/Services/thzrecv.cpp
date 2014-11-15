@@ -39,7 +39,7 @@ int thzrecvc(Process *proc, void **ptr, char * port,
 	//port_ent* pe = (port_ent *) malloc(sizeof(port_ent));   
 
 	strcpy(pe.port_name, port_name);
-	cp * cpp = proc -> in_cps;
+	Port * cpp = proc -> in_ports;
 	while (cpp != 0)
 	{
 		
@@ -72,7 +72,7 @@ int thzrecv(Process *proc, void **ptr, port_ent *peptr, int elem_no,
 	//IPh   *optr;
 	IP   *tptr;
 	int value = 0;
-	cp *cpp;
+	Port *cpp;
 	Cnxt *cnp;
 	IIP *IIPptr;
 	IPh   *created_IIP_ptr;
@@ -83,7 +83,7 @@ int thzrecv(Process *proc, void **ptr, port_ent *peptr, int elem_no,
 		if (proc -> trace) MSG1("%s Recv from unconnected port\n", proc -> procname);
 		return(2);
 	}
-	cpp = (cp *)peptr -> cpptr;
+	cpp = (Port *)peptr -> cpptr;
 	if (proc -> trace) MSG3("%s Recv start %s[%d]\n", proc -> procname,
 		cpp -> port_name, elem_no);
 

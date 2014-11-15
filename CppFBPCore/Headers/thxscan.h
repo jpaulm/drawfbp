@@ -13,7 +13,7 @@
 	 void * label_ptr;   // points to a label for subnets	 
      bool trace;
      bool composite;
-     // bool must_run;
+     bool must_run;  // new - doesn't seem to hurt, even when CopyFile not modified!
      };
 
 typedef  _proc_ent proc_ent;
@@ -29,6 +29,7 @@ typedef  _proc_ent proc_ent;
      int downstream_elem_no;
      union cnxt_union {IIP *IIPptr; void *connxn;} gen;
      int capacity;
+	 bool dropOldest;     // new - doesn't seem to hurt, even when CopyFile not modified!
      };
 
 typedef  _cnxt_ent cnxt_ent;

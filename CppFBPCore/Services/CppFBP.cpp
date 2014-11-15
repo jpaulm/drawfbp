@@ -50,7 +50,7 @@ int thxscan(FILE *fp, label_ent *label, char file_name[10]);
 int thzsend(Process *pptr, void **ptr, port_ent *peptr, int elem_no);
 int thzcrep(Process *pptr, void **ptr, long IPsize, char *type);
 int thzdrop(Process *pptr, void **ptr);
-void thziclos(Process * proc, cp * cpp, int i);
+void thziclos(Process * proc, Port * cpp, int i);
 
 //void thzputs(Process * p, char * buffer); 
 
@@ -78,7 +78,7 @@ void   CppFBP( label_ent * label_blk, bool dynam, FILE * fp, bool timereq)    {
 	//int cnxt_count = 0;
 	char file_name[10];
 
-	cp *cpp;
+	Port *cpp;
 	time_t st_time, end_time;
 	double secs;
 	//freopen("my_log.txt", "w", stdout);
@@ -161,7 +161,7 @@ void   CppFBP( label_ent * label_blk, bool dynam, FILE * fp, bool timereq)    {
 	{
 		this_proc -> appl_ptr = appl_ptr;
 		attsw = TRUE;
-		cpp = this_proc -> in_cps;
+		cpp = this_proc -> in_ports;
 		while (cpp != 0) {	 
 			for (i = 0; i < cpp -> elem_count; i++) {
 				if (cpp -> elem_list[i].gen.connxn != 0 &&
@@ -273,7 +273,7 @@ void inline Process::run(Process * proc) {
 	for( ; ; ) {
 		if (2 == run_test(proc)  && !proc -> must_run) 
 			break;
-		cp * cpp = proc -> in_cps;
+		Port * cpp = proc -> in_ports;
 	    while (cpp != 0) {	       
 		   for (int i = 0; i < cpp -> elem_count; i++) {
 			  if (cpp -> elem_list[i].gen.connxn == 0)
@@ -296,7 +296,7 @@ void inline Process::run(Process * proc) {
 			printf("%s Deactivated with %d IPs not disposed of\n",
 			proc -> procname, proc -> owned_IPs);
 
-		cpp = proc -> in_cps;
+		cpp = proc -> in_ports;
 		while (cpp != 0)
 		{
 			for (int i = 0; i < cpp -> elem_count; i++) {
@@ -334,10 +334,10 @@ void inline Process::run(Process * proc) {
 	/*
 	Process * lpProc;
 	// This should only be done at termination time!
-	if (lpProc -> end_cp != 0) {
+	if (lpProc -> end_port != 0) {
 	lpProc -> value = thzcrep(lpProc,
 	&lpProc -> int_ptr, 0, "\0");
-	lpProc -> int_pe.cpptr = lpProc -> end_cp;
+	lpProc -> int_pe.cpptr = lpProc -> end_port;
 	lpProc -> value = thzsend(lpProc,
 	&lpProc -> int_ptr, &lpProc -> int_pe, 0);
 	if (lpProc -> value > 0)
@@ -347,10 +347,10 @@ void inline Process::run(Process * proc) {
 	}
 
 	*/
-	//close_output_cps(proc);
+	//close_outputPorts(proc);
 	
 
-	cp * cpp = proc -> out_cps;
+	Port * cpp = proc -> out_ports;
 	while (cpp != 0)
 	{
 		for (int i = 0; i < cpp -> elem_count; i++) {
@@ -361,8 +361,8 @@ void inline Process::run(Process * proc) {
 		cpp = cpp -> succ;
 	}
 
-	//close_input_cps(proc);
-	cpp = proc -> in_cps;
+	//close_inputPorts(proc);
+	cpp = proc -> in_ports;
 	while (cpp != 0)
 	{
 		for (int i = 0; i < cpp -> elem_count; i++) {
@@ -393,7 +393,7 @@ void inline Process::dormwait(Process * proc) {
 int run_test(Process * proc) {
         int res  = 2;
 		Cnxt * cnp;
-		cp * cpp = proc -> in_cps;
+		Port * cpp = proc -> in_ports;
 		while (cpp != 0)
 		{
 			for (int i = 0; i < cpp -> elem_count; i++) {

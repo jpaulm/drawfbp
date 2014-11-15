@@ -46,7 +46,7 @@ cp and cp_elem handle the connections between a port and its owning process -
 each cp block is followed by an array of cp element blocks, each of which points at a connection (Cnxt), an IIP or zero
 */
 
-struct _cp_elem {     // port control block element -
+struct Port_elem {     // port control block element -
 	//   port is represented by port control block,
 	//   followed by an array of port control block
 	//   elements
@@ -62,11 +62,12 @@ struct _cp_elem {     // port control block element -
 	bool subdef;   //  port elem is defined in a subnet definition
 } ;
 
-typedef  _cp_elem cp_elem;
+typedef  Port_elem cp_elem;
 
-struct _cp {          //  port control block (see above)
+class Port {          //  port control block (see above)
 	//-----------------------------------------
-	struct _cp *succ;  // next port in input port chain or output
+public:
+	Port *succ;  // next port in input port chain or output
 	//  port chain - these are separate chains
 	char port_name[32];   // port name
 
@@ -75,11 +76,10 @@ struct _cp {          //  port control block (see above)
 	//   0 = input
 	//   1 = output 
 
-	struct _cp_elem elem_list[1]; // array of port control block elements
+	struct Port_elem elem_list[1]; // array of port control block elements
 
 } ;
 
-typedef  _cp cp;
 
 struct _IPh {                 //  Information Packet header
 	//-------------------------------------
@@ -123,14 +123,14 @@ public:
 	// which is 'expanded' to subnet - it
 	// does not participate in process
 	// scheduling
-	struct _cp *in_cps;        // ptr to first input port control block
-	struct _cp *out_cps;       // ptr to first output port control block
+	Port *in_ports;        // ptr to first input port control block
+	Port *out_ports;       // ptr to first output port control block
 	//struct _IPh   *first_owned_IP;   // ptr to first IP owned by this
 	//     process 
-	struct _cp *begin_cp;      // ptr to 'beginning' port - if specified,
+	Port *begin_port;      // ptr to 'beginning' port - if specified,
 	//   process is delayed until IP arrives
 	//   at this port
-	struct _cp *end_cp;        // ptr to 'ending' port - if specified,
+	Port *end_port;        // ptr to 'ending' port - if specified,
 	//   process sends a signal to this port
 	//   when it finally terminates  
 	struct _port_ent int_pe;   // 'port_ent' block internal to process

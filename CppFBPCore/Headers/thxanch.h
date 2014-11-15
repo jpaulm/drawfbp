@@ -11,7 +11,7 @@ struct _port_ent              // block representing port in process's
 	// following fields are set by THZDFPT
 	//union {
 	//void *reserved;   
-	void *cpptr;   // - pointer to actual port control block (_cp)
+	void *cpptr;   // - pointer to actual port control block (Port)
 	//};
 	int elem_count;         // - no. of elements in port control
 	//     block: >1 implies array port

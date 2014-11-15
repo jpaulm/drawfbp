@@ -173,7 +173,11 @@ get_rest_of_IIP:
 	printf("EOF encountered within quoted string\n");
 	ret_code = 4;
 	goto exit;
-tbsl:  
+tbsl:
+	TCO(tbq,'\\');
+	CC;
+	goto get_rest_of_IIP;
+tbq:
 	TCO(copy,'\'');
 	goto NQ2;
 copy:
