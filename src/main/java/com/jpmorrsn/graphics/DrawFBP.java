@@ -326,13 +326,16 @@ public class DrawFBP extends JFrame
 			defaultFontSize = Integer.parseInt(dfs);
 
 		String dcl = properties.get("defaultCompLang");
-		if (dcl.equals("NoFlo"))    // transitional!
-			dcl = "JSON";
+		//if (dcl.equals("NoFlo"))    // transitional!
+		//	dcl = "JSON";
 		if (dcl == null) {
 			defaultCompLang = findGLFromLabel("Java");
 			propertiesChanged = true;
-		} else
+		} else {
+			if (dcl.equals("NoFlo"))    // transitional!
+				dcl = "JSON";
 			defaultCompLang = findGLFromLabel(dcl);
+		}
 
 		startProperties = new HashMap<String, String>();
 		for (String s : properties.keySet()) {
