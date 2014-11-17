@@ -16,12 +16,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource Files\Pomp.fbp" />
+    <None Include="Resource Files\TestInfQ.fbp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Source Files\Thxgen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source Files\Thxgen.cpp">
+    <ClCompile Include="..\CppFBPCore\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CppFBPCore\Services\thxscan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

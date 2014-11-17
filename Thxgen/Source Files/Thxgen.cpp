@@ -98,7 +98,7 @@ void main(int argc, char *argv[])  {
 
 	if (thxscan(fp, label_tab, file_name) != 0) {
 		printf("Scan error\n");
-		res = 8; goto retn;;
+		res = 8; goto retn; 
 	}
 
 	gen_ptr = gen_area;
@@ -412,7 +412,10 @@ void main(int argc, char *argv[])  {
 	strcpy(gen_ptr, "CppFBP(&LABELTAB, 0, 0, 0);\n}\n");
 
 	fputs(gen_area,fpo);
-	printf("Gen finished\n");
+	strcpy(gen_area, "Gen finished\nOutput written to: ");
+	strcat(gen_area, fname);
+	strcat(gen_area, "\n");
+	printf(gen_area);
 	// free(cnxt_tab);
 	// free(proc_tab);
 	free(label_tab);

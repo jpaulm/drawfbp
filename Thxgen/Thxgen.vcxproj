@@ -81,12 +81,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Resource Files\Pomp.fbp" />
+    <None Include="Resource Files\TestInfQ.fbp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="..\CppFBPCore\Services\thxscan.cpp" />
+    <ClCompile Include="..\CppFBPCore\stdafx.cpp" />
     <ClCompile Include="Source Files\Thxgen.cpp">
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</PreprocessToFile>
       <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NoListing</AssemblerOutput>

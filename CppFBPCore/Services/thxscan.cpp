@@ -3,7 +3,7 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <string.h>
 
 #include "cppfbp.h"
@@ -255,11 +255,11 @@ NQ1:
 	o_ptr = out_str;
 	TC(outport,'*');     /* automatic port */
 	*o_ptr = '\0';
+	IIPlen = -1;
+	goto GUy;
 
 outport:  // same as upstream port
 	res = scan_blanks(fp);
-	
-
 
 	// now we test for end of clause
 	// if scan_blanks found an EOL, res will be set to 2, not 0 - if so, it is end of clause
@@ -294,6 +294,7 @@ get_up_port:
 		ret_code = 4;
 		goto exit;  
 	}
+GUy:
 	scan_blanks(fp);
 	
 	strcpy(upstream_port_name, out_str);
@@ -368,7 +369,7 @@ ncap:
 	o_ptr = out_str;
 	TC(Y2a,'*');       /* automatic port */
 	*o_ptr = '\0';
-	strcpy(cnxt_hold->downstream_name, "*");  /* ext. conn */
+	strcpy(cnxt_hold->downstream_port_name, out_str);  /* ext. conn */
 	goto is_outport;
 Y2a: 
 	if (scan_sym(fp,  out_str) != 0) {
@@ -441,18 +442,46 @@ exit:
 
 	cnxt_hold = cnxt_tab;
 	while (cnxt_hold != 0) {
-		if (cnxt_hold -> upstream_name[0] != '!')
-			printf(" Connection: %s %s[%d] -> %s[%d] %s\n",
+		char up[200];
+		char down[200];
+		char elem[20];
+		if (cnxt_hold -> upstream_name[0] != '!') {
+			if (cnxt_hold -> upstream_port_name[0] == '*')
+				strcpy(up, cnxt_hold -> upstream_port_name);
+			else {
+				strcpy(up, cnxt_hold -> upstream_port_name);
+				strcat(up, "[");				
+				itoa(cnxt_hold -> upstream_elem_no, elem, 10);
+				strcat(up, elem);
+				strcat(up, "]");
+			}
+			if (cnxt_hold -> downstream_port_name[0] == '*')
+				strcpy(down, cnxt_hold -> downstream_port_name);
+			else {
+				strcpy(down, cnxt_hold -> downstream_port_name);
+				strcat(down, "[");
+				itoa(cnxt_hold -> downstream_elem_no, elem, 10);
+				strcat(down, elem);
+				strcat(down, "]");
+			}
+			printf(" Connection: %s %s -> %s %s\n",
 			cnxt_hold -> upstream_name,
-			cnxt_hold -> upstream_port_name,
-			cnxt_hold -> upstream_elem_no,
-			cnxt_hold -> downstream_port_name,
-			cnxt_hold -> downstream_elem_no,
+			up,			
+			down,
 			cnxt_hold -> downstream_name);
+		}
 		else {
-			printf(" IIP: -> %s[%d] %s\n",
-				cnxt_hold -> downstream_port_name,
-				cnxt_hold -> downstream_elem_no,
+			if (cnxt_hold -> downstream_port_name[0] == '*')
+				strcpy(down, cnxt_hold -> downstream_port_name);
+			else {
+				strcpy(down, cnxt_hold -> downstream_port_name);
+				strcat(down, "[");
+				itoa(cnxt_hold -> downstream_elem_no, elem, 10);
+				strcat(down, elem);
+				strcat(down, "]");
+			}
+			printf(" IIP: -> %s %s\n",
+				down,
 				cnxt_hold -> downstream_name);
 			IIP_ptr = cnxt_hold -> gen.IIPptr;
 			printf("    \'");
