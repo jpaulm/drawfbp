@@ -252,13 +252,13 @@ NQ1:
 		goto bigloop;
 	}
 
-	o_ptr = out_str;
-	TC(outport,'*');     /* automatic port */
-	*o_ptr = '\0';
-	IIPlen = -1;
-	goto GUy;
+	//o_ptr = out_str;
+	//TC(outport,'*');     /* automatic port */
+	//*o_ptr = '\0';
+	//IIPlen = -1;
+	//goto GUy;
 
-outport:  // same as upstream port
+//outport:  -- same as upstream port
 	res = scan_blanks(fp);
 
 	// now we test for end of clause
@@ -282,13 +282,20 @@ nxtnet:
 	goto exit;
 
 tiip:	   
-	TCO(get_up_port,',');	
 	IIPlen = -1;
+	TCO(get_up_port,',');	
+	
 	scan_blanks(fp);
 	goto bigloop; 
 
 get_up_port:	
+	o_ptr = out_str;
+	TC(outport,'*');     /* automatic port */
+	*o_ptr = '\0';
 	
+	goto GUy;
+
+outport:
 	if (scan_sym(fp,  out_str) != 0) {
 		printf("Name error\n");
 		ret_code = 4;
@@ -324,6 +331,7 @@ tGr:
 	printf("Arrow\n");
 	cnxt_new = (cnxt_ent *) malloc (sizeof(cnxt_ent)); 
 	cnxt_new->succ = 0;
+	cnxt_new->dropOldest = false;
 	if (cnxt_tab == 0) {
 		cnxt_tab = cnxt_new;
 		label_curr ->cnxt_ptr = cnxt_tab;		
@@ -337,6 +345,7 @@ tGr:
 	cnxt_hold = cnxt_new;
 	if (IIPlen != -1) {
 		strcpy(cnxt_hold->upstream_name, "!");
+		cnxt_hold->upstream_port_name[0] = '\0';
 		cnxt_hold->gen.IIPptr = IIP_ptr;
 	}
 	else {
@@ -446,19 +455,15 @@ exit:
 		char down[200];
 		char elem[20];
 		if (cnxt_hold -> upstream_name[0] != '!') {
-			if (cnxt_hold -> upstream_port_name[0] == '*')
-				strcpy(up, cnxt_hold -> upstream_port_name);
-			else {
-				strcpy(up, cnxt_hold -> upstream_port_name);
+			strcpy(up, cnxt_hold -> upstream_port_name);
+			if (up[0] != '*') {
 				strcat(up, "[");				
 				itoa(cnxt_hold -> upstream_elem_no, elem, 10);
 				strcat(up, elem);
 				strcat(up, "]");
 			}
-			if (cnxt_hold -> downstream_port_name[0] == '*')
-				strcpy(down, cnxt_hold -> downstream_port_name);
-			else {
-				strcpy(down, cnxt_hold -> downstream_port_name);
+			strcpy(down, cnxt_hold -> downstream_port_name);
+			if (down[0] != '*') {
 				strcat(down, "[");
 				itoa(cnxt_hold -> downstream_elem_no, elem, 10);
 				strcat(down, elem);
@@ -471,10 +476,8 @@ exit:
 			cnxt_hold -> downstream_name);
 		}
 		else {
-			if (cnxt_hold -> downstream_port_name[0] == '*')
-				strcpy(down, cnxt_hold -> downstream_port_name);
-			else {
-				strcpy(down, cnxt_hold -> downstream_port_name);
+			strcpy(down, cnxt_hold -> downstream_port_name);
+			if (down[0] != '*') {
 				strcat(down, "[");
 				itoa(cnxt_hold -> downstream_elem_no, elem, 10);
 				strcat(down, elem);

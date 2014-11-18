@@ -7,3 +7,4 @@ Lire OUT -> IN Ecrire("../CppFBPComponents/Components/ThFileWt"),
 'c:\\temp\\infqueue.dat' -> OPT Ecrire  * -> * Lire2("../CppFBPComponents/Components/ThFileRd")
 Lire2 OUT ->  IN Ecrire2("../CppFBPComponents/Components/ThFileWt") 
 'c:\\threadn\\riches.fil' ->  OPT Ecrire2
+'c:\\temp\\infqueue.dat' -> OPT Lire2
