@@ -60,7 +60,7 @@
     while (value == 0)
       {
       dptr = (char *) ptr;
-      for (i = 0; i < size - 1; i++) {
+      for (i = 0; i < size; i++) {
          ch = (int) * (dptr + i);
          value = fputc(ch, fp);
         }

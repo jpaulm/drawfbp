@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SolutionSettings", "Solutio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryLuaDyn", "DynNetworks\TryLuaDyn\TryLuaDyn.vcxproj", "{5B57785A-99A3-4D7A-AF09-0DCBD574229F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryInfQDyn", "DynNetworks\TryInfQDyn\TryInfQDyn.vcxproj", "{5B57785A-99A3-4D7A-AF09-0DCBD574229F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32

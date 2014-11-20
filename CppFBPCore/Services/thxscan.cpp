@@ -458,14 +458,14 @@ exit:
 			strcpy(up, cnxt_hold -> upstream_port_name);
 			if (up[0] != '*') {
 				strcat(up, "[");				
-				itoa(cnxt_hold -> upstream_elem_no, elem, 10);
+				_itoa(cnxt_hold -> upstream_elem_no, elem, 10);
 				strcat(up, elem);
 				strcat(up, "]");
 			}
 			strcpy(down, cnxt_hold -> downstream_port_name);
 			if (down[0] != '*') {
 				strcat(down, "[");
-				itoa(cnxt_hold -> downstream_elem_no, elem, 10);
+				_itoa(cnxt_hold -> downstream_elem_no, elem, 10);
 				strcat(down, elem);
 				strcat(down, "]");
 			}
@@ -479,7 +479,7 @@ exit:
 			strcpy(down, cnxt_hold -> downstream_port_name);
 			if (down[0] != '*') {
 				strcat(down, "[");
-				itoa(cnxt_hold -> downstream_elem_no, elem, 10);
+				_itoa(cnxt_hold -> downstream_elem_no, elem, 10);
 				strcat(down, elem);
 				strcat(down, "]");
 			}
