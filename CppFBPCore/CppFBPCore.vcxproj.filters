@@ -69,6 +69,18 @@
     <ClCompile Include="Services\thxbnet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IntComps\SubIn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IntComps\SubOut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IntComps\Network.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IntComps\SubNet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\compsvcs.h">
@@ -102,6 +114,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\thxdef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\network.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

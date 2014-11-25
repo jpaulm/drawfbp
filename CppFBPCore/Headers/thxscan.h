@@ -27,7 +27,7 @@ typedef  _proc_ent proc_ent;
      char downstream_name[32];
      char downstream_port_name[32];
      int downstream_elem_no;
-     union cnxt_union {IIP *IIPptr; void *connxn;} gen;
+     union cnxt_union {IIP * IIPptr; void *connxn;} gen;
      int capacity;
 	 bool dropOldest;     // new - doesn't seem to hurt, even when CopyFile not modified!
      };

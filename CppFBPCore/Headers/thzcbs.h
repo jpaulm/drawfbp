@@ -119,10 +119,7 @@ public:
 	Appl* appl_ptr;            // ptr to application control block
 	Process *next_proc;  // ptr to next sibling process
 	//   within subnet (static)
-	Process *mother_proc;  // ptr to 'mother' process - process
-	// which is 'expanded' to subnet - it
-	// does not participate in process
-	// scheduling
+	Process *mother_proc;  // ptr to 'mother' process 
 	Port *in_ports;        // ptr to first input port control block
 	Port *out_ports;       // ptr to first output port control block
 	//struct _IPh   *first_owned_IP;   // ptr to first IP owned by this

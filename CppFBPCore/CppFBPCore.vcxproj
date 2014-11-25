@@ -74,6 +74,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="IntComps\Network.cpp" />
+    <ClCompile Include="IntComps\SubIn.cpp" />
+    <ClCompile Include="IntComps\SubNet.cpp" />
+    <ClCompile Include="IntComps\SubOut.cpp" />
     <ClCompile Include="Services\CppFBP.cpp" />
     <ClCompile Include="Services\thxbnet.cpp" />
     <ClCompile Include="Services\thxfcbs.cpp" />
@@ -100,6 +104,7 @@
     <ClInclude Include="Headers\cppfbp.h" />
     <ClInclude Include="headers\dllheader.h" />
     <ClInclude Include="headers\fbp.h" />
+    <ClInclude Include="Headers\network.h" />
     <ClInclude Include="headers\stdafx.h" />
     <ClInclude Include="headers\targetver.h" />
     <ClInclude Include="headers\thxanch.h" />
