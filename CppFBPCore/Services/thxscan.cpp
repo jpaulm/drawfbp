@@ -3,15 +3,12 @@
 #include <malloc.h>
 #include <stdio.h>
 #include <ctype.h>
-//#include <stdlib.h>
 #include <string.h>
 
 #include "cppfbp.h"
-#include "thxiip.h"
-#include "thxscan.h"
+#include "thzcbs.h"
 #define TRUE 1
 #define FALSE 0
-#define _CRT_SECURE_NO_WARNINGS
 
 #if __OS2__ == 1
 #define getc fgetc

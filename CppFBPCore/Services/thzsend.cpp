@@ -3,7 +3,7 @@
 #include <stdio.h>
 //#include <malloc.h>
 #include <string.h>
-#include "thxiip.h"
+#include "thzcbs.h"
 #include "cppfbp.h"
 #define FALSE 0
 #define TRUE 1
@@ -213,6 +213,6 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 retn:
 	//cnp->lock.unlock();
 	//cnp -> lock.~unique_lock();	
-	proc -> appl_ptr -> active = TRUE;
+	proc -> network -> active = TRUE;
 	return(value);
 }

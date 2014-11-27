@@ -3,7 +3,7 @@
 #include <stdlib.h>
 //#include <malloc.h>
 #include <string.h>
-#include "thxiip.h"
+#include "thzcbs.h"
 #include "cppfbp.h"
 #define FALSE 0
 #define TRUE 1
@@ -34,7 +34,7 @@ void thziclos(Process *pptr, Port  * cpp, int elem_no)
 					return;
 	}
 
-	Cnxt * cnp = (Cnxt *) cpp -> elem_list[elem_no].gen.connxn;
+	Cnxt * cnp = cpp -> elem_list[elem_no].gen.connxn;
 	
 	//int value = 0;
 	boost::unique_lock<boost::mutex> lock (cnp -> mtx); 
@@ -42,7 +42,7 @@ void thziclos(Process *pptr, Port  * cpp, int elem_no)
 	if (cpp -> direction == INPUT) {
 		// Closing an input port
 		if (pptr->trace) MSG1("%s Close input\n",pptr -> procname);
-		//Cnxt * cnp = (Cnxt *) cpp -> elem_list[elem_no].gen.connxn;
+		//Cnxt * cnp = cpp -> elem_list[elem_no].gen.connxn;
 		if (cnp -> closed) {
 			//value = 1;
 			goto retn;
@@ -76,7 +76,7 @@ void thziclos(Process *pptr, Port  * cpp, int elem_no)
 	else {
 		// Closing an output port
 		if (pptr->trace) MSG1("%s Close output\n",pptr -> procname);
-		//Cnxt * cnp = (Cnxt *) cpp -> elem_list[elem_no].gen.connxn;
+		//Cnxt * cnp = cpp -> elem_list[elem_no].gen.connxn;
 		cnp -> nonterm_upstream_proc_count--;
 		sptr = cnp -> fed_proc;
 		//term_now = TRUE;

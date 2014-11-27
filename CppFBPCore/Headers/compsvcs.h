@@ -1,7 +1,9 @@
 
 #define THRCOMP  extern "C"  __declspec(dllexport) int __stdcall 
-
+#ifndef THXANCH
+#define THXANCH
    #include "thxanch.h"
+#endif
 
    int dfscrep(_anchor proc_anchor, void **ptr, long size, char *type);
    int dfssend(_anchor proc_anchor, void **ptr, port_ent *peptr,

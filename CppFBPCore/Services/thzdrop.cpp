@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 #include <string.h>
-#include "thxiip.h"
+#include "thzcbs.h"
 #include "cppfbp.h"
 
 int thzdrop(Process *proc, void **ptr)
@@ -21,7 +21,7 @@ int thzdrop(Process *proc, void **ptr)
    if (IPptr -> on_stack)
      MSG1("IP on stack - %s\n", proc->procname);
    
-   boost::lock_guard<boost::mutex> lock(proc -> appl_ptr -> heapmtx);
+   boost::lock_guard<boost::mutex> lock(proc -> network -> heapmtx);
    free(IPptr);
    //lock.~lock_guard();
     

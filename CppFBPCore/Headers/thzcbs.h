@@ -2,13 +2,18 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/cv_status.hpp>
 
+#ifndef THXDEF
+#define THXDEF
+#include "thxdef.h"
+#endif
+
 // In what follows, IP means Information Packet  
 
 
 class Cdl {                  // countdown latch
 public:
 	Cdl(int ct);
-	int wait(void * ap);  // 1 = deadlock; 0 = count completed
+	int wait();  // 1 = deadlock; 0 = count completed
 	void count_down();
 
 private:
@@ -18,40 +23,17 @@ private:
 } ;
 
 
-class Appl {                // control block representing application
-	//----------------------------------------
-public:
-	char name[32];             // name of application
-
-	void* first_child_proc;  // ptr to first child process
-	void* first_child_comp;  // ptr to first child component
-
-	struct _IPh   * alloc_ptr;  // ptr to allocated IP
-	long alloc_lth;                // length of requested IP
-	bool dynam;                     // DLLs being dynamically loaded (interpretive mode)
-
-	void *first_cnxt;
-
-	Cdl * latch;   // count down latch
-	bool active;
-	
-	bool possibleDeadlock;
-	bool deadlock;
-	boost::mutex heapmtx;
-} ;
-
-
 /* 
 cp and cp_elem handle the connections between a port and its owning process -
 each cp block is followed by an array of cp element blocks, each of which points at a connection (Cnxt), an IIP or zero
 */
-
+class Cnxt;
 struct Port_elem {     // port control block element -
 	//   port is represented by port control block,
 	//   followed by an array of port control block
 	//   elements
 	//-----------------------------------------------
-	union cp_union {void *connxn; struct _IIP *IIPptr;}
+	union cp_union {Cnxt *connxn; struct _IIP *IIPptr;}
 	gen;     //  this field may point at a connection or
 	//    an Initial IP (IIP)  or zero (i.e. unused)
 	//  (an IIP is like a parameter - it is specified
@@ -96,6 +78,8 @@ struct _IPh {                 //  Information Packet header
 
 typedef  _IPh IPh;
 
+
+
 struct _IP {                  //  Information Packet
 	//--------------------------------------
 	struct _IPh IP_header;     //    header, followed by 0 - 32767 
@@ -107,6 +91,8 @@ typedef  _IP IP;
 
 #define guard_value 219  /* solid rectangle */
 
+class Cnxt;
+class Network;
 class Process {             // process control block
 	//--------------------------------------
 public:
@@ -116,7 +102,7 @@ public:
 	//       of ready processes (dynamic)
 	//jmp_buf state;             // state of component - used by longjmp
 	//    from scheduler back to component 
-	Appl* appl_ptr;            // ptr to application control block
+	Network *network;            // ptr to application control block
 	Process *next_proc;  // ptr to next sibling process
 	//   within subnet (static)
 	Process *mother_proc;  // ptr to 'mother' process 
@@ -147,7 +133,7 @@ public:
 	char status;               //  status of process execution:
 	//     values defined in #defines below
 
-	void * waiting_cnxt;   // connection process is waiting on
+	Cnxt * waiting_cnxt;   // connection process is waiting on
 	bool trace;            //  trace required for process
 	//bool terminating;      //  process is terminating
 	bool must_run;         //  process must run at least once
@@ -157,9 +143,11 @@ public:
 	long owned_IPs;       // number of owned IPs
 
 	boost::thread thread;   
-	static void Process::run(Process * proc);
+	void run();
 
-	static void dormwait(Process * proc);
+	void dormwait();
+	int run_test();
+
 
 	
 	boost::condition canGo;
@@ -183,15 +171,7 @@ public:
 	}
 
 	 
-	void activate() {
-		if (status == NOT_STARTED) {
-			status = ACTIVE;
-			boost::thread thread(&Process::run, this);  			
-		}
-		else if (status == DORMANT) {		
-			canGo.notify_all();			
-		}
-	}
+	void activate(); 
 	 
 	
 
@@ -225,5 +205,32 @@ public:
 	boost::mutex mtx;
 } ;
 
+class Network
+{
+public:
+	char name[32];             // name of application
+
+	Process* first_child_proc;  // ptr to first child process
+	Process* first_child_comp;  // ptr to first child component
+
+	struct _IPh   * alloc_ptr;  // ptr to allocated IP
+	long alloc_lth;                // length of requested IP
+	bool dynam;                     // DLLs being dynamically loaded (interpretive mode)
+
+	Cnxt *first_cnxt;
+
+	Cdl * latch;   // count down latch
+	bool active;
+	
+	bool possibleDeadlock;
+	bool deadlock;
+	boost::mutex heapmtx;
+
+   
+    void waitForAll();
+    void thxfcbs();
+	bool deadlock_test();
+    void go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq); 
+};
 
 

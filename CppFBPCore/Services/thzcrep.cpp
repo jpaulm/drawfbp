@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
-#include "thxiip.h"
+#include "thzcbs.h"
 #include "cppfbp.h"
 
 
@@ -26,7 +26,7 @@ int thzcrep(Process *pptr, void **ptr, long IPsize, char *type)
    int i = sizeof(IPh);
    totsize = IPsize + i + 1;          // room for guard
     
-   boost::lock_guard<boost::mutex> lock(pptr -> appl_ptr -> heapmtx);
+   boost::lock_guard<boost::mutex> lock(pptr -> network -> heapmtx);
    IPptr = (IPh *) malloc(totsize);
    //lock.~lock_guard();
 

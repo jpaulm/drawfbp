@@ -80,7 +80,6 @@
     <ClCompile Include="IntComps\SubOut.cpp" />
     <ClCompile Include="Services\CppFBP.cpp" />
     <ClCompile Include="Services\thxbnet.cpp" />
-    <ClCompile Include="Services\thxfcbs.cpp" />
     <ClCompile Include="Services\thxgatrs.cpp" />
     <ClCompile Include="Services\thxscan.cpp" />
     <ClCompile Include="Services\thz.cpp" />
@@ -104,13 +103,10 @@
     <ClInclude Include="Headers\cppfbp.h" />
     <ClInclude Include="headers\dllheader.h" />
     <ClInclude Include="headers\fbp.h" />
-    <ClInclude Include="Headers\network.h" />
     <ClInclude Include="headers\stdafx.h" />
     <ClInclude Include="headers\targetver.h" />
     <ClInclude Include="headers\thxanch.h" />
     <ClInclude Include="Headers\thxdef.h" />
-    <ClInclude Include="headers\thxiip.h" />
-    <ClInclude Include="headers\thxscan.h" />
     <ClInclude Include="headers\thzcbs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

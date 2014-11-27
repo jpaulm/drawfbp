@@ -1,7 +1,7 @@
 // #include "thxanch.h"
-#include "thxiip.h"
+#include "thzcbs.h"
 #include "cppfbp.h"
-#include "thxscan.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #define MAXELEMNO 200
@@ -16,7 +16,7 @@ typedef int (CALLBACK* LPFNDLLFUNC)(_anchor);
 LPFNDLLFUNC lpfnDllFunc;  
 
 int thxbnet(label_ent * label_ptr, Process *mother,
-	Appl *appl_ptr, label_ent *label_tab) {
+	Network * network, label_ent *label_tab) {
 
 		/*
 
@@ -48,7 +48,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 			strcpy(this_proc -> procname, curr_proc -> proc_name);
 			strcpy(this_proc -> compname, curr_proc -> comp_name);
 
-			this_proc -> appl_ptr = appl_ptr;
+			this_proc -> network = network;
 
 			this_proc -> next_proc = 0;
 			//this_proc -> has_run = FALSE;
@@ -155,7 +155,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 
 			if (curr_cnxt -> upstream_name[0] != '!') {
 
-				if ((cnxt_ptr = (Cnxt *) cpp -> elem_list[i].gen.connxn) == 0) {
+				if ((cnxt_ptr = cpp -> elem_list[i].gen.connxn) == 0) {
 					if (cpp -> elem_list[i].is_IIP)
 						printf("Cannot have connection and IIP on same port element\n");
 					if (curr_cnxt -> upstream_name[0] == '*') {
@@ -209,8 +209,8 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 					// now these are Cnxt's
 
 					cnxt_ptr =  new Cnxt();				
-					cnxt_ptr -> succ = (Cnxt *)appl_ptr -> first_cnxt;					
-					appl_ptr -> first_cnxt = cnxt_ptr;
+					cnxt_ptr -> succ = (Cnxt *)network -> first_cnxt;					
+					network -> first_cnxt = cnxt_ptr;
 
 					cnxt_ptr -> first_IPptr = 0;
 					cnxt_ptr -> last_IPptr = 0;
@@ -300,7 +300,7 @@ build_outPort:
 				return(4);
 			}
 			// copy in connection or IIP address to element
-			cpp -> elem_list[i].gen.connxn = (Cnxt*) curr_cnxt -> gen.connxn;
+			cpp -> elem_list[i].gen.connxn = curr_cnxt -> gen.connxn;
 
 get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 		}
@@ -317,13 +317,13 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 				/* this will cause recursive use of thxbnet */
 				thxbnet(leptr,
 					this_proc,
-					appl_ptr,
+					network,
 					label_tab);
 
 				cpp = this_proc -> out_ports;
 				while (cpp != 0)  {
 					for (i = 0; i < cpp -> elem_count; i++) {
-						cnxt_ptr = (Cnxt *) cpp -> elem_list[i].gen.connxn;
+						cnxt_ptr = cpp -> elem_list[i].gen.connxn;
 						if (cnxt_ptr == 0)
 							continue;
 						if (!cpp -> elem_list[i].subdef)
@@ -338,7 +338,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 				while (cpp != 0)
 				{
 					for (i = 0; i < cpp -> elem_count; i++) {
-						cnxt_ptr = (Cnxt *) cpp -> elem_list[i].gen.connxn;
+						cnxt_ptr = cpp -> elem_list[i].gen.connxn;
 						if (cnxt_ptr == 0)
 							continue;
 						if (!cpp -> elem_list[i].subdef)
@@ -349,8 +349,8 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					cpp = cpp -> succ;
 				}
 
-				this_proc -> next_proc = (Process*) appl_ptr -> first_child_proc;
-				appl_ptr -> first_child_comp = this_proc;
+				this_proc -> next_proc = (Process*) network -> first_child_proc;
+				network -> first_child_comp = this_proc;
 			}
 			else {
 				if (curr_proc -> faddr == 0) {
@@ -408,7 +408,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 				cpp = this_proc -> out_ports;
 				while (cpp != 0)  {
 					for (i = 0; i < cpp -> elem_count; i++) {
-						cnxt_ptr = (Cnxt *) cpp -> elem_list[i].gen.connxn;
+						cnxt_ptr = cpp -> elem_list[i].gen.connxn;
 						if (cnxt_ptr == 0)
 							continue;
 						cnxt_ptr -> total_upstream_proc_count++;
@@ -417,8 +417,8 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					cpp = cpp -> succ;
 				}
 
-				this_proc -> next_proc = (Process*) appl_ptr -> first_child_proc;
-				appl_ptr -> first_child_proc = this_proc;
+				this_proc -> next_proc = (Process*) network -> first_child_proc;
+				network -> first_child_proc = this_proc;
 			}
 
 			curr_proc = curr_proc -> succ;

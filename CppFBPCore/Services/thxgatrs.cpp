@@ -4,9 +4,9 @@
     #include <stdlib.h>
     #include <string.h>
     //#include <setjmp.h>
-    #include "thxiip.h"
+    #include "thzcbs.h"
     #include "cppfbp.h"
-    #include "thxscan.h"
+    
         #define TRUE 1
     #define FALSE 0
     //#define _CRT_SECURE_NO_WARNINGS

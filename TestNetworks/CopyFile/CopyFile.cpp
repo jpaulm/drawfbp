@@ -16,10 +16,7 @@ THRCOMP ThFileWt(_anchor anch);
 THRCOMP ThCopyNL(_anchor anch);
 THRCOMP ThFileRt(_anchor anch);
 
-#define TRACE true
-#define COMPOS true
-#define DYNAM true
-#define TIME_REQ true
+
 
 int cap = 2;
 int elem0 = 0;

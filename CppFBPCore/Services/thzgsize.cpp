@@ -1,3 +1,4 @@
+#include "thzcbs.h"
 #include "cppfbp.h"
 
    long thzgsize(Process *pptr, void **ptr)

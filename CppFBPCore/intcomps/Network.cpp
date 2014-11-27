@@ -7,10 +7,8 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-#include "thxiip.h"
+#include "thzcbs.h"
 #include "cppfbp.h"
-#include "thxscan.h"
-#include "network.h"
 
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>
@@ -19,12 +17,11 @@
 
 #define FILE struct _iobuf
 
-void thxfcbs(Appl *appl_ptr);
 
 void disp_IP(IPh   * this_IP);
 /* first param of thxbnet is subnet address; last is whole net address */
 int thxbnet(label_ent * label_ptr, Process *mother,
-	Appl *appl_ptr, label_ent *label_tab);
+	Network * network, label_ent *label_tab);
 int findmod(char * p);
 
 int thxscan(FILE *fp, label_ent *label, char file_name[10]);
@@ -36,24 +33,19 @@ void thziclos(Process * proc, Port * cpp, int i);
 
 //void thzputs(Process * p, char * buffer); 
 
-static void run(Process * proc);
-
-int run_test(Process * proc);
+//static void run(Process * proc);
 
 bool deadlock_test_sw = TRUE;
 
 
-void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
-	Appl *appl_ptr;
+void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {	
 	Process *this_proc;
 	cnxt_ent *cnxt_tab;
 	proc_ent *proc_tab;
 	label_ent *label_tab;
 	label_ent *label_curr;
 	label_ent *label_new;
-	//int label_count = 0;
-	//int proc_count = 0;
-	//int cnxt_count = 0;
+	
 	char file_name[10];
 
 	Port *cpp;
@@ -101,22 +93,23 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 			exit(4);
 		}
 	}
-	appl_ptr = new Appl;
-	strcpy(appl_ptr -> name,"APPL");
-	//appl_ptr -> first_ready_proc = 0;
-	appl_ptr -> first_child_proc = 0;
-	appl_ptr -> first_child_comp = 0;
-	appl_ptr -> first_cnxt = 0;
-	appl_ptr -> dynam = dynam;
-	appl_ptr -> active = FALSE;
-	appl_ptr -> possibleDeadlock = FALSE;
-	appl_ptr -> deadlock = FALSE;
+	//network = new Appl;
+	//network = this;
+	strcpy(name,"APPL");
+	//first_ready_proc = 0;
+	first_child_proc = 0;
+	first_child_comp = 0;
+	first_cnxt = 0;
+	dynam = dynam;
+	active = FALSE;
+	possibleDeadlock = FALSE;
+	deadlock = FALSE;
 
-	thxbnet(label_tab, 0, appl_ptr, label_tab);  // why two params the same?!
+	thxbnet(label_tab, 0, this, label_tab);  // why two params the same?!
 
 	int thread_count = 0;
 
-	this_proc = (Process*) appl_ptr -> first_child_proc;
+	this_proc = (Process*) first_child_proc;
 	while (this_proc != 0)
 	{
 		thread_count ++;
@@ -125,18 +118,18 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 
 	/* Look for processes with no input ports */
 
-	appl_ptr -> latch =  new Cdl(thread_count);
+	latch =  new Cdl(thread_count);
 
-	Cnxt * cnxt_ptr = (Cnxt *) appl_ptr -> first_cnxt;
+	Cnxt * cnxt_ptr = (Cnxt *) first_cnxt;
 	while (cnxt_ptr != 0) {	 
 		cnxt_ptr -> closed = FALSE;
 		cnxt_ptr = cnxt_ptr -> succ;
 	}
 
-	this_proc = (Process*) appl_ptr -> first_child_proc;
+	this_proc = (Process*) first_child_proc;
 	while (this_proc != 0)
 	{
-		this_proc -> appl_ptr = appl_ptr;
+		this_proc -> network = this;
 		bool attsw = TRUE;
 		cpp = this_proc -> in_ports;
 		while (cpp != 0) {	 
@@ -161,21 +154,10 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 		this_proc = this_proc -> next_proc;
 	}
 
-	appl_ptr -> active = TRUE;
+	active = TRUE;
 
-	//boost::chrono::milliseconds msec(500);
-	bool deadlock_test(Appl * ptr);
-
-	for (;;) {
-		//Cdl * l = appl_ptr -> latch;
-		int res = appl_ptr -> latch -> wait(appl_ptr) ;  // 1 means count hit zero; 0 means timeout interval expired
-		if (res == 1)
-			break;  	
-		if (res == 0 && deadlock_test_sw && deadlock_test(appl_ptr))
-			break;
-	}
-
-	delete appl_ptr -> latch;
+	waitForAll();
+	delete latch;
 
 
 	//if (dynam) {                  -- check this out!
@@ -184,8 +166,8 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 	//}
 
 
-	//free (appl_ptr -> latch);  
-	thxfcbs(appl_ptr);
+	//free (latch);  
+	thxfcbs();
 	free(label_tab);
 
 	end_time = time(NULL);
@@ -205,9 +187,22 @@ Cdl::Cdl(int ct)  {
 	count = ct;
 }
 
+void Network::waitForAll() {
+	//boost::chrono::milliseconds msec(500);
+	
+
+	for (;;) {
+		//Cdl * l = latch;
+		int res = latch -> wait() ;  // 1 means count hit zero; 0 means timeout interval expired
+		if (res == 1)
+			break;  	
+		if (res == 0 && deadlock_test_sw && deadlock_test())
+			break;
+	}
+}
 
 /// Blocks until the latch has counted down to zero or hit no. of msecs, whichever comes first .
-int Cdl::wait(void * appl_ptr)
+int Cdl::wait()
 {
 	boost::unique_lock<boost::mutex> lock( mutex );
 
@@ -242,15 +237,23 @@ void Cdl::count_down()
 	}
 }
 
+void Process::activate() {
+		if (status == NOT_STARTED) {
+			status = ACTIVE;
+			boost::thread thread(&Process::run, this);  			
+		}
+		else if (status == DORMANT) {		
+			canGo.notify_all();			
+		}
+	}
 
-
-void inline Process::run(Process * proc) {
+void Process::run() {
 
 	//proc -> status = ACTIVE;
 	for( ; ; ) {
-		if (2 == run_test(proc)  && !proc -> must_run) 
+		if (2 == run_test()  && ! must_run) 
 			break;
-		Port * cpp = proc -> in_ports;
+		Port * cpp = in_ports;
 		while (cpp != 0) {	       
 			for (int i = 0; i < cpp -> elem_count; i++) {
 				if (cpp -> elem_list[i].gen.connxn == 0)
@@ -262,22 +265,22 @@ void inline Process::run(Process * proc) {
 		}
 		//
 		// execute component code!
-		proc -> value =
-			proc -> faddr (proc -> proc_anchor);	
+		value =
+			faddr (proc_anchor);	
 		// component code returns
 
-		if (proc -> value > 0)
+		if (value > 0)
 			printf ("Process %s returned with value %d\n",
-			proc -> procname, proc -> value); 
-		if (proc -> owned_IPs > 0)
+			procname, value); 
+		if (owned_IPs > 0)
 			printf("%s Deactivated with %d IPs not disposed of\n",
-			proc -> procname, proc -> owned_IPs);
+			procname, owned_IPs);
 
-		cpp = proc -> in_ports;
+		cpp = in_ports;
 		while (cpp != 0)
 		{
 			for (int i = 0; i < cpp -> elem_count; i++) {
-				Cnxt * cnp = (Cnxt *)cpp -> elem_list[i].gen.connxn;
+				Cnxt * cnp = cpp -> elem_list[i].gen.connxn;
 				if (cnp == 0)
 					continue;
 				if (cpp -> elem_list[i].is_IIP) 
@@ -285,11 +288,11 @@ void inline Process::run(Process * proc) {
 			}
 			cpp = cpp -> succ;
 		}
-		if (proc -> trace)
+		if (trace)
 			printf("%s Deactivated with retcode %d\n",
-			proc -> procname, proc -> value);
+			procname, value);
 
-		if (proc -> value > 4) {
+		if (value > 4) {
 			//proc -> terminating = TRUE;
 			break;
 		}
@@ -298,12 +301,12 @@ void inline Process::run(Process * proc) {
 		/* res =  0 if data in cnxt; 1 if upstream not closed;
 		2 if upstream closed */
 
-		res = run_test(proc);
+		res = run_test();
 
 		if (res == 2) break;
 		if (res == 0) continue;
 
-		dormwait(proc);
+		dormwait();
 	}
 
 
@@ -327,54 +330,54 @@ void inline Process::run(Process * proc) {
 	//close_outputPorts(proc);
 
 
-	Port * cpp = proc -> out_ports;
+	Port * cpp = out_ports;
 	while (cpp != 0)
 	{
 		for (int i = 0; i < cpp -> elem_count; i++) {
 			if (cpp -> elem_list[i].gen.connxn == 0)
 				continue;
-			/*value = */ thziclos(proc, cpp, i);
+			/*value = */ thziclos(this, cpp, i);
 		}
 		cpp = cpp -> succ;
 	}
 
 	//close_inputPorts(proc);
-	cpp = proc -> in_ports;
+	cpp = in_ports;
 	while (cpp != 0)
 	{
 		for (int i = 0; i < cpp -> elem_count; i++) {
 			if (cpp -> elem_list[i].gen.connxn == 0)
 				continue;
 			if (! cpp -> elem_list[i].is_IIP)
-				thziclos(proc, cpp, i);
+				thziclos(this, cpp, i);
 		}
 		cpp = cpp -> succ;
 	}
 	//printf("Terminated %s\n", proc -> procname);
-	proc -> status = TERMINATED;
-	if (proc -> trace)
+	status = TERMINATED;
+	if (trace)
 		printf("%s Terminated with retcode %d\n",
-		proc -> procname, proc -> value);
+		procname, value);
 	//proc -> thread.join();
-	proc -> appl_ptr -> latch -> count_down();
+	network -> latch -> count_down();
 } 
 
-void inline Process::dormwait(Process * proc) {
-	boost::unique_lock<boost::mutex> lock (proc -> mtx );
-	proc -> status = DORMANT;
-	proc -> canGo.wait(lock);
-	proc -> status = ACTIVE;
+void inline Process::dormwait() {
+	boost::unique_lock<boost::mutex> lock (mtx);
+	status = DORMANT;
+	canGo.wait(lock);
+	status = ACTIVE;
 
 }
 
-int run_test(Process * proc) {
+int Process::run_test() {
 	int res  = 2;
 	Cnxt * cnp;
-	Port * cpp = proc -> in_ports;
+	Port * cpp = in_ports;
 	while (cpp != 0)
 	{
 		for (int i = 0; i < cpp -> elem_count; i++) {
-			cnp = (Cnxt *)cpp -> elem_list[i].gen.connxn;
+			cnp = cpp -> elem_list[i].gen.connxn;
 
 			if (cnp == 0)
 				continue;
@@ -404,15 +407,15 @@ int run_test(Process * proc) {
 	return res;
 }
 
-bool deadlock_test(Appl * appl_ptr) {
+bool Network::deadlock_test() {
 
 	//testTimeouts(freq);
-	if (appl_ptr -> active) {
-		appl_ptr -> active = FALSE; // reset flag every 1/2 sec
-	} else if (!appl_ptr -> possibleDeadlock) {
-		appl_ptr -> possibleDeadlock = TRUE;
+	if (active) {
+		active = FALSE; // reset flag every 1/2 sec
+	} else if (!possibleDeadlock) {
+		possibleDeadlock = TRUE;
 	} else {
-		appl_ptr -> deadlock = TRUE; // well, maybe
+		deadlock = TRUE; // well, maybe
 		// so test state of components
 
 		class ABC
@@ -429,7 +432,7 @@ bool deadlock_test(Appl * appl_ptr) {
 
 
 		bool deadlock = TRUE;
-		Process * this_proc = (Process *) appl_ptr -> first_child_proc;
+		Process * this_proc = (Process *) first_child_proc;
 		//Cnxt * cnp;
 		bool terminated = TRUE;
 		while (this_proc != 0)
@@ -496,7 +499,7 @@ bool deadlock_test(Appl * appl_ptr) {
 			//char c; std::cin>>c;   // to see console
 
 			//		kill everything!
-			Process * this_proc = (Process *) appl_ptr -> first_child_proc;
+			Process * this_proc = (Process *) first_child_proc;
 			boost::thread::id nat =  boost::thread::id::id();   // Not a Thread
 			while (this_proc != 0)
 			{
@@ -509,14 +512,62 @@ bool deadlock_test(Appl * appl_ptr) {
 		}
 		// one or more components haven't started or
 		// are in a long wait
-		appl_ptr -> deadlock = FALSE;
-		appl_ptr -> possibleDeadlock = FALSE;
+		deadlock = FALSE;
+		possibleDeadlock = FALSE;
 
 	}
 	return FALSE;
 }
 
+void Network::thxfcbs()
+{
+	Port *cpp, *oldPortp;
+	Process *this_proc;
+	Cnxt *this_cnxt;
 
+	
+		this_proc = first_child_proc;
+	    while (this_proc != 0) {
+		first_child_proc = this_proc -> next_proc;
+		  cpp = this_proc -> out_ports;
+		  while (cpp != 0) {
+			oldPortp = cpp;
+			cpp = cpp -> succ;
+			free(oldPortp);
+		  }
+		  cpp = this_proc -> in_ports;
+		  while (cpp != 0) {
+			//for (i = 0; i < cpp -> elem_count; i++) {
+				//Cnxt * cnp = (Cnxt *) cpp -> elem_list[i].gen.connxn;
+				//if (cnp != 0) {						
+					//free(cnp);
+				//}
+			//}
+			oldPortp = cpp;
+			cpp = cpp -> succ;
+			free(oldPortp);
+		  }
+		  //old_proc = this_proc;
+		  //this_proc = this_proc -> next_proc;
+		  this_proc -> mtx.~mutex();
+		  this_proc -> canGo.~condition_variable_any();
+		  //delete this_proc;
+		  this_proc = first_child_proc;
+	}
+
+	this_cnxt = first_cnxt;
+	while (this_cnxt != 0) {
+		first_cnxt = this_cnxt -> succ;
+		//delete this_cnxt;
+		this_cnxt = first_cnxt;
+	}
+
+	//if (!deadsw) {
+		//delete network;
+		//printf("Done\n");
+	//}
+} 
+ 
 void disp_IP(IPh   * this_IP) {   // not currently used...
 	char * dptr;
 	IPh   * ip;
@@ -537,3 +588,4 @@ void disp_IP(IPh   * this_IP) {   // not currently used...
 	}
 	printf("%c\n", (int) *(dptr + size));
 }
+ 

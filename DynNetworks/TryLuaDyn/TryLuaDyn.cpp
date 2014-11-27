@@ -15,9 +15,7 @@
 
 void  CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
 
-void main() {
-	bool DYNAM = true;
-	bool TIMEREQ = true;
+void main() {	
 	
 	const char* fname =  "TryLua.fbp";
 	FILE *f;
@@ -36,6 +34,6 @@ void main() {
 	
 	}
   else
-    CppFBP(0, DYNAM, f, TIMEREQ);   
+    CppFBP(0, DYNAM, f, TIME_REQ);   
 	system("pause");  // to see console
 }

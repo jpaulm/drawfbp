@@ -1,7 +1,7 @@
 //#include <setjmp.h>
 #include <stdio.h>
 #include <string.h>
-#include "thxiip.h"
+#include "thzcbs.h"
 #include "cppfbp.h"
 #include <stdlib.h>
 //#define FALSE 0
@@ -188,6 +188,6 @@ X: IPptr = cnp -> first_IPptr;
 	value = 0;
 retn:
 	
-	proc -> appl_ptr -> active = TRUE;
+	proc -> network -> active = TRUE;
 	return(value);
 }

@@ -14,14 +14,12 @@ between processes, connections, ports and IIPs - they will be referred to as fix
 
 #include <stdarg.h>
 
-#include "thxiip.h"
-#include "cppfbp.h"
-#include "thxscan.h"
-#include "network.h"
+#include "thxdef.h"
+#include "thzcbs.h"
 
 
 void   CppFBP(label_ent * label_blk, bool dynam, FILE * fp, bool timereq)    {
-
+	
 	Network * network = new Network;
 	network -> go(label_blk, dynam,  fp,  timereq);
 	

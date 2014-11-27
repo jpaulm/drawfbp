@@ -10,8 +10,8 @@
 
 #define GEN_BOOST
 #include "cppfbp.h"
-#include "thxiip.h"
-#include "thxscan.h"
+#include "thzcbs.h"
+
 //typedef enum {FALSE, TRUE} Boolean;
 
 // #define _CRT_SECURE_NO_WARNINGS 
