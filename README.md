@@ -56,9 +56,10 @@ Now go into Visual C++, and `Open/Project/Solution` `CppFBP.sln` (in the just cl
 
 There will be a "solution" line, followed by a number of "projects" - two of which are `CppFBPCore` and `CppFBPComponents`.
  
-Right click on `CppFBPCore` and do a `Build`
-
-Right click on `CppFBPComponents` and do a `Build`
+Do these builds in this order:
+- Right click on `CppFBPCore` and do a `Build`
+- Right click on `CppFBPComponents` and do a `Build`
+- Right click on `TestSubnets` and do a `Build`
 
 Right click on the "solution" line, and do `Build Solution`
 
