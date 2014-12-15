@@ -32,7 +32,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 		Cnxt *cnxt_ptr;
 		Process *upstream_proc, *downstream_proc;
 		cnxt_ent *curr_cnxt;
-		label_ent *leptr;
+		//label_ent *leptr;
 		int i;
 
 		char szBuf[80];
@@ -60,7 +60,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 			this_proc -> proc_anchor.svc_addr = (int (*) (int, void * vp, ...)) thz;
 			this_proc -> proc_anchor.reserved = this_proc;
 			this_proc -> mother_proc = mother;
-			this_proc -> faddr = 0;
+			this_proc -> faddr = curr_proc -> faddr;
 			this_proc -> in_ports = 0;
 			this_proc -> out_ports = 0;
 			this_proc -> begin_port = 0;
@@ -83,7 +83,8 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 
 		while (curr_cnxt != 0) {
 
-			if (curr_cnxt -> downstream_name[0] == '*') { // something to do with subnets
+			/*
+			if (curr_cnxt -> downstream_name[0] == '*') { 
 				cpp2 = mother -> out_ports;
 				while (cpp2 != 0) {
 					if (strcmp(curr_cnxt -> downstream_port_name, cpp2 -> port_name)
@@ -104,6 +105,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 			}
 
 			//  not subnet port...
+			*/
 			downstream_proc = find_proc(label_ptr -> proc_ptr,
 				curr_cnxt -> downstream_name);
 			if (downstream_proc == 0)
@@ -240,7 +242,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 					}
 					//cnxt_ptr -> fedproc_wtg_to_recv = FALSE;
 				}
-build_outPort:
+// build_outPort:
 				upstream_proc = find_proc(label_ptr -> proc_ptr,
 					curr_cnxt -> upstream_name);
 
@@ -310,50 +312,8 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 
 		while (curr_proc != 0) {
 			this_proc = (Process *) curr_proc -> proc_block;
-			if (curr_proc -> composite) {
 
-				leptr = (label_ent *) curr_proc -> label_ptr;
-
-				/* this will cause recursive use of thxbnet */
-				thxbnet(leptr,
-					this_proc,
-					network,
-					label_tab);
-
-				cpp = this_proc -> out_ports;
-				while (cpp != 0)  {
-					for (i = 0; i < cpp -> elem_count; i++) {
-						cnxt_ptr = cpp -> elem_list[i].gen.connxn;
-						if (cnxt_ptr == 0)
-							continue;
-						if (!cpp -> elem_list[i].subdef)
-							printf("Port %s used by process %s but not defined\n",
-							cpp -> port_name, this_proc -> procname);
-						cpp -> elem_list[i].gen.connxn = 0;
-					}
-					cpp = cpp -> succ;
-				}
-
-				cpp = this_proc -> in_ports;
-				while (cpp != 0)
-				{
-					for (i = 0; i < cpp -> elem_count; i++) {
-						cnxt_ptr = cpp -> elem_list[i].gen.connxn;
-						if (cnxt_ptr == 0)
-							continue;
-						if (!cpp -> elem_list[i].subdef)
-							printf("Port %s used by process %s but not defined\n",
-							cpp -> port_name, this_proc -> procname);
-						cpp -> elem_list[i].gen.connxn = 0;
-					}
-					cpp = cpp -> succ;
-				}
-
-				this_proc -> next_proc = (Process*) network -> first_child_proc;
-				network -> first_child_comp = this_proc;
-			}
-			else {
-				if (curr_proc -> faddr == 0) {
+			if (this_proc -> faddr == 0  && !this_proc -> composite) {
 
 					/* The following assumes that components are packaged one component per DLL - 
 					of course they could be packaged in many other ways */
@@ -365,12 +325,8 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 						MessageBox(NULL, szBuf, "Library Functions", MB_ICONHAND);
 					}
 
-					/* Load the library module. This assumes one DLL per component */
-					//strcpy(dllname, curr_proc -> comp_name);
-
-					//strcpy(dllname, "../Debug/");
-					//strcat(dllname, curr_proc -> comp_name);
-					//strcat(dllname, "Dll.dll");
+					/* Load the CppFBPComponents module. This logic assumes all components in one dll file */
+					
 					strcpy(dllname, "CppFBPComponents.dll");
 					hDLL = LoadLibrary(dllname);
 					if (hDLL == NULL) {
@@ -381,16 +337,14 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					else {
 
 						/* Retrieve the address of the actual function. */
-						//lpfnDllFunc = (LPFNDLLFUNC1)
-						// (int (FAR PASCAL *)(anchor anch))
-						//	(GetProcAddress(hDLL, procname_in_dll));
+						
 						strcpy(procname_in_dll, "_");
 					    strcat(procname_in_dll, curr_proc -> comp_name);
 					    strcat(procname_in_dll, "@8");	
 						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
-						curr_proc -> faddr  = lpfnDllFunc;
+						this_proc -> faddr  = lpfnDllFunc;
 
-						if (curr_proc -> faddr == NULL) {
+						if (this_proc -> faddr == NULL) {
 							GetLastError();
 							strcpy(szBuf, "GetProcAddress failed: ");
 							strcat(szBuf, procname_in_dll);
@@ -403,7 +357,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 
 
 
-				this_proc -> faddr =  curr_proc -> faddr;
+				//this_proc -> faddr =  curr_proc -> faddr;
 				//this_proc -> must_run = curr_proc -> must_run;
 				cpp = this_proc -> out_ports;
 				while (cpp != 0)  {
@@ -417,9 +371,9 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					cpp = cpp -> succ;
 				}
 
-				this_proc -> next_proc = (Process*) network -> first_child_proc;
+				this_proc -> next_proc = network -> first_child_proc;
 				network -> first_child_proc = this_proc;
-			}
+			//}
 
 			curr_proc = curr_proc -> succ;
 		}

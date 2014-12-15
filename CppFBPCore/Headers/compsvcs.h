@@ -1,5 +1,8 @@
 
-#define THRCOMP  extern "C"  __declspec(dllexport) int __stdcall 
+#define THRCOMP  extern "C"  __declspec(dllexport) int __stdcall  
+#define THRSUBC  __declspec(dllexport) int __stdcall
+ 
+
 #ifndef THXANCH
 #define THXANCH
    #include "thxanch.h"

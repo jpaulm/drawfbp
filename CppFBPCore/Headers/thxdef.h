@@ -8,8 +8,8 @@ external control blocks - used in network definitions
 #endif
 
 #define THRCOMP  extern "C"  __declspec(dllexport) int __stdcall  
-
-
+#define THRSUBC  __declspec(dllexport) int __stdcall
+ 
 
 struct _IIP
    {
@@ -26,7 +26,7 @@ typedef  _IIP IIP;
 
      int (__stdcall *faddr) (_anchor anch);
 	 
-     void *proc_block;   	 
+     void *proc_block;   // used as a temporary placeholder by thxbnet
 	 void * label_ptr;   // points to a label for subnets	 
      bool trace;
      bool composite;

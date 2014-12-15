@@ -7,7 +7,7 @@
 1,000,000 IPs running through basically 3 connections (2 in parallel, plus 2 in sequence) - so roughly 3,000,000 recevs, 3,000,000 sends,
 giving 14 microsecs per send/receive pair - not bad given that all app logic is in Lua!  Which could probably be speeded up by compiling the Lua text... 
 
-Using a non-looper (recvr.lua) in place of drop.lus multiplies the run time enormously, which is not surprising given the time required to fire up 
+Using a non-looper (recvr.lua) in place of drop.lua multiplies the run time enormously, which is not surprising given the time required to fire up 
 the Lua environment on every non-looper activation - so I wouldn't recommend doing that... but it works!
 
 */

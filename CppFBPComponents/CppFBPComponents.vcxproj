@@ -51,14 +51,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../CppFBPCore/Headers;$(LUA_INCLUDE)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../CppFBPCore/Headers;$(BOOST_INCLUDE);$(LUA_INCLUDE)</AdditionalIncludeDirectories>
       <AssemblerOutput>All</AssemblerOutput>
       <AdditionalOptions>/LD %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(LUA_LIB);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(LUA_LIB);..\Debug\CppFBPCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(BOOST_LIB)</AdditionalLibraryDirectories>
     </Link>
     <Lib>
@@ -88,6 +88,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\SubIn.cpp" />
+    <ClCompile Include="Components\SubOut.cpp" />
     <ClCompile Include="..\CppFBPCore\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -96,7 +98,6 @@
     <ClCompile Include="Components\ThCopyNL.cpp" />
     <ClCompile Include="Components\ThDrop.cpp" />
     <ClCompile Include="Components\ThFileRd.cpp" />
-    <ClCompile Include="Components\ThFileRt.cpp" />
     <ClCompile Include="Components\ThFileWt.cpp" />
     <ClCompile Include="Components\ThGenIps.cpp" />
     <ClCompile Include="Components\ThLua.cpp" />

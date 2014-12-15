@@ -1,4 +1,4 @@
-
+#pragma optimize( "", off )
 #include "stdafx.h"
 #include <dos.h>  
 #if defined _WIN32
@@ -38,7 +38,7 @@ void thziclos(Process * proc, Port * cpp, int i);
 bool deadlock_test_sw = TRUE;
 
 
-void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {	
+void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq, _anchor proc_anchor) {	
 	Process *this_proc;
 	cnxt_ent *cnxt_tab;
 	proc_ent *proc_tab;
@@ -52,7 +52,10 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 	time_t st_time, end_time;
 	double secs;
 	st_time = time(NULL);
-	//_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	Process * mother = (Process *) proc_anchor.reserved;
+
+	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	label_tab = (label_ent *)malloc(sizeof(label_ent));
 	label_curr = label_tab;
@@ -95,7 +98,10 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 	}
 	//network = new Appl;
 	//network = this;
-	strcpy(name,"APPL");
+	if (proc_anchor.reserved == NULL)
+		strcpy(name,"APPL");
+	else
+		strcpy(name,"SUBNET");
 	//first_ready_proc = 0;
 	first_child_proc = 0;
 	first_child_comp = 0;
@@ -105,7 +111,7 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 	possibleDeadlock = FALSE;
 	deadlock = FALSE;
 
-	thxbnet(label_tab, 0, this, label_tab);  // why two params the same?!
+	thxbnet(label_tab, mother, this, label_tab);  // first param is network/subnet, 2nd is "mother" process", 4th is network as a whole
 
 	int thread_count = 0;
 
@@ -176,7 +182,7 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
 		printf("Elapsed time in seconds: %5.3f\n",secs);
 
 	}
-	//_CrtDumpMemoryLeaks();
+	_CrtDumpMemoryLeaks();
 	//char c; std::cin>>c;   // to see console
 	system("pause");  // to see console
 	exit(0);
@@ -238,9 +244,46 @@ void Cdl::count_down()
 }
 
 void Process::activate() {
+	    HINSTANCE hDLL;
+		char procname_in_dll[255];
+		char dllname[255];
+		char szBuf[80];
+		typedef int (CALLBACK* LPFNDLLFUNC)(_anchor);
+        LPFNDLLFUNC lpfnDllFunc; 
+
 		if (status == NOT_STARTED) {
 			status = ACTIVE;
-			boost::thread thread(&Process::run, this);  			
+			if (composite) {
+				/* Load the CppFBPComponents module. This logic assumes all components in one dll file */
+					
+					strcpy(dllname, "TestSubnets.dll");
+					hDLL = LoadLibrary(dllname);
+					if (hDLL == NULL) {
+						strcpy(szBuf, "LoadLibrary failed: ");
+						strcat(szBuf, dllname);
+						MessageBox(NULL, szBuf, "Library Functions", MB_ICONHAND);
+					}
+					else {
+
+						/* Retrieve the address of the actual function. */
+						
+						strcpy(procname_in_dll, "_");
+					    strcat(procname_in_dll, compname);
+					    strcat(procname_in_dll, "@8");	
+						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
+						faddr  = lpfnDllFunc;
+
+						if (faddr == NULL) {
+							GetLastError();
+							strcpy(szBuf, "GetProcAddress failed: ");
+							strcat(szBuf, procname_in_dll);
+							MessageBox(NULL, szBuf, "Library Functions", MB_ICONHAND);
+						}
+					}					
+			}
+			//else {
+			boost::thread thread(&Process::run, this);  
+			//}
 		}
 		else if (status == DORMANT) {		
 			canGo.notify_all();			

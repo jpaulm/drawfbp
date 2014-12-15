@@ -11,20 +11,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CD601953-D9D2-4A73-BC98-962132D532F4}</ProjectGuid>
-    <RootNamespace>CppFBPCore</RootNamespace>
+    <ProjectGuid>{D21CD921-1B48-4266-A2EE-E197D950A3EC}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>networks</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -38,75 +39,62 @@
     <Import Project="..\SolutionSettings\UserMacros.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../CppFBPCore/Headers;$(BOOST_INCLUDE);$(LUA_INCLUDE)</AdditionalIncludeDirectories>
       <AssemblerOutput>All</AssemblerOutput>
-      <AdditionalIncludeDirectories>Headers;$(BOOST_INCLUDE)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <AdditionalOptions>/LD %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <NoEntryPoint>true</NoEntryPoint>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(LUA_LIB);..\Debug\CppFBPCore.lib;..\Debug\CppFBPComponents.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(BOOST_LIB)</AdditionalLibraryDirectories>
     </Link>
-    <Lib />
     <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Debug\CppFBPCore.lib;..\..\Debug\CppFBPComponents.lib</AdditionalLibraryDirectories>
     </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>Headers;$(BOOST_INCLUDE)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../CppFBPCore/Headers;$(LUA_INCLUDE)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(BOOST_LIB)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;$(LUA_LIB);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="IntComps\Network.cpp" />
-    <ClCompile Include="IntComps\SubNet.cpp" />
-    <ClCompile Include="Services\CppFBP.cpp" />
-    <ClCompile Include="Services\CppSub.cpp" />
-    <ClCompile Include="Services\thxbnet.cpp" />
-    <ClCompile Include="Services\thxgatrs.cpp" />
-    <ClCompile Include="Services\thxscan.cpp" />
-    <ClCompile Include="Services\thz.cpp" />
-    <ClCompile Include="Services\thzclos.cpp" />
-    <ClCompile Include="Services\thzcrep.cpp" />
-    <ClCompile Include="Services\thzdfpt.cpp" />
-    <ClCompile Include="Services\thzdrop.cpp" />
-    <ClCompile Include="Services\thzelct.cpp" />
-    <ClCompile Include="Services\thzgsize.cpp" />
-    <ClCompile Include="Services\thzpop.cpp" />
-    <ClCompile Include="Services\thzpush.cpp" />
-    <ClCompile Include="Services\thzrecv.cpp" />
-    <ClCompile Include="Services\thzsend.cpp" />
-    <ClCompile Include="Services\thziclos.cpp" />
-    <ClCompile Include="stdafx.cpp">
+    <ClCompile Include="Subnets\InfQueue.cpp" />
+    <ClCompile Include="..\CppFBPCore\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\compsvcs.h" />
-    <ClInclude Include="Headers\cppfbp.h" />
-    <ClInclude Include="headers\dllheader.h" />
-    <ClInclude Include="headers\fbp.h" />
-    <ClInclude Include="headers\stdafx.h" />
-    <ClInclude Include="headers\targetver.h" />
-    <ClInclude Include="headers\thxanch.h" />
-    <ClInclude Include="Headers\thxdef.h" />
-    <ClInclude Include="headers\thzcbs.h" />
+    <None Include="TestNetworks\ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -407,20 +407,7 @@ NNy:
 
 nextnet:
 	scan_blanks(fp);
-	//TCO(nEOF2,EOF);  
-	//   printf("End of Network Definition\n");
-	//goto exit;
-
-//nEOF2:
-	/*
-	label_new = (label_ent *)malloc (sizeof(label_ent));
-	label_curr -> succ = label_new;
-	label_curr = label_new;	  
-	label_curr->label[0] = '\0';
-	label_curr-> succ = 0;
-	label_curr ->cnxt_ptr = cnxt_hold;
-	label_curr ->proc_ptr = proc_curr;
-	*/
+	
 	if (eof_found) {
 		label_curr -> succ = 0;   // temporary fix as we are only generating one network for now
 		goto exit;
@@ -501,37 +488,7 @@ exit:
 		// printf("Scan error\n");
 		return(ret_code);
 	}
-	// subnet processing?
-	/*
-	proc_last = proc_count;
-	for (i = proc_hold; i < proc_last; i++) {
-	proc_curr = &proc_tab[i];
-	if (proc_curr -> proc_name[0] == '\0') continue;
-	label_ct = find_label(label_tab, proc_curr -> comp_name, file_name, label_count);
-	proc_curr -> composite = (label_ct > 0);
-	if (proc_curr -> composite)
-	proc_curr -> label_count = label_ct;
-	else {
-	strcpy(fname, proc_curr -> comp_name);
-	if ((fp2 = fopen_s(strcat(fname, ".net"),"r"))
-	!= NULL) {
-	label_ct = label_count;
-	strcpy(fname, proc_curr -> comp_name);
-	thxscan(fp2, label_tab, fname);
-	fclose(fp2);
-	proc_curr -> composite = TRUE;
-	//proc_curr -> label_count = label_ct;
-	}
-	else {
-	// proc_curr -> must_run =
-	//    (thxgatrs(proc_curr -> comp_name) > 0);
-	proc_curr -> composite = FALSE;
-	proc_curr -> faddr = 0;
-	}
-	}
-	}
-	*/
-
+	
 	// printf("Scan finished\n");
 	return (ret_code);
 }

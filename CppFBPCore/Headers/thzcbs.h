@@ -96,7 +96,7 @@ class Network;
 class Process {             // process control block
 	//--------------------------------------
 public:
-	char procname[32];         // process name
+	char procname[128];         // process name
 	char compname[200];         // component name
 	//Process *next_proc;   // ptr to next process in chain
 	//       of ready processes (dynamic)
@@ -182,7 +182,7 @@ public:
 class Cnxt {                // control block for a connection
 	//--------------------------------------  
 public:
-	char name[32];             // name
+	char name[128];             // name
 	Process *fed_proc;         // ptr to process 'fed' by this connection
 	//  (can only be one) 
 	
@@ -208,7 +208,7 @@ public:
 class Network
 {
 public:
-	char name[32];             // name of application
+	char name[128];             // name of application
 
 	Process* first_child_proc;  // ptr to first child process
 	Process* first_child_comp;  // ptr to first child component
@@ -230,7 +230,13 @@ public:
     void waitForAll();
     void thxfcbs();
 	bool deadlock_test();
-    void go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq); 
+    void go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq, _anchor proc_anchor); 
 };
 
 
+class SubNet:Network
+{
+public:
+//	char name[32];             // name of subnet
+	void go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq, _anchor proc_anchor); 
+};

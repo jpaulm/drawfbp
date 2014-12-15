@@ -9,7 +9,7 @@
    LIMITATIONS:
     FILENAME is limited to 256 bytes including extension. (this is less
     restrictive than DOS, so will not matter.
-    Input records must be less than 256 bytes or they will be segmented.
+    Input records must be less than 4096 bytes or they will be segmented.
     If they are segmented it may be difficult to re-assemble them.
 
    DEFAULTS:
@@ -29,15 +29,14 @@
  
   void *ptr;
   char fname[256];
-  char string[256];
+  char string[4096];
   int value;
   long size;
   char *type;
   unsigned long len;
   port_ent port_tab[2];
   FILE *fp;
-  //char buffer[256];
-
+ 
   value = dfsdfpt(proc_anchor, 2, port_tab,"OPT","OUT");
 
 /* read in the filename and open the input file
@@ -58,13 +57,13 @@
   value = dfsdrop(proc_anchor, &ptr);
 
 /* read records from the input file and create entities from them.  If the
-input records are longer than 256 bytes, they will be segmented and put out
-as a series of 256 byte entities.
+input records are longer than 4096 bytes, they will be segmented and put out
+as a series of 4096 byte IPs.
 */
-  while ((fgets (string, 256, fp)) != NULL) {
+  while ((fgets (string, 4096, fp)) != NULL) {
       len = strlen(string);
       if (string[len - 1] == '\n')
-	 len = len - 1;
+	     len = len - 1;
       value = dfscrep(proc_anchor, &ptr, len,"A");
       memcpy (ptr, string, len);
       value = dfssend(proc_anchor, &ptr, &port_tab[1], 0);

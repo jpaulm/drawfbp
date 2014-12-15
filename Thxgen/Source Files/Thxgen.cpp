@@ -20,6 +20,8 @@
 This module scans off free-form network definitions (using thxscan), and converts them to 
 fixed-format network definitions (FFNDs).
 
+Output is written to {user}\Resource Files\{name}.cpp
+
 */
 int thxscan(FILE *fp, label_ent *label_tab, char file_name[10]);
 
@@ -136,9 +138,9 @@ void main(int argc, char *argv[])  {
 	strcpy(gen_ptr,
 		"void  CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);\n");
 	fputs(gen_area,fpo);
-	gen_ptr = gen_area;
-	strcpy(gen_ptr,  "bool NO_TRACE = false; bool TRACE = true;\n");
-	fputs(gen_area,fpo);
+	//gen_ptr = gen_area;
+	//strcpy(gen_ptr,  "bool NO_TRACE = false; bool TRACE = true;\n");
+	//fputs(gen_area,fpo);
 
 	proc_count = 0;
 	iip_count = 0;
@@ -241,9 +243,10 @@ void main(int argc, char *argv[])  {
 			if (proc_ptr -> trace)
 				strcpy(gen_ptr, " TRACE, ");       // trace  
 			else
-				strcpy(gen_ptr, " NO_TRACE, ");       // no trace  
+				strcpy(gen_ptr, " !TRACE, ");       // no trace  
 			gen_ptr = strchr(gen_ptr,'\0');
-			_itoa(proc_ptr -> composite, gen_ptr, 10);
+			//_itoa(proc_ptr -> composite, gen_ptr, 10);
+			strcpy(gen_ptr, " !COMPOS");       // no compos 
 			gen_ptr = strchr(gen_ptr,'\0');
 			strcpy(gen_ptr, "};\n");
 			proc_count++;
