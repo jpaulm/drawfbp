@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\TestSubnets\Subnets\InfQueue.cpp" />
     <ClCompile Include="Components\SubIn.cpp" />
     <ClCompile Include="Components\SubOut.cpp" />
     <ClCompile Include="..\CppFBPCore\stdafx.cpp">

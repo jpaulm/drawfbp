@@ -8,7 +8,7 @@ external control blocks - used in network definitions
 #endif
 
 #define THRCOMP  extern "C"  __declspec(dllexport) int __stdcall  
-#define THRSUBC  __declspec(dllexport) int __stdcall
+#define THRCOMPS  __declspec(dllexport) int __stdcall  // use with components in subnet
  
 
 struct _IIP

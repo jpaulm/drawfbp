@@ -9,10 +9,11 @@ void  CppSub(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq, _ancho
 THRCOMP InfQueue(_anchor proc_anchor)
 {
 	
-THRSUBC  ThFileRd(anchor anch);
-THRSUBC  ThFileWt(anchor anch);
-THRSUBC  SubIn(anchor anch);
-THRSUBC  SubOut(anchor anch);
+// use THRCOMPS within subnet
+THRCOMPS  ThFileRd(anchor anch);
+THRCOMPS  ThFileWt(anchor anch);
+THRCOMPS  SubIn(anchor anch);
+THRCOMPS  SubOut(anchor anch);
 
 proc_ent P0 = {0, "SubIn", "SubIn", SubIn, 0, 0, !TRACE, 0};
 proc_ent P1 = {&P0, "Ecrire", "ThFileWt", ThFileWt, 0, 0, !TRACE, 0};
