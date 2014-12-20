@@ -259,7 +259,13 @@ void Process::activate() {
 		if (status == NOT_STARTED) {
 			status = ACTIVE;
 			//printf("Activate %s", compname);
-			if (composite) {
+			if (faddr == NULL) {
+				if (!composite) {
+					strcpy(szBuf, "No link but not marked composite: ");
+							strcat(szBuf, compname);
+							MessageBox(NULL, szBuf, "Subnet specification", MB_ICONHAND);
+				}
+
 				/* Load the CppFBPComponents module. This logic assumes all components in one dll file */
 					
 					strcpy(dllname, "TestSubnets.dll");
