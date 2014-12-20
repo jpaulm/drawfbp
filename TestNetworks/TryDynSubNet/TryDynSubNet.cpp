@@ -1,6 +1,10 @@
-#include "thxdef.h"
 
-#include <stdio.h>
+#include "stdafx.h"
+#include "thxdef.h"
+//#include <dos.h>  
+//#include <iostream>
+//using namespace std;
+
 #define FILE struct _iobuf
 
 /* This is not the THREADS internal structure - this 
@@ -35,4 +39,7 @@ label_ent LABELTAB = {NULL, " ", "", &C3, &P2, 'L'};
 
 void main() {
 CppFBP(&LABELTAB, !DYNAM, NULL, TIME_REQ);  // time required
+//printf("Press enter\n");
+//char c; std::cin>>c;   // to see console
+//system("pause");  // to see console
 }

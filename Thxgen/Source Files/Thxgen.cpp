@@ -18,7 +18,7 @@
 /* 
 
 This module scans off free-form network definitions (using thxscan), and converts them to 
-fixed-format network definitions (FFNDs).
+fixed-format network definitions (FFNDs) (label_ent, proc_ent, cnxt_ent, etc.).
 
 Output is written to {user}\Resource Files\{name}.cpp
 
@@ -83,9 +83,9 @@ void main(int argc, char *argv[])  {
 	//FILE** pFile;
 	 #ifdef WIN32
     
-    if( (err  = fopen_s( &fpo, fname, "a" )) !=0 ) {
+    if( (err  = fopen_s( &fpo, fname, "w" )) !=0 ) {
 #else
-    if ((fpo = fopen(fname, "a")) == NULL) {
+    if ((fpo = fopen(fname, "w")) == NULL) {
 #endif
 		printf("Cannot open Output Network: %s\n", fname);
 		res = 8; goto retn; 
@@ -147,7 +147,6 @@ void main(int argc, char *argv[])  {
 	cnxt_count = 0;
 	char comp_name_end[20];
 
-	// for now just one network - no subnets
 	label_ptr = label_tab;
 	while (label_ptr != 0) {     
 		proc_ptr = label_ptr -> proc_ptr;

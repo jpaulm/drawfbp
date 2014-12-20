@@ -21,7 +21,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TrySubNet.cpp">
+    <ClCompile Include="TryDynSubNet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Helper Code\dfs.cpp">

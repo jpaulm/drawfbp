@@ -69,9 +69,6 @@
     <ClCompile Include="IntComps\Network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IntComps\SubNet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Services\CppSub.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

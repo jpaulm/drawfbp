@@ -7,6 +7,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <conio.h>
 #include "thzcbs.h"
 #include "cppfbp.h"
 
@@ -174,18 +175,22 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq, _an
 
 	//free (latch);  
 	thxfcbs();
-	free(label_tab);
+	//free(label_tab);
 
 	end_time = time(NULL);
 	secs = difftime(end_time, st_time);
 	if (timereq){
 		printf("Elapsed time in seconds: %5.3f\n",secs);
-
 	}
-	_CrtDumpMemoryLeaks();
-	//char c; std::cin>>c;   // to see console
-	system("pause");  // to see console
-	exit(0);
+
+	if (strcmp(name, "SUBNET") != 0) {
+	  //_CrtDumpMemoryLeaks();
+	  //char c; 
+	  printf("Press enter to terminate\n",secs);
+	  std::cin.get();  // to see console
+	  //system("pause");  // to see console
+	  exit(0);
+	}
 }
 
 
@@ -253,6 +258,7 @@ void Process::activate() {
 
 		if (status == NOT_STARTED) {
 			status = ACTIVE;
+			//printf("Activate %s", compname);
 			if (composite) {
 				/* Load the CppFBPComponents module. This logic assumes all components in one dll file */
 					
@@ -594,14 +600,14 @@ void Network::thxfcbs()
 		  //this_proc = this_proc -> next_proc;
 		  this_proc -> mtx.~mutex();
 		  this_proc -> canGo.~condition_variable_any();
-		  //delete this_proc;
+		  delete this_proc;
 		  this_proc = first_child_proc;
 	}
 
 	this_cnxt = first_cnxt;
 	while (this_cnxt != 0) {
 		first_cnxt = this_cnxt -> succ;
-		//delete this_cnxt;
+		delete this_cnxt;
 		this_cnxt = first_cnxt;
 	}
 

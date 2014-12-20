@@ -35,7 +35,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryLuaDyn", "DynNetworks\Tr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryInfQDyn", "DynNetworks\TryInfQDyn\TryInfQDyn.vcxproj", "{94C91431-3434-4706-AA41-F0462B889E0B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrySubNet", "TestNetworks\TrySubNet\TrySubNet.vcxproj", "{6FF571DA-D3E6-4F8D-916D-AE1FA9C666DE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryDynSubNet", "TestNetworks\TryDynSubNet\TryDynSubNet.vcxproj", "{6FF571DA-D3E6-4F8D-916D-AE1FA9C666DE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryStatSubNet", "TestNetworks\TryStatSubNet\TryStatSubNet.vcxproj", "{E2C180E0-1CAE-4D37-AD32-D78C8B8057AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +91,8 @@ Global
 		{94C91431-3434-4706-AA41-F0462B889E0B}.Release|Win32.ActiveCfg = Release|Win32
 		{6FF571DA-D3E6-4F8D-916D-AE1FA9C666DE}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6FF571DA-D3E6-4F8D-916D-AE1FA9C666DE}.Release|Win32.ActiveCfg = Release|Win32
+		{E2C180E0-1CAE-4D37-AD32-D78C8B8057AD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E2C180E0-1CAE-4D37-AD32-D78C8B8057AD}.Release|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

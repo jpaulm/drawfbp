@@ -24,7 +24,7 @@ void   CppFBP(label_ent * label_blk, bool dynam, FILE * fp, bool timereq)    {
 	_anchor anch;
 	anch.reserved = NULL; 
 	network -> go(label_blk, dynam,  fp,  timereq, anch);
-	
+	delete network;
 }
 
 
