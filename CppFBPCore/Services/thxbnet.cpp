@@ -313,10 +313,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 		while (curr_proc != 0) {
 			this_proc = (Process *) curr_proc -> proc_block;
 
-			if (this_proc -> faddr == 0  && !this_proc -> composite) {
-
-					/* The following assumes that components are packaged one component per DLL - 
-					of course they could be packaged in many other ways */
+			if (this_proc -> faddr == 0  /*&& !this_proc -> composite */) {
 
 					SetErrorMode(SEM_NOOPENFILEERRORBOX);
 
