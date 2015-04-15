@@ -4004,7 +4004,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					curDiag.arrows.remove(aid);
 				} else {
 					curDiag.changed = true;
-					checkCompatibility(a);
+					//checkCompatibility(a);
 				}
 				curDiag.foundBlock = null;
 
@@ -4070,7 +4070,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						curDiag.arrows.remove(aid);
 					} else {
 						curDiag.changed = true;
-						checkCompatibility(curDiag.currentArrow);
+						//checkCompatibility(curDiag.currentArrow);
 					}
 
 					curDiag.currentArrow = null;
