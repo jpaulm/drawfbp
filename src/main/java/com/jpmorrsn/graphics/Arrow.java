@@ -791,9 +791,11 @@ public class Arrow implements ActionListener {
 					if (arrow.endsAtBlock)
 						return arrow;
 					
-					else id = arrow.toId;
+					//else id = arrow.toId;
+						
 				}
 			}
+			return null;
 		}
 	}
 

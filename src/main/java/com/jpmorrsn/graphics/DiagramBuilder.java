@@ -453,9 +453,9 @@ public class DiagramBuilder {
 		// for (Arrow a: currentDiag.arrows.values()){
 		// checkCompatibility(a);
 		// }
-		for (Block b : diag.blocks.values()) {
-			b.checkArrows();
-		}
+		//for (Block b : diag.blocks.values()) {
+		//	b.checkArrows();
+		//}
 		if (diag.diagLang == null) {
 			diag.diagLang = driver.defaultCompLang;
 			diag.changed = true;

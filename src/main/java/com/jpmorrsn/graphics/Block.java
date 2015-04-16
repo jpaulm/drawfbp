@@ -1085,8 +1085,9 @@ public class Block implements ActionListener {
 		else
 			return s.substring(0, i);
 	}
-
+/*
 	// check arrows attached to this block
+	// this is called from DiagramBuilder, but it causes tight loops, so I am not calling it right now
 	void checkArrows() {
 		for (Arrow a : diag.arrows.values()) {
 			if (id == a.fromId)
@@ -1097,7 +1098,7 @@ public class Block implements ActionListener {
 					driver.checkCompatibility(a);
 			}
 		}
-	}
+*/	
 
 	void buildBlockPopupMenu() {
 		diag.jpm = new JPopupMenu("            Block-related Actions");
