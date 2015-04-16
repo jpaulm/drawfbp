@@ -1091,11 +1091,11 @@ public class Block implements ActionListener {
 	void checkArrows() {
 		for (Arrow a : diag.arrows.values()) {
 			if (id == a.fromId)
-				driver.checkCompatibility(a);
+				//driver.checkCompatibility(a);
 			else {
 				Arrow a2 = a.findTerminalArrow();
 				if (id == a2.toId)
-					driver.checkCompatibility(a);
+					//driver.checkCompatibility(a);
 			}
 		}
 */	
