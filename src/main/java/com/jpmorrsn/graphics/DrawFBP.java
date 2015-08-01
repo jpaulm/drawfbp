@@ -3080,9 +3080,23 @@ void chooseFonts(MyFontChooser fontChooser){
 		public void paint(Graphics g) {
 
 			// Paint background if we're opaque.
-			osg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+			//osg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+			//		RenderingHints.VALUE_ANTIALIAS_ON);
 
+			RenderingHints rh = new RenderingHints(
+		             RenderingHints.KEY_TEXT_ANTIALIASING,
+		             RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+			rh.put(RenderingHints.KEY_ANTIALIASING,
+					RenderingHints.VALUE_ANTIALIAS_ON);
+			rh.put(RenderingHints.KEY_STROKE_CONTROL,
+					RenderingHints.VALUE_STROKE_NORMALIZE);
+			rh.put(RenderingHints.KEY_RENDERING,
+					RenderingHints.VALUE_RENDER_QUALITY);
+			rh.put(RenderingHints.KEY_DITHERING,
+					RenderingHints.VALUE_DITHER_ENABLE);
+			rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
+					RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+		    osg.setRenderingHints(rh);
 			if (isOpaque()) {
 				//osg.setColor(getBackground());
 				osg.setColor(Color.WHITE);
