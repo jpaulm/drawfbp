@@ -242,24 +242,19 @@ public class CodeManager implements ActionListener, DocumentListener {
 			styles[10] = normalStyle;
 
 			for (Block block : diag.blocks.values()) {
-				String s = "";
-				if (block instanceof ComponentBlock
-						&& block.description == null) {
+				
+				String t;
+
+				if (block instanceof ComponentBlock) {
+					if (block.description == null) {
 					MyOptionPane.showMessageDialog(frame,
 							"One or more missing block descriptions");
 					error = true;
 					return false;
 				}
 
-				//s = block.description;
-
-				String t;
-
-				if (block instanceof ComponentBlock) {
-
-					cleanDesc(block);
-					String c = cleanComp(block);
-					s = block.descMod;
+					String s = cleanDesc(block);
+					String c = cleanComp(block);					
 					
 					if (!block.multiplex)
 						code += genComp(s, c, langLabel) + "; \n";
@@ -280,14 +275,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 						frame.repaint();
 						if (block.mpxfactor != null) {
-							code += "int " + compress(block.descMod)
+							code += "int " + compress(s)
 									+ "_count = " + block.mpxfactor + "; "
 									+ "     //  multiplex counter for " +
-									"\"" + block.descMod + "\"\n";
+									"\"" + s + "\"\n";
 						}
 
 						code += "for (int i = 0; i < "
-								+ compress(block.descMod)
+								+ compress(s)
 								+ "_count; i++)\n";
 						// code += component + "(\"" + s + ":\" + i, " + c +
 						// "); ";
@@ -305,6 +300,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				
 				if (block instanceof ExtPortBlock) {
 					ExtPortBlock eb = (ExtPortBlock) block;
+					String s = "";
 					if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
 						s = "SUBIN";
 						if (eb.substreamSensitive)
@@ -328,15 +324,15 @@ public class CodeManager implements ActionListener, DocumentListener {
 						t = t.substring(0, t.length() - 6);
 
 					code += genComp(s, t, langLabel) + "; \n";
-					code += initialize + "(\"" + block.descMod + "\", "
+					code += initialize + "(\"" + s + "\", "
 							+ component + "(\"" + s + "\"), " + _port
 							+ "(\"NAME\")); \n";
 				}
 
-				if (block instanceof IIPBlock) 
+			if (block instanceof IIPBlock) 
 					descArray.put(new Integer(block.id), block.description);
-				else
-					descArray.put(new Integer(block.id), block.descMod);
+			else
+					descArray.put(new Integer(block.id), cleanDesc(block));
 				//cdescArray.put(new Integer(block.id), s);
 			}
 
@@ -1030,14 +1026,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 			
 			if (block instanceof ComponentBlock) {
-				cleanDesc(block);
-				String s = cleanComp(block);
-				data += comma + q(block.descMod) + ":{ \"component\" :" + q(s)
+				String s = cleanDesc(block);
+				String t = cleanComp(block);
+				data += comma + q(s) + ":{ \"component\" :" + q(t)
 						+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
 						+ block.cy + "}}";
 				comma = "\n,";
 			 
-			    descArray.put(new Integer(block.id), block.descMod);
+			    descArray.put(new Integer(block.id), s);
 			}
 			//cdescArray.put(new Integer(block.id), block.description);
 			if (block instanceof IIPBlock) {
@@ -1133,11 +1129,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 					return false;
 				}
 
-				cleanDesc(block);
-				String s = cleanComp(block);
-				code += cma + block.descMod + "(" + s + ")";
+				String s = cleanDesc(block);
+				//String s = cleanComp(block);
+				code += cma + s + "(" + s + ")";
 				cma = ",\n";
-				descArray.put(new Integer(block.id), block.descMod);
+				descArray.put(new Integer(block.id), s);
 				// cdescArray.put(new Integer(block.id), s);
 			}
 			if (block instanceof IIPBlock) {
@@ -1311,9 +1307,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return c;
 	}
 	
-	void cleanDesc(Block b) {
+	String cleanDesc(Block b) {
 
 		String t = b.description;
+		
 		//if (!(b instanceof IIPBlock)) {
 
 			if (t == null || t.equals(""))
@@ -1344,9 +1341,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 			t = t.replace('\u0007', '_');
 
-			b.descMod = makeUniqueDesc(t); // and make it unique
+			return makeUniqueDesc(t); // and make it unique	
 		
-		return;
 	}
 	
 	boolean getPortNames(Arrow arrow) {		

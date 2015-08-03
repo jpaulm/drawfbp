@@ -23,7 +23,7 @@ public class Block implements ActionListener {
 	int width, height;
 
 	String description;
-	String descMod;  // modified a lot for .fbp notation; slightly, for other notations (" -> _)
+	//String descMod;  // modified a lot for .fbp notation; slightly, for other notations (" -> _)
 
 	String diagramFileName;
 
@@ -62,7 +62,7 @@ public class Block implements ActionListener {
 
 	URLClassLoader classLoader = null;
 	Class<?> javaClass; // selected Java class for block
-	String compDescr;
+	String compDescr;  // used for annotations only
 	boolean isSubnet;
 
 	//JMenuItem[] sMenu;
@@ -532,14 +532,18 @@ public class Block implements ActionListener {
 			try {
 				javaClass = classLoader.loadClass(cn);
 			} catch (ClassNotFoundException e) {
-				System.out.println("Missing class name in " + fullClassName);
+				//System.out.println("Missing class name in " + fullClassName);
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Class name not found: " + fullClassName);
 				// e.printStackTrace();
-				return;
+				javaClass = null;
 			} catch (NoClassDefFoundError e) {
-				System.out.println("Missing internal class name in "
-						+ fullClassName);
+				//System.out.println("Missing internal class name in "
+				//		+ fullClassName);
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Internal class name not found: " + fullClassName);
 				// e.printStackTrace();
-				return;
+				javaClass = null;
 			}
 
 		} catch (Exception e) {
@@ -572,9 +576,16 @@ public class Block implements ActionListener {
 			try {
 				javaClass = classLoader.loadClass(cn);
 			} catch (ClassNotFoundException e) {
-				// class not found
+				//System.out.println("Missing class name in " + fullClassName);
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Class name not found: " + fullClassName);
+				javaClass = null;
 			} catch (NoClassDefFoundError e) {
-				// class not found
+				//System.out.println("Missing internal class name in "
+				//		+ fullClassName);
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Internal class name not found: " + fullClassName);
+				javaClass = null;
 			}
 
 		} catch (Exception e) {
@@ -616,7 +627,8 @@ public class Block implements ActionListener {
 					.loadClass("com.jpmorrsn.fbp.engine.SubNet");
 
 			i = s.lastIndexOf(".class");
-			s = s.substring(0, i);
+			if (i != -1)
+				s = s.substring(0, i);
 			s = s.replace('/', '.');
 			cls = classLoader.loadClass(s);
 
@@ -856,6 +868,7 @@ public class Block implements ActionListener {
 		});
 
 		jdialog.setTitle("Description and Port Information");
+		jdialog.toFront();
 		JPanel panel = new JPanel(new GridBagLayout());
 
 		panel.setBackground(Color.GRAY);
@@ -1003,6 +1016,7 @@ public class Block implements ActionListener {
 
 	int testMatch(String port, String type) {
 		// this logic is somewhat over-constrained!
+		// this routine returns a value of 0, 1 or 2  (Yes, Missing or Optional)
 		boolean input = (type.indexOf("in") > -1 || type.indexOf("param") > -1);
 		boolean output = (type.indexOf("out") > -1);
 		if (!input && !output) {
@@ -1015,6 +1029,8 @@ public class Block implements ActionListener {
 			//if (arrow.endsAtLine)
 			//	continue;
 			Arrow arr = arrow.findTerminalArrow(); 
+			if (arr == null)
+				return 2;
 			if (id == arr.toId && arr.downStreamPort != null
 					&& stem(arr.downStreamPort).equals(port))
 				if (input)
@@ -1396,7 +1412,9 @@ public class Block implements ActionListener {
 
 			if ((javaClass == null) != (fullClassName == null)) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Class name and full class name do not match");
+						"One of class name and full class name is null, but the other isn't:\n"
+						+ "class name - " + javaClass + "\n"
+						+ "full class name - " + fullClassName);
 				return;
 			}
 
@@ -1715,8 +1733,13 @@ public class Block implements ActionListener {
 			fullClassName = null;
 		}
 
-		if (!driver.getJavaFBPJarFile())
+		if (!driver.getJavaFBPJarFile()){
+			MyOptionPane
+			.showMessageDialog(
+					driver.frame,
+					"JavaFBP jar file not specified or found");
 			return;
+		}
 
 		if (javaClass == null) {
 

@@ -465,18 +465,20 @@ public class DrawFBP extends JFrame
 			}
 		};
 
-		/*
+		
+		jtp.addMouseListener(mouseListener);		
+		
 		frame.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent ev) {
-				if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					escapeAction
-							.actionPerformed(new ActionEvent(ev, 0, "CLOSE"));
+			public void keyPressed(KeyEvent ev) {				
+				if (ev.getKeyCode() == KeyEvent.VK_ENTER){
+					for (int i = 0; i< but.length; i++){
+						but[i].requestFocusInWindow();
+						if (but[i].isEnabled())
+							but[i].setSelected(true);
+					}
 				}
 			}
-		});
-		
-		*/
-		jtp.addMouseListener(mouseListener);
+		});			
 
 		Box box4 = new Box(BoxLayout.X_AXIS);
 		box1.add(box4);
@@ -543,6 +545,7 @@ public class DrawFBP extends JFrame
 			box2.add(but[j]);
 			// but[j].setFont(fontg);
 			but[j].setText(buttonNames[j]);
+			but[j].setFocusable(true);
 		}
 
 		adjustFonts();
@@ -1327,6 +1330,7 @@ public class DrawFBP extends JFrame
 									// frame2.setVisible(false);
 									frame2.dispose();
 								}
+								
 							}
 						});			
 						jHelpViewer.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
