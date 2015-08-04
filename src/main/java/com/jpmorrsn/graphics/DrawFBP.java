@@ -773,7 +773,7 @@ public class DrawFBP extends JFrame
 		//helpMenu.setFont(fontg);
 		runMenu.setBorderPainted(true);
 		// helpMenu.setColor(new Color(121, 201, 201));
-		//menuBar.add(runMenu);  fix later!
+		menuBar.add(runMenu);  
 		JMenuItem menu_run = new JMenuItem("Run Command");
 		runMenu.add(menu_run);
 		menu_run.addActionListener(this);
@@ -1065,7 +1065,9 @@ public class DrawFBP extends JFrame
 		if (s.equals("Run Command")) {	
 			Process p = null;
 			try {
-				 p = Runtime.getRuntime().exec("cmd /c java -jar map.jar time.rel test.txt debug");
+				 //p = Runtime.getRuntime().exec("cmd /c java -jar map.jar time.rel test.txt debug");
+				 p = Runtime.getRuntime().exec("cmd /c type C:\\Users\\Paul\\Documents\\Business\\FBP\\book_biog.txt");
+				 
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
