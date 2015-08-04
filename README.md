@@ -56,7 +56,7 @@ OSX users (using Brew, http://brew.sh) can install Maven by executing the follow
 Eclipse IDE Integration
 ---
 
-You can generate Eclipse project using the following mvn command:
+You can generate Eclipse project using the following command:
 
     gradle eclipse
 
@@ -71,17 +71,19 @@ Then import a generated project in Eclipse, right (ctrl for OSX) click on the pr
 Building from command line
 ---
 
+Current release is `v2.10.9` - the related jar file is `DrawFBP-2.10.9`.
+
 For building the project simply run the following command:
 
     gradle build
 
-As a result a `DrawFBP-2.x.x.jar` file will be created in the `build/libs` directory, where `2.x.x` is latest release. 
+As a result a `DrawFBP-2.x.x.jar` file will be created in the `build/libs` directory. 
 
 
 Running DrawFBP
 ----
 
-DrawFBP can be executed directly by executing the jar file on the Java platform.  You can either build the jar file or download it from the project Releases directory in GitHub.
+DrawFBP can be executed directly by executing the jar file on the Java platform.  You can either build the jar file or download it from the DrawFBP project Releases directory in GitHub.
 
 It can be executed directly if you have the Java platform associated with the .jar extension.  Alternatively it can be run from the command line by entering 
 
