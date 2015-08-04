@@ -178,6 +178,7 @@ public class DrawFBP extends JFrame
 	JMenu fileMenu = null;
 	JMenu editMenu = null;
 	JMenu helpMenu = null;
+	JMenu runMenu = null;
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
 	JMenuItem menuItem1 = null;
@@ -766,6 +767,17 @@ public class DrawFBP extends JFrame
 		helpMenu.setBorderPainted(true);
 		// helpMenu.setColor(new Color(121, 201, 201));
 		menuBar.add(helpMenu);
+		
+		runMenu.setMnemonic(KeyEvent.VK_R);
+		//helpMenu.setFont(fontg);
+		runMenu.setBorderPainted(true);
+		// helpMenu.setColor(new Color(121, 201, 201));
+		menuBar.add(runMenu);
+		JMenuItem menu_run = new JMenuItem("Run Command");
+		runMenu.add(menu_run);
+		menu_run.addActionListener(this);
+		http://stackoverflow.com/questions/8496494/running-command-line-in-java ;
+		
 
 		Box box0 = new Box(BoxLayout.X_AXIS);
 		//JPanel jp1 = new JPanel();
@@ -2030,7 +2042,8 @@ void chooseFonts(MyFontChooser fontChooser){
 	void adjustFonts() {
 		fileMenu = new JMenu(" File ");
 		editMenu = new JMenu(" Edit ");
-		helpMenu = new JMenu(" Help ");
+		helpMenu = new JMenu(" Help ");		
+		runMenu = new JMenu(" Run ");
 		osg.setFont(fontg);
 		jfl.setFont(fontg);
 		jtp.setFont(fontg);
@@ -2042,6 +2055,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		fileMenu.setFont(fontg);
 		editMenu.setFont(fontg);
 		helpMenu.setFont(fontg);
+		runMenu.setFont(fontg);
 		diagDesc.setFont(fontg);
 		
 		for (int i = 0; i < but.length; i++) {
