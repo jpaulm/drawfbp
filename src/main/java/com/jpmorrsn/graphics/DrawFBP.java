@@ -468,7 +468,7 @@ public class DrawFBP extends JFrame
 
 		
 		jtp.addMouseListener(mouseListener);		
-		
+		/*
 		frame.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent ev) {				
 				if (ev.getKeyCode() == KeyEvent.VK_ENTER){
@@ -479,7 +479,8 @@ public class DrawFBP extends JFrame
 					}
 				}
 			}
-		});			
+		});	
+		*/
 
 		Box box4 = new Box(BoxLayout.X_AXIS);
 		box1.add(box4);
@@ -613,7 +614,7 @@ public class DrawFBP extends JFrame
 		return image;
 	}
 
-	public void createMenuBar() {
+	public void createMenuBar() throws IOException {
 
 		//JMenu editMenu;
 
@@ -766,17 +767,16 @@ public class DrawFBP extends JFrame
 		//helpMenu.setFont(fontg);
 		helpMenu.setBorderPainted(true);
 		// helpMenu.setColor(new Color(121, 201, 201));
-		menuBar.add(helpMenu);
+		menuBar.add(helpMenu);  
 		
 		runMenu.setMnemonic(KeyEvent.VK_R);
 		//helpMenu.setFont(fontg);
 		runMenu.setBorderPainted(true);
 		// helpMenu.setColor(new Color(121, 201, 201));
-		menuBar.add(runMenu);
+		//menuBar.add(runMenu);  fix later!
 		JMenuItem menu_run = new JMenuItem("Run Command");
 		runMenu.add(menu_run);
 		menu_run.addActionListener(this);
-		http://stackoverflow.com/questions/8496494/running-command-line-in-java ;
 		
 
 		Box box0 = new Box(BoxLayout.X_AXIS);
@@ -1060,6 +1060,43 @@ public class DrawFBP extends JFrame
 		}
 		*/
 		
+		//  http://stackoverflow.com/questions/9123272/is-there-a-way-to-pass-parameters-to-a-runnable
+		
+		if (s.equals("Run Command")) {	
+			Process p = null;
+			try {
+				 p = Runtime.getRuntime().exec("cmd /c java -jar map.jar time.rel test.txt debug");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}				
+
+			MyRunnable r = new MyRunnable() {
+			    public void run() {
+			        BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+			        String line = null; 
+
+			        try {
+			            while ((line = input.readLine()) != null) {
+			                System.out.println(line);
+			            }
+			        } catch (IOException e) {
+			            e.printStackTrace();
+			        }
+			    }
+			};
+
+			r.proc = p;
+			new Thread(r).start();
+			
+			try {
+				r.proc.waitFor();
+			} catch (InterruptedException ev) {
+				// TODO Auto-generated catch block
+				ev.printStackTrace();
+			}
+			
+		}
 
 		if (s.equals("Clear Language Association")) {
 			curDiag.diagLang = null;
@@ -1476,6 +1513,13 @@ public class DrawFBP extends JFrame
 			return;
 		}
 
+		setBlkType(s);
+
+		frame.repaint();
+	}
+ 
+	
+	void setBlkType(String s) {
 		if (s.equals("(none)")) {
 			blockType = "";
 
@@ -1516,8 +1560,6 @@ public class DrawFBP extends JFrame
 				blockType = Block.Types.ENCL_BLOCK;
 			}
 		}
-
-		frame.repaint();
 	}
 	
 	void changeLanguage(GenLang gl) {
@@ -1965,22 +2007,7 @@ public class DrawFBP extends JFrame
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontg = new Font(generalFont, Font.PLAIN, defaultFontSize);
-			/*
-			osg.setFont(fontg);
-			jfl.setFont(fontg);
-			jtp.setFont(fontg);
-			lab2.setFont(fontg);
-			jtf.setFont(fontg);
-			pan.setFont(fontg);
-			grid.setFont(fontg);
-			scaleLab.setFont(fontg);
-			fileMenu.setFont(fontg);
-			editMenu.setFont(fontg);
-			helpMenu.setFont(fontg);
-			for (int i = 0; i < but.length; i++) {
-				but[i].setFont(fontg);
-			}
-			*/
+			
 			adjustFonts();
 			frame.repaint();
 			repaint();
@@ -2060,6 +2087,16 @@ void chooseFonts(MyFontChooser fontChooser){
 		
 		for (int i = 0; i < but.length; i++) {
 			but[i].setFont(fontg);
+			but[i].setFocusable(true);
+			but[i].addKeyListener(new KeyAdapter() {
+				public void keyPressed(KeyEvent ev) {				
+					if (ev.getKeyCode() == KeyEvent.VK_ENTER){	
+						JRadioButton rb = (JRadioButton)ev.getSource();							
+						rb.setSelected(true);
+						setBlkType(rb.getText());
+					}
+				}
+			});	
 		}
 		
 		UIDefaults def = UIManager.getLookAndFeelDefaults();
@@ -2089,7 +2126,12 @@ void chooseFonts(MyFontChooser fontChooser){
 		 */
 		// UIManager.put("Button.select", slateGray1);
 
-		createMenuBar();
+		try {
+			createMenuBar();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		frame.setJMenuBar(menuBar);
 
 		frame.repaint();
