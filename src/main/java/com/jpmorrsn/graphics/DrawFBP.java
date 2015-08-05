@@ -1066,7 +1066,7 @@ public class DrawFBP extends JFrame
 			Process p = null;
 			try {
 				 //p = Runtime.getRuntime().exec("cmd /c java -jar map.jar time.rel test.txt debug");
-				 p = Runtime.getRuntime().exec("cmd /c type C:\\Users\\Paul\\Documents\\Business\\FBP\\book_biog.txt");
+				 p = Runtime.getRuntime().exec("cmd /c echo Under construction");
 				 
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
