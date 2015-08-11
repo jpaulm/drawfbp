@@ -22,6 +22,8 @@ import java.lang.reflect.*;
 
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 //import javax.help.*;
 
 public class DrawFBP extends JFrame
@@ -178,7 +180,7 @@ public class DrawFBP extends JFrame
 	JMenu fileMenu = null;
 	JMenu editMenu = null;
 	JMenu helpMenu = null;
-	JMenu runMenu = null;
+	
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
 	JMenuItem menuItem1 = null;
@@ -368,9 +370,9 @@ public class DrawFBP extends JFrame
 		//jtp.setFont(fontg);
 
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		java.net.URL imgURL = loader // this.getClass().getClassLoader()	
+		//java.net.URL imgURL = loader // this.getClass().getClassLoader()	
 		//java.net.URL imgURL = this.getClass().getClassLoader()
-				.getResource("DrawFBP-logo-small.png");
+		//		.getResource("DrawFBP-logo-small.png");
 		BufferedImage image = loadImage("DrawFBP-logo-small.png");
 		
 		if (image != null) {
@@ -695,7 +697,13 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Display Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		fileMenu.addSeparator();
+		JMenuItem runMenu = new JMenuItem("Run Command");
 		
+		runMenu.setMnemonic(KeyEvent.VK_R);		
+		runMenu.setBorderPainted(true);		
+		fileMenu.add(runMenu);  		
+		runMenu.addActionListener(this);		
 		
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Generate .fbp code");
@@ -767,17 +775,7 @@ public class DrawFBP extends JFrame
 		//helpMenu.setFont(fontg);
 		helpMenu.setBorderPainted(true);
 		// helpMenu.setColor(new Color(121, 201, 201));
-		menuBar.add(helpMenu);  
-		
-		runMenu.setMnemonic(KeyEvent.VK_R);
-		//helpMenu.setFont(fontg);
-		runMenu.setBorderPainted(true);
-		// helpMenu.setColor(new Color(121, 201, 201));
-		menuBar.add(runMenu);  
-		JMenuItem menu_run = new JMenuItem("Run Command");
-		runMenu.add(menu_run);
-		menu_run.addActionListener(this);
-		
+		menuBar.add(helpMenu); 			
 
 		Box box0 = new Box(BoxLayout.X_AXIS);
 		//JPanel jp1 = new JPanel();
@@ -1058,46 +1056,124 @@ public class DrawFBP extends JFrame
 
 			return;
 		}
-		*/
+		*/		
+			
 		
-		//  http://stackoverflow.com/questions/9123272/is-there-a-way-to-pass-parameters-to-a-runnable
-		
-		if (s.equals("Run Command")) {	
+		if (s.equals("Run Command")) {
+			String command = "";
+			readPropertiesFile();
+			if (null == (command = properties.get("runCommand")))
+				command = "echo Enter command";
+
+			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+					"Enter or change text", "Command with no diagram name",
+					JOptionPane.PLAIN_MESSAGE, null, null, command);
+
+			if (ans != null && ans.length() > 0) {
+				command = ans;
+
+				properties.put("runCommand", command);
+				propertiesChanged = true;
+			}
 			Process p = null;
+			String realCommand = "";
+			if ((System.getProperty("os.name")).startsWith("Windows"))
+				realCommand += "cmd /c ";
+			realCommand += command;
+			String jSONNetworkDir = null;
+			if (curDiag.title == null)
+				MyOptionPane.showMessageDialog(frame,
+						"No diagram selected: executing command with no diagram JSON");
+			else {
+				if (null == (jSONNetworkDir = properties
+						.get("currentJSONNetworkDir"))) {
+					MyOptionPane.showMessageDialog(frame,
+							"Diagram selected but JSON directory missing: generate JSON from diagram \n"
+							+ "will prompt for JSON directory");
+					return;
+				}
+				
+				String fileName = jSONNetworkDir + File.separator + curDiag.title + ".json";
+				File file = new File(fileName);
+				if (!file.isFile()){
+					MyOptionPane.showMessageDialog(frame,
+							"JSON file for diagram does not exist: generate JSON from diagram");
+					return;
+				}
+				realCommand += " " + fileName;				
+			}
+			
+			ans = (String) MyOptionPane.showInputDialog(driver.frame,
+					"Enter or change text", "Actual command",
+					JOptionPane.PLAIN_MESSAGE, null, null, realCommand);
+
+			if (ans != null && ans.length() > 0) {
+				realCommand = ans;
+
+				//properties.put("runCommand", realCommand);
+				//propertiesChanged = true;
+			}
+			
 			try {
-				 //p = Runtime.getRuntime().exec("cmd /c java -jar map.jar time.rel test.txt debug");
-				 p = Runtime.getRuntime().exec("cmd /c echo Under construction");
-				 
+				p = Runtime.getRuntime().exec(realCommand);
+
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}				
+			}
 
-			MyRunnable r = new MyRunnable() {
-			    public void run() {
-			        BufferedReader input = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-			        String line = null; 
+			// final JEditorPane pane = new JEditorPane();
 
-			        try {
-			            while ((line = input.readLine()) != null) {
-			                System.out.println(line);
-			            }
-			        } catch (IOException e) {
-			            e.printStackTrace();
-			        }
-			    }
+			final JFrame jframe = new JFrame("Run Output");
+			final JEditorPane pane = new JEditorPane("text/plain", " ");
+			pane.setEditable(false);
+			JScrollPane scrollPane = new JScrollPane(pane);
+			jframe.add(scrollPane);
+			jframe.setVisible(true);
+			pane.setVisible(true);
+			scrollPane.setVisible(true);
+			pane.setFont(fontf);
+			jframe.setSize(600, 400);
+			jframe.setLocation(100, 50);
+			jframe.addWindowListener(new WindowAdapter() {
+
+				@Override
+				public void windowClosing(final WindowEvent ev) {
+					jframe.dispose();
+				}
+			});
+
+			MyRunnable r = new MyRunnable(pane) {
+				public void run() {
+					BufferedReader input = new BufferedReader(
+							new InputStreamReader(proc.getInputStream()));
+					String line = null;
+
+					try {
+						while ((line = input.readLine()) != null) {
+							try {
+								Document doc = pane.getDocument();
+								doc.insertString(doc.getLength(), line, null);
+							} catch (BadLocationException exc) {
+								exc.printStackTrace();
+							}
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			};
 
 			r.proc = p;
 			new Thread(r).start();
-			
+
 			try {
 				r.proc.waitFor();
 			} catch (InterruptedException ev) {
 				// TODO Auto-generated catch block
 				ev.printStackTrace();
 			}
-			
+
 		}
 
 		if (s.equals("Clear Language Association")) {
@@ -2072,7 +2148,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		fileMenu = new JMenu(" File ");
 		editMenu = new JMenu(" Edit ");
 		helpMenu = new JMenu(" Help ");		
-		runMenu = new JMenu(" Run ");
+		//runMenu = new JMenu(" Run ");
 		osg.setFont(fontg);
 		jfl.setFont(fontg);
 		jtp.setFont(fontg);
@@ -2084,7 +2160,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		fileMenu.setFont(fontg);
 		editMenu.setFont(fontg);
 		helpMenu.setFont(fontg);
-		runMenu.setFont(fontg);
+		//runMenu.setFont(fontg);
 		diagDesc.setFont(fontg);
 		
 		for (int i = 0; i < but.length; i++) {

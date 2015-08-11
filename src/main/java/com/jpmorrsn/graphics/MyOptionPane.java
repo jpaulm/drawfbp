@@ -34,7 +34,7 @@ public class MyOptionPane {
 	     
 	     Object selectedValue = pane.getValue();
 	     Integer in = (Integer) selectedValue;
-	     if (in.intValue() == JOptionPane.CANCEL_OPTION)
+	     if (in == null || in.intValue() == JOptionPane.CANCEL_OPTION)
 	       return null;
 	     
 	     return pane.getInputValue(); 

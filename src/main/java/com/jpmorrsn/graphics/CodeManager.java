@@ -340,6 +340,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 				// generate a connection or initialize
 				Block from = diag.blocks.get(new Integer(arrow.fromId));
 				Arrow a2 = arrow.findTerminalArrow();
+				if (a2 == null)
+					continue;
 				Block to = diag.blocks.get(new Integer(a2.toId));
 				if (to == null) {
 					MyOptionPane.showMessageDialog(frame,
