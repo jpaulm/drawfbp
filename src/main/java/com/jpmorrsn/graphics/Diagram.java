@@ -254,6 +254,11 @@ public class Diagram {
 					return null;
 				}
 
+				if (newFile.getParentFile() == null) {
+					MyOptionPane.showMessageDialog(frm, "Missing parent file for: "
+							+ newFile.getName());
+					return null;
+				}
 				if (!(newFile.getParentFile().exists())) {
 					MyOptionPane.showMessageDialog(frm, "Invalid file name: "
 							+ newFile.getAbsolutePath());

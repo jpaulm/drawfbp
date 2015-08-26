@@ -509,10 +509,8 @@ public class MyFileChooser extends JFrame
 		return showOpenDialog(false);
 	}
 
-	String getSelectedFile() {
-		// return fullNodeName;
-		// return text.getText() + File.separator + text2.getText();
-		return DrawFBP.makeAbsFileName(text2.getText(), text.getText());
+	String getSelectedFile() {   
+		return DrawFBP.makeAbsFileName(text2.getText(), text.getText());		
 	}
 
 	void setSuggestedName(String s) {

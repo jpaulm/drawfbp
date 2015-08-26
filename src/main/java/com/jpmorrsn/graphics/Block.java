@@ -1176,11 +1176,7 @@ public class Block implements ActionListener {
 						menuItem.addActionListener(this);
 						diag.jpm.add(menuItem);
 					}
-
-					// menuItem = new JMenuItem(
-					// "Choose Component/Subnet Java Class");
-					// menuItem.addActionListener(this);
-					// jpm.add(menuItem);
+					
 
 					if (!isSubnet) {
 
@@ -1204,27 +1200,27 @@ public class Block implements ActionListener {
 					menuItem.addActionListener(this);
 					diag.jpm.add(menuItem);
 
-					//if (diag.diagLang != null
-					//		&& diag.diagLang.label.equals("Java")) {
-						// if (diagramFileName == null
-						// || diagramFileName.toLowerCase().endsWith(".java")) {
-						diag.jpm.addSeparator();
+					
+					diag.jpm.addSeparator();
 					JMenuItem menuItem1 = new JMenuItem(
-								"Choose Component/Subnet Java Class");
-						menuItem1.addActionListener(this);
-						diag.jpm.add(menuItem1);
-						JMenuItem menuItem2 = new JMenuItem("Display Port Info");
-						menuItem2.addActionListener(this);
-						diag.jpm.add(menuItem2);
-						JMenuItem menuItem3 = new JMenuItem("Display Full Java Class Name");
-						menuItem3.addActionListener(this);
-						diag.jpm.add(menuItem3);
-						// }
-					//}
-					if (diag.diagLang == null
-							|| !( diag.diagLang.label.equals("Java"))) {
+								"Choose Component/Subnet Class");
+					menuItem1.addActionListener(this);
+					diag.jpm.add(menuItem1);					
+					JMenuItem menuItem2 = new JMenuItem("Display Full Class Name");
+					menuItem2.addActionListener(this);
+					diag.jpm.add(menuItem2);
+					JMenuItem menuItem3 = new JMenuItem("Display Port Info");
+					menuItem3.addActionListener(this);
+					diag.jpm.add(menuItem3);
+						
+					if (diag.diagLang == null) {							
+						menuItem1.setEnabled(false);
+					}
+					if (diag.diagLang.label.equals("JSON")){
 						menuItem1.setEnabled(false);
 						menuItem2.setEnabled(false);
+					}
+					if (!(diag.diagLang.label.equals("Java"))){						
 						menuItem3.setEnabled(false);
 					}
 						
@@ -1346,7 +1342,8 @@ public class Block implements ActionListener {
 			return;
 		}
 
-		if (s.equals("Choose Component/Subnet Java Class")) {
+		if (s.equals("Choose Component/Subnet Class")) {
+			
 			if (codeFileName != null) {
 				if (!(codeFileName.toLowerCase().endsWith(".java"))) {
 					if (JOptionPane.YES_OPTION != MyOptionPane
@@ -1361,10 +1358,8 @@ public class Block implements ActionListener {
 				}
 			}
 			selectJavaClass();
-			// diag.changeCompLang();
-			// diag.compLang = driver.findGLFromLabel("Java");
-			// diag.changed = true;
-
+			 
+			
 		}
 
 		if (s.equals("Display Subnet")) {
@@ -1402,7 +1397,7 @@ public class Block implements ActionListener {
 
 		}
 
-		if (s.equals("Display Full Java Class Name")) {
+		if (s.equals("Display Full Class Name")) {
 
 			if (javaClass == null && fullClassName == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -1713,15 +1708,20 @@ public class Block implements ActionListener {
 		return;
 	}
 	void selectJavaClass() {
+		/*
 		if (diag.diagLang != null
-				&& !(diag.diagLang.label.equals("Java"))) {
-			MyOptionPane
-					.showMessageDialog(
-							driver.frame,
-							"This only applies to Java and compatible languages - \n"
-									+ "     to change language, click on File>Select Diagram Language");
-			return;
-		}
+				&& !(diag.diagLang.label.equals("Java")))  {
+		//non-Java languages
+		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+				"Enter or change text", "Edit component name",
+				JOptionPane.PLAIN_MESSAGE, null, null, fullClassName);
+		if ((ans != null) && (ans.length() > 0)) {
+			fullClassName = ans.trim();
+			diag.changed = true;
+	}
+		return;
+	}
+		*/
 		if (javaClass != null) {
 			if (JOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame, "Block already associated with class ("
@@ -1766,20 +1766,17 @@ public class Block implements ActionListener {
 					javaClass = getSelectedClass(res);
 					fullClassName = res;
 				} else {
-					String fs = fc.getSelectedFile();
+					String fs = fc.getSelectedFile();					
 					
-					//int j = fs.lastIndexOf(File.separator);					
-
-					//if (j > -1 && fs.substring(j + 1).startsWith("JavaFBP"))
 					if (fs.endsWith("jar"))
 						cFile = new File(driver.javaFBPJarFile);
 					else {
 						cFile = new File(fc.getSelectedFile());
-						if (cFile == null || !(cFile.exists())) {
-							MyOptionPane.showMessageDialog(driver.frame,
-									"Unable to find file " + cFile.getName());
-							return;
-						}
+					 	if (cFile == null || !(cFile.exists())) {
+					 		MyOptionPane.showMessageDialog(driver.frame,
+					 				"Unable to find file " + cFile.getName());
+						 	return;
+					 	}				
 					}
 
 					boolean classFound;
@@ -1868,7 +1865,7 @@ public class Block implements ActionListener {
 		if (javaClass == null) {
 			MyOptionPane.showMessageDialog(driver.frame, "No class selected");
 		} else {
-			buildMetadata();
+			//buildMetadata();
 			displayPortInfo();
 			diag.changed = true;
 			// diag.changeCompLang();
@@ -1878,14 +1875,7 @@ public class Block implements ActionListener {
 	}
 
 	void selectSourceCode() {
-		//if (gl == null)  
-		//	gl = driver.defaultCompLang;
-		//if (gl == null) {
-		//	MyOptionPane
-		//			.showMessageDialog(driver.frame,
-		//					"You need to select a language - click on File>Select Diagram Language");
-		//	return;
-		//}
+		
 		GenLang gl = driver.curDiag.diagLang;
 		if (codeFileName != null) {
 			int i = MyOptionPane.showConfirmDialog(driver.frame,
@@ -1896,19 +1886,33 @@ public class Block implements ActionListener {
 				return;
 			}
 		}
-
+		
 		if (!(gl.label.equals("Java")) && javaClass != null) {
-			if (JOptionPane.YES_OPTION != MyOptionPane
+			if (JOptionPane.NO_OPTION == MyOptionPane
 					.showConfirmDialog(
 							driver.frame,
 							"You have selected a non-Java language and there is a Java class associated with this block - go ahead?",
 							"Java previously used", JOptionPane.YES_NO_OPTION)) {
+				
+				javaClass = null;
+				codeFileName = null;
 				return;
 			}
-			javaClass = null;
-			fullClassName = null;
 		}
-
+		
+				
+		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+				 "Edit arbitrary string or browse (enter # to browse)", "Enter/change source code name",
+				JOptionPane.PLAIN_MESSAGE, null, null, codeFileName);
+		
+		if ((ans != null) && (ans.length() > 0)) {
+			codeFileName = ans.trim();
+			//javaClass = null;
+			diag.changed = true;
+		}
+		
+		if (codeFileName.equals("#")) {
+		
 		String t = driver.properties.get(gl.srcDirProp);
 		if (t == null)
 			t = System.getProperty("user.home");
@@ -1922,28 +1926,26 @@ public class Block implements ActionListener {
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 
 			cFile = new File(fc.getSelectedFile());
-			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(driver.frame,
-				// "Unable to find file " + cFile.getName());
-						"File " + cFile.getName() + " does not exist");
-				// return;
-			}
-			// else {
-
-			File fp = cFile;
-			codeFileName = fp.getAbsolutePath();
-			driver.properties.put(gl.srcDirProp, fp.getParentFile()
+			if (cFile == null || !(cFile.exists())) {				
+				if (JOptionPane.NO_OPTION == MyOptionPane
+						.showConfirmDialog(
+								driver.frame,
+								"You have entered a file name that does not exist - go ahead?",
+								"File does not exist", JOptionPane.YES_NO_OPTION)) {
+					return;
+				}
+				codeFileName = fc.getSelectedFile();
+			}	
+			else {			
+				codeFileName = cFile.getAbsolutePath();
+				driver.properties.put(gl.srcDirProp, cFile.getParentFile()
 					.getAbsolutePath());
-			driver.propertiesChanged = true;
+				driver.propertiesChanged = true;
+			}
 
 		}
-
-		// if (codeFileName == null) {
-		// MyOptionPane.showMessageDialog(driver.frame, "No " + gl.label
-		// + " component selected");
-		// }
-
-		return;
+		}
+		
 	}
 
 	void showCode() {

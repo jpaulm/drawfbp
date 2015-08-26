@@ -1076,8 +1076,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 			data += comma + "{ ";
 			//String upPort = arrow.upStreamPort;
 			//String dnPort = a2.downStreamPort;
-			upPort = upPort.toLowerCase();
-			upPort = makeUniquePort(upPort, from);
+			if (upPort != null) {
+			    upPort = upPort.toLowerCase();
+			    upPort = makeUniquePort(upPort, from);
+			}
 			dnPort = dnPort.toLowerCase();
 			if (a2.dspMod == null)
 				a2.dspMod = makeUniquePort(dnPort, to);
@@ -1290,6 +1292,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				error = true;
 		}
 		if (!error) {
+			/*
 			if (gl.label.equals("JSON")) { // bit of a hack...
 				int i = c.lastIndexOf(File.separator);
 				if (i == -1)
@@ -1299,6 +1302,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				if (j > -1)
 					c = c.substring(0, j);
 			}
+			*/
 			int i = c.indexOf("!");
 			if (i > -1 && i < c.length() - 1)
 				c = c.substring(i + 1);
