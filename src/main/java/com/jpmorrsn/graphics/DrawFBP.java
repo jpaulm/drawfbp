@@ -263,7 +263,7 @@ public class DrawFBP extends JFrame
 				driver.new DiagramFilter(), "Diagrams (*.drw, *.fbp)");
 
 		fCPArray[IMAGE] = new FileChooserParms("currentImageDir",
-				"Save image of: ", ".png", driver.new ImageFilter(),
+				"Image: ", ".png", driver.new ImageFilter(),
 				"Image files");
 
 		fCPArray[JARFILE] = new FileChooserParms("javaFBPJarFile",
@@ -1490,18 +1490,18 @@ public class DrawFBP extends JFrame
 			String dt = VersionAndTimestamp.getDate();
 			
 			int i = v.length();
-			String sp1 = "       ".substring(0, 6 - i);
+			String sp1 = "       ".substring(0, 7 - i);
 			
 			i = dt.length();
 			String sp2 = "       ".substring(0, 14 - i);
 			
 			ta.setText("****************************************************\n"
 					+  "*                                                  *\n"
-					+  "*             DrawFBP v" + v + "      "+ sp1 +"                *\n"
+					+  "*             DrawFBP v" + v + "      "+ sp1 +"               *\n"
 					+  "*                                                  *\n"
 					+  "*    Authors: J.Paul Morrison and Bob Corrick      *\n"
 					+  "*                                                  *\n"
-					+  "*    Copyright 2009, ..., 2014                     *\n"
+					+  "*    Copyright 2009, ..., 2015                     *\n"
 					+  "*                                                  *\n"
 					+  "*    FBP web site: www.jpaulmorrison.com/fbp       *\n"
 					+  "*                                                  *\n"
