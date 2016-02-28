@@ -26,7 +26,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 	DrawFBP driver;
 	HashSet<String> portNames;
 	HashMap<String, Integer> blocklist;
-	//HashMap<String, Integer> portlist;
+	// HashMap<String, Integer> portlist;
 	Style baseStyle, normalStyle, packageNameStyle, errorStyle,
 			quotedStringStyle, commentStyle;
 	JFrame frame;
@@ -34,12 +34,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 	boolean changed = false;
 	boolean generated = false;
 	boolean packageNameChanged = false;
-	//String targetLang;
+	// String targetLang;
 
-	//final boolean SAVE_AS = true;
+	// final boolean SAVE_AS = true;
 	boolean error = false;
 
-	boolean fbpMode;  // generating .fbp notation
+	boolean fbpMode; // generating .fbp notation
 	String ext;
 	Diagram diag;
 	// Font font;
@@ -48,10 +48,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 	JTextPane textPane;
 	JScrollPane scrollPane;
 
-	//GenLang compLang;
+	// GenLang compLang;
 	HashMap<Integer, String> descArray = new HashMap<Integer, String>();
-	//HashMap<Integer, String> cdescArray = new HashMap<Integer, String>();
-	//int type;
+	// HashMap<Integer, String> cdescArray = new HashMap<Integer, String>();
+	// int type;
 	JLabel nsLabel = null;
 	boolean SAVE_AS = true;
 	FileChooserParms[] saveFCPArr;
@@ -63,10 +63,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 	CodeManager(Diagram d) {
 		diag = d;
 		driver = d.driver;
-		frame = new JFrame();		
-		DrawFBP.applyOrientation(frame);   
-		
-		//type = DrawFBP.GENCODE;
+		frame = new JFrame();
+		DrawFBP.applyOrientation(frame);
+
+		// type = DrawFBP.GENCODE;
 
 		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
@@ -82,11 +82,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 		frame.setJMenuBar(createMenuBar());
 		frame.repaint();
 
-		
-			
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
 		frame.setIconImage(image);
-		
+
 		frame.setSize(1000, 750);
 		frame.setLocation(100, 50);
 		frame.setForeground(Color.WHITE);
@@ -108,7 +106,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 	}
 	void genCode() {
 		if (!generateCode()) {
-			frame.dispose();			
+			frame.dispose();
 		}
 	}
 
@@ -117,40 +115,46 @@ public class CodeManager implements ActionListener, DocumentListener {
 		fbpMode = false;
 		langLabel = diag.diagLang.label;
 		gl = diag.diagLang;
-		
-		//diag.targetLang = langLabel;
+
+		// diag.targetLang = langLabel;
 		changed = true;
-		diag.fCPArr[DrawFBP.COMPONENT] = driver.new FileChooserParms(diag.diagLang.srcDirProp, "Select "
-				+ diag.diagLang.showLangs() + " component from directory",
-				diag.diagLang.suggExtn, diag.diagLang.filter, "Components: "
-						+ diag.diagLang.showLangs() + " " + diag.diagLang.showSuffixes());
-		
-		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(diag.diagLang.netDirProp,
+		diag.fCPArr[DrawFBP.COMPONENT] = driver.new FileChooserParms(
+				diag.diagLang.srcDirProp,
+				"Select " + diag.diagLang.showLangs()
+						+ " component from directory",
+				diag.diagLang.suggExtn, diag.diagLang.filter,
+				"Components: " + diag.diagLang.showLangs() + " "
+						+ diag.diagLang.showSuffixes());
+
+		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+				diag.diagLang.netDirProp,
 				"Specify file name for generated code",
 				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-				diag.diagLang.label);	
-		
+				diag.diagLang.label);
+
 		String component = (langLabel.equals("Java"))
 				? "component"
 				: "Component";
-		//String connect = (langLabel.equals("Java")) ? "connect" : "Connect";
+		// String connect = (langLabel.equals("Java")) ? "connect" : "Connect";
 		String initialize = (langLabel.equals("Java"))
 				? "initialize"
 				: "Initialize";
 		String _port = (langLabel.equals("Java")) ? "port" : "Port";
-		String sDO = (langLabel.equals("Java")) ? "setDropOldest()" : "SetDropOldest()";
+		String sDO = (langLabel.equals("Java"))
+				? "setDropOldest()"
+				: "SetDropOldest()";
 
-		//if (diag.genCodeFileName == null)
-		//frame.setTitle("Generated Code: " + diag.title);
-			frame.setTitle("Generated Code for " + diag.diagFile.getName());
-		//else {
-		//	File f = new File(diag.genCodeFileName);
-		//	frame.setTitle("Generated Code: " + f.getName());
-		//}
+		// if (diag.genCodeFileName == null)
+		// frame.setTitle("Generated Code: " + diag.title);
+		frame.setTitle("Generated Code for " + diag.diagFile.getName());
+		// else {
+		// File f = new File(diag.genCodeFileName);
+		// frame.setTitle("Generated Code: " + f.getName());
+		// }
 
 		frame.setJMenuBar(createMenuBar());
-		//frame.repaint();
-		
+		// frame.repaint();
+
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
 		frame.setIconImage(image);
 
@@ -192,16 +196,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 			styles[0] = normalStyle;
 		} else {
 			contents = new String[20];
-			if (langLabel.equals("Java")){
+			if (langLabel.equals("Java")) {
 				contents[0] = "package ";
 				contents[1] = packageName + ";";
-			}
-			else
+			} else
 				contents[0] = "namespace {";
-			
 
 			contents[2] = "    // change this if you want \n ";
-			
+
 			if (langLabel.equals("Java"))
 				contents[2] += "import com.jpmorrsn.fbp.engine.*; \n";
 
@@ -242,28 +244,33 @@ public class CodeManager implements ActionListener, DocumentListener {
 			styles[10] = normalStyle;
 
 			for (Block block : diag.blocks.values()) {
-				
+
 				String t;
 
 				if (block instanceof ComponentBlock) {
 					if (block.description == null) {
-					MyOptionPane.showMessageDialog(frame,
-							"One or more missing block descriptions");
-					error = true;
-					return false;
-				}
+						MyOptionPane.showMessageDialog(frame,
+								"One or more missing block descriptions");
+						error = true;
+						return false;
+					}
 
 					String s = cleanDesc(block);
-					String c = cleanComp(block);					
-					
+					String c = cleanComp(block);
+					if (block instanceof IIPBlock)
+						descArray.put(new Integer(block.id), block.description);
+					else
+						descArray.put(new Integer(block.id), s);
+
 					if (!block.multiplex)
 						code += genComp(s, c, langLabel) + "; \n";
 					else {
 						if (block.mpxfactor == null) {
-							String d = (String) MyOptionPane.showInputDialog(frame,									
-									"Multiplex factor for " +
-											"\"" + block.description + "\"",
-											"Please enter number",
+							String d = (String) MyOptionPane.showInputDialog(
+									frame,
+									"Multiplex factor for " + "\""
+											+ block.description + "\"",
+									"Please enter number",
 									JOptionPane.QUESTION_MESSAGE);
 							if (d == null || d.equals("")) {
 								block.mpxfactor = "????";
@@ -275,14 +282,13 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 						frame.repaint();
 						if (block.mpxfactor != null) {
-							code += "int " + compress(s)
-									+ "_count = " + block.mpxfactor + "; "
-									+ "     //  multiplex counter for " +
-									"\"" + s + "\"\n";
+							code += "int " + compress(s) + "_count = "
+									+ block.mpxfactor + "; "
+									+ "     //  multiplex counter for " + "\""
+									+ s + "\"\n";
 						}
 
-						code += "for (int i = 0; i < "
-								+ compress(s)
+						code += "for (int i = 0; i < " + compress(s)
 								+ "_count; i++)\n";
 						// code += component + "(\"" + s + ":\" + i, " + c +
 						// "); ";
@@ -295,9 +301,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					}
 
 				}
-				
-				
-				
+
 				if (block instanceof ExtPortBlock) {
 					ExtPortBlock eb = (ExtPortBlock) block;
 					String s = "";
@@ -307,7 +311,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 							t = "SubInSS";
 						else
 							t = "SubIn";
-					} else if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+					} else
+						if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 						s = "SUBOUT";
 						if (eb.substreamSensitive)
 							t = "SubOutSS";
@@ -324,16 +329,15 @@ public class CodeManager implements ActionListener, DocumentListener {
 						t = t.substring(0, t.length() - 6);
 
 					code += genComp(s, t, langLabel) + "; \n";
-					code += initialize + "(\"" + s + "\", "
-							+ component + "(\"" + s + "\"), " + _port
-							+ "(\"NAME\")); \n";
+					code += initialize + "(\"" + s + "\", " + component + "(\""
+							+ s + "\"), " + _port + "(\"NAME\")); \n";
 				}
 
-			if (block instanceof IIPBlock) 
-					descArray.put(new Integer(block.id), block.description);
-			else
-					descArray.put(new Integer(block.id), cleanDesc(block));
-				//cdescArray.put(new Integer(block.id), s);
+				//if (block instanceof IIPBlock)
+				//	descArray.put(new Integer(block.id), block.description);
+				//else
+				//	descArray.put(new Integer(block.id), cleanDesc(block));
+				// cdescArray.put(new Integer(block.id), s);
 			}
 
 			for (Arrow arrow : diag.arrows.values()) {
@@ -356,7 +360,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					continue;
 
 				if (!getPortNames(arrow))
-					 return false;
+					return false;
 
 				frame.repaint();
 
@@ -367,22 +371,20 @@ public class CodeManager implements ActionListener, DocumentListener {
 				// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
 				// boolean ok;
-				
-				
+
 				// }
 
 				frame.repaint();
-				//String upPort = arrow.upStreamPort;
-				//String dnPort = a2.downStreamPort;
-				
+				// String upPort = arrow.upStreamPort;
+				// String dnPort = a2.downStreamPort;
+
 				String cap = "";
 				if (arrow.capacity > 0)
 					cap = ", " + arrow.capacity;
 				if (from instanceof ComponentBlock
 						&& to instanceof ComponentBlock) {
-					
-					if (!arrow.endsAtLine
-							&& checkDupPort(dnPort, to)) {
+
+					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 						MyOptionPane.showMessageDialog(frame,
 								"Duplicate port name: " + dnPort);
 						error = true;
@@ -395,61 +397,63 @@ public class CodeManager implements ActionListener, DocumentListener {
 					if (from.multiplex) {
 						code += "for (int i = 0; i < " + compress(fromDesc)
 								+ "_count; i++)\n";
-						code += genConnect(arrow) + "(" + component + "(\"" + fromDesc
-								+ ":\" + i), " + _port + "(" + q(upPort) + "), "
-								+ component + "(\"" + toDesc + "\"), " + _port
-								+ "(" + q(dnPort) + ")" + cap + "); \n";
+						code += genConnect(arrow) + "(" + component + "(\""
+								+ fromDesc + ":\" + i), " + _port + "("
+								+ q(upPort) + "), " + component + "(\"" + toDesc
+								+ "\"), " + _port + "(" + q(dnPort) + ")" + cap
+								+ "); \n";
 						if (arrow.dropOldest)
 							code += "c" + arrow.id + "." + sDO + "; \n";
 					} else if (to.multiplex) {
 						code += "for (int i = 0; i < " + compress(toDesc)
 								+ "_count; i++)\n";
-						code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
-								+ "), " + _port + "(" + q(upPort) + ",i), "
-								+ component + "(\"" + toDesc + ":\" + i), "
+						code += genConnect(arrow) + "(" + component + "("
+								+ q(fromDesc) + "), " + _port + "(" + q(upPort)
+								+ ",i), " + component + "(\"" + toDesc
+								+ ":\" + i), " + _port + "(" + q(dnPort) + ")"
+								+ cap + "); \n";
+						if (arrow.dropOldest)
+							code += "c" + arrow.id + "." + sDO + "; \n";
+					} else {
+						code += genConnect(arrow) + "(" + component + "("
+								+ q(fromDesc) + "), " + _port + "(" + q(upPort)
+								+ "), " + component + "(\"" + toDesc + "\"), "
 								+ _port + "(" + q(dnPort) + ")" + cap + "); \n";
 						if (arrow.dropOldest)
-						code += "c" + arrow.id + "." + sDO + "; \n";
-					} else {
-						code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
-								+ "), " + _port + "(" + q(upPort) + "), "
-								+ component + "(\"" + toDesc + "\"), " + _port
-								+ "(" + q(dnPort) + ")" + cap + "); \n";
-						if (arrow.dropOldest)
-					code += "c" + arrow.id + "." + sDO + "; \n";
+							code += "c" + arrow.id + "." + sDO + "; \n";
 					}
 				}
 
-				else if (from instanceof IIPBlock
-						&& to instanceof ComponentBlock) {
-					if (!arrow.endsAtLine
-							&& checkDupPort(dnPort, to)) {
+				else
+					if (from instanceof IIPBlock
+							&& to instanceof ComponentBlock) {
+					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 						MyOptionPane.showMessageDialog(frame,
 								"Duplicate port name: " + dnPort);
 						error = true;
 					}
 
 					code += initialize + "(" + q(fromDesc) + ", " + component
-							+ "(\"" + toDesc + "\"), " + _port + "("
-							+ q(dnPort) + ")" + cap + "); \n";
+							+ "(\"" + toDesc + "\"), " + _port + "(" + q(dnPort)
+							+ ")" + cap + "); \n";
 				}
 
 				if (from instanceof ExtPortBlock) {
 
-					code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
-							+ "), " + _port + "(\"OUT\"), " + component
-							+ "(\"" + toDesc + "\"), " + _port + "("
+					code += genConnect(arrow) + "(" + component + "("
+							+ q(fromDesc) + "), " + _port + "(\"OUT\"), "
+							+ component + "(\"" + toDesc + "\"), " + _port + "("
 							+ q(dnPort) + ")" + cap + "); \n";
 					if (arrow.dropOldest)
-					code += "c" + arrow.id + "." + sDO + "; \n";
+						code += "c" + arrow.id + "." + sDO + "; \n";
 				} else if (to instanceof ExtPortBlock) {
 
-					code += genConnect(arrow) + "(" + component + "(" + q(fromDesc)
-							+ "), " + _port + "(" + q(upPort) + "), " + component
-							+ "(\"" + toDesc + "\"), " + _port
-							+ "(\"IN\" " + ")" + cap + "); \n";
+					code += genConnect(arrow) + "(" + component + "("
+							+ q(fromDesc) + "), " + _port + "(" + q(upPort)
+							+ "), " + component + "(\"" + toDesc + "\"), "
+							+ _port + "(\"IN\" " + ")" + cap + "); \n";
 					if (arrow.dropOldest)
-					code += "c" + arrow.id + "." + sDO + "; \n";
+						code += "c" + arrow.id + "." + sDO + "; \n";
 				}
 			}
 
@@ -488,8 +492,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// insert data from arrays
 		try {
 			for (int i = 0; i < contents.length; i++) {
-				if (contents[i] != null)					
-				doc.insertString(doc.getLength(), contents[i], styles[i]);
+				if (contents[i] != null)
+					doc.insertString(doc.getLength(), contents[i], styles[i]);
 			}
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(frame,
@@ -497,14 +501,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		//if (diag.compLang != glcompLang)
-		//	diag.compLang = compLang;
+		// if (diag.compLang != glcompLang)
+		// diag.compLang = compLang;
 		changed = true;
 		colourCode();
 
 		generated = true;
 
-        nsLabel.setText("Not saved");
+		nsLabel.setText("Not saved");
 
 		frame.repaint();
 		// jframe.update(jdriver.osg);
@@ -520,13 +524,13 @@ public class CodeManager implements ActionListener, DocumentListener {
 		else
 			return "Component(\"" + name + "\", typeof(" + className + "))";
 	}
-	
-	String genConnect(Arrow arrow) {		
+
+	String genConnect(Arrow arrow) {
 		String connect = (langLabel.equals("Java")) ? "connect" : "Connect";
-		if (arrow.dropOldest){			
-			connect = "Connection c" + arrow.id + " = " + connect ;
+		if (arrow.dropOldest) {
+			connect = "Connection c" + arrow.id + " = " + connect;
 		}
-		return connect;	
+		return connect;
 	}
 
 	String genCompMpx(String name, String className, String lang) {
@@ -538,13 +542,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return "Component(\"" + name + ":\" + i, typeof(" + className
 					+ "))";
 	}
-	
 
 	void display(File file, GenLang gl) {
 
 		frame.setTitle("Displayed Code: " + file.getName());
 		// genLang = gl;
-		
+
 		String fileString = driver.curDiag.readFile(file);
 		if (fileString == null) {
 			MyOptionPane.showMessageDialog(frame,
@@ -591,10 +594,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 		}
 
 		colourCode();
-		//if (file.getName().endsWith(".fbp"))
-		//	type = DrawFBP.DIAGRAM;  
+		// if (file.getName().endsWith(".fbp"))
+		// type = DrawFBP.DIAGRAM;
 		frame.repaint();
-		//frame.repaint();
+		// frame.repaint();
 		return;
 	}
 
@@ -644,8 +647,6 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return descr + inData + outData;
 	}
 
-	
-
 	String makeUniqueDesc(String s) {
 		Integer i;
 		String t = s;
@@ -659,7 +660,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return t;
 
 	}
-	
+
 	String makeUniquePort(String s, Block b) {
 		Integer i;
 		String t = s;
@@ -675,8 +676,6 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return t;
 
 	}
-	
-
 
 	boolean checkDupPort(String port, Block bl) {
 		// return false if no duplication
@@ -755,9 +754,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 						&& !(doc.getText(i - 1, 1).equals(File.separator))) {
 					int j = i + 1;
 					for (; j < doc.getLength(); j++) {
-						if (doc.getText(j, 1).equals("\"")
-								&& !(doc.getText(j - 1, 1)
-										.equals(File.separator)))
+						if (doc.getText(j, 1).equals("\"") && !(doc
+								.getText(j - 1, 1).equals(File.separator)))
 							break;
 					}
 					doc.setCharacterAttributes(i, j - i + 1, quotedStringStyle,
@@ -781,8 +779,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 					for (; j < doc.getLength(); j++) {
 						if (doc.getText(j, ls.length()).equals(ls))
 							break;
-						//String x = doc.getText(j, ls.length());
-						//x += "";
+						// String x = doc.getText(j, ls.length());
+						// x += "";
 					}
 					doc.setCharacterAttributes(i, j - i + 1, commentStyle,
 							false); // green
@@ -809,12 +807,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
 
-		//if (s.equals("Save")) {
-		//	saveCode(/*!SAVE_AS*/);
-		//} else 
-			if (s.equals("Save As")) {
-				
-			saveCode(/*SAVE_AS*/);
+		// if (s.equals("Save")) {
+		// saveCode(/*!SAVE_AS*/);
+		// } else
+		if (s.equals("Save As")) {
+
+			saveCode(/* SAVE_AS */);
 
 		} else if (s.equals("Exit")) {
 			Boolean res = true;
@@ -828,21 +826,21 @@ public class CodeManager implements ActionListener, DocumentListener {
 	}
 
 	public boolean askAboutSaving() {
-		int answer = MyOptionPane.showConfirmDialog(frame,  
+		int answer = MyOptionPane.showConfirmDialog(frame,
 				"Save generated or modified code?", "Save code",
 				JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.INFORMATION_MESSAGE);
-		
-		boolean b; 
+
+		boolean b;
 		if (answer == JOptionPane.YES_OPTION) {
 			// User clicked YES.
-			b = saveCode(/*SAVE_AS*/);
-			//diag.diagLang = gl;
+			b = saveCode(/* SAVE_AS */);
+			// diag.diagLang = gl;
 			return b;
 		}
-		
+
 		b = (answer == JOptionPane.NO_OPTION);
-		//diag.diagLang = gl;
+		// diag.diagLang = gl;
 		return b;
 	}
 
@@ -853,23 +851,23 @@ public class CodeManager implements ActionListener, DocumentListener {
 		if (packageName != null) {
 			if (e.getOffset() >= 8 && e.getOffset() <= 8 + packageName.length()
 					&& generated) {
-				packageNameChanged = true;				
+				packageNameChanged = true;
 			}
-		}		
+		}
 		nsLabel.setText(changed ? "Not saved" : " ");
 		frame.repaint();
 	}
 
 	public void insertUpdate(DocumentEvent e) {
 		if (e.getOffset() > 0)
-				changed = true;
+			changed = true;
 
 		if (packageName != null) {
 			if (e.getOffset() >= 8 && e.getOffset() <= 8 + packageName.length()
 					&& generated) {
-				packageNameChanged = true;	
+				packageNameChanged = true;
 			}
-		}		
+		}
 		nsLabel.setText(changed ? "Not saved" : " ");
 		frame.repaint();
 	}
@@ -883,7 +881,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					&& generated) {
 				packageNameChanged = true;
 			}
-		}		
+		}
 		nsLabel.setText(changed ? "Not saved" : " ");
 		frame.repaint();
 	}
@@ -894,7 +892,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return "X$" + counterList.indexOf(s);
 	}
 
-	boolean saveCode ( /*boolean saveAs */)   {
+	boolean saveCode( /* boolean saveAs */) {
 
 		String fileString = null;
 		try {
@@ -907,13 +905,13 @@ public class CodeManager implements ActionListener, DocumentListener {
 		}
 
 		File file = null;
-		//if (diag.genCodeFileName != null)
-		//	file = new File(diag.genCodeFileName);
+		// if (diag.genCodeFileName != null)
+		// file = new File(diag.genCodeFileName);
 
-		//if (file == null)
-		//	saveAs = true;
-		//if (saveAs)
-		 	file = null;
+		// if (file == null)
+		// saveAs = true;
+		// if (saveAs)
+		file = null;
 
 		if (diag.fCPArr[DrawFBP.GENCODE].fileExt.equals(".java")) {
 			try {
@@ -940,7 +938,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 		}
 
-		file = diag.genSave(file, diag.fCPArr[DrawFBP.GENCODE], fileString, frame);
+		file = diag.genSave(file, diag.fCPArr[DrawFBP.GENCODE], fileString,
+				frame);
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(frame, "File not saved");
@@ -948,27 +947,24 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		//genCodeFileName = file.getAbsolutePath();
+		// genCodeFileName = file.getAbsolutePath();
 		driver.properties.put(diag.diagLang.netDirProp, file.getParent());
 		driver.propertiesChanged = true;
 		changed = false;
-			
+
 		if (packageNameChanged) {
 			driver.properties.put("packageName", packageName);
 			driver.propertiesChanged = true;
 		}
 
-				
-		//diag.targetLang = langLabel;
+		// diag.targetLang = langLabel;
 		nsLabel.setText(changed ? "Not saved" : " ");
-		//diag.genCodeFileName = file.getAbsolutePath();
+		// diag.genCodeFileName = file.getAbsolutePath();
 		frame.setTitle("Generated Code: " + file.getName());
 		frame.repaint();
 
 		return true;
 	}
-
-	
 
 	public JMenuBar createMenuBar() {
 
@@ -976,19 +972,18 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		// Create the menu bar.
 		menuBar = new JMenuBar();
-		
+
 		menuBar.setBorderPainted(true);
 
-		//Box box = new Box(BoxLayout.X_AXIS);
-		//box.setLayout(new FlowLayout(FlowLayout.LEFT));
+		// Box box = new Box(BoxLayout.X_AXIS);
+		// box.setLayout(new FlowLayout(FlowLayout.LEFT));
 		JMenuItem menuItem =
-		/* new JMenuItem("Save");
-		menuBar.add(menuItem);
-		menuItem.addActionListener(this);
-		menuItem.setBorderPainted(true);
-		menuItem = 
-		*/
-				new JMenuItem("Save As");
+		/*
+		 * new JMenuItem("Save"); menuBar.add(menuItem);
+		 * menuItem.addActionListener(this); menuItem.setBorderPainted(true);
+		 * menuItem =
+		 */
+		new JMenuItem("Save As");
 		menuBar.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem.setBorderPainted(true);
@@ -996,11 +991,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 		menuBar.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem.setBorderPainted(true);
-		//menuBar.add(box);
-		//int w = frame.getWidth();
+		// menuBar.add(box);
+		// int w = frame.getWidth();
 		menuBar.add(Box.createHorizontalStrut(200));
 		JPanel p = new JPanel();
-		nsLabel = new JLabel("Not changed");		
+		nsLabel = new JLabel("Not changed");
 		p.add(nsLabel, BorderLayout.LINE_END);
 		menuBar.add(p, BorderLayout.LINE_END);
 		nsLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -1016,7 +1011,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		data += "\"processes\": {\n";
 		portNames = new HashSet<String>();
 		blocklist = new HashMap<String, Integer>();
-		
+
 		String comma = "";
 		for (Block block : diag.blocks.values()) {
 			// String s = "";
@@ -1026,7 +1021,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				// error = true;
 				return null;
 			}
-			
+
 			if (block instanceof ComponentBlock) {
 				String s = cleanDesc(block);
 				String t = cleanComp(block);
@@ -1034,10 +1029,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 						+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
 						+ block.cy + "}}";
 				comma = "\n,";
-			 
-			    descArray.put(new Integer(block.id), s);
+
+				descArray.put(new Integer(block.id), s);
 			}
-			//cdescArray.put(new Integer(block.id), block.description);
+			// cdescArray.put(new Integer(block.id), block.description);
 			if (block instanceof IIPBlock) {
 				descArray.put(new Integer(block.id), block.description);
 			}
@@ -1060,30 +1055,29 @@ public class CodeManager implements ActionListener, DocumentListener {
 					|| to instanceof ReportBlock || to instanceof LegendBlock)
 				continue;
 
-			 if (!getPortNames(arrow))
-				 return "";
+			if (!getPortNames(arrow))
+				return "";
 			String fromDesc = descArray.get(new Integer(arrow.fromId));
-			//String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
+			// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
 
 			String toDesc = descArray.get(new Integer(a2.toId));
-			
+
 			frame.repaint();
-			if (!(from instanceof ComponentBlock)
-					&& !(from instanceof IIPBlock)
+			if (!(from instanceof ComponentBlock) && !(from instanceof IIPBlock)
 					|| !(to instanceof ComponentBlock))
 				continue;
 
 			data += comma + "{ ";
-			//String upPort = arrow.upStreamPort;
-			//String dnPort = a2.downStreamPort;
+			// String upPort = arrow.upStreamPort;
+			// String dnPort = a2.downStreamPort;
 			if (upPort != null) {
-			    upPort = upPort.toLowerCase();
-			    upPort = makeUniquePort(upPort, from);
+				upPort = upPort.toLowerCase();
+				upPort = makeUniquePort(upPort, from);
 			}
 			dnPort = dnPort.toLowerCase();
 			if (a2.dspMod == null)
 				a2.dspMod = makeUniquePort(dnPort, to);
-			//upPort = arrow.uspMod;
+			// upPort = arrow.uspMod;
 			dnPort = a2.dspMod;
 			if (from instanceof IIPBlock) {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
@@ -1104,25 +1098,23 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		return data;
 	}
-	
 
-	boolean genFbpCode(){
+	boolean genFbpCode() {
 		String code = "";
 		String cma = "";
-		//generated = false;
+		// generated = false;
 		portNames = new HashSet<String>();
 		blocklist = new HashMap<String, Integer>();
-		//portlist = new HashMap<String, Integer>();
-		//diag.targetLang = "FBP";
+		// portlist = new HashMap<String, Integer>();
+		// diag.targetLang = "FBP";
 		saveFCPArr = diag.fCPArr;
-		//gl = diag.diagLang;
+		// gl = diag.diagLang;
 		gl = driver.findGLFromLabel("FBP");
 		fbpMode = true;
-				diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms("currentFBPNetworkDir",
-				"Specify file name for generated code",
-				".fbp", diag.diagLang.filter,
-				"fbp");	
-		
+		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+				"currentFBPNetworkDir", "Specify file name for generated code",
+				".fbp", diag.diagLang.filter, "fbp");
+
 		for (Block block : diag.blocks.values()) {
 
 			if (block instanceof ComponentBlock) {
@@ -1134,7 +1126,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				}
 
 				String s = cleanDesc(block);
-				//String s = cleanComp(block);
+				// String s = cleanComp(block);
 				code += cma + s + "(" + s + ")";
 				cma = ",\n";
 				descArray.put(new Integer(block.id), s);
@@ -1144,7 +1136,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				descArray.put(new Integer(block.id), block.description);
 			}
 		}
-		
+
 		for (Arrow arrow : diag.arrows.values()) {
 			Block from = diag.blocks.get(new Integer(arrow.fromId));
 			Arrow a2 = arrow.findTerminalArrow();
@@ -1156,42 +1148,40 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 			if (from == null || to == null || from instanceof FileBlock
 					|| from instanceof ReportBlock
-					|| from instanceof LegendBlock
-					|| to instanceof FileBlock || to instanceof ReportBlock
-					|| to instanceof LegendBlock)
+					|| from instanceof LegendBlock || to instanceof FileBlock
+					|| to instanceof ReportBlock || to instanceof LegendBlock)
 				continue;
 
 			if (!getPortNames(arrow))
-				 return false;
-			
+				return false;
+
 			String fromDesc = descArray.get(new Integer(arrow.fromId));
-			//String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
+			// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
 
 			String toDesc = descArray.get(new Integer(a2.toId));
-			//String cToDesc = cdescArray.get(new Integer(a2.toId));
+			// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
 			frame.repaint();
-			
+
 			if (!(from instanceof IIPBlock)) {
-			upPort = arrow.upStreamPort;			
-			upPort = upPort.replaceAll("-", "\\\\-");
-			upPort = upPort.replaceAll("\\.", "\\\\.");
-			upPort = makeUniquePort(upPort, from);
+				upPort = arrow.upStreamPort;
+				upPort = upPort.replaceAll("-", "\\\\-");
+				upPort = upPort.replaceAll("\\.", "\\\\.");
+				upPort = makeUniquePort(upPort, from);
 			}
-			
+
 			dnPort = a2.downStreamPort;
-			//dnPort = dnPort.toLowerCase();
-			
+			// dnPort = dnPort.toLowerCase();
+
 			if (a2.dspMod == null)
 				a2.dspMod = makeUniquePort(dnPort, to);
-			
+
 			dnPort = a2.dspMod.replaceAll("-", "\\\\-");
 			dnPort = dnPort.replaceAll("\\.", "\\\\.");
-			
+
 			if (from instanceof ComponentBlock
 					&& to instanceof ComponentBlock) {
-				if (!arrow.endsAtLine
-						&& checkDupPort(dnPort, to)) {
+				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 					MyOptionPane.showMessageDialog(frame,
 							"Duplicate port name: " + dnPort);
 					error = true;
@@ -1201,89 +1191,88 @@ public class CodeManager implements ActionListener, DocumentListener {
 							"Duplicate port name: " + upPort);
 					error = true;
 				}
-				 
+
 				if (from.multiplex) {
-					
+
 					MyOptionPane.showMessageDialog(frame,
 							"Multiplexing not supported");
 					error = true;
 				} else if (to.multiplex) {
-					
+
 					MyOptionPane.showMessageDialog(frame,
 							"Multiplexing not supported");
 					error = true;
-				} else				
-					 
-				code += cma + fromDesc + " " + upPort + " -> " + dnPort + " " + toDesc;
-			}
-			else if (from instanceof IIPBlock
-					&& to instanceof ComponentBlock) {
-				if (!arrow.endsAtLine
-						&& checkDupPort(dnPort, to)) {
+				} else
+
+					code += cma + fromDesc + " " + upPort + " -> " + dnPort
+							+ " " + toDesc;
+			} else
+				if (from instanceof IIPBlock && to instanceof ComponentBlock) {
+				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 					MyOptionPane.showMessageDialog(frame,
 							"Duplicate port name: " + dnPort);
 					error = true;
-				}			
+				}
 				code += cma + "'" + fromDesc + "' -> " + dnPort + " " + toDesc;
 			}
 
-			if (from instanceof ExtPortBlock) {				
+			if (from instanceof ExtPortBlock) {
 				code += cma + fromDesc + " out -> " + dnPort + " " + toDesc;
-				
-			} else if (to instanceof ExtPortBlock) {			
+
+			} else if (to instanceof ExtPortBlock) {
 				code += cma + fromDesc + " -> in " + toDesc;
 			}
 		}
-		 
+
 		// insert string data
-				try {					
-						doc.insertString(doc.getLength(), code, baseStyle);
-					
-				} catch (BadLocationException ble) {
-					MyOptionPane.showMessageDialog(frame,
-							"Couldn't insert text into text pane");
-					// restore old language parameters
-					diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(diag.diagLang.netDirProp,
-							"Specify file name for generated code",
-							"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-							diag.diagLang.label);
-					return false;
-				}
+		try {
+			doc.insertString(doc.getLength(), code, baseStyle);
 
-				changed = true;
-				//colourCode();
+		} catch (BadLocationException ble) {
+			MyOptionPane.showMessageDialog(frame,
+					"Couldn't insert text into text pane");
+			// restore old language parameters
+			diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+					diag.diagLang.netDirProp,
+					"Specify file name for generated code",
+					"." + diag.diagLang.suggExtn, diag.diagLang.filter,
+					diag.diagLang.label);
+			return false;
+		}
 
-				generated = true;
+		changed = true;
+		// colourCode();
 
-		        nsLabel.setText(changed ? "Not saved" : " ");
+		generated = true;
 
-				frame.repaint();
-				// jframe.update(jdriver.osg);
-				
-				// restore old language parameters
-				diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(diag.diagLang.netDirProp,
-						"Specify file name for generated code",
-						"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-						diag.diagLang.label);
-				
-				return true;
-		
+		nsLabel.setText(changed ? "Not saved" : " ");
+
+		frame.repaint();
+		// jframe.update(jdriver.osg);
+
+		// restore old language parameters
+		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+				diag.diagLang.netDirProp,
+				"Specify file name for generated code",
+				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
+				diag.diagLang.label);
+
+		return true;
+
 	}
-	
-	
+
 	String q(String s) {
 		return "\"" + s + "\"";
 	}
-	
+
 	String cleanComp(Block b) {
-		
-		//String[] sa = new String[2]; // process name and component name, resp.
-		
-		
-		//if (gl.label.equals("FBP")) 
-		 //   s = cleanDesc(s); // clean up name	
-				
-		
+
+		// String[] sa = new String[2]; // process name and component name,
+		// resp.
+
+		// if (gl.label.equals("FBP"))
+		// s = cleanDesc(s); // clean up name
+
 		error = false;
 		String c = b.fullClassName;
 		if (c == null) {
@@ -1293,103 +1282,95 @@ public class CodeManager implements ActionListener, DocumentListener {
 		}
 		if (!error) {
 			/*
-			if (gl.label.equals("JSON")) { // bit of a hack...
-				int i = c.lastIndexOf(File.separator);
-				if (i == -1)
-					i = c.lastIndexOf("/");
-				c = c.substring(i + 1);
-				int j = c.lastIndexOf(".");
-				if (j > -1)
-					c = c.substring(0, j);
-			}
-			*/
+			 * if (gl.label.equals("JSON")) { // bit of a hack... int i =
+			 * c.lastIndexOf(File.separator); if (i == -1) i =
+			 * c.lastIndexOf("/"); c = c.substring(i + 1); int j =
+			 * c.lastIndexOf("."); if (j > -1) c = c.substring(0, j); }
+			 */
 			int i = c.indexOf("!");
 			if (i > -1 && i < c.length() - 1)
 				c = c.substring(i + 1);
 			if (c.toLowerCase().endsWith(".class"))
 				c = c.substring(0, c.length() - 6);
 		}
-		
+
 		return c;
 	}
-	
+
 	String cleanDesc(Block b) {
 
 		String t = b.description;
-		
-		//if (!(b instanceof IIPBlock)) {
 
-			if (t == null || t.equals(""))
-				t = "_comp_";
-			t = t.replace('"', '\u0007');
-			Pattern p;
-			Matcher ma;
+		// if (!(b instanceof IIPBlock)) {
 
-			if (fbpMode) {
-				t = t.replace('_', '\u0007');
-				p = Pattern.compile("\\p{Punct}"); // punctuation chars
-				ma = p.matcher(t);
+		if (t == null || t.equals(""))
+			t = "_comp_";
+		t = t.replace('"', '\u0007');
+		Pattern p;
+		Matcher ma;
 
-				String u = "";
-				int i = 0;
-				while (ma.find(i)) {
-					String s = "\\" + ma.group();
-					u += t.substring(i, ma.start()) + s;
-					i = ma.end();
-				}
-				u += t.substring(i);
-				t = u;
-			}
-
-			p = Pattern.compile("\\s"); // whitespace chars
+		if (fbpMode) {
+			t = t.replace('_', '\u0007');
+			p = Pattern.compile("\\p{Punct}"); // punctuation chars
 			ma = p.matcher(t);
-			t = ma.replaceAll("_");
 
-			t = t.replace('\u0007', '_');
+			String u = "";
+			int i = 0;
+			while (ma.find(i)) {
+				String s = "\\" + ma.group();
+				u += t.substring(i, ma.start()) + s;
+				i = ma.end();
+			}
+			u += t.substring(i);
+			t = u;
+		}
 
-			return makeUniqueDesc(t); // and make it unique	
-		
+		p = Pattern.compile("\\s"); // whitespace chars
+		ma = p.matcher(t);
+		t = ma.replaceAll("_");
+
+		t = t.replace('\u0007', '_');
+
+		return makeUniqueDesc(t); // and make it unique
+
 	}
-	
-	boolean getPortNames(Arrow arrow) {		
+
+	boolean getPortNames(Arrow arrow) {
 		Block from = diag.blocks.get(new Integer(arrow.fromId));
 		Arrow a2 = arrow.findTerminalArrow();
 		Block to = diag.blocks.get(new Integer(a2.toId));
 		String z;
-		
+
 		if (from instanceof ComponentBlock) {
-		upPort = arrow.upStreamPort;
-		while (true) {
-			if (upPort != null && !(upPort.equals(""))) {
-				z = validatePortName(upPort);
-				if (z != null) {
-					upPort = z;
-					break;
+			upPort = arrow.upStreamPort;
+			while (true) {
+				if (upPort != null && !(upPort.equals(""))) {
+					z = validatePortName(upPort);
+					if (z != null) {
+						upPort = z;
+						break;
+					}
+					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+							null, "Invalid port name: " + upPort,
+							"Invalid output port name - try again?",
+							JOptionPane.YES_NO_OPTION)) {
+						// ok = false;
+						upPort = "????";
+						break;
+					}
 				}
-				if (JOptionPane.NO_OPTION == MyOptionPane
-						.showConfirmDialog(null, "Invalid port name: "
-								+ upPort,
-								"Invalid output port name - try again?",
-								JOptionPane.YES_NO_OPTION)) {
-					// ok = false;
-					upPort = "????";
-					break;
-				}
-			}
-			upPort = (String) MyOptionPane.showInputDialog(frame,
-					"Output port from " + "\"" + from.description
-							+ "\"", "Please enter port name",
-					JOptionPane.QUESTION_MESSAGE);
-			if (upPort == null)
+				upPort = (String) MyOptionPane.showInputDialog(frame,
+						"Output port from " + "\"" + from.description + "\"",
+						"Please enter port name", JOptionPane.QUESTION_MESSAGE);
+				if (upPort == null)
 					return false;
-			diag.changed = true;
+				diag.changed = true;
+
+			}
+
+			arrow.upStreamPort = upPort;
 
 		}
-
-		arrow.upStreamPort = upPort;
-		
-		
-		 }
 
 		dnPort = a2.downStreamPort;
 		while (true) {
@@ -1399,11 +1380,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 					dnPort = z;
 					break;
 				}
-				if (JOptionPane.NO_OPTION == MyOptionPane
-						.showConfirmDialog(null, "Invalid port name: "
-								+ dnPort,
-								"Invalid input port name - try again?",
-								JOptionPane.YES_NO_OPTION)) {
+				if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+						null, "Invalid port name: " + dnPort,
+						"Invalid input port name - try again?",
+						JOptionPane.YES_NO_OPTION)) {
 					// ok = false;
 					dnPort = "????";
 					break;
@@ -1411,8 +1391,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 			dnPort = (String) MyOptionPane.showInputDialog(frame,
 					"Input port to " + "\"" + to.description + "\"",
-					"Please enter port name",
-					JOptionPane.QUESTION_MESSAGE);
+					"Please enter port name", JOptionPane.QUESTION_MESSAGE);
 			if (dnPort == null)
 				return false;
 			diag.changed = true;
@@ -1420,18 +1399,25 @@ public class CodeManager implements ActionListener, DocumentListener {
 		}
 
 		a2.downStreamPort = dnPort;
-		
+
 		return true;
 	}
-	
+
 	String validatePortName(String s) {
-		if (s == null || s.equals("") || s.equals("????")) 
+		if (s == null || s.equals("") || s.equals("????"))
 			return null;
-		Pattern p = Pattern.compile("[a-zA-Z][\\d\\-\\_\\.\\[\\]a-zA-Z]*");  // Allow hyphen (for Humberto), period (for Tom), underscore
-		                                                               //    and square brackets                     
+		Pattern p = Pattern.compile("[a-zA-Z][\\d\\-\\_\\.\\[\\]a-zA-Z]*"); // Allow
+																			// hyphen
+																			// (for
+																			// Humberto),
+																			// period
+																			// (for
+																			// Tom),
+																			// underscore
+		// and square brackets
 		Matcher ma = p.matcher(s);
 		if (!ma.matches())
-			return null;		
+			return null;
 		else
 			return s;
 	}
