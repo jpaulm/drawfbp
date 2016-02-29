@@ -257,10 +257,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 					String s = cleanDesc(block);
 					String c = cleanComp(block);
-					if (block instanceof IIPBlock)
-						descArray.put(new Integer(block.id), block.description);
-					else
-						descArray.put(new Integer(block.id), s);
+					
+					descArray.put(new Integer(block.id), s);
 
 					if (!block.multiplex)
 						code += genComp(s, c, langLabel) + "; \n";
@@ -333,11 +331,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
 				}
 
-				//if (block instanceof IIPBlock)
-				//	descArray.put(new Integer(block.id), block.description);
-				//else
-				//	descArray.put(new Integer(block.id), cleanDesc(block));
-				// cdescArray.put(new Integer(block.id), s);
+				if (block instanceof IIPBlock)
+					descArray.put(new Integer(block.id), block.description);
+				
 			}
 
 			for (Arrow arrow : diag.arrows.values()) {
