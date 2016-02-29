@@ -101,7 +101,7 @@ Here is a very simple diagram built using DrawFBP, showing process names, names 
 JavaHelp facility
 ---
 
-DrawFBP has a help facility which uses the JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the DrawFBP-Help.jar file.  This is the standard JavaHelp jar file, and can be found in the project `lib` directory, in the `lib` directory in the DrawFBP jar file, or can be downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar .
+DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the DrawFBP-Help.jar file.  This is the standard JavaHelp jar file, and can be found in the `lib` directory on the GitHub `drawfbp` project, or can be downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar .
 
 From then on DrawFBP will remember the location in your `DrawFBPProperties.xml` file.
 
