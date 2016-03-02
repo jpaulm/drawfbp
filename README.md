@@ -33,8 +33,7 @@ Download and install `Boost` - http://www.boost.org/
 Download and install `Lua` - http://www.lua.org/
 
 Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LIB`, `LUA_INCLUDE`, `LUA_LIB`, as follows:
-- Go to `View`/`Property Manager`
-- Under `Property Manager`, select `SolutionSettings`
+- Go to `View/Other Windows/Property Manager/SolutionSettings`
 - Expand, showing `Debug`
 - Expand, showing `UserMacros`
 - Select `UserMacros`
@@ -42,7 +41,7 @@ Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LI
 - Click on that, revealing the 4 macros; change version numbers if necessary
 - Leave the `set this macro as an environment variable in the build environment` option set to selected
  
-or, more simply, in Windows Explorer, just go to `SolutionSettings`, open it, open `UserMacros.props`, and make and save your changes.
+or, more simply, in Windows Explorer, just go to `SolutionSettings`, open it, open `UserMacros.props`, and make, apply and save your changes.
 
 
 Build FBP Project
