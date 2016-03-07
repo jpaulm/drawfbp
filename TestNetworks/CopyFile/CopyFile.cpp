@@ -15,9 +15,9 @@ is a structured representation of the free-form connection list
 	//__declspec(dllimport/dllexport) keywords, combined with extern "C"
 
 
-	extern "C" THRCOMP ThFileWt(_anchor anch);
-	extern "C" THRCOMP ThCopyNL(_anchor anch);
-	extern "C" THRCOMP ThFileRd(_anchor anch);
+	THRCOMP ThFileWt(_anchor anch);
+	THRCOMP ThCopyNL(_anchor anch);
+	THRCOMP ThFileRd(_anchor anch);
 
 	int cap = 2;
 	int elem0 = 0;
