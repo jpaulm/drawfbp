@@ -1,3 +1,6 @@
+//#pragma comment(lib, "lua53")
+//#pragma comment(lib, "CppFBPCore")
+
 #include "StdAfx.h"
 extern "C" {
 #include "lua.h"
@@ -13,6 +16,7 @@ extern "C" {
 
 int thl_recv(lua_State *L) ;
 int thl_drop(lua_State *L) ;
+
 int thl_crep(lua_State *L) ;
 int thl_send(lua_State *L) ;
 int thl_elct(lua_State *L) ;
@@ -75,7 +79,8 @@ THRCOMP ThLua(_anchor proc_anchor)
 
 	value = dfsdrop(proc_anchor, &ptr);
 
-	lua_State *L = lua_open();
+	//lua_State *L = lua_open();   // obsolete
+	lua_State *L = luaL_newstate();
 
 	luaL_openlibs (L);
 

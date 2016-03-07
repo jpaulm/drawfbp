@@ -218,7 +218,7 @@ int Cdl::wait()
 	boost::unique_lock<boost::mutex> lock( mutex );
 
 	boost::chrono::milliseconds msec(500);
-	int res; 
+	boost::cv_status res; 
 	//while ( count > 0 )
 	//{   			
 	res = cond_var.wait_for(lock, msec);

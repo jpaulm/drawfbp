@@ -1,9 +1,9 @@
+#pragma comment(lib, "CppFBPCore")
+#pragma comment(lib, "CppFBPComponents")
 
 #include "stdafx.h"
 #include "thxdef.h"
-//#include <dos.h>  
-//#include <iostream>
-//using namespace std;
+
 
 #define FILE struct _iobuf
 

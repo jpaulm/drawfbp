@@ -1,3 +1,6 @@
+#pragma comment(lib, "CppFBPCore")
+#pragma comment(lib, "CppFBPComponents")
+
 #include "thxdef.h"
 #include <stdio.h>
 

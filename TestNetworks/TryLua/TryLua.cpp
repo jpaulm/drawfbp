@@ -1,3 +1,6 @@
+#pragma comment(lib, "CppFBPCore")
+#pragma comment(lib, "CppFBPComponents")
+
 // TryLua.cpp : Defines the entry point for the console application.
 //
 /*
@@ -29,7 +32,7 @@ void CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
 
 THRCOMP ThLua(_anchor anch);
 
-bool TRACE = true;
+//bool TRACE = true;
 bool NOTRACE = false;
 
 proc_ent P00 = {0, "Gen", "ThLua", ThLua, 0, 0, NOTRACE, 0};

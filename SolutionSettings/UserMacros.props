@@ -2,10 +2,10 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <LUA_LIB>C:\Program Files (x86)\Lua\5.1\lib\lua51.lib</LUA_LIB>
-    <BOOST_INCLUDE>C:\Program Files\Boost\boost_1_54_0</BOOST_INCLUDE>
-    <BOOST_LIB>C:\Program Files\Boost\boost_1_54_0\stage\lib</BOOST_LIB>
-    <LUA_INCLUDE>C:\Program Files (x86)\Lua\5.1\include</LUA_INCLUDE>
+    <LUA_LIB>C:\Program Files (x86)\Lua\5.3</LUA_LIB>
+    <BOOST_INCLUDE>C:\Program Files\Boost\boost_1_60_0</BOOST_INCLUDE>
+    <BOOST_LIB>C:\Program Files\Boost\boost_1_60_0\stage\lib</BOOST_LIB>
+    <LUA_INCLUDE>C:\Program Files (x86)\Lua\5.3\src</LUA_INCLUDE>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />

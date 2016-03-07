@@ -1,3 +1,4 @@
+//#pragma comment(lib, "CppFBPCore")
 #include "StdAfx.h"
 #include "dllheader.h"
 
@@ -16,6 +17,7 @@
   #include <stdio.h>
   #include <string.h>
   #include "compsvcs.h"
+
 
 
   THRCOMP  ThDrop(_anchor proc_anchor)

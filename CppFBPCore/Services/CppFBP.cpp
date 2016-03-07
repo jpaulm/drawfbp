@@ -18,13 +18,13 @@ between processes, connections, ports and IIPs - they will be referred to as fix
 #include "thzcbs.h"
 
 
-void   CppFBP(label_ent * label_blk, bool dynam, FILE * fp, bool timereq)    {
-	
-	Network * network = new Network;
-	_anchor anch;
-	anch.reserved = NULL; 
-	network -> go(label_blk, dynam,  fp,  timereq, anch);
-	delete network;
-}
+	void   CppFBP(label_ent * label_blk, bool dynam, FILE * fp, bool timereq) {
+
+		Network * network = new Network;
+		_anchor anch;
+		anch.reserved = NULL;
+		network->go(label_blk, dynam, fp, timereq, anch);
+		delete network;
+	}
 
 

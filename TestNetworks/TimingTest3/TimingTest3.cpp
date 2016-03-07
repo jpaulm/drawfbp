@@ -1,3 +1,6 @@
+#pragma comment(lib, "CppFBPCore")
+#pragma comment(lib, "CppFBPComponents")
+
 // TimingTest3.cpp : TimingTest1 with subnets
 
 #include "thxdef.h"

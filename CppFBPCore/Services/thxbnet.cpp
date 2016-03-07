@@ -355,7 +355,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 
 
 				//this_proc -> faddr =  curr_proc -> faddr;
-				//this_proc -> must_run = curr_proc -> must_run;
+				this_proc -> must_run = curr_proc -> must_run;  // undeleted as per John Revill
 				cpp = this_proc -> out_ports;
 				while (cpp != 0)  {
 					for (i = 0; i < cpp -> elem_count; i++) {

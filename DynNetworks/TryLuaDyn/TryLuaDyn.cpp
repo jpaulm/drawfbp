@@ -1,3 +1,6 @@
+#pragma comment(lib, "CppFBPCore")
+#pragma comment(lib, "CppFBPComponents")
+
 // TryLuaDyn.cpp : Defines the entry point for the console application.
 //
 

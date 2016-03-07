@@ -1,11 +1,12 @@
 /* 
 external control blocks - used in network definitions
 */
-
+ 
 #ifndef THXANCH
 #define THXANCH
 #include "thxanch.h"
 #endif
+
 
 #define THRCOMP  extern "C"  __declspec(dllexport) int __stdcall  
 #define THRCOMPS  __declspec(dllexport) int __stdcall  // use with components in subnet

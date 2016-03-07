@@ -1,3 +1,6 @@
+#pragma comment(lib, "CppFBPCore")
+#pragma comment(lib, "CppFBPComponents")
+
 #include <stdafx.h>
 #include <stdarg.h>
 #include <stdio.h>
