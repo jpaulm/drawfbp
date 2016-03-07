@@ -7,7 +7,7 @@
 #include <string.h>
 #include "dllheader.h"
 
-extern "C"  __declspec(dllexport) int __stdcall ThCopyNL(_anchor proc_anchor)
+THRCOMP ThCopyNL(_anchor proc_anchor)
 	{
 		void *ptr;
 		void *ptr2;

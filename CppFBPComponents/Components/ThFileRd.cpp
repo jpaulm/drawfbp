@@ -23,7 +23,7 @@ not given.
 #include <string.h>
 #include "compsvcs.h"  
 
-extern "C"  __declspec(dllexport) int __stdcall ThFileRd(_anchor proc_anchor) {
+THRCOMP ThFileRd(_anchor proc_anchor) {
 
 
 		void *ptr;

@@ -31,7 +31,7 @@ With _CrtSetDbgFlag took 443 secs
 void CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
 
 THRCOMP ThGenIps(_anchor anch);
-THRCOMP           ThDrop(_anchor anch);
+THRCOMP ThDrop(_anchor anch);
 
 proc_ent P00 = {0, "Gen0", "ThGenIps", ThGenIps, 0, 0,  0, 0};
 proc_ent P01 = {&P00, "Drop0", "ThDrop", ThDrop, 0, 0,  0, 0};
