@@ -16,7 +16,7 @@ is a structured representation of the free-form connection list
 
 
 	extern "C" THRCOMP ThFileWt(_anchor anch);
-	extern "C" THRCOMP ThCopy(_anchor anch);
+	extern "C" THRCOMP ThCopyNL(_anchor anch);
 	extern "C" THRCOMP ThFileRd(_anchor anch);
 
 	int cap = 2;
@@ -25,7 +25,7 @@ is a structured representation of the free-form connection list
 
 	proc_ent P0 = { NULL, "Read", "ThFileRd", ThFileRd, NULL, NULL,  !TRACE, !COMPOS };
 	proc_ent P1 = { &P0, "Show", "ThFileWt", ThFileWt, NULL, NULL,  !TRACE, !COMPOS };
-	proc_ent P2 = { &P1, "Copy", "ThCopy", ThCopy, NULL, NULL,  !TRACE, !COMPOS };
+	proc_ent P2 = { &P1, "Copy", "ThCopy", ThCopyNL, NULL, NULL,  !TRACE, !COMPOS };
 	//proc_ent P2 = {&P1, "Copy", "ThCopy", ThCopy, NULL, NULL,  !TRACE, !COMPOS;
 
 	IIP I0 = { "..\\..\\TestData\\POMPIERS.FIL" };
