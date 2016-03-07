@@ -39,19 +39,19 @@ THRCOMP ThGenIps(_anchor anch);
 THRCOMP ThDrop(_anchor anch);
 THRCOMP ThPsThru(_anchor anch);
 
-bool TRACE = false;
+bool NOTRACE = false;
 
-proc_ent P00 = {0, "Gen", "ThGenIps",      ThGenIps, 0, 0, TRACE, 0};
-proc_ent P01 = {&P00, "Copy0", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};
-proc_ent P02 = {&P01, "Copy1", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};
-proc_ent P03 = {&P02, "Copy2", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};
-proc_ent P04 = {&P03, "Copy3", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};
-proc_ent P05 = {&P04, "Copy4", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};  // added
-proc_ent P06 = {&P05, "Copy5", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};  // added
-proc_ent P07 = {&P06, "Copy6", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};  // added
-proc_ent P08 = {&P07, "Copy7", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};  // added
-proc_ent P09 = {&P08, "Copy8", "ThPsThru", ThPsThru, 0, 0, TRACE, 0};  // added
-proc_ent P10 = {&P09, "Drop", "ThDrop",    ThDrop,   0, 0,  TRACE, 0};
+proc_ent P00 = {0, "Gen", "ThGenIps",      ThGenIps, 0, 0, NOTRACE, 0};
+proc_ent P01 = {&P00, "Copy0", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};
+proc_ent P02 = {&P01, "Copy1", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};
+proc_ent P03 = {&P02, "Copy2", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};
+proc_ent P04 = {&P03, "Copy3", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};
+proc_ent P05 = {&P04, "Copy4", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};  // added
+proc_ent P06 = {&P05, "Copy5", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};  // added
+proc_ent P07 = {&P06, "Copy6", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};  // added
+proc_ent P08 = {&P07, "Copy7", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};  // added
+proc_ent P09 = {&P08, "Copy8", "ThPsThru", ThPsThru, 0, 0, NOTRACE, 0};  // added
+proc_ent P10 = {&P09, "Drop", "ThDrop",    ThDrop,   0, 0,  NOTRACE, 0};
 IIP I00 = {"2000000"};   //  was 2000000
 cnxt_ent C00 = {0, "!", "", 0, "Gen", "COUNT", 0, &I00, 0};
 cnxt_ent C01 = {&C00, "Gen", "OUT", 0, "Copy0", "IN", 0, 0, 50};
