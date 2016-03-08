@@ -339,7 +339,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					    strcat(procname_in_dll, curr_proc -> comp_name);
 					    strcat(procname_in_dll, "@8");	
 						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
-						this_proc -> faddr  = lpfnDllFunc;
+						//this_proc -> faddr  = lpfnDllFunc;  // leave for now
 
 						if (this_proc -> faddr == NULL) {
 							GetLastError();

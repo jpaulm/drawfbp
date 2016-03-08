@@ -124,8 +124,10 @@ public:
 	int value;                 // holds return code from 'ending' port
 	//    call to THZSEND
 
-	int ( __stdcall *faddr) (_anchor anch);   // address of code to be
+	//int ( __stdcall *faddr) (_anchor anch);   // address of code to be
 	//     executed by this process
+
+	int( *faddr) (_anchor anch);
 
 	_anchor proc_anchor;  // anchor to be passed to service calls
 	struct _IPh   *stack;   //  ptr to first IP in process stack -

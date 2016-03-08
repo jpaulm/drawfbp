@@ -283,7 +283,7 @@ void Process::activate() {
 					    strcat(procname_in_dll, compname);
 					    strcat(procname_in_dll, "@8");	
 						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
-						faddr  = lpfnDllFunc;
+					//	faddr  = lpfnDllFunc;   // leave for now
 
 						if (faddr == NULL) {
 							GetLastError();
