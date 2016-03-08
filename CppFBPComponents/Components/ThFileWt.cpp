@@ -1,6 +1,7 @@
+#include "StdAfx.h"
+
 //#pragma comment(lib, "CppFBPCore")
 
-#include "StdAfx.h"
 #include "dllheader.h"
 
 #include <string.h>

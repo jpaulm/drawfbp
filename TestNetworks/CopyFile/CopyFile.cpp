@@ -15,21 +15,21 @@ is a structured representation of the free-form connection list
 	//__declspec(dllimport/dllexport) keywords, combined with extern "C"
 
 
-	extern "C" THRCOMP ThFileWt(_anchor anch);
-	extern "C" THRCOMP ThCopyNL(_anchor anch);
-	extern "C" THRCOMP ThFileRd(_anchor anch);
+	THRCOMP ThFileWt(_anchor anch);
+	THRCOMP ThCopyNL(_anchor anch);
+	THRCOMP ThFileRd(_anchor anch);
 
 	int cap = 2;
 	int elem0 = 0;
 
 
-	proc_ent P0 = { NULL, "Read", "ThFileRd", ThFileRd, NULL, NULL,  !TRACE, !COMPOS };
+	proc_ent P0 = { NULL, "Read", "ThFileRd", ThFileRd, NULL, NULL,  TRACE, !COMPOS };
 	proc_ent P1 = { &P0, "Show", "ThFileWt", ThFileWt, NULL, NULL,  !TRACE, !COMPOS };
 	proc_ent P2 = { &P1, "Copy", "ThCopy", ThCopyNL, NULL, NULL,  !TRACE, !COMPOS };
 	//proc_ent P2 = {&P1, "Copy", "ThCopy", ThCopy, NULL, NULL,  !TRACE, !COMPOS;
 
-	IIP I0 = { "..\\..\\TestData\\POMPIERS.FIL" };
-	IIP I2 = { "..\\..\\TestData\\output.fil" };
+	IIP I0 = { "..\\TestData\\POMPIERS.FIL" };
+	IIP I2 = { "..\\TestData\\output.fil" };
 	cnxt_ent C0 = { NULL, "!", "", 0, "Read", "OPT", elem0, &I0, 0 };
 	cnxt_ent C1 = { &C0, "Read", "OUT", elem0, "Copy", "IN", elem0, NULL, cap };
 	cnxt_ent C2 = { &C1, "!", "", 0, "Show", "OPT", elem0, &I2, 0 };

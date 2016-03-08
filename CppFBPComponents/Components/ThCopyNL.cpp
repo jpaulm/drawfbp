@@ -1,8 +1,10 @@
+#include "StdAfx.h"
+
 //#pragma comment(lib, "CppFBPCore")
 
 // This component simply makes a shallow copy, drops the original, and sends out the copy
 // Same as ThCopy but written as a non-looper
-#include "StdAfx.h"
+
 #include "compsvcs.h"
 #include <string.h>
 #include "dllheader.h"

@@ -1,3 +1,5 @@
+#include "StdAfx.h"
+
 //#pragma comment(lib, "CppFBPCore")
 
 /* THFILERD is a DOS file reader.  It accepts a filename as an input on port
@@ -15,7 +17,7 @@ DEFAULTS:
 NONE.  The filename is required.  A message will be produced if it is
 not given.
 */
-#include "StdAfx.h"
+
 #include "dllheader.h"
 
 //#include <setjmp.h>
