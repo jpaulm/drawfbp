@@ -137,17 +137,17 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq, _an
 	while (this_proc != 0)
 	{
 		this_proc -> network = this;
-		bool attsw = TRUE;
+		this_proc-> self_starting = TRUE;
 		cpp = this_proc -> in_ports;
 		while (cpp != 0) {	 
 			for (int i = 0; i < cpp -> elem_count; i++) {
 				if (cpp -> elem_list[i].gen.connxn != 0 &&
 					! cpp -> elem_list[i].is_IIP)
-					attsw = FALSE;
+					this_proc->self_starting = FALSE;
 			}
 			cpp = cpp -> succ;
 		}
-		if (attsw)
+		if (this_proc -> self_starting)
 		{
 			// add to ready chain
 			//this_proc -> status = INITIATED;
@@ -254,7 +254,7 @@ void Process::activate() {
 		char dllname[255];
 		char szBuf[80];
 		typedef int (CALLBACK* LPFNDLLFUNC)(_anchor);
-        LPFNDLLFUNC lpfnDllFunc; 
+        LPFNDLLFUNC lpfnDllFunc; 		
 
 		if (status == NOT_STARTED) {
 			status = ACTIVE;
@@ -283,7 +283,7 @@ void Process::activate() {
 					    strcat(procname_in_dll, compname);
 					    strcat(procname_in_dll, "@8");	
 						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
-					//	faddr  = lpfnDllFunc;   // leave for now
+						//faddr  = lpfnDllFunc;   // leave for now
 
 						if (faddr == NULL) {
 							GetLastError();
@@ -305,8 +305,15 @@ void Process::activate() {
 void Process::run() {
 
 	//proc -> status = ACTIVE;
+
+	/*
+	run_test() returns 0 if data waiting
+	1 if no data waiting, but not all upstream connections are closed
+	2 if no input ports or input ports are only IIP ports or all input ports closed
+	*/
+
 	for( ; ; ) {
-		if (2 == run_test()  && ! must_run) 
+		if (2 == run_test()  && ! must_run && ! self_starting) 
 			break;
 		Port * cpp = in_ports;
 		while (cpp != 0) {	       
@@ -426,6 +433,12 @@ void inline Process::dormwait() {
 }
 
 int Process::run_test() {
+
+	/*  
+	returns 0 if data waiting
+	1 if no data waiting, but not all upstream connections are closed
+	2 if no input ports or input ports are only IIP ports or all input ports closed
+	*/
 	int res  = 2;
 	Cnxt * cnp;
 	Port * cpp = in_ports;

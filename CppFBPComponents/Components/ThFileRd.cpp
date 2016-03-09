@@ -25,7 +25,8 @@ not given.
 #include <string.h>
 #include "compsvcs.h"  
 
-THRCOMP ThFileRd(_anchor proc_anchor) {
+ THRCOMP ThFileRd(_anchor proc_anchor)
+ {
 
 
 		void *ptr;

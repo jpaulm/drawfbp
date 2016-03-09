@@ -143,6 +143,7 @@ public:
 	bool composite;        //  process is 'mother' of a subnet
 
 	long owned_IPs;       // number of owned IPs
+	bool self_starting = FALSE;
 
 	boost::thread thread;   
 	void run();
@@ -169,7 +170,7 @@ public:
 
 
 	Process(){
-		Process::status = NOT_STARTED ;
+		Process::status = NOT_STARTED ;		
 	}
 
 	 
