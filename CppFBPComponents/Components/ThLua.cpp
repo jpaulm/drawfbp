@@ -1,18 +1,13 @@
-//#pragma comment(lib, "lua53")
-//#pragma comment(lib, "CppFBPCore")
 
 #include "StdAfx.h"
+
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 }
-#include "dllheader.h"
 #include "compsvcs.h"
-//#define GEN_BOOST
-//#include "thzcbs.h"
 #include <string.h>
-
 
 int thl_recv(lua_State *L) ;
 int thl_drop(lua_State *L) ;
@@ -175,9 +170,9 @@ int thl_crep(lua_State *L) {
 	_anchor * anch = (_anchor *) lua_topointer(L, -1);
 	//Process * proc = (Process *) anch -> reserved;
 	
-	int len = strlen(tptr);
+	auto len = strlen(tptr);
 	++len;                          // it's a string, so leave room for terminating null!
-	int value = dfscrep(* anch, &IPptr, len, "A");  
+	int value = dfscrep(* anch, &IPptr, static_cast<int>(len), "A");  
 
 	strcpy((char *) IPptr , tptr);
 

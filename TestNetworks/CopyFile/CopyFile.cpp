@@ -1,7 +1,15 @@
-#pragma comment(lib, "CppFBPCore")
-#pragma comment(lib, "CppFBPComponents")
 
 #include "thxdef.h"
+
+#pragma comment(lib, "CppFBPCore")
+
+#if 1
+#pragma comment(lib, "CppFBPComponents")
+#else
+#pragma comment(lib, "CppFBPComponentsDll")
+#endif
+
+
 
 #include <stdio.h>
 #define FILE struct _iobuf

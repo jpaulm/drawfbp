@@ -155,8 +155,8 @@ void main(int argc, char *argv[])  {
 		proc_ptr = label_ptr -> proc_ptr;
 		
 		while (proc_ptr != 0) {
-			int j = strlen(proc_ptr -> comp_name) - 1;	
-			int k = j;
+			auto j = strlen(proc_ptr -> comp_name) - 1;	
+			auto k = j;
 
 			while (j >= 0) {
 				if (proc_ptr -> comp_name[j] == '/')
@@ -276,8 +276,8 @@ void main(int argc, char *argv[])  {
 				strcpy(gen_ptr, "\"");
 				gen_ptr = strchr(gen_ptr,'\0');
 
-				int j = strlen(IIPptr -> datapart);
-				for (int i = 0; i < j; i++) {
+				auto j = strlen(IIPptr -> datapart);
+				for (auto i = decltype(j) {0}; i < j; i++) {
 					if (IIPptr -> datapart[i] == '\\')
 						strcpy (gen_ptr, "\\\\");
 					else

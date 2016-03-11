@@ -1,8 +1,6 @@
 //#pragma comment(lib, "CppFBPCore")
 
 #include "StdAfx.h"
-#include "dllheader.h"
-
 #include <string.h>
 #include "compsvcs.h"
 /* THFILEWT writes incoming entities to the file named on port OPT and

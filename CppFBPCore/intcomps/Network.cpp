@@ -186,7 +186,7 @@ void Network::go(label_ent * label_blk, bool dynam, FILE * fp, bool timereq, _an
 	if (strcmp(name, "SUBNET") != 0) {
 	  //_CrtDumpMemoryLeaks();
 	  //char c; 
-	  printf("Press enter to terminate\n",secs);
+	  printf("Press enter to terminate\n");
 	  std::cin.get();  // to see console
 	  //system("pause");  // to see console
 	  exit(0);

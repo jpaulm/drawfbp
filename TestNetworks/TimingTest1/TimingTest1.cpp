@@ -1,5 +1,11 @@
 #pragma comment(lib, "CppFBPCore")
+
+#if 1
 #pragma comment(lib, "CppFBPComponents")
+#else
+#pragma comment(lib, "CppFBPComponentsDll")
+#endif
+
 
 // TimingTest1.cpp : Defines the entry point for the console application.
 #include "thxdef.h"

@@ -1,7 +1,5 @@
 //#pragma comment(lib, "CppFBPCore")
 #include "StdAfx.h"
-#include "dllheader.h"
-
 #include <string.h>
 #include "compsvcs.h"
 // This component simply makes a shallow copy, drops the original, and sends out the copy to all elements of the output port

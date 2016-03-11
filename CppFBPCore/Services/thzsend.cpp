@@ -25,21 +25,21 @@ int elem_no = 0;
 	port_ent pe;
 
 	if (p == 0) 
-		strcpy (port_name, port);
+		strcpy_s (port_name, port);
 	else {
 		q = strchr(p, ']');
-		long n = q - p - 1;
+		auto n = q - p - 1;
 		char no[10];		
-		strncpy(no, p + 1, n);
+		strncpy_s(no, p + 1, n);
 		elem_no = atoi(no);
 		char * r = port;
-		strncpy (port_name, port, p - r);
+		strncpy_s (port_name, port, p - r);
 		port_name[p - r] = '\0';
 	}
 
 	//port_ent* pe = (port_ent *) malloc(sizeof(port_ent));   
 
-	strcpy(pe.port_name, port_name);
+	strcpy_s(pe.port_name, port_name);
 	Port * cpp = proc -> out_ports;
 	while (cpp != 0)
 	{
@@ -102,9 +102,9 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 	IPptr = (IPh   *) *ptr - 1;       /* back up size of header */
 	tptr = (IP *)IPptr;
 	if (tptr -> datapart[IPptr -> IP_size] != guard_value)
-		MSG1("Guard byte corrupted\n", proc->procname);
+		MSG1("Guard byte corrupted: '%s'\n", proc->procname);
 	if (IPptr -> on_stack)
-		MSG1("IP on stack\n", proc->procname);
+		MSG1("IP on stack: '%s'\n", proc->procname);
 
 	if (cpp -> direction != OUTPUT) {
 		MSG2("%s %s SEND Wrong direction\n",
@@ -160,7 +160,7 @@ int thzsend(Process *proc, void **ptr, port_ent *peptr, int elem_no)
 	}
 
 	if (IPptr -> owner != proc)
-		MSG1("IP header corrupted\n", proc->procname);
+		MSG1("IP header corrupted: '%s'\n", proc->procname);
 	IPptr -> owner = cnp;
 	//optr = IPptr -> prev_IP;
 	//qptr = IPptr -> next_IP;

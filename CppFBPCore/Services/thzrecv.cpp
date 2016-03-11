@@ -24,21 +24,21 @@ int thzrecvc(Process *proc, void **ptr, char * port,
 	port_ent pe;
 
 	if (p == 0) 
-		strcpy (port_name, port);
+		strcpy_s (port_name, port);
 	else {
 		q = strchr(p, ']');
-		long n = q - p - 1;
+		auto n = q - p - 1;
 		char no[10];		
-		strncpy(no, p + 1, n);
+		strncpy_s(no, p + 1, n);
 		elem_no = atoi(no);
 		char * r = port;
-		strncpy (port_name, port, p - r);
+		strncpy_s (port_name, port, p - r);
 		port_name[p - r] = '\0';
 	}
 
 	//port_ent* pe = (port_ent *) malloc(sizeof(port_ent));   
 
-	strcpy(pe.port_name, port_name);
+	strcpy_s(pe.port_name, port_name);
 	Port * cpp = proc -> in_ports;
 	while (cpp != 0)
 	{
@@ -89,8 +89,8 @@ int thzrecv(Process *proc, void **ptr, port_ent *peptr, int elem_no,
 
 	if (cpp -> elem_list[elem_no].is_IIP) {
 		IIPptr = cpp -> elem_list[elem_no].gen.IIPptr;
-		int j = strlen(IIPptr -> datapart);
-		value = thzcrep(proc, &created_ptr, j + 1, "OPTIONS");
+		auto j = strlen(IIPptr -> datapart);
+		value = thzcrep(proc, &created_ptr, static_cast<int>(j + 1), "OPTIONS");
 		created_IIP_ptr = (IPh   *) created_ptr - 1;
 		memcpy (created_ptr, IIPptr -> datapart, j + 1);
 		cpp -> elem_list[elem_no].closed = TRUE;
@@ -167,9 +167,9 @@ X: IPptr = cnp -> first_IPptr;
 
 	tptr = (IP *) IPptr;
 	if (tptr -> datapart[IPptr -> IP_size] != guard_value)
-		MSG1("Guard byte corrupted\n", proc->procname);
+		MSG1("Guard byte corrupted: '%s'\n", proc->procname);
 	if (IPptr -> owner != cnp)
-		MSG1("IP header corrupted\n", proc->procname);
+		MSG1("IP header corrupted: '%s'\n", proc->procname);
 	*ptr = tptr -> datapart;
 	*size = IPptr -> IP_size;
 	*typep = IPptr -> type;

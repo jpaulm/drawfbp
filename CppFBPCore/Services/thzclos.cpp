@@ -22,21 +22,21 @@ int thzclosc(Process *proc, char * port ){
 	port_ent pe;
 
 	if (p == 0) 
-		strcpy (port_name, port);
+		strcpy_s (port_name, port);
 	else {
 		q = strchr(p, ']');
-		long n = q - p - 1;
+		auto n = q - p - 1;
 		char no[10];		
-		strncpy(no, p + 1, n);
+		strncpy_s(no, p + 1, n);
 		elem_no = atoi(no);
 		char * r = port;
-		strncpy (port_name, port, p - r);
+		strncpy_s (port_name, port, p - r);
 		port_name[p - r] = '\0';
 	}
 
 	//port_ent* pe = (port_ent *) malloc(sizeof(port_ent));   
 
-	strcpy(pe.port_name, port_name);
+	strcpy_s(pe.port_name, port_name);
 	Port * cpp = proc -> in_ports;
 	while (cpp != 0)
 	{

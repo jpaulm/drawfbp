@@ -1,7 +1,15 @@
-#pragma comment(lib, "CppFBPCore")
-#pragma comment(lib, "CppFBPComponents")
 
 #include "StdAfx.h"
+
+#pragma comment(lib, "CppFBPCore")
+
+#if 1
+#pragma comment(lib, "CppFBPComponents")
+#else
+#pragma comment(lib, "CppFBPComponentsDll")
+#endif
+
+
 #include "thxdef.h"
 #include <stdio.h>
 #define FILE struct _iobuf
@@ -11,11 +19,11 @@ void  CppSub(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq, _ancho
 THRCOMP InfQueue(_anchor proc_anchor)
 {
 	
-// use THRCOMPS within subnet
-THRCOMPS  ThFileRd(anchor anch);
-THRCOMPS  ThFileWt(anchor anch);
-THRCOMPS  SubIn(anchor anch);
-THRCOMPS  SubOut(anchor anch);
+
+THRCOMP  ThFileRd(anchor anch);
+THRCOMP  ThFileWt(anchor anch);
+THRCOMP  SubIn(anchor anch);
+THRCOMP  SubOut(anchor anch);
 
 proc_ent P0 = {0, "SubIn", "SubIn", SubIn, 0, 0, !TRACE, 0};
 proc_ent P1 = {&P0, "Ecrire", "ThFileWt", ThFileWt, 0, 0, !TRACE, 0};

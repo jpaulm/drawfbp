@@ -23,11 +23,11 @@
    pptr -> stack = IPptr -> next_IP;
    tptr = (IP *) IPptr;
    if (tptr -> datapart[IPptr -> IP_size] != guard_value)
-      MSG1("Guard byte corrupted\n", pptr -> procname);
+      MSG1("Guard byte corrupted: '%s'\n", pptr -> procname);
    if (IPptr -> owner != pptr)
-     MSG1("IP header corrupted\n", pptr->procname);
+     MSG1("IP header corrupted: '%s'\n", pptr->procname);
    if (! IPptr -> on_stack)
-     MSG1("IP not on stack\n", pptr->procname);
+     MSG1("IP not on stack: '%s'\n", pptr->procname);
 
    *ptr = tptr -> datapart;
    *size = IPptr -> IP_size;

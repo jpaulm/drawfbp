@@ -1,6 +1,5 @@
 //#pragma comment(lib, "CppFBPCore")
 #include "StdAfx.h"
-#include "dllheader.h"
 
 /* THDROP drops all entities received on IN port.
 

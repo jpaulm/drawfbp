@@ -50,8 +50,8 @@
        char fname[256];
        FILE *fp = NULL;
 
-       strcpy(fname,comp);
-	   strcat(fname,".atr");
+       strcpy_s(fname,comp);
+	   strcat_s(fname,".atr");
 	   FILE* pFile;
 	   #ifdef WIN32
 	   fopen_s(&pFile, fname, "r");

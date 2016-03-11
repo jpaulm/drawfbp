@@ -45,8 +45,8 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 		while (curr_proc != 0) {
 			//this_proc = (Process *) malloc(sizeof(Process));
 			this_proc = new Process();
-			strcpy(this_proc -> procname, curr_proc -> proc_name);
-			strcpy(this_proc -> compname, curr_proc -> comp_name);
+			strcpy_s(this_proc -> procname, curr_proc -> proc_name);
+			strcpy_s(this_proc -> compname, curr_proc -> comp_name);
 
 			this_proc -> network = network;
 
@@ -65,7 +65,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 			this_proc -> out_ports = 0;
 			this_proc -> begin_port = 0;
 			this_proc -> end_port = 0;
-			strcpy(this_proc -> int_pe.port_name, " ");
+			strcpy_s(this_proc -> int_pe.port_name, " ");
 			this_proc -> int_pe.elem_count = 1;
 			this_proc -> int_pe.cpptr = 0;
 			this_proc -> int_pe.ret_code = 0;
@@ -136,7 +136,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 				// this shouldn't happen more than once for a given port name... 
 
 				cpp =  (Port *)malloc(sizeof(Port) + MAXELEMNO * sizeof(cp_elem));
-				strcpy(cpp -> port_name, curr_cnxt -> downstream_port_name);
+				strcpy_s(cpp -> port_name, curr_cnxt -> downstream_port_name);
 				cpp -> elem_count = i;
 				cpp -> direction = INPUT;
 				cpp -> succ = downstream_proc -> in_ports;
@@ -192,13 +192,13 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 										cpp -> elem_list[i].is_IIP = TRUE;
 									else {
 										cnxt_ptr -> fed_proc = downstream_proc;
-										strcpy(cnxt_ptr -> name, cnxt_ptr -> fed_proc -> procname); 
-										strcat(cnxt_ptr -> name, ".");
-										strcat(cnxt_ptr -> name, cpp2 -> port_name);
+										strcpy_s(cnxt_ptr -> name, cnxt_ptr -> fed_proc -> procname); 
+										strcat_s(cnxt_ptr -> name, ".");
+										strcat_s(cnxt_ptr -> name, cpp2 -> port_name);
 										if (i > 0) {
 											char no[12];
-											sprintf(no, "[%d]", i); 
-											strcat(cnxt_ptr -> name, no);
+											sprintf_s(no, "[%d]", i); 
+											strcat_s(cnxt_ptr -> name, no);
 										}
 									}
 								}
@@ -232,13 +232,13 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 						cpp -> elem_list[i].gen.connxn = cnxt_ptr;
 
 					cnxt_ptr -> fed_proc = downstream_proc;
-					strcpy(cnxt_ptr -> name, cnxt_ptr -> fed_proc -> procname); 
-					strcat(cnxt_ptr -> name, ".");
-					strcat(cnxt_ptr -> name, cpp -> port_name);
+					strcpy_s(cnxt_ptr -> name, cnxt_ptr -> fed_proc -> procname); 
+					strcat_s(cnxt_ptr -> name, ".");
+					strcat_s(cnxt_ptr -> name, cpp -> port_name);
 					if (i > 0) {
 						char no[12];
-						sprintf(no, "[%d]", i); 
-						strcat(cnxt_ptr -> name, no);
+						sprintf_s(no, "[%d]", i); 
+						strcat_s(cnxt_ptr -> name, no);
 					}
 					//cnxt_ptr -> fedproc_wtg_to_recv = FALSE;
 				}
@@ -272,7 +272,7 @@ int thxbnet(label_ent * label_ptr, Process *mother,
 				// this shouldn't happen more than once for a given port name... 
 
 				cpp =  (Port *)malloc(sizeof(Port) + MAXELEMNO * sizeof(cp_elem));
-				strcpy(cpp -> port_name, curr_cnxt -> upstream_port_name);
+				strcpy_s(cpp -> port_name, curr_cnxt -> upstream_port_name);
 				cpp -> elem_count = i;
 				cpp -> direction = OUTPUT;
 				cpp -> succ = upstream_proc -> out_ports;
@@ -318,33 +318,33 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					SetErrorMode(SEM_NOOPENFILEERRORBOX);
 
 					if (curr_proc -> comp_name[0] == '\0') {
-						strcpy(szBuf, "Component name not filled in");
+						strcpy_s(szBuf, "Component name not filled in");
 						MessageBox(NULL, szBuf, "Library Functions", MB_ICONHAND);
 					}
 
 					/* Load the CppFBPComponents module. This logic assumes all components in one dll file */
 					
-					strcpy(dllname, "CppFBPComponents.dll");
+					strcpy_s(dllname, "CppFBPComponents.dll");
 					hDLL = LoadLibrary(dllname);
 					if (hDLL == NULL) {
-						strcpy(szBuf, "LoadLibrary failed: ");
-						strcat(szBuf, dllname);
+						strcpy_s(szBuf, "LoadLibrary failed: ");
+						strcat_s(szBuf, dllname);
 						MessageBox(NULL, szBuf, "Library Functions", MB_ICONHAND);
 					}
 					else {
 
 						/* Retrieve the address of the actual function. */
 						
-						strcpy(procname_in_dll, "_");
-					    strcat(procname_in_dll, curr_proc -> comp_name);
-					    strcat(procname_in_dll, "@8");	
+						strcpy_s(procname_in_dll, "_");
+					    strcat_s(procname_in_dll, curr_proc -> comp_name);
+					    strcat_s(procname_in_dll, "@8");	
 						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
 						this_proc -> faddr  = lpfnDllFunc;
 
 						if (this_proc -> faddr == NULL) {
 							GetLastError();
-							strcpy(szBuf, "GetProcAddress failed: ");
-							strcat(szBuf, procname_in_dll);
+							strcpy_s(szBuf, "GetProcAddress failed: ");
+							strcat_s(szBuf, procname_in_dll);
 							MessageBox(NULL, szBuf, "Library Functions", MB_ICONHAND);
 						}
 

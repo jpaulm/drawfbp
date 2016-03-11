@@ -16,7 +16,6 @@ NONE.  The filename is required.  A message will be produced if it is
 not given.
 */
 #include "StdAfx.h"
-#include "dllheader.h"
 
 //#include <setjmp.h>
 #include <stdio.h>
@@ -32,7 +31,7 @@ THRCOMP ThFileRd(_anchor proc_anchor) {
 		int value;
 		long size;
 		char *type;
-		unsigned long len;
+		size_t len;
 		port_ent port_tab[2];
 		FILE *fp;
 
@@ -63,7 +62,7 @@ THRCOMP ThFileRd(_anchor proc_anchor) {
 			len = strlen(string);
 			if (string[len - 1] == '\n')
 				len = len - 1;
-			value = dfscrep(proc_anchor, &ptr, len, "A");
+			value = dfscrep(proc_anchor, &ptr, static_cast<long>(len), "A");
 			memcpy(ptr, string, len);
 			value = dfssend(proc_anchor, &ptr, &port_tab[1], 0);
 		}

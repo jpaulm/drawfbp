@@ -1,7 +1,5 @@
 
-#define THRCOMP  extern "C"  __declspec(dllexport) int __stdcall  
-#define THRCOMPS  __declspec(dllexport) int __stdcall  // use with components in subnet
- 
+#define THRCOMP  int __stdcall  
 
 #ifndef THXANCH
 #define THXANCH

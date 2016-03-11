@@ -1,0 +1,18 @@
+﻿  InfQueue.cpp
+  SubIn.cpp
+  SubOut.cpp
+  stdafx.cpp
+  ThConcat.cpp
+  ThCopy.cpp
+  ThCopyNL.cpp
+  ThDrop.cpp
+  ThFileRd.cpp
+  ThFileWt.cpp
+  ThGenIps.cpp
+  ThLua.cpp
+  ThPsThru.cpp
+  ThReplStr.cpp
+  ThRevers.cpp
+  ThSort.cpp
+  dfs.cpp
+  CppFBPComponents.vcxproj -> C:\Users\john\Documents\GitHub\cppfbp\Release\CppFBPComponents.lib

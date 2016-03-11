@@ -77,9 +77,6 @@
     <ClInclude Include="headers\compsvcs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\dllheader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\fbp.h">
       <Filter>Header Files</Filter>
     </ClInclude>

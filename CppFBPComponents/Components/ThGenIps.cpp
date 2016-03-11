@@ -1,10 +1,9 @@
-//#pragma comment(lib, "CppFBPCore")
+
 #include "StdAfx.h"
-#include "dllheader.h"
-  
-  #include <string.h>
-  #include <stdio.h>
-  #include <stdlib.h>
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
   #include "compsvcs.h"
 
