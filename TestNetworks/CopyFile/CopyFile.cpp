@@ -31,9 +31,9 @@ is a structured representation of the free-form connection list
 	int elem0 = 0;
 
 
-	proc_ent P0 = { NULL, "Read", "ThFileRd", ThFileRd, NULL, NULL,  !TRACE, !COMPOS };
-	proc_ent P1 = { &P0, "Show", "ThFileWt", ThFileWt, NULL, NULL,  !TRACE, !COMPOS };
-	proc_ent P2 = { &P1, "Copy", "ThCopy", ThCopyNL, NULL, NULL,  !TRACE, !COMPOS };
+	proc_ent P0 = { NULL, "Read", "ThFileRd", ThFileRd, NULL, NULL,  TRACE, !COMPOS };
+	proc_ent P1 = { &P0, "Show", "ThFileWt", ThFileWt, NULL, NULL,  TRACE, !COMPOS };
+	proc_ent P2 = { &P1, "Copy", "ThCopyNL", ThCopyNL, NULL, NULL,  TRACE, !COMPOS };
 	//proc_ent P2 = {&P1, "Copy", "ThCopy", ThCopy, NULL, NULL,  !TRACE, !COMPOS;
 
 	IIP I0 = { "..\\..\\TestData\\POMPIERS.FIL" };

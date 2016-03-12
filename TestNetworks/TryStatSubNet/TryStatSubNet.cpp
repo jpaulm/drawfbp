@@ -2,7 +2,14 @@
 #include "stdafx.h"
 
 #pragma comment(lib, "CppFBPCore")
+
+#if 1
 #pragma comment(lib, "CppFBPComponents")
+#else
+#pragma comment(lib, "CppFBPComponentsDll")
+#endif
+
+#pragma comment(lib, "TestSubnets")  /// jr dll  linkage - (should be static ??
 
 #include "thxdef.h"
 

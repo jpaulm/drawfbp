@@ -124,8 +124,10 @@ public:
 	int value;                 // holds return code from 'ending' port
 	//    call to THZSEND
 
-	int ( __stdcall *faddr) (_anchor anch);   // address of code to be
+	//int ( __stdcall *faddr) (_anchor anch);   // address of code to be
 	//     executed by this process
+
+	int(__stdcall *faddr) (_anchor anch);
 
 	_anchor proc_anchor;  // anchor to be passed to service calls
 	struct _IPh   *stack;   //  ptr to first IP in process stack -
@@ -141,6 +143,7 @@ public:
 	bool composite;        //  process is 'mother' of a subnet
 
 	long owned_IPs;       // number of owned IPs
+	bool self_starting = 0; /// FALSE
 
 	boost::thread thread;   
 	void run();
@@ -167,7 +170,7 @@ public:
 
 
 	Process(){
-		Process::status = NOT_STARTED ;
+		Process::status = NOT_STARTED ;		
 	}
 
 	 

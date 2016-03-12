@@ -19,12 +19,12 @@ void CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
 
 THRCOMP ThGenIps(_anchor anch);
 THRCOMP ThReplStr(_anchor anch);
-THRCOMP ThConcat(_anchor anch);
+THRCOMP ThConcatStr(_anchor anch);
 THRCOMP ThDrop(_anchor anch);
 
 proc_ent P00 = {0, "Gen", "ThGenIps", ThGenIps, 0, 0,  0, 0};
 proc_ent P01 = {&P00, "Repl", "ThReplStr", ThReplStr, 0, 0,  0, 0};
-proc_ent P02 = {&P01, "Concat", "ThConcat", ThConcat, 0, 0,  0, 0};
+proc_ent P02 = {&P01, "Concat", "ThConcatStr", ThConcatStr, 0, 0,  0, 0};
 proc_ent P03 = {&P02, "Drop", "ThDrop", ThDrop, 0, 0,  0, 0};
 
 IIP I00 = {"2000000"};

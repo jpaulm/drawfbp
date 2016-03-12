@@ -1,8 +1,7 @@
-﻿  InfQueue.cpp
-  SubIn.cpp
+﻿  SubIn.cpp
   SubOut.cpp
   stdafx.cpp
-  ThConcat.cpp
+  ThConcatStr.cpp
   ThCopy.cpp
   ThCopyNL.cpp
   ThDrop.cpp

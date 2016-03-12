@@ -7,7 +7,7 @@
 
 // This is totally different from the Concat's in JavaFBP, C#FBP and JSFBP - probably the name should be changed... 
 
-THRCOMP ThConcat(_anchor proc_anchor)
+THRCOMP ThConcatStr(_anchor proc_anchor)
 {
 	void *ptr;
 	//void *ptr2;

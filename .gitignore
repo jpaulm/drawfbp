@@ -20,6 +20,7 @@ build
 *.exe
 *.opensdf
 *.opendb
+output.fil
 
 # System's crap
 Thumbs.db

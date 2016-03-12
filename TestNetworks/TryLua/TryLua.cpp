@@ -40,14 +40,12 @@ void CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
 
 THRCOMP ThLua(_anchor anch);
 
-//bool TRACE = true;
-bool NOTRACE = false;
 
-proc_ent P00 = {0, "Gen", "ThLua", ThLua, 0, 0, NOTRACE, 0};
-proc_ent P01 = {&P00, "Gen2", "ThLua", ThLua, 0, 0, NOTRACE, 0};
-proc_ent P02 = {&P01, "Concat", "ThLua",  ThLua, 0, 0, NOTRACE, 0};
-proc_ent P03 = {&P02, "Repl", "ThLua",  ThLua, 0, 0, NOTRACE, 0};
-proc_ent P04 = {&P03, "Drop", "ThLua",  ThLua, 0, 0, NOTRACE, 0};
+proc_ent P00 = {0, "Gen", "ThLua", ThLua, 0, 0, !TRACE, 0};
+proc_ent P01 = {&P00, "Gen2", "ThLua", ThLua, 0, 0, !TRACE, 0};
+proc_ent P02 = {&P01, "Concat", "ThLua",  ThLua, 0, 0, !TRACE, 0};
+proc_ent P03 = {&P02, "Repl", "ThLua",  ThLua, 0, 0, !TRACE, 0};
+proc_ent P04 = {&P03, "Drop", "ThLua",  ThLua, 0, 0, !TRACE, 0};
 
 cnxt_ent C00 = {0, "Gen", "OUT", 0, "Concat", "IN", 0, 0, 2};
 cnxt_ent C01 = {&C00, "Gen2", "OUT", 0, "Concat", "IN", 1, 0, 2};

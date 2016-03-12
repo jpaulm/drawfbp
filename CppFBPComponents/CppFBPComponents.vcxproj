@@ -172,14 +172,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\TestSubnets\Subnets\InfQueue.cpp" />
     <ClCompile Include="Components\SubIn.cpp" />
     <ClCompile Include="Components\SubOut.cpp" />
     <ClCompile Include="..\CppFBPCore\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Components\ThConcat.cpp" />
+    <ClCompile Include="Components\ThConcatStr.cpp" />
     <ClCompile Include="Components\ThCopy.cpp" />
     <ClCompile Include="Components\ThCopyNL.cpp" />
     <ClCompile Include="Components\ThDrop.cpp" />

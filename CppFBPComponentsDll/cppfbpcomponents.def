@@ -1,7 +1,7 @@
 EXPORTS
 SubIn
 SubOut
-ThConcat
+ThConcatStr
 ThCopy
 ThCopyNL
 ThDrop
