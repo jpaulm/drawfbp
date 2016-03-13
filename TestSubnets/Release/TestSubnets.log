@@ -1,7 +1,0 @@
-﻿  stdafx.cpp
-  InfQueue.cpp
-     Creating library C:\Users\john\Documents\GitHub\cppfbp\Release\TestSubnets.lib and object C:\Users\john\Documents\GitHub\cppfbp\Release\TestSubnets.exp
-  Generating code
-  All 1216 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  TestSubnets.vcxproj -> C:\Users\john\Documents\GitHub\cppfbp\Release\TestSubnets.dll
