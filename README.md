@@ -73,13 +73,13 @@ The projects whose names are of the form `xxxDyn` are "dynamic" versions of the 
 Testing "TimingTest1" (console application)
 ---
 
-This test case has 5 Generate/Drop process pairs, over each of which 1,000,000 IPs travel concurrently.
+This test case has 5 Generate/Drop process pairs, over each of which 1,000,000 IPs travel concurrently.  This means 5,000,000 each of `create IP`, `send`, `receive`, and `drop`.  
 
 To run it, right click on `TimingTest1` in Solution Explorer; Debug/Start new instance
 
 You should see something like
 
-    Elapsed time in seconds: 35.000
+    Elapsed time in seconds: 180.000
     Press any key to continue . . .
 
 The elapsed time will of course depend on your machine processing speed, number of cores, etc.
