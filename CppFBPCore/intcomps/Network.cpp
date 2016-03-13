@@ -279,11 +279,9 @@ void Process::activate() {
 
 						/* Retrieve the address of the actual function. */
 						
-						strcpy(procname_in_dll, "_");
-					    strcat(procname_in_dll, compname);
-					    strcat(procname_in_dll, "@8");	
-						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
-						//faddr  = lpfnDllFunc;   // leave for now
+						strcpy_s(procname_in_dll, compname);
+
+						faddr = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
 
 						if (faddr == NULL) {
 							GetLastError();

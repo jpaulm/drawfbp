@@ -335,11 +335,9 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 
 						/* Retrieve the address of the actual function. */
 						
-						strcpy_s(procname_in_dll, "_");
-					    strcat_s(procname_in_dll, curr_proc -> comp_name);
-					    strcat_s(procname_in_dll, "@8");	
-						lpfnDllFunc = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
-						//this_proc -> faddr  = lpfnDllFunc;  // leave for now
+						strcpy_s(procname_in_dll, curr_proc -> comp_name);
+						
+						this_proc->faddr = (LPFNDLLFUNC)	GetProcAddress(hDLL, procname_in_dll);
 
 						if (this_proc -> faddr == NULL) {
 							GetLastError();
