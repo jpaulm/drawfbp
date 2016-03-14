@@ -67,7 +67,7 @@ Currently, no label at beginning, and no subnet support.
 
 thxscan scans off the free form network definition, generating fixed format definitions (FFNDs)
 
-It has been converted to support NoFlo .fbp notation...
+Unlike NoFlo, thxscan does not treat an end of line (EOL) as an end of clause
 
 thxscan is either used by Thxgen to generate FFNDs, or by CppFBP in dynamic mode
 */
@@ -99,7 +99,7 @@ int thxscan(FILE *fp, label_ent *label_tab, char file_name[10])
 	bool eq_arrow;
 	IIP *IIP_ptr;
 	//FILE *fp2;
-	int res;
+	//int res;
 
 	ret_code = 0;
 	
@@ -158,10 +158,7 @@ X2:
 
 	proc_curr = find_or_build_proc(procname);
 
-	res = scan_blanks(fp);
-	
-	if (2 == res)
-		goto bigloop; 
+	scan_blanks(fp);	
 	
 	goto X3;
 
@@ -227,12 +224,10 @@ NN2:
 NB1: 
 	// comp scanned off, if any
 	strcpy_s(upstream_name, procname);	    // in case this proc is the upstream of another arrow
-	res = scan_blanks(fp);
 	
-	if (res == 2)   {  
-		//IIPlen = -1;          //  EOL encountered among blanks?
-		goto bigloop;
-	}
+	scan_blanks(fp);
+
+
 	TCO(NQ1,'?');
 	proc_curr->trace = 1;
 NQ1: 
@@ -242,12 +237,9 @@ NQ1:
 	//  cnxt_hold = 0;
 	//}
 
-	res = scan_blanks(fp);
 	
-	if (res == 2)  {        //  EOL encountered among blanks?
-		//IIPlen = -1;
-		goto bigloop;
-	}
+	scan_blanks(fp);
+
 
 	//o_ptr = out_str;
 	//TC(outport,'*');     /* automatic port */
@@ -256,15 +248,9 @@ NQ1:
 	//goto GUy;
 
 //outport:  -- same as upstream port
-	res = scan_blanks(fp);
+	
+	//scan_blanks(fp);
 
-	// now we test for end of clause
-	// if scan_blanks found an EOL, res will be set to 2, not 0 - if so, it is end of clause
-
-	if (res == 2) {
-		//IIPlen = -1;
-		goto bigloop;
-	}
 
 	TCO(tsc,EOF);
 	eof_found = TRUE;
@@ -273,6 +259,7 @@ NQ1:
 tsc:
 	TCO(tiip,';'); 
 nxtnet:
+	// this is a fudge because multiple nets are not currently supported 
 	IIPlen = -1;
 	scan_blanks(fp);
 	TCO(nextnet,EOF); 
@@ -495,13 +482,9 @@ exit:
 
 /* 
 
-Scan off blanks - returns: 
+Scan off blanks or EOLs - returns: 
 4 if EOF encountered in a comment
 0 otherwise
-
-if end of line encountered, returns 2 - 
-this is only tested for at one place in the logic, where it can mean end of clause (NoFlo convention); 
-elsewhere it is ignored
 
 */
 
@@ -515,10 +498,9 @@ sbs:
 		TCO(not_blank,' ');
 		continue;
 not_blank: 
-		TCO(neol, eol);
-		res = 2;
+		TCO(not_EOL, '\n');
 		continue;
-neol:
+not_EOL:
 		TCO(ncom,'#');   // comment runs from #-sign to end of line
 		for (;;) {
 			TCO(tasu,EOF);
@@ -538,6 +520,7 @@ ncom:
 	}
 exit: 	
 	return(res);
+
 }
 
 /*

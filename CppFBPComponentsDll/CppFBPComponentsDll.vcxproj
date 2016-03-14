@@ -98,7 +98,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>cppfbpcomponents.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(TargetDir);$(BOOST_LIB);$(LUA_LIB)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(TargetDir);$(BOOST_LIB)</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
@@ -136,7 +136,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>cppfbpcomponents.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(TargetDir);$(BOOST_LIB);$(LUA_LIB)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(TargetDir);$(BOOST_LIB)</AdditionalLibraryDirectories>
       <ImportLibrary>$(OutDir)$(ProjectName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
