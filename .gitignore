@@ -25,6 +25,7 @@ hs_err_pid*
 *.opensdf
 *.opendb
 */output.fil
+*/autres.fil
 **/Release/
 **/Debug/
 
