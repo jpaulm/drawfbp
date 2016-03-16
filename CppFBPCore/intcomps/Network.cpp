@@ -23,7 +23,7 @@ void disp_IP(IPh   * this_IP);
 /* first param of thxbnet is subnet address; last is whole net address */
 int thxbnet(label_ent * label_ptr, Process *mother,
 	Network * network, label_ent *label_tab);
-int findmod(char * p);
+//int findmod(char * p);
 
 int thxscan(FILE *fp, label_ent *label, char file_name[10]);
 
@@ -253,7 +253,7 @@ void Process::activate() {
 		char procname_in_dll[255];
 		char dllname[255];
 		char szBuf[80];
-		typedef int (CALLBACK* LPFNDLLFUNC)(_anchor);
+		typedef int (__stdcall* LPFNDLLFUNC)(_anchor);
         //LPFNDLLFUNC lpfnDllFunc; 		
 
 		if (status == NOT_STARTED) {

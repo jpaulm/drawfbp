@@ -12,8 +12,9 @@
 Process * find_proc(proc_ent *proc_tab, char name[32]);
 int thz(int code, Process *proc_ptr, ...);
 
-typedef int (CALLBACK* LPFNDLLFUNC)(_anchor);
-LPFNDLLFUNC lpfnDllFunc;  
+typedef int (__stdcall *LPFNDLLFUNC)(_anchor);
+ 
+//LPFNDLLFUNC lpfnDllFunc;  
 
 int thxbnet(label_ent * label_ptr, Process *mother,
 	Network * network, label_ent *label_tab) {

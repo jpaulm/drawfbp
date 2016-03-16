@@ -126,8 +126,9 @@ public:
 
 	//int ( __stdcall *faddr) (_anchor anch);   // address of code to be
 	//     executed by this process
-
-	int(__stdcall *faddr) (_anchor anch);
+	
+	LPFNDLLFUNC faddr;     // address of code to be
+	//     executed by this process
 
 	_anchor proc_anchor;  // anchor to be passed to service calls
 	struct _IPh   *stack;   //  ptr to first IP in process stack -
