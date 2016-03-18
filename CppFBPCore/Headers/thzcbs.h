@@ -1,3 +1,5 @@
+#pragma once
+
 #include <boost/thread/condition.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/thread/cv_status.hpp>

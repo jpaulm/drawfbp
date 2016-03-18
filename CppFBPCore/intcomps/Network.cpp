@@ -253,7 +253,7 @@ void Process::activate() {
 		char procname_in_dll[255];
 		char dllname[255];
 		char szBuf[80];
-		typedef int (__stdcall* LPFNDLLFUNC)(_anchor);
+		//typedef int (__stdcall* LPFNDLLFUNC)(_anchor);
         //LPFNDLLFUNC lpfnDllFunc; 		
 
 		if (status == NOT_STARTED) {

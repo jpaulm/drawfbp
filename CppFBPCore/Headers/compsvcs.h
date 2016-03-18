@@ -8,8 +8,10 @@
    #include "thxanch.h"
 //#endif
 
-typedef int (__stdcall *LPFNDLLFUNC) (_anchor anch);
-#define THRCOMP __declspec(dllexport) int __stdcall
+//typedef int (__stdcall *LPFNDLLFUNC) (_anchor anch);
+typedef int(*LPFNDLLFUNC) (_anchor anch);
+//#define THRCOMP __declspec(dllexport) int __stdcall
+#define THRCOMP extern "C" __declspec(dllexport) int 
 
    int dfscrep(_anchor proc_anchor, void **ptr, long size, char *type);
    int dfssend(_anchor proc_anchor, void **ptr, port_ent *peptr,

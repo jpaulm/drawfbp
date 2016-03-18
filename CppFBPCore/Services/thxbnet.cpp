@@ -12,7 +12,7 @@
 Process * find_proc(proc_ent *proc_tab, char name[32]);
 int thz(int code, Process *proc_ptr, ...);
 
-typedef int (__stdcall *LPFNDLLFUNC)(_anchor);
+//typedef int (__stdcall *LPFNDLLFUNC)(_anchor);
  
 //LPFNDLLFUNC lpfnDllFunc;  
 

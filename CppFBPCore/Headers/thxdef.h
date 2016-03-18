@@ -10,8 +10,10 @@ external control blocks - used in network definitions
 //#endif
 
 
-typedef int (__stdcall *LPFNDLLFUNC) (_anchor anch);
-#define THRCOMP __declspec(dllexport) int __stdcall
+//typedef int (__stdcall *LPFNDLLFUNC) (_anchor anch);
+typedef int(*LPFNDLLFUNC) (_anchor anch);
+//#define THRCOMP __declspec(dllexport) int __stdcall
+#define THRCOMP extern "C" __declspec(dllexport) int 
  
 
 struct _IIP
