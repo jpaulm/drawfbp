@@ -1,11 +1,13 @@
+#pragma once
+
 /* 
 external control blocks - used in network definitions
 */
  
-#ifndef THXANCH
-#define THXANCH
+//#ifndef THXANCH
+//#define THXANCH
 #include "thxanch.h"
-#endif
+//#endif
 
 
 typedef int (__stdcall *LPFNDLLFUNC) (_anchor anch);

@@ -2,10 +2,10 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/cv_status.hpp>
 
-#ifndef THXDEF
-#define THXDEF
+//#ifndef THXDEF
+//#define THXDEF
 #include "thxdef.h"
-#endif
+//#endif
 
 // In what follows, IP means Information Packet  
 

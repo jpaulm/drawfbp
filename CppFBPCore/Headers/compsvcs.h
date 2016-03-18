@@ -1,12 +1,12 @@
 
 
 
+#pragma once
 
-
-#ifndef THXANCH
-#define THXANCH
+//#ifndef THXANCH
+//#define THXANCH
    #include "thxanch.h"
-#endif
+//#endif
 
 typedef int (__stdcall *LPFNDLLFUNC) (_anchor anch);
 #define THRCOMP __declspec(dllexport) int __stdcall
