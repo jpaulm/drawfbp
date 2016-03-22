@@ -84,6 +84,13 @@ You should see something like
 
 The elapsed time will of course depend on your machine processing speed, number of cores, etc.
 
+Installing Lua (under VS 2015)
+---
+- Download Lua 5.3.2 from http://www.lua.org/download.html; install in `C:Program Files (x86)`
+- Build `lua53.def` using all the `LUA_API` declares in `lapi.c`; store in `CppFBPLua` project directory
+- Run `lib /def:lua53.def /out:lua53.lib` under VS 2015 Developer Command Prompt.
+- Update `LUA_LIB` macro in `SolutionSettings/UserMacros.props`
+
 TryLua
 ---
 
