@@ -325,9 +325,12 @@ void Process::run() {
 		}
 		//
 		// execute component code!
+		//
 		value =
 			faddr (proc_anchor);	
+		//
 		// component code returns
+		//
 
 		if (value > 0)
 			printf ("Process %s returned with value %d\n",

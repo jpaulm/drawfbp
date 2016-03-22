@@ -334,7 +334,7 @@ get_next_conn:  curr_cnxt = curr_cnxt -> succ;
 					}
 					else {
 
-						/* Retrieve the address of the actual function. */
+						/* Retrieve the address of the actual function. */						
 						
 						strcpy_s(procname_in_dll, curr_proc -> comp_name);
 						

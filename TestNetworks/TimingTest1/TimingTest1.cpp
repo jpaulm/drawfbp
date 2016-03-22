@@ -13,26 +13,9 @@
 #include <stdio.h>
 #define FILE struct _iobuf
 
-/* This is not the THREADS internal structure - this 
+/* 
+This is not the THREADS internal structure - this 
 is a structured representation of the free-form connection list
-
-Using fibres...
-This test case took 26 secs with 1,000,000 IPs on *each* connection (5 connections), and connection capacities = 6;
-                    17           1,000,000                                                       20 
-					16           1,000,000                                                       50 
-					64           4,000,000                                                       50 
-therefore averaging 1.25 microsecs per function call...
-
-Only uses one processor
-
-Interestingly, adding _CrtSetDbgFlag to CppFBP increased running time to 466 secs (7.77 mins) - i.e. a factor of 7.5 approx
- 
-Using Boost...
-                    12-14        1,000,000                                                       50 
-
-Uses all 4 processors
-
-With _CrtSetDbgFlag took 443 secs
 */
 void CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
 

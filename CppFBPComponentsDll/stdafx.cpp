@@ -1,2 +1,0 @@
-
-#pragma comment(lib, "CppFBPComponents")

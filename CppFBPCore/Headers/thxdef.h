@@ -11,7 +11,7 @@ external control blocks - used in network definitions
 
 
 //typedef int (__stdcall *LPFNDLLFUNC) (_anchor anch);
-typedef int(*LPFNDLLFUNC) (_anchor anch);
+typedef __declspec(dllimport) int (*LPFNDLLFUNC) (_anchor anch);
 //#define THRCOMP __declspec(dllexport) int __stdcall
 #define THRCOMP extern "C" __declspec(dllexport) int 
  
