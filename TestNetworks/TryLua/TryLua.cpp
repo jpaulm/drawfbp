@@ -17,11 +17,9 @@ the Lua environment on every non-looper activation - so I wouldn't recommend doi
 
 #pragma comment(lib, "CppFBPCore")
 
-#if 0
+
 #pragma comment(lib, "CppFBPComponents")		// static lib
-#else
-#pragma comment(lib, "CppFBPComponentsDll")		// dll
-#endif
+
 
 #pragma comment(lib, "lua53")
 

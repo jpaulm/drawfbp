@@ -3,11 +3,9 @@
 
 #pragma comment(lib, "CppFBPCore")
 
-#if 1
+
 #pragma comment(lib, "CppFBPComponents")
-#else
-#pragma comment(lib, "CppFBPComponentsDll")
-#endif
+
 
 #include "thxdef.h"
 
