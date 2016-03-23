@@ -90,12 +90,12 @@ Assume we are using Lua 5.3.2...
 - Download Lua 5.3.2 from http://www.lua.org/download.html; install in `C:Program Files [(x86)]`
 - Start VS 2015 Developer Command Prompt
 - `cd` to `cppfbp/CppFBPLua` directory 
-- Run `link /implib:lua53.lib /out:lua53.dll /dll /noentry`
- 
-- Remove `lua.obj` and `luac.obj` from CppFBPLua
-- Run `lib /out:lua53.lib *.obj`, creating lua53.lib
-
-- Update `LUA_LIB` macro in `SolutionSettings/UserMacros.props` to point at location of `lua53.lib`
+- Move `lua.c` and `luac.c` to `CppFBPLua/comfiles`
+- `cd genitems` 
+- Run `cl /c "c:/program files (x86)/lua/5.3/src/*.c"`
+- Run `lib /out:lua53.lib *.obj`, creating `lua53.lib` in folder `genitems`
+- Update `LUA_LIB` macro in `SolutionSettings/UserMacros.props` to point at location of `genitems\lua53.lib`
+- Close and reopen Visual Studio
 - Rebuild `CppFBPComponents`
 
 TryLua
