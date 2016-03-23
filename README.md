@@ -87,11 +87,11 @@ The elapsed time will of course depend on your machine processing speed, number 
 Installing Lua (under VS 2015)
 ---
 Assume we are using Lua 5.3.2...
-- Download Lua 5.3.2 from http://www.lua.org/download.html; install in `C:Program Files (x86)`
-- If a different version from `5.3`, using `x.y` for first two levels of Lua version number,
- - Build `luaxy.def` using all the `LUA_API` declares in `lapi.c`; store in `CppFBPLua` project directory
- - Run `lib /def:luaxy.def /out:luaxy.lib` under VS 2015 Developer Command Prompt.
- - Update `LUA_LIB` macro in `SolutionSettings/UserMacros.props` to point at location of `luaxy.lib`
+- Download Lua 5.3.2 from http://www.lua.org/download.html; install in `C:Program Files [(x86)]`
+- Start VS 2015 Developer Command Prompt
+- `cd` to `cppfbp/CppFBPLua` directory
+- Run `lib /def:lua53.def /out:lua53.lib`  
+- Update `LUA_LIB` macro in `SolutionSettings/UserMacros.props` to point at location of `lua53.lib`
 
 TryLua
 ---
