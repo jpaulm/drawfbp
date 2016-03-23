@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Generated Items">
+      <UniqueIdentifier>{3a845a08-5d77-4590-9ccf-c2cf93d456ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Command Files">
+      <UniqueIdentifier>{e8ab1eca-3869-499d-8ec6-eba8d41e8851}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -21,5 +27,119 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="genitems\lua53.lib">
+      <Filter>Generated Items</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="genitems\lapi.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lauxlib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lbaselib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lbitlib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lcode.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lcorolib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lctype.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\ldblib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\ldebug.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\ldo.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\ldump.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lfunc.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lgc.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\linit.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\liolib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\llex.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lmathlib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lmem.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\loadlib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lobject.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lopcodes.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\loslib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lparser.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lstate.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lstring.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lstrlib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\ltable.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\ltablib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\ltm.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lundump.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lutf8lib.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lvm.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+    <Object Include="genitems\lzio.obj">
+      <Filter>Generated Items</Filter>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="comfiles\lua.c">
+      <Filter>Command Files</Filter>
+    </ClCompile>
+    <ClCompile Include="comfiles\luac.c">
+      <Filter>Command Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

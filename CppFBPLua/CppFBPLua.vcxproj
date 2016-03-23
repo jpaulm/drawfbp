@@ -146,6 +146,48 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="genitems\lua53.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="genitems\lapi.obj" />
+    <Object Include="genitems\lauxlib.obj" />
+    <Object Include="genitems\lbaselib.obj" />
+    <Object Include="genitems\lbitlib.obj" />
+    <Object Include="genitems\lcode.obj" />
+    <Object Include="genitems\lcorolib.obj" />
+    <Object Include="genitems\lctype.obj" />
+    <Object Include="genitems\ldblib.obj" />
+    <Object Include="genitems\ldebug.obj" />
+    <Object Include="genitems\ldo.obj" />
+    <Object Include="genitems\ldump.obj" />
+    <Object Include="genitems\lfunc.obj" />
+    <Object Include="genitems\lgc.obj" />
+    <Object Include="genitems\linit.obj" />
+    <Object Include="genitems\liolib.obj" />
+    <Object Include="genitems\llex.obj" />
+    <Object Include="genitems\lmathlib.obj" />
+    <Object Include="genitems\lmem.obj" />
+    <Object Include="genitems\loadlib.obj" />
+    <Object Include="genitems\lobject.obj" />
+    <Object Include="genitems\lopcodes.obj" />
+    <Object Include="genitems\loslib.obj" />
+    <Object Include="genitems\lparser.obj" />
+    <Object Include="genitems\lstate.obj" />
+    <Object Include="genitems\lstring.obj" />
+    <Object Include="genitems\lstrlib.obj" />
+    <Object Include="genitems\ltable.obj" />
+    <Object Include="genitems\ltablib.obj" />
+    <Object Include="genitems\ltm.obj" />
+    <Object Include="genitems\lundump.obj" />
+    <Object Include="genitems\lutf8lib.obj" />
+    <Object Include="genitems\lvm.obj" />
+    <Object Include="genitems\lzio.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="comfiles\lua.c" />
+    <ClCompile Include="comfiles\luac.c" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
