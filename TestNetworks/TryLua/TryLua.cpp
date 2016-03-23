@@ -17,11 +17,9 @@ the Lua environment on every non-looper activation - so I wouldn't recommend doi
 
 #pragma comment(lib, "CppFBPCore")
 
+#pragma comment(lib, "CppFBPComponents")	
 
-#pragma comment(lib, "CppFBPComponents")		// static lib
-
-
-#pragma comment(lib, "lua53")
+//#pragma comment(lib, "lua53")
 
 #include "thxdef.h"
 #include <stdio.h>
@@ -39,8 +37,8 @@ void CppFBP(label_ent * label_blk, bool dynam,  FILE * fp, bool timereq);
 THRCOMP ThLua(_anchor anch);
 
 
-proc_ent P00 = {0, "Gen", "ThLua", ThLua, 0, 0, !TRACE, 0};
-proc_ent P01 = {&P00, "Gen2", "ThLua", ThLua, 0, 0, !TRACE, 0};
+proc_ent P00 = {0, "Gen", "ThLua", ThLua, 0, 0, TRACE, 0};
+proc_ent P01 = {&P00, "Gen2", "ThLua", ThLua, 0, 0, TRACE, 0};
 proc_ent P02 = {&P01, "Concat", "ThLua",  ThLua, 0, 0, !TRACE, 0};
 proc_ent P03 = {&P02, "Repl", "ThLua",  ThLua, 0, 0, !TRACE, 0};
 proc_ent P04 = {&P03, "Drop", "ThLua",  ThLua, 0, 0, !TRACE, 0};
@@ -50,13 +48,13 @@ cnxt_ent C01 = {&C00, "Gen2", "OUT", 0, "Concat", "IN", 1, 0, 2};
 cnxt_ent C025 = {&C01, "Concat", "OUT", 0, "Repl", "IN", 0, 0, 2};
 cnxt_ent C02 = {&C025, "Repl", "OUT", 0, "Drop", "IN", 0, 0, 2};
 
-IIP I00 = {"500000"};
+IIP I00 = {"5000"};
 IIP I01 = {"..\\..\\LuaScripts\\gen.lua"};                                      // creates and sends 'COUNT' IPs  
 cnxt_ent C03 = {&C02, "!", "", 0, "Gen", "COUNT", 0, &I00, 0};
 cnxt_ent C04 = {&C03, "!", "", 0, "Gen", "PROG", 0, &I01, 0};
 
  
-IIP I02 = {"500000"};
+IIP I02 = {"5000"};
 IIP I03 = {"..\\..\\LuaScripts\\gen.lua"};                                      // creates and sends 'COUNT' IPs  
 cnxt_ent C05 = {&C04, "!", "", 0, "Gen2", "COUNT", 0, &I02, 0};
 cnxt_ent C06 = {&C05, "!", "", 0, "Gen2", "PROG", 0, &I03, 0};
