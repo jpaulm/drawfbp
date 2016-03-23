@@ -91,6 +91,7 @@ Assume we are using Lua 5.3.2...
 - Start VS 2015 Developer Command Prompt
 - `cd` to `cppfbp/CppFBPLua` directory
 - Run `lib /def:lua53.def /out:lua53.lib`  
+- Run `link /implib:lua53.lib /out:lua53.dll /dll /noentry`
 - Update `LUA_LIB` macro in `SolutionSettings/UserMacros.props` to point at location of `lua53.lib`
 
 TryLua
