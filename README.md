@@ -87,12 +87,12 @@ The elapsed time will of course depend on your machine processing speed, number 
 Installing Lua (under VS 2015)
 ---
 - Download latest version of Lua from http://www.lua.org/download.html; install in `C:Program Files [(x86)]`
-- Copy all files from `C:Program Files [(x86)]\Lua\src`, except `lua.c` and `luac.c`, to `CppFBPLua\src` folder
-- Go into VS 2015
-- Do `Add/Existing Item` with the files just added to `CppFBPLua\src` of type `.c` to `CppFBPLua/Source Files`
-- Do `Add/Existing Item` with the files just added to `CppFBPLua\src` of type `.h` to `CppFBPLua/Header Files`
-- Rebuild `CppFBPLua` project
-- Update `LUA_LIB` macro in `SolutionSettings/UserMacros.props` to say `.../cppfbp\Debug\CppFBPLua.lib`, where `...` is the parent directory
+- If Lua version is not 5.3.2, 
+  - Copy all files from `C:Program Files [(x86)]\Lua\5.3\src`, except `lua.c` and `luac.c`, to `CppFBPLua\src` folder
+  - Go into VS 2015
+  - Do `Add/Existing Item` with the files just added to `CppFBPLua\src` of type `.c` to `CppFBPLua/Source Files`
+  - Do `Add/Existing Item` with the files just added to `CppFBPLua\src` of type `.h` to `CppFBPLua/Header Files`
+  - Rebuild `CppFBPLua` project
 - Run tests
 
 TryLua
