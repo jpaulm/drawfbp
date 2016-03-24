@@ -26,7 +26,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -71,6 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -143,50 +144,69 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\lapi.h" />
+    <ClInclude Include="src\lauxlib.h" />
+    <ClInclude Include="src\lcode.h" />
+    <ClInclude Include="src\lctype.h" />
+    <ClInclude Include="src\ldebug.h" />
+    <ClInclude Include="src\ldo.h" />
+    <ClInclude Include="src\lfunc.h" />
+    <ClInclude Include="src\lgc.h" />
+    <ClInclude Include="src\llex.h" />
+    <ClInclude Include="src\llimits.h" />
+    <ClInclude Include="src\lmem.h" />
+    <ClInclude Include="src\lobject.h" />
+    <ClInclude Include="src\lopcodes.h" />
+    <ClInclude Include="src\lparser.h" />
+    <ClInclude Include="src\lprefix.h" />
+    <ClInclude Include="src\lstate.h" />
+    <ClInclude Include="src\lstring.h" />
+    <ClInclude Include="src\ltable.h" />
+    <ClInclude Include="src\ltm.h" />
+    <ClInclude Include="src\lua.h" />
+    <ClInclude Include="src\lua.hpp" />
+    <ClInclude Include="src\luaconf.h" />
+    <ClInclude Include="src\lualib.h" />
+    <ClInclude Include="src\lundump.h" />
+    <ClInclude Include="src\lvm.h" />
+    <ClInclude Include="src\lzio.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="genitems\lua53.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="genitems\lapi.obj" />
-    <Object Include="genitems\lauxlib.obj" />
-    <Object Include="genitems\lbaselib.obj" />
-    <Object Include="genitems\lbitlib.obj" />
-    <Object Include="genitems\lcode.obj" />
-    <Object Include="genitems\lcorolib.obj" />
-    <Object Include="genitems\lctype.obj" />
-    <Object Include="genitems\ldblib.obj" />
-    <Object Include="genitems\ldebug.obj" />
-    <Object Include="genitems\ldo.obj" />
-    <Object Include="genitems\ldump.obj" />
-    <Object Include="genitems\lfunc.obj" />
-    <Object Include="genitems\lgc.obj" />
-    <Object Include="genitems\linit.obj" />
-    <Object Include="genitems\liolib.obj" />
-    <Object Include="genitems\llex.obj" />
-    <Object Include="genitems\lmathlib.obj" />
-    <Object Include="genitems\lmem.obj" />
-    <Object Include="genitems\loadlib.obj" />
-    <Object Include="genitems\lobject.obj" />
-    <Object Include="genitems\lopcodes.obj" />
-    <Object Include="genitems\loslib.obj" />
-    <Object Include="genitems\lparser.obj" />
-    <Object Include="genitems\lstate.obj" />
-    <Object Include="genitems\lstring.obj" />
-    <Object Include="genitems\lstrlib.obj" />
-    <Object Include="genitems\ltable.obj" />
-    <Object Include="genitems\ltablib.obj" />
-    <Object Include="genitems\ltm.obj" />
-    <Object Include="genitems\lundump.obj" />
-    <Object Include="genitems\lutf8lib.obj" />
-    <Object Include="genitems\lvm.obj" />
-    <Object Include="genitems\lzio.obj" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="comfiles\lua.c" />
-    <ClCompile Include="comfiles\luac.c" />
+    <ClCompile Include="src\lapi.c" />
+    <ClCompile Include="src\lauxlib.c" />
+    <ClCompile Include="src\lbaselib.c" />
+    <ClCompile Include="src\lbitlib.c" />
+    <ClCompile Include="src\lcode.c" />
+    <ClCompile Include="src\lcorolib.c" />
+    <ClCompile Include="src\lctype.c" />
+    <ClCompile Include="src\ldblib.c" />
+    <ClCompile Include="src\ldebug.c" />
+    <ClCompile Include="src\ldo.c" />
+    <ClCompile Include="src\ldump.c" />
+    <ClCompile Include="src\lfunc.c" />
+    <ClCompile Include="src\lgc.c" />
+    <ClCompile Include="src\linit.c" />
+    <ClCompile Include="src\liolib.c" />
+    <ClCompile Include="src\llex.c" />
+    <ClCompile Include="src\lmathlib.c" />
+    <ClCompile Include="src\lmem.c" />
+    <ClCompile Include="src\loadlib.c" />
+    <ClCompile Include="src\lobject.c" />
+    <ClCompile Include="src\lopcodes.c" />
+    <ClCompile Include="src\loslib.c" />
+    <ClCompile Include="src\lparser.c" />
+    <ClCompile Include="src\lstate.c" />
+    <ClCompile Include="src\lstring.c" />
+    <ClCompile Include="src\lstrlib.c" />
+    <ClCompile Include="src\ltable.c" />
+    <ClCompile Include="src\ltablib.c" />
+    <ClCompile Include="src\ltm.c" />
+    <ClCompile Include="src\lundump.c" />
+    <ClCompile Include="src\lutf8lib.c" />
+    <ClCompile Include="src\lvm.c" />
+    <ClCompile Include="src\lzio.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

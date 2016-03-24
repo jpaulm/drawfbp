@@ -4,8 +4,8 @@
   <PropertyGroup Label="UserMacros">    
     <BOOST_INCLUDE>C:\Program Files\Boost\boost_1_60_0</BOOST_INCLUDE>
     <BOOST_LIB>C:\Program Files\Boost\boost_1_60_0\stage\lib</BOOST_LIB>
-    <LUA_INCLUDE>C:\Program Files (x86)\Lua\5.3\src</LUA_INCLUDE>
-    <LUA_LIB>c:\Users\Paul\Documents\GitHub\cppfbp\CppFBPLua\genitems\lua53.lib</LUA_LIB>
+    <LUA_INCLUDE>c:\Users\Paul\Documents\GitHub\cppfbp\CppFBPLua\src</LUA_INCLUDE>
+    <LUA_LIB>C:\Users\Paul\Documents\GitHub\cppfbp\Debug\CppFBPLua.lib</LUA_LIB>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />
