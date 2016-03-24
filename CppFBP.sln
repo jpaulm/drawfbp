@@ -76,6 +76,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryStatSubNet", "TestNetwor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppFBPLua", "CppFBPLua\CppFBPLua.vcxproj", "{5AE4CD23-C68A-4539-B0C2-5948226F3A0F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LuaScripts", "LuaScripts\LuaScripts.vcxproj", "{89753248-CB45-4CD4-AF27-E0864EA8F0A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -239,6 +241,16 @@ Global
 		{5AE4CD23-C68A-4539-B0C2-5948226F3A0F}.Release|Win32.Build.0 = Release|Win32
 		{5AE4CD23-C68A-4539-B0C2-5948226F3A0F}.Release|x64.ActiveCfg = Release|x64
 		{5AE4CD23-C68A-4539-B0C2-5948226F3A0F}.Release|x64.Build.0 = Release|x64
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Debug|ARM.ActiveCfg = Debug|Win32
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Debug|Win32.Build.0 = Debug|Win32
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Debug|x64.ActiveCfg = Debug|x64
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Debug|x64.Build.0 = Debug|x64
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Release|ARM.ActiveCfg = Release|Win32
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Release|Win32.ActiveCfg = Release|Win32
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Release|Win32.Build.0 = Release|Win32
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Release|x64.ActiveCfg = Release|x64
+		{89753248-CB45-4CD4-AF27-E0864EA8F0A5}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
