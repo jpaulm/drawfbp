@@ -73,7 +73,7 @@ public class Arrow implements ActionListener {
 		Block to = null;
 		if (!endsAtLine && toId > -1) {
 			to = diag.blocks.get(new Integer(toId));
-			if (downStreamPort == null || downStreamPort.equals(""))
+			if (from.type == Block.Types.COMPONENT_BLOCK && (downStreamPort == null || downStreamPort.equals(""))) 
 				downStreamPort = "IN";
 		}
 		
