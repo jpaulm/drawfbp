@@ -2,6 +2,7 @@ package com.jpmorrsn.graphics;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 //import java.io.File;
 
 /**
@@ -26,12 +27,23 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		if (i > -1) {
 			super.setSelectedIndex(i);
 			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);
-			if (b != null) {
+			if (b != null && b.diag != null) {
 				driver.curDiag = b.diag;
+				driver.frame.setTitle("Diagram: " + driver.curDiag.title);  
+				File f = driver.curDiag.diagFile;
+				if (f != null) {
+				    File currentDiagramDir = f.getParentFile();
+				    driver.properties
+						.put("currentDiagramDir", currentDiagramDir.getAbsolutePath());  
+				    driver.propertiesChanged = true;  
+				}
+
+				 
 				if (driver.curDiag != null && driver.curDiag.diagLang != null && 
 						driver.curDiag.diagLang != driver.defaultCompLang) {
 					driver.changeLanguage(driver.curDiag.diagLang);
 				}
+				 
 			}
 		}
 	}

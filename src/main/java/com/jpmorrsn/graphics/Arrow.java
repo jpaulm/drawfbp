@@ -65,11 +65,17 @@ public class Arrow implements ActionListener {
 
 		int endX, endY;
 		Block from = null;
-		if (fromId > -1)
+		if (fromId > -1) {
 			from = diag.blocks.get(new Integer(fromId));
+			if (upStreamPort == null || upStreamPort.equals(""))
+				upStreamPort = "OUT";
+		}
 		Block to = null;
-		if (!endsAtLine && toId > -1)
+		if (!endsAtLine && toId > -1) {
 			to = diag.blocks.get(new Integer(toId));
+			if (downStreamPort == null || downStreamPort.equals(""))
+				downStreamPort = "IN";
+		}
 		
 		if (toX == -1) 
 			endX = diag.xa;
