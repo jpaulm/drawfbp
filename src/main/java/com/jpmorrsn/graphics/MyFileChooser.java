@@ -99,7 +99,7 @@ public class MyFileChooser extends JFrame
 	boolean saveAs;
 	Vector<Component> order = null;
 
-	Point mLoc = null;
+	//Point mLoc = null;
 	//MyComboBox cBox = null;
 	ListRenderer renderer;
 
@@ -119,6 +119,8 @@ public class MyFileChooser extends JFrame
 	// String fullNodeName;
 	
 	DrawFBP.FileChooserParms fCParms;
+	
+	Point mLoc = null;
 
 	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP, JFrame frm) {
 			
@@ -154,8 +156,8 @@ public class MyFileChooser extends JFrame
 		});
 
 		panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-
+		panel.setLayout(new BorderLayout());		
+		
 		driver.curDiag.filterOptions[0] = fCParms.title;
 		cBox = new MyComboBox(driver.curDiag.filterOptions);
 		cBox.setMaximumRowCount(2);
@@ -337,8 +339,8 @@ public class MyFileChooser extends JFrame
 			gridbag.setConstraints(text3, c);
 			pan2.add(text3);
 			text3.setBackground(Color.WHITE);
-			Dimension dim = text3.getPreferredSize();
-			text3.setPreferredSize(new Dimension(driver.fontWidth * 25, dim.height));
+			Dimension dim2 = text3.getPreferredSize();
+			text3.setPreferredSize(new Dimension(driver.fontWidth * 25, dim2.height));
 		}
 
 		c.gridx = 5;
@@ -425,8 +427,8 @@ public class MyFileChooser extends JFrame
 
 		
 
-		Dimension dim = new Dimension(1000, 800);
-		dialog.setPreferredSize(dim);
+		//Dimension dim = new Dimension(1000, 800);
+		//dialog.setPreferredSize(dim);
 
 		dialog.setFocusTraversalKeysEnabled(false);
 		text.addKeyListener(this);
@@ -492,16 +494,20 @@ public class MyFileChooser extends JFrame
 		panel.add(pan2, BorderLayout.SOUTH);
 		dialog.add(panel);
 
+		Dimension dim = frame.getSize();
+		int x_off = 100;
+		int y_off = 100;
+		dialog.setPreferredSize(new Dimension(dim.width - x_off * 2, dim.height - y_off));
 		dialog.pack();
-		dialog.setLocation(200, 100);
-		frame.pack();
+		dialog.setLocation(x_off, y_off);
+		//frame.pack();
 
 		dialog.setVisible(true);
 
 		// if (!saveAs)
 		// textBackground = Color.WHITE;
 
-		frame.repaint();
+		//frame.repaint();
 
 		return result;
 	}
@@ -645,12 +651,12 @@ public class MyFileChooser extends JFrame
 		// list.requestFocusInWindow();
 		paintList();
 
-		frame.pack();
+		//frame.pack();
 		listView.repaint();
 		dialog.repaint();
 		panel.validate();
 		panel.repaint();
-		frame.repaint();
+		//frame.repaint();
 
 	}
 
@@ -940,7 +946,8 @@ public class MyFileChooser extends JFrame
 			BoxLayout gb = new BoxLayout(jp, BoxLayout.X_AXIS);
 			jp.setLayout(gb);
 
-			jp.setBackground(Color.WHITE);
+			//jp.setBackground(Color.WHITE);
+			jp.setBackground(Color.GREEN);
 			// System.out.println("|" + s + "|");
 			// if (s.equals(""))
 			// return jp;
@@ -964,7 +971,7 @@ public class MyFileChooser extends JFrame
 					icon = driver.classIcon;
 			}
 
-			if (selComp instanceof JList) {
+			//if (selComp instanceof JList) {
 
 				if (listHead.equals(listShowingJarFile)
 						&& s.toLowerCase().endsWith(".jar") || inJarTree)
@@ -980,7 +987,7 @@ public class MyFileChooser extends JFrame
 						jp.setBackground(lightBlue);
 					// System.out.println("Selected " + index);
 				}
-			}
+			//}
 
 			minSize = new Dimension(400, 15);
 			prefSize = new Dimension(400, 15);
@@ -1062,6 +1069,7 @@ public class MyFileChooser extends JFrame
 		// repaint();
 	}
 
+	@SuppressWarnings("unused")
 	public void mouseClicked(MouseEvent e) {
 
 		list.setSelectedIndex(-1);
@@ -1123,17 +1131,21 @@ public class MyFileChooser extends JFrame
 
 			// String fn = listHead + File.separator + nodeNames[rowNo];
 
+			
 			if (e.getClickCount() == 1) {
 				mLoc = e.getLocationOnScreen();
-
+				
 				if (nodeNames[rowNo].equals("(empty folder"))
-					return;
+					return;			
+				
+				list.setSelectedIndex(rowNo);
+				list.repaint();
 
 			} else if (e.getClickCount() == 2) {
 
 				Point p = e.getLocationOnScreen();
 
-				if (mLoc != null && Math.abs(p.x - mLoc.x) < 6
+				if (mLoc != null && Math.abs(p.x - mLoc.x) < 6  // check for moved cursor...
 						&& Math.abs(p.y - mLoc.y) < 6) {
 
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
@@ -1364,7 +1376,7 @@ public class MyFileChooser extends JFrame
 
 			String u = f.isDirectory() ? "folder" : "file";
 
-			if (JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(frame,
+			if (JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(dialog,
 					"Do you want to delete this " + u + ": " + f.getName()
 							+ "?", "File/folder delete",
 					JOptionPane.YES_NO_OPTION)) {
@@ -1378,7 +1390,7 @@ public class MyFileChooser extends JFrame
 				showList();
 
 			}
-			frame.repaint();
+			//frame.repaint();
 		}
 	}
 
@@ -1519,7 +1531,7 @@ public class MyFileChooser extends JFrame
 
 			// }
 			dialog.repaint();
-			frame.repaint();
+			//frame.repaint();
 		}
 
 	}
@@ -1593,8 +1605,8 @@ public class MyFileChooser extends JFrame
 			dialog.repaint();
 			panel.validate();
 			panel.repaint();
-			frame.repaint();
-			frame.repaint();
+			//frame.repaint();
+			//frame.repaint();
 			text.repaint();
 			repaint();
 
@@ -1605,7 +1617,7 @@ public class MyFileChooser extends JFrame
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 			String fileName = (String) MyOptionPane
-					.showInputDialog(frame, "Enter new folder name", null);
+					.showInputDialog(dialog, "Enter new folder name", null);
 
 			if (fileName != null) {
 				String s = listHead;
@@ -1636,6 +1648,7 @@ public class MyFileChooser extends JFrame
 		public void paintComponent(Graphics g) {
 
 			Color c = (this == selComp) ? vLightBlue : Color.WHITE;
+			
 			int i = driver.allFiles ? 1 : 0;
 			String lt = driver.curDiag.filterOptions[i];
 
