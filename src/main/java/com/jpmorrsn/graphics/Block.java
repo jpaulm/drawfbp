@@ -872,8 +872,9 @@ public class Block implements ActionListener {
 		JPanel panel = new JPanel(new GridBagLayout());
 
 		panel.setBackground(Color.GRAY);
-		panel.setLocation(driver.frame.getX() + 50, driver.frame.getY() + 50);
-		panel.setPreferredSize(new Dimension(800, 600));
+		//panel.setLocation(driver.frame.getX() + 50, driver.frame.getY() + 50);
+		//panel.setPreferredSize(new Dimension(800, 600));
+		
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		panel.setLayout(gbl);
@@ -979,11 +980,19 @@ public class Block implements ActionListener {
 		}
 
 		jdialog.add(panel);
+		//jdialog.pack();
+		 
+		Dimension dim = driver.frame.getSize();
+		int x_off = 100;
+		int y_off = 100;
+		jdialog.setPreferredSize(new Dimension(dim.width - x_off * 2, dim.height - y_off));
 		jdialog.pack();
-		int x1 = driver.frame.getX() + driver.frame.getWidth()
-				- jdialog.getWidth();
-		x1 = Math.min(cx + 50, x1);
-		jdialog.setLocation(x1, cy + 50);
+		jdialog.setLocation(x_off, y_off);
+		 
+		//int x1 = driver.frame.getX() + driver.frame.getWidth()
+		//		- jdialog.getWidth();
+		//x1 = Math.min(cx + 50, x1);
+		//jdialog.setLocation(x1, cy + 50);
 		int height = 200 + inputPortAttrs.size() * 40 + outputPortAttrs.size()
 				* 40;
 		jdialog.setSize(800, height);

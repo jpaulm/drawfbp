@@ -202,8 +202,7 @@ public class DrawFBP extends JFrame
 	static Color lg = new Color(240, 240, 240); // very light gray
 	static Color slateGray1 = new Color(198, 226, 255);
 	// static Color goldenrod = new Color(255, 255, 224);
-	// static Color slategray2 = new Color(185, 211, 238);
-	JFrame frame2;
+	JDialog popup2;
 
 	static enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
@@ -536,7 +535,7 @@ public class DrawFBP extends JFrame
 		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		box1.add(box2);
 		box2.add(Box.createHorizontalGlue());
-		ButtonGroup group = new ButtonGroup();
+		ButtonGroup butGroup = new ButtonGroup();
 
 		String buttonNames[] = {"(none)", "Component", "Initial IP",
 				"Enclosure", "Subnet", "Ext Port - In", "Ext Port - Out",
@@ -545,7 +544,7 @@ public class DrawFBP extends JFrame
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
 			but[j].addActionListener(this);
-			group.add(but[j]);
+			butGroup.add(but[j]);
 			box2.add(but[j]);
 			// but[j].setFont(fontg);
 			but[j].setText(buttonNames[j]);
@@ -1442,20 +1441,20 @@ public class DrawFBP extends JFrame
 							}
 						}
 						// Create a new frame.
-						frame2 = new JFrame();
-						frame2.setTitle("Help DrawFBP");
-						frame2.setIconImage(favicon.getImage());
-						applyOrientation(frame2);
+						popup2 = new JDialog();
+						popup2.setTitle("Help DrawFBP");
+						popup2.setIconImage(favicon.getImage());
+						applyOrientation(popup2);
 						
 						 
-						frame2.setFocusable(true);
-						frame2.requestFocusInWindow();
+						popup2.setFocusable(true);
+						popup2.requestFocusInWindow();
 						
-						frame2.addKeyListener(new KeyAdapter() {
+						popup2.addKeyListener(new KeyAdapter() {
 							public void keyPressed(KeyEvent ev) {
 								if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
 									// frame2.setVisible(false);
-									frame2.dispose();
+									popup2.dispose();
 								}
 								
 							}
@@ -1465,15 +1464,21 @@ public class DrawFBP extends JFrame
 
 						jHelpViewer.getActionMap().put("CLOSE", escapeAction);
 						
-						// Set its size.
-						frame2.setPreferredSize(frame.getPreferredSize());
+						// frame2.setPreferredSize(frame.getPreferredSize());
 						// Add the created helpViewer to it.
-						frame2.getContentPane().add(jHelpViewer);
+						popup2.getContentPane().add(jHelpViewer);
 						// Set a default close operation.
-						frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						popup2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 						// Make the frame visible.
-						frame2.setVisible(true);
-						frame2.pack();
+						popup2.setVisible(true);
+						popup2.pack();
+						Dimension dim = frame.getSize();
+						Point p = frame.getLocation();
+						int x_off = 100;
+						int y_off = 100;
+						popup2.setPreferredSize(new Dimension(dim.width - x_off * 2, dim.height - y_off));
+						popup2.pack();
+						popup2.setLocation(p.x + x_off, p.y + y_off);
 						return;
 		}
 
@@ -1511,8 +1516,11 @@ public class DrawFBP extends JFrame
 
 			ta.setFont(f);
 			final JDialog popup = new JDialog(frame);
-			popup.add(ta, BorderLayout.CENTER);
-			popup.setBounds(200, 100, 800, 600);
+			popup.add(ta, BorderLayout.CENTER);			
+			Point p = frame.getLocation();
+			//popup.setPreferredSize(new Dimension(60,20));
+			popup.pack();
+			popup.setLocation(p.x + 200, p.y + 100);
 			popup.setVisible(true);
 
 			popup.addWindowListener(new WindowAdapter() {
@@ -2981,7 +2989,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 			
 			if (e.getSource() == jHelpViewer){				
-				frame2.dispose();
+				popup2.dispose();
 				repaint();
 				return;
 			}
