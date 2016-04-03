@@ -946,8 +946,8 @@ public class MyFileChooser extends JFrame
 			BoxLayout gb = new BoxLayout(jp, BoxLayout.X_AXIS);
 			jp.setLayout(gb);
 
-			//jp.setBackground(Color.WHITE);
-			jp.setBackground(Color.GREEN);
+			jp.setBackground(Color.WHITE);
+			
 			// System.out.println("|" + s + "|");
 			// if (s.equals(""))
 			// return jp;

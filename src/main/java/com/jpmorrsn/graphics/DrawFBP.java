@@ -1504,9 +1504,10 @@ public class DrawFBP extends JFrame
 					+  "*                                                  *\n"
 					+  "*             DrawFBP v" + v + "      "+ sp1 +"               *\n"
 					+  "*                                                  *\n"
-					+  "*    Authors: J.Paul Morrison and Bob Corrick      *\n"
+					+  "*    Authors: J.Paul Rodker Morrison,              *\n"
+					+  "*             Bob Corrick                          *\n"
 					+  "*                                                  *\n"
-					+  "*    Copyright 2009, ..., 2015                     *\n"
+					+  "*    Copyright 2009, ..., 2016                     *\n"
 					+  "*                                                  *\n"
 					+  "*    FBP web site: www.jpaulmorrison.com/fbp       *\n"
 					+  "*                                                  *\n"
@@ -4131,8 +4132,8 @@ void chooseFonts(MyFontChooser fontChooser){
 				Block to = curDiag.blocks.get(new Integer(
 						a.toId));
 
-				a.downStreamPort = "";
-				a.upStreamPort = "";
+				//a.downStreamPort = "";
+				//a.upStreamPort = "";
 
 				
 				Boolean error = false;

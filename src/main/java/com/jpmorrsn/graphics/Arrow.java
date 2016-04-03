@@ -75,12 +75,13 @@ public class Arrow implements ActionListener {
 			
 		}
 		
-		if (from != null && from.type == Block.Types.COMPONENT_BLOCK && to != null && to.type == Block.Types.COMPONENT_BLOCK){
+		if (from != null && from.type == Block.Types.COMPONENT_BLOCK)  
 			if (upStreamPort == null || upStreamPort.equals("")) 
 			    upStreamPort = "OUT";
+		if (to != null && to.type == Block.Types.COMPONENT_BLOCK) 
 		    if (downStreamPort == null || downStreamPort.equals("")) 
 			    downStreamPort = "IN";
-		}
+		 
 		if (toX == -1) 
 			endX = diag.xa;
 		else
