@@ -71,7 +71,7 @@ Then import a generated project in Eclipse, right (ctrl for OSX) click on the pr
 Building from command line
 ---
 
-Current release is `v2.10.15` - the related jar file is `drawfbp-2.10.15.jar`, and can be found in `Releases`.
+Current release is `v2.10.16` - the related jar file is `drawfbp-2.10.16.jar`, and can be found in `Releases`.
 
 For building the project simply run the following command:
 
