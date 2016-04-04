@@ -494,12 +494,13 @@ public class MyFileChooser extends JFrame
 		panel.add(pan2, BorderLayout.SOUTH);
 		dialog.add(panel);
 
+		Point p = frame.getLocation();
 		Dimension dim = frame.getSize();
 		int x_off = 100;
 		int y_off = 100;
 		dialog.setPreferredSize(new Dimension(dim.width - x_off * 2, dim.height - y_off));
 		dialog.pack();
-		dialog.setLocation(x_off, y_off);
+		dialog.setLocation(p.x + x_off, p.y + y_off);
 		//frame.pack();
 
 		dialog.setVisible(true);
