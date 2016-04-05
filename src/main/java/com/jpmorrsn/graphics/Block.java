@@ -981,13 +981,14 @@ public class Block implements ActionListener {
 
 		jdialog.add(panel);
 		//jdialog.pack();
-		 
+		
+		Point p = driver.frame.getLocation();
 		Dimension dim = driver.frame.getSize();
 		int x_off = 100;
 		int y_off = 100;
 		jdialog.setPreferredSize(new Dimension(dim.width - x_off * 2, dim.height - y_off));
 		jdialog.pack();
-		jdialog.setLocation(x_off, y_off);
+		jdialog.setLocation(p.x + x_off, p.y + y_off);
 		 
 		//int x1 = driver.frame.getX() + driver.frame.getWidth()
 		//		- jdialog.getWidth();
