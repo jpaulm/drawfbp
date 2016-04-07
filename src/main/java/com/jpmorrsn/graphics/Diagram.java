@@ -102,7 +102,7 @@ public class Diagram {
 				"Select component from class directory", ".class",
 				driver.new JavaClassFilter(), "Class files");
 		
-		fCPArr[DrawFBP.COMPONENT] = driver.new FileChooserParms(diagLang.srcDirProp, "Select "
+		fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(diagLang.srcDirProp, "Select "
 				+ diagLang.showLangs() + " component from directory",
 				diagLang.suggExtn, diagLang.filter, "Components: "
 						+ diagLang.showLangs() + " " + diagLang.showSuffixes());
@@ -133,7 +133,7 @@ public class Diagram {
 				f2 = new File(".");
 			}
 
-			MyFileChooser fc = new MyFileChooser(f2, fCPArr[DrawFBP.DIAGRAM], driver.frame);
+			MyFileChooser fc = new MyFileChooser(f2, fCPArr[DrawFBP.DIAGRAM]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -198,7 +198,7 @@ public class Diagram {
 
 	/* General save function */
 
-	public File genSave(File file, DrawFBP.FileChooserParms fCP, Object contents, JFrame frm) {
+	public File genSave(File file, DrawFBP.FileChooserParms fCP, Object contents) {
 
 		boolean saveAs = false;
 		File newFile = null;
@@ -219,7 +219,7 @@ public class Diagram {
 
 			File f = new File(s);
 			if (!f.exists()) {
-				MyOptionPane.showMessageDialog(frm, "Directory '" + s
+				MyOptionPane.showMessageDialog(driver.frame, "Directory '" + s
 						+ "' does not exist - reselect");
 
 				f = new File(System.getProperty("user.home"));
@@ -237,7 +237,7 @@ public class Diagram {
 						+ fCP.fileExt;
 			}
 
-			MyFileChooser fc = new MyFileChooser(f, fCP, frm);
+			MyFileChooser fc = new MyFileChooser(f, fCP);
 
 			fc.setSuggestedName(suggestedFileName);
 
@@ -249,24 +249,24 @@ public class Diagram {
 				s = newFile.getAbsolutePath();
 
 				if (s.endsWith("(empty folder)")) {
-					MyOptionPane.showMessageDialog(frm, "Invalid file name: "
+					MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
 							+ newFile.getName());
 					return null;
 				}
 
 				if (newFile.getParentFile() == null) {
-					MyOptionPane.showMessageDialog(frm, "Missing parent file for: "
+					MyOptionPane.showMessageDialog(driver.frame, "Missing parent file for: "
 							+ newFile.getName());
 					return null;
 				}
 				if (!(newFile.getParentFile().exists())) {
-					MyOptionPane.showMessageDialog(frm, "Invalid file name: "
+					MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
 							+ newFile.getAbsolutePath());
 					return null;
 				}
 
 				if (s.toLowerCase().endsWith("~")) {
-					MyOptionPane.showMessageDialog(frm,
+					MyOptionPane.showMessageDialog(driver.frame,
 							"Cannot save into backup file: " + s);
 					return null;
 				}
@@ -299,7 +299,7 @@ public class Diagram {
 			int response;
 			if (newFile.exists()) {
 				if (newFile.isDirectory()) {
-					MyOptionPane.showMessageDialog(frm, newFile.getName()
+					MyOptionPane.showMessageDialog(driver.frame, newFile.getName()
 							+ " is a directory");
 					return null;
 				}
@@ -420,7 +420,7 @@ public class Diagram {
 				// User clicked YES.
 				if (diagFile == null) { // choose file
 
-					file = genSave(null, fCPArr[DrawFBP.DIAGRAM], name, driver.frame);
+					file = genSave(null, fCPArr[DrawFBP.DIAGRAM], name);
 					if (file == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"File not saved");
@@ -774,7 +774,7 @@ public class Diagram {
 		 * build double-lined block in old diagram
 		 */
 
-		Block block = new ComponentBlock(oldDiag);
+		Block block = new ProcessBlock(oldDiag);
 		// if (block.editDescription(DrawFBP.EDIT_NO_CANCEL)) {
 
 		block.cx = oldDiag.xa;

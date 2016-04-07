@@ -75,13 +75,20 @@ public class Arrow implements ActionListener {
 			
 		}
 		
-		if (from != null && from.type.equals(Block.Types.COMPONENT_BLOCK) &&  
-			(upStreamPort == null || upStreamPort.trim().equals(""))) 
-			    upStreamPort = "OUT";
-		if (to != null && to.type.equals(Block.Types.COMPONENT_BLOCK) &&
-		    (downStreamPort == null || downStreamPort.trim().equals(""))) 
-			    downStreamPort = "IN";
+		// Generate "OUT" and "IN" if neither end is one of: Legend, File, Person, Report			
 		 
+		if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
+				from instanceof IIPBlock) && 
+				(endsAtLine || (to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock || 
+				to instanceof Enclosure)))){
+			
+			if (!(from instanceof IIPBlock) && (upStreamPort == null || upStreamPort.trim().equals(""))) 
+				upStreamPort = "OUT";
+			if (!endsAtLine &&(downStreamPort == null || downStreamPort.trim().equals(""))) 
+				downStreamPort = "IN";
+		}
+		 
+			
 		if (toX == -1) 
 			endX = diag.xa;
 		else
@@ -126,9 +133,9 @@ public class Arrow implements ActionListener {
 
 		if (driver.selArrowP == this)
 			g.setColor(Color.BLUE);
-		else if ((from instanceof ComponentBlock
+		else if ((from instanceof ProcessBlock
 				|| from instanceof ExtPortBlock || from instanceof Enclosure)
-				&& (to instanceof ComponentBlock || to instanceof ExtPortBlock
+				&& (to instanceof ProcessBlock || to instanceof ExtPortBlock
 						|| to instanceof Enclosure || endsAtLine))
 			if (checkStatus == Status.UNCHECKED)
 				g.setColor(Color.BLACK);
@@ -213,8 +220,8 @@ public class Arrow implements ActionListener {
 			g.drawRect(fromX - 3, fromY - 3, 6, 6);
 			g.drawRect(x - 3, toY - 3, 6, 6);
 		} else if (endsAtBlock) {
-			if ((from instanceof ComponentBlock || from instanceof ExtPortBlock || from instanceof Enclosure)
-					&& (to instanceof ComponentBlock
+			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
+					from instanceof IIPBlock) && to != null && (to instanceof ProcessBlock
 							|| to instanceof ExtPortBlock || to instanceof Enclosure)) {
 				Arrowhead ah = new Arrowhead(fx, fy, toX, toY);  
 				ah.draw(g);				
@@ -228,7 +235,7 @@ public class Arrow implements ActionListener {
 
 		if (toX != -1 && (endsAtBlock || endsAtLine)) {
 			if (upStreamPort != null
-					&& (from instanceof ComponentBlock || from instanceof Enclosure)) {
+					&& (from instanceof ProcessBlock || from instanceof Enclosure)) {
 				if (upStreamPort.equals("*")) {
 					drawCircleFrom(g, fromX, fromY, endX, endY, Color.BLUE, 8);
 					// g.setColor(Color.BLUE);
@@ -245,7 +252,7 @@ public class Arrow implements ActionListener {
 			if (downStreamPort != null
 					&& !endsAtLine
 					&& to != null
-					&& (to instanceof ComponentBlock || to instanceof Enclosure)) {
+					&& (to instanceof ProcessBlock || to instanceof Enclosure)) {
 				if (downStreamPort.equals("*")) {
 					drawCircleTo(g, fx, fy, toX, toY, Color.BLUE, 8);
 					// g.setColor(Color.BLUE);
@@ -841,10 +848,10 @@ public class Arrow implements ActionListener {
 	boolean checkSides() {
 		Block from = diag.blocks.get(new Integer(fromId));
 		Block to = diag.blocks.get(new Integer(toId));
-		if (!(from instanceof ComponentBlock)
+		if (!(from instanceof ProcessBlock)
 				&& !(from instanceof ExtPortBlock))
 			return true;
-		if (!(to instanceof ComponentBlock) && !(to instanceof ExtPortBlock))
+		if (!(to instanceof ProcessBlock) && !(to instanceof ExtPortBlock))
 			return true;
 		// if (fromSide == DrawFBP.Side.LEFT || fromSide == DrawFBP.Side.TOP)
 		// return false;

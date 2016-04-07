@@ -54,7 +54,7 @@ public class MyFileChooser extends JFrame
 	//String prompt = "";
 	//int type;
 
-	JFrame frame;
+	//JFrame frame;
 	JList<String> list = null;
 	String listHead = null;
 	String listShowingJarFile = null;
@@ -122,7 +122,7 @@ public class MyFileChooser extends JFrame
 	
 	Point mLoc = null;
 
-	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP, JFrame frm) {
+	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP) {
 			
 		if (!f.exists()) 
 			listHead = System.getProperty("user.home");
@@ -134,7 +134,7 @@ public class MyFileChooser extends JFrame
 		fCParms = fCP;
 		
 		// text3.setEditable(false);
-		frame = frm;
+		//frame = driver.frame;
 		//filter = driver.curDiag.saveInfoArray[type].filter;
 		//fileExt = driver.curDiag.saveInfoArray[type].fileExt;
 		//prompt = driver.curDiag.saveInfoArray[type].prompt;
@@ -144,7 +144,7 @@ public class MyFileChooser extends JFrame
 
 	int showOpenDialog(final boolean sa) {
 
-		dialog = new JDialog(frame, JDialog.ModalityType.APPLICATION_MODAL);
+		dialog = new JDialog(driver.frame, JDialog.ModalityType.APPLICATION_MODAL);
 		// dialog.setUndecorated(false);
 
 		saveAs = sa;
@@ -494,11 +494,11 @@ public class MyFileChooser extends JFrame
 		panel.add(pan2, BorderLayout.SOUTH);
 		dialog.add(panel);
 
-		Point p = frame.getLocation();
-		Dimension dim = frame.getSize();
+		Point p = driver.frame.getLocation();
+		Dimension dim = driver.frame.getSize();
 		int x_off = 100;
 		int y_off = 100;
-		dialog.setPreferredSize(new Dimension(dim.width - x_off * 2, dim.height - y_off));
+		dialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
 		dialog.pack();
 		dialog.setLocation(p.x + x_off, p.y + y_off);
 		//frame.pack();
@@ -904,7 +904,7 @@ public class MyFileChooser extends JFrame
 					if (k2.equals("graphs") && fCParms == driver.curDiag.fCPArr[DrawFBP.DIAGRAM]
 							|| k2.equals("components")
 							&& (fCParms == driver.curDiag.fCPArr[DrawFBP.GENCODE] ||
-									fCParms == driver.curDiag.fCPArr[DrawFBP.COMPONENT])) {
+									fCParms == driver.curDiag.fCPArr[DrawFBP.PROCESS])) {
 						HashMap<String, Object> m2 = (HashMap<String, Object>) m
 								.get(k2);
 						for (Object v : m2.values()) {

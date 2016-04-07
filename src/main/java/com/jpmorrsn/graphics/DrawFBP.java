@@ -108,7 +108,7 @@ public class DrawFBP extends JFrame
 
 	KeyStroke escapeKS = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
 
-	String blockType = Block.Types.COMPONENT_BLOCK;
+	String blockType = Block.Types.PROCESS_BLOCK;
 
 	int curx, cury;
 
@@ -121,7 +121,7 @@ public class DrawFBP extends JFrame
 	public static int IMAGE = 2;
 	public static int JARFILE = 3;
 	public static int JHALL = 4;
-	public static int COMPONENT = 5;
+	public static int PROCESS = 5;
 	public static int GENCODE = 6;
 
 	JCheckBox grid;
@@ -160,11 +160,11 @@ public class DrawFBP extends JFrame
 	int panX, panY;
 	Cursor openPawCursor = null;
 	Cursor closedPawCursor = null;
-	String blockNames[] = {"Component", "File", "Report", "Ext Port - In",
+	String blockNames[] = {"Process", "File", "Report", "Ext Port - In",
 			"Ext Port - Out", "Ext Port - Out/In", "Initial IP", "Legend",
 			"Person", "Enclosure"};
-
-	String blockTypes[] = {Block.Types.COMPONENT_BLOCK, Block.Types.FILE_BLOCK,
+	
+	String blockTypes[] = {Block.Types.PROCESS_BLOCK, Block.Types.FILE_BLOCK,
 			Block.Types.REPORT_BLOCK, Block.Types.EXTPORT_IN_BLOCK,
 			Block.Types.EXTPORT_OUT_BLOCK, Block.Types.EXTPORT_OUTIN_BLOCK,
 			Block.Types.IIP_BLOCK, Block.Types.LEGEND_BLOCK,
@@ -188,7 +188,7 @@ public class DrawFBP extends JFrame
 	
 	JLabel lab2 = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
-	JRadioButton[] but = new JRadioButton[12];
+	JRadioButton[] but = new JRadioButton[11];
 
 	boolean allFiles = false;
 	int wDiff, hDiff;
@@ -208,6 +208,8 @@ public class DrawFBP extends JFrame
 		LEFT, TOP, RIGHT, BOTTOM
 	}
 	static boolean READFILE = true;
+	
+	//int oldW, oldH;
 
 	//static enum FontType {
 	//	FIXED, GENERAL
@@ -223,7 +225,7 @@ public class DrawFBP extends JFrame
 		// int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
 		scalingFactor = 1.0d;
 		driver = this;
-
+		
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
 
@@ -537,7 +539,8 @@ public class DrawFBP extends JFrame
 		box2.add(Box.createHorizontalGlue());
 		ButtonGroup butGroup = new ButtonGroup();
 
-		String buttonNames[] = {"(none)", "Component", "Initial IP",
+		// "Subnet" is not a separate block type (it is a variant of "Process")
+		String buttonNames[] = {"Process", "Initial IP",
 				"Enclosure", "Subnet", "Ext Port - In", "Ext Port - Out",
 				"Ext Port - Out/In", "Legend", "File", "Person", "Report"};
 
@@ -553,7 +556,7 @@ public class DrawFBP extends JFrame
 
 		adjustFonts();
 
-		but[1].setSelected(true); // "Component"
+		but[0].setSelected(true); // "Component"
 
 		box2.add(Box.createHorizontalGlue());
 		Component[] comps = box2.getComponents();
@@ -998,7 +1001,7 @@ public class DrawFBP extends JFrame
 				genDir = new File(ss);
 
 			MyFileChooser fc = new MyFileChooser(genDir,
-					curDiag.fCPArr[GENCODE], frame);
+					curDiag.fCPArr[GENCODE]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -1271,7 +1274,7 @@ public class DrawFBP extends JFrame
 			curDiag.fCPArr[IMAGE].prompt = curDiag.fCPArr[IMAGE].prompt
 					.substring(0, i) + ": " + fn;
 
-			file = curDiag.genSave(null, fCPArray[IMAGE], buffer2, frame);
+			file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
 
 			if (file == null) {
 				MyOptionPane.showMessageDialog(frame, "File not saved");
@@ -1302,7 +1305,7 @@ public class DrawFBP extends JFrame
 				currentImageDir = new File(ss);
 
 			MyFileChooser fc = new MyFileChooser(currentImageDir,
-					curDiag.fCPArr[IMAGE], frame);
+					curDiag.fCPArr[IMAGE]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -1441,7 +1444,7 @@ public class DrawFBP extends JFrame
 							}
 						}
 						// Create a new frame.
-						popup2 = new JDialog();
+						popup2 = new JDialog(frame);
 						popup2.setTitle("Help DrawFBP");
 						popup2.setIconImage(favicon.getImage());
 						applyOrientation(popup2);
@@ -1607,17 +1610,20 @@ public class DrawFBP extends JFrame
  
 	
 	void setBlkType(String s) {
+		/*
 		if (s.equals("(none)")) {
 			blockType = "";
 
-		} else if (s.equals("Subnet")) {
-			blockType = Block.Types.COMPONENT_BLOCK;
+		} else 
+			*/
+		if (s.equals("Subnet")) {
+			blockType = Block.Types.PROCESS_BLOCK;
 			willBeSubnet = true;
 
 		} else {
 			willBeSubnet = false;
 			if (s.equals("Component")) {
-				blockType = Block.Types.COMPONENT_BLOCK;
+				blockType = Block.Types.PROCESS_BLOCK;
 
 			} else if (s.equals("File")) {
 				blockType = Block.Types.FILE_BLOCK;
@@ -1670,7 +1676,7 @@ public class DrawFBP extends JFrame
 		fileMenu.add(gNMenuItem, 10);
 		curDiag.filterOptions[0] = gl.showLangs();
 
-		curDiag.fCPArr[DrawFBP.COMPONENT] = driver.new FileChooserParms(
+		curDiag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(
 				gl.srcDirProp, "Select "
 						+ gl.showLangs()
 						+ " component from directory",
@@ -1694,8 +1700,8 @@ public class DrawFBP extends JFrame
 
 	Block createBlock(String blkType, boolean enterDesc) {
 		Block block = null;
-		if (blkType == Block.Types.COMPONENT_BLOCK) {
-			block = new ComponentBlock(curDiag);
+		if (blkType == Block.Types.PROCESS_BLOCK) {
+			block = new ProcessBlock(curDiag);
 			block.isSubnet = willBeSubnet;
 		}
 
@@ -1790,7 +1796,7 @@ public class DrawFBP extends JFrame
 	}
 
 	void displayProperties() {
-		final JDialog jdialog = new JDialog();
+		final JDialog jdialog = new JDialog(frame);
 		jdialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				jdialog.dispose();
@@ -1811,8 +1817,8 @@ public class DrawFBP extends JFrame
 		});
 
 		panel.setBackground(Color.GRAY);
-		panel.setLocation(frame.getX() + 50, frame.getY() + 50);
-		panel.setSize(1200, 800);
+		//panel.setLocation(frame.getX() + 50, frame.getY() + 50);
+		//panel.setSize(1200, 800);
 
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -1872,7 +1878,8 @@ public class DrawFBP extends JFrame
 
 		jdialog.add(panel);
 		jdialog.pack();
-		jdialog.setLocation(150, 50);
+		Point p = frame.getLocation();
+		jdialog.setLocation(p.x + 150, p.y + 50);
 		int height = 200 + properties.size() * 40;
 		jdialog.setSize(1200, height);
 		panel.setVisible(true);
@@ -1966,7 +1973,7 @@ public class DrawFBP extends JFrame
 		if (!saveAs)
 			file = curDiag.diagFile;
 
-		file = curDiag.genSave(file, fCPArray[DIAGRAM], null, frame);
+		file = curDiag.genSave(file, fCPArray[DIAGRAM], null);
 
 		int i = jtp.getSelectedIndex();
 		if (file == null) {
@@ -2386,7 +2393,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		else
 			f = (new File(s)).getParentFile();
 		
-		MyFileChooser fc = new MyFileChooser(f, fCPArray[JARFILE], frame);
+		MyFileChooser fc = new MyFileChooser(f, fCPArray[JARFILE]);
 		
 		int returnVal = fc.showOpenDialog();
 
@@ -2420,7 +2427,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		else
 			f = (new File(s)).getParentFile();
 
-		MyFileChooser fc = new MyFileChooser(f, fCPArray[JHALL], frame);
+		MyFileChooser fc = new MyFileChooser(f, fCPArray[JHALL]);
 
 		int returnVal = fc.showOpenDialog();
 
@@ -2547,8 +2554,8 @@ void chooseFonts(MyFontChooser fontChooser){
 		Block to = curDiag.blocks.get(new Integer(a2.toId));
 		// String downPort = a2.downStreamPort;
 		a.checkStatus = Status.UNCHECKED;
-		if (!(from instanceof ComponentBlock)
-				|| !(to instanceof ComponentBlock))
+		if (!(from instanceof ProcessBlock)
+				|| !(to instanceof ProcessBlock))
 			return;
 		if (a.upStreamPort == null || a.upStreamPort.equals(""))
 			return;
@@ -2678,12 +2685,12 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	void displayAlignmentLines(Block block) {
 
-		if (!(block instanceof ComponentBlock))
+		if (!(block instanceof ProcessBlock))
 			return;
 
 		block.hNeighbour = null;
 		for (Block b : curDiag.blocks.values()) {
-			if (!(b instanceof ComponentBlock))
+			if (!(b instanceof ProcessBlock))
 				continue;
 			int y = b.cy + b.height / 2;
 			if (b != block
@@ -2694,7 +2701,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 		block.vNeighbour = null;
 		for (Block b : curDiag.blocks.values()) {
-			if (!(b instanceof ComponentBlock))
+			if (!(b instanceof ProcessBlock))
 				continue;
 			int x = b.cx - b.width / 2;
 			if (b != block && between(block.cx - block.width / 2, x - 6, x + 6)) {
@@ -2751,11 +2758,14 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
+		//oldW = getSize().width;
+		//oldH = getSize().height;
 		if (!source.getValueIsAdjusting()) {
 			scalingFactor = ((int) source.getValue()) / 100.0;
 			String scale = (int) source.getValue() + "%";
 			scaleLab.setText(scale);
 			frame.pack();
+			frame.setPreferredSize(new Dimension(1200, 800)); 	
 			frame.repaint();
 		}
 	}
@@ -3277,6 +3287,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			Graphics2D g2d = (Graphics2D) g;
 			
 			g2d.scale(scalingFactor, scalingFactor);
+			
+			
 
 			//g2d.translate(xTranslate, yTranslate);
 
@@ -4077,7 +4089,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				boolean OK = true;
 				Block from = curDiag.blocks.get(new Integer(
 						curDiag.currentArrow.fromId));
-				if ((curDiag.foundBlock instanceof ComponentBlock || curDiag.foundBlock instanceof ExtPortBlock)
+				if ((curDiag.foundBlock instanceof ProcessBlock || curDiag.foundBlock instanceof ExtPortBlock)
 						&& !(from instanceof IIPBlock)) {
 					if (side == Side.BOTTOM) {
 						int answer = MyOptionPane.showConfirmDialog(frame,
@@ -4137,7 +4149,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 				
 				Boolean error = false;
-				if (to instanceof IIPBlock && from instanceof ComponentBlock) {
+				if (to instanceof IIPBlock && from instanceof ProcessBlock) {
 					a.reverseDirection();
 					// MyOptionPane
 					// .showMessageDialog(frame,

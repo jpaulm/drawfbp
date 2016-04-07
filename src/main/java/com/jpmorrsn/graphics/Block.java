@@ -17,7 +17,7 @@ import javax.swing.*;
 import com.jpmorrsn.graphics.DrawFBP.GenLang;
 
 public class Block implements ActionListener {
-	String type;
+	String type;   // One of Types (single character strings)
 	DrawFBP driver;
 	int leftEdge, rgtEdge, topEdge, botEdge;
 	int width, height;
@@ -73,7 +73,7 @@ public class Block implements ActionListener {
 	HashMap<String, Integer> portlist;
 
 	static public class Types {
-		static String COMPONENT_BLOCK = "B";
+		static String PROCESS_BLOCK = "B";
 		static String EXTPORT_IN_BLOCK = "C";
 		static String EXTPORT_OUT_BLOCK = "D";
 		static String EXTPORT_OUTIN_BLOCK = "E";
@@ -90,7 +90,7 @@ public class Block implements ActionListener {
 		diag = d;
 		driver = d.driver;
 
-		type = Block.Types.COMPONENT_BLOCK;
+		type = Block.Types.PROCESS_BLOCK;
 
 		diagramFileName = null;
 		fullClassName = null;
@@ -105,7 +105,7 @@ public class Block implements ActionListener {
 			return;
 		}
 
-		if (this == driver.selBlockP && !(this instanceof ComponentBlock)) {
+		if (this == driver.selBlockP && !(this instanceof ProcessBlock)) {
 			showArrowEndAreas(g);
 			return;
 		}
@@ -401,7 +401,7 @@ public class Block implements ActionListener {
 			description = description.substring(1,description.length() - 1);				
 		
 		if (type == null)
-			type = Block.Types.COMPONENT_BLOCK;
+			type = Block.Types.PROCESS_BLOCK;
 		codeFileName = item.get("codefilename");
 		//if (codeFileName != null) { 
 		//	codeFileName = DrawFBP.makeAbsFileName(codeFileName,
@@ -475,7 +475,7 @@ public class Block implements ActionListener {
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
 
 		// driver.frame.setSize(driver.maxX, driver.maxY);
-		if (this instanceof ComponentBlock && javaClass != null) {
+		if (this instanceof ProcessBlock && javaClass != null) {
 			buildMetadata();
 		}
 
@@ -860,7 +860,7 @@ public class Block implements ActionListener {
 
 	void displayPortInfo() {
 		buildMetadata();   
-		final JDialog jdialog = new JDialog();
+		final JDialog jdialog = new JDialog(driver.frame);
 		jdialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				jdialog.dispose();
@@ -986,7 +986,7 @@ public class Block implements ActionListener {
 		Dimension dim = driver.frame.getSize();
 		int x_off = 100;
 		int y_off = 100;
-		jdialog.setPreferredSize(new Dimension(dim.width - x_off * 2, dim.height - y_off));
+		//jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
 		jdialog.pack();
 		jdialog.setLocation(p.x + x_off, p.y + y_off);
 		 
@@ -1165,16 +1165,16 @@ public class Block implements ActionListener {
 			diag.jpm.add(menuItem);
 
 		} else {
-			if (this instanceof ComponentBlock || this instanceof FileBlock
+			if (this instanceof ProcessBlock || this instanceof FileBlock
 					|| this instanceof ReportBlock
 					|| this instanceof LegendBlock) {
-				if (this instanceof ComponentBlock)
+				if (this instanceof ProcessBlock)
 					menuItem = new JMenuItem("Edit Process Name");
 				else
 					menuItem = new JMenuItem("Edit Description");
 				menuItem.addActionListener(this);
 				diag.jpm.add(menuItem);
-				if (this instanceof ComponentBlock) {
+				if (this instanceof ProcessBlock) {
 
 					menuItem = new JMenuItem("Select Subnet Diagram (.drw)");
 					menuItem.addActionListener(this);
@@ -1637,7 +1637,7 @@ public class Block implements ActionListener {
 
 		description = area.getText();
 		/*
-		if (!(description.equals("")) && type.equals(Types.COMPONENT_BLOCK)) {
+		if (!(description.equals("")) && type.equals(Types.PROCESS_BLOCK)) {
 			Pattern p = Pattern.compile("[_\\s\\p{N}\\p{L}]*",
 					Pattern.UNICODE_CASE | Pattern.CANON_EQ);
 			Matcher ma = p.matcher(description);
@@ -1691,7 +1691,7 @@ public class Block implements ActionListener {
 			t = System.getProperty("user.home");
 
 		MyFileChooser fc = new MyFileChooser(new File(t),
-				diag.fCPArr[DrawFBP.DIAGRAM], driver.frame);
+				diag.fCPArr[DrawFBP.DIAGRAM]);
 
 		int returnVal = fc.showOpenDialog();
 
@@ -1760,7 +1760,7 @@ public class Block implements ActionListener {
 			// "Select component from class directory", ".class",
 			// driver.new JavaClassFilter(), MyFileChooser.CLASS);
 			MyFileChooser fc = new MyFileChooser(new File(t),
-					diag.fCPArr[DrawFBP.CLASS], driver.frame);
+					diag.fCPArr[DrawFBP.CLASS]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -1928,7 +1928,7 @@ public class Block implements ActionListener {
 			t = System.getProperty("user.home");
 
 		MyFileChooser fc = new MyFileChooser(new File(t),
-				diag.fCPArr[DrawFBP.COMPONENT], driver.frame);
+				diag.fCPArr[DrawFBP.PROCESS]);
 
 		int returnVal = fc.showOpenDialog();
 

@@ -22,7 +22,7 @@ allows multi-level diagrams to
 be drawn using a number of different element types, and supports
 the technology and methodology known as Flow-Based
 Programming (FBP).&nbsp; DrawFBP captures the x-y coordinates of the
-components entered, as well as those of bends in the connecting lines,
+processes entered, as well as those of bends in the connecting lines,
 while preserving the connectivity of the various objects in the
 diagram.&nbsp;&nbsp; DrawFBP supports limited "rubber-banding": as
 blocks are dragged, the line segments immediately attached to the
@@ -35,8 +35,8 @@ level diagrams. &nbsp; An element type called <span
  style="color: rgb(0, 153, 0);">External Port</span> (Output or Input) 
 is used to manage
 the connections between a lower-level subnet and the diagram that uses
-it.&nbsp; Initially a component in the diagram will be of undefined type, but can be changed to
-reference either a Java component or a subnet, by using the "Select Component/Subnet Class" and/or 
+it.&nbsp; Initially a process in the diagram will be of undefined type, but can be changed to
+reference either a Java process or a subnet, by using the "Select Component/Subnet Class" and/or 
 the "Link to Subnet Diagram" functions in the popup for that element.</p>
 <p>
 Since connectivity information is preserved when a DrawFBP diagram is
@@ -52,7 +52,7 @@ NoFlo, see the <a
 <p>
 DrawFBP supports the JavaFBP and C#FBP parametrization facility, called <span
  style="color: rgb(0, 153, 0);">Initial Information Packets</span>
-(Initial IPs, or IIPs).  It also supports several element types, apart from Components, 
+(Initial IPs, or IIPs).  It also supports several element types, apart from Processes, 
 IIPs and External Ports: <span
  style="color: rgb(0, 153, 0);">Files<span style="color: rgb(0, 0, 0);">,</span>
 </span><span style="color: rgb(0, 153, 0);">Reports</span>, <span
@@ -60,7 +60,7 @@ IIPs and External Ports: <span
  style="color: rgb(0, 153, 0);">Persons</span>, and <span
  style="color: rgb(0, 153, 0);">Enclosures</span>, allowing a
 more visual style of charting.&nbsp; These block types do not represent
-actual FBP components, and do not generate any code, but help with
+actual FBP processes, and do not generate any code, but help with
 visualization. Whichever diagram symbol type is selected at the bottom of the screen,
  in the Block options bar, will be painted on your drawing area where you clicked.  DrawFBP will remember the diagram symbol type you selected - 
  there are 11 possible symbols - plus "none". It can be changed at any time during diagram construction.</p>

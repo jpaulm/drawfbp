@@ -9,7 +9,7 @@
        <tocitem text="Getting Started" target="gettingstarted"/>
        <tocitem text="Choosing Files" target="filechooser"/>
        <tocitem text="Blocks" target="blocks">
-           <tocitem text="Components" target="components" />
+           <tocitem text="Processes" target="processes" />
            <tocitem text="One-button Support" target="onebutton" />
            <tocitem text="Initial IPs" target="iips" />
            <tocitem text="Enclosures" target="enclosures" />

@@ -44,10 +44,10 @@ termination point.  You cannot start an arrow at a line - only end it there.&nbs
 For code generation purposes, DrawFBP treats an arrow terminating at a line as 
 feeding into the same block and port
 as the arrow it terminates at.</p>
-<p>An IIP can be connected to a component by an arrow, 
+<p>An IIP can be connected to a process by an arrow, 
 but the arrow will be displayed without an arrowhead.  This type 
 of connection can be drawn in either direction - however, if it
-is drawn in the wrong direction (i.e. from component to IIP), 
+is drawn in the wrong direction (i.e. from process to IIP), 
 DrawFBP will try to swap the ends of the arrow,
 which may give strange results if there are bends in the arrow.</p>  
 <p>When an arrow is completed, port names of <span style="color: rgb(0, 0, 153);">OUT</span>
@@ -91,9 +91,9 @@ with the arrow, and can be removed using "Remove Capacity", no matter where it h
 <h3 style="color: rgb(0, 0, 153);">Automatic/Normal</h3>
 <p>If the upstream or downstream end of an arrow is toggled to "automatic"
 it is shown with a blue circle at that end. </p>
-<p>An automatic output port sends a close-down signal at process close-down <i>even though the component has not 
+<p>An automatic output port sends a close-down signal at process close-down <i>even though the process has not 
 specified a port name for that function.</i>  An automatic input port will delay the process until an IP or 
-close-down signal is detected at that port, again <i>even though the component has not 
+close-down signal is detected at that port, again <i>even though the process has not 
 specified a port name for that function.</i>  No receive is required to process it.
 <h3 style="color: rgb(0, 0, 153);">DropOldest</h3>
 <p>This sets a connection attribute which drops the oldest IP on the connection if it would suspend the upstream (sending) 

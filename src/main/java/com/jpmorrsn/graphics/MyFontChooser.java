@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionListener;
 public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 	//private static final long serialVersionUID = 1L;
-	JFrame frame;
+	//JFrame frame;
 	// Graphics2D osg;
 	DrawFBP driver;
 	//FontType ft = null;
@@ -44,7 +44,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	MyFontChooser(JFrame frm, DrawFBP drawFBP) {
 
 		// type = t; // true if general text; false if fixed-width
-		frame = frm;
+		//frame = frm;
 		driver = drawFBP;
 		//ft = ftyp;
 		//cr = new CellRenderer();
@@ -71,7 +71,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 		String prompt = "";
 
-		popup = new JDialog(frame, Dialog.ModalityType.APPLICATION_MODAL);
+		popup = new JDialog(driver.frame, Dialog.ModalityType.APPLICATION_MODAL);
 		popup.setFocusable(true);
 		popup.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -169,7 +169,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	
 	void done() {
 		popup.setVisible(false);
-		frame.repaint();
+		driver.frame.repaint();
 	}
 	
 	public void valueChanged(ListSelectionEvent e) {
@@ -186,7 +186,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 					fixedFont = fixedFonts[i];
 					fFChanged = true;
 					MyOptionPane
-					.showMessageDialog(frame, "Font '" + fixedFont 
+					.showMessageDialog(driver.frame, "Font '" + fixedFont 
 							+ "' selected as font for fixed-size characters.");
 					lb1.setText("Fixed Fonts (" + fixedFont + ")");
 					lb1.repaint();
@@ -195,7 +195,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 					generalFont = generalFonts[i];
 					gFChanged = true;
 					MyOptionPane
-						.showMessageDialog(frame, "Font '" + generalFont
+						.showMessageDialog(driver.frame, "Font '" + generalFont
 								+ "' selected as font for general characters.");
 					lb2.setText("General Fonts (" + generalFont + ")");
 					lb2.repaint();

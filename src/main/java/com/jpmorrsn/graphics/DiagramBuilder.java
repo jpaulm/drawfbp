@@ -227,7 +227,7 @@ public class DiagramBuilder {
 								 
 								/*
 								driver.jtf.setText(diag.diagLang.showLangs());
-								diag.fCPArr[DrawFBP.COMPONENT] = driver.new FileChooserParms(diag.diagLang.srcDirProp, "Select "
+								diag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(diag.diagLang.srcDirProp, "Select "
 										+ diag.diagLang.showLangs() + " component from directory",
 										diag.diagLang.suggExtn, diag.diagLang.filter, "Components: "
 												+ diag.diagLang.showLangs() + " " + diag.diagLang.showSuffixes());
@@ -272,11 +272,11 @@ public class DiagramBuilder {
 								if (null == stype) {
 									MyOptionPane.showMessageDialog(frame,
 											"No block type specified");
-									block = new ComponentBlock(diag);
+									block = new ProcessBlock(diag);
 
 								} else if (stype
-										.equals(Block.Types.COMPONENT_BLOCK)) {
-									block = new ComponentBlock(diag);
+										.equals(Block.Types.PROCESS_BLOCK)) {
+									block = new ProcessBlock(diag);
 
 									if (MPsw) {
 										block.multiplex = true;
@@ -336,7 +336,7 @@ public class DiagramBuilder {
 								} else {
 									MyOptionPane.showMessageDialog(frame,
 											"Undefined block type");
-									block = new ComponentBlock(diag);
+									block = new ProcessBlock(diag);
 								}
 								block.buildBlockFromXML(item);
 								block.calcEdges();
