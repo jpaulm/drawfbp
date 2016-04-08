@@ -1622,7 +1622,7 @@ public class DrawFBP extends JFrame
 
 		} else {
 			willBeSubnet = false;
-			if (s.equals("Component")) {
+			if (s.equals("Process")) {
 				blockType = Block.Types.PROCESS_BLOCK;
 
 			} else if (s.equals("File")) {
