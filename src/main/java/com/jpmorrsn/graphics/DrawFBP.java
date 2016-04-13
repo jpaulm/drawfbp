@@ -3285,7 +3285,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			diagDesc.setText(s);
  
 			Graphics2D g2d = (Graphics2D) g;
-			
+						
 			g2d.scale(scalingFactor, scalingFactor);
 			
 			
@@ -3547,6 +3547,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				repaint();
 				return;
 			}
+			
 			// if no currentDiag.currentArrow, start an arrow
 			if (curDiag.currentArrow == null && curDiag.foundBlock != null			
 					&& arrowEndForDragging == null) {
@@ -3565,10 +3566,8 @@ void chooseFonts(MyFontChooser fontChooser){
 				curDiag.arrows.put(aid, arrow);
 				curDiag.foundBlock = null;
 				// curDiag.changed = true;
-				arrow.fromSide = side;
-
+				arrow.fromSide = side;				
 			}
-
 			repaint();
 		}
 
@@ -4144,9 +4143,16 @@ void chooseFonts(MyFontChooser fontChooser){
 				Block to = curDiag.blocks.get(new Integer(
 						a.toId));
 
-				//a.downStreamPort = "";
-				//a.upStreamPort = "";
-
+				if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
+						from instanceof IIPBlock) && 
+						(a.endsAtLine || (to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock || 
+						to instanceof Enclosure)))){
+					
+					if (!(from instanceof IIPBlock) && (a.upStreamPort == null || a.upStreamPort.trim().equals(""))) 
+						a.upStreamPort = "OUT";
+					if (!a.endsAtLine &&(a.downStreamPort == null || a.downStreamPort.trim().equals(""))) 
+						a.downStreamPort = "IN";
+				}
 				
 				Boolean error = false;
 				if (to instanceof IIPBlock && from instanceof ProcessBlock) {
@@ -4194,25 +4200,25 @@ void chooseFonts(MyFontChooser fontChooser){
 			) {
 
 				curDiag.foundArrow = null;
+				Arrow a = curDiag.currentArrow;
 				for (Arrow arrow : curDiag.arrows.values()) {
-					if (arrow != curDiag.currentArrow
+					if (arrow != a
 							&& curDiag.matchArrow(xa, ya, arrow))
 						curDiag.foundArrow = arrow;
 				}
 
-				if (curDiag.foundArrow != null // && leftButton
-				) {
-
+				if (curDiag.foundArrow != null) {     // && leftButton				 
+					
 					if (x != curx) {
-						double s = y - curDiag.currentArrow.lastY;
-						double t = x - curDiag.currentArrow.lastX;
+						double s = y - a.lastY;
+						double t = x - a.lastX;
 						s = s / t;
 						if (Math.abs(s) < FORCE_HORIZONTAL) // force horizontal
 							y = curDiag.currentArrow.lastY;
 						if (Math.abs(s) > FORCE_VERTICAL) // force vertical
 							x = curDiag.currentArrow.lastX;
 					}
-					curDiag.currentArrow.toX = x;
+					a.toX = x;
 					curDiag.currentArrow.toY = y;
 					curDiag.currentArrow.endsAtLine = true;
 
@@ -4222,11 +4228,25 @@ void chooseFonts(MyFontChooser fontChooser){
 					// line,
 					// not
 					// block
-					curDiag.currentArrow.downStreamPort = curDiag.foundArrow.downStreamPort;
 					Block from = curDiag.blocks.get(new Integer(
-							curDiag.currentArrow.fromId));
+							a.fromId));
+					Block to = curDiag.blocks.get(new Integer(
+							a.toId));
+					if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
+							from instanceof IIPBlock) && 
+							(a.endsAtLine || (to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock || 
+							to instanceof Enclosure)))){
+						
+						if (!(from instanceof IIPBlock) && (a.upStreamPort == null || a.upStreamPort.trim().equals(""))) 
+							a.upStreamPort = "OUT";
+						if (!a.endsAtLine &&(a.downStreamPort == null || a.downStreamPort.trim().equals(""))) 
+							a.downStreamPort = "IN";
+					}
+					a.downStreamPort = curDiag.foundArrow.downStreamPort;
+					//Block from = curDiag.blocks.get(new Integer(
+					//		a.fromId));
 					Arrow a2 = curDiag.currentArrow.findTerminalArrow();
-					Block to = curDiag.blocks.get(new Integer(a2.toId));
+					to = curDiag.blocks.get(new Integer(a2.toId));
 					boolean error = true;
 					if (from instanceof ExtPortBlock
 							&& from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))

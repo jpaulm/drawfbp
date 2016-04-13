@@ -74,6 +74,7 @@ public class Arrow implements ActionListener {
 			to = diag.blocks.get(new Integer(toId));
 			
 		}
+		/*
 		
 		// Generate "OUT" and "IN" if neither end is one of: Legend, File, Person, Report			
 		 
@@ -88,7 +89,7 @@ public class Arrow implements ActionListener {
 				downStreamPort = "IN";
 		}
 		 
-			
+		*/	
 		if (toX == -1) 
 			endX = diag.xa;
 		else
