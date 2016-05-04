@@ -540,6 +540,7 @@ public class Diagram {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
+			System.err.println("File error writing " + file.getAbsolutePath());
 			return false;
 		}
 

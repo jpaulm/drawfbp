@@ -953,10 +953,10 @@ public class MyFileChooser extends JFrame
 			// if (s.equals(""))
 			// return jp;
 
-			if (s.toLowerCase().endsWith(".jar"))
-				icon = driver.jarIcon;
-			else if (s.equals("(empty folder)"))
+			if (s == null || s.equals("(empty folder)"))
 				icon = null;
+			else if (s.toLowerCase().endsWith(".jar"))
+				icon = driver.jarIcon;			
 			else {
 				if (currentNode == null) {
 					File f = new File(listHead + File.separator + s);
@@ -973,8 +973,10 @@ public class MyFileChooser extends JFrame
 			}
 
 			//if (selComp instanceof JList) {
-
-				if (listHead.equals(listShowingJarFile)
+			if (s == null)
+				jp.setBackground(vLightBlue);
+			
+			else if (listHead.equals(listShowingJarFile)
 						&& s.toLowerCase().endsWith(".jar") || inJarTree)
 					jp.setBackground(bisque);
 				else
@@ -995,7 +997,7 @@ public class MyFileChooser extends JFrame
 			maxSize = new Dimension(Short.MAX_VALUE, 15);
 
 			JLabel lab1;
-			if (s.charAt(0) == ' ')
+			if (s == null || s.charAt(0) == ' ')
 				lab1 = new JLabel(s);
 			else
 				lab1 = new JLabel(s, icon, JLabel.LEFT);

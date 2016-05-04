@@ -177,11 +177,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 		if (langLabel.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
 			if (packageName == null) {
-				packageName = (String) MyOptionPane.showInputDialog(dialog,
-						"Please fill in a package/namespace name", null);
-				packageName = packageName.trim();
-				driver.properties.put("currentPackageName", packageName);
-				driver.propertiesChanged = true;
+				packageName = "xxxxxx";
+				//packageName = (String) MyOptionPane.showInputDialog(dialog,
+				//		"Please fill in a package/namespace name", null);
+				//packageName = packageName.trim();
+				//driver.properties.put("currentPackageName", packageName);
+				//driver.propertiesChanged = true;
 			}
 		}
 
