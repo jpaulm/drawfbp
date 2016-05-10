@@ -34,8 +34,8 @@ public class LegendBlock extends Block {
 		
 		if (this == driver.selBlock) {
 			showZones(g);
-			return;
-		}
+			//return;
+		}		
 	}
 	
 	/*
