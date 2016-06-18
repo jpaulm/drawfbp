@@ -17,6 +17,10 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
+To get started using DrawFBP once you have it installed (see below), just click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block is controlled by the buttons along the bottom of the screen.
+
+To connect two blocks, click anywhere on the border of the "from" block; then click anywhere on the border of the "to" block - it doesn't matter whether the left mouse button is held down or not. 
+
 
 Features
 ----
