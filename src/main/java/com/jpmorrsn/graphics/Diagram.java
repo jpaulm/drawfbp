@@ -2,6 +2,7 @@ package com.jpmorrsn.graphics;
 
 //import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -84,6 +85,8 @@ public class Diagram {
 	FileChooserParms[] fCPArr = new FileChooserParms[7];
 	String[] filterOptions = {"", "All (*.*)"};
 	//Rectangle curMenuRect = null;
+	
+	Point arrowRoot = null;
 	
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;

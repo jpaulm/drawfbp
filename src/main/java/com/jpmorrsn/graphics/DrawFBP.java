@@ -4075,15 +4075,19 @@ void chooseFonts(MyFontChooser fontChooser){
 								* scalingFactor, y + 4 * scalingFactor))
 					return;
 				if (curDiag.foundBlock.id == curDiag.currentArrow.fromId) {
-					MyOptionPane.showMessageDialog(frame,
-							"Cannot connect arrow to originating block");
-					Integer aid = new Integer(curDiag.currentArrow.id);
-					curDiag.arrows.remove(aid);
-					curDiag.foundBlock = null;
-					curDiag.currentArrow = null;
+					//MyOptionPane.showMessageDialog(frame,
+					//		"Cannot connect arrow to originating block");
+					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
+							"Connecting arrow to originating block is deadlock-prone", "Allow?",
+							JOptionPane.YES_NO_OPTION)) {
+					    Integer aid = new Integer(curDiag.currentArrow.id);
+					    curDiag.arrows.remove(aid);
+					    curDiag.foundBlock = null;
+					    curDiag.currentArrow = null;
 
-					repaint();
-					return;
+					    repaint();
+					    return;
+					}
 				}
 				boolean OK = true;
 				Block from = curDiag.blocks.get(new Integer(
@@ -4247,6 +4251,24 @@ void chooseFonts(MyFontChooser fontChooser){
 					//		a.fromId));
 					Arrow a2 = curDiag.currentArrow.findTerminalArrow();
 					to = curDiag.blocks.get(new Integer(a2.toId));
+					
+					if (to == from){
+						//MyOptionPane.showMessageDialog(frame,
+						//		"Cannot connect arrow to originating block");
+						if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
+								"Connecting arrow to originating block is deadlock-prone", "Allow?",
+								JOptionPane.YES_NO_OPTION)) {
+						    Integer aid = new Integer(curDiag.currentArrow.id);
+						    curDiag.arrows.remove(aid);
+						    curDiag.foundBlock = null;
+						    curDiag.currentArrow = null;
+
+						    repaint();
+						    return;
+						}
+						
+					}				
+					
 					boolean error = true;
 					if (from instanceof ExtPortBlock
 							&& from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))
