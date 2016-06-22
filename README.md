@@ -76,6 +76,10 @@ You need to install a Gradle plugin for Eclipse as explained here:
 https://github.com/spring-projects/eclipse-integration-gradle/
 Then import a generated project in Eclipse, right (ctrl for OSX) click on the project in Eclipse -> Configure -> Convert to Gradle Project. After the conversion you can Right (ctrl for OSX) click on the project -> Gradle -> Task Quick Launcher and type `build`.
 
+
+In Eclipse, you may have to do a `Refresh` on the project.
+
+
 Building from command line
 ---
 
@@ -85,7 +89,9 @@ For building the project yourself simply run the following command:
 
     gradle build
 
-As a result a `DrawFBP-2.x.x.jar` file will be created in the `build/libs` directory. 
+
+
+As a result a `DrawFBP-2.x.x.jar` file will be created in the `build/libs` directory.  If you have done this earlier, you should delete the `build` directory first.
 
 
 Running DrawFBP

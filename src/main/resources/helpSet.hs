@@ -12,7 +12,9 @@
    <!-- maps --> 
    <maps>
      <homeID>overview</homeID>
+
      <mapref location="help/map.jhm" />
+
    </maps>
 	
    <!-- views --> 
@@ -20,7 +22,9 @@
       <name>TOC</name>
       <label>Table Of Contents</label>
       <type>javax.help.TOCView</type>
+
       <data>help/helptoc.xml</data>
+
       
    </view>
  
@@ -29,7 +33,9 @@
       <name>Index</name>
       <label>Index</label>
       <type>javax.help.IndexView</type>
+
       <data>help/helpindex.xml</data>
+
    </view> 
    
 	
@@ -49,7 +55,9 @@
       <name>glossary</name>
       <label>Glossary</label>
       <type>javax.help.GlossaryView</type>
+
       <data>help/glossary.xml</data>
+
    </view>
     -->
 
