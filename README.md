@@ -89,9 +89,7 @@ For building the project yourself simply run the following command:
 
     gradle build
 
-
-
-As a result a `DrawFBP-2.x.x.jar` file will be created in the `build/libs` directory.  If you have done this earlier, you should delete the `build` directory first.
+As a result a `DrawFBP-2.x.x.jar` file will be created in the `build/libs` directory.  If you have done this earlier, you have to delete the `build` directory first.
 
 
 Running DrawFBP
