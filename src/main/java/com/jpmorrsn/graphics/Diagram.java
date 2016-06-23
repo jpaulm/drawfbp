@@ -19,7 +19,7 @@ import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
@@ -86,7 +86,7 @@ public class Diagram {
 	String[] filterOptions = {"", "All (*.*)"};
 	//Rectangle curMenuRect = null;
 	
-	Point arrowRoot = null;
+	FoundPoint arrowRoot = null;
 	
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;

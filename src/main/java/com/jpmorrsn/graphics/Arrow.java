@@ -74,22 +74,8 @@ public class Arrow implements ActionListener {
 			to = diag.blocks.get(new Integer(toId));
 			
 		}
-		/*
 		
-		// Generate "OUT" and "IN" if neither end is one of: Legend, File, Person, Report			
-		 
-		if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
-				from instanceof IIPBlock) && 
-				(endsAtLine || (to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock || 
-				to instanceof Enclosure)))){
-			
-			if (!(from instanceof IIPBlock) && (upStreamPort == null || upStreamPort.trim().equals(""))) 
-				upStreamPort = "OUT";
-			if (!endsAtLine &&(downStreamPort == null || downStreamPort.trim().equals(""))) 
-				downStreamPort = "IN";
-		}
-		 
-		*/	
+
 		if (toX == -1) 
 			endX = diag.xa;
 		else
@@ -271,8 +257,9 @@ public class Arrow implements ActionListener {
 			}
 		}
 		if (extraArrowhead != null)  
-			extraArrowhead.draw(g); 		
-		 
+			extraArrowhead.draw(g); 
+		
+				 
 	}
 	void calcLimits(int x1, int x2, int y1, int y2) {
 		if (x1 < x2) {

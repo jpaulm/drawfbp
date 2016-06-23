@@ -244,7 +244,14 @@ public class Block implements ActionListener {
 						- vNeighbour.width / 2, cy - height / 2);
 			g.setColor(Color.BLACK);
 		}
+		
+		if (driver.curDiag.arrowRoot != null)	{
+			g.setColor(Color.GRAY);
+		    g.drawRect(driver.curDiag.arrowRoot.xa - 3, driver.curDiag.arrowRoot.ya - 3, 6, 6);
+		    g.setColor(Color.BLACK);
+		}
 	}
+	
 	void calcEdges() {
 		leftEdge = cx - width / 2;
 		rgtEdge = cx + width / 2;

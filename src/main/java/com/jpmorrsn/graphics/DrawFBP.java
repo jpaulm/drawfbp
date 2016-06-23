@@ -370,7 +370,7 @@ public class DrawFBP extends JFrame
 
 		//jtp.setFont(fontg);
 
-		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		//ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		//java.net.URL imgURL = loader // this.getClass().getClassLoader()	
 		//java.net.URL imgURL = this.getClass().getClassLoader()
 		//		.getResource("DrawFBP-logo-small.png");
@@ -3206,11 +3206,11 @@ void chooseFonts(MyFontChooser fontChooser){
 	        super.addURL(url);  
 	    }  
 	   
-	    public Class loadClass(String s) throws ClassNotFoundException {
+	    public Class<?> loadClass(String s) throws ClassNotFoundException {
 	    	return super.loadClass(s);
 	    }
 	    
-	    protected Class findClass(String s) throws ClassNotFoundException {
+	    protected Class<?> findClass(String s) throws ClassNotFoundException {
 	    	return super.findClass(s);
 	    }
 	    
@@ -3293,9 +3293,56 @@ void chooseFonts(MyFontChooser fontChooser){
 			//g2d.translate(xTranslate, yTranslate);
 
 			// Now copy that off-screen image onto the screen
-			g2d.drawImage(buffer, 0, 0 , null); 
-			 
+			g2d.drawImage(buffer, 0, 0 , null); 	
+		}
+		
+		
+		
+		FoundPoint findArrowStart(int xa, int ya) {
 
+			FoundPoint fp = null;
+			for (Block block : curDiag.blocks.values()) {
+				
+				if (!(between(xa, block.leftEdge - 6 * scalingFactor, block.rgtEdge + 6 * scalingFactor)))
+					continue;
+
+				if (!(between(ya, block.topEdge - 4 * scalingFactor, block.botEdge + 4 * scalingFactor)))
+					continue;
+				
+				/* check for ends of arrows */
+				if (between(xa, block.leftEdge - 6 * scalingFactor,
+						block.leftEdge + 6 * scalingFactor)
+						&& between(ya, block.topEdge, block.botEdge)) {
+					fp = new FoundPoint(block.leftEdge, ya, Side.LEFT, block);
+					break;
+				}
+
+				else
+					if (between(xa, block.rgtEdge - 6 * scalingFactor,
+							block.rgtEdge + 6 * scalingFactor)
+							&& between(ya, block.topEdge, block.botEdge)) {
+					fp = new FoundPoint(block.rgtEdge, ya, Side.RIGHT, block);
+					break;
+				}
+
+				else
+						if (between(ya, block.topEdge - 4 * scalingFactor,
+								block.topEdge + 4 * scalingFactor)
+								&& between(xa, block.leftEdge, block.rgtEdge)) {
+					fp = new FoundPoint(xa, block.topEdge, Side.TOP, block);
+					break;
+				} else
+							if (between(ya, block.botEdge - 4 * scalingFactor,
+									block.botEdge + 4 * scalingFactor)
+									&& between(xa, block.leftEdge,
+											block.rgtEdge)) {
+					fp = new FoundPoint(xa, block.botEdge, Side.BOTTOM, block);
+					break;
+				}
+				// else if (fp != null)
+				// break;
+			}
+			return fp;
 		}
 
 		public void mouseMoved(MouseEvent e) {
@@ -3304,6 +3351,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
+			curDiag.arrowRoot = null;
 
 			Rectangle r = jtp.getBoundsAt(0);
 			Rectangle r2 = curDiag.area.getBounds();
@@ -3370,6 +3418,12 @@ void chooseFonts(MyFontChooser fontChooser){
 					curDiag.currentArrow.toY = ya;
 				}
 			}
+			
+            //curDiag.foundBlock = null;			
+			
+			FoundPoint fp = findArrowStart(xa, ya);
+			if (fp != null)
+				curDiag.arrowRoot = fp;
 
 			repaint();
 		}
@@ -3403,6 +3457,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int y = e.getY();
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
+			curDiag.arrowRoot = null;
 
 			
 			//if (curDiag.jpm != null) {
@@ -3578,6 +3633,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
+			curDiag.arrowRoot = null;
 
 			Point p = new Point(x, y);
 			p = gridAlign(p);
@@ -3775,6 +3831,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
+			curDiag.arrowRoot = null;
 
 			Side side = null;
 			Point p2 = new Point(x, y);
@@ -4021,52 +4078,18 @@ void chooseFonts(MyFontChooser fontChooser){
 				return;
 			}
 
-			// curDiag.currentArrow is not null....
-
-			curDiag.foundBlock = null;
-			for (Block block : curDiag.blocks.values()) {
-
-				/* check for ends of arrows */
-				if (between(xa, block.leftEdge - 6 * scalingFactor,
-						block.leftEdge + 6 * scalingFactor)
-						&& between(ya, block.topEdge, block.botEdge)) {
-					curDiag.foundBlock = block;
-					xa = block.leftEdge;
-					// ya = ya;
-					side = Side.LEFT;
-					break;
-				}
-				if (between(xa, block.rgtEdge - 6 * scalingFactor,
-						block.rgtEdge + 6 * scalingFactor)
-						&& between(ya, block.topEdge, block.botEdge)) {
-					curDiag.foundBlock = block;
-					xa = block.rgtEdge;
-					// ya = ya;
-					side = Side.RIGHT;
-					break;
-				}
-				if (between(ya, block.topEdge - 4 * scalingFactor,
-						block.topEdge + 4 * scalingFactor)
-						&& between(xa, block.leftEdge, block.rgtEdge)) {
-					curDiag.foundBlock = block;
-					// xa = xa;
-					ya = block.topEdge;
-					side = Side.TOP;
-					break;
-				}
-				if (between(ya, block.botEdge - 4 * scalingFactor,
-						block.botEdge + 4 * scalingFactor)
-						&& between(xa, block.leftEdge, block.rgtEdge)) {
-					curDiag.foundBlock = block;
-					// xa = xa;
-					ya = block.botEdge;
-					side = Side.BOTTOM;
-					break;
-				}
-			}
+			// curDiag.currentArrow is not null....			
 
 			// check for end of arrow
-			// arrow cannot connect block to itself...
+			
+			curDiag.foundBlock = null;
+			
+			FoundPoint fp = findArrowStart(xa, ya);
+			if (fp != null){
+				curDiag.foundBlock = fp.b;	
+				side = fp.side;
+			}
+			
 			if (curDiag.foundBlock != null // && leftButton
 			) {
 				if (between(curDiag.currentArrow.fromX, x - 4 * scalingFactor,
@@ -4075,8 +4098,7 @@ void chooseFonts(MyFontChooser fontChooser){
 								* scalingFactor, y + 4 * scalingFactor))
 					return;
 				if (curDiag.foundBlock.id == curDiag.currentArrow.fromId) {
-					//MyOptionPane.showMessageDialog(frame,
-					//		"Cannot connect arrow to originating block");
+					
 					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
 							"Connecting arrow to originating block is deadlock-prone", "Allow?",
 							JOptionPane.YES_NO_OPTION)) {
