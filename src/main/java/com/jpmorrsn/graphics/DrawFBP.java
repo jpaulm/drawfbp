@@ -432,6 +432,9 @@ public class DrawFBP extends JFrame
 		// if (diagramName != null)
 		// actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
 		// "Open " + diagramName));
+		
+		if (diagramName != null) 
+			openAction(diagramName);
 	}
 
 	private void buildUI(Container container) {
@@ -441,10 +444,8 @@ public class DrawFBP extends JFrame
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 		Box box1 = new Box(BoxLayout.Y_AXIS);
 		container.add(box1);
-		curDiag = getNewDiag();
-		// curDiag = new Diagram(this);
-		// area = getNewArea();
-		// jtp.addTab(area);
+		
+		curDiag = getNewDiag();				
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -471,19 +472,7 @@ public class DrawFBP extends JFrame
 
 		
 		jtp.addMouseListener(mouseListener);		
-		/*
-		frame.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent ev) {				
-				if (ev.getKeyCode() == KeyEvent.VK_ENTER){
-					for (int i = 0; i< but.length; i++){
-						but[i].requestFocusInWindow();
-						if (but[i].isEnabled())
-							but[i].setSelected(true);
-					}
-				}
-			}
-		});	
-		*/
+		
 
 		Box box4 = new Box(BoxLayout.X_AXIS);
 		box1.add(box4);
