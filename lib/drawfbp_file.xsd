@@ -14,17 +14,17 @@
             <xs:element name="blocks"> 
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="block"> 
+                        <xs:element name="block" maxOccurs="unbounded" > 
                             <xs:complexType>
-                               <xs:sequence>
+                               <xs:all>
                                     <xs:element name="x" type="xs:integer"/>
                                     <xs:element name="y" type="xs:integer"/>
                                     <xs:element name="id" type="xs:integer"/>
                                     <xs:element name="type" type="xs:string"/>
                                     <xs:element name="width" type="xs:integer"/>
                                     <xs:element name="height" type="xs:integer"/>
-                                    <xs:element name="description" type="xs:string"/>                                    
-                               </xs:sequence> 
+                                    <xs:element name="description" type="xs:string" minOccurs="0" />                                    
+                               </xs:all> 
                            </xs:complexType>
                       </xs:element> 
                   </xs:sequence>
@@ -33,9 +33,9 @@
           <xs:element name="connections"> 
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="connection"> 
+                        <xs:element name="connection" maxOccurs="unbounded"> 
                             <xs:complexType>
-                               <xs:sequence>
+                               <xs:all>
                                     <xs:element name="fromx" type="xs:integer"/>
                                     <xs:element name="fromy" type="xs:integer"/>
                                     <xs:element name="tox" type="xs:integer"/>
@@ -45,7 +45,7 @@
                                     <xs:element name="id" type="xs:integer"/>
                                     <xs:element name="upstreamport" type="xs:string"/>
                                     <xs:element name="downstreamport" type="xs:string"/>                                                                    
-                               </xs:sequence> 
+                               </xs:all> 
                            </xs:complexType>
                       </xs:element> 
                   </xs:sequence>
