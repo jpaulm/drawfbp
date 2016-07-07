@@ -23,7 +23,7 @@ public class Arrow implements ActionListener {
 	String upStreamPort, downStreamPort;
 	//String uspMod;   //  upstream port after lowercasing
 	String dspMod;   // downStreamPort after lowercasing 
-	DrawFBP.Side fromSide, toSide;
+	//DrawFBP.Side fromSide, toSide;
 	boolean deleteOnSave = false;
 	static Color FOREST_GREEN = new Color(34, 139, 34);
 	static Color ORANGE_RED = new Color(255, 69, 0);
@@ -95,7 +95,7 @@ public class Arrow implements ActionListener {
 		 g.drawRect(fromX - 3, fromY - 3, 6, 6);
 		 return;
 		 }
-
+/*
 		if (from != null) {
 			if (fromSide == Side.TOP)
 				fromY = from.cy - from.height / 2;
@@ -117,6 +117,7 @@ public class Arrow implements ActionListener {
 			else if (toSide == Side.RIGHT)
 				toX = to.cx + to.width / 2;
 		}
+		*/
 
 		if (driver.selArrowP == this)
 			g.setColor(Color.BLUE);
@@ -343,8 +344,8 @@ public class Arrow implements ActionListener {
 				+ fromY + "</fromy> " + "<tox>" + toX + "</tox> " + "<toy>"
 				+ toY + "</toy> " + "<fromid>" + fromId + "</fromid> "
 				+ "<toid>" + toId + "</toid> " + "<id>" + id + "</id> ";
-		if (endsAtLine)
-			s += "<endsatline/> ";
+		//if (endsAtLine)
+			s += "<endsatline>" + (endsAtLine?"true":"false") + "</endsatline>";
 		if (upStreamPort != null) {
 			s += "<upstreamport>" + upStreamPort + "</upstreamport>";
 		}
@@ -352,7 +353,7 @@ public class Arrow implements ActionListener {
 			s += "<downstreamport>" + downStreamPort + "</downstreamport>";
 		}
 		if (dropOldest) {
-			s += "<dropoldest/>";
+			s += "<dropoldest>" + (dropOldest?"true":"false") + "</dropOldest>";
 		}
 		if (bends != null) {
 			s += "<bends> ";
@@ -364,6 +365,7 @@ public class Arrow implements ActionListener {
 			}
 			s += "</bends> ";
 		}
+		/*
 		if (fromSide == Side.LEFT)
 			s += "<fromside> L </fromside>";
 		else if (fromSide == Side.RIGHT)
@@ -381,7 +383,7 @@ public class Arrow implements ActionListener {
 			s += "<toside> T </toside>";
 		else if (toSide == Side.BOTTOM)
 			s += "<toside> B </toside>";
-
+*/
 		s += "</connection> \n";
 		return s;
 	}
@@ -419,6 +421,8 @@ public class Arrow implements ActionListener {
 
 		endsAtBlock = true;
 		endsAtLine = false;
+		
+		/*
 		s = item.get("fromside");
 		if (s != null) {
 			s = s.trim();
@@ -443,6 +447,8 @@ public class Arrow implements ActionListener {
 			else if (s.equals("B"))
 				toSide = Side.BOTTOM;
 		}
+		
+		*/
 
 	}
 
@@ -824,10 +830,10 @@ public class Arrow implements ActionListener {
 			side = Side.BOTTOM;
 		}
 		if (side != null) {
-			if (tailMarked)
-				fromSide = side;
-			if (headMarked)
-				toSide = side;
+			//if (tailMarked)
+			//	fromSide = side;
+			//if (headMarked)
+			//	toSide = side;
 			return true;
 		}
 		return false;
@@ -860,9 +866,9 @@ public class Arrow implements ActionListener {
 		id = toId;
 		toId = fromId;
 		fromId = id;
-		DrawFBP.Side s = toSide;
-		toSide = fromSide;
-		fromSide = s;
+		//DrawFBP.Side s = toSide;
+		//toSide = fromSide;
+		//fromSide = s;
 		String st = upStreamPort;
 		upStreamPort = downStreamPort;
 		downStreamPort = st;
@@ -893,8 +899,8 @@ public class Arrow implements ActionListener {
 		}
 		arr.upStreamPort = this.upStreamPort;
 		arr.downStreamPort = this.downStreamPort;
-		arr.fromSide = this.fromSide;
-		arr.toSide = this.toSide;
+		//arr.fromSide = this.fromSide;
+		//arr.toSide = this.toSide;
 		arr.diag = d;
 		return arr;
 

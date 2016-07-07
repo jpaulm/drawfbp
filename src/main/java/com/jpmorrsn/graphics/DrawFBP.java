@@ -3604,13 +3604,26 @@ void chooseFonts(MyFontChooser fontChooser){
 				
 				arrow.fromId = curDiag.foundBlock.id;
 				curDiag.currentArrow = arrow;
-				curDiag.currentArrow.lastX = xa; // save last x and y
-				curDiag.currentArrow.lastY = ya;
+				arrow.lastX = xa; // save last x and y
+				arrow.lastY = ya;
 				Integer aid = new Integer(arrow.id);
 				curDiag.arrows.put(aid, arrow);
-				curDiag.foundBlock = null;
+				
 				// curDiag.changed = true;
-				arrow.fromSide = side;				
+				//arrow.fromSide = side;	
+				//if (from != null) {
+					if (side == Side.TOP)
+						arrow.fromY = curDiag.foundBlock.cy - curDiag.foundBlock.height / 2;
+					else if (side == Side.BOTTOM)
+						arrow.fromY = curDiag.foundBlock.cy + curDiag.foundBlock.height / 2;
+					else if (side == Side.LEFT)
+						arrow.fromX = curDiag.foundBlock.cx - curDiag.foundBlock.width / 2;
+					else if (side == Side.RIGHT)
+						arrow.fromX = curDiag.foundBlock.cx + curDiag.foundBlock.width / 2;
+				//}
+					curDiag.foundBlock = null;
+
+				
 			}
 			repaint();
 		}
@@ -4152,7 +4165,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				a.toX = xa;
 				a.toY = ya;
 
-				a.toSide = side;
+				//a.toSide = side;
 				from = curDiag.blocks.get(new Integer(
 						a.fromId));
 				Block to = curDiag.blocks.get(new Integer(
@@ -4297,6 +4310,16 @@ void chooseFonts(MyFontChooser fontChooser){
 					} else {
 						curDiag.changed = true;
 						//checkCompatibility(curDiag.currentArrow);
+						if (to != null) {
+							if (side == Side.TOP)
+								curDiag.currentArrow.toY = to.cy - to.height / 2;
+							else if (side == Side.BOTTOM)
+								curDiag.currentArrow.toY = to.cy + to.height / 2;
+							else if (side == Side.LEFT)
+								curDiag.currentArrow.toX = to.cx - to.width / 2;
+							else if (side == Side.RIGHT)
+								curDiag.currentArrow.toX = to.cx + to.width / 2;
+						}
 					}
 
 					curDiag.currentArrow = null;

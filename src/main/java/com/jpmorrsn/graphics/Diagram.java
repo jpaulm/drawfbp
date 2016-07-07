@@ -472,8 +472,8 @@ public class Diagram {
 		// fileString += "<genCodeFileName>" + genCodeFileName
 		// + "</genCodeFileName> ";
 
-		if (clickToGrid)
-			fileString += "<clicktogrid/> ";
+		
+		fileString += "<clicktogrid>" + (clickToGrid?"true":"false") + "/clickToGrid" ;
 
 		fileString += "<blocks>";
 

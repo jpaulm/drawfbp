@@ -366,13 +366,13 @@ public class Block implements ActionListener {
 		}
 		if (this instanceof ExtPortBlock) {
 			ExtPortBlock eb = (ExtPortBlock) this;
-			if (eb.substreamSensitive)
-				s += "<substreamsensitive/> ";
+			//if (eb.substreamSensitive)
+				s += "<substreamsensitive>" + (eb.substreamSensitive?"true":"false") + "</substreamsensitive>";
 		}
-		if (multiplex)
-			s += "<multiplex/> ";
-		if (!visible)
-			s += "<invisible/> ";
+		//if (multiplex)
+			s += s += "<multiplex>" + (multiplex?"true":"false") + "</multiplex>";
+		//if (!visible)
+			s += "<invisible>" + (!visible?"true":"false") + "</invisible>";
 		if (mpxfactor != null)
 			s += "<mpxfactor>" + mpxfactor + "</mpxfactor> \n";
 		if (this instanceof Enclosure) {
@@ -387,8 +387,8 @@ public class Block implements ActionListener {
 					s += " <name>" + snp.name + "</name>";
 				String side = (snp.side == DrawFBP.Side.LEFT) ? "L" : "R";
 				s += " <side>" + side + "</side>";
-				if (snp.substreamSensitive)
-					s += " <substreamsensitive/>";
+				//if (snp.substreamSensitive)
+					s += "<substreamsensitive>" + (snp.substreamSensitive?"true":"false") + "</substreamsensitive>";
 				s += "</subnetport> \n";
 			}
 			s += "</subnetports>";

@@ -245,9 +245,9 @@ public class DiagramBuilder {
 								// nothing!
 							}
 
-							//if (tag.equals("genCodeFileName")) {
-							//	diag.genCodeFileName = saveData;
-							//}
+							if (tag.equals("clicktogrid")) {
+								diag.clickToGrid = saveData == "true";
+							}
 
 							item.put(tag, saveData);
 
@@ -263,6 +263,7 @@ public class DiagramBuilder {
 						if (tag.equals("block")) {
 							Block block = null;
 							String stype;
+							
 							if (cEncl != null) {
 								block = cEncl;
 								stype = Block.Types.ENCL_BLOCK;
@@ -345,16 +346,32 @@ public class DiagramBuilder {
 									IVsw = false;
 								}
 							}
+							
+							String s = item.get("multiplex");
+							if (s != null)
+							   block.multiplex = s == "true";
+							
+							s = item.get("invisible");
+							if (s != null)
+							   block.visible = s == "false";
+							
 							diag.blocks.put(new Integer(block.id), block);
+							
 						} else if (tag.equals("connection")) {
 							if (!arrowBuilt) {
 								Integer aid = new Integer(item.get("id"));
 								diag.arrows.put(aid, thisArrow);
 								thisArrow.buildArrow(item);
 							}
-							thisArrow.endsAtLine = EALsw;
-							thisArrow.endsAtBlock = !EALsw;
+							thisArrow.endsAtLine = EALsw;							
+							String s = item.get("endsatline");
+							if (s != null )
+								thisArrow.endsAtLine = s == "true";
+							thisArrow.endsAtBlock = !thisArrow.endsAtLine;
 							thisArrow.dropOldest = DOsw;
+							s = item.get("dropoldest");
+							if (s != null )
+								thisArrow.dropOldest = s == "true";
 							thisArrow = null;
 						} else if (tag.equals("bend")) {
 							if (thisArrow.bends == null)
@@ -475,6 +492,7 @@ public class DiagramBuilder {
 		fl1.put("title", "*");  // deprecated
 		fl1.put("desc", "*");
 		fl1.put("complang", "*");
+		fl1.put("clicktogrid", "*");
 		fl1.put("genCodeFileName", "*"); //deprecated
 		// fl1.put("scalingFactor", "*");
 		fl1.put("generatedCodeFileName", "*"); // deprecated
@@ -514,11 +532,14 @@ public class DiagramBuilder {
 		fl5.put("fromid", "*");
 		fl5.put("toid", "*");
 		fl5.put("id", "*");
-		fl5.put("fromside", "*");
-		fl5.put("toside", "*");
+		fl5.put("fromside", "*");  // deprecated
+		fl5.put("toside", "*");  // deprecated
 		fl5.put("upstreamport", "*");
 		fl5.put("downstreamport", "*");
 		fl5.put("dropoldest", "*");
+		fl5.put("endsatline", "*");
+		fl5.put("multiplex", "*");
+		fl5.put("invisible", "*");
 		fl5.put("bends", "LinkedList");
 
 		HashMap<String, String> fl6 = new HashMap<String, String>();
