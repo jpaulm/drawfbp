@@ -457,10 +457,13 @@ public class Diagram {
 	}
 
 	public String buildFile() {
-		String fileString = "<?xml version=\"1.0\"?> \n<net> ";
+		String fileString = "<?xml version=\"1.0\"?> \n ";
+		fileString += "<drawfbp_file " +
+"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+"xsi:noNamespaceSchemaLocation=\"https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd\">";
 
 		if (desc != null)
-			fileString += "<desc>" + desc + "</desc> ";
+			fileString += "<net> <desc>" + desc + "</desc> ";
 
 		// if (title != null)
 		// fileString += "<title>" + title + "</title> ";
@@ -473,7 +476,7 @@ public class Diagram {
 		// + "</genCodeFileName> ";
 
 		
-		fileString += "<clicktogrid>" + (clickToGrid?"true":"false") + "/clickToGrid" ;
+		fileString += "<clicktogrid>" + (clickToGrid?"true":"false") + "</clicktogrid> \n" ;
 
 		fileString += "<blocks>";
 
@@ -493,7 +496,7 @@ public class Diagram {
 		}
 		fileString += "</connections> ";
 
-		fileString += "</net>";
+		fileString += "</net> </drawfbp_file>";
 
 		return fileString;
 	}

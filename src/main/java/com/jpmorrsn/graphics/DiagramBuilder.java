@@ -184,7 +184,7 @@ public class DiagramBuilder {
 						System.out.println(tag + " popped");
 					if (!sym.equals(tag)) {
 						MyOptionPane
-								.showMessageDialog(frame, "Tags don't match");
+								.showMessageDialog(frame, "Tags don't match: " + sym + " - " + tag);
 						return;
 					}
 					if (atomic) { // patterns as follows:
@@ -246,7 +246,7 @@ public class DiagramBuilder {
 							}
 
 							if (tag.equals("clicktogrid")) {
-								diag.clickToGrid = saveData == "true";
+								diag.clickToGrid = saveData.equals("true");
 							}
 
 							item.put(tag, saveData);
@@ -349,11 +349,11 @@ public class DiagramBuilder {
 							
 							String s = item.get("multiplex");
 							if (s != null)
-							   block.multiplex = s == "true";
+							   block.multiplex = s.equals("true");
 							
 							s = item.get("invisible");
 							if (s != null)
-							   block.visible = s == "false";
+							   block.visible = s.equals("false");
 							
 							diag.blocks.put(new Integer(block.id), block);
 							
@@ -366,12 +366,12 @@ public class DiagramBuilder {
 							thisArrow.endsAtLine = EALsw;							
 							String s = item.get("endsatline");
 							if (s != null )
-								thisArrow.endsAtLine = s == "true";
+								thisArrow.endsAtLine = s.equals("true");
 							thisArrow.endsAtBlock = !thisArrow.endsAtLine;
 							thisArrow.dropOldest = DOsw;
 							s = item.get("dropoldest");
 							if (s != null )
-								thisArrow.dropOldest = s == "true";
+								thisArrow.dropOldest = s.equals("true");
 							thisArrow = null;
 						} else if (tag.equals("bend")) {
 							if (thisArrow.bends == null)
@@ -437,7 +437,7 @@ public class DiagramBuilder {
 				if (!bp.tu()) {
 					// at this point, we have processed the whole input stream
 					if (!names.empty())
-						MyOptionPane.showMessageDialog(frame, "Tags remaining");
+						MyOptionPane.showMessageDialog(frame, "Tags remaining: " + names.elementAt(0));
 					done = true;
 					break;
 				}
@@ -516,7 +516,9 @@ public class DiagramBuilder {
 		fl3.put("type", "*");
 		fl3.put("width", "*");
 		fl3.put("height", "*");
+		fl3.put("multiplex", "*");
 		fl3.put("mpxfactor", "*");
+		fl3.put("invisible", "*");
 		fl3.put("description", "*");
 		fl3.put("subnetports", "LinkedList");
 
@@ -537,9 +539,7 @@ public class DiagramBuilder {
 		fl5.put("upstreamport", "*");
 		fl5.put("downstreamport", "*");
 		fl5.put("dropoldest", "*");
-		fl5.put("endsatline", "*");
-		fl5.put("multiplex", "*");
-		fl5.put("invisible", "*");
+		fl5.put("endsatline", "*");	
 		fl5.put("bends", "LinkedList");
 
 		HashMap<String, String> fl6 = new HashMap<String, String>();

@@ -369,8 +369,8 @@ public class Block implements ActionListener {
 			//if (eb.substreamSensitive)
 				s += "<substreamsensitive>" + (eb.substreamSensitive?"true":"false") + "</substreamsensitive>";
 		}
-		//if (multiplex)
-			s += s += "<multiplex>" + (multiplex?"true":"false") + "</multiplex>";
+		// if (multiplex)
+			s += "<multiplex>" + (multiplex?"true":"false") + "</multiplex>";
 		//if (!visible)
 			s += "<invisible>" + (!visible?"true":"false") + "</invisible>";
 		if (mpxfactor != null)

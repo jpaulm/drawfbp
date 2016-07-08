@@ -8,7 +8,7 @@
     <xs:element name="net">
      <xs:complexType>
           <xs:sequence>           
-            <xs:element name="desc" type="xs:string"/>
+            <xs:element name="desc" type="xs:string" minOccurs="0"/>
             <xs:element name="complang" type="xs:string" minOccurs="0"/>
             <xs:element name="clicktogrid" type="xs:boolean" minOccurs="0"/>
             <xs:element name="blocks"> 
@@ -50,7 +50,7 @@
                                     <xs:element name="toid" type="xs:integer"/>
                                     <xs:element name="id" type="xs:integer"/>
                                     <xs:element name="upstreamport" type="xs:string"  minOccurs="0"/>
-                                    <xs:element name="downstreamport" type="xs:string"/>  
+                                    <xs:element name="downstreamport" type="xs:string"  minOccurs="0"/>  
                                     <xs:element name="dropoldest" type="xs:boolean" minOccurs="0"/>  
                                     <xs:element name="endsatline" type="xs:boolean" minOccurs="0"/>  
                                     <xs:element name="bends" minOccurs="0">  
