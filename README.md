@@ -120,8 +120,9 @@ From then on DrawFBP will remember the location in your `DrawFBPProperties.xml` 
 XML Schema for `.drw` files
 ---
 
-An XML Schema has been added to the `lib` folder, called `drawfbp_file.xsd`, specifying the format of the `.drw` files used to hold DrawFBP diagrams.  This schema can be used to check whether the file format of any other diagramming tool matches the `.drw` format.
-Some changes have been made to DrawFBP to accommodate the new value options - some more debugging may be required.
+An XML Schema has been added to the `lib` folder - https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd - specifying the format of the XML files used to hold DrawFBP diagrams. These files have an extension of `.drw`.  This schema can also be used to check whether the file format of any other diagramming tool matches the `.drw` format.
+
+Old `.drw` files can still be displayed using the latest release of DrawFBP (v2.12.1) and following, but will be stored in the new format when they are rebuilt.
 
 External ports for subnets still have to be added.
 
