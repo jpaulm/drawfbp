@@ -611,6 +611,11 @@ public class Block implements ActionListener {
 		if (i == -1)
 			return null;
 		String fn = s.substring(0, i + 4);
+		int j = fn.lastIndexOf("javafbp") + 8;
+		String seg = "engine.";
+		if (!(0 > fn.substring(j, j + 1).compareTo("4")))  // if javafbp jar file version not less than 4.0.0
+		    seg = "core.engine.";
+		
 		s = s.substring(i + 5);
 		Class<?> cls;
 		try {
@@ -625,13 +630,13 @@ public class Block implements ActionListener {
 			URLClassLoader classLoader = new URLClassLoader(urls);
 
 			Class<?> compClass = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.Component");
+					.loadClass("com.jpmorrsn.fbp." + seg + "Component");
 
 			Class<?> networkClass = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.Network");
+					.loadClass("com.jpmorrsn.fbp." + seg + "Network");
 
 			Class<?> subnetClass = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.SubNet");
+					.loadClass("com.jpmorrsn.fbp." + seg + "SubNet");
 
 			i = s.lastIndexOf(".class");
 			if (i != -1)
@@ -696,18 +701,24 @@ public class Block implements ActionListener {
 	void buildMetadata() {
 		inputPortAttrs = new HashMap<String, AInPort>();
 		outputPortAttrs = new HashMap<String, AOutPort>();
+		String s = driver.javaFBPJarFile; 
+		int j = s.lastIndexOf("javafbp") + 8;
+		String seg = "engine.";
+		if (!(0 > s.substring(j, j + 1).compareTo("4")))  // if javafbp jar file version not less than 4.0.0
+		    seg = "core.engine.";
+		
 		try {
 
 			Class<?> compdescCls = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.ComponentDescription");
+					.loadClass("com.jpmorrsn.fbp." + seg + "ComponentDescription");
 			Class<?> inportCls = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.InPort");
+					.loadClass("com.jpmorrsn.fbp." + seg + "InPort");
 			Class<?> outportCls = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.OutPort");
+					.loadClass("com.jpmorrsn.fbp." + seg + "OutPort");
 			Class<?> inportsCls = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.InPorts");
+					.loadClass("com.jpmorrsn.fbp." + seg + "InPorts");
 			Class<?> outportsCls = classLoader
-					.loadClass("com.jpmorrsn.fbp.engine.OutPorts");
+					.loadClass("com.jpmorrsn.fbp." + seg + "OutPorts");
 
 			Annotation[] annos = javaClass.getAnnotations();
 			for (Annotation a : annos) {

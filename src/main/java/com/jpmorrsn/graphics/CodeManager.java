@@ -202,7 +202,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			contents[2] = "    // change this if you want \n ";
 
 			if (langLabel.equals("Java"))
-				contents[2] += "import com.jpmorrsn.fbp.engine.*; \n";
+				contents[2] += "import com.jpmorrsn.fbp.core.engine.*; \n";
 
 			if (ext.equals("SubNet"))
 				contents[3] = genMetadata(langLabel) + "\n";
