@@ -10,11 +10,11 @@ hs_err_pid*
 target
 build
 
+
 # Eclipse project
 bin
 .settings/
-.project
-.classpath
+
 
 # IDEA project
 .idea/

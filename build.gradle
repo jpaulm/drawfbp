@@ -2,14 +2,14 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-version = '2.12.2'
+version = '2.13.0'
 
 description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and can actually be used to generate JavaFBP networks.'
 
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-mainClassName = 'com.jpmorrsn.graphics.DrawFBP'
+mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 
 jar { 
    
