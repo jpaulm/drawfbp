@@ -13,7 +13,7 @@ build
 
 # Eclipse project
 bin
-.settings/
+.settings 
 
 
 # IDEA project
