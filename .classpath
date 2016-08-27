@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="lib" path="build/libs/drawfbp-2.12.1.jar"/>
 	<classpathentry kind="lib" path="build/libs/drawfbp-2.12.2.jar"/>
 	<classpathentry kind="lib" path="build/libs/drawfbp-2.13.0.jar"/>
