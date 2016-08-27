@@ -97,7 +97,7 @@ Running DrawFBP
 
 DrawFBP can be executed directly by executing the jar file.  You can download it from the latest release in the DrawFBP project Releases directory in GitHub, and can then be executed directly by double-clicking on it.  You may need to have the Java platform associated with the .jar extension.  You can also build the jar file yourself by running `gradle build`.
 
-Alternatively it can be run from the command line by entering 
+Alternatively it can be run from the command line by positioning to your DrawFBP folder, and entering 
 
     java -cp build\libs\drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
     java -cp build\libs\drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
