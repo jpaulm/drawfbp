@@ -101,6 +101,8 @@ Alternatively it can be run from the command line by positioning to your DrawFBP
 
     java -cp build\libs\drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
     java -cp build\libs\drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
+    
+Note: if you are displaying a network built using an earlier version of DrawFBP, with some or all of the component classes filled in, you will have to reaccess the component classes, as the naming conventions have changed.
 
 Another approach is to run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
 
