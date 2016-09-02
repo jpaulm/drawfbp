@@ -95,7 +95,7 @@ As a result a `DrawFBP-x.y.z.jar` file will be created in the `build/libs` direc
 Running DrawFBP
 ----
 
-DrawFBP can be executed directly by executing the jar file.  You can download it from the latest release in the DrawFBP project Releases directory in GitHub, and can then be executed directly by double-clicking on it.  You may need to have the Java binary associated with the .jar extension - otherwise double-clicking on the jar file may just display it as a zip file.  You can also build the jar file yourself by running `gradle build`, or run `gradle installApp` and you will find start scripts in `build\install\drawfbp\bin`.
+DrawFBP can be executed directly by executing the jar file.  You can download it from the latest release in the DrawFBP project Releases directory in GitHub, and can then be executed directly by double-clicking on it.  You may need to have the Java binary associated with the .jar extension - otherwise double-clicking on the jar file may just display it as a zip file.  You can also build the jar file yourself by running `gradle build`, or run `gradle installDist` and you will find start scripts in `build\install\drawfbp\bin`.
 
 Alternatively it can be run from the command line by positioning to your DrawFBP folder, and entering 
 
