@@ -1,26 +1,131 @@
+buildscript {  
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+    }
+}
+apply plugin: 'io.codearte.nexus-staging'
+
+allprojects {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
-version = '2.13.0'
+version = '2.13.1'
 
-description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and can actually be used to generate JavaFBP networks.'
+description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and will generate JavaFBP or C#FBP networks.'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 
-jar { 
-   
+dependencies {
+	compile files('lib/DrawFBP-Help.jar') 
+}
+
+jar {
     manifest {
         attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': version,
         'Main-Class' : mainClassName
     }
+}
+
+ext {
+    snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
+    releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+
+
+mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
+ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
+osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
+}
+
+
+
+//jar { 
+   
+ //   manifest {
+ //       attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': version,
+ //       'Main-Class' : mainClassName
+ //   }
+ //   }
     
-    
+task writeNewPom << {
+    pom {
+        project {
+            groupId 'com.jpaulmorrison'
+            artifactId 'drawfbp'
+            version '2.13.1'
+        
+            inceptionYear '2016'
+            licenses {
+                license {
+                    name 'GNU Lesser General Public License, Version 3.0'
+                    url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                }
+            }
+   
+        }
+    }.writeTo("pom.xml")
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: releasePublicationRepository) {
+        authentication(userName: ossrhUser, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: snapshotPublicationRepository) {
+       authentication(userName: ossrhUser, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'DrawFBP'
+        description 'Diagramming Tool for Flow-Based Programming'
+        groupId 'com.jpaulmorrison'
+        packaging 'jar'
+        // optionally artifactId can be defined here         
+        url 'https://github.com/jpaulm/drawfbp'
+        version '2.13.1'
+        scm {
+          connection 'scm:git:https://github.com/jpaulm.git'
+          developerConnection 'scm:git:https://github.com/jpaulm.git'
+          url 'https://github.com/jpaulm.git'
+        }
+
+        licenses {
+          license {
+            name 'GNU Lesser General Public License, Version 3.0'
+            url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'jpaulmorr'
+            name 'John Paul Rodker Morrison (Software architect)'
+            email 'jpaulmorr@gmail.com'
+          }
+        }
+      }
+    }
+  }
+}
+}
+nexusStaging {  
+    username = ossrhUser
+    password = ossrhPassword    
     
 }
+
 
 
 

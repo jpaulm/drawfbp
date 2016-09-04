@@ -253,12 +253,20 @@ public class CodeManager implements ActionListener, DocumentListener {
 					}
 
 					String s = cleanDesc(block);
-					String c = cleanComp(block);
+					
+					String c = null;
+					if (block.javaClass != null) {
+					    c = cleanComp(block);
+					    if (c.toLowerCase().endsWith(".class"))
+							c = c.substring(0, c.length() - 6);
+					}
+					else
+						c = "Invalid class";
 					
 					descArray.put(new Integer(block.id), s);
 
 					if (!block.multiplex)
-						code += genComp(s, c, langLabel) + "; \n";
+						code += genComp(s, c, langLabel) + "; \n";  
 					else {
 						if (block.mpxfactor == null) {
 							String d = (String) MyOptionPane.showInputDialog(
@@ -342,7 +350,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				Block to = diag.blocks.get(new Integer(a2.toId));
 				if (to == null) {
 					MyOptionPane.showMessageDialog(dialog,
-							"Downstream block not found");
+							"Downstream block not found: from " + from.description);
 					break;
 				}
 				if (from == null || to == null || from instanceof FileBlock
@@ -512,8 +520,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 	String genComp(String name, String className, String lang) {
 		if (className == null)
 			className = "????";
-		if (lang.equals("Java"))
-			return "component(\"" + name + "\"," + className + ".class)";
+		if (lang.equals("Java")) {
+			if (!(className.equals("Invalid class")))
+				className += ".class";
+			return "component(\"" + name + "\"," + className + ")";
+		}
 		else
 			return "Component(\"" + name + "\", typeof(" + className + "))";
 	}
@@ -1038,7 +1049,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(dialog,
-						"Downstream block not found");
+						"Downstream block not found: from " + from.description);
 				break;
 			}
 			if (from == null || to == null || from instanceof FileBlock

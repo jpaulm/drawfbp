@@ -325,7 +325,7 @@ public class DrawFBP extends JFrame
 			fixedFont = "Courier";
 		String dfs = properties.get("defaultFontSize");
 		if (dfs == null)
-			defaultFontSize = 12;
+			defaultFontSize = 14;
 		else
 			defaultFontSize = Integer.parseInt(dfs);
 
@@ -2398,10 +2398,23 @@ void chooseFonts(MyFontChooser fontChooser){
 			javaFBPJarFile = cFile.getAbsolutePath();
 			properties.put("javaFBPJarFile", javaFBPJarFile);
 			propertiesChanged = true;
-			MyOptionPane.showMessageDialog(frame, "JavaFBP jar file location: " + cFile.getAbsolutePath());
+			MyOptionPane.showMessageDialog(frame,
+					"JavaFBP jar file location: " + cFile.getAbsolutePath());
+			for (int i = 0; i < driver.jtp.getTabCount(); i++) {
+				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
+						.getTabComponentAt(i);
+
+				Diagram d = b.diag;
+				if (d == null)
+					continue;				
+				
+				for (Block bk : d.blocks.values()) {
+					bk.getClassInfo(bk.fullClassName);					
+				}
+			}
 			return true;
-		} else
-			return false;
+		} 
+		return false;
 	}
 	
 	
@@ -4246,20 +4259,21 @@ void chooseFonts(MyFontChooser fontChooser){
 						if (Math.abs(s) > FORCE_VERTICAL) // force vertical
 							x = curDiag.currentArrow.lastX;
 					}
-					a.toX = x;
-					curDiag.currentArrow.toY = y;
+					a.toX = x;                        // ???????????? 
+					//curDiag.currentArrow.toY = y;   // ????????????
+					a.toY = y;
 					curDiag.currentArrow.endsAtLine = true;
 
-					curDiag.currentArrow.toId = curDiag.foundArrow.id; // use
-																		// id
-																		// of
-					// line,
-					// not
-					// block
+					// use id of target line, not of target block
+					curDiag.currentArrow.toId = curDiag.foundArrow.id; 
+					
 					Block from = curDiag.blocks.get(new Integer(
 							a.fromId));
-					Block to = curDiag.blocks.get(new Integer(
-							a.toId));
+					//Block to = curDiag.blocks.get(new Integer(
+					//		a.toId));
+					Arrow a2 = curDiag.currentArrow.findTerminalArrow();
+					Block to = curDiag.blocks.get(new Integer(a2.toId));
+					
 					if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
 							from instanceof IIPBlock) && 
 							(a.endsAtLine || (to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock || 
@@ -4269,12 +4283,14 @@ void chooseFonts(MyFontChooser fontChooser){
 							a.upStreamPort = "OUT";
 						if (!a.endsAtLine &&(a.downStreamPort == null || a.downStreamPort.trim().equals(""))) 
 							a.downStreamPort = "IN";
+						if (a.endsAtLine &&(a2.downStreamPort == null || a2.downStreamPort.trim().equals(""))) 
+							a2.downStreamPort = "IN";
 					}
-					a.downStreamPort = curDiag.foundArrow.downStreamPort;
+					a.downStreamPort = a2.downStreamPort;
 					//Block from = curDiag.blocks.get(new Integer(
 					//		a.fromId));
-					Arrow a2 = curDiag.currentArrow.findTerminalArrow();
-					to = curDiag.blocks.get(new Integer(a2.toId));
+					//Arrow a2 = curDiag.currentArrow.findTerminalArrow();
+					//to = curDiag.blocks.get(new Integer(a2.toId));
 					
 					if (to == from){
 						//MyOptionPane.showMessageDialog(frame,

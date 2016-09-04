@@ -181,25 +181,31 @@ public class Block implements ActionListener {
 			y += driver.fontHeight;
 		}
 
+		String name = null;
 		if (diag.diagLang != null
 				&& diag.diagLang.label.equals("Java")) {
 			if (javaClass != null) {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				g.setColor(Color.BLUE);
-				String name = javaClass.getSimpleName() /* + ".class" */;
+				name = javaClass.getSimpleName()  + ".class";
 				int x = cx - name.length() * driver.fontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
 				y += driver.fontHeight;
 			}
 
-			if (javaClass == null && fullClassName != null) {
+			else if (fullClassName != null) {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
-				String name = fullClassName;
-				g.setColor(Color.RED);
+				name = "Class not found - rechoose comp/subnet";
 				int x = cx - name.length() * driver.fontWidth / 2;
+				g.drawString(name, x, y);
+				g.setFont(fontsave);
+				y += driver.fontHeight;
+				name = fullClassName;
+				g.setColor(Color.RED);
+				x = cx - name.length() * driver.fontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
 				g.setColor(Color.BLACK);
@@ -209,7 +215,7 @@ public class Block implements ActionListener {
 		if (codeFileName != null) {
 			Font fontsave = g.getFont();
 			g.setFont(driver.fontf);
-			String name = codeFileName;
+			name = codeFileName;
 			int i = name.lastIndexOf(File.separator);
 			if (i == -1)
 				i = name.lastIndexOf("/");
@@ -428,31 +434,8 @@ public class Block implements ActionListener {
 			isSubnet = true;
 
 		fullClassName = item.get("blockclassname");
-		if (fullClassName != null) {
-			if (fullClassName.indexOf("!") == -1) {// if no "!", language is not
-													// Java...
-				driver.tryFindJarFile = false;
-				if (fullClassName.toLowerCase().endsWith(".json")) {
-					codeFileName = fullClassName;
-					fullClassName = null;
-				}
-			}
-			if (driver.tryFindJarFile) {
-				if (!driver.getJavaFBPJarFile()) {
-					MyOptionPane
-							.showMessageDialog(
-									driver.frame,
-									"Unable to read JavaFBP jar file - "
-											+ "so cannot process class information for "
-											+ description);
-					driver.tryFindJarFile = false;
-				} else if (fullClassName.indexOf("jar!") > -1)
-					loadClassFromJarFile();
-				else
-					loadClassFromFile();
-			}
-			// diag.compLang = driver.findGLFromLabel("Java");
-		}
+		getClassInfo(fullClassName); 
+		
 		s = item.get("x").trim();
 		cx = Integer.parseInt(s);
 		s = item.get("y").trim();
@@ -487,6 +470,36 @@ public class Block implements ActionListener {
 		}
 
 	}
+	
+	void getClassInfo(String fcn){  
+		fullClassName = fcn;
+		//fullClassName = item.get("blockclassname");
+		if (fullClassName != null) {
+			if (fullClassName.indexOf("!") == -1) {// if no "!", language is not
+													// Java...
+				driver.tryFindJarFile = false;
+				if (fullClassName.toLowerCase().endsWith(".json")) {
+					codeFileName = fullClassName;
+					fullClassName = null;
+				}
+			}
+			if (driver.tryFindJarFile) {
+				if (!driver.getJavaFBPJarFile()) {
+					MyOptionPane
+							.showMessageDialog(
+									driver.frame,
+									"Unable to read JavaFBP jar file - "
+											+ "so cannot process class information for "
+											+ description);
+					driver.tryFindJarFile = false;
+				} else if (fullClassName.indexOf("jar!") > -1)
+					loadClassFromJarFile();
+				else
+					loadClassFromFile();
+			}
+			// diag.compLang = driver.findGLFromLabel("Java");
+		}
+		}
 
 	void loadClassFromJarFile() {
 
@@ -503,29 +516,62 @@ public class Block implements ActionListener {
 			j = jfs.lastIndexOf("/");
 		jfs = jfs.substring(j + 1);
 
-		int w = fns.compareTo(jfs);
-		if (w > 0) {
+		int w = fns.compareTo(jfs);  // fns comes from fullClassName;  jfs from javaFBPJarFile
+		if (w > 0) {  // fullclassname version no. > javaFBPJarFile version no.
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Name of jar file in diagram (" + fn
-							+ ") is newer than your system jar file ("
-							+ driver.javaFBPJarFile + "),\n "
-							+ "so cannot load components");
-			return;
-		} else if (w < 0
-				&& JOptionPane.YES_OPTION == MyOptionPane
-						.showConfirmDialog(
-								driver.frame,
-								"JavaFBP jar file is more recent - \n do you want to change jar file name in class name?",
-								"Change jar file name",
-								JOptionPane.YES_NO_OPTION)) {
-			fn = driver.javaFBPJarFile;
+					"Name of jar file on a process component (" + fullClassName
+							+ ")\n    is newer than your system jar file ("
+							+ driver.javaFBPJarFile + ") - \n "
+							+ "Locate JavaFBP jar file, and Choose component/subnet class again");
+			
+			diag.changed = true;
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Class name changed - was: " + fullClassName
-							+ ", \n   now: " + fn + "!" + cn);
-			fullClassName = fn + "!" + cn;
-			diag.changed = true;
+							+ ", \n   now: " + driver.javaFBPJarFile + "!" + cn);
+			fullClassName = driver.javaFBPJarFile + "!" + cn;
+			
+		}
+		
+		if (w < 0) {    // fullclassname version no. < javaFBPJarFile version no.                        
+			j = driver.javaFBPJarFile.lastIndexOf("javafbp-");
+			int k = fullClassName.lastIndexOf("javafbp-");
+			String jfv = driver.javaFBPJarFile.substring(j + 8, j + 11);
+			String pcv = fullClassName.substring(k + 8, k + 11);
+			
+			if ((jfv.substring(0,1).compareTo("3") <= 0) && (pcv.substring(0,1).compareTo("3") <= 0) ||
+					(jfv.compareTo("4.1") >= 0) && (pcv.compareTo("4.1") >= 0)) {
+				if (JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+						driver.frame,
+						"Name of jar file on a process component (" + fullClassName
+						+ ")\n    is older than your system jar file ("
+						+ driver.javaFBPJarFile + ") - \n "
+						+ "Do you want to change jar file name?",
+						"Change jar file name", JOptionPane.YES_NO_OPTION)) {
+					//fn = driver.javaFBPJarFile;
+					MyOptionPane.showMessageDialog(driver.frame,
+							"Class name changed - was: " + fullClassName
+									+ ", \n   now: " + driver.javaFBPJarFile + "!" + cn);
+					fullClassName = driver.javaFBPJarFile + "!" + cn;
+					diag.changed = true;
+				}
+			}
+			else {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Name of jar file on a process component (" + fullClassName
+								+ ") \n   is older than your system jar file ("
+								+ driver.javaFBPJarFile + ") - \n "
+								+ "Choose component/subnet class again");
+				
+				diag.changed = true;	
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Class name changed - was: " + fullClassName
+								+ ", \n   now: " + driver.javaFBPJarFile + "!" + cn);
+				fullClassName = driver.javaFBPJarFile + "!" + cn;
+			}
+				
 		}
 
+		
 		try {
 			File jFile = new File(fn);
 			URI uri = jFile.toURI();
@@ -1007,7 +1053,7 @@ public class Block implements ActionListener {
 		//jdialog.pack();
 		
 		Point p = driver.frame.getLocation();
-		Dimension dim = driver.frame.getSize();
+		//Dimension dim = driver.frame.getSize();
 		int x_off = 100;
 		int y_off = 100;
 		//jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));

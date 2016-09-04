@@ -796,19 +796,18 @@ public class Arrow implements ActionListener {
 	Arrow findTerminalArrow() {
 		if (endsAtBlock)
 			return this;
-		int id = toId;		
+		int id = toId;		   // not a block, so toId must be a line ID
 		while (true) {
 			for (Arrow arrow : diag.arrows.values()) {
 				if (id == arrow.id) {
 					if (arrow.endsAtBlock)
 						return arrow;
 					
-					//else id = arrow.toId;
-						
+					id = arrow.toId;
+					break;
 				}
-			}
-			return null;
-		}
+			}			
+		}		
 	}
 
 	boolean touches(Block b, int x, int y) {
