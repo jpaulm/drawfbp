@@ -390,6 +390,7 @@ public class Arrow implements ActionListener {
 
 	void buildArrow(HashMap<String, String> item) {
 		String s;
+				
 
 		s = item.get("fromx").trim();
 		fromX = Integer.parseInt(s);
@@ -401,9 +402,17 @@ public class Arrow implements ActionListener {
 		toY = Integer.parseInt(s);
 		upStreamPort = item.get("upstreamport");
 		downStreamPort = item.get("downstreamport");
+				
+		s = item.get("endsatline");		
+		if (s != null && s.equals("true"))			
+			endsAtLine = true;
+		
+		endsAtBlock = !endsAtLine;		
+		
 		s = item.get("dropoldest");
-		if (s != null)
+		if (s != null && s.equals("true")) 
 			dropOldest = true;
+		
 		s = item.get("fromid").trim();
 		fromId = Integer.parseInt(s);
 
@@ -419,36 +428,7 @@ public class Arrow implements ActionListener {
 
 		diag.maxArrowNo = Math.max(id, diag.maxArrowNo);
 
-		endsAtBlock = true;
-		endsAtLine = false;
 		
-		/*
-		s = item.get("fromside");
-		if (s != null) {
-			s = s.trim();
-			if (s.equals("L"))
-				fromSide = Side.LEFT;
-			else if (s.equals("R"))
-				fromSide = Side.RIGHT;
-			else if (s.equals("T"))
-				fromSide = Side.TOP;
-			else if (s.equals("B"))
-				fromSide = Side.BOTTOM;
-		}
-		s = item.get("toside");
-		if (s != null) {
-			s = s.trim();
-			if (s.equals("L"))
-				toSide = Side.LEFT;
-			else if (s.equals("R"))
-				toSide = Side.RIGHT;
-			else if (s.equals("T"))
-				toSide = Side.TOP;
-			else if (s.equals("B"))
-				toSide = Side.BOTTOM;
-		}
-		
-		*/
 
 	}
 

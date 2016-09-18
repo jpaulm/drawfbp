@@ -41,6 +41,8 @@ public class DiagramBuilder {
 		boolean atomic = false;
 		HashMap<String, String> curFl = null;
 		boolean debugging = false;
+		//boolean debugging = true;
+
 
 		// 3 stacks
 		Stack<String> names = new Stack<String>(); // names (atomic and
@@ -52,11 +54,7 @@ public class DiagramBuilder {
 		boolean endsw; // if true, it is an end tag
 		boolean control = false; // if true, it is a comment or control tag
 		boolean arrowBuilt = false;
-		boolean EALsw = false;
-		boolean SSsw = false;
-		boolean MPsw = false;
-		boolean IVsw = false;
-		boolean DOsw = false;
+	
 		Enclosure cEncl = null;
 		SubnetPort snp = null;
 
@@ -158,9 +156,7 @@ public class DiagramBuilder {
 						if (sym.equals("connection")) {
 							Arrow arrow = new Arrow(diag);
 							thisArrow = arrow;
-							arrowBuilt = false;
-							EALsw = false;
-							DOsw = false;
+							arrowBuilt = false;							
 
 						} else if (sym.equals("bends")) {
 							Integer aid = new Integer(item.get("id"));
@@ -187,39 +183,32 @@ public class DiagramBuilder {
 								.showMessageDialog(frame, "Tags don't match: " + sym + " - " + tag);
 						return;
 					}
-					if (atomic) { // patterns as follows:
-						// <xx> data </xx> OR <yy/>
-						if (data == null) { // <yy/>
+					if (atomic) {   // i.e. a leaf in the XML tree
+						if (data == null) { 
+							// patterns as follows:
+							// <xx> </xx> OR <yy/>
 							if (debugging)
 								System.out.println("Stand-alone tag: " + tag);
-							if (sym.equals("endsatline"))
-								EALsw = true;
-							if (sym.equals("substreamsensitive"))
-								SSsw = true;
-							if (sym.equals("multiplex"))
-								MPsw = true;
-							if (sym.equals("invisible"))
-								IVsw = true;
-							if (sym.equals("dropoldest"))
-								DOsw = true;
-							if (sym.equals("clicktogrid")) {
-								diag.clickToGrid = true;
-								driver.grid.setSelected(diag.clickToGrid);
-							}
+							if (sym.equals("endsatline") ||
+								sym.equals("substreamsensitive") ||
+								sym.equals("multiplex") ||
+								sym.equals("invisible") ||
+								sym.equals("dropoldest"))
+								    item.put(sym, "true");
 
 						} else { // <xx> data </xx> OR <yy/>
 							saveData = new String(data);
 
-							if (tag.equals("desc")) {
-								diag.desc = saveData;
-								diag.desc = diag.desc.replace('\n', ' ');
+						if (tag.equals("desc")) {
+							diag.desc = saveData;
+							diag.desc = diag.desc.replace('\n', ' ');
 							}
 
 							//if (tag.equals("title")) {
 							//	diag.title = saveData;
 							//}
 
-							if (tag.equals("complang")) {
+						else if (tag.equals("complang")) {
 								if (saveData.equals("NoFlo"))
 									saveData = "JSON";   // transitional! 
 								diag.diagLang = driver
@@ -239,27 +228,28 @@ public class DiagramBuilder {
 								*/
 							}
 
-							if (tag.equals("generatedCodeFileName")) {
+						else if (tag.equals("generatedCodeFileName")) {
 								// diag.generatedCodeFileName = saveData; //
 								// there may be some in old diagrams, so do
 								// nothing!
 							}
 
-							if (tag.equals("clicktogrid")) {
+						else if (tag.equals("clicktogrid")) {
 								diag.clickToGrid = saveData.equals("true");
 							}
 
+						else
 							item.put(tag, saveData);
 
-							if (debugging)
+						if (debugging)
 								System.out.println("Data at " + tag + ": "
 										+ saveData);
-							data = null;
+						data = null;
 						}
 						atomic = false;
 					}
 
-					else { // if not atomic and endsw is on
+					else { // if not atomic and endsw is on - we're processing the end tag of a tag pair
 						if (tag.equals("block")) {
 							Block block = null;
 							String stype;
@@ -275,24 +265,9 @@ public class DiagramBuilder {
 											"No block type specified");
 									block = new ProcessBlock(diag);
 
-								} else if (stype
-										.equals(Block.Types.PROCESS_BLOCK)) {
-									block = new ProcessBlock(diag);
-
-									if (MPsw) {
-										block.multiplex = true;
-										MPsw = false;
-									}
-									// String s = item.get("compname"); //
-									// deprecated
-									// String t = item.get("codefilename");
-									// block.codeFileName = t;
-									// if (t == null && s != null)
-									// block.codeFileName = s;
-									// block.fullClassName = item
-									// .get("blockclassname");
-									// block.diagramFileName = item
-									// .get("diagramfilename");
+								} else if (stype.equals(Block.Types.PROCESS_BLOCK)) {
+									block = new ProcessBlock(diag);								
+									
 								} else if (stype
 										.equals(Block.Types.REPORT_BLOCK)) {
 									block = new ReportBlock(diag);
@@ -311,14 +286,14 @@ public class DiagramBuilder {
 										block.width = 2 * block.width;
 									}
 									block.type = stype;
-									if (SSsw) {
+									
+									if (item.get("substreamsensitive").equals("true")){											
 										if (block instanceof ExtPortBlock) {
 											ExtPortBlock eb = (ExtPortBlock) block;
 											eb.substreamSensitive = true;
 										}
 										if (snp != null)
-											snp.substreamSensitive = true;
-										SSsw = false;
+											snp.substreamSensitive = true;										
 									}
 								} else if (stype.equals(Block.Types.IIP_BLOCK)) {
 									block = new IIPBlock(diag);
@@ -340,20 +315,14 @@ public class DiagramBuilder {
 									block = new ProcessBlock(diag);
 								}
 								block.buildBlockFromXML(item);
-								block.calcEdges();
-								if (IVsw) {
-									block.visible = false;
-									IVsw = false;
-								}
+								block.calcEdges();								
 							}
 							
-							String s = item.get("multiplex");
-							if (s != null)
-							   block.multiplex = s.equals("true");
+							String s = item.get("multiplex");							
+							block.multiplex = s.equals("true");
 							
-							s = item.get("invisible");
-							if (s != null)
-							   block.visible = s.equals("false");
+							s = item.get("invisible");							
+							block.visible = s.equals("false");
 							
 							diag.blocks.put(new Integer(block.id), block);
 							
@@ -363,15 +332,8 @@ public class DiagramBuilder {
 								diag.arrows.put(aid, thisArrow);
 								thisArrow.buildArrow(item);
 							}
-							thisArrow.endsAtLine = EALsw;							
-							String s = item.get("endsatline");
-							if (s != null )
-								thisArrow.endsAtLine = s.equals("true");
-							thisArrow.endsAtBlock = !thisArrow.endsAtLine;
-							thisArrow.dropOldest = DOsw;
-							s = item.get("dropoldest");
-							if (s != null )
-								thisArrow.dropOldest = s.equals("true");
+													
+														
 							thisArrow = null;
 						} else if (tag.equals("bend")) {
 							if (thisArrow.bends == null)
@@ -382,13 +344,11 @@ public class DiagramBuilder {
 						} else if (tag.equals("subnetport")) {
 
 							snp.buildBlockFromXML(item);
-							if (SSsw)
+							if (item.get("substreamsensitive").equals("true"))
 								snp.substreamSensitive = true;
 							cEncl.subnetPorts.add(snp);
 							snp = null;
-						} // else if (tag.equals("subnetports")) {
-							// item = block_item;
-							// }
+						} 
 						clsNames.pop();
 						fldLists.pop();
 						if (!fldLists.empty())
@@ -461,6 +421,12 @@ public class DiagramBuilder {
 			}
 
 		} // end of loop
+		
+		if (sym.equals("clicktogrid")) {
+			diag.clickToGrid = true;
+			driver.grid.setSelected(diag.clickToGrid);
+			item.put(sym, "true");
+		}
 
 		if (curFl != null)
 			MyOptionPane.showMessageDialog(frame,
