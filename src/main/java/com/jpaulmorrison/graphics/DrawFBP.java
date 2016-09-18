@@ -815,13 +815,14 @@ public class DrawFBP extends JFrame
 		menuBar.add(Box.createRigidArea(new Dimension(20,0)));
 		menuBar.add(pan);
 
-		grid.setFont(fontg);
+		grid.setFont(fontg);		
 		grid.setSelected(true);
 		// box.add(grid);
 		grid.setActionCommand("Toggle Click to Grid");
 		grid.addActionListener(this);
 		grid.setBackground(slateGray1);
 		grid.setBorderPaintedFlat(false);
+		
 		// grid.setBorder(null);
 		// grid.setPreferredSize(new Dimension(50, 20));
 		menuBar.add(Box.createRigidArea(new Dimension(10,0)));
@@ -3273,6 +3274,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			// int x = 0; // problem!
 			// }
 
+			grid.setSelected(diag.clickToGrid);
+			repaint();
 			for (Block block : diag.blocks.values()) {
 				block.draw(osg);
 			}

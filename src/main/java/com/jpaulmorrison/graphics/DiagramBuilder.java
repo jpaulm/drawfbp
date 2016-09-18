@@ -193,10 +193,11 @@ public class DiagramBuilder {
 								sym.equals("substreamsensitive") ||
 								sym.equals("multiplex") ||
 								sym.equals("invisible") ||
+								sym.equals("clicktogrid") ||
 								sym.equals("dropoldest"))
 								    item.put(sym, "true");
 
-						} else { // <xx> data </xx> OR <yy/>
+						} else { // <xx> data </xx> 
 							saveData = new String(data);
 
 						if (tag.equals("desc")) {
@@ -422,11 +423,11 @@ public class DiagramBuilder {
 
 		} // end of loop
 		
-		if (sym.equals("clicktogrid")) {
-			diag.clickToGrid = true;
-			driver.grid.setSelected(diag.clickToGrid);
-			item.put(sym, "true");
-		}
+		//if (sym.equals("clicktogrid")) {
+		//	diag.clickToGrid = true;
+		//	//driver.grid.setSelected(diag.clickToGrid);
+		//	item.put(sym, "true");
+		//}
 
 		if (curFl != null)
 			MyOptionPane.showMessageDialog(frame,
