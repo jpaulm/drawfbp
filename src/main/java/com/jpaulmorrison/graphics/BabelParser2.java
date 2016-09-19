@@ -128,9 +128,7 @@ public class BabelParser2 {
 	 * Test for blank, CR or tab, but with modification (must be 'i', 'n' or 'o')
 	 * ('n' is equivalent to old Babel 'IO' - I- and O-modification)
 	 * (the only blank tests in DiagramBuilder logic are all mod'd)
-	 * 
-	 * @param x
-	 *            char
+	 * 	 
 	 * @param mod
 	 *            char
 	 */
@@ -288,7 +286,7 @@ public class BabelParser2 {
 	/**
 	 * Write one char out to output stream
 	 * 
-	 * @param mod
+	 * @param x
 	 *            char
 	 */
 	public boolean w(char x) {

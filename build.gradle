@@ -8,6 +8,25 @@ buildscript {
 }
 apply plugin: 'io.codearte.nexus-staging'
 
+subprojects {
+       
+
+        task javadocJar(type: Jar) {
+            classifier = 'javadoc'
+            from javadoc
+        }
+
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives javadocJar, sourcesJar
+        }
+    }
+
+
 allprojects {
 apply plugin: 'java'
 apply plugin: 'eclipse'
@@ -16,6 +35,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 version = '2.13.2'
+group = 'com.jpaulmorrison'
 
 description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and will generate JavaFBP or C#FBP networks.'
 
@@ -24,7 +44,15 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 
+nexusStaging {  
+    username = ossrhUser
+    password = ossrhPassword       
+    
+}
+
+
 dependencies {
+  compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
 	compile files('lib/DrawFBP-Help.jar') 
 }
 
@@ -35,6 +63,12 @@ jar {
     }
 }
 
+if (JavaVersion.current().isJava8Compatible()) {   
+        tasks.withType(Javadoc) {
+            options.addBooleanOption('Xdoclint:none', true)
+        }  
+}
+
 ext {
     snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
     releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -43,18 +77,40 @@ ext {
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
 osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
+
+}
+
+// Used to generate initial maven-dir layout
+task "create-dirs" { description = "Create default maven directory structure" } << {
+    sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'JavaFBP', 'Implementation-Version': version
+    }
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
 }
 
 
-
-//jar { 
-   
- //   manifest {
- //       attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': version,
- //       'Main-Class' : mainClassName
- //   }
- //   }
-    
 task writeNewPom << {
     pom {
         project {
@@ -120,12 +176,3 @@ uploadArchives {
   }
 }
 }
-nexusStaging {  
-    username = ossrhUser
-    password = ossrhPassword    
-    
-}
-
-
-
-

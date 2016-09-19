@@ -3193,7 +3193,7 @@ void chooseFonts(MyFontChooser fontChooser){
 	public class MyClassLoader extends URLClassLoader{  
 		   
 	    /** 
-	     * @param urls, to carryforward the existing classpath. 
+	     * @param urls  to carry forward the existing classpath. 
 	     * 
 	     * Thanks to http://www.coderanch.com/t/384068/java/java/Adding-JAR-file-Classpath-Runtime
 	     */  
