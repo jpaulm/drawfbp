@@ -3,6 +3,7 @@ DrawFBP
 
 Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
+#### The latest version of DrawFBP is now up on Maven Central - go to http://search.maven.org/ , and search for DrawFBP.  Download the .jar file from here, and execute using Java Platform SE binary.
 
 Description
 -----------
@@ -49,7 +50,7 @@ Features
 - Extra arrowhead (one per arrow)
 
 
-Prerequisites
+Prerequisites for Building  (DrawFBP can be _run_ simply from the .jar file)
 ---
 
 The project requires Gradle for building (tested with version 2.0). You can download the corresponding package from the following URL: 
