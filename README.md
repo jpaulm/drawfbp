@@ -18,6 +18,12 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
+Three Youtube videos are currently available showing how to use DrawFBP, for drawing diagrams, and generating running JavaFBP networks, using the Eclipse IDE:
+
+- https://www.youtube.com/watch?v=OrKenPOV4Js
+- https://www.youtube.com/watch?v=9NXYNxDjFWY
+- https://www.youtube.com/watch?v=-AmzfhV2hIU
+
 #### Getting Started
 
 To get started using DrawFBP once you have it installed, just click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block is controlled by the buttons along the bottom of the screen.
