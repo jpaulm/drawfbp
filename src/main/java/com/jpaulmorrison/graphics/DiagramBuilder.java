@@ -320,10 +320,12 @@ public class DiagramBuilder {
 							}
 							
 							String s = item.get("multiplex");							
-							block.multiplex = s.equals("true");
+							block.multiplex = s != null && s.equals("true");
 							
-							s = item.get("invisible");							
-							block.visible = s.equals("false");
+							s = item.get("invisible");	
+							block.visible = true;
+							if (s != null)
+							   block.visible = s.equals("false");
 							
 							diag.blocks.put(new Integer(block.id), block);
 							

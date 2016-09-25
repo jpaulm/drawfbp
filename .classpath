@@ -28,5 +28,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Paul/Documents/GitHub/javafbp/build/libs/javafbp-4.1.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
