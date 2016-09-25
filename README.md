@@ -3,6 +3,7 @@ DrawFBP
 
 Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
+#### The latest version of DrawFBP is now up on Maven Central - go to http://search.maven.org/ , and search for DrawFBP.  Download the .jar file from here, and execute using Java Platform SE binary.
 
 Description
 -----------
@@ -17,9 +18,15 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
+Three Youtube videos are currently available showing how to use DrawFBP, for drawing diagrams, and generating running JavaFBP networks, using the Eclipse IDE:
+
+- https://www.youtube.com/watch?v=OrKenPOV4Js
+- https://www.youtube.com/watch?v=9NXYNxDjFWY
+- https://www.youtube.com/watch?v=-AmzfhV2hIU
+
 #### Getting Started
 
-To get started using DrawFBP once you have it installed (see below), just click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block is controlled by the buttons along the bottom of the screen.
+To get started using DrawFBP once you have it installed, just click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block is controlled by the buttons along the bottom of the screen.
 
 To connect two blocks, click anywhere on the border of the "from" block; then click anywhere on the border of the "to" block - it doesn't matter whether the left mouse button is held down or not. 
 
@@ -49,7 +56,7 @@ Features
 - Extra arrowhead (one per arrow)
 
 
-Prerequisites
+Prerequisites for Building  (DrawFBP can be _run_ simply from the .jar file)
 ---
 
 The project requires Gradle for building (tested with version 2.0). You can download the corresponding package from the following URL: 
