@@ -288,7 +288,8 @@ public class DiagramBuilder {
 									}
 									block.type = stype;
 									
-									if (item.get("substreamsensitive").equals("true")){											
+									String sbs = item.get("substreamsensitive");
+									if (sbs != null && sbs.equals("true")){											
 										if (block instanceof ExtPortBlock) {
 											ExtPortBlock eb = (ExtPortBlock) block;
 											eb.substreamSensitive = true;
