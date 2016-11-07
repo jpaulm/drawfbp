@@ -62,7 +62,7 @@ public class DiagramBuilder {
 
 		String type;
 
-		diag.clickToGrid = false;
+		diag.clickToGrid = true;
 		driver.grid.setSelected(diag.clickToGrid);
 
 		while (true) { // skip blanks, CRs or tabs
@@ -95,8 +95,8 @@ public class DiagramBuilder {
 			while (true) { // scan off a symbol within <>
 				if (bp.tc('>', 'n'))
 					break;
-				if (bp.tb('n'))
-					break; // 'n' is equivalent to 'io'
+				//if (bp.tb('n'))
+				//	break; // 'n' is equivalent to 'io'
 
 				bp.tu();
 			}
@@ -111,6 +111,8 @@ public class DiagramBuilder {
 			if (!control) {
 
 				sym = bp.getOutStr(); // get this symbol - check if ends in /
+				if (sym.startsWith("drawfbp_file"))
+					sym = "drawfbp_file";
 
 				if (sym.charAt(sym.length() - 1) == '/') { // stand-alone field
 					// (no data)
@@ -179,6 +181,8 @@ public class DiagramBuilder {
 					if (debugging)
 						System.out.println(tag + " popped");
 					if (!sym.equals(tag)) {
+						if (sym.equals("net"))  // from code before 2.13.4
+							return;
 						MyOptionPane
 								.showMessageDialog(frame, "Tags don't match: " + sym + " - " + tag);
 						return;
@@ -411,7 +415,9 @@ public class DiagramBuilder {
 				break;
 
 			data = bp.getOutStr();
+			
 			if (data != null) {
+				//data = data.trim();
 				if (tag == null || !(sym.equals("description")))
 					data = data.trim();
 				Pattern p = Pattern.compile("\\s*");
@@ -530,6 +536,7 @@ public class DiagramBuilder {
 		fl9.put("substreamsensitive", "*");
 
 		tagInfo.put("net", fl1);
+		tagInfo.put("drawfbp_file", fl1);		
 		tagInfo.put("blocks", fl2);
 		tagInfo.put("block", fl3);
 		tagInfo.put("connections", fl4);

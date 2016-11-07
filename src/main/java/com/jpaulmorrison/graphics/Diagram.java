@@ -496,7 +496,7 @@ public class Diagram {
 		}
 		fileString += "</connections> ";
 
-		fileString += "</net> </drawfbp_file>";
+		fileString += "</drawfbp_file>";
 
 		return fileString;
 	}

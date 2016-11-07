@@ -5,9 +5,9 @@ package com.jpaulmorrison.graphics;
 
 public final class VersionAndTimestamp {
 
-	static String version = "2.13.3";
+	static String version = "2.13.4";
 
-	static String date = "Oct. 31, 2016";
+	static String date = "Nov. 7, 2016";
 
 	static String getVersion() {
 		return version;
