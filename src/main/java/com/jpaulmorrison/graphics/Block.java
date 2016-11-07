@@ -58,10 +58,10 @@ public class Block implements ActionListener {
 
 	boolean visible = true;
 
-	/* next four fields are not stored in .drw files */
-
+	/* next four fields are not stored in .drw files */	
+	
 	URLClassLoader classLoader = null;
-	Class<?> javaClass; // selected Java class for block
+	Class<?> javaClass; // selected Java class for block (fullClassName is equivalent in String format)
 	String compDescr;  // used for annotations only
 	boolean isSubnet;
 
@@ -482,6 +482,7 @@ public class Block implements ActionListener {
 					codeFileName = fullClassName;
 					fullClassName = null;
 				}
+				return;
 			}
 			if (driver.tryFindJarFile) {
 				if (!driver.getJavaFBPJarFile()) {
@@ -510,6 +511,7 @@ public class Block implements ActionListener {
 			j = fn.lastIndexOf("/");
 		String fns = fn.substring(j + 1);
 		String cn = fullClassName.substring(i + 1);
+		// can't assume jar file was JavaFBP
 		String jfs = driver.javaFBPJarFile;
 		j = jfs.lastIndexOf(File.separator);
 		if (j == -1)
@@ -578,39 +580,23 @@ public class Block implements ActionListener {
 			URL url = uri.toURL();
 
 			URL[] urls = new URL[]{url};
-
-			// Create a new class loader with the directory
+			
 			classLoader = new URLClassLoader(urls);
-
-			try {
-				javaClass = classLoader.loadClass(cn);
-			} catch (ClassNotFoundException e) {
-				//System.out.println("Missing class name in " + fullClassName);
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Class name not found: " + fullClassName);
-				// e.printStackTrace();
-				javaClass = null;
-			} catch (NoClassDefFoundError e) {
-				//System.out.println("Missing internal class name in "
-				//		+ fullClassName);
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Internal class name not found: " + fullClassName);
-				// e.printStackTrace();
-				javaClass = null;
-			}
-
 		} catch (Exception e) {
 			System.err.println("Unhandled exception:");
 			e.printStackTrace();
 			return;
 		}
+		
+		   loadClass(cn);
+		
 	}
 
 	void loadClassFromFile() {
 
 		int i = fullClassName.indexOf("!");
-		String fn = fullClassName.substring(0, i);
-		String cn = fullClassName.substring(i + 1);
+		String fn = fullClassName.substring(0, i);  // jar file name, if any
+		String cn = fullClassName.substring(i + 1);  // class name
 
 		try {
 			File jFile = new File(driver.javaFBPJarFile);
@@ -623,23 +609,9 @@ public class Block implements ActionListener {
 
 			URL[] urls = new URL[]{url, url2};
 
-			// Create a new class loader with the directory
 			classLoader = new URLClassLoader(urls);
 
-			try {
-				javaClass = classLoader.loadClass(cn);
-			} catch (ClassNotFoundException e) {
-				//System.out.println("Missing class name in " + fullClassName);
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Class name not found: " + fullClassName);
-				javaClass = null;
-			} catch (NoClassDefFoundError e) {
-				//System.out.println("Missing internal class name in "
-				//		+ fullClassName);
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Internal class name not found: " + fullClassName);
-				javaClass = null;
-			}
+			loadClass(cn);
 
 		} catch (Exception e) {
 			System.err.println("Unhandled exception:");
@@ -647,16 +619,36 @@ public class Block implements ActionListener {
 			return;
 		}
 	}
+	
+	void loadClass(String cn){			
 
-	Class<?> getSelectedClass(String s) {
+			try {
+				javaClass = classLoader.loadClass(cn);
+			} catch (ClassNotFoundException e) {
+				//System.out.println("Missing class name in " + fullClassName);
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Class name not found: " + fullClassName);
+				// e.printStackTrace();
+				javaClass = null;
+			} catch (NoClassDefFoundError e) {
+				//System.out.println("Missing internal class name in "
+				//		+ fullClassName);
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Internal class name not found: " + fullClassName);
+				// e.printStackTrace();
+				javaClass = null;
+			}
+		
+		
+	}
 
-		if (s.trim().equals("")) {
+	Class<?> getSelectedClass(String jar, String jf) {
+
+		if (jf.trim().equals("")) {
 			return null;
 		}
-		int i = s.indexOf(".jar!");
-		if (i == -1)
-			return null;
-		String fn = s.substring(0, i + 4);
+		String fn = driver.javaFBPJarFile;
+		
 		int j = fn.lastIndexOf("javafbp") + 8;
 		String seg = "engine.";
 		if (0 <= fn.substring(j, j + 1).compareTo("4"))  // if javafbp jar file version not less than 4.0.0
@@ -665,19 +657,23 @@ public class Block implements ActionListener {
 		if (0 <= fn.substring(j, j + 3).compareTo("4.1"))  // if javafbp jar file version not less than 4.0.0
 		    owner = "jpaulmorrison";
 		
-		s = s.substring(i + 5);
 		Class<?> cls;
-		try {
-			// File jFile = new File(driver.javaFBPJarFile);
-			File jFile = new File(fn);
+		try {	
+			
+			try {
+				File jFile = new File(jar);
+				URI uri = jFile.toURI();
+				URL url = uri.toURL();
 
-			URI uri = jFile.toURI();
-			URL url = uri.toURL();
-
-			URL[] urls = new URL[]{url};
-			// Create a new class loader with the directory
-			URLClassLoader classLoader = new URLClassLoader(urls);
-
+				URL[] urls = new URL[]{url};
+				
+				classLoader = new URLClassLoader(urls);
+			} catch (Exception e) {
+				System.err.println("Unhandled exception:");
+				e.printStackTrace();
+				return null;
+			}
+			
 			Class<?> compClass = classLoader
 					.loadClass("com." + owner + ".fbp." + seg + "Component");
 
@@ -687,11 +683,11 @@ public class Block implements ActionListener {
 			Class<?> subnetClass = classLoader
 					.loadClass("com." + owner + ".fbp." + seg + "SubNet");
 
-			i = s.lastIndexOf(".class");
+			int i = jf.lastIndexOf(".class");
 			if (i != -1)
-				s = s.substring(0, i);
-			s = s.replace('/', '.');
-			cls = classLoader.loadClass(s);
+				jf = jf.substring(0, i);
+			jf = jf.replace('/', '.');
+			cls = classLoader.loadClass(jf);
 
 			if (cls.equals(compClass) || cls.equals(networkClass)
 					|| cls.equals(subnetClass))
@@ -718,7 +714,7 @@ public class Block implements ActionListener {
 						"Class file contains a 'main' method");
 				return null;
 			} else {
-				this.classLoader = classLoader;
+				//this.classLoader = classLoader;
 				return cls;
 			}
 
@@ -726,11 +722,7 @@ public class Block implements ActionListener {
 			System.err.println("Class not found exception:");
 			e.printStackTrace();
 			return null;
-		} catch (MalformedURLException e) {
-			System.err.println("Malformed URL exception:");
-			e.printStackTrace();
-			return null;
-		}
+		} 
 	}
 
 	void showArrowEndAreas(Graphics2D g) {
@@ -1826,9 +1818,7 @@ public class Block implements ActionListener {
 			String t = driver.properties.get("currentClassDir");
 			if (t == null)
 				t = System.getProperty("user.home");
-			// SaveInfo si = new SaveInfo("currentClassDir",
-			// "Select component from class directory", ".class",
-			// driver.new JavaClassFilter(), MyFileChooser.CLASS);
+			
 			MyFileChooser fc = new MyFileChooser(new File(t),
 					diag.fCPArr[DrawFBP.CLASS]);
 
@@ -1843,15 +1833,15 @@ public class Block implements ActionListener {
 														// back-slash
 					res2 = res2.replace('/', '.');
 					res = res.substring(0, i) + "!" + res2;
-					javaClass = getSelectedClass(res);
+					javaClass = getSelectedClass(res.substring(0, i), res2);
 					fullClassName = res;
 				} else {
-					String fs = fc.getSelectedFile();					
+					String fs = res;					
 					
 					if (fs.endsWith("jar"))
-						cFile = new File(driver.javaFBPJarFile);
+						cFile = new File(driver.javaFBPJarFile);  // ????
 					else {
-						cFile = new File(fc.getSelectedFile());
+						cFile = new File(fs);
 					 	if (cFile == null || !(cFile.exists())) {
 					 		MyOptionPane.showMessageDialog(driver.frame,
 					 				"Unable to find file " + cFile.getName());
@@ -1938,6 +1928,7 @@ public class Block implements ActionListener {
 									+ javaClass.getCanonicalName();
 						}
 					}
+					javaClass = getSelectedClass(fp.getAbsolutePath(), javaClass.getCanonicalName());  
 				}
 			}
 		}

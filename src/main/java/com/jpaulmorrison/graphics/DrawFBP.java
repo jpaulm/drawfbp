@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import java.util.*;
+import java.util.jar.JarFile;
 import java.io.*;
 import java.net.*;
 
@@ -169,6 +170,8 @@ public class DrawFBP extends JFrame
 			Block.Types.EXTPORT_OUT_BLOCK, Block.Types.EXTPORT_OUTIN_BLOCK,
 			Block.Types.IIP_BLOCK, Block.Types.LEGEND_BLOCK,
 			Block.Types.PERSON_BLOCK, Block.Types.ENCL_BLOCK};
+	
+	HashMap<String, String> jarFiles = new HashMap<String, String> ();
 
 	// JPopupMenu curPopup = null; // currently active popup menu
 
@@ -368,12 +371,7 @@ public class DrawFBP extends JFrame
 		jtp.setForeground(Color.BLACK);
 		jtp.setBackground(Color.WHITE);
 
-		//jtp.setFont(fontg);
-
-		//ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		//java.net.URL imgURL = loader // this.getClass().getClassLoader()	
-		//java.net.URL imgURL = this.getClass().getClassLoader()
-		//		.getResource("DrawFBP-logo-small.png");
+		
 		BufferedImage image = loadImage("DrawFBP-logo-small.png");
 		
 		if (image != null) {
@@ -713,6 +711,10 @@ public class DrawFBP extends JFrame
 			menuItem1.setEnabled(true); 
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
+		menuItem = new JMenuItem("Add Additional Run Time Jar File");
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
+		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1182,7 +1184,13 @@ public class DrawFBP extends JFrame
 			locateJavaFBPJarFile();
 			return;
 		}
+		
+		if (s.equals("Add Additional Run Time Jar File")) {
 
+			addAdditionalJarFile();
+			return;
+		}
+		
 		if (s.equals("Locate DrawFBP Help File")) {
 
 			locateJhallJarFile();
@@ -2354,6 +2362,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			jf = new File(javaFBPJarFile);
 		}
 		if (jf != null && jf.exists()) {
+			jarFiles.put("JavaFBP Jar File", jf.getAbsolutePath());
 			return res;
 		}
 
@@ -2375,7 +2384,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		return res;
 	}
 	boolean locateJavaFBPJarFile() {
-
+		
 		String s = properties.get("javaFBPJarFile");
 		File f = null;
 		if (s == null)
@@ -2401,6 +2410,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			propertiesChanged = true;
 			MyOptionPane.showMessageDialog(frame,
 					"JavaFBP jar file location: " + cFile.getAbsolutePath());
+			jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
 			for (int i = 0; i < driver.jtp.getTabCount(); i++) {
 				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
 						.getTabComponentAt(i);
@@ -2418,7 +2428,39 @@ void chooseFonts(MyFontChooser fontChooser){
 		return false;
 	}
 	
-	
+	boolean addAdditionalJarFile(){
+		
+		String ans = (String) MyOptionPane.showInputDialog(frame,
+				"Enter Description", "Enter Description of Jar File",
+				JOptionPane.PLAIN_MESSAGE, null, null, null);
+		if (ans == null)
+			return false;
+		
+		String s = properties.get("javaFBPJarFile");
+		File f = null;
+		if (s == null)
+			f = new File(System.getProperty("user.home"));
+		else
+			f = (new File(s)).getParentFile();
+        MyFileChooser fc = new MyFileChooser(f, fCPArray[JARFILE]);
+		
+		int returnVal = fc.showOpenDialog();
+		File cFile = null;
+		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			cFile = new File(fc.getSelectedFile());
+			if (cFile == null || !(cFile.exists())) {
+				MyOptionPane.showMessageDialog(frame,
+						"Unable to read additional jar file " + cFile.getName());
+				return false;
+			}
+			// diag.driver.currentDir = new File(cFile.getParent());
+			jarFiles.put(ans, cFile.getAbsolutePath());
+			//properties.put("javaFBPJarFile", javaFBPJarFile);
+			propertiesChanged = true;
+			
+		}
+		return true;
+	}
 	
 	 
 	boolean locateJhallJarFile() {

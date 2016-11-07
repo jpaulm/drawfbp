@@ -460,6 +460,8 @@ public class DiagramBuilder {
 
 		HashMap<String, String> fl1 = new HashMap<String, String>();
 		fl1.put("title", "*");  // deprecated
+		fl1.put("drawfbp_file", "LinkedList");
+		fl1.put("net", "LinkedList");
 		fl1.put("desc", "*");
 		fl1.put("complang", "*");
 		fl1.put("clicktogrid", "*");

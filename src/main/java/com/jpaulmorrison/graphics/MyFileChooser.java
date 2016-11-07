@@ -605,10 +605,11 @@ public class MyFileChooser extends JFrame
 
 		if (!inJarTree) {
 			if (listHead.equals(listShowingJarFile)) {
-				s = driver.javaFBPJarFile;
-				//int j = s.lastIndexOf(File.separator);
-				//s = s.substring(j + 1);
-				ll.add(s);
+				//s = driver.javaFBPJarFile;				
+				//ll.add(s);
+				for (String t : driver.jarFiles.values()){
+					ll.add(t);
+				}
 			}
 		}
 
@@ -976,15 +977,15 @@ public class MyFileChooser extends JFrame
 			if (s == null)
 				jp.setBackground(vLightBlue);
 			
-			else if (listHead.equals(listShowingJarFile)
-						&& s.toLowerCase().endsWith(".jar") || inJarTree)
+			else if (/*listHead.equals(listShowingJarFile)
+						&& */ s.toLowerCase().endsWith(".jar") || inJarTree)
 					jp.setBackground(bisque);
 				else
 					jp.setBackground(vLightBlue);
 
 				if (isSelected) {
-					if (listHead.equals(listShowingJarFile)
-							&& s.toLowerCase().endsWith(".jar") || inJarTree)
+					if (/*listHead.equals(listShowingJarFile)
+							&& */ s.toLowerCase().endsWith(".jar") || inJarTree)
 						jp.setBackground(goldenrod);
 					else
 						jp.setBackground(lightBlue);
@@ -1458,9 +1459,8 @@ public class MyFileChooser extends JFrame
 						fCParms == driver.curDiag.fCPArr[DrawFBP.JHALL]   ) {					
 					processOK();
 					return;
-				}
+				}				
 				
-				//jarTree = buildJarFileTree(driver.javaFBPJarFile);
 				jarTree = buildJarFileTree(s);
 				inJarTree = true;
 				butNF.setEnabled(!inJarTree);
@@ -1474,10 +1474,9 @@ public class MyFileChooser extends JFrame
 					return;
 				}
 
-				//listHead = driver.javaFBPJarFile + "!";
 				listHead = s + "!";
 				text.setText(listHead);
-				// panel.remove(listView);
+				
 				showList();
 
 			} else if (!inJarTree) {
