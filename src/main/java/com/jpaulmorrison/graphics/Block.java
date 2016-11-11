@@ -642,6 +642,7 @@ public class Block implements ActionListener {
 		
 	}
 
+	@SuppressWarnings("resource")
 	Class<?> getSelectedClass(String jar, String jf) {
 
 		if (jf.trim().equals("")) {
@@ -658,10 +659,11 @@ public class Block implements ActionListener {
 		    owner = "jpaulmorrison";
 		
 		Class<?> cls;
+		URLClassLoader classLoader = null;
 		try {	
 			
 			try {
-				File jFile = new File(jar);
+				File jFile = new File(fn);         
 				URI uri = jFile.toURI();
 				URL url = uri.toURL();
 
@@ -683,20 +685,21 @@ public class Block implements ActionListener {
 			Class<?> subnetClass = classLoader
 					.loadClass("com." + owner + ".fbp." + seg + "SubNet");
 
-			int i = jf.lastIndexOf(".class");
+			int i = jf.lastIndexOf(".class"); 			
 			if (i != -1)
 				jf = jf.substring(0, i);
 			jf = jf.replace('/', '.');
-			cls = classLoader.loadClass(jf);
+			cls = this.classLoader.loadClass(jf);
 
 			if (cls.equals(compClass) || cls.equals(networkClass)
-					|| cls.equals(subnetClass))
-				return null;
+					|| cls.equals(subnetClass)){
+					return null;
+			}
 
-			if (cls.getSuperclass() == null
-					|| !((compClass).isAssignableFrom((cls)))) {
+			Class cs = cls.getSuperclass();
+			if (cs != compClass  || cs != subnetClass) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Class file not a valid FBP component");
+						"Class file not a valid FBP component");				
 				return null;
 			}
 
@@ -1429,7 +1432,12 @@ public class Block implements ActionListener {
 					codeFileName = null;
 				}
 			}
-			selectJavaClass();
+			try {
+				selectJavaClass();
+			} catch (MalformedURLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			 
 			
 		}
@@ -1779,7 +1787,7 @@ public class Block implements ActionListener {
 		driver.frame.repaint();
 		return;
 	}
-	void selectJavaClass() {
+	void selectJavaClass() throws MalformedURLException {
 		/*
 		if (diag.diagLang != null
 				&& !(diag.diagLang.label.equals("Java")))  {
@@ -1833,6 +1841,29 @@ public class Block implements ActionListener {
 														// back-slash
 					res2 = res2.replace('/', '.');
 					res = res.substring(0, i) + "!" + res2;
+					
+					// get jar files from list - first one is
+					// JavaFBPJarFile
+					
+					LinkedList<URL> ll = new LinkedList<URL>();
+					File fx = null;
+					URI uri;
+					URL url;
+					
+					for (String jfv : driver.jarFiles.values()){
+						fx = new File(jfv);
+						uri = fx.toURI();
+						url = uri.toURL();
+						ll.add(url);
+					}						
+
+			        //URL[] urls = (URL[]) ll.toArray();
+			        
+			        //as per http://stackoverflow.com/questions/5690351/java-stringlist-toarray-gives-classcastexception 
+					URL[] urls = ll.toArray(new URL[ll.size()]); 
+
+					// Create a new class loader with the directory
+					classLoader = new URLClassLoader(urls);
 					javaClass = getSelectedClass(res.substring(0, i), res2);
 					fullClassName = res;
 				} else {
@@ -1859,20 +1890,34 @@ public class Block implements ActionListener {
 
 					String error = "";
 
+					LinkedList<URL> ll = new LinkedList<URL>();
+					File fx = null;
 					while (true) {
+						ll.clear();
 						fp = cFile.getParentFile();
 						if (fp == null)
 							break;
 						try {
 							classFound = true;
-							File jFile = new File(driver.javaFBPJarFile);
-							URI uri = jFile.toURI();
+							
+							URI uri = fp.toURI();
 							URL url = uri.toURL();
+							ll.add(url);
+							
+							// get jar files from list - first one is
+							// JavaFBPJarFile
+							
+							for (String jfv : driver.jarFiles.values()){
+								fx = new File(jfv);
+								uri = fx.toURI();
+								url = uri.toURL();
+								ll.add(url);
+							}						
 
-							uri = fp.toURI();
-							URL url2 = uri.toURL();
-
-							URL[] urls = new URL[]{url, url2};
+					        //URL[] urls = (URL[]) ll.toArray();
+					        
+					        //as per http://stackoverflow.com/questions/5690351/java-stringlist-toarray-gives-classcastexception 
+							URL[] urls = ll.toArray(new URL[ll.size()]); 
 
 							// Create a new class loader with the directory
 							classLoader = new URLClassLoader(urls);
@@ -1925,10 +1970,10 @@ public class Block implements ActionListener {
 									fp.getAbsolutePath());
 							driver.propertiesChanged = true;
 							fullClassName = fp.getAbsolutePath() + "!"
-									+ javaClass.getCanonicalName();
+									+ javaClass;
 						}
 					}
-					javaClass = getSelectedClass(fp.getAbsolutePath(), javaClass.getCanonicalName());  
+					javaClass = getSelectedClass(fp.getAbsolutePath(), javaClass.getName());  
 				}
 			}
 		}

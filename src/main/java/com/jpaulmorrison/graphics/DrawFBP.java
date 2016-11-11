@@ -2431,10 +2431,13 @@ void chooseFonts(MyFontChooser fontChooser){
 	boolean addAdditionalJarFile(){
 		
 		String ans = (String) MyOptionPane.showInputDialog(frame,
-				"Enter Description", "Enter Description of Jar File",
+				"Enter Description of Jar File", "Enter Description", 
 				JOptionPane.PLAIN_MESSAGE, null, null, null);
-		if (ans == null)
+		if (ans == null || ans.equals("")){
+			MyOptionPane.showMessageDialog(frame,
+					"No description entered");
 			return false;
+		}
 		
 		String s = properties.get("javaFBPJarFile");
 		File f = null;
