@@ -2,7 +2,6 @@ package com.jpaulmorrison.graphics;
 
 //import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,8 +13,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
@@ -35,9 +34,9 @@ import com.jpaulmorrison.graphics.DrawFBP.Side;
 
 public class Diagram {
 	// LinkedList<Block> blocks;
-	HashMap<Integer, Block> blocks;
+	ConcurrentHashMap<Integer, Block> blocks;
 
-	HashMap<Integer, Arrow> arrows;
+	ConcurrentHashMap<Integer, Arrow> arrows;
 
 	File diagFile;
 
@@ -91,8 +90,8 @@ public class Diagram {
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;
 		//driver.curDiag = this;
-		blocks = new HashMap<Integer, Block>();
-		arrows = new HashMap<Integer, Arrow>();
+		blocks = new ConcurrentHashMap<Integer, Block>();
+		arrows = new ConcurrentHashMap<Integer, Arrow>();
 		clickToGrid = true;
 		driver.grid.setSelected(clickToGrid);
 		//file = null;
@@ -404,6 +403,7 @@ public class Diagram {
 
 		String fileString = null;
 		String name;
+		boolean res = true;
 		if (changed) {
 
 			if (title == null)
@@ -427,7 +427,7 @@ public class Diagram {
 					if (file == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"File not saved");
-						return false;
+						res = false;
 					}
 				} else {
 					file = diagFile;
@@ -437,22 +437,37 @@ public class Diagram {
 
 				}
 
-				File currentDiagramDir = file.getParentFile();
-				driver.properties.put("currentDiagramDir",
-						currentDiagramDir.getAbsolutePath());
-				driver.propertiesChanged = true;
-
-				// }
-				return true;
+				
+				
 			}
-			if (answer == JOptionPane.NO_OPTION)
-				// User clicked NO.
-				return true;
-			else
-				return false;
+			if (answer != JOptionPane.NO_OPTION)				
+				res = false;
 
 		}
-		return true;
+		File currentDiagramDir = null;
+		
+		if (diagFile != null) {
+		    currentDiagramDir = diagFile.getParentFile();
+		    driver.properties.put("currentDiagramDir",
+				currentDiagramDir.getAbsolutePath());
+		    if (res)
+		        driver.properties.put("currentDiagram",
+				    diagFile.getAbsolutePath());
+		    else
+		    	driver.properties.remove("currentDiagram");
+		}
+		
+		String t = Integer.toString(driver.frame.getX());
+		driver.properties.put("x", t);
+		t = Integer.toString(driver.frame.getY());
+		driver.properties.put("y", t);
+		t = Integer.toString(driver.frame.getWidth());
+		driver.properties.put("width", t);
+		t = Integer.toString(driver.frame.getHeight());
+		driver.properties.put("height", t);
+		driver.propertiesChanged = true;
+		
+		return res;
 
 	}
 

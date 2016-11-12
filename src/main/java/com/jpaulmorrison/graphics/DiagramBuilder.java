@@ -31,7 +31,7 @@ public class DiagramBuilder {
 		boolean done = false;
 		Arrow thisArrow = null;
 
-		String sym = "";
+		String starttag = "";
 		String data = null;
 		String saveData = null;
 		// Object object;
@@ -58,17 +58,16 @@ public class DiagramBuilder {
 		Enclosure cEncl = null;
 		SubnetPort snp = null;
 
-		String tag = null;
+		String endtag = null;
 
-		String type;
+		//String type;
 
 		diag.clickToGrid = true;
 		driver.grid.setSelected(diag.clickToGrid);
 
 		while (true) { // skip blanks, CRs or tabs
-			if (bp.tb('o'))
-				continue;
-			break;
+			if (!(bp.tb('o')))				
+			    break;
 		}
 
 		if (!bp.tc('<', 'o')) {
@@ -88,56 +87,48 @@ public class DiagramBuilder {
 				control = true;
 			if (bp.tc('?', 'o'))
 				control = true;
-			while (true) {
-				if (!bp.tb('o'))
-					break;
-			}
+			
 			while (true) { // scan off a symbol within <>
-				if (bp.tc('>', 'n'))
-					break;
-				//if (bp.tb('n'))
-				//	break; // 'n' is equivalent to 'io'
+				if (bp.tc('>', 'o'))
+					break;			
 
 				bp.tu();
 			}
-			while (true) {
-				if (bp.tc('>', 'o'))
-					break;
-				bp.tu('o'); // skip all characters within tag until >
-			}
-
+			
 			// at end, we can use getOutStr to get output into String (sym)
 
 			if (!control) {
 
-				sym = bp.getOutStr(); // get this symbol - check if ends in /
-				if (sym.startsWith("drawfbp_file"))
-					sym = "drawfbp_file";
+				starttag = bp.getOutStr(); // get this symbol - check if ends in /
+				if (starttag.startsWith("drawfbp_file"))
+					starttag = "drawfbp_file";
 
-				if (sym.charAt(sym.length() - 1) == '/') { // stand-alone field
+				if (starttag.charAt(starttag.length() - 1) == '/') { // stand-alone field
 					// (no data)
 					endsw = true;
-					sym = sym.substring(0, sym.length() - 1); // drop final
+					starttag = starttag.substring(0, starttag.length() - 1); // drop final
+					endtag = starttag;
 					// slash from symbol
-					names.push(sym);
+					names.push(starttag);
 					data = null;
 					atomic = true;
 				}
 
 				if (!endsw) {
 
-					names.push(sym);
-					type = sym;
+					names.push(starttag);
+					String t = starttag;
+					endtag = null;
 
 					if (curFl != null) {
 
-						type = (String) curFl.get(sym);
-						if (type == null) {
+						t = (String) curFl.get(starttag);
+						if (t == null) {
 							MyOptionPane.showMessageDialog(frame, "Field '"
-									+ sym + "' not defined for this class");
+									+ starttag + "' not defined for this class");
 							return;
 						}
-						if (type.charAt(0) == '*') // test if it's atomic
+						if (t.charAt(0) == '*') // test if it's atomic
 							// this is set on if the value in curFl is an
 							// asterisk, meaning that tag just has a value,
 							// not a list
@@ -147,44 +138,45 @@ public class DiagramBuilder {
 
 					if (!atomic) { // end switch not on, and not atomic
 						// get permissible tags within this one
-						curFl = (HashMap<String, String>) tagInfo.get(type);
+						curFl = (HashMap<String, String>) tagInfo.get(starttag);
 						// set current field list
 						fldLists.push(curFl); // push it on stack
-						clsNames.push(type); // ??? // push class name
-
+						clsNames.push(starttag); //  push class name
+						
+						
 						if (debugging)
-							System.out.println("Starting class " + type);
+							System.out.println("Starting class " + starttag);
 
-						if (sym.equals("connection")) {
+						if (starttag.equals("connection")) {
 							Arrow arrow = new Arrow(diag);
 							thisArrow = arrow;
 							arrowBuilt = false;							
 
-						} else if (sym.equals("bends")) {
+						} else if (starttag.equals("bends")) {
 							Integer aid = new Integer(item.get("id"));
 							diag.arrows.put(aid, thisArrow);
 							thisArrow.buildArrow(item);
 							arrowBuilt = true;
 
-						} else if (sym.equals("subnetport")) {
+						} else if (starttag.equals("subnetport")) {
 							snp = new SubnetPort();
 
-						} else if (sym.equals("subnetports")) {
+						} else if (starttag.equals("subnetports")) {
 							cEncl = new Enclosure(diag);
 							cEncl.buildEncl(item);
-						}
+						} 
 						item.clear();
 					}
 
 				} else { // if endsw is on...
-					tag = (String) names.pop();
+					endtag = (String) names.pop();
 					if (debugging)
-						System.out.println(tag + " popped");
-					if (!sym.equals(tag)) {
-						if (sym.equals("net"))  // from code before 2.13.4
+						System.out.println(endtag + " popped");
+					if (!starttag.equals(endtag)) {
+						if (starttag.equals("net"))  // from code before 2.13.4
 							return;
 						MyOptionPane
-								.showMessageDialog(frame, "Tags don't match: " + sym + " - " + tag);
+								.showMessageDialog(frame, "Tags don't match: " + starttag + " - " + endtag);
 						return;
 					}
 					if (atomic) {   // i.e. a leaf in the XML tree
@@ -192,19 +184,19 @@ public class DiagramBuilder {
 							// patterns as follows:
 							// <xx> </xx> OR <yy/>
 							if (debugging)
-								System.out.println("Stand-alone tag: " + tag);
-							if (sym.equals("endsatline") ||
-								sym.equals("substreamsensitive") ||
-								sym.equals("multiplex") ||
-								sym.equals("invisible") ||
-								sym.equals("clicktogrid") ||
-								sym.equals("dropoldest"))
-								    item.put(sym, "true");
+								System.out.println("Stand-alone tag: " + endtag);
+							if (starttag.equals("endsatline") ||
+								starttag.equals("substreamsensitive") ||
+								starttag.equals("multiplex") ||
+								starttag.equals("invisible") ||
+								starttag.equals("clicktogrid") ||
+								starttag.equals("dropoldest"))
+								    item.put(starttag, "true");
 
 						} else { // <xx> data </xx> 
 							saveData = new String(data);
 
-						if (tag.equals("desc")) {
+						if (endtag.equals("desc")) {
 							diag.desc = saveData;
 							diag.desc = diag.desc.replace('\n', ' ');
 							}
@@ -213,7 +205,7 @@ public class DiagramBuilder {
 							//	diag.title = saveData;
 							//}
 
-						else if (tag.equals("complang")) {
+						else if (endtag.equals("complang")) {
 								if (saveData.equals("NoFlo"))
 									saveData = "JSON";   // transitional! 
 								diag.diagLang = driver
@@ -233,21 +225,21 @@ public class DiagramBuilder {
 								*/
 							}
 
-						else if (tag.equals("generatedCodeFileName")) {
+						else if (endtag.equals("generatedCodeFileName")) {
 								// diag.generatedCodeFileName = saveData; //
 								// there may be some in old diagrams, so do
 								// nothing!
 							}
 
-						else if (tag.equals("clicktogrid")) {
+						else if (endtag.equals("clicktogrid")) {
 								diag.clickToGrid = saveData.equals("true");
 							}
 
 						else
-							item.put(tag, saveData);
+							item.put(endtag, saveData);
 
 						if (debugging)
-								System.out.println("Data at " + tag + ": "
+								System.out.println("Data at " + endtag + ": "
 										+ saveData);
 						data = null;
 						}
@@ -255,42 +247,42 @@ public class DiagramBuilder {
 					}
 
 					else { // if not atomic and endsw is on - we're processing the end tag of a tag pair
-						if (tag.equals("block")) {
+						if (endtag.equals("block")) {
 							Block block = null;
-							String stype;
+							String type;
 							
 							if (cEncl != null) {
 								block = cEncl;
-								stype = Block.Types.ENCL_BLOCK;
+								type = Block.Types.ENCL_BLOCK;
 								cEncl = null;
 							} else {
-								stype = item.get("type");
-								if (null == stype) {
+								type = item.get("type");
+								if (null == type) {
 									MyOptionPane.showMessageDialog(frame,
 											"No block type specified");
 									block = new ProcessBlock(diag);
 
-								} else if (stype.equals(Block.Types.PROCESS_BLOCK)) {
+								} else if (type.equals(Block.Types.PROCESS_BLOCK)) {
 									block = new ProcessBlock(diag);								
 									
-								} else if (stype
+								} else if (type
 										.equals(Block.Types.REPORT_BLOCK)) {
 									block = new ReportBlock(diag);
 
-								} else if (stype.equals(Block.Types.FILE_BLOCK)) {
+								} else if (type.equals(Block.Types.FILE_BLOCK)) {
 									block = new FileBlock(diag);
 
-								} else if (stype
+								} else if (type
 										.equals(Block.Types.EXTPORT_IN_BLOCK)
-										|| stype.equals(Block.Types.EXTPORT_OUT_BLOCK)
-										|| stype.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
+										|| type.equals(Block.Types.EXTPORT_OUT_BLOCK)
+										|| type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
 									block = new ExtPortBlock(diag);
 
-									if (stype
+									if (type
 											.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
 										block.width = 2 * block.width;
 									}
-									block.type = stype;
+									block.type = type;
 									
 									String sbs = item.get("substreamsensitive");
 									if (sbs != null && sbs.equals("true")){											
@@ -301,18 +293,18 @@ public class DiagramBuilder {
 										if (snp != null)
 											snp.substreamSensitive = true;										
 									}
-								} else if (stype.equals(Block.Types.IIP_BLOCK)) {
+								} else if (type.equals(Block.Types.IIP_BLOCK)) {
 									block = new IIPBlock(diag);
 
-								} else if (stype
+								} else if (type
 										.equals(Block.Types.LEGEND_BLOCK)) {
 									block = new LegendBlock(diag);
 
-								} else if (stype
+								} else if (type
 										.equals(Block.Types.PERSON_BLOCK)) {
 									block = new PersonBlock(diag);
 
-								} else if (stype.equals(Block.Types.ENCL_BLOCK)) {
+								} else if (type.equals(Block.Types.ENCL_BLOCK)) {
 									block = new Enclosure(diag);
 
 								} else {
@@ -334,7 +326,7 @@ public class DiagramBuilder {
 							
 							diag.blocks.put(new Integer(block.id), block);
 							
-						} else if (tag.equals("connection")) {
+						} else if (endtag.equals("connection")) {
 							if (!arrowBuilt) {
 								Integer aid = new Integer(item.get("id"));
 								diag.arrows.put(aid, thisArrow);
@@ -343,13 +335,13 @@ public class DiagramBuilder {
 													
 														
 							thisArrow = null;
-						} else if (tag.equals("bend")) {
+						} else if (endtag.equals("bend")) {
 							if (thisArrow.bends == null)
 								thisArrow.bends = new LinkedList<Bend>();
 							Bend bend = new Bend();
 							bend.buildBend(item);
 							thisArrow.bends.add(bend);
-						} else if (tag.equals("subnetport")) {
+						} else if (endtag.equals("subnetport")) {
 
 							snp.buildBlockFromXML(item);
 							if (item.get("substreamsensitive").equals("true"))
@@ -373,9 +365,8 @@ public class DiagramBuilder {
 			// skip following blanks to next non-blank (should be a <)
 			if (endsw || !atomic || control) {
 				while (true) { // skip blanks and tabs
-					if (bp.tb('o'))
-						continue;
-					break;
+					if (!(bp.tb('o')))
+					    break;
 				}
 				bp.eraseOutput(); // make sure no symbol outstanding
 				control = false;
@@ -416,9 +407,8 @@ public class DiagramBuilder {
 
 			data = bp.getOutStr();
 			
-			if (data != null) {
-				//data = data.trim();
-				if (tag == null || !(sym.equals("description")))
+			if (data != null) {				
+				if (!(starttag.equals("description") || (starttag.equals("desc"))))
 					data = data.trim();
 				Pattern p = Pattern.compile("\\s*");
 				Matcher m = p.matcher(data);
@@ -466,7 +456,7 @@ public class DiagramBuilder {
 
 		HashMap<String, String> fl1 = new HashMap<String, String>();
 		fl1.put("title", "*");  // deprecated
-		fl1.put("drawfbp_file", "LinkedList");
+		//fl1.put("drawfbp_file", "LinkedList");
 		fl1.put("net", "LinkedList");
 		fl1.put("desc", "*");
 		fl1.put("complang", "*");
@@ -497,7 +487,7 @@ public class DiagramBuilder {
 		fl3.put("multiplex", "*");
 		fl3.put("mpxfactor", "*");
 		fl3.put("invisible", "*");
-		fl3.put("description", "*");
+		fl3.put("description", "*");  // deprecated
 		fl3.put("subnetports", "LinkedList");
 
 		HashMap<String, String> fl4 = new HashMap<String, String>();

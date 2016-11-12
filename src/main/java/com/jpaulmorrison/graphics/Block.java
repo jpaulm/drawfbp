@@ -697,7 +697,7 @@ public class Block implements ActionListener {
 			}
 
 			Class cs = cls.getSuperclass();
-			if (cs != compClass  || cs != subnetClass) {
+			if (cs == null || !(cs == compClass  || cs == subnetClass)) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Class file not a valid FBP component");				
 				return null;
