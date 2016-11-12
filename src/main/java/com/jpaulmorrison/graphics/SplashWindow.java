@@ -17,7 +17,7 @@ class SplashWindow extends JWindow {
 	static boolean READFILE = true;
 	
 	public SplashWindow(String filename, JFrame f, int waitTime,
-			final DrawFBP driver) {
+			final DrawFBP driver, boolean small) {
 		super(f);
 		
 		Image i = null;
@@ -32,15 +32,21 @@ class SplashWindow extends JWindow {
 		JLabel l = new JLabel(icon);
 		c.add(l, BorderLayout.CENTER);
 		pack();
+		f.repaint();
 
-		Dimension screenSize =
+		Point p = new Point(100,100);
+		if (!small) {
+		    Dimension screenSize =
 		// Toolkit.getDefaultToolkit().getScreenSize();
-		f.getSize();
+		        f.getSize();
+		    p = f.getLocation();
 
-		Dimension labelSize = l.getPreferredSize();
-		setLocation(screenSize.width / 2 - (labelSize.width / 2),
-				screenSize.height / 2 - (labelSize.height / 2) + 30);
+		    Dimension labelSize = l.getPreferredSize();
+		    setLocation(p.x + screenSize.width / 2 - (labelSize.width / 2),
+			    p.y + screenSize.height / 2 - (labelSize.height / 2) + 30);
+		}
 
+		pack();
 		final int pause = waitTime;
 		final Runnable closerRunner = new Runnable() {
 			public void run() {

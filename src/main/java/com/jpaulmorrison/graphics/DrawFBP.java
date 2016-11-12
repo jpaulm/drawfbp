@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import java.util.*;
-import java.util.jar.JarFile;
 import java.io.*;
 import java.net.*;
 
@@ -409,30 +408,53 @@ public class DrawFBP extends JFrame
 		buildUI(cont);		
 		
 		frame.add(Box.createRigidArea(new Dimension(0,10)));
+		//diagramName = properties.get("diagramName");		
+		//if (diagramName != null) 
+		//	openAction(diagramName);
+		String t = properties.get("x"); 
+		int x = 0, y = 0, w2 = 1200, h2 = 800;
+		if (t != null)
+		    x = Integer.parseInt(t);
+		t = properties.get("y"); 
+		if (t != null)
+		    y = Integer.parseInt(t);
+		Point p = new Point(x, y);
+		frame.setLocation(p);
+		
+		t = properties.get("width"); 
+		if (t != null)
+		    w2 = Integer.parseInt(t);
+		t = properties.get("height"); 
+		if (t != null)
+		    h2 = Integer.parseInt(t);
+		
+		Dimension dim2 = new Dimension(w2, h2);
+		frame.setPreferredSize(dim2); 
+		frame.repaint();
 		// Display the window.
 		frame.pack();
 
 		frame.setVisible(true);
 		frame.addComponentListener(this);
-		// frame.update(frame.getGraphics());
-		// Graphics2D g = (Graphics2D) frame.getGraphics();
+		
 		frame.repaint();
 
 		wDiff = frame.getWidth() - curDiag.area.getWidth();
 		hDiff = frame.getHeight() - curDiag.area.getHeight();
-
-		if (diagramName == null) {
-			new SplashWindow("DrawFBP-logo.jpg", frame, 5000, this); // display
-			// for 5.0 secs, or until mouse is moved
-
-		}
-
-		// if (diagramName != null)
-		// actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-		// "Open " + diagramName));
 		
-		if (diagramName != null) 
-			openAction(diagramName);
+		diagramName = properties.get("currentDiagram");
+		
+		boolean small = (diagramName) == null ? false : true;	
+		
+		new SplashWindow("DrawFBP-logo.jpg", frame, 3000, this, small); // display
+		    // for 3.0 secs, or until mouse is moved
+		
+	    if (diagramName != null)  {	
+		    actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+		       "Open " + diagramName));
+		}
+		frame.repaint();
+		
 	}
 
 	private void buildUI(Container container) {
@@ -1768,6 +1790,8 @@ public class DrawFBP extends JFrame
 				"currentClassDir");
 		propertyDescriptions.put("Current diagram directory",
 				"currentDiagramDir");
+		propertyDescriptions.put("Current diagram",
+				"currentDiagram");
 		propertyDescriptions.put("Current image directory", "currentImageDir");
 		propertyDescriptions.put("Current Java source code directory",
 				"currentSourceDir");
@@ -3011,6 +3035,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 
 			jtp.removeTabAt(i);
+			
+			driver.properties.remove("currentDiagram");
 
 			int j = jtp.getTabCount();
 			if (j == 0) {
@@ -3321,14 +3347,15 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			grid.setSelected(diag.clickToGrid);
 			repaint();
+			
 			for (Block block : diag.blocks.values()) {
 				block.draw(osg);
 			}
-
+			
 			for (Arrow arrow : diag.arrows.values()) {
 				arrow.draw(osg);
 			}
-
+			
 			String s = diag.desc;
 			if (s != null)
 				s = s.replace('\n', ' ');
