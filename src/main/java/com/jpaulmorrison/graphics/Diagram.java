@@ -435,7 +435,10 @@ public class Diagram {
 
 					writeFile(file, fileString);
 
-				}				
+
+				}
+				
+
 			}
 			if (answer == JOptionPane.CANCEL_OPTION)				
 				res = false;
@@ -508,7 +511,9 @@ public class Diagram {
 		}
 		fileString += "</connections> ";
 
+
 		fileString += "</net> </drawfbp_file>";
+
 
 		return fileString;
 	}
