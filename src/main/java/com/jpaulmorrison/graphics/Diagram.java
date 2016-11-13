@@ -436,11 +436,9 @@ public class Diagram {
 					writeFile(file, fileString);
 
 				}
-
-				
 				
 			}
-			if (answer != JOptionPane.NO_OPTION)				
+			if (answer == JOptionPane.CANCEL_OPTION)				
 				res = false;
 
 		}
@@ -511,7 +509,7 @@ public class Diagram {
 		}
 		fileString += "</connections> ";
 
-		fileString += "</drawfbp_file>";
+		fileString += "</net></drawfbp_file>";
 
 		return fileString;
 	}
