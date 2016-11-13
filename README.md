@@ -3,7 +3,7 @@ DrawFBP
 
 Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-#### The latest version of DrawFBP is now up on Maven Central - go to http://search.maven.org/ , and search for DrawFBP.  Download the .jar file from here, and execute using Java Platform SE binary.
+#### The latest version of DrawFBP is now up on Maven Central - go to http://search.maven.org/ , and search for DrawFBP.  Download the .jar file from here, and execute using Java Platform SE binary.  
 
 Description
 -----------
@@ -56,55 +56,12 @@ Features
 - Extra arrowhead (one per arrow)
 
 
-Prerequisites for Building  (DrawFBP can be _run_ simply from the .jar file)
----
-
-The project requires Gradle for building (tested with version 2.0). You can download the corresponding package from the following URL: 
-http://www.gradle.org
-
-Windows and Linux users should follow the installation instructions on the Maven website (URL provided above).
-
-OSX users (using Brew, http://brew.sh) can install Maven by executing the following command:
-
-    brew install gradle
-
-Eclipse IDE Integration
----
-
-You can generate Eclipse project using the following command:
-
-    gradle eclipse
-
-If you already created an Eclipse project you can run:
-
-    gradle cleanEclipse Eclipse
-
-You need to install a Gradle plugin for Eclipse as explained here:
-https://github.com/spring-projects/eclipse-integration-gradle/
-Then import a generated project in Eclipse, right (ctrl for OSX) click on the project in Eclipse -> Configure -> Convert to Gradle Project. After the conversion you can Right (ctrl for OSX) click on the project -> Gradle -> Task Quick Launcher and type `build`.
-
-
-In Eclipse, you may have to do a `Refresh` on the project.
-
-
-Building from command line
----
-
-Current release can be found in most recent release in `Releases`, which also contains the most recent jar file.
-
-For building the project yourself simply run the following command:
-
-    gradle build
-
-As a result a `DrawFBP-x.y.z.jar` file will be created in the `build/libs` directory.  If you have done this earlier, you have to delete the `build` directory first.
-
-
 Running DrawFBP
 ----
 
-DrawFBP can be executed directly by executing the jar file.  You can download it from the latest release in the DrawFBP project Releases directory in GitHub, and can then be executed directly by double-clicking on it.  You may need to have the Java binary associated with the .jar extension - otherwise double-clicking on the jar file may just display it as a zip file.  You can also build the jar file yourself by running `gradle build`, or run `gradle installDist` and you will find start scripts in `build\install\drawfbp\bin`.
+DrawFBP can be executed directly by executing the .jar file.  You can download it from Maven (search for DrawFBP), or from the latest release in the DrawFBP project Releases directory in GitHub; it can then be executed directly by double-clicking on it. 
 
-Alternatively it can be run from the command line by positioning to your DrawFBP folder, and entering 
+Alternatively DrawFBP can be run from the command line by positioning to your DrawFBP folder, and entering 
 
     java -cp build\libs\drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
     java -cp build\libs\drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
