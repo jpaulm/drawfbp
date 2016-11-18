@@ -343,7 +343,20 @@ public class DrawFBP extends JFrame
 				dcl = "JSON";
 			defaultCompLang = findGLFromLabel(dcl);
 		}
-
+		Iterator entries = jarFiles.entrySet().iterator();
+		String z = "";
+		String cma = ""; 
+		boolean first = true;
+		while (entries.hasNext()) {	
+			@SuppressWarnings("unchecked")	
+			Entry<String, String> thisEntry = (Entry<String, String>) entries.next();
+		    if (!first) {			       				
+		        z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+		        cma = ";"; 
+		    }			    
+		    first = false;
+		}
+		properties.put("additionalJarFiles", z);
 		startProperties = new HashMap<String, String>();
 		for (String s : properties.keySet()) {
 			startProperties.put(s, properties.get(s));
@@ -1818,7 +1831,7 @@ public class DrawFBP extends JFrame
 		propertyDescriptions
 				.put("DrawFBP Help jar file", "jhallJarFile");
 		propertyDescriptions
-		.put("Additional Jar Files", "additionalJarFiles");
+				.put("Additional Jar Files", "additionalJarFiles");
 		  
 	}
 
@@ -2344,30 +2357,37 @@ void chooseFonts(MyFontChooser fontChooser){
 				String u = "";
 				if (k > 0) {
 					if (!(key.equals("additionalJarFiles"))) {
-					    s = s.substring(0, k).trim();
-					    properties.put(key, s);
-					}
-					else {
+						s = s.substring(0, k).trim();
+						properties.put(key, s);
+					} else 
+						//if (!(s.equals(""))) {
 						s = s.substring(0, k).trim();
 						while (true) {
 							int m = s.indexOf(";");
-							if (m == -1){
+							if (m == -1) {
 								u = s;
 								int n = u.indexOf(":");
-								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
-								jarFiles.put(u.substring(0, n), u.substring(n + 1));
+								if (n == -1)
+									break;
+								properties.put("addnl_jf_" + u.substring(0, n),
+										u.substring(n + 1));
+								jarFiles.put(u.substring(0, n),
+										u.substring(n + 1));
 								break;
-							}
-							else {
+							} else {
 								u = s.substring(0, m);
-								s = s.substring(m + 1);	
+								s = s.substring(m + 1);
 								int n = u.indexOf(":");
-								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
-								jarFiles.put(u.substring(0, n), u.substring(n + 1));
-								}							
+								if (n == -1)
+									break;
+								properties.put("addnl_jf_" + u.substring(0, n),
+										u.substring(n + 1));
+								jarFiles.put(u.substring(0, n),
+										u.substring(n + 1));
+							}
 						}
-					}
-						
+					//}
+
 				}
 			}
 
@@ -2391,12 +2411,27 @@ void chooseFonts(MyFontChooser fontChooser){
 			out.write("<?xml version=\"1.0\"?> \n");
 			out.write("<properties> \n");
 			for (String k : properties.keySet()) {
-				if (k.startsWith("addnl_jf_"))
+				if (k.startsWith("addnl_jf_") || k.startsWith("additionalJarFiles"))
 					continue;
+				
 				String s = "<" + k + "> " + properties.get(k) + "</" + k
 						+ "> \n";
 				out.write(s);
 			}
+			Iterator entries = jarFiles.entrySet().iterator();
+			String z = "";
+			String cma = ""; 
+			boolean first = true;
+			while (entries.hasNext()) {	
+				@SuppressWarnings("unchecked")	
+				Entry<String, String> thisEntry = (Entry<String, String>) entries.next();
+			    if (!first) {			       				
+			        z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+			        cma = ";"; 
+			    }			    
+			    first = false;
+			}
+			properties.put("additionalJarFiles", z);
 
 			out.write("</properties> \n");
 			// Close the BufferedWriter

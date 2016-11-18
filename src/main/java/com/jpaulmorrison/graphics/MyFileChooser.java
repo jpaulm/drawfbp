@@ -599,7 +599,7 @@ public class MyFileChooser extends JFrame
 			return;
 
 		
-		// Collections.sort(ll2,String.CASE_INSENSITIVE_ORDER);  // try without sorting
+		Collections.sort(ll2,String.CASE_INSENSITIVE_ORDER);  
 
 		for (String li : ll2) {
 			ll.add(li);
