@@ -196,7 +196,7 @@ public class DiagramBuilder {
 						} else { // <xx> data </xx> 
 							saveData = new String(data);
 
-						if (endtag.equals("desc")) {
+						if (endtag.equals("desc") || endtag.equals("description")) {
 							diag.desc = saveData;
 							diag.desc = diag.desc.replace('\n', ' ');
 							}
@@ -407,9 +407,8 @@ public class DiagramBuilder {
 
 			data = bp.getOutStr();
 			
-			if (data != null) {				
-				if (!(starttag.equals("description") || (starttag.equals("desc"))))
-					data = data.trim();
+			if (data != null) {	
+				data = data.trim();
 				Pattern p = Pattern.compile("\\s*");
 				Matcher m = p.matcher(data);
 				if (!(data.equals("")) && !m.matches())
@@ -467,6 +466,7 @@ public class DiagramBuilder {
 		fl1.put("genCodeFileNames", "*"); // deprecated
 		fl1.put("blocks", "LinkedList");
 		fl1.put("connections", "LinkedList");
+		fl1.put("description", "*");  // deprecated
 
 		HashMap<String, String> fl2 = new HashMap<String, String>();
 		fl2.put("block", "Block");
@@ -486,8 +486,7 @@ public class DiagramBuilder {
 		fl3.put("height", "*");
 		fl3.put("multiplex", "*");
 		fl3.put("mpxfactor", "*");
-		fl3.put("invisible", "*");
-		fl3.put("description", "*");  // deprecated
+		fl3.put("invisible", "*");		
 		fl3.put("subnetports", "LinkedList");
 
 		HashMap<String, String> fl4 = new HashMap<String, String>();

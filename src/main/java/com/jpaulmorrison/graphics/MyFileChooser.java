@@ -568,7 +568,7 @@ public class MyFileChooser extends JFrame
 						File fx = new File(fn);
 						if (!fx.exists())
 							continue;
-						if (!fx.isDirectory()
+						if (!fx.isDirectory() /* && (!(fn.startsWith("."))) */
 								&& (fCParms.filter.accept(fx) || driver.allFiles))
 							ll2.add(fl[j]); // non-directories go into ll2,
 											// which is
@@ -598,7 +598,9 @@ public class MyFileChooser extends JFrame
 		if (ll2 == null)
 			return;
 
-		Collections.sort(ll2, comp);
+		
+		// Collections.sort(ll2,String.CASE_INSENSITIVE_ORDER);  // try without sorting
+
 		for (String li : ll2) {
 			ll.add(li);
 		}

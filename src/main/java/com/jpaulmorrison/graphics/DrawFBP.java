@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.io.*;
 import java.net.*;
 
@@ -446,7 +447,8 @@ public class DrawFBP extends JFrame
 		
 		boolean small = (diagramName) == null ? false : true;	
 		
-		new SplashWindow("DrawFBP-logo.jpg", frame, 3000, this, small); // display
+		if (!small)  // try suppressing this...
+		    new SplashWindow(frame, 3000, this, small); // display
 		    // for 3.0 secs, or until mouse is moved
 		
 	    if (diagramName != null)  {	
@@ -536,10 +538,10 @@ public class DrawFBP extends JFrame
 		diagDesc.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 		// label.setLabelFor(area);
 		box1.add(diagDesc);
-		// Font ft = fontg.deriveFont(Font.BOLD);
-		// diagDesc.setFont(fontg);
+		Font ft = fontg.deriveFont(Font.BOLD);
+		diagDesc.setFont(ft);
 		diagDesc.setPreferredSize(new Dimension(0, fontHeight * 2));
-		diagDesc.setForeground(Color.BLACK);
+		diagDesc.setForeground(Color.BLUE);
 
 		box1.add(Box.createRigidArea(new Dimension(0, 4)));
 		Box box2 = new Box(BoxLayout.X_AXIS);
@@ -1578,6 +1580,7 @@ public class DrawFBP extends JFrame
 			if ((ans != null) && (ans.length() > 0)) {
 				curDiag.desc = ans;
 				curDiag.desc = curDiag.desc.replace('\n', ' ');
+				curDiag.desc = curDiag.desc.trim();
 				curDiag.changed = true;
 			}
 			frame.repaint();
@@ -1814,7 +1817,9 @@ public class DrawFBP extends JFrame
 		propertyDescriptions.put("JavaFBP jar file", "javaFBPJarFile");
 		propertyDescriptions
 				.put("DrawFBP Help jar file", "jhallJarFile");
-		//propertyDescriptions.put("Select all files", "allFiles");  // always initialized to false
+		propertyDescriptions
+		.put("Additional Jar Files", "additionalJarFiles");
+		  
 	}
 
 	void displayProperties() {
@@ -1824,8 +1829,9 @@ public class DrawFBP extends JFrame
 				jdialog.dispose();
 			}
 		});
-		
+				
 		JPanel panel = new JPanel(new GridBagLayout());
+		JScrollPane jsp = new JScrollPane(panel);
 		
 		jdialog.setFocusable(true);
 		jdialog.requestFocusInWindow();
@@ -1839,8 +1845,8 @@ public class DrawFBP extends JFrame
 		});
 
 		panel.setBackground(Color.GRAY);
-		//panel.setLocation(frame.getX() + 50, frame.getY() + 50);
-		//panel.setSize(1200, 800);
+		panel.setLocation(frame.getX() + 50, frame.getY() + 50);
+		panel.setSize(1200, 800);
 
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -1872,42 +1878,75 @@ public class DrawFBP extends JFrame
 			String q = propertyDescriptions.get(p);
 			tft[1] = new JTextField(q);
 			String u = properties.get(q);
-			String v = "";
-			if (u == null)
-				u = "(null)";
-			else {
-				v = startProperties.get(q);
-				if (v == null)
-					v = "(null)";
-				else if (v.equals(properties.get(q)))
-					v = "";
-			}
-			if (q.equals("defaultCompLang")) {
-				u = findGLFromLabel(u).showLangs();
-				if (!(v.equals("")))
-					v = findGLFromLabel(v).showLangs();
-			}
-			tft[2] = new JTextField(u);
-			tft[3] = new JTextField(v);
+			String w = "";
+			int i;
+			if (u != null)
+				w = u;
+			boolean done = true;
+			boolean first = true;
+			
+			while (true) {
 
-			tft[0].setFont(fontg);
-			tft[1].setFont(fontg);
-			tft[2].setFont(fontf);
-			tft[3].setFont(fontf);
+				String v = "";
+				if (u == null)  
+					u = "(null)";
+				 
+				else {
+					if (q.equals("additionalJarFiles") && first){
+						first = false;
+						continue;
+					}
+					if ((i = w.indexOf(";")) > -1) {
+						u = w.substring(0, i);
+						w = w.substring(i + 1);
+						done = false;
+					}
+					else {
+						u = w;
+						done = true;
+					}
+						
+					v = startProperties.get(q);
+					if (v == null)
+						v = "(null)";
+					else if (v.equals(properties.get(q)) || v == null)
+						v = "";
+				}
+				if (q.equals("defaultCompLang")) {
+					u = findGLFromLabel(u).showLangs();
+					if (!(v.equals("")))
+						v = findGLFromLabel(v).showLangs();
+				}
+				tft[2] = new JTextField(u);
+				tft[3] = new JTextField(v);
 
-			displayRow(gbc, gbl, tft, panel, Color.BLACK);
+				tft[0].setFont(fontg);
+				tft[1].setFont(fontg);
+				tft[2].setFont(fontf);
+				tft[3].setFont(fontf);
+
+				displayRow(gbc, gbl, tft, panel, Color.BLACK);
+				
+				if (done)
+					break;
+				tft[0] = new JTextField("");
+				tft[1] = new JTextField("");
+			}
 		}
 
-		jdialog.add(panel);
+		//jsp.add(panel);
+		jdialog.add(jsp);		
 		jdialog.pack();
 		Point p = frame.getLocation();
 		jdialog.setLocation(p.x + 150, p.y + 50);
-		int height = 200 + properties.size() * 40;
-		jdialog.setSize(1200, height);
+		//int height = 200 + properties.size() * 40;
+		jdialog.setSize(1200, 800);
+		//jsp.setVisible(true); 
 		panel.setVisible(true);
 		jdialog.setVisible(true);
 		jdialog.toFront();
 		// jdialog.validate();
+		jsp.repaint();
 		panel.repaint();
 		jdialog.repaint();
 		frame.repaint();
@@ -2302,9 +2341,33 @@ void chooseFonts(MyFontChooser fontChooser){
 				String key = s.substring(i + 1, j);
 				s = s.substring(j + 1);
 				int k = s.indexOf("<");
+				String u = "";
 				if (k > 0) {
-					s = s.substring(0, k).trim();
-					properties.put(key, s);
+					if (!(key.equals("additionalJarFiles"))) {
+					    s = s.substring(0, k).trim();
+					    properties.put(key, s);
+					}
+					else {
+						s = s.substring(0, k).trim();
+						while (true) {
+							int m = s.indexOf(";");
+							if (m == -1){
+								u = s;
+								int n = u.indexOf(":");
+								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
+								jarFiles.put(u.substring(0, n), u.substring(n + 1));
+								break;
+							}
+							else {
+								u = s.substring(0, m);
+								s = s.substring(m + 1);	
+								int n = u.indexOf(":");
+								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
+								jarFiles.put(u.substring(0, n), u.substring(n + 1));
+								}							
+						}
+					}
+						
 				}
 			}
 
@@ -2328,6 +2391,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			out.write("<?xml version=\"1.0\"?> \n");
 			out.write("<properties> \n");
 			for (String k : properties.keySet()) {
+				if (k.startsWith("addnl_jf_"))
+					continue;
 				String s = "<" + k + "> " + properties.get(k) + "</" + k
 						+ "> \n";
 				out.write(s);
@@ -2347,33 +2412,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	
 	
-	/*
-	boolean chooseFontF() {
-		MyFontChooser fontChooser = new MyFontChooser(FontType.FIXED, frame,
-				this);
-		
-		String s = fontChooser.getResult();
-		if (s == null)
-			return false;
-		fixedFont = s;
-		// frame.repaint();
-		// repaint();
-		return true;
-	}
-	boolean chooseFontG() {
-		MyFontChooser fontChooser = new MyFontChooser(FontType.GENERAL, frame,
-				this);
-
-		
-		String s = fontChooser.getResult();
-		if (s == null)
-			return false;
-		generalFont = s;
-		// frame.repaint();
-		// repaint();
-		return true;
-	}
-	*/
+	
 
 	boolean getJavaFBPJarFile() {
 		if (javaFBPJarFile == null) {
@@ -2431,6 +2470,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			// diag.driver.currentDir = new File(cFile.getParent());
 			javaFBPJarFile = cFile.getAbsolutePath();
 			properties.put("javaFBPJarFile", javaFBPJarFile);
+			
 			propertiesChanged = true;
 			MyOptionPane.showMessageDialog(frame,
 					"JavaFBP jar file location: " + cFile.getAbsolutePath());
@@ -2480,9 +2520,25 @@ void chooseFonts(MyFontChooser fontChooser){
 						"Unable to read additional jar file " + cFile.getName());
 				return false;
 			}
-			// diag.driver.currentDir = new File(cFile.getParent());
+			
 			jarFiles.put(ans, cFile.getAbsolutePath());
-			//properties.put("javaFBPJarFile", javaFBPJarFile);
+			
+			@SuppressWarnings("rawtypes")
+			Iterator entries = jarFiles.entrySet().iterator();
+			String t = "";
+			String cma = ""; 
+			boolean first = true;
+			while (entries.hasNext()) {	
+				@SuppressWarnings("unchecked")	
+				Entry<String, String> thisEntry = (Entry<String, String>) entries.next();
+			    if (!first) {			       				
+			        t += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+			        cma = ";"; 
+			    }			    
+			    first = false;
+			}
+			properties.put("additionalJarFiles", t);
+			//propertyDescriptions.put("Additional JarFiles", "additionalJarFiles");
 			propertiesChanged = true;
 			
 		}
@@ -2990,9 +3046,12 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		private static final long serialVersionUID = 1L;
 
+		@SuppressWarnings("unchecked")
 		public void actionPerformed(ActionEvent e) {
 
 			boolean close = true;
+			
+			
 
 			for (int i = 0; i < jtp.getTabCount(); i++) {
 				ButtonTabComponent b = (ButtonTabComponent) jtp
@@ -3006,9 +3065,9 @@ void chooseFonts(MyFontChooser fontChooser){
 					}
 				}
 			}
-			if (propertiesChanged) {
+			//if (propertiesChanged) {
 				writePropertiesFile();
-			}
+			//}
 
 			if (close) {
 				frame.dispose();

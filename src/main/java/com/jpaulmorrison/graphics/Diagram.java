@@ -799,8 +799,7 @@ public class Diagram {
 		 */
 
 		Block block = new ProcessBlock(oldDiag);
-		// if (block.editDescription(DrawFBP.EDIT_NO_CANCEL)) {
-
+		
 		block.cx = oldDiag.xa;
 		block.cy = oldDiag.ya;
 		block.calcEdges();

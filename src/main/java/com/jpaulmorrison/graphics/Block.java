@@ -643,12 +643,23 @@ public class Block implements ActionListener {
 	}
 
 	@SuppressWarnings("resource")
-	Class<?> getSelectedClass(String jar, String jf) {
+	Class<?> getSelectedClass(String jar, String jf, boolean injar) {
 
 		if (jf.trim().equals("")) {
 			return null;
 		}
-		String fn = driver.javaFBPJarFile;
+				
+		//tentative...
+		String fn = "";
+		
+		if (injar) {
+		    fn = jar;
+		    if (fn.lastIndexOf("javafbp") == -1){
+		    	fn = driver.javaFBPJarFile;
+		    }
+		}
+		else
+			fn = driver.javaFBPJarFile;
 		
 		int j = fn.lastIndexOf("javafbp") + 8;
 		String seg = "engine.";
@@ -691,13 +702,15 @@ public class Block implements ActionListener {
 			jf = jf.replace('/', '.');
 			cls = this.classLoader.loadClass(jf);
 
-			if (cls.equals(compClass) || cls.equals(networkClass)
-					|| cls.equals(subnetClass)){
+			if (cls.getCanonicalName().equals(compClass.getCanonicalName()) || 
+					cls.getCanonicalName().equals(networkClass.getCanonicalName())
+					|| cls.getCanonicalName().equals(subnetClass.getCanonicalName())){
 					return null;
 			}
 
 			Class cs = cls.getSuperclass();
-			if (cs == null || !(cs == compClass  || cs == subnetClass)) {
+			if (cs == null || !(cs.getCanonicalName().equals(compClass.getCanonicalName())  ||
+					cs.getCanonicalName().equals(subnetClass.getCanonicalName()))) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Class file not a valid FBP component");				
 				return null;
@@ -1234,7 +1247,7 @@ public class Block implements ActionListener {
 					|| this instanceof ReportBlock
 					|| this instanceof LegendBlock) {
 				if (this instanceof ProcessBlock)
-					menuItem = new JMenuItem("Edit Process Name");
+					menuItem = new JMenuItem("Edit Process Name or Description");
 				else
 					menuItem = new JMenuItem("Edit Description");
 				menuItem.addActionListener(this);
@@ -1346,7 +1359,7 @@ public class Block implements ActionListener {
 		String s = e.getActionCommand();
 		diag.jpm = null;
 
-		if (s.equals("Edit Process Name") || s.equals("Edit Description")) {
+		if (s.equals("Edit Process Name or Description") || s.equals("Edit Description")) {
 
 			editDescription(DrawFBP.MODIFY);
 			return;
@@ -1655,13 +1668,7 @@ public class Block implements ActionListener {
 
 	boolean editDescription(int option) {
 
-		// copied from DrawFBP (keep in step):
-
-		// static final int EDIT_NO_CANCEL = 0;
-		// static final int REG_CREATE = 1;
-		// static final int MODIFY = 2;
-
-		final JTextArea area = new JTextArea(5, 4);
+		final JTextArea area = new JTextArea(4, 3);
 
 		area.setText(description);
 		area.setFont(driver.fontg);
@@ -1694,7 +1701,7 @@ public class Block implements ActionListener {
 		
 
 		int result = JOptionPane.showOptionDialog(driver.frame, new Object[]{
-				"Enter/change description or contents", pane}, init + t,
+				"Enter/change name or description", pane}, init + t,
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
 				null, null, null);
 		
@@ -1706,40 +1713,8 @@ public class Block implements ActionListener {
 		}
 
 		description = area.getText();
-		/*
-		if (!(description.equals("")) && type.equals(Types.PROCESS_BLOCK)) {
-			Pattern p = Pattern.compile("[_\\s\\p{N}\\p{L}]*",
-					Pattern.UNICODE_CASE | Pattern.CANON_EQ);
-			Matcher ma = p.matcher(description);
-			String s = "";
-			int i = 0;
-			while (ma.find(i)) {
-				s += ma.group();
-				if (ma.end() > description.length())
-					break;
-				i = ma.end() + 1;
-				if (i > description.length())
-					break;
-				s += "_";
-			}
-
-			if (!s.equals(description)) {
-				MyOptionPane
-						.showMessageDialog(
-								driver.frame,
-								"Invalid process name (only underscores, blanks, letters and numbers allowed):\n     "
-										+ description);
-				description = s;
-			}
-		}
-		*/
 
 		diag.changed = true;
-
-		// if (this instanceof LegendBlock) {
-		// lb = (LegendBlock) this;
-		// lb.setLegendSize();
-		// }
 
 		driver.frame.repaint();
 
@@ -1832,6 +1807,7 @@ public class Block implements ActionListener {
 
 			int returnVal = fc.showOpenDialog();
 
+			boolean injar = true;
 			File cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				String res = fc.getSelectedFile();
@@ -1864,9 +1840,10 @@ public class Block implements ActionListener {
 
 					// Create a new class loader with the directory
 					classLoader = new URLClassLoader(urls);
-					javaClass = getSelectedClass(res.substring(0, i), res2);
+					javaClass = getSelectedClass(res.substring(0, i), res2, injar);
 					fullClassName = res;
 				} else {
+					// we are looking in local class hierarchy (not a jar file)
 					String fs = res;					
 					
 					if (fs.endsWith("jar"))
@@ -1970,10 +1947,10 @@ public class Block implements ActionListener {
 									fp.getAbsolutePath());
 							driver.propertiesChanged = true;
 							fullClassName = fp.getAbsolutePath() + "!"
-									+ javaClass;
+									+ javaClass.getName();
 						}
 					}
-					javaClass = getSelectedClass(fp.getAbsolutePath(), javaClass.getName());  
+					javaClass = getSelectedClass(fp.getAbsolutePath(), javaClass.getName(), !injar);  
 				}
 			}
 		}
@@ -2018,50 +1995,49 @@ public class Block implements ActionListener {
 		
 				
 		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-				 "Edit arbitrary string or browse (enter # to browse)", "Enter/change source code name",
-				JOptionPane.PLAIN_MESSAGE, null, null, codeFileName);
-		
+				"Edit arbitrary string or browse (enter # to browse)",
+				"Enter/change source code name", JOptionPane.PLAIN_MESSAGE,
+				null, null, codeFileName);
+
 		if ((ans != null) && (ans.length() > 0)) {
 			codeFileName = ans.trim();
-			//javaClass = null;
+			// javaClass = null;
 			diag.changed = true;
 		}
-		
+
 		if (codeFileName.equals("#")) {
-		
-		String t = driver.properties.get(gl.srcDirProp);
-		if (t == null)
-			t = System.getProperty("user.home");
 
-		MyFileChooser fc = new MyFileChooser(new File(t),
-				diag.fCPArr[DrawFBP.PROCESS]);
+			String t = driver.properties.get(gl.srcDirProp);
+			if (t == null)
+				t = System.getProperty("user.home");
 
-		int returnVal = fc.showOpenDialog();
+			MyFileChooser fc = new MyFileChooser(new File(t),
+					diag.fCPArr[DrawFBP.PROCESS]);
 
-		File cFile = null;
-		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			int returnVal = fc.showOpenDialog();
 
-			cFile = new File(fc.getSelectedFile());
-			if (cFile == null || !(cFile.exists())) {				
-				if (JOptionPane.NO_OPTION == MyOptionPane
-						.showConfirmDialog(
-								driver.frame,
-								"You have entered a file name that does not exist - go ahead?",
-								"File does not exist", JOptionPane.YES_NO_OPTION)) {
-					return;
+			File cFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+
+				cFile = new File(fc.getSelectedFile());
+				if (cFile == null || !(cFile.exists())) {
+					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+							driver.frame,
+							"You have entered a file name that does not exist - go ahead?",
+							"File does not exist", JOptionPane.YES_NO_OPTION)) {
+						return;
+					}
+					codeFileName = fc.getSelectedFile();
+				} else {
+					codeFileName = cFile.getAbsolutePath();
+					driver.properties.put(gl.srcDirProp,
+							cFile.getParentFile().getAbsolutePath());
+					driver.propertiesChanged = true;
 				}
-				codeFileName = fc.getSelectedFile();
-			}	
-			else {			
-				codeFileName = cFile.getAbsolutePath();
-				driver.properties.put(gl.srcDirProp, cFile.getParentFile()
-					.getAbsolutePath());
-				driver.propertiesChanged = true;
-			}
 
+			}
 		}
-		}
-		
+
 	}
 
 	void showCode() {

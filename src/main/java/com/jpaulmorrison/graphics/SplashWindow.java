@@ -16,16 +16,19 @@ class SplashWindow extends JWindow {
 	static final long serialVersionUID = 111L;
 	static boolean READFILE = true;
 	
-	public SplashWindow(String filename, JFrame f, int waitTime,
+	public SplashWindow(JFrame f, int waitTime,
 			final DrawFBP driver, boolean small) {
 		super(f);
 		
 		Image i = null;
-								
-		BufferedImage image = driver.loadImage(filename);
+		String fn = "DrawFBP-logo.jpg";					
+		 
+		BufferedImage image = driver.loadImage(fn);
 		int x = image.getWidth();
 		int y = image.getHeight();
-		i = image.getScaledInstance(320, 320 * y / x, Image.SCALE_SMOOTH);
+		
+		int m = small ? 120 : 320;
+		i = image.getScaledInstance(m, m * y / x, Image.SCALE_SMOOTH);
 		
 		Container c = getContentPane();
 		ImageIcon icon = new ImageIcon(i);
@@ -34,16 +37,18 @@ class SplashWindow extends JWindow {
 		pack();
 		f.repaint();
 
-		Point p = new Point(100,100);
-		if (!small) {
-		    Dimension screenSize =
-		// Toolkit.getDefaultToolkit().getScreenSize();
-		        f.getSize();
-		    p = f.getLocation();
-
-		    Dimension labelSize = l.getPreferredSize();
+		Point p = f.getLocation();
+		Dimension labelSize = l.getPreferredSize();
+		Dimension screenSize = f.getSize();
+		if (small) {
+			//labelSize = new Dimension((int) (labelSize.width * .6), (int) (labelSize.height * .6));
+			p = new Point(p.x + 80, p.y + 120);
+			setLocation(p);
+			//l.setPreferredSize(labelSize);
+		} else {			
+		    		    
 		    setLocation(p.x + screenSize.width / 2 - (labelSize.width / 2),
-			    p.y + screenSize.height / 2 - (labelSize.height / 2) + 30);
+		    	p.y + screenSize.height / 2 - (labelSize.height / 2) + 30);
 		}
 
 		pack();
