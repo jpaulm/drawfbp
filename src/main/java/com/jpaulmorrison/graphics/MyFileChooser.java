@@ -282,6 +282,7 @@ public class MyFileChooser extends JFrame
 
 		// butNF.addActionListener(this);
 		box1.add(butNF);
+		box1.add(butOK);
 
 		box0.add(Box.createRigidArea(new Dimension(0, 20)));
 		box0.add(box1);
@@ -600,7 +601,7 @@ public class MyFileChooser extends JFrame
 
 		
 		// Collections.sort(ll2,String.CASE_INSENSITIVE_ORDER);  // try without sorting
-
+	
 		for (String li : ll2) {
 			ll.add(li);
 		}
@@ -942,7 +943,7 @@ public class MyFileChooser extends JFrame
 		public Component getListCellRendererComponent(
 				JList<? extends String> list, String value, int index,
 				boolean isSelected, boolean cellHasFocus) {
-			Color goldenrod = new Color(255, 255, 224);
+			Color goldenRod = new Color(255, 255, 224);
 			Color bisque = new Color(255, 228, 196);
 			String s = (String) value;
 			Icon icon = driver.leafIcon;
@@ -981,14 +982,14 @@ public class MyFileChooser extends JFrame
 			
 			else if (/*listHead.equals(listShowingJarFile)
 						&& */ s.toLowerCase().endsWith(".jar") || inJarTree)
-					jp.setBackground(bisque);
+					jp.setBackground(goldenRod);
 				else
 					jp.setBackground(vLightBlue);
 
 				if (isSelected) {
 					if (/*listHead.equals(listShowingJarFile)
 							&& */ s.toLowerCase().endsWith(".jar") || inJarTree)
-						jp.setBackground(goldenrod);
+						jp.setBackground(bisque);
 					else
 						jp.setBackground(lightBlue);
 					// System.out.println("Selected " + index);
@@ -1261,11 +1262,11 @@ public class MyFileChooser extends JFrame
 		} else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
 			shift = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			// if (selComp instanceof JList || selComp == text || selComp ==
-			// text2) {
+			 if (selComp instanceof JList || selComp == text || selComp ==
+			 text2) {
 
 			enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-			// }
+			 }
 		} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			// if (selComp instanceof JList) {
 
@@ -1429,14 +1430,14 @@ public class MyFileChooser extends JFrame
 				showList();
 				return;
 			}
-			if (selComp == text2) {
+			//if (selComp == text2) {
 				// fullNodeName = text.getText() + File.separator
 				// + text2.getText();
 				// if (!saveAs)
-				processOK();
-			}
+			//	processOK();
+			//}
 
-			if (!(selComp instanceof JList))
+			if (!((selComp instanceof JList) || selComp == text2))
 				return;
 
 			butNF.setEnabled(!inJarTree);

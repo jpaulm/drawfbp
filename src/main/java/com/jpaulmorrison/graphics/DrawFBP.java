@@ -735,9 +735,9 @@ public class DrawFBP extends JFrame
 			menuItem1.setEnabled(true); 
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
-		menuItem = new JMenuItem("Add Additional Run Time Jar File");
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		//menuItem = new JMenuItem("Add Additional Run Time Jar File");
+		//fileMenu.add(menuItem);
+		//menuItem.addActionListener(this);
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
 		fileMenu.add(menuItem);
@@ -2354,6 +2354,8 @@ void chooseFonts(MyFontChooser fontChooser){
 							if (m == -1){
 								u = s;
 								int n = u.indexOf(":");
+if (n == -1)
+break;
 								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
 								jarFiles.put(u.substring(0, n), u.substring(n + 1));
 								break;
@@ -2362,6 +2364,8 @@ void chooseFonts(MyFontChooser fontChooser){
 								u = s.substring(0, m);
 								s = s.substring(m + 1);	
 								int n = u.indexOf(":");
+if (n == -1)
+break;
 								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
 								jarFiles.put(u.substring(0, n), u.substring(n + 1));
 								}							
@@ -2391,13 +2395,27 @@ void chooseFonts(MyFontChooser fontChooser){
 			out.write("<?xml version=\"1.0\"?> \n");
 			out.write("<properties> \n");
 			for (String k : properties.keySet()) {
-				if (k.startsWith("addnl_jf_"))
+				if (k.startsWith("addnl_jf_") || k.startsWith("additionalJarFiles"))
 					continue;
 				String s = "<" + k + "> " + properties.get(k) + "</" + k
 						+ "> \n";
 				out.write(s);
 			}
-
+			Iterator entries = jarFiles.entrySet().iterator();
+			String z = "";
+			String cma = ""; 
+			boolean first = true;
+			while (entries.hasNext()) {	
+				@SuppressWarnings("unchecked")	
+				Entry<String, String> thisEntry = (Entry<String, String>) entries.next();
+			    if (!first) {			       				
+			        z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+			        cma = ";"; 
+			    }			    
+			    first = false;
+			}
+			String s = "<additionalJarFiles> " + z + "</additionalJarFiles> \n";
+			out.write(s);
 			out.write("</properties> \n");
 			// Close the BufferedWriter
 			out.flush();
