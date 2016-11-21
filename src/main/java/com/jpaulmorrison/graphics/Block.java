@@ -670,7 +670,7 @@ public class Block implements ActionListener {
 		    owner = "jpaulmorrison";
 		
 		Class<?> cls;
-		URLClassLoader classLoader = null;
+		/*URLClassLoader*/ classLoader = null;
 		try {	
 			
 			try {
