@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.jar.JarEntry;
@@ -599,8 +600,9 @@ public class MyFileChooser extends JFrame
 		if (ll2 == null)
 			return;
 
-		
-		// Collections.sort(ll2,String.CASE_INSENSITIVE_ORDER);  // try without sorting
+		//Collections.sort(ll2);
+		// Collections.sort(ll2,String.CASE_INSENSITIVE_ORDER);  // neither seem to work in Linux!
+		sortTo(ll2, ll);   // add elements of ll2 to ll in sorted order
 	
 		for (String li : ll2) {
 			ll.add(li);
@@ -926,6 +928,34 @@ public class MyFileChooser extends JFrame
 		}
 
 		return ll;
+	}
+	
+	void sortTo(LinkedList<String> from, LinkedList<String> to) {
+		if (from.isEmpty()) {
+			to = null;
+			return;
+		}
+		int low_x = 0;
+		LinkedList<String> lkl = new LinkedList<String>();
+		while (true) {
+			try {
+				String low = from.getFirst();
+				int i = 0;
+				for (String s : from) {
+					if (s.compareTo(low) == -1) {
+						low = s;
+						low_x = i;
+					}
+				}
+				lkl.add(low);
+				lkl.remove(low_x);
+				break;
+			}
+
+			catch (NoSuchElementException e) {
+				to = lkl;
+			}
+		}
 	}
 
 	class ListRenderer implements ListCellRenderer<String> {

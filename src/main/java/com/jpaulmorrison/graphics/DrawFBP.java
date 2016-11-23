@@ -341,8 +341,24 @@ public class DrawFBP extends JFrame
 		} else {
 			if (dcl.equals("NoFlo"))    // transitional!
 				dcl = "JSON";
-			defaultCompLang = findGLFromLabel(dcl);
+			defaultCompLang = findGLFromLabel(dcl);			
 		}
+
+		Iterator entries = jarFiles.entrySet().iterator();
+		String z = "";
+		String cma = "";
+		boolean first = true;
+		while (entries.hasNext()) {
+			@SuppressWarnings("unchecked")
+			Entry<String, String> thisEntry = (Entry<String, String>) entries
+					.next();
+			if (!first) {
+				z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+				cma = ";";
+			}
+			first = false;
+		}
+		properties.put("additionalJarFiles", z);
 
 		startProperties = new HashMap<String, String>();
 		for (String s : properties.keySet()) {
