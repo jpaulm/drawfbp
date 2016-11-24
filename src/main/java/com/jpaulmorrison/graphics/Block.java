@@ -504,13 +504,16 @@ public class Block implements ActionListener {
 
 	void loadClassFromJarFile() {
 
+		 
 		int i = fullClassName.indexOf("!");
 		String fn = fullClassName.substring(0, i);
+		String cn = fullClassName.substring(i + 1);
+		/*
 		int j = fn.lastIndexOf(File.separator);
 		if (j == -1)
 			j = fn.lastIndexOf("/");
 		String fns = fn.substring(j + 1);
-		String cn = fullClassName.substring(i + 1);
+		
 		// can't assume jar file was JavaFBP
 		String jfs = driver.javaFBPJarFile;
 		j = jfs.lastIndexOf(File.separator);
@@ -572,7 +575,7 @@ public class Block implements ActionListener {
 			}
 				
 		}
-
+*/
 		
 		try {
 			File jFile = new File(fn);
@@ -720,6 +723,8 @@ public class Block implements ActionListener {
 			try {
 				cls.getMethod("main", String[].class);
 			} catch (NoSuchMethodException e) {
+				mainPresent = false;
+			} catch (NoClassDefFoundError e) {
 				mainPresent = false;
 			} catch (SecurityException e2) {
 				mainPresent = false;
@@ -1931,6 +1936,8 @@ public class Block implements ActionListener {
 						try {
 							javaClass.getMethod("main", String[].class);
 						} catch (NoSuchMethodException e2) {
+							mainPresent = false;
+						} catch (NoClassDefFoundError e2) {
 							mainPresent = false;
 						} catch (SecurityException e2) {
 							mainPresent = false;

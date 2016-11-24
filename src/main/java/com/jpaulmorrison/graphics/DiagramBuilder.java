@@ -196,7 +196,7 @@ public class DiagramBuilder {
 						} else { // <xx> data </xx> 
 							saveData = new String(data);
 
-						if (endtag.equals("desc") || endtag.equals("description")) {
+						if (endtag.equals("desc") /* || endtag.equals("description") */) {
 							diag.desc = saveData;
 							diag.desc = diag.desc.replace('\n', ' ');
 							}

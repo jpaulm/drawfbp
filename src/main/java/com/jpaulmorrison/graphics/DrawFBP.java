@@ -341,8 +341,24 @@ public class DrawFBP extends JFrame
 		} else {
 			if (dcl.equals("NoFlo"))    // transitional!
 				dcl = "JSON";
-			defaultCompLang = findGLFromLabel(dcl);
+			defaultCompLang = findGLFromLabel(dcl);			
 		}
+
+		Iterator entries = jarFiles.entrySet().iterator();
+		String z = "";
+		String cma = "";
+		boolean first = true;
+		while (entries.hasNext()) {
+			@SuppressWarnings("unchecked")
+			Entry<String, String> thisEntry = (Entry<String, String>) entries
+					.next();
+			if (!first) {
+				z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+				cma = ";";
+			}
+			first = false;
+		}
+		properties.put("additionalJarFiles", z);
 
 		startProperties = new HashMap<String, String>();
 		for (String s : properties.keySet()) {
@@ -735,9 +751,9 @@ public class DrawFBP extends JFrame
 			menuItem1.setEnabled(true); 
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
-		//menuItem = new JMenuItem("Add Additional Run Time Jar File");
-		//fileMenu.add(menuItem);
-		//menuItem.addActionListener(this);
+		menuItem = new JMenuItem("Add Additional Run-Time Jar File");
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
 		fileMenu.add(menuItem);
@@ -1209,7 +1225,7 @@ public class DrawFBP extends JFrame
 			return;
 		}
 		
-		if (s.equals("Add Additional Run Time Jar File")) {
+		if (s.equals("Add Additional Run-Time Jar File")) {
 
 			addAdditionalJarFile();
 			return;
