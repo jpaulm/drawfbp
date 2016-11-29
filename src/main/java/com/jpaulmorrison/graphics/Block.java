@@ -198,7 +198,7 @@ public class Block implements ActionListener {
 			else if (fullClassName != null) {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
-				name = "Class not found - rechoose comp/subnet";
+				name = "Class not found or out of date - rechoose comp/subnet";
 				int x = cx - name.length() * driver.fontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
@@ -504,13 +504,18 @@ public class Block implements ActionListener {
 
 	void loadClassFromJarFile() {
 
+		 
 		int i = fullClassName.indexOf("!");
+		if (i == -1)
+			return;
 		String fn = fullClassName.substring(0, i);
+		String cn = fullClassName.substring(i + 1);
+		/*
 		int j = fn.lastIndexOf(File.separator);
 		if (j == -1)
 			j = fn.lastIndexOf("/");
 		String fns = fn.substring(j + 1);
-		String cn = fullClassName.substring(i + 1);
+		
 		// can't assume jar file was JavaFBP
 		String jfs = driver.javaFBPJarFile;
 		j = jfs.lastIndexOf(File.separator);
@@ -572,7 +577,7 @@ public class Block implements ActionListener {
 			}
 				
 		}
-
+*/
 		
 		try {
 			File jFile = new File(fn);
@@ -595,6 +600,8 @@ public class Block implements ActionListener {
 	void loadClassFromFile() {
 
 		int i = fullClassName.indexOf("!");
+		if (i == -1)
+			return;
 		String fn = fullClassName.substring(0, i);  // jar file name, if any
 		String cn = fullClassName.substring(i + 1);  // class name
 
@@ -670,7 +677,11 @@ public class Block implements ActionListener {
 		    owner = "jpaulmorrison";
 		
 		Class<?> cls;
-		/*URLClassLoader*/ classLoader = null;
+
+		
+		/*
+		URLClassLoader classLoader = null;  // local URLClassLoader
+
 		try {	
 			
 			try {
@@ -686,7 +697,9 @@ public class Block implements ActionListener {
 				e.printStackTrace();
 				return null;
 			}
+			*/
 			
+		try {
 			Class<?> compClass = classLoader
 					.loadClass("com." + owner + ".fbp." + seg + "Component");
 
@@ -720,6 +733,8 @@ public class Block implements ActionListener {
 			try {
 				cls.getMethod("main", String[].class);
 			} catch (NoSuchMethodException e) {
+				mainPresent = false;
+			} catch (NoClassDefFoundError e) {
 				mainPresent = false;
 			} catch (SecurityException e2) {
 				mainPresent = false;
@@ -1061,23 +1076,27 @@ public class Block implements ActionListener {
 		//jdialog.pack();
 		
 		Point p = driver.frame.getLocation();
-		//Dimension dim = driver.frame.getSize();
+		Dimension dim = driver.frame.getSize();
 		int x_off = 100;
 		int y_off = 100;
-		//jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
+		jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
 		jdialog.pack();
-		jdialog.setLocation(p.x + x_off, p.y + y_off);
+		int height = 200 + inputPortAttrs.size() * 40 + outputPortAttrs.size() * 40;
+		int width = (int)jdialog.getPreferredSize().getWidth();
+		 
+		jdialog.setLocation(p.x + dim.width - width, p.y + dim.height - height - y_off);
 		 
 		//int x1 = driver.frame.getX() + driver.frame.getWidth()
 		//		- jdialog.getWidth();
 		//x1 = Math.min(cx + 50, x1);
 		//jdialog.setLocation(x1, cy + 50);
-		int height = 200 + inputPortAttrs.size() * 40 + outputPortAttrs.size()
-				* 40;
+		
 		jdialog.setSize(800, height);
 		panel.setVisible(true);
 		jdialog.setVisible(true);
 		jdialog.toFront();
+		//jdialog.setPreferredSize(new Dimension(dim.width / 2, dim.height / 2));
+		//jdialog.pack();
 		// jdialog.validate();
 		panel.repaint();
 		jdialog.repaint();
@@ -1777,6 +1796,9 @@ public class Block implements ActionListener {
 		return;
 	}
 		*/
+		
+		String oldFullClassName = fullClassName;
+		
 		if (javaClass != null) {
 			if (JOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame, "Block already associated with class ("
@@ -1784,8 +1806,8 @@ public class Block implements ActionListener {
 					"Change class", JOptionPane.YES_NO_OPTION)) {
 				return;
 			}
-			javaClass = null;
-			fullClassName = null;
+			//javaClass = null;
+			//fullClassName = null;
 		}
 
 		if (!driver.getJavaFBPJarFile()){
@@ -1796,7 +1818,7 @@ public class Block implements ActionListener {
 			return;
 		}
 
-		if (javaClass == null) {
+		//if (javaClass == null) {
 
 			String t = driver.properties.get("currentClassDir");
 			if (t == null)
@@ -1818,13 +1840,17 @@ public class Block implements ActionListener {
 					res2 = res2.replace('/', '.');
 					res = res.substring(0, i) + "!" + res2;
 					
-					// get jar files from list - first one is
-					// JavaFBPJarFile
+					// get jar files from list
 					
 					LinkedList<URL> ll = new LinkedList<URL>();
 					File fx = null;
 					URI uri;
 					URL url;
+					
+					fx = new File(driver.javaFBPJarFile);
+					uri = fx.toURI();
+					url = uri.toURL();
+					ll.add(url);
 					
 					for (String jfv : driver.jarFiles.values()){
 						fx = new File(jfv);
@@ -1833,9 +1859,7 @@ public class Block implements ActionListener {
 						ll.add(url);
 					}						
 
-			        //URL[] urls = (URL[]) ll.toArray();
 			        
-			        //as per http://stackoverflow.com/questions/5690351/java-stringlist-toarray-gives-classcastexception 
 					URL[] urls = ll.toArray(new URL[ll.size()]); 
 
 					// Create a new class loader with the directory
@@ -1881,8 +1905,12 @@ public class Block implements ActionListener {
 							URL url = uri.toURL();
 							ll.add(url);
 							
-							// get jar files from list - first one is
-							// JavaFBPJarFile
+							// get jar files from list
+							
+							fx = new File(driver.javaFBPJarFile);
+							uri = fx.toURI();
+							url = uri.toURL();
+							ll.add(url);
 							
 							for (String jfv : driver.jarFiles.values()){
 								fx = new File(jfv);
@@ -1891,9 +1919,7 @@ public class Block implements ActionListener {
 								ll.add(url);
 							}						
 
-					        //URL[] urls = (URL[]) ll.toArray();
-					        
-					        //as per http://stackoverflow.com/questions/5690351/java-stringlist-toarray-gives-classcastexception 
+					         
 							URL[] urls = ll.toArray(new URL[ll.size()]); 
 
 							// Create a new class loader with the directory
@@ -1927,10 +1953,13 @@ public class Block implements ActionListener {
 					}
 
 					else {
+						/*
 						boolean mainPresent = true;
 						try {
 							javaClass.getMethod("main", String[].class);
 						} catch (NoSuchMethodException e2) {
+							mainPresent = false;
+						} catch (NoClassDefFoundError e2) {
 							mainPresent = false;
 						} catch (SecurityException e2) {
 							mainPresent = false;
@@ -1943,23 +1972,25 @@ public class Block implements ActionListener {
 							javaClass = null;
 							fullClassName = null;
 						} else {
+							*/
 							driver.properties.put("currentClassDir",
 									fp.getAbsolutePath());
 							driver.propertiesChanged = true;
 							fullClassName = fp.getAbsolutePath() + "!"
 									+ javaClass.getName();
-						}
-					}
+						 
+					 
 					javaClass = getSelectedClass(fp.getAbsolutePath(), javaClass.getName(), !injar);  
 				}
+				}
 			}
-		}
+		 
 
 		if (javaClass == null) {
 			MyOptionPane.showMessageDialog(driver.frame, "No class selected");
 		} else {
-			//buildMetadata();
-			displayPortInfo();
+			if (!fullClassName.equals(oldFullClassName))
+			    displayPortInfo();
 			diag.changed = true;
 			// diag.changeCompLang();
 		}

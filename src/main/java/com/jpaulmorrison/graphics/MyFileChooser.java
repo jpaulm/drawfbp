@@ -552,6 +552,7 @@ public class MyFileChooser extends JFrame
 					return;
 
 				String[] fl = f.list();
+				
 				ll2 = new LinkedList<String>();
 				if (fl == null || fl.length == 0) {
 					ll2.add("(empty folder)");
@@ -562,8 +563,12 @@ public class MyFileChooser extends JFrame
 						if (!fx.exists())
 							continue;
 						if (fx.isDirectory())
-							ll.add(fl[j]); // directories go into ll first
+							ll2.add(fl[j]); // directories go into ll first
+						
 					}
+					ll = sortTo(ll2);  // add elements of ll2 to ll in sorted order
+					
+					ll2 = new LinkedList<String>(); 
 
 					for (int j = 0; j < fl.length; j++) {
 						String fn = s + File.separator + fl[j];
@@ -574,9 +579,11 @@ public class MyFileChooser extends JFrame
 								&& (fCParms.filter.accept(fx) || driver.allFiles))
 							ll2.add(fl[j]); // non-directories go into ll2,
 											// which is
-											// then sorted, and then added
-											// to ll
+											// then sorted into ll
+											
 					}
+					
+		 			ll.addAll(sortTo(ll2));   // add elements of ll2 to end of ll in sorted order
 				}
 
 			} else {
@@ -585,33 +592,40 @@ public class MyFileChooser extends JFrame
 				if (currentNode == null)
 					return;
 
-				Enumeration<DefaultMutableTreeNode> e = currentNode.children();
-
 				ll = new LinkedList<String>();
 
 				ll2 = new LinkedList<String>();
+				
+				Enumeration<DefaultMutableTreeNode> e = currentNode.children();
 				while (e.hasMoreElements()) {
 					DefaultMutableTreeNode node = (e.nextElement());
-					Object obj = node.getUserObject();
-					ll2.add((String) obj);
+					String t = (String) node.getUserObject();
+					File f = new File(t);
+					if (f.isDirectory())
+					    ll2.add((String) t);
 				}
+				ll = sortTo(ll2);
+				
+				ll2 = new LinkedList<String>();
+				e = currentNode.children();
+				while (e.hasMoreElements()) {
+					DefaultMutableTreeNode node = (e.nextElement());
+					String t = (String) node.getUserObject();
+					File f = new File(t);
+					if (!(f.isDirectory()))
+					    ll2.add((String) t);
+				}
+				ll.addAll(sortTo(ll2));   // add elements of ll2 to end of ll in sorted order
 			}
 		}
-		if (ll2 == null)
+		if (ll == null)
 			return;
 
-		//Collections.sort(ll2);
-		// Collections.sort(ll2,String.CASE_INSENSITIVE_ORDER);  // neither seem to work in Linux!
-		sortTo(ll2, ll);   // add elements of ll2 to ll in sorted order
-	
-		for (String li : ll2) {
-			ll.add(li);
-		}
 
 		if (!inJarTree) {
 			if (listHead.equals(listShowingJarFile)) {
-				//s = driver.javaFBPJarFile;				
-				//ll.add(s);
+				s = driver.javaFBPJarFile;				
+				ll.add(s);
 				for (String t : driver.jarFiles.values()){
 					ll.add(t);
 				}
@@ -930,10 +944,11 @@ public class MyFileChooser extends JFrame
 		return ll;
 	}
 	
-	void sortTo(LinkedList<String> from, LinkedList<String> to) {
+
+	LinkedList<String> sortTo(LinkedList<String> from) {
 		if (from.isEmpty()) {
-			to = null;
-			return;
+			return new LinkedList<String>();
+
 		}
 		int low_x = 0;
 		LinkedList<String> lkl = new LinkedList<String>();
@@ -942,18 +957,21 @@ public class MyFileChooser extends JFrame
 				String low = from.getFirst();
 				int i = 0;
 				for (String s : from) {
-					if (s.compareTo(low) == -1) {
+
+					if (s.compareToIgnoreCase(low) == -1) {
+
 						low = s;
 						low_x = i;
 					}
 				}
 				lkl.add(low);
-				lkl.remove(low_x);
-				break;
+
+				from.remove(low_x);				
 			}
 
 			catch (NoSuchElementException e) {
-				to = lkl;
+				return lkl;				
+
 			}
 		}
 	}
