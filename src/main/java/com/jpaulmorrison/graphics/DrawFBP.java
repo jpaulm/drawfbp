@@ -161,6 +161,7 @@ public class DrawFBP extends JFrame
 	int panX, panY;
 	Cursor openPawCursor = null;
 	Cursor closedPawCursor = null;
+	Cursor drag_icon = null;
 	String blockNames[] = {"Process", "File", "Report", "Ext Port - In",
 			"Ext Port - Out", "Ext Port - Out/In", "Initial IP", "Legend",
 			"Person", "Enclosure"};
@@ -347,16 +348,15 @@ public class DrawFBP extends JFrame
 		Iterator entries = jarFiles.entrySet().iterator();
 		String z = "";
 		String cma = "";
-		boolean first = true;
+		
 		while (entries.hasNext()) {
 			@SuppressWarnings("unchecked")
 			Entry<String, String> thisEntry = (Entry<String, String>) entries
 					.next();
-			if (!first) {
+			
 				z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
 				cma = ";";
-			}
-			first = false;
+			
 		}
 		properties.put("additionalJarFiles", z);
 
@@ -623,7 +623,10 @@ public class DrawFBP extends JFrame
 		image = loadImage("closed_paw.gif");
 		closedPawCursor = tk
 				.createCustomCursor(image, new Point(15, 15), "Paw");
-
+		
+		image = loadImage("drag_icon.gif");
+		drag_icon = tk.createCustomCursor(image, new Point(15, 15), "Drag"); 
+		
 	}
 	
 	BufferedImage loadImage(String s) {
@@ -2133,12 +2136,12 @@ public class DrawFBP extends JFrame
 		int m = 0;
 
 		while (true) {
-			if (cur.substring(k, k + 3).equals("../")) {
+			if (cur.length() >= 3 && cur.substring(k, k + 3).equals("../")) {
 				k += 3;
 				m++;
 				continue;
 			}
-			if (cur.substring(k, k + 2).equals("./")) {
+			if (cur.length() >= 2 && cur.substring(k, k + 2).equals("./")) {
 				k += 2;
 				m++;
 				continue;
@@ -2370,8 +2373,8 @@ void chooseFonts(MyFontChooser fontChooser){
 							if (m == -1){
 								u = s;
 								int n = u.indexOf(":");
-if (n == -1)
-break;
+								if (n == -1)
+									break;
 								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
 								jarFiles.put(u.substring(0, n), u.substring(n + 1));
 								break;
@@ -2380,8 +2383,8 @@ break;
 								u = s.substring(0, m);
 								s = s.substring(m + 1);	
 								int n = u.indexOf(":");
-if (n == -1)
-break;
+								if (n == -1)
+									break;
 								properties.put("addnl_jf_" + u.substring(0, n), u.substring(n + 1));
 								jarFiles.put(u.substring(0, n), u.substring(n + 1));
 								}							
@@ -2420,15 +2423,15 @@ break;
 			Iterator entries = jarFiles.entrySet().iterator();
 			String z = "";
 			String cma = ""; 
-			boolean first = true;
+			
 			while (entries.hasNext()) {	
 				@SuppressWarnings("unchecked")	
 				Entry<String, String> thisEntry = (Entry<String, String>) entries.next();
-			    if (!first) {			       				
+				
+			    			     				
 			        z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
 			        cma = ";"; 
-			    }			    
-			    first = false;
+			    		
 			}
 			String s = "<additionalJarFiles> " + z + "</additionalJarFiles> \n";
 			out.write(s);
@@ -2459,7 +2462,7 @@ break;
 			jf = new File(javaFBPJarFile);
 		}
 		if (jf != null && jf.exists()) {
-			jarFiles.put("JavaFBP Jar File", jf.getAbsolutePath());
+			//jarFiles.put("JavaFBP Jar File", jf.getAbsolutePath());
 			return res;
 		}
 
@@ -2508,7 +2511,7 @@ break;
 			propertiesChanged = true;
 			MyOptionPane.showMessageDialog(frame,
 					"JavaFBP jar file location: " + cFile.getAbsolutePath());
-			jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
+			//jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
 			for (int i = 0; i < driver.jtp.getTabCount(); i++) {
 				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
 						.getTabComponentAt(i);
@@ -2561,15 +2564,14 @@ break;
 			Iterator entries = jarFiles.entrySet().iterator();
 			String t = "";
 			String cma = ""; 
-			boolean first = true;
+			
 			while (entries.hasNext()) {	
 				@SuppressWarnings("unchecked")	
 				Entry<String, String> thisEntry = (Entry<String, String>) entries.next();
-			    if (!first) {			       				
+			    			       				
 			        t += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
 			        cma = ";"; 
-			    }			    
-			    first = false;
+			    
 			}
 			properties.put("additionalJarFiles", t);
 			//propertyDescriptions.put("Additional JarFiles", "additionalJarFiles");
@@ -3353,22 +3355,16 @@ break;
 		}
 
 	}
-	
+	/*
 	public class MyClassLoader extends URLClassLoader{  
 		   
-	    /** 
-	     * @param urls  to carry forward the existing classpath. 
-	     * 
-	     * Thanks to http://www.coderanch.com/t/384068/java/java/Adding-JAR-file-Classpath-Runtime
-	     */  
+	     
 	    public MyClassLoader(URL[] urls) {  
 	        super(urls);  
 	    }  
 	      
 	    @Override  
-	    /** 
-	     * add classpath to the loader. 
-	     */  
+	     
 	    public void addURL(URL url) {  
 	        super.addURL(url);  
 	    }  
@@ -3383,6 +3379,8 @@ break;
 	    
 	    	   
 	}  
+	
+	*/
 
 	public class SelectionArea extends JComponent implements MouseInputListener {
 		static final long serialVersionUID = 111L;
@@ -3579,7 +3577,12 @@ break;
 				if (between(xa, block.leftEdge - 6, block.rgtEdge + 6)
 						&& between(ya, block.topEdge - 6, block.botEdge + 6)) {
 					selBlock = block;
-
+					if (between(xa, block.leftEdge + 4 * scalingFactor,
+							block.rgtEdge - 4 * scalingFactor)
+							&& between(ya, block.topEdge + 4 * scalingFactor,
+									block.botEdge - 4 * scalingFactor)) {
+						//frame.setCursor(drag_icon);
+					}
 					break;
 				}
 
@@ -3718,6 +3721,7 @@ break;
 						oldoldy = oldy = ya;
 						blockSelForDragging = block;
 						// displayAlignmentLines(block);
+						//frame.setCursor(drag_icon);
 						break;
 					}
 				}

@@ -624,8 +624,8 @@ public class MyFileChooser extends JFrame
 		
 		if (!inJarTree) {
 			if (listHead.equals(listShowingJarFile)) {
-				//s = driver.javaFBPJarFile;				
-				//ll.add(s);
+				s = driver.javaFBPJarFile;				
+				ll.add(s);
 				for (String t : driver.jarFiles.values()){
 					ll.add(t);
 				}
@@ -955,7 +955,7 @@ public class MyFileChooser extends JFrame
 				String low = from.getFirst();
 				int i = 0;
 				for (String s : from) {
-					if (s.compareTo(low) == -1) {
+					if (s.compareToIgnoreCase(low) == -1) {
 						low = s;
 						low_x = i;
 					}
