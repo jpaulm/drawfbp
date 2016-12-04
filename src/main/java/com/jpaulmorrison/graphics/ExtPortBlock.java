@@ -63,7 +63,7 @@ public class ExtPortBlock extends Block {
 		pty[6] = top + 6;
 		g.setColor(Color.BLACK);
 		g.drawPolygon(ptx, pty, 7);
-		if (this == driver.selBlockP)
+		if (this == driver.selBlock)
 			g.setColor(new Color(255, 255, 200)); // light yellow
 		else
 			g.setColor(new Color(200, 255, 255)); // light turquoise
@@ -123,7 +123,7 @@ public class ExtPortBlock extends Block {
 		pty[6] = top;
 		g.setColor(Color.BLACK);
 		g.drawPolygon(ptx, pty, 7);
-		if (this == driver.selBlockP)
+		if (this == driver.selBlock)
 			g.setColor(new Color(255, 255, 200)); // light yellow
 		else
 			g.setColor(new Color(200, 255, 255)); // light turquoise

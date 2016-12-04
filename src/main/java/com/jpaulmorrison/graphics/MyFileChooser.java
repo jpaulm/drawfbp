@@ -548,6 +548,9 @@ public class MyFileChooser extends JFrame
 				if (listHead == null)
 					return;
 				File f = new File(listHead);
+				String t = f.getAbsolutePath();
+				if (t.endsWith("My Documents"))
+					f = new File(t.replace("My Documents", "Documents"));
 				if (!f.exists() || !f.isDirectory())
 					return;
 
@@ -566,9 +569,9 @@ public class MyFileChooser extends JFrame
 							ll2.add(fl[j]); // directories go into ll first
 						
 					}
-					ll = sortTo(ll2);  // add elements of ll2 to ll in sorted order
+					ll = mySort(ll2);  // add elements of ll2 to ll in sorted order
 					
-					ll2 = new LinkedList<String>(); 
+					ll2.clear(); 
 
 					for (int j = 0; j < fl.length; j++) {
 						String fn = s + File.separator + fl[j];
@@ -583,7 +586,7 @@ public class MyFileChooser extends JFrame
 											
 					}
 					
-		 			ll.addAll(sortTo(ll2));   // add elements of ll2 to end of ll in sorted order
+		 			ll.addAll(mySort(ll2));   // add elements of ll2 to end of ll in sorted order
 				}
 
 			} else {
@@ -604,9 +607,9 @@ public class MyFileChooser extends JFrame
 					if (f.isDirectory())
 					    ll2.add((String) t);
 				}
-				ll = sortTo(ll2);
+				ll = mySort(ll2);
 				
-				ll2 = new LinkedList<String>();
+				ll2.clear();
 				e = currentNode.children();
 				while (e.hasMoreElements()) {
 					DefaultMutableTreeNode node = (e.nextElement());
@@ -615,11 +618,11 @@ public class MyFileChooser extends JFrame
 					if (!(f.isDirectory()))
 					    ll2.add((String) t);
 				}
-				ll.addAll(sortTo(ll2));   // add elements of ll2 to end of ll in sorted order
+				ll.addAll(mySort(ll2));   // add elements of ll2 to end of ll in sorted order
 			}
 		}
-		if (ll == null)
-			return;
+		//if (ll == null)
+		//	return;
 
 
 		if (!inJarTree) {
@@ -945,7 +948,7 @@ public class MyFileChooser extends JFrame
 	}
 	
 
-	LinkedList<String> sortTo(LinkedList<String> from) {
+	LinkedList<String> mySort(LinkedList<String> from) {
 		if (from.isEmpty()) {
 			return new LinkedList<String>();
 

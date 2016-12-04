@@ -92,7 +92,7 @@ public class Arrow implements ActionListener {
 		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
 
 		if (toX == -1) {
-		 g.drawRect(fromX - 3, fromY - 3, 6, 6);
+		 //g.drawRect(fromX - 3, fromY - 3, 6, 6);
 		 return;
 		 }
 /*
@@ -119,7 +119,7 @@ public class Arrow implements ActionListener {
 		}
 		*/
 
-		if (driver.selArrowP == this)
+		if (driver.selArrow == this)
 			g.setColor(Color.BLUE);
 		else if ((from instanceof ProcessBlock
 				|| from instanceof ExtPortBlock || from instanceof Enclosure)
@@ -205,8 +205,8 @@ public class Arrow implements ActionListener {
 		calcLimits(fx, x, fy, toY);
 
 		if (!endsAtBlock && !endsAtLine) {
-			g.drawRect(fromX - 3, fromY - 3, 6, 6);
-			g.drawRect(x - 3, toY - 3, 6, 6);
+			//g.drawRect(fromX - 3, fromY - 3, 6, 6);
+			//g.drawRect(x - 3, toY - 3, 6, 6);
 		} else if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
 					from instanceof IIPBlock) && to != null && (to instanceof ProcessBlock

@@ -15,7 +15,10 @@ public class LegendBlock extends Block {
 
 	@Override
 	void draw(Graphics2D g) {
-		
+		if (!visible && this != driver.selBlock) {
+			showZones(g);
+			return;
+		}
 		
 		if (description != null && !(description.trim().equals(""))) {
 			g.setColor(Color.BLACK);
@@ -23,19 +26,23 @@ public class LegendBlock extends Block {
 			//drawDesc(g);	
 			centreDesc(g);
 		}
+		 
 		else {
 			width = 40;
 			height = 15;
 			showArrowEndAreas(g);
 		}
+		 
 		// g.setColor(Color.BLACK);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy
 				+ height / 2);
 		
-		if (this == driver.selBlock) {
+		 
+		if (this == driver.selBlockM) {
 			showZones(g);
 			//return;
-		}		
+		}
+		 
 	}
 	
 	/*

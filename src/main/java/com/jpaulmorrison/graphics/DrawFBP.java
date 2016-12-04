@@ -72,9 +72,9 @@ public class DrawFBP extends JFrame
 	String javaFBPJarFile = null;
 	String jhallJarFile = null;
 
-	Block selBlock = null;  // used only when mousing over 
-	Block selBlockP = null; // permanent select
-	Arrow selArrowP = null; // permanent select
+	Block selBlockM = null;  // used only when mousing over 
+	Block selBlock = null; // permanent select
+	Arrow selArrow = null; // permanent select
 	String generalFont = null;
 	String fixedFont = null;
 	Font fontf = null;
@@ -161,7 +161,7 @@ public class DrawFBP extends JFrame
 	int panX, panY;
 	Cursor openPawCursor = null;
 	Cursor closedPawCursor = null;
-	//Cursor drag_icon = null;
+	Cursor drag_icon = null;
 	String blockNames[] = {"Process", "File", "Report", "Ext Port - In",
 			"Ext Port - Out", "Ext Port - Out/In", "Initial IP", "Legend",
 			"Person", "Enclosure"};
@@ -211,15 +211,10 @@ public class DrawFBP extends JFrame
 	static enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
 	}
-	static boolean READFILE = true;
+	//static boolean READFILE = true;
 	
-	//int oldW, oldH;
-
-	//static enum FontType {
-	//	FIXED, GENERAL
-	//}
-
-	//ComponentOrientation orientation = ComponentOrientation.LEFT_TO_RIGHT;
+	Cursor defaultCursor = null;
+	boolean use_drag_icon = false;
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -300,7 +295,8 @@ public class DrawFBP extends JFrame
 		// frame = new JFrame("DrawFBP Diagram Generator");
 		frame.setUndecorated(false); // can't change size of JFrame title,
 										// though!
-		frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
+		frame.setCursor(defaultCursor);
 
 		applyOrientation(frame);
 
@@ -626,8 +622,9 @@ public class DrawFBP extends JFrame
 		closedPawCursor = tk
 				.createCustomCursor(image, new Point(15, 15), "Paw");
 		
-		//image = loadImage("drag_icon.gif");
-		//drag_icon = tk.createCustomCursor(image, new Point(15, 15), "Drag"); 
+		//image = loadImage("drag_icon2.gif");
+		image = loadImage("drag_icon.gif");
+		drag_icon = tk.createCustomCursor(image, new Point(15, 15), "Drag"); 
 		
 	}
 	
@@ -1280,15 +1277,11 @@ public class DrawFBP extends JFrame
 		}
 		if (s.equals("Toggle Pan Switch")) {
 			panSwitch = !panSwitch;
-			if (panSwitch) {
+			if (panSwitch)  
 				frame.setCursor(openPawCursor);
-			} else {
-				frame.setCursor(Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			}
-
+			else 
+				frame.setCursor(defaultCursor);	
 			return;
-
 		}
 		if (s.equals("Export Image")) {
 
@@ -1438,10 +1431,8 @@ public class DrawFBP extends JFrame
 														+ "Use File/Locate DrawFBP Help File, and try Help again");
 								return;
 							}
-							try {
-								URI uri = jFile.toURI();
-								URL url = uri.toURL();
-								URL[] urls = new URL[]{url};
+							try {								
+								URL[] urls = new URL[]{jFile.toURI().toURL()};
 
 								// Create a new class loader with the directory
 								cl = new URLClassLoader(urls, this.getClass()
@@ -1456,7 +1447,7 @@ public class DrawFBP extends JFrame
 
 							if (helpSetClass == null) {
 								MyOptionPane.showMessageDialog(frame,
-										"HelpSet class not found in jar file");
+										"HelpSet class not found in jar file or invalid");
 								return;
 							}
 
@@ -1626,19 +1617,20 @@ public class DrawFBP extends JFrame
 
 		}
 		if (s.equals("Block-related Actions")) {
-			Block b = selBlockP;
+			Block b = selBlock;
 			if (b == null) {
 				MyOptionPane.showMessageDialog(frame, "Block not selected");
 				return;
 			}
 			b.buildBlockPopupMenu();
+			use_drag_icon = false;
 			curDiag.jpm.show(frame, curDiag.xa + 100, curDiag.ya + 100);
 			frame.repaint();
 			return;
 
 		}
 		if (s.equals("Arrow-related Actions")) {
-			Arrow a = selArrowP;
+			Arrow a = selArrow;
 			if (a == null) {
 				MyOptionPane.showMessageDialog(frame, "Arrow not selected");
 				return;
@@ -1801,7 +1793,7 @@ public class DrawFBP extends JFrame
 		block.id = curDiag.maxBlockNo;
 		curDiag.blocks.put(new Integer(block.id), block);
 		curDiag.changed = true;
-		selBlockP = block;
+		selBlock = block;
 		// selArrowP = null;
 		return block;
 	}
@@ -3365,32 +3357,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 
 	}
-	/*
-	public class MyClassLoader extends URLClassLoader{  
-		   
-	     
-	    public MyClassLoader(URL[] urls) {  
-	        super(urls);  
-	    }  
-	      
-	    @Override  
-	     
-	    public void addURL(URL url) {  
-	        super.addURL(url);  
-	    }  
-	   
-	    public Class<?> loadClass(String s) throws ClassNotFoundException {
-	    	return super.loadClass(s);
-	    }
-	    
-	    protected Class<?> findClass(String s) throws ClassNotFoundException {
-	    	return super.findClass(s);
-	    }
-	    
-	    	   
-	}  
 	
-	*/
 
 	public class SelectionArea extends JComponent implements MouseInputListener {
 		static final long serialVersionUID = 111L;
@@ -3487,7 +3454,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (!(between(ya, block.topEdge - 4 * scalingFactor, block.botEdge + 4 * scalingFactor)))
 					continue;
 				
-				/* check for ends of arrows */
+				/* check for possible start of arrows */
 				if (between(xa, block.leftEdge - 6 * scalingFactor,
 						block.leftEdge + 6 * scalingFactor)
 						&& between(ya, block.topEdge, block.botEdge)) {
@@ -3495,7 +3462,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					break;
 				}
 
-				else
+				
 					if (between(xa, block.rgtEdge - 6 * scalingFactor,
 							block.rgtEdge + 6 * scalingFactor)
 							&& between(ya, block.topEdge, block.botEdge)) {
@@ -3503,22 +3470,20 @@ void chooseFonts(MyFontChooser fontChooser){
 					break;
 				}
 
-				else
+				
 						if (between(ya, block.topEdge - 4 * scalingFactor,
 								block.topEdge + 4 * scalingFactor)
 								&& between(xa, block.leftEdge, block.rgtEdge)) {
 					fp = new FoundPoint(xa, block.topEdge, Side.TOP, block);
 					break;
-				} else
+				} 
 							if (between(ya, block.botEdge - 4 * scalingFactor,
 									block.botEdge + 4 * scalingFactor)
 									&& between(xa, block.leftEdge,
 											block.rgtEdge)) {
 					fp = new FoundPoint(xa, block.botEdge, Side.BOTTOM, block);
 					break;
-				}
-				// else if (fp != null)
-				// break;
+				}				
 			}
 			return fp;
 		}
@@ -3536,11 +3501,14 @@ void chooseFonts(MyFontChooser fontChooser){
 			Rectangle r3 = new Rectangle(r2.x, r2.y - r.height, r2.width,
 					r2.height - r.height);
 
-			if (r3.contains(x, y) && panSwitch)
-				frame.setCursor(openPawCursor);
-			else
-				frame.setCursor(Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			if (r3.contains(x, y)) 
+				if (panSwitch)			 
+				    frame.setCursor(openPawCursor);
+			    else 
+			    	if (use_drag_icon)
+			    		frame.setCursor(drag_icon);
+			    	else
+			    		frame.setCursor(defaultCursor);
 
 			Point p = new Point(x, y);
 			p = gridAlign(p);
@@ -3553,7 +3521,9 @@ void chooseFonts(MyFontChooser fontChooser){
 				repaint();
 				return;
 			}
-			selBlock = null;
+			
+				
+			selBlockM = null;
 			// look for corner of an enclosure
 			for (Block block : curDiag.blocks.values()) {
 				// block.calcEdges();
@@ -3565,18 +3535,21 @@ void chooseFonts(MyFontChooser fontChooser){
 						enclSelForArrow = enc;
 						enc.corner = Corner.TOPLEFT;
 						break;
-					} else if (between(xa, block.leftEdge - 6,
+					} 
+					if (between(xa, block.leftEdge - 6,
 							block.leftEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.BOTTOMLEFT;
 						break;
-					} else if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
+					}  
+					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
 							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.TOPRIGHT;
 						break;
-					} else if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
+					} 
+					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.BOTTOMRIGHT;
@@ -3585,21 +3558,35 @@ void chooseFonts(MyFontChooser fontChooser){
 				}
 
 				if (between(xa, block.leftEdge - 6, block.rgtEdge + 6)
-						&& between(ya, block.topEdge - 6, block.botEdge + 6)) {
-					selBlock = block;
-					if (between(xa, block.leftEdge + 4 * scalingFactor,
-							block.rgtEdge - 4 * scalingFactor)
-							&& between(ya, block.topEdge + 4 * scalingFactor,
-									block.botEdge - 4 * scalingFactor)) {
-						//frame.setCursor(drag_icon);
-					}
+						&& between(ya, block.topEdge - 6, block.botEdge + 6))  
+					selBlockM = block;  // mousing select
+				
+				// logic to change cursor to drag_icon
+				
+				if (between(xa, block.leftEdge + 6 * scalingFactor,
+						block.rgtEdge - 6 * scalingFactor)
+						&& between(ya, block.topEdge + 6 * scalingFactor,
+								block.botEdge - 6 * scalingFactor)) {
+					if (!use_drag_icon) {
+						if (curDiag.jpm == null)
+							frame.setCursor(drag_icon);
+						use_drag_icon = true;
+						}
 					break;
-				}
+					}
 
+				if (use_drag_icon){
+					frame.setCursor(defaultCursor);
+					use_drag_icon = false;
+				}
+				
+				/* 
 				if (curDiag.currentArrow != null) {
 					curDiag.currentArrow.toX = xa;
 					curDiag.currentArrow.toY = ya;
 				}
+				*/
+				
 			}
 			
             //curDiag.foundBlock = null;			
@@ -3640,7 +3627,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int y = e.getY();
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
-			curDiag.arrowRoot = null;
+			//curDiag.arrowRoot = null;
 
 			
 			//if (curDiag.jpm != null) {
@@ -3665,8 +3652,8 @@ void chooseFonts(MyFontChooser fontChooser){
 				return;
 
 			curDiag.foundBlock = null;
-			selBlockP = null;
-			selArrowP = null;
+			selBlock = null;
+			selArrow = null;
 			blockSelForDragging = null;
 			//enclSelForDragging = null;			
 			//arrowEndForDragging = null;
@@ -3729,9 +3716,7 @@ void chooseFonts(MyFontChooser fontChooser){
 									block.botEdge - 4 * scalingFactor)) {
 						oldoldx = oldx = xa;
 						oldoldy = oldy = ya;
-						blockSelForDragging = block;
-						// displayAlignmentLines(block);
-						//frame.setCursor(drag_icon);
+						blockSelForDragging = block;						
 						break;
 					}
 				}
@@ -3792,7 +3777,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					&& arrowEndForDragging == null) {
 
 				Arrow arrow = new Arrow(curDiag);
-				selArrowP = arrow;
+				selArrow = arrow;
 				// selBlockP = null;
 				arrow.fromX = xa;
 				arrow.fromY = ya;
@@ -3830,13 +3815,13 @@ void chooseFonts(MyFontChooser fontChooser){
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
-			curDiag.arrowRoot = null;
+			//curDiag.arrowRoot = null;
 
 			Point p = new Point(x, y);
 			p = gridAlign(p);
 			xa = (int) p.getX();
 			ya = (int) p.getY();
-
+			
 			if (e.getClickCount() == 2) {
 			  
 				blockSelForDragging = null;
@@ -4053,7 +4038,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				//bendForDragging = null;				
 				
 				if (blockSelForDragging != null) {
-					selBlockP = blockSelForDragging;
+					selBlock = blockSelForDragging;
 					// this tests if mouse has moved (approximately) - ignore small twitches and also big jumps!
 					if (between(oldoldx, x - 4 * scalingFactor, x + 4
 							* scalingFactor)
@@ -4129,7 +4114,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				// if (Math.abs(xa - oldx) < 4 && Math.abs(ya - oldy) < 4) // do
 				// not respond to small twitches
 				// return;
-				selBlockP = blockSelForDragging;
+				selBlock = blockSelForDragging;
 				int savex = blockSelForDragging.cx;
 				int savey = blockSelForDragging.cy;
 
@@ -4197,7 +4182,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					curDiag.foundArrow = arrow;
 			}
 
-			selArrowP = curDiag.foundArrow;
+			selArrow = curDiag.foundArrow;
 			// selBlockP = null;
 			curDiag.changed = true;
 			if (curDiag.foundArrow != null) {
@@ -4233,8 +4218,8 @@ void chooseFonts(MyFontChooser fontChooser){
 								&& between(ya, block.cy - block.height / 2,
 										block.cy + block.height / 2)) {
 							curDiag.foundBlock = block;
-							selBlockP = block;
-							selArrowP = null;
+							selBlock = block;
+							selArrow = null;
 							// block.x = xa;
 							// block.y = ya;
 							break;
@@ -4249,8 +4234,8 @@ void chooseFonts(MyFontChooser fontChooser){
 										block.cy - block.height / 2 - hh,
 										block.cy - block.height / 2 + hh / 2)) {
 							curDiag.foundBlock = block;
-							selBlockP = block;
-							selArrowP = null;
+							selBlock = block;
+							selArrow = null;
 							// block.x = xa;
 							// block.y = ya;
 							break;
@@ -4297,7 +4282,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (curDiag.foundBlock.id == curDiag.currentArrow.fromId) {
 					
 					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
-							"Connecting arrow to originating block is deadlock-prone", "Allow?",
+							"Connecting arrow to originating block is deadlock-prone - do anyway?", "Allow?",
 							JOptionPane.YES_NO_OPTION)) {
 					    Integer aid = new Integer(curDiag.currentArrow.id);
 					    curDiag.arrows.remove(aid);
@@ -4478,7 +4463,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						//MyOptionPane.showMessageDialog(frame,
 						//		"Cannot connect arrow to originating block");
 						if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
-								"Connecting arrow to originating block is deadlock-prone", "Allow?",
+								"Connecting arrow to originating block is deadlock-prone - do anyway?", "Allow?",
 								JOptionPane.YES_NO_OPTION)) {
 						    Integer aid = new Integer(curDiag.currentArrow.id);
 						    curDiag.arrows.remove(aid);
@@ -4558,6 +4543,16 @@ void chooseFonts(MyFontChooser fontChooser){
 				// }
 			}
 
+			/*  following code prevents having bends in arrows
+			if (curDiag.currentArrow != null)
+			{
+				Integer aid = new Integer(curDiag.currentArrow.id);
+			    curDiag.arrows.remove(aid);
+			    curDiag.foundBlock = null;
+			    curDiag.currentArrow = null;
+				repaint();
+			}
+			*/
 		}
 
 		public void mouseClicked(MouseEvent arg0) {

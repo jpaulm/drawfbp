@@ -54,7 +54,7 @@ public class Enclosure extends Block {
 
 	@Override
 	void draw(Graphics2D g) {
-		if (!visible && this != driver.selBlockP) {
+		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;
 		}

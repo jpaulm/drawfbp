@@ -16,7 +16,7 @@ public class FileBlock extends Block {
 	
 	@Override
 	void draw(Graphics2D g) {
-		if (!visible && this != driver.selBlockP) {
+		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;
 		}
@@ -33,7 +33,7 @@ public class FileBlock extends Block {
 		gp.quadTo(x + width/2, y + 10, x, y);
 		gp.closePath();
 		//g.draw(gp);
-		if (this == driver.selBlockP)
+		if (this == driver.selBlock)
 			g.setColor(new Color(255, 255, 200)); // light yellow
 			else
 			g.setColor(new Color(200, 255, 255)); // light turquoise	

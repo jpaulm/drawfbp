@@ -85,7 +85,7 @@ public class Diagram {
 	String[] filterOptions = {"", "All (*.*)"};
 	//Rectangle curMenuRect = null;
 	
-	FoundPoint arrowRoot = null;
+	FoundPoint arrowRoot = null;  // used to draw blue circles where arrows can start
 	
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;
@@ -807,7 +807,7 @@ public class Diagram {
 		block.id = oldDiag.maxBlockNo;
 		oldDiag.blocks.put(new Integer(block.id), block);
 		oldDiag.changed = true;
-		driver.selBlockP = block;
+		driver.selBlock = block;
 		block.diagramFileName = diagfn;
 		block.isSubnet = true;
 

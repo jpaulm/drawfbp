@@ -100,16 +100,18 @@ public class Block implements ActionListener {
 
 	void draw(Graphics2D g) {
 
-		if (!visible && this != driver.selBlockP) {
+		 
+		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;
 		}
 
-		if (this == driver.selBlockP && !(this instanceof ProcessBlock)) {
+		 
+		if (this == driver.selBlock && !(this instanceof ProcessBlock)) {
 			showArrowEndAreas(g);
 			return;
 		}
-
+         
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy
 				+ height / 2);
 
@@ -119,7 +121,7 @@ public class Block implements ActionListener {
 
 		g.setColor(Color.BLACK);
 		g.drawRoundRect(tlx, tly, width, height, 6, 6);
-		if (this == driver.selBlockP)
+		if (this == driver.selBlock)
 			g.setColor(new Color(255, 255, 200)); // light yellow
 		else
 			g.setColor(new Color(200, 255, 255)); // light turquoise
@@ -136,7 +138,7 @@ public class Block implements ActionListener {
 			y = cy - 20 / 2;
 			g.setColor(Color.BLACK);
 			g.drawRoundRect(x, y, i - 1, 20, 2, 2);
-			if (this == driver.selBlockP)
+			if (this == driver.selBlock)
 				g.setColor(new Color(255, 255, 200)); // light yellow
 			else
 				g.setColor(new Color(200, 255, 255)); // light turquoise
@@ -164,7 +166,7 @@ public class Block implements ActionListener {
 			centreDesc(g);
 		}
 
-		if (!visible && this == driver.selBlockP)
+		if (!visible && this == driver.selBlock)
 			g.drawLine(tlx, tly, cx + width / 2, cy + height / 2);
 
 		int y = cy + height / 2 + driver.fontHeight + driver.fontHeight / 2;
@@ -252,9 +254,13 @@ public class Block implements ActionListener {
 		}
 		
 		if (driver.curDiag.arrowRoot != null)	{
-			g.setColor(Color.GRAY);
-		    g.drawRect(driver.curDiag.arrowRoot.xa - 3, driver.curDiag.arrowRoot.ya - 3, 6, 6);
-		    g.setColor(Color.BLACK);
+			//g.setColor(Color.GRAY);
+		    //g.drawRect(driver.curDiag.arrowRoot.xa - 3, driver.curDiag.arrowRoot.ya - 3, 6, 6);
+		    //g.setColor(Color.BLACK);
+			Color col = g.getColor();
+			g.setColor(Color.BLUE);
+			g.drawOval(driver.curDiag.arrowRoot.x - 5, driver.curDiag.arrowRoot.y - 5, 10, 10);
+			g.setColor(col);
 		}
 	}
 	
@@ -330,14 +336,15 @@ public class Block implements ActionListener {
 		}
 	}
 
+	 
 	void showZones(Graphics2D g) {
 		if (diag.currentArrow == null) {
-			if (driver.selBlock == this)
+			if (driver.selBlockM == this)
 				showArrowEndAreas(g);
 		} else if (diag.currentArrow.fromId != id)
 			showArrowEndAreas(g);
 	}
-
+ 
 	String serialize() {
 		String s = "<block> <x> " + cx + " </x> <y> " + cy + " </y> <id> " + id
 				+ " </id> <type>" + type + "</type> ";
@@ -493,144 +500,55 @@ public class Block implements ActionListener {
 											+ "so cannot process class information for "
 											+ description);
 					driver.tryFindJarFile = false;
-				} else if (fullClassName.indexOf("jar!") > -1)
-					loadClassFromJarFile();
-				else
-					loadClassFromFile();
+				} else 
+					loadClass();
 			}
 			// diag.compLang = driver.findGLFromLabel("Java");
 		}
 		}
-
-	void loadClassFromJarFile() {
-
-		 
-		int i = fullClassName.indexOf("!");
-		if (i == -1)
-			return;
-		String fn = fullClassName.substring(0, i);
-		String cn = fullClassName.substring(i + 1);
-		/*
-		int j = fn.lastIndexOf(File.separator);
-		if (j == -1)
-			j = fn.lastIndexOf("/");
-		String fns = fn.substring(j + 1);
-		
-		// can't assume jar file was JavaFBP
-		String jfs = driver.javaFBPJarFile;
-		j = jfs.lastIndexOf(File.separator);
-		if (j == -1)
-			j = jfs.lastIndexOf("/");
-		jfs = jfs.substring(j + 1);
-
-		int w = fns.compareTo(jfs);  // fns comes from fullClassName;  jfs from javaFBPJarFile
-		if (w > 0) {  // fullclassname version no. > javaFBPJarFile version no.
-			MyOptionPane.showMessageDialog(driver.frame,
-					"Name of jar file on a process component (" + fullClassName
-							+ ")\n    is newer than your system jar file ("
-							+ driver.javaFBPJarFile + ") - \n "
-							+ "Locate JavaFBP jar file, and Choose component/subnet class again");
-			
-			diag.changed = true;
-			MyOptionPane.showMessageDialog(driver.frame,
-					"Class name changed - was: " + fullClassName
-							+ ", \n   now: " + driver.javaFBPJarFile + "!" + cn);
-			fullClassName = driver.javaFBPJarFile + "!" + cn;
-			
-		}
-		
-		if (w < 0) {    // fullclassname version no. < javaFBPJarFile version no.                        
-			j = driver.javaFBPJarFile.lastIndexOf("javafbp-");
-			int k = fullClassName.lastIndexOf("javafbp-");
-			String jfv = driver.javaFBPJarFile.substring(j + 8, j + 11);
-			String pcv = fullClassName.substring(k + 8, k + 11);
-			
-			if ((jfv.substring(0,1).compareTo("3") <= 0) && (pcv.substring(0,1).compareTo("3") <= 0) ||
-					(jfv.compareTo("4.1") >= 0) && (pcv.compareTo("4.1") >= 0)) {
-				if (JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-						driver.frame,
-						"Name of jar file on a process component (" + fullClassName
-						+ ")\n    is older than your system jar file ("
-						+ driver.javaFBPJarFile + ") - \n "
-						+ "Do you want to change jar file name?",
-						"Change jar file name", JOptionPane.YES_NO_OPTION)) {
-					//fn = driver.javaFBPJarFile;
-					MyOptionPane.showMessageDialog(driver.frame,
-							"Class name changed - was: " + fullClassName
-									+ ", \n   now: " + driver.javaFBPJarFile + "!" + cn);
-					fullClassName = driver.javaFBPJarFile + "!" + cn;
-					diag.changed = true;
-				}
-			}
-			else {
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Name of jar file on a process component (" + fullClassName
-								+ ") \n   is older than your system jar file ("
-								+ driver.javaFBPJarFile + ") - \n "
-								+ "Choose component/subnet class again");
-				
-				diag.changed = true;	
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Class name changed - was: " + fullClassName
-								+ ", \n   now: " + driver.javaFBPJarFile + "!" + cn);
-				fullClassName = driver.javaFBPJarFile + "!" + cn;
-			}
-				
-		}
-*/
-		
-		try {
-			File jFile = new File(fn);
-			URI uri = jFile.toURI();
-			URL url = uri.toURL();
-
-			URL[] urls = new URL[]{url};
-			
-			classLoader = new URLClassLoader(urls);
-		} catch (Exception e) {
-			System.err.println("Unhandled exception:");
-			e.printStackTrace();
-			return;
-		}
-		
-		   loadClass(cn);
-		
-	}
-
-	void loadClassFromFile() {
-
-		int i = fullClassName.indexOf("!");
-		if (i == -1)
-			return;
-		String fn = fullClassName.substring(0, i);  // jar file name, if any
-		String cn = fullClassName.substring(i + 1);  // class name
-
-		try {
-			File jFile = new File(driver.javaFBPJarFile);
-			URI uri = jFile.toURI();
-			URL url = uri.toURL();
-
-			File f = new File(fn);
-			uri = f.toURI();
-			URL url2 = uri.toURL();
-
-			URL[] urls = new URL[]{url, url2};
-
-			classLoader = new URLClassLoader(urls);
-
-			loadClass(cn);
-
-		} catch (Exception e) {
-			System.err.println("Unhandled exception:");
-			e.printStackTrace();
-			return;
-		}
-	}
 	
-	void loadClass(String cn){			
 
-			try {
-				javaClass = classLoader.loadClass(cn);
+	
+	
+	void loadClass(){
+		int i = fullClassName.indexOf("!");
+		if (i == -1)
+			return;
+		String fn = fullClassName.substring(0, i);  // jar file name or class folder
+		String cn = fullClassName.substring(i + 1);  // class name
+	
+		LinkedList<URL> ll = new LinkedList<URL>();
+		
+		if (!(fn.endsWith("jar")))
+				fn += File.separator;
+		
+		File f = new File(fn);	
+				 
+		try {
+			
+			ll.add(f.toURI().toURL());
+			
+			String curClsDir = driver.properties.get("currentClassDir") + File.separator;
+			
+			if (null != curClsDir){
+				f = new File(curClsDir);
+				ll.add(f.toURI().toURL());
+			}				 
+			
+			f = new File(driver.javaFBPJarFile);
+			ll.add(f.toURI().toURL());
+			
+			for (String jfv : driver.jarFiles.values()){
+				f = new File(jfv);
+				ll.add(f.toURI().toURL());
+			}	
+	        
+			URL[] urls = ll.toArray(new URL[ll.size()]); 
+			
+			classLoader = new URLClassLoader(urls);
+		
+			javaClass = classLoader.loadClass(cn);
+			
 			} catch (ClassNotFoundException e) {
 				//System.out.println("Missing class name in " + fullClassName);
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -644,12 +562,18 @@ public class Block implements ActionListener {
 						"Internal class name not found: " + fullClassName);
 				// e.printStackTrace();
 				javaClass = null;
+			} catch (MalformedURLException e) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Malformed URL: " + fullClassName);
+				// e.printStackTrace();
+				javaClass = null;
+				e.printStackTrace();
 			}
 		
 		
 	}
 
-	@SuppressWarnings("resource")
+	
 	Class<?> getSelectedClass(String jar, String jf, boolean injar) {
 
 		if (jf.trim().equals("")) {
@@ -676,28 +600,7 @@ public class Block implements ActionListener {
 		if (0 <= fn.substring(j, j + 3).compareTo("4.1"))  // if javafbp jar file version not less than 4.0.0
 		    owner = "jpaulmorrison";
 		
-		Class<?> cls;
-
-		
-		/*
-		URLClassLoader classLoader = null;  // local URLClassLoader
-
-		try {	
-			
-			try {
-				File jFile = new File(fn);         
-				URI uri = jFile.toURI();
-				URL url = uri.toURL();
-
-				URL[] urls = new URL[]{url};
-				
-				classLoader = new URLClassLoader(urls);
-			} catch (Exception e) {
-				System.err.println("Unhandled exception:");
-				e.printStackTrace();
-				return null;
-			}
-			*/
+		Class<?> cls;	
 			
 		try {
 			Class<?> compClass = classLoader
@@ -713,7 +616,7 @@ public class Block implements ActionListener {
 			if (i != -1)
 				jf = jf.substring(0, i);
 			jf = jf.replace('/', '.');
-			cls = this.classLoader.loadClass(jf);
+			cls = classLoader.loadClass(jf);
 
 			if (cls.getCanonicalName().equals(compClass.getCanonicalName()) || 
 					cls.getCanonicalName().equals(networkClass.getCanonicalName())
@@ -721,7 +624,7 @@ public class Block implements ActionListener {
 					return null;
 			}
 
-			Class cs = cls.getSuperclass();
+			Class<?> cs = cls.getSuperclass();
 			if (cs == null || !(cs.getCanonicalName().equals(compClass.getCanonicalName())  ||
 					cs.getCanonicalName().equals(subnetClass.getCanonicalName()))) {
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -756,6 +659,7 @@ public class Block implements ActionListener {
 		} 
 	}
 
+	 
 	void showArrowEndAreas(Graphics2D g) {
 		g.setColor(new Color(170, 244, 255));
 
@@ -769,6 +673,7 @@ public class Block implements ActionListener {
 			g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height - 12); // right
 		g.setColor(Color.BLACK);
 	}
+	  
 
 	void buildMetadata() {
 		inputPortAttrs = new HashMap<String, AInPort>();
@@ -1316,7 +1221,7 @@ public class Block implements ActionListener {
 					JMenuItem menuItem2 = new JMenuItem("Display Full Class Name");
 					menuItem2.addActionListener(this);
 					diag.jpm.add(menuItem2);
-					JMenuItem menuItem3 = new JMenuItem("Display Port Info");
+					JMenuItem menuItem3 = new JMenuItem("Display Description and Port Info");
 					menuItem3.addActionListener(this);
 					diag.jpm.add(menuItem3);
 						
@@ -1372,6 +1277,7 @@ public class Block implements ActionListener {
 		// menuItem.addActionListener(this);
 		// diag.curMenuRect = new Rectangle(p.x, p.y, d.width, d.height);
 		// return jpm;
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -1556,7 +1462,7 @@ public class Block implements ActionListener {
 			return;
 
 		}
-		if (s.equals("Display Port Info")) {
+		if (s.equals("Display Description and Port Info")) {
 			if (javaClass == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"No class information associated with block");
@@ -1833,30 +1739,29 @@ public class Block implements ActionListener {
 			File cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				String res = fc.getSelectedFile();
+				
+				String curClsDir = driver.properties.get("currentClassDir") + File.separator;
+				LinkedList<URL> ll = new LinkedList<URL>();
+				
 				int i = res.indexOf("!");
-				if (i > -1) {
+				if (i > -1) {  // 
 					String res2 = res.substring(i + 2); // ! will be followed by
-														// back-slash
+														// slash
 					res2 = res2.replace('/', '.');
-					res = res.substring(0, i) + "!" + res2;
+					res = res.substring(0, i) + "!" + res2;		
 					
-					// get jar files from list
-					
-					LinkedList<URL> ll = new LinkedList<URL>();
 					File fx = null;
-					URI uri;
-					URL url;
+					if (null != curClsDir){
+						fx = new File(curClsDir);
+						ll.add(fx.toURI().toURL());
+					}	
 					
 					fx = new File(driver.javaFBPJarFile);
-					uri = fx.toURI();
-					url = uri.toURL();
-					ll.add(url);
+					ll.add(fx.toURI().toURL());
 					
 					for (String jfv : driver.jarFiles.values()){
 						fx = new File(jfv);
-						uri = fx.toURI();
-						url = uri.toURL();
-						ll.add(url);
+						ll.add(fx.toURI().toURL());
 					}						
 
 			        
@@ -1891,7 +1796,6 @@ public class Block implements ActionListener {
 
 					String error = "";
 
-					LinkedList<URL> ll = new LinkedList<URL>();
 					File fx = null;
 					while (true) {
 						ll.clear();
@@ -1899,24 +1803,21 @@ public class Block implements ActionListener {
 						if (fp == null)
 							break;
 						try {
-							classFound = true;
+							classFound = true;							
 							
-							URI uri = fp.toURI();
-							URL url = uri.toURL();
-							ll.add(url);
+							ll.add(fp.toURI().toURL());							
 							
-							// get jar files from list
-							
+							if (null != curClsDir){
+								fx = new File(curClsDir);
+								ll.add(fx.toURI().toURL());
+							}	
+														
 							fx = new File(driver.javaFBPJarFile);
-							uri = fx.toURI();
-							url = uri.toURL();
-							ll.add(url);
+							ll.add(fx.toURI().toURL());
 							
 							for (String jfv : driver.jarFiles.values()){
 								fx = new File(jfv);
-								uri = fx.toURI();
-								url = uri.toURL();
-								ll.add(url);
+								ll.add(fx.toURI().toURL());
 							}						
 
 					         

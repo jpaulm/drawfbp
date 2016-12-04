@@ -15,7 +15,7 @@ public class ReportBlock extends Block {
 	
 	@Override
 	void draw(Graphics2D g) {
-		if (!visible && this != driver.selBlockP) {
+		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;
 		}
@@ -67,7 +67,7 @@ public class ReportBlock extends Block {
 
 		g.setColor(Color.BLACK);
 		g.drawPolygon(ptx, pty, 11);
-		if (this == driver.selBlockP)
+		if (this == driver.selBlock)
 			g.setColor(new Color(255, 255, 200)); // light yellow
 		else
 			g.setColor(new Color(200, 255, 255)); // light turquoise
