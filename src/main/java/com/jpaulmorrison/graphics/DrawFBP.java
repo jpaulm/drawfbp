@@ -623,8 +623,8 @@ public class DrawFBP extends JFrame
 				.createCustomCursor(image, new Point(15, 15), "Paw");
 		
 		//image = loadImage("drag_icon.gif");
-		image = loadImage("drag_icon3.gif");
-		drag_icon = tk.createCustomCursor(image, new Point(10, 10), "Drag"); 
+		image = loadImage("drag_icon2.gif");
+		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag"); 
 		
 	}
 	
