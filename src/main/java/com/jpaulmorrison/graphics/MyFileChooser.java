@@ -112,7 +112,7 @@ public class MyFileChooser extends JFrame
 	ParentAction parentAction;
 	NewFolderAction newFolderAction;
 
-	MyFileCompare comp;
+	//MyFileCompare comp;
 	//String[] filterOptions = {"", "All (*.*)"};
 
 	// Color textBackground;
@@ -197,7 +197,7 @@ public class MyFileChooser extends JFrame
 		// text3.setPreferredSize(new Dimension(100, driver.fontHeight + 2));
 
 		String s = (saveAs) ? "Save or Save As" : "Open File";
-		comp = new MyFileCompare();
+		//comp = new MyFileCompare();
 		renderer = new ListRenderer(driver);
 
 		if (fCParms == driver.curDiag.fCPArr[DrawFBP.DIAGRAM])
@@ -953,23 +953,27 @@ public class MyFileChooser extends JFrame
 			return new LinkedList<String>();
 
 		}
-		int low_x = 0;
+		 
+		LinkedList<String> ll = from;
 		LinkedList<String> lkl = new LinkedList<String>();
 		while (true) {
 			try {
-				String low = from.getFirst();
+				String low = ll.getFirst();
 				int i = 0;
-				for (String s : from) {
+				int low_i = 0;
+				for (String s : ll) {
 
-					if (s.compareToIgnoreCase(low) == -1) {
+					if (i > 0 && s.compareToIgnoreCase(low) < 0) {
 
 						low = s;
-						low_x = i;
+						low_i = i;
 					}
+					
+					i++;
 				}
 				lkl.add(low);
 
-				from.remove(low_x);				
+				ll.remove(low_i);				
 			}
 
 			catch (NoSuchElementException e) {
@@ -1826,6 +1830,7 @@ public class MyFileChooser extends JFrame
 		}
 	}
 
+	/*
 	class MyFileCompare implements Comparator<String> {
 
 		
@@ -1835,6 +1840,7 @@ public class MyFileChooser extends JFrame
 
 		
 	}
+	*/
 
 	
 
