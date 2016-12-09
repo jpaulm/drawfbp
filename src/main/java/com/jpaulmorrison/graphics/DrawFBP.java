@@ -3771,6 +3771,23 @@ void chooseFonts(MyFontChooser fontChooser){
 				repaint();
 				return;
 			}
+			/*
+			if (curDiag.currentArrow != null) {
+				if (between(xa,curDiag.currentArrow.toX - 4, curDiag.currentArrow.toX + 4) &&
+						between(ya,curDiag.currentArrow.toY - 4, curDiag.currentArrow.toY + 4)) {
+					curDiag.currentArrow.toX = xa;
+					curDiag.currentArrow.toY = ya;				
+				}	
+				else {
+					Integer aid = new Integer(curDiag.currentArrow.id);
+				    curDiag.arrows.remove(aid);
+				    curDiag.foundBlock = null;
+				    curDiag.currentArrow = null;
+					//repaint();
+				}
+				repaint();
+			}
+			*/
 			
 			// if no currentDiag.currentArrow, start an arrow
 			if (curDiag.currentArrow == null && curDiag.foundBlock != null			
@@ -3956,6 +3973,8 @@ void chooseFonts(MyFontChooser fontChooser){
 				block.cx += xa - oldx;
 				block.cy += ya - oldy;
 				block.calcEdges();
+				curDiag.arrowRoot.x += xa - oldx;
+				curDiag.arrowRoot.y += ya - oldy;
 
 				if (block instanceof Enclosure) {
 					Enclosure enc = (Enclosure) block;
@@ -4013,7 +4032,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
-			curDiag.arrowRoot = null;
+			curDiag.arrowRoot = null;   // for blue circles (possible arrow starts)
 
 			Side side = null;
 			Point p2 = new Point(x, y);
@@ -4459,9 +4478,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					//Arrow a2 = curDiag.currentArrow.findTerminalArrow();
 					//to = curDiag.blocks.get(new Integer(a2.toId));
 					
-					if (to == from){
-						//MyOptionPane.showMessageDialog(frame,
-						//		"Cannot connect arrow to originating block");
+					if (to == from){						
 						if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
 								"Connecting arrow to originating block is deadlock-prone - do anyway?", "Allow?",
 								JOptionPane.YES_NO_OPTION)) {
@@ -4512,10 +4529,27 @@ void chooseFonts(MyFontChooser fontChooser){
 				}
 
 				// else if (leftButton) { // currentDiag.foundArrow is null, so
-				// we
+				// we may
 				// have a
 				// bend
 
+				if (curDiag.currentArrow != null) {
+					if (!(between(xa,curDiag.currentArrow.toX - 4, curDiag.currentArrow.toX + 4) &&
+							between(ya,curDiag.currentArrow.toY - 4, curDiag.currentArrow.toY + 4))) {
+						//curDiag.currentArrow.toX = xa;
+						//curDiag.currentArrow.toY = ya;				
+					//}	
+					//else {
+						Integer aid = new Integer(curDiag.currentArrow.id);
+					    curDiag.arrows.remove(aid);
+					    curDiag.foundBlock = null;
+					    curDiag.currentArrow = null;
+						repaint();
+						return;
+					}
+					//repaint();
+				}
+				
 				if (curDiag.currentArrow.bends == null) {
 					curDiag.currentArrow.bends = new LinkedList<Bend>();
 				}
@@ -4543,16 +4577,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				// }
 			}
 
-			/*  following code prevents having bends in arrows
-			if (curDiag.currentArrow != null)
-			{
-				Integer aid = new Integer(curDiag.currentArrow.id);
-			    curDiag.arrows.remove(aid);
-			    curDiag.foundBlock = null;
-			    curDiag.currentArrow = null;
-				repaint();
-			}
-			*/
+			
 		}
 
 		public void mouseClicked(MouseEvent arg0) {

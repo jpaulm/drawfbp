@@ -523,27 +523,14 @@ public class Block implements ActionListener {
 				fn += File.separator;
 		
 		File f = new File(fn);	
+		
+		URL[] urls = buildUrls(f);
+		
+		if (urls == null)
+			javaClass = null;
+		else 
 				 
 		try {
-			
-			ll.add(f.toURI().toURL());
-			
-			String curClsDir = driver.properties.get("currentClassDir") + File.separator;
-			
-			if (null != curClsDir){
-				f = new File(curClsDir);
-				ll.add(f.toURI().toURL());
-			}				 
-			
-			f = new File(driver.javaFBPJarFile);
-			ll.add(f.toURI().toURL());
-			
-			for (String jfv : driver.jarFiles.values()){
-				f = new File(jfv);
-				ll.add(f.toURI().toURL());
-			}	
-	        
-			URL[] urls = ll.toArray(new URL[ll.size()]); 
 			
 			classLoader = new URLClassLoader(urls);
 		
@@ -562,13 +549,7 @@ public class Block implements ActionListener {
 						"Internal class name not found: " + fullClassName);
 				// e.printStackTrace();
 				javaClass = null;
-			} catch (MalformedURLException e) {
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Malformed URL: " + fullClassName);
-				// e.printStackTrace();
-				javaClass = null;
-				e.printStackTrace();
-			}
+			} 
 		
 		
 	}
@@ -1688,140 +1669,107 @@ public class Block implements ActionListener {
 		return;
 	}
 	void selectJavaClass() throws MalformedURLException {
-		/*
-		if (diag.diagLang != null
-				&& !(diag.diagLang.label.equals("Java")))  {
-		//non-Java languages
-		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-				"Enter or change text", "Edit component name",
-				JOptionPane.PLAIN_MESSAGE, null, null, fullClassName);
-		if ((ans != null) && (ans.length() > 0)) {
-			fullClassName = ans.trim();
-			diag.changed = true;
-	}
-		return;
-	}
-		*/
-		
+
 		String oldFullClassName = fullClassName;
-		
+
 		if (javaClass != null) {
 			if (JOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
-					driver.frame, "Block already associated with class ("
+					driver.frame,
+					"Block already associated with class ("
 							+ javaClass.getName() + ") - change it?",
 					"Change class", JOptionPane.YES_NO_OPTION)) {
 				return;
 			}
-			//javaClass = null;
-			//fullClassName = null;
+			// javaClass = null;
+			// fullClassName = null;
 		}
 
-		if (!driver.getJavaFBPJarFile()){
-			MyOptionPane
-			.showMessageDialog(
-					driver.frame,
+		if (!driver.getJavaFBPJarFile()) {
+			MyOptionPane.showMessageDialog(driver.frame,
 					"JavaFBP jar file not specified or found");
 			return;
 		}
 
-		//if (javaClass == null) {
+		String t = driver.properties.get("currentClassDir");
+		if (t == null)
+			t = System.getProperty("user.home");
 
-			String t = driver.properties.get("currentClassDir");
-			if (t == null)
-				t = System.getProperty("user.home");
-			
-			MyFileChooser fc = new MyFileChooser(new File(t),
-					diag.fCPArr[DrawFBP.CLASS]);
+		MyFileChooser fc = new MyFileChooser(new File(t),
+				diag.fCPArr[DrawFBP.CLASS]);
 
-			int returnVal = fc.showOpenDialog();
+		int returnVal = fc.showOpenDialog();
 
-			boolean injar = true;
-			File cFile = null;
-			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				String res = fc.getSelectedFile();
-				
-				String curClsDir = driver.properties.get("currentClassDir") + File.separator;
-				LinkedList<URL> ll = new LinkedList<URL>();
-				
-				int i = res.indexOf("!");
-				if (i > -1) {  // 
-					String res2 = res.substring(i + 2); // ! will be followed by
-														// slash
-					res2 = res2.replace('/', '.');
-					res = res.substring(0, i) + "!" + res2;		
-					
-					File fx = null;
-					if (null != curClsDir){
-						fx = new File(curClsDir);
-						ll.add(fx.toURI().toURL());
-					}	
-					
-					fx = new File(driver.javaFBPJarFile);
-					ll.add(fx.toURI().toURL());
-					
-					for (String jfv : driver.jarFiles.values()){
-						fx = new File(jfv);
-						ll.add(fx.toURI().toURL());
-					}						
+		boolean injar = true;
+		File cFile = null;
+		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			String res = fc.getSelectedFile();
 
-			        
-					URL[] urls = ll.toArray(new URL[ll.size()]); 
+			int i = res.indexOf("!");
+			if (i > -1) { // looking in a jar file (?)
+				String res2 = res.substring(i + 2); // ! will be followed by
+													// slash
+				res2 = res2.replace('/', '.');
 
+				File f = new File(res.substring(0, i));
+
+				res = res.substring(0, i) + "!" + res2;
+
+				URL[] urls = buildUrls(f);
+
+				if (urls == null)
+					javaClass = null;
+				else {
 					// Create a new class loader with the directory
 					classLoader = new URLClassLoader(urls);
-					javaClass = getSelectedClass(res.substring(0, i), res2, injar);
-					fullClassName = res;
-				} else {
-					// we are looking in local class hierarchy (not a jar file)
-					String fs = res;					
-					
-					if (fs.endsWith("jar"))
-						cFile = new File(driver.javaFBPJarFile);  // ????
-					else {
-						cFile = new File(fs);
-					 	if (cFile == null || !(cFile.exists())) {
-					 		MyOptionPane.showMessageDialog(driver.frame,
-					 				"Unable to find file " + cFile.getName());
-						 	return;
-					 	}				
+					try {
+						javaClass = classLoader.loadClass(res2);
+					} catch (ClassNotFoundException e2) {
+						javaClass = null;
+					} catch (NoClassDefFoundError e2) {
+						javaClass = null;
 					}
+					javaClass = getSelectedClass(res.substring(0, i), res2,
+							injar);
+					fullClassName = res;
+				}
+			} else {
+				// we are looking in local class hierarchy (not a jar file)
+				String fs = res;
 
-					boolean classFound;
-					File fp = null;
+				if (fs.endsWith("jar"))
+					cFile = new File(driver.javaFBPJarFile); // ????
+				else {
+					cFile = new File(fs);
+					if (cFile == null || !(cFile.exists())) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"Unable to find file " + cFile.getName());
+						return;
+					}
+				}
 
-					String u = cFile.getName();
-					i = u.lastIndexOf(".class");
-					if (i > -1)
-						u = u.substring(0, i);
+				boolean classFound;
+				File fp = null;
 
-					String error = "";
+				String u = cFile.getName();
+				i = u.lastIndexOf(".class");
+				if (i > -1)
+					u = u.substring(0, i);
 
-					File fx = null;
-					while (true) {
-						ll.clear();
-						fp = cFile.getParentFile();
-						if (fp == null)
-							break;
-						try {
-							classFound = true;							
-							
-							ll.add(fp.toURI().toURL());							
-							
-							if (null != curClsDir){
-								fx = new File(curClsDir);
-								ll.add(fx.toURI().toURL());
-							}	
-														
-							fx = new File(driver.javaFBPJarFile);
-							ll.add(fx.toURI().toURL());
-							
-							for (String jfv : driver.jarFiles.values()){
-								fx = new File(jfv);
-								ll.add(fx.toURI().toURL());
-							}						
+				String error = "";
 
-					         
-							URL[] urls = ll.toArray(new URL[ll.size()]); 
+				while (true) {
+
+					fp = cFile.getParentFile();
+					if (fp == null)
+						break;
+					//try {
+						classFound = true;
+
+						URL[] urls = buildUrls(fp);
+
+						if (urls == null)
+							javaClass = null;
+						else {
 
 							// Create a new class loader with the directory
 							classLoader = new URLClassLoader(urls);
@@ -1836,62 +1784,42 @@ public class Block implements ActionListener {
 								error = "NoClassDefFoundError";
 							}
 
-						} catch (IOException ioe) {
-							System.err.println("Unhandled exception:");
-							ioe.printStackTrace();
-							return;
+							if (classFound)
+								break;
+							String v = fp.getName();
+							u = v + "." + u;
+							cFile = fp;
 						}
-						if (classFound)
-							break;
-						String v = fp.getName();
-						u = v + "." + u;
-						cFile = fp;
-					}
-					if (javaClass == null) {
-						MyOptionPane.showMessageDialog(driver.frame, "Class '"
-								+ fc.getSelectedFile() + "' not found ("
-								+ error + ")");
-					}
+					//} finally {
 
-					else {
-						/*
-						boolean mainPresent = true;
-						try {
-							javaClass.getMethod("main", String[].class);
-						} catch (NoSuchMethodException e2) {
-							mainPresent = false;
-						} catch (NoClassDefFoundError e2) {
-							mainPresent = false;
-						} catch (SecurityException e2) {
-							mainPresent = false;
-						}
-
-						if (mainPresent) {
-							MyOptionPane.showMessageDialog(driver.frame,
-									"Class '" + fc.getSelectedFile()
-											+ "' contains 'main' method");
-							javaClass = null;
-							fullClassName = null;
-						} else {
-							*/
-							driver.properties.put("currentClassDir",
-									fp.getAbsolutePath());
-							driver.propertiesChanged = true;
-							fullClassName = fp.getAbsolutePath() + "!"
-									+ javaClass.getName();
-						 
-					 
-					javaClass = getSelectedClass(fp.getAbsolutePath(), javaClass.getName(), !injar);  
+					//}
 				}
+				
+				if (javaClass == null) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"Class '" + fc.getSelectedFile() + "' not found ("
+									+ error + ")");
+				}
+
+				else {
+
+					driver.properties.put("currentClassDir",
+							fp.getAbsolutePath());
+					driver.propertiesChanged = true;
+					fullClassName = fp.getAbsolutePath() + "!"
+							+ javaClass.getName();
+
+					javaClass = getSelectedClass(fp.getAbsolutePath(),
+							javaClass.getName(), !injar);
 				}
 			}
-		 
+		}
 
 		if (javaClass == null) {
 			MyOptionPane.showMessageDialog(driver.frame, "No class selected");
 		} else {
 			if (!fullClassName.equals(oldFullClassName))
-			    displayPortInfo();
+				displayPortInfo();
 			diag.changed = true;
 			// diag.changeCompLang();
 		}
@@ -1899,33 +1827,65 @@ public class Block implements ActionListener {
 		return;
 	}
 
+	URL[] buildUrls(File f) {
+		LinkedList<URL> ll = new LinkedList<URL>();
+		URL[] urls = null;
+		try {
+			ll.add(f.toURI().toURL());
+
+			String curClsDir = driver.properties.get("currentClassDir")
+					+ File.separator;
+
+			if (null != curClsDir) {
+				f = new File(curClsDir);
+				ll.add(f.toURI().toURL());
+			}
+
+			f = new File(driver.javaFBPJarFile);
+			ll.add(f.toURI().toURL());
+
+			for (String jfv : driver.jarFiles.values()) {
+				f = new File(jfv);
+				ll.add(f.toURI().toURL());
+			}
+			urls = ll.toArray(new URL[ll.size()]);
+		} catch (MalformedURLException e) {
+			MyOptionPane.showMessageDialog(driver.frame,
+					"Malformed URL: " + fullClassName);
+			// e.printStackTrace();
+			// javaClass = null;
+			urls = null;
+			e.printStackTrace();
+		}
+
+		return urls;
+	}
+
 	void selectSourceCode() {
-		
+
 		GenLang gl = driver.curDiag.diagLang;
 		if (codeFileName != null) {
 			int i = MyOptionPane.showConfirmDialog(driver.frame,
-					"Block already associated with source code ("
-							+ codeFileName + ") - change it?",
+					"Block already associated with source code (" + codeFileName
+							+ ") - change it?",
 					"Change source code", JOptionPane.YES_NO_OPTION);
 			if (i != JOptionPane.YES_OPTION) {
 				return;
 			}
 		}
-		
+
 		if (!(gl.label.equals("Java")) && javaClass != null) {
-			if (JOptionPane.NO_OPTION == MyOptionPane
-					.showConfirmDialog(
-							driver.frame,
-							"You have selected a non-Java language and there is a Java class associated with this block - go ahead?",
-							"Java previously used", JOptionPane.YES_NO_OPTION)) {
-				
+			if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+					driver.frame,
+					"You have selected a non-Java language and there is a Java class associated with this block - go ahead?",
+					"Java previously used", JOptionPane.YES_NO_OPTION)) {
+
 				javaClass = null;
 				codeFileName = null;
 				return;
 			}
 		}
-		
-				
+
 		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 				"Edit arbitrary string or browse (enter # to browse)",
 				"Enter/change source code name", JOptionPane.PLAIN_MESSAGE,
