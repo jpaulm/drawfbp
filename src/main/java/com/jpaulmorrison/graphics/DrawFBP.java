@@ -3973,8 +3973,10 @@ void chooseFonts(MyFontChooser fontChooser){
 				block.cx += xa - oldx;
 				block.cy += ya - oldy;
 				block.calcEdges();
-				curDiag.arrowRoot.x += xa - oldx;
-				curDiag.arrowRoot.y += ya - oldy;
+				if (curDiag.arrowRoot != null) {
+					curDiag.arrowRoot.x += xa - oldx;
+					curDiag.arrowRoot.y += ya - oldy;
+				}
 
 				if (block instanceof Enclosure) {
 					Enclosure enc = (Enclosure) block;
