@@ -253,7 +253,10 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 		}
 		
-		if (driver.curDiag.arrowRoot != null)	{
+		if (driver.curDiag.arrowRoot != null) { 
+			if (driver.arrowEndForDragging == null ||
+			    !driver.arrowEndForDragging.headMarked && 
+				!driver.arrowEndForDragging.tailMarked) {	{
 			//g.setColor(Color.GRAY);
 		    //g.drawRect(driver.curDiag.arrowRoot.xa - 3, driver.curDiag.arrowRoot.ya - 3, 6, 6);
 		    //g.setColor(Color.BLACK);
@@ -261,6 +264,8 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLUE);
 			g.drawOval(driver.curDiag.arrowRoot.x - 5, driver.curDiag.arrowRoot.y - 5, 10, 10);
 			g.setColor(col);
+		}
+		}
 		}
 	}
 	

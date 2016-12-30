@@ -318,7 +318,11 @@ public class DrawFBP extends JFrame
 		// UIDefaults def = UIManager.getLookAndFeelDefaults();
 		// UIDefaults def = UIManager.getDefaults();
 
-		readPropertiesFile();
+		readPropertiesFile();				
+		
+		properties.put("versionNo", "v" + VersionAndTimestamp.getVersion());
+		properties.put("date", VersionAndTimestamp.getDate());
+		
 		if (null == (generalFont = properties.get("generalFont")))
 			generalFont = "Arial";
 		if (null == (fixedFont = properties.get("fixedFont")))
@@ -343,14 +347,12 @@ public class DrawFBP extends JFrame
 		}
 		
 
-		Iterator entries = jarFiles.entrySet().iterator();
+		Iterator<Entry<String, String>> entries = jarFiles.entrySet().iterator();
 		String z = "";
 		String cma = "";
 		
 		while (entries.hasNext()) {
-			@SuppressWarnings("unchecked")
-			Entry<String, String> thisEntry = (Entry<String, String>) entries
-					.next();
+			Entry<String, String> thisEntry = entries.next();
 			
 				z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
 				cma = ";";
@@ -475,6 +477,8 @@ public class DrawFBP extends JFrame
 
 	private void buildUI(Container container) {
 
+		
+		
 		buildPropDescTable();
 
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -581,7 +585,7 @@ public class DrawFBP extends JFrame
 
 		adjustFonts();
 
-		but[0].setSelected(true); // "Component"
+		but[0].setSelected(true); // "Process"     
 
 		box2.add(Box.createHorizontalGlue());
 		Component[] comps = box2.getComponents();
@@ -1277,10 +1281,10 @@ public class DrawFBP extends JFrame
 		}
 		if (s.equals("Toggle Pan Switch")) {
 			panSwitch = !panSwitch;
-			if (panSwitch)  
-				frame.setCursor(openPawCursor);
-			else 
-				frame.setCursor(defaultCursor);	
+			//if (panSwitch)  
+			//	frame.setCursor(openPawCursor);
+			//else 
+			//	frame.setCursor(defaultCursor);	
 			return;
 		}
 		if (s.equals("Export Image")) {
@@ -1648,12 +1652,12 @@ public class DrawFBP extends JFrame
  
 	
 	void setBlkType(String s) {
-		/*
-		if (s.equals("(none)")) {
+		
+		if (s.equals("none")) {
 			blockType = "";
 
 		} else 
-			*/
+			
 		if (s.equals("Subnet")) {
 			blockType = Block.Types.PROCESS_BLOCK;
 			willBeSubnet = true;
@@ -1800,6 +1804,11 @@ public class DrawFBP extends JFrame
 
 	void buildPropDescTable() {
 		propertyDescriptions = new LinkedHashMap<String, String>();
+		
+		propertyDescriptions.put("Version #",
+				"versionNo");
+		propertyDescriptions.put("Date",
+				"date");
 		propertyDescriptions.put("Current C# source code directory",
 				"currentCsharpSourceDir");
 		propertyDescriptions.put("Current C# network code directory",
@@ -1928,9 +1937,11 @@ public class DrawFBP extends JFrame
 						v = "";
 				}
 				if (q.equals("defaultCompLang")) {
-					u = findGLFromLabel(u).showLangs();
+					if (!(u.equals("(null)"))) {
+					    u = findGLFromLabel(u).showLangs();
 					if (!(v.equals("")))
 						v = findGLFromLabel(v).showLangs();
+					}
 				}
 				tft[2] = new JTextField(u);
 				tft[3] = new JTextField(v);
@@ -2420,14 +2431,13 @@ void chooseFonts(MyFontChooser fontChooser){
 						+ "> \n";
 				out.write(s);
 			}
-			Iterator entries = jarFiles.entrySet().iterator();
+			Iterator<Entry<String, String>> entries = jarFiles.entrySet().iterator();
 			String z = "";
 			String cma = ""; 
 
 			
 			while (entries.hasNext()) {	
-				@SuppressWarnings("unchecked")	
-				Entry<String, String> thisEntry = (Entry<String, String>) entries.next();
+				Entry<String, String> thisEntry = entries.next();
 				
 			    			     				
 			        z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
@@ -3084,7 +3094,6 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		private static final long serialVersionUID = 1L;
 
-		@SuppressWarnings("unchecked")
 		public void actionPerformed(ActionEvent e) {
 
 			boolean close = true;
@@ -3414,6 +3423,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			// }
 
 			grid.setSelected(diag.clickToGrid);
+			
 			repaint();
 			
 			for (Block block : diag.blocks.values()) {
@@ -3495,14 +3505,10 @@ void chooseFonts(MyFontChooser fontChooser){
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
 			curDiag.arrowRoot = null;
+			
+			Rectangle r2 = curDiag.area.getBounds();			
 
-			Rectangle r = jtp.getBoundsAt(0);
-			Rectangle r2 = curDiag.area.getBounds();
-			Rectangle r3 = new Rectangle(r2.x, r2.y - r.height, r2.width,
-					r2.height - r.height);
-
-			if (r3.contains(x, y)) 
-				if (panSwitch)			 
+			if (r2.contains(x, y) && panSwitch)			 
 				    frame.setCursor(openPawCursor);
 			    else 
 			    	if (use_drag_icon)
@@ -3640,7 +3646,10 @@ void chooseFonts(MyFontChooser fontChooser){
 			curx = xa;
 			cury = ya;
 
-			if (panSwitch) {
+			//if (panSwitch) {
+			Rectangle r2 = curDiag.area.getBounds();
+				
+			if (r2.contains(x, y) && panSwitch) {
 				frame.setCursor(closedPawCursor);
 				panX = xa;
 				panY = ya;
@@ -4042,7 +4051,9 @@ void chooseFonts(MyFontChooser fontChooser){
 			xa = (int) p2.getX();
 			ya = (int) p2.getY();
 
-			if (panSwitch) {
+			Rectangle r2 = curDiag.area.getBounds();			
+
+			if (r2.contains(x, y) && panSwitch) {
 				frame.setCursor(openPawCursor);
 				repaint();
 				return;
@@ -4272,7 +4283,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 				curDiag.xa = xa;
 				curDiag.ya = ya;
-				if (null != createBlock(blockType))
+				if (!(blockType.equals("")) && null != createBlock(blockType))
 					curDiag.changed = true;
 				frame.repaint();
 				// repaint();
