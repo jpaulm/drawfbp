@@ -262,7 +262,7 @@ public class Block implements ActionListener {
 		    //g.setColor(Color.BLACK);
 			Color col = g.getColor();
 			g.setColor(Color.BLUE);
-			g.drawOval(driver.curDiag.arrowRoot.x - 5, driver.curDiag.arrowRoot.y - 5, 10, 10);
+			g.drawOval(driver.curDiag.arrowRoot.x - 4, driver.curDiag.arrowRoot.y - 4, 8, 8);
 			g.setColor(col);
 		}
 		}
@@ -987,8 +987,8 @@ public class Block implements ActionListener {
 		jdialog.setVisible(true);
 		jdialog.toFront();
 		//jdialog.setPreferredSize(new Dimension(dim.width / 2, dim.height / 2));
-		//jdialog.pack();
-		// jdialog.validate();
+		jdialog.pack();
+		jdialog.validate();
 		panel.repaint();
 		jdialog.repaint();
 		driver.frame.repaint();

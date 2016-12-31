@@ -3633,14 +3633,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int y = e.getY();
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
-			//curDiag.arrowRoot = null;
-
 			
-			//if (curDiag.jpm != null) {
-			//	curDiag.jpm = null;
-			//	frame.repaint();
-			//	return;
-			//}
 			xa = x;
 			ya = y;
 			curx = xa;
@@ -4043,7 +4036,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
-			curDiag.arrowRoot = null;   // for blue circles (possible arrow starts)
+			curDiag.arrowRoot = null; // for blue circles (possible arrow
+										// starts)
 
 			Side side = null;
 			Point p2 = new Point(x, y);
@@ -4051,7 +4045,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			xa = (int) p2.getX();
 			ya = (int) p2.getY();
 
-			Rectangle r2 = curDiag.area.getBounds();			
+			Rectangle r2 = curDiag.area.getBounds();
 
 			if (r2.contains(x, y) && panSwitch) {
 				frame.setCursor(openPawCursor);
@@ -4064,42 +4058,45 @@ void chooseFonts(MyFontChooser fontChooser){
 				ya = cury;
 			}
 
-			if (e.getClickCount() == 2  || !leftButton) {
-				//enclSelForDragging = null;
-				//arrowEndForDragging = null;
-				//bendForDragging = null;				
-				
+			if (e.getClickCount() == 2 || !leftButton) {
+				// enclSelForDragging = null;
+				// arrowEndForDragging = null;
+				// bendForDragging = null;
+
 				if (blockSelForDragging != null) {
 					selBlock = blockSelForDragging;
-					// this tests if mouse has moved (approximately) - ignore small twitches and also big jumps!
-					if (between(oldoldx, x - 4 * scalingFactor, x + 4
-							* scalingFactor)
-							&& between(oldoldy, y - 4 * scalingFactor, y + 4
-									* scalingFactor) || 
-									Math.abs(oldoldx - x) > 100 || Math.abs(oldoldy - y) > 100) {
-						
-						// if it was a small move, or a big jump, just get subnet, or display options
-						if (leftButton && blockSelForDragging.isSubnet && blockSelForDragging.diagramFileName != null) {							
-								File f = new File(
-										blockSelForDragging.diagramFileName);
-								Diagram saveCurDiag = curDiag;
-								if (null == openAction(f.getAbsolutePath()))
-									curDiag = saveCurDiag;
+					// this tests if mouse has moved (approximately) - ignore
+					// small twitches and also big jumps!
+					if (between(oldoldx, x - 4 * scalingFactor,
+							x + 4 * scalingFactor)
+							&& between(oldoldy, y - 4 * scalingFactor,
+									y + 4 * scalingFactor)
+							|| Math.abs(oldoldx - x) > 100
+							|| Math.abs(oldoldy - y) > 100) {
+
+						// if it was a small move, or a big jump, just get
+						// subnet, or display options
+						if (leftButton && blockSelForDragging.isSubnet
+								&& blockSelForDragging.diagramFileName != null) {
+							File f = new File(
+									blockSelForDragging.diagramFileName);
+							Diagram saveCurDiag = curDiag;
+							if (null == openAction(f.getAbsolutePath()))
+								curDiag = saveCurDiag;
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
 							curDiag.jpm.show(frame, curDiag.xa + 100,
 									curDiag.ya + 100);
 
 						}
-						//blockSelForDragging = null;						
-					}
-					else {
+						// blockSelForDragging = null;
+					} else {
 						curDiag.changed = true;
 					}
 					repaint();
-					//return;
+					// return;
 				}
-			
+
 			}
 
 			if (arrowEndForDragging != null) {
@@ -4192,61 +4189,66 @@ void chooseFonts(MyFontChooser fontChooser){
 					enc.draggingContents = false;
 				}
 
-				//blockSelForDragging = null;
+				// blockSelForDragging = null;
 
 				repaint();
 				return;
 			}
-			if (blockSelForDragging != null&& blockSelForDragging instanceof Enclosure) {
-				((Enclosure)blockSelForDragging).corner = null;
+			if (blockSelForDragging != null
+					&& blockSelForDragging instanceof Enclosure) {
+				((Enclosure) blockSelForDragging).corner = null;
 				blockSelForDragging = null;
 				curDiag.changed = true;
 				repaint();
 				return;
 			}
 			curDiag.foundBlock = null;
-
-			// Look for a line to detect - for deletion, etc.
-			curDiag.foundArrow = null;
-			// if (!leftButton) {
-			for (Arrow arrow : curDiag.arrows.values()) {
-				if (curDiag.matchArrow(xa, ya, arrow))
-					curDiag.foundArrow = arrow;
-			}
-
-			selArrow = curDiag.foundArrow;
-			// selBlockP = null;
-			curDiag.changed = true;
-			if (curDiag.foundArrow != null) {
-				Arrow arr = curDiag.foundArrow;
-				if (arr.endsAtLine || arr.endsAtBlock) {
-
-				if (curDiag.findArrowCrossing) {
-					processSubnetPort(arr);
-					repaint();
-					return;
-				}
-				arr.buildArrowPopupMenu();
-				// curDiag.currentArrow.lastX = xa;
-				// curDiag.currentArrow.lastY = ya;
-				curDiag.jpm.show(e.getComponent(), xa, ya);
-				repaint();
-				return;
-			}
-			}
-			curDiag.findArrowCrossing = false;
-			// }
-
 			if (curDiag.currentArrow == null) {
 
+				// Look for a line to detect - for deletion, etc. - logic to end arrow at a line comes in a later section... 
+				curDiag.foundArrow = null;
+				// if (!leftButton) {
+				for (Arrow arrow : curDiag.arrows.values()) {
+					if (curDiag.matchArrow(xa, ya, arrow)) {
+						curDiag.foundArrow = arrow;
+						break;
+					}
+				}
+
+				selArrow = curDiag.foundArrow;
+				// selBlockP = null;
+				curDiag.changed = true;
+				if (curDiag.foundArrow != null) {
+					Arrow arr = curDiag.foundArrow;
+					if (arr.endsAtLine || arr.endsAtBlock) {
+
+						if (curDiag.findArrowCrossing) {
+							processSubnetPort(arr);
+							repaint();
+							return;
+						}
+						arr.buildArrowPopupMenu();
+						// curDiag.currentArrow.lastX = xa;
+						// curDiag.currentArrow.lastY = ya;
+						curDiag.jpm.show(e.getComponent(), xa, ya);
+						repaint();
+						return;
+					}
+				}
+				curDiag.findArrowCrossing = false;
+				// }
+
+				// if (curDiag.currentArrow == null) {
 
 				curDiag.foundBlock = null;
 
+				// Check if we are within a block
+				
 				for (Block block : curDiag.blocks.values()) {
 					// block.calcEdges();
 					if (!(block instanceof Enclosure)) {
-						if (between(xa, block.cx - block.width / 2, block.cx
-								+ block.width / 2)
+						if (between(xa, block.cx - block.width / 2,
+								block.cx + block.width / 2)
 								&& between(ya, block.cy - block.height / 2,
 										block.cy + block.height / 2)) {
 							curDiag.foundBlock = block;
@@ -4259,11 +4261,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					} else { // if it is an enclosure block
 
 						int hh = fontHeight;
-						if (between(xa, block.cx - block.width / 2
-								+ block.width / 5, block.cx + block.width / 2
-								- block.width / 5)
-								&& between(ya,
-										block.cy - block.height / 2 - hh,
+						if (between(xa,
+								block.cx - block.width / 2 + block.width / 5,
+								block.cx + block.width / 2 - block.width / 5)
+								&& between(ya, block.cy - block.height / 2 - hh,
 										block.cy - block.height / 2 + hh / 2)) {
 							curDiag.foundBlock = block;
 							selBlock = block;
@@ -4292,43 +4293,45 @@ void chooseFonts(MyFontChooser fontChooser){
 				return;
 			}
 
-			// curDiag.currentArrow is not null....			
+			// curDiag.currentArrow is not null....
 
 			// check for end of arrow
-			
+
 			curDiag.foundBlock = null;
-			
+
 			FoundPoint fp = findArrowStart(xa, ya);
-			if (fp != null){
-				curDiag.foundBlock = fp.b;	
+			if (fp != null) {
+				curDiag.foundBlock = fp.b;
 				side = fp.side;
 			}
-			
+
 			if (curDiag.foundBlock != null // && leftButton
 			) {
 				if (between(curDiag.currentArrow.fromX, x - 4 * scalingFactor,
 						x + 4 * scalingFactor)
-						&& between(curDiag.currentArrow.fromY, y - 4
-								* scalingFactor, y + 4 * scalingFactor))
+						&& between(curDiag.currentArrow.fromY,
+								y - 4 * scalingFactor, y + 4 * scalingFactor))
 					return;
 				if (curDiag.foundBlock.id == curDiag.currentArrow.fromId) {
-					
-					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
-							"Connecting arrow to originating block is deadlock-prone - do anyway?", "Allow?",
-							JOptionPane.YES_NO_OPTION)) {
-					    Integer aid = new Integer(curDiag.currentArrow.id);
-					    curDiag.arrows.remove(aid);
-					    curDiag.foundBlock = null;
-					    curDiag.currentArrow = null;
 
-					    repaint();
-					    return;
+					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+							frame,
+							"Connecting arrow to originating block is deadlock-prone - do anyway?",
+							"Allow?", JOptionPane.YES_NO_OPTION)) {
+						Integer aid = new Integer(curDiag.currentArrow.id);
+						curDiag.arrows.remove(aid);
+						curDiag.foundBlock = null;
+						curDiag.currentArrow = null;
+
+						repaint();
+						return;
 					}
 				}
 				boolean OK = true;
-				Block from = curDiag.blocks.get(new Integer(
-						curDiag.currentArrow.fromId));
-				if ((curDiag.foundBlock instanceof ProcessBlock || curDiag.foundBlock instanceof ExtPortBlock)
+				Block from = curDiag.blocks
+						.get(new Integer(curDiag.currentArrow.fromId));
+				if ((curDiag.foundBlock instanceof ProcessBlock
+						|| curDiag.foundBlock instanceof ExtPortBlock)
 						&& !(from instanceof IIPBlock)) {
 					if (side == Side.BOTTOM) {
 						int answer = MyOptionPane.showConfirmDialog(frame,
@@ -4348,8 +4351,8 @@ void chooseFonts(MyFontChooser fontChooser){
 					}
 				}
 				if (!OK) {
-					//MyOptionPane.showMessageDialog(frame,
-					//		"Cannot end an arrow here");
+					// MyOptionPane.showMessageDialog(frame,
+					// "Cannot end an arrow here");
 					Integer aid = new Integer(curDiag.currentArrow.id);
 					curDiag.arrows.remove(aid);
 					curDiag.foundBlock = null;
@@ -4373,27 +4376,31 @@ void chooseFonts(MyFontChooser fontChooser){
 						xa = a.lastX;
 				}
 
-											
 				a.toX = xa;
 				a.toY = ya;
 
-				//a.toSide = side;
-				from = curDiag.blocks.get(new Integer(
-						a.fromId));
-				Block to = curDiag.blocks.get(new Integer(
-						a.toId));
+				// a.toSide = side;
+				from = curDiag.blocks.get(new Integer(a.fromId));
+				Block to = curDiag.blocks.get(new Integer(a.toId));
 
-				if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
-						from instanceof IIPBlock) && 
-						(a.endsAtLine || (to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock || 
-						to instanceof Enclosure)))){
-					
-					if (!(from instanceof IIPBlock) && (a.upStreamPort == null || a.upStreamPort.trim().equals(""))) 
+				if (from != null
+						&& (from instanceof ProcessBlock
+								|| from instanceof ExtPortBlock
+								|| from instanceof Enclosure
+								|| from instanceof IIPBlock)
+						&& (a.endsAtLine
+								|| (to != null && (to instanceof ProcessBlock
+										|| to instanceof ExtPortBlock
+										|| to instanceof Enclosure)))) {
+
+					if (!(from instanceof IIPBlock) && (a.upStreamPort == null
+							|| a.upStreamPort.trim().equals("")))
 						a.upStreamPort = "OUT";
-					if (!a.endsAtLine &&(a.downStreamPort == null || a.downStreamPort.trim().equals(""))) 
+					if (!a.endsAtLine && (a.downStreamPort == null
+							|| a.downStreamPort.trim().equals("")))
 						a.downStreamPort = "IN";
 				}
-				
+
 				Boolean error = false;
 				if (to instanceof IIPBlock && from instanceof ProcessBlock) {
 					a.reverseDirection();
@@ -4401,29 +4408,29 @@ void chooseFonts(MyFontChooser fontChooser){
 					// .showMessageDialog(frame,
 					// "Direction of arrow has been reversed");
 				}
-				if (from instanceof ExtPortBlock
-						&& (from.type.equals(Block.Types.EXTPORT_OUT_BLOCK) || from.type
-								.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
+				if (from instanceof ExtPortBlock && (from.type
+						.equals(Block.Types.EXTPORT_OUT_BLOCK)
+						|| from.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
 								&& a.fromX < from.cx))
 					error = true;
-				else if (to instanceof ExtPortBlock
-						&& (to.type.equals(Block.Types.EXTPORT_IN_BLOCK) || to.type
-								.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
-								&& a.toX > to.cx))
+				else
+					if (to instanceof ExtPortBlock && (to.type
+							.equals(Block.Types.EXTPORT_IN_BLOCK)
+							|| to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
+									&& a.toX > to.cx))
 					error = true;
 
 				if (!a.checkSides())
 					error = true;
 
 				if (error) {
-					MyOptionPane
-							.showMessageDialog(frame,
-									"Arrow attached to one or both wrong side(s) of blocks");
+					MyOptionPane.showMessageDialog(frame,
+							"Arrow attached to one or both wrong side(s) of blocks");
 					Integer aid = new Integer(a.id);
 					curDiag.arrows.remove(aid);
 				} else {
 					curDiag.changed = true;
-					//checkCompatibility(a);
+					// checkCompatibility(a);
 				}
 				curDiag.foundBlock = null;
 
@@ -4442,13 +4449,12 @@ void chooseFonts(MyFontChooser fontChooser){
 				curDiag.foundArrow = null;
 				Arrow a = curDiag.currentArrow;
 				for (Arrow arrow : curDiag.arrows.values()) {
-					if (arrow != a
-							&& curDiag.matchArrow(xa, ya, arrow))
+					if (arrow != a && curDiag.matchArrow(xa, ya, arrow))
 						curDiag.foundArrow = arrow;
 				}
 
-				if (curDiag.foundArrow != null) {     // && leftButton				 
-					
+				if (curDiag.foundArrow != null) { // && leftButton
+
 					if (x != curx) {
 						double s = y - a.lastY;
 						double t = x - a.lastX;
@@ -4458,61 +4464,71 @@ void chooseFonts(MyFontChooser fontChooser){
 						if (Math.abs(s) > FORCE_VERTICAL) // force vertical
 							x = curDiag.currentArrow.lastX;
 					}
-					a.toX = x;                        // ???????????? 
-					//curDiag.currentArrow.toY = y;   // ????????????
+					a.toX = x; // ????????????
+					// curDiag.currentArrow.toY = y; //????????????
 					a.toY = y;
 					curDiag.currentArrow.endsAtLine = true;
 
 					// use id of target line, not of target block
-					curDiag.currentArrow.toId = curDiag.foundArrow.id; 
-					
-					Block from = curDiag.blocks.get(new Integer(
-							a.fromId));
-					//Block to = curDiag.blocks.get(new Integer(
-					//		a.toId));
+					curDiag.currentArrow.toId = curDiag.foundArrow.id;
+
+					Block from = curDiag.blocks.get(new Integer(a.fromId));
+					// Block to = curDiag.blocks.get(new Integer(
+					// a.toId));
 					Arrow a2 = curDiag.currentArrow.findTerminalArrow();
 					Block to = curDiag.blocks.get(new Integer(a2.toId));
-					
-					if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
-							from instanceof IIPBlock) && 
-							(a.endsAtLine || (to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock || 
-							to instanceof Enclosure)))){
-						
-						if (!(from instanceof IIPBlock) && (a.upStreamPort == null || a.upStreamPort.trim().equals(""))) 
+
+					if (from != null
+							&& (from instanceof ProcessBlock
+									|| from instanceof ExtPortBlock
+									|| from instanceof Enclosure
+									|| from instanceof IIPBlock)
+							&& (a.endsAtLine || (to != null
+									&& (to instanceof ProcessBlock
+											|| to instanceof ExtPortBlock
+											|| to instanceof Enclosure)))) {
+
+						if (!(from instanceof IIPBlock)
+								&& (a.upStreamPort == null
+										|| a.upStreamPort.trim().equals("")))
 							a.upStreamPort = "OUT";
-						if (!a.endsAtLine &&(a.downStreamPort == null || a.downStreamPort.trim().equals(""))) 
+						if (!a.endsAtLine && (a.downStreamPort == null
+								|| a.downStreamPort.trim().equals("")))
 							a.downStreamPort = "IN";
-						if (a.endsAtLine &&(a2.downStreamPort == null || a2.downStreamPort.trim().equals(""))) 
+						if (a.endsAtLine && (a2.downStreamPort == null
+								|| a2.downStreamPort.trim().equals("")))
 							a2.downStreamPort = "IN";
 					}
 					a.downStreamPort = a2.downStreamPort;
-					//Block from = curDiag.blocks.get(new Integer(
-					//		a.fromId));
-					//Arrow a2 = curDiag.currentArrow.findTerminalArrow();
-					//to = curDiag.blocks.get(new Integer(a2.toId));
-					
-					if (to == from){						
-						if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(frame,
-								"Connecting arrow to originating block is deadlock-prone - do anyway?", "Allow?",
-								JOptionPane.YES_NO_OPTION)) {
-						    Integer aid = new Integer(curDiag.currentArrow.id);
-						    curDiag.arrows.remove(aid);
-						    curDiag.foundBlock = null;
-						    curDiag.currentArrow = null;
+					// Block from = curDiag.blocks.get(new Integer(
+					// a.fromId));
+					// Arrow a2 = curDiag.currentArrow.findTerminalArrow();
+					// to = curDiag.blocks.get(new Integer(a2.toId));
 
-						    repaint();
-						    return;
+					if (to == from) {
+						if (JOptionPane.NO_OPTION == MyOptionPane
+								.showConfirmDialog(frame,
+										"Connecting arrow to originating block is deadlock-prone - do anyway?",
+										"Allow?", JOptionPane.YES_NO_OPTION)) {
+							Integer aid = new Integer(curDiag.currentArrow.id);
+							curDiag.arrows.remove(aid);
+							curDiag.foundBlock = null;
+							curDiag.currentArrow = null;
+
+							repaint();
+							return;
 						}
-						
-					}				
-					
+
+					}
+
 					boolean error = true;
 					if (from instanceof ExtPortBlock
 							&& from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))
 						MyOptionPane.showMessageDialog(frame,
 								"Arrow in wrong direction");
-					else if (to instanceof ExtPortBlock
-							&& to.type.equals(Block.Types.EXTPORT_IN_BLOCK))
+					else
+						if (to instanceof ExtPortBlock
+								&& to.type.equals(Block.Types.EXTPORT_IN_BLOCK))
 						MyOptionPane.showMessageDialog(frame,
 								"Arrow in wrong direction");
 					else
@@ -4522,12 +4538,14 @@ void chooseFonts(MyFontChooser fontChooser){
 						curDiag.arrows.remove(aid);
 					} else {
 						curDiag.changed = true;
-						//checkCompatibility(curDiag.currentArrow);
+						// checkCompatibility(curDiag.currentArrow);
 						if (to != null) {
 							if (side == Side.TOP)
-								curDiag.currentArrow.toY = to.cy - to.height / 2;
+								curDiag.currentArrow.toY = to.cy
+										- to.height / 2;
 							else if (side == Side.BOTTOM)
-								curDiag.currentArrow.toY = to.cy + to.height / 2;
+								curDiag.currentArrow.toY = to.cy
+										+ to.height / 2;
 							else if (side == Side.LEFT)
 								curDiag.currentArrow.toX = to.cx - to.width / 2;
 							else if (side == Side.RIGHT)
@@ -4547,22 +4565,24 @@ void chooseFonts(MyFontChooser fontChooser){
 				// bend
 
 				if (curDiag.currentArrow != null) {
-					if (!(between(xa,curDiag.currentArrow.toX - 4, curDiag.currentArrow.toX + 4) &&
-							between(ya,curDiag.currentArrow.toY - 4, curDiag.currentArrow.toY + 4))) {
-						//curDiag.currentArrow.toX = xa;
-						//curDiag.currentArrow.toY = ya;				
-					//}	
-					//else {
+					if (!(between(xa, curDiag.currentArrow.toX - 4,
+							curDiag.currentArrow.toX + 4)
+							&& between(ya, curDiag.currentArrow.toY - 4,
+									curDiag.currentArrow.toY + 4))) {
+						// curDiag.currentArrow.toX = xa;
+						// curDiag.currentArrow.toY = ya;
+						// }
+						// else {
 						Integer aid = new Integer(curDiag.currentArrow.id);
-					    curDiag.arrows.remove(aid);
-					    curDiag.foundBlock = null;
-					    curDiag.currentArrow = null;
+						curDiag.arrows.remove(aid);
+						curDiag.foundBlock = null;
+						curDiag.currentArrow = null;
 						repaint();
 						return;
 					}
-					//repaint();
+					// repaint();
 				}
-				
+
 				if (curDiag.currentArrow.bends == null) {
 					curDiag.currentArrow.bends = new LinkedList<Bend>();
 				}
@@ -4590,7 +4610,6 @@ void chooseFonts(MyFontChooser fontChooser){
 				// }
 			}
 
-			
 		}
 
 		public void mouseClicked(MouseEvent arg0) {

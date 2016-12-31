@@ -99,9 +99,10 @@ public class MyOptionPane {
 	     	     
 	     dialog.pack();	     	     
 	     dialog.setVisible(true);	
-	     
-	     Integer ret = (Integer) pane.getValue();
-	     return ret.intValue();
+	     int i = -1;
+	     if (pane.getValue() != null)  
+	         i = ((Integer) pane.getValue()).intValue();
+	     return i;
 	     
 	}
 	static int showConfirmDialog(Object f,  Object message, String title, int optionType) {

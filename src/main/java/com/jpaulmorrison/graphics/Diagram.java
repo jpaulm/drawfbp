@@ -621,12 +621,10 @@ public class Diagram {
 			for (Bend bend : arrow.bends) {
 				x2 = bend.x;
 				y2 = bend.y;
-				if (driver.nearpln(x, y, x1, y1, x2, y2)) {
-					return true;
-				} else {
-					x1 = bend.x;
-					y1 = bend.y;
-				}
+				if (driver.nearpln(x, y, x1, y1, x2, y2)) 
+					return true;				
+				x1 = x2;
+				y1 = y2;				
 			}
 		}
 

@@ -226,9 +226,7 @@ public class Arrow implements ActionListener {
 					&& (from instanceof ProcessBlock || from instanceof Enclosure)) {
 				if (upStreamPort.equals("*")) {
 					drawCircleFrom(g, fromX, fromY, endX, endY, Color.BLUE, 8);
-					// g.setColor(Color.BLUE);
-					// g.drawOval(fromX, fromY - 4, 8, 8);
-					// g.fillOval(fromX, fromY - 4, 8, 8);
+					
 				} else if (from.visible) {
 					g.setColor(Color.BLUE);
 					int y = fromY + driver.fontHeight;
@@ -243,9 +241,7 @@ public class Arrow implements ActionListener {
 					&& (to instanceof ProcessBlock || to instanceof Enclosure)) {
 				if (downStreamPort.equals("*")) {
 					drawCircleTo(g, fx, fy, toX, toY, Color.BLUE, 8);
-					// g.setColor(Color.BLUE);
-					// g.drawOval(x - 8, toY - 4, 8, 8);
-					// g.fillOval(x - 8, toY - 4, 8, 8);
+					
 				} else if (to.visible) {
 					g.setColor(Color.BLUE);
 					int y = toY - driver.fontHeight / 2;
