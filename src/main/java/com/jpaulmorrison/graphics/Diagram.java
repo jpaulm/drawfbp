@@ -2,6 +2,7 @@ package com.jpaulmorrison.graphics;
 
 //import java.awt.ComponentOrientation;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;

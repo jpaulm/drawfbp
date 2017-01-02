@@ -199,6 +199,8 @@ public class DiagramBuilder {
 						if (endtag.equals("desc") /* || endtag.equals("description") */) {
 							diag.desc = saveData;
 							diag.desc = diag.desc.replace('\n', ' ');
+							if (diag.desc.equals(""))
+								diag.desc = " ";
 							}
 
 							//if (tag.equals("title")) {

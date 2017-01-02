@@ -221,7 +221,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			else
 				contents[8] = " {\nstring description = ";
 			if (diag.desc == null)
-				diag.desc = "";
+				diag.desc = " ";
 			contents[9] = "\"" + diag.desc + "\"";
 			if (langLabel.equals("Java"))
 				contents[10] = ";\n protected void define() { \n";
@@ -608,8 +608,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 	String genMetadata(String lang) {
 		String inData = "";
 		String outData = "";
-		String descr = "";
-		if (diag.desc != null) {
+		String descr = " ";
+		if (diag.desc != null && !(diag.desc.equals(" "))) {
 			if (lang.equals("Java"))
 				descr = "@ComponentDescription(\"" + diag.desc + "\") \n";
 			else

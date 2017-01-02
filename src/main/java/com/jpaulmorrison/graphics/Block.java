@@ -6,7 +6,6 @@ import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -49,7 +48,7 @@ public class Block implements ActionListener {
 
 	Diagram diag;
 
-	LegendBlock lb;
+	LegendBlock lblk;
 	String mpxfactor = null;
 	HashMap<String, AInPort> inputPortAttrs;
 	HashMap<String, AOutPort> outputPortAttrs;
@@ -67,6 +66,10 @@ public class Block implements ActionListener {
 
 	//JMenuItem[] sMenu;
 	Color lg = new Color(240, 240, 240); // very light gray
+	Color ly = new Color(255, 255, 200); // light yellow
+	Color lb = new Color(200, 255, 255); // light blue (turquoise actually)
+	Color grey = new Color(170, 244, 255); // sort of grey (?)
+	
 	int ROWSIZE = 5;
 	String codeFileName;
 	
@@ -122,9 +125,9 @@ public class Block implements ActionListener {
 		g.setColor(Color.BLACK);
 		g.drawRoundRect(tlx, tly, width, height, 6, 6);
 		if (this == driver.selBlock)
-			g.setColor(new Color(255, 255, 200)); // light yellow
-		else
-			g.setColor(new Color(200, 255, 255)); // light turquoise
+			g.setColor(ly); // light yellow
+		else  
+			g.setColor(lb); // light turquoise
 
 		g.fillRoundRect(tlx + 1, tly + 1, width - 1, height - 1, 6, 6);
 
@@ -139,9 +142,9 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 			g.drawRoundRect(x, y, i - 1, 20, 2, 2);
 			if (this == driver.selBlock)
-				g.setColor(new Color(255, 255, 200)); // light yellow
+				g.setColor(ly); // light yellow
 			else
-				g.setColor(new Color(200, 255, 255)); // light turquoise
+				g.setColor(lb); // light turquoise
 			g.fillRoundRect(x + 1, y + 1, i - 2, 19, 2, 2);
 			g.setColor(Color.BLACK);
 			if (mpxfactor != null)
@@ -522,7 +525,7 @@ public class Block implements ActionListener {
 		String fn = fullClassName.substring(0, i);  // jar file name or class folder
 		String cn = fullClassName.substring(i + 1);  // class name
 	
-		LinkedList<URL> ll = new LinkedList<URL>();
+		//LinkedList<URL> ll = new LinkedList<URL>();
 		
 		if (!(fn.endsWith("jar")))
 				fn += File.separator;
@@ -647,7 +650,7 @@ public class Block implements ActionListener {
 
 	 
 	void showArrowEndAreas(Graphics2D g) {
-		g.setColor(new Color(170, 244, 255));
+		g.setColor(grey);   
 
 		g.fillRect(cx - width / 2 - 1, cy - height / 2 - 1, 4, height); // left
 		if (!(this instanceof Enclosure))
@@ -856,9 +859,7 @@ public class Block implements ActionListener {
 		JPanel panel = new JPanel(new GridBagLayout());
 
 		panel.setBackground(Color.GRAY);
-		//panel.setLocation(driver.frame.getX() + 50, driver.frame.getY() + 50);
-		//panel.setPreferredSize(new Dimension(800, 600));
-		
+				
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		panel.setLayout(gbl);
@@ -869,6 +870,18 @@ public class Block implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = ROWSIZE;
+		String desc = description.replace('\n',  ' '); 
+		JTextField tfd = new JTextField(" " + desc + " ");
+		Font ft = tfd.getFont();
+		ft = ft.deriveFont(Font.BOLD);
+		tfd.setFont(ft);
+		tfd.setForeground(Color.BLUE);
+		tfd.setEditable(false);
+		gbl.setConstraints(tfd, gbc);
+		//tfd.setBackground(lg);
+		panel.add(tfd);
+		
+		gbc.gridy = 1;
 		JTextField tf0 = new JTextField(" " + fullClassName + " ");
 		tf0.setEditable(false);
 		gbl.setConstraints(tf0, gbc);
@@ -878,7 +891,7 @@ public class Block implements ActionListener {
 		gbc.weightx = 1.5;
 		gbc.weighty = 0.5;
 		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = 2;
 		gbc.gridwidth = ROWSIZE;
 		if (compDescr == null || compDescr.equals("")) {
 			compDescr = "(no description)";
@@ -893,7 +906,7 @@ public class Block implements ActionListener {
 		gbc.weightx = 0.5;
 
 		gbc.gridwidth = 1;
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 
 		JTextField[] tft = new JTextField[ROWSIZE];
 		tft[0] = new JTextField(" Port ");
@@ -964,30 +977,33 @@ public class Block implements ActionListener {
 		}
 
 		jdialog.add(panel);
-		//jdialog.pack();
+		//jdialog.pack();  
 		
+		 
 		Point p = driver.frame.getLocation();
 		Dimension dim = driver.frame.getSize();
-		int x_off = 100;
-		int y_off = 100;
-		jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
-		jdialog.pack();
-		int height = 200 + inputPortAttrs.size() * 40 + outputPortAttrs.size() * 40;
-		int width = (int)jdialog.getPreferredSize().getWidth();
-		 
-		jdialog.setLocation(p.x + dim.width - width, p.y + dim.height - height - y_off);
-		 
-		//int x1 = driver.frame.getX() + driver.frame.getWidth()
-		//		- jdialog.getWidth();
-		//x1 = Math.min(cx + 50, x1);
-		//jdialog.setLocation(x1, cy + 50);
+		//int x_off = 100;
+		//int y_off = 100;
+		//jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
+		//jdialog.pack();
+		//int height = 200 + inputPortAttrs.size() * 40 + outputPortAttrs.size() * 40;
+		int width = (int)jdialog.getPreferredSize().getWidth();		
 		
-		jdialog.setSize(800, height);
+		int max_y = 0;
+		for (Block b: driver.curDiag.blocks.values()) {
+			max_y = Math.max(max_y, b.cy + b.height / 2 );
+		}
+		
+		jdialog.pack();
+		//jdialog.setLocation(p.x + dim.width / 2 - width / 2, p.y + dim.height - height - y_off);
+		jdialog.setLocation(p.x + dim.width / 2 - width / 2, p.y + max_y + 50);
+		
+		
 		panel.setVisible(true);
 		jdialog.setVisible(true);
 		jdialog.toFront();
 		//jdialog.setPreferredSize(new Dimension(dim.width / 2, dim.height / 2));
-		jdialog.pack();
+		
 		jdialog.validate();
 		panel.repaint();
 		jdialog.repaint();
@@ -1118,7 +1134,6 @@ public class Block implements ActionListener {
 		diag.jpm = new JPopupMenu("            Block-related Actions");
 		// driver.curPopup = jpm;
 		diag.jpm.setVisible(true);
-		// jpm.setColor(new Color(121, 201, 201));
 		JMenuItem menuItem = null;
 		JLabel label2 = new JLabel();
 		label2.setFont(driver.fontg);

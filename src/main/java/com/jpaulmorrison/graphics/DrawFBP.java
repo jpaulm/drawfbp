@@ -155,7 +155,7 @@ public class DrawFBP extends JFrame
 
 	Class<?> jHelpClass = null;
 	Class<?> helpSetClass = null;
-	JSlider zoomControl = null;
+	
 
 	boolean panSwitch = false;
 	int panX, panY;
@@ -190,22 +190,14 @@ public class DrawFBP extends JFrame
 	JMenuItem menuItem1 = null;
 	JTextField jtf = new JTextField();
 	
-	JLabel lab2 = new JLabel("Zoom");
-	JCheckBox pan = new JCheckBox("Pan");
-	JRadioButton[] but = new JRadioButton[11];
-
 	boolean allFiles = false;
-	int wDiff, hDiff;
+	//int wDiff, hDiff;
 	JComponent jHelpViewer = null;
 	MyFontChooser fontChooser;
 	boolean gFontChanged, fFontChanged;
-	
-
-	// String[] filterOptions = {"", "All (*.*)"};
 
 	static Color lg = new Color(240, 240, 240); // very light gray
 	static Color slateGray1 = new Color(198, 226, 255);
-	// static Color goldenrod = new Color(255, 255, 224);
 	JDialog popup2;
 
 	static enum Side {
@@ -215,6 +207,12 @@ public class DrawFBP extends JFrame
 	
 	Cursor defaultCursor = null;
 	boolean use_drag_icon = false;
+	
+	JLabel zoom = new JLabel("Zoom");
+	JCheckBox pan = new JCheckBox("Pan");
+	JRadioButton[] but = new JRadioButton[11];
+	
+	
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -456,8 +454,8 @@ public class DrawFBP extends JFrame
 		
 		frame.repaint();
 
-		wDiff = frame.getWidth() - curDiag.area.getWidth();
-		hDiff = frame.getHeight() - curDiag.area.getHeight();
+		//wDiff = frame.getWidth() - curDiag.area.getWidth();
+		//hDiff = frame.getHeight() - curDiag.area.getHeight();
 		
 		diagramName = properties.get("currentDiagram");
 		
@@ -481,9 +479,7 @@ public class DrawFBP extends JFrame
 		
 		buildPropDescTable();
 
-		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		Box box1 = new Box(BoxLayout.Y_AXIS);
-		container.add(box1);
+		
 		
 		curDiag = getNewDiag();				
 
@@ -499,7 +495,7 @@ public class DrawFBP extends JFrame
 				Diagram diag = b.diag;
 
 				if (diag == null) {
-					getNewDiag();
+					curDiag = getNewDiag();
 					// diag = new Diagram(driver);
 					// b.diag = diag;
 				}
@@ -510,14 +506,19 @@ public class DrawFBP extends JFrame
 			}
 		};
 
-		
+			
 		jtp.addMouseListener(mouseListener);		
-		
+			
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		Box box1 = new Box(BoxLayout.Y_AXIS);
+		container.add(box1);		
 
 		Box box4 = new Box(BoxLayout.X_AXIS);
 		box1.add(box4);
+		
 		int sf = (int) Math.round(100.0 * scalingFactor);
-		zoomControl = new JSlider(JSlider.VERTICAL, 60, 200, sf);
+		
+		JSlider zoomControl = new JSlider(JSlider.VERTICAL, 60, 200, sf);
 		zoomControl.setPreferredSize(new Dimension(40, 200));
 		zoomControl.setMajorTickSpacing(20);
 		// zoomControl.setMinorTickSpacing(10);
@@ -531,29 +532,64 @@ public class DrawFBP extends JFrame
 		zoomControl.getActionMap().put("CLOSE", escapeAction);
 
 		// zoomControl.setBackground(Color.WHITE);
-		Box box5 = new Box(BoxLayout.Y_AXIS);
-		box4.add(box5);
-		box5.add(Box.createRigidArea(new Dimension(0, 10)));
-		// box4.add(Box.createRigidArea(new Dimension(5, 0)));
+		Box box45 = new Box(BoxLayout.Y_AXIS);
+		Box box46 = new Box(BoxLayout.X_AXIS);
+		Box box5 = new Box(BoxLayout.X_AXIS);
+		Box box61 = new Box(BoxLayout.X_AXIS);
+		Box box62 = new Box(BoxLayout.X_AXIS);
+		Box box6 = new Box(BoxLayout.Y_AXIS);
+		
+		box5.add(Box.createRigidArea(new Dimension(10, 0)));				
+		
+		box6.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		//lab2.setFont(fontg);
-		box5.add(lab2);
-		box5.add(Box.createRigidArea(new Dimension(0, 10)));
-		box5.add(zoomControl);
-		box5.add(Box.createRigidArea(new Dimension(0, 10)));
 		scaleLab = new JLabel();
-		box5.add(scaleLab);
+		box61.add(scaleLab);
+		box61.add(Box.createRigidArea(new Dimension(5, 0)));
+				
+		box62.add(zoom);
+		box62.add(Box.createRigidArea(new Dimension(5, 0)));
+		
+		box6.add(zoomControl);
+		box6.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		
+		scaleLab.setForeground(Color.BLUE);
 		String scale = "100%";
 		scaleLab.setText(scale);
+		
+		box6.add(Box.createRigidArea(new Dimension(0, 10)));
+		box6.add(box61);
+		box6.add(Box.createRigidArea(new Dimension(0, 10)));
+		box6.add(box62);		
+		box5.add(box6);
+		box5.add(Box.createRigidArea(new Dimension(10, 0)));
+		//grid.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+		grid.setFont(fontg);		
+		grid.setSelected(true);
+		// box.add(grid);
+		grid.setActionCommand("Toggle Click to Grid");
+		grid.addActionListener(this);
+		grid.setBackground(slateGray1);
+		grid.setBorderPaintedFlat(false);
+		box6.add(Box.createRigidArea(new Dimension(0, 10)));
+		box45.add(box5);
+		box45.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		box46.add(grid);
+		box46.add(Box.createRigidArea(new Dimension(0, 10)));
+		box45.add(box46);
 		// scaleLab.setFont(fontg);
+		
+		box4.add(box45);
 		Point p = jtp.getLocation();
 		jtp.setLocation(p.x + 100, p.y);
 		box4.add(jtp);
 		box4.add(Box.createRigidArea(new Dimension(50, 0)));
 		// jtp.setBackground(Color.WHITE);
 		// Align the left edges of the components.
-		curDiag.area.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-		diagDesc.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+		curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);    
+		diagDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
 		// label.setLabelFor(area);
 		box1.add(diagDesc);
 		Font ft = fontg.deriveFont(Font.BOLD);
@@ -563,16 +599,28 @@ public class DrawFBP extends JFrame
 
 		box1.add(Box.createRigidArea(new Dimension(0, 4)));
 		Box box2 = new Box(BoxLayout.X_AXIS);
-		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));  // ????
 		box1.add(box2);
+		//box2.add(Box.createHorizontalGlue());
+		box2.add(pan);
+		//.addbox2(Box.createHorizontalGlue());
+		box2.add(Box.createRigidArea(new Dimension(10, 0))); 
 		box2.add(Box.createHorizontalGlue());
+		pan.setSelected(false);
+		pan.setFont(fontg);		
+		pan.setActionCommand("Toggle Pan Switch");
+		pan.addActionListener(this);
+		pan.setBackground(slateGray1);
+		pan.setBorderPaintedFlat(false);
+		// pan.setBorder(null);
+		// pan.setPreferredSize(new Dimension(50, 20));
 		ButtonGroup butGroup = new ButtonGroup();
 
 		// "Subnet" is not a separate block type (it is a variant of "Process")
 		String buttonNames[] = {"Process", "Initial IP",
 				"Enclosure", "Subnet", "Ext Port - In", "Ext Port - Out",
 				"Ext Port - Out/In", "Legend", "File", "Person", "Report"};
-
+			
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
 			but[j].addActionListener(this);
@@ -853,30 +901,30 @@ public class DrawFBP extends JFrame
 		// box.add(Box.createRigidArea(new Dimension(60, 0)));
 		//box.add(Box.createGlue());
 
-		pan.setSelected(false);
-		pan.setFont(fontg);
+		//pan.setSelected(false);
+		//pan.setFont(fontg);
 		// box.add(pan);
-		pan.setActionCommand("Toggle Pan Switch");
-		pan.addActionListener(this);
-		pan.setBackground(slateGray1);
-		pan.setBorderPaintedFlat(false);
+		//pan.setActionCommand("Toggle Pan Switch");
+		//pan.addActionListener(this);
+		//pan.setBackground(slateGray1);
+		//pan.setBorderPaintedFlat(false);
 		// pan.setBorder(null);
 		// pan.setPreferredSize(new Dimension(50, 20));
-		menuBar.add(Box.createRigidArea(new Dimension(20,0)));
-		menuBar.add(pan);
+		//menuBar.add(Box.createRigidArea(new Dimension(20,0)));
+		//menuBar.add(pan);
 
-		grid.setFont(fontg);		
-		grid.setSelected(true);
+		//grid.setFont(fontg);		
+		//grid.setSelected(true);
 		// box.add(grid);
-		grid.setActionCommand("Toggle Click to Grid");
-		grid.addActionListener(this);
-		grid.setBackground(slateGray1);
-		grid.setBorderPaintedFlat(false);
+		//grid.setActionCommand("Toggle Click to Grid");
+		//grid.addActionListener(this);
+		//grid.setBackground(slateGray1);
+		//grid.setBorderPaintedFlat(false);
 		
 		// grid.setBorder(null);
 		// grid.setPreferredSize(new Dimension(50, 20));
-		menuBar.add(Box.createRigidArea(new Dimension(10,0)));
-		menuBar.add(grid);
+		//menuBar.add(Box.createRigidArea(new Dimension(10,0)));
+		//menuBar.add(grid);
 
 		JMenuItem menu_help = new JMenuItem("Launch Help");
 		helpMenu.add(menu_help);
@@ -899,6 +947,7 @@ public class DrawFBP extends JFrame
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
 		diag.area = sa;
+		
 		int i = jtp.getTabCount();
 		jtp.add(sa, new JLabel());
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
@@ -906,6 +955,7 @@ public class DrawFBP extends JFrame
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
 		diag.tabNum = i;
+		
 		return diag;
 	}
 
@@ -1987,6 +2037,7 @@ public class DrawFBP extends JFrame
 		sa.getInputMap().put(escapeKS, "CLOSE");
 
 		sa.getActionMap().put("CLOSE", escapeAction);
+		/* experimental
 		if (curDiag == null)
 			sa.setPreferredSize(new Dimension(1200, 800));
 		else {
@@ -1994,6 +2045,7 @@ public class DrawFBP extends JFrame
 			int h = frame.getHeight();
 			sa.setPreferredSize(new Dimension(w - wDiff, h - hDiff));
 		}
+		*/
 		return sa;
 	}
 
@@ -2255,7 +2307,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		osg.setFont(fontg);
 		jfl.setFont(fontg);
 		jtp.setFont(fontg);
-		lab2.setFont(fontg);
+		zoom.setFont(fontg);
 		jtf.setFont(fontg);
 		pan.setFont(fontg);
 		grid.setFont(fontg);
@@ -3437,6 +3489,9 @@ void chooseFonts(MyFontChooser fontChooser){
 			String s = diag.desc;
 			if (s != null)
 				s = s.replace('\n', ' ');
+			else 
+				s = " ";
+			
 			diagDesc.setText(s);
  
 			Graphics2D g2d = (Graphics2D) g;
@@ -3498,23 +3553,20 @@ void chooseFonts(MyFontChooser fontChooser){
 			return fp;
 		}
 
-		public void mouseMoved(MouseEvent e) {
-			// jtp.redXTabNo = -1;
+		public void mouseMoved(MouseEvent e) {			
 
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
 			curDiag.arrowRoot = null;
 			
-			Rectangle r2 = curDiag.area.getBounds();			
-
-			if (r2.contains(x, y) && panSwitch)			 
-				    frame.setCursor(openPawCursor);
-			    else 
-			    	if (use_drag_icon)
-			    		frame.setCursor(drag_icon);
-			    	else
-			    		frame.setCursor(defaultCursor);
+			if (panSwitch) {
+				Rectangle r = curDiag.area.getBounds();
+				if (r.contains(x, y))
+					frame.setCursor(openPawCursor);
+				else
+					frame.setCursor(defaultCursor);
+			}  
 
 			Point p = new Point(x, y);
 			p = gridAlign(p);
@@ -3530,7 +3582,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			
 				
 			selBlockM = null;
-			// look for corner of an enclosure
+			// look for corner of an enclosure			
 			for (Block block : curDiag.blocks.values()) {
 				// block.calcEdges();
 				if (block instanceof Enclosure) {
@@ -3563,9 +3615,9 @@ void chooseFonts(MyFontChooser fontChooser){
 					}
 				}
 
-				if (between(xa, block.leftEdge - 6, block.rgtEdge + 6)
-						&& between(ya, block.topEdge - 6, block.botEdge + 6))  
-					selBlockM = block;  // mousing select
+				//if (between(xa, block.leftEdge - 6, block.rgtEdge + 6)
+				//		&& between(ya, block.topEdge - 6, block.botEdge + 6))  
+				//	selBlockM = block;  // mousing select
 				
 				// logic to change cursor to drag_icon
 				
@@ -3573,28 +3625,24 @@ void chooseFonts(MyFontChooser fontChooser){
 						block.rgtEdge - 6 * scalingFactor)
 						&& between(ya, block.topEdge + 6 * scalingFactor,
 								block.botEdge - 6 * scalingFactor)) {
+					selBlockM = block;  // mousing select
 					if (!use_drag_icon) {
-						if (curDiag.jpm == null)
+						if (curDiag.jpm == null && !panSwitch)
 							frame.setCursor(drag_icon);
 						use_drag_icon = true;
 						}
+					
 					break;
 					}
-
-				if (use_drag_icon){
-					frame.setCursor(defaultCursor);
-					use_drag_icon = false;
-				}
-				
-				/* 
-				if (curDiag.currentArrow != null) {
-					curDiag.currentArrow.toX = xa;
-					curDiag.currentArrow.toY = ya;
-				}
-				*/
 				
 			}
-			
+			if (selBlockM == null) {
+				if (use_drag_icon) 	
+					use_drag_icon = false;
+				
+				if (!panSwitch)
+					frame.setCursor(defaultCursor);
+			}
             //curDiag.foundBlock = null;			
 			
 			FoundPoint fp = findArrowStart(xa, ya);
@@ -3638,17 +3686,17 @@ void chooseFonts(MyFontChooser fontChooser){
 			ya = y;
 			curx = xa;
 			cury = ya;
-
-			//if (panSwitch) {
-			Rectangle r2 = curDiag.area.getBounds();
-				
-			if (r2.contains(x, y) && panSwitch) {
-				frame.setCursor(closedPawCursor);
-				panX = xa;
-				panY = ya;
-				return;
+			
+			if (panSwitch) {
+				Rectangle r = curDiag.area.getBounds();
+				if (r.contains(x, y)) {
+					frame.setCursor(closedPawCursor);
+					panX = xa;
+					panY = ya;
+					return;
+				} else
+					frame.setCursor(defaultCursor);
 			}
-
 			
 			if (e.getClickCount() == 2)
 				return;
@@ -4045,9 +4093,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			xa = (int) p2.getX();
 			ya = (int) p2.getY();
 
-			Rectangle r2 = curDiag.area.getBounds();
-
-			if (r2.contains(x, y) && panSwitch) {
+			if (curDiag.area.contains(x, y) && panSwitch) {
 				frame.setCursor(openPawCursor);
 				repaint();
 				return;
