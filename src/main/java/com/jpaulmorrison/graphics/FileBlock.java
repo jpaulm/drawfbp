@@ -34,9 +34,9 @@ public class FileBlock extends Block {
 		gp.closePath();
 		//g.draw(gp);
 		if (this == driver.selBlock)
-			g.setColor(new Color(255, 255, 200)); // light yellow
+			g.setColor(ly); // light yellow
 			else
-			g.setColor(new Color(200, 255, 255)); // light turquoise	
+			g.setColor(lb); // light turquoise	
 		g.fill(gp);
 		g.setColor(Color.BLACK);
 		g.draw(gp);

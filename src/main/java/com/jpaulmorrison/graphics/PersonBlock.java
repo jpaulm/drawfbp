@@ -24,9 +24,9 @@ import java.awt.Graphics2D;
 			g.setColor(Color.BLACK);
 			g.drawOval(cx - 8, cy - height/2 + 2, 16, 20);
 			if (this == driver.selBlock)
-				g.setColor(new Color(255, 255, 200)); // light yellow
+				g.setColor(ly); // light yellow
 				else
-				g.setColor(new Color(200, 255, 255)); // light turquoise			
+				g.setColor(lb); // light turquoise			
 			
 			g.fillOval(cx - 7, cy - height/2 + 3, 14, 18);
 			g.setColor(Color.BLACK);

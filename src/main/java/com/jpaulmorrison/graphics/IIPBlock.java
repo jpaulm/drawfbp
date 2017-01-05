@@ -39,9 +39,9 @@ public class IIPBlock extends Block {
 		}
 		g.drawRoundRect(cx - width / 2, cy - height / 2, width, height, 6, 6);
 		if (this == driver.selBlock)
-			g.setColor(new Color(255, 255, 200)); // light yellow
+			g.setColor(ly); // light yellow
 			else
-			g.setColor(new Color(200, 255, 255)); // light turquoise
+			g.setColor(lb); // light turquoise
 		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width - 1,
 				height - 1, 6, 6);
 		g.setColor(Color.GRAY);

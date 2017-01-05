@@ -488,6 +488,7 @@ public class DiagramBuilder {
 		fl3.put("height", "*");
 		fl3.put("multiplex", "*");
 		fl3.put("mpxfactor", "*");
+		fl3.put("substreamsensitive", "*");
 		fl3.put("invisible", "*");		
 		fl3.put("subnetports", "LinkedList");
 

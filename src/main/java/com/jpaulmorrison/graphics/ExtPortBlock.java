@@ -64,9 +64,9 @@ public class ExtPortBlock extends Block {
 		g.setColor(Color.BLACK);
 		g.drawPolygon(ptx, pty, 7);
 		if (this == driver.selBlock)
-			g.setColor(new Color(255, 255, 200)); // light yellow
+			g.setColor(ly); // light yellow
 		else
-			g.setColor(new Color(200, 255, 255)); // light turquoise
+			g.setColor(lb); // light turquoise
 		ptx[0] += 1;
 		pty[0] += 1;
 		ptx[1] -= 1;
@@ -89,7 +89,7 @@ public class ExtPortBlock extends Block {
 			pty2[0] = top;
 			pty2[1] = cy;
 			pty2[2] = bottom;
-			g.setColor(Color.RED);
+			g.setColor(Color.BLUE);
 			g.drawPolygon(ptx2, pty2, 3);		
 			g.fillPolygon(ptx2, pty2, 3);	
 		}
@@ -124,9 +124,9 @@ public class ExtPortBlock extends Block {
 		g.setColor(Color.BLACK);
 		g.drawPolygon(ptx, pty, 7);
 		if (this == driver.selBlock)
-			g.setColor(new Color(255, 255, 200)); // light yellow
+			g.setColor(ly); // light yellow
 		else
-			g.setColor(new Color(200, 255, 255)); // light turquoise
+			g.setColor(lb); // light turquoise
 		ptx[0] -= 1;
 		pty[0] += 1;
 		ptx[1] -= 1;
@@ -140,7 +140,7 @@ public class ExtPortBlock extends Block {
 		g.fillPolygon(ptx, pty, 7);
 		
 		if (substreamSensitive){
-			g.setColor(Color.RED);			
+			//g.setColor(Color.RED);			
 			//GeneralPath gp = Enclosure.drawSemicircle(left - 4, cy, +1);
 			//g.fill(gp);	
 			int ptx2[] = new int[3];
@@ -151,7 +151,7 @@ public class ExtPortBlock extends Block {
 			pty2[0] = top;
 			pty2[1] = cy;
 			pty2[2] = bottom;
-			g.setColor(Color.RED);
+			g.setColor(Color.BLUE);
 			g.drawPolygon(ptx2, pty2, 3);		
 			g.fillPolygon(ptx2, pty2, 3);	
 		}
