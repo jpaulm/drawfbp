@@ -22,8 +22,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -72,9 +70,9 @@ public class MyFileChooser extends JFrame
 	MyButton butNF = new MyButton();
 	MyButton butCopy = new MyButton();
 
-	MyTextField text = new MyTextField(100);
-	MyTextField text2 = new MyTextField(100);
-	MyTextField text3 = new MyTextField(100);
+	MyTextField t_dirName = new MyTextField(100);
+	MyTextField t_fileName = new MyTextField(100);
+	MyTextField t_suggName = new MyTextField(100);
 
 	Component selComp = null;
 	// Component changedField = null;
@@ -166,34 +164,34 @@ public class MyFileChooser extends JFrame
 		cBox.setSelectedIndex(driver.allFiles ? 1 : 0);
 
 		order = new Vector<Component>(9);
-		order.add(text);
+		order.add(t_dirName);
 		order.add(butParent);
 		order.add(butNF);
 		order.add(panel); // just a place-holder - will be filled in by
 							// buildList
-		order.add(text2);
+		order.add(t_fileName);
 		order.add(butCopy);
 		order.add(butOK);
 		order.add(cBox);
 		order.add(butDel);
 		order.add(butCancel);
 
-		text.setEditable(true);
-		text.setEnabled(true);
+		t_dirName.setEditable(true);
+		t_dirName.setEnabled(true);
 
 		//text.getDocument().addDocumentListener(this);
 
-		text2.setEditable(true);
-		text2.setEnabled(true);
-		text2.setRequestFocusEnabled(true);
+		t_fileName.setEditable(true);
+		t_fileName.setEnabled(true);
+		t_fileName.setRequestFocusEnabled(true);
 		//text2.addKeyListener(this);
 		//text2.getDocument().addDocumentListener(this);
-		text2.setPreferredSize(new Dimension(100, driver.fontHeight + 2));
+		t_fileName.setPreferredSize(new Dimension(100, driver.fontHeight + 2));
 			
-		text3.setEditable(false);
-		text3.setEnabled(true);
+		t_suggName.setEditable(false);
+		t_suggName.setEnabled(true);
 		// text3.setRequestFocusEnabled(true);
-		text3.setFont(driver.fontg.deriveFont(Font.ITALIC));
+		t_suggName.setFont(driver.fontg.deriveFont(Font.ITALIC));
 		// text3.setPreferredSize(new Dimension(100, driver.fontHeight + 2));
 
 		String s = (saveAs) ? "Save or Save As" : "Open File";
@@ -237,15 +235,15 @@ public class MyFileChooser extends JFrame
 		butNF.setRequestFocusEnabled(true);
 		butCopy.setRequestFocusEnabled(true);
 
-		text.addMouseListener(this);
-		text2.addMouseListener(this);
+		t_dirName.addMouseListener(this);
+		t_fileName.addMouseListener(this);
 		
 		panel.setPreferredSize(new Dimension(600, 600));
 
-		text.setFocusTraversalKeysEnabled(false);
+		t_dirName.setFocusTraversalKeysEnabled(false);
 		butParent.setFocusTraversalKeysEnabled(false);
 		butNF.setFocusTraversalKeysEnabled(false);
-		text2.setFocusTraversalKeysEnabled(false);
+		t_fileName.setFocusTraversalKeysEnabled(false);
 		butOK.setFocusTraversalKeysEnabled(false);
 		butDel.setFocusTraversalKeysEnabled(false);
 		butCancel.setFocusTraversalKeysEnabled(false);
@@ -274,7 +272,7 @@ public class MyFileChooser extends JFrame
 		box1.add(label);
 
 		box1.add(Box.createRigidArea(new Dimension(12, 0)));
-		box1.add(text);
+		box1.add(t_dirName);
 		box1.add(Box.createRigidArea(new Dimension(6, 0)));
 
 		box1.add(butParent);
@@ -283,7 +281,7 @@ public class MyFileChooser extends JFrame
 
 		// butNF.addActionListener(this);
 		box1.add(butNF);
-		box1.add(butOK);
+		//box1.add(butOK);
 
 		box0.add(Box.createRigidArea(new Dimension(0, 20)));
 		box0.add(box1);
@@ -291,9 +289,9 @@ public class MyFileChooser extends JFrame
 		box0.add(Box.createRigidArea(new Dimension(0, 20)));
 		panel.add(box0, BorderLayout.NORTH);
 
-		text.setFont(label.getFont());
-		text.addActionListener(this);
-		text2.addActionListener(this);
+		t_dirName.setFont(label.getFont());
+		t_dirName.addActionListener(this);
+		t_fileName.addActionListener(this);
 		
 		
 		GridBagLayout gridbag = new GridBagLayout();
@@ -324,8 +322,8 @@ public class MyFileChooser extends JFrame
 		c.weightx = saveAs ? 0.1: 1.0;
 		c.gridwidth = saveAs ? 1 : 3;
 		//c.ipadx  = saveAs ? -20: 0;
-		gridbag.setConstraints(text2, c);
-		pan2.add(text2);
+		gridbag.setConstraints(t_fileName, c);
+		pan2.add(t_fileName);
 
 		if (saveAs) {
 			c.gridx = 3;
@@ -338,11 +336,11 @@ public class MyFileChooser extends JFrame
 			c.gridx = 4;
 			c.weightx = 0.9;
 			//c.ipadx = 20;
-			gridbag.setConstraints(text3, c);
-			pan2.add(text3);
-			text3.setBackground(Color.WHITE);
-			Dimension dim2 = text3.getPreferredSize();
-			text3.setPreferredSize(new Dimension(driver.fontWidth * 25, dim2.height));
+			gridbag.setConstraints(t_suggName, c);
+			pan2.add(t_suggName);
+			t_suggName.setBackground(Color.WHITE);
+			Dimension dim2 = t_suggName.getPreferredSize();
+			t_suggName.setPreferredSize(new Dimension(driver.fontWidth * 25, dim2.height));
 		}
 
 		c.gridx = 5;
@@ -433,8 +431,8 @@ public class MyFileChooser extends JFrame
 		//dialog.setPreferredSize(dim);
 
 		dialog.setFocusTraversalKeysEnabled(false);
-		text.addKeyListener(this);
-		text2.addKeyListener(this);
+		t_dirName.addKeyListener(this);
+		t_fileName.addKeyListener(this);
 		butParent.addKeyListener(this); // needed to service tab keys
 		butNF.addKeyListener(this); // needed to service tab keys
 		butOK.addKeyListener(this); // needed to service tab keys
@@ -453,9 +451,9 @@ public class MyFileChooser extends JFrame
 			if (suggestedName != null && !(suggestedName.equals(""))) {
 				File h = new File(suggestedName);
 				listHead = h.getParent();
-				text.setText(listHead);
-				text2.setText(h.getName());
-				text3.setText(h.getName());
+				t_dirName.setText(listHead);
+				//t_fileName.setText(h.getName());
+				t_suggName.setText(h.getName());
 
 				/*
 				SwingUtilities.invokeLater(new Runnable() {
@@ -468,8 +466,8 @@ public class MyFileChooser extends JFrame
 				
 				*/
 				
-				text2.addAncestorListener( new RequestFocusListener(false) );
-				selComp = text2;
+				t_fileName.addAncestorListener( new RequestFocusListener(false) );
+				//selComp = t_fileName;
 				//text2.setBackground(vLightBlue);
 				//text2.setEditable(true); 
 			}
@@ -479,7 +477,7 @@ public class MyFileChooser extends JFrame
 						+ ")";
 			}
 		} else {
-			text.setText(listHead);
+			t_dirName.setText(listHead);
 			/*
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -518,8 +516,11 @@ public class MyFileChooser extends JFrame
 		return showOpenDialog(false);
 	}
 
-	String getSelectedFile() {   
-		return DrawFBP.makeAbsFileName(text2.getText(), text.getText());		
+	void getSelectedFile(String[] s) {
+		
+		s[0] = DrawFBP.makeAbsFileName(t_fileName.getText(), t_dirName.getText());
+		dialog.dispose();
+		return; 
 	}
 
 	void setSuggestedName(String s) {
@@ -553,13 +554,23 @@ public class MyFileChooser extends JFrame
 					f = new File(t.replace("My Documents", "Documents"));
 				if (!f.exists() || !f.isDirectory())
 					return;
+				
+				if (!inJarTree) {
+					if (listHead.equals(listShowingJarFile)) {
+						t = driver.javaFBPJarFile;
+						ll.add(t);
+						for (String u : driver.jarFiles.values()) {
+							ll.add(u);
+						}
+					}
+				}
 
 				String[] fl = f.list();
 				
 				ll2 = new LinkedList<String>();
-				if (fl == null || fl.length == 0) {
-					ll2.add("(empty folder)");
-				} else {
+				//if (fl == null || fl.length == 0) {
+				//	ll2.add("(empty folder)");
+				//} else {
 					for (int j = 0; j < fl.length; j++) {
 						String fn = s + File.separator + fl[j];
 						File fx = new File(fn);
@@ -568,8 +579,8 @@ public class MyFileChooser extends JFrame
 						if (fx.isDirectory())
 							ll2.add(fl[j]); // directories go into ll first
 						
-					}
-					ll = mySort(ll2);  // add elements of ll2 to ll in sorted order
+					 }
+					ll.addAll(mySort(ll2));  // add elements of ll2 to ll in sorted order
 					
 					ll2.clear(); 
 
@@ -587,7 +598,7 @@ public class MyFileChooser extends JFrame
 					}
 					
 		 			ll.addAll(mySort(ll2));   // add elements of ll2 to end of ll in sorted order
-				}
+				 
 
 			} else {
 				inJarTree = true;
@@ -607,7 +618,7 @@ public class MyFileChooser extends JFrame
 					if (f.isDirectory())
 					    ll2.add((String) t);
 				}
-				ll = mySort(ll2);
+				ll.addAll(mySort(ll2));
 				
 				ll2.clear();
 				e = currentNode.children();
@@ -625,24 +636,21 @@ public class MyFileChooser extends JFrame
 		//	return;
 
 
-		if (!inJarTree) {
-			if (listHead.equals(listShowingJarFile)) {
-				s = driver.javaFBPJarFile;				
-				ll.add(s);
-				for (String t : driver.jarFiles.values()){
-					ll.add(t);
-				}
-			}
-		}
+		
 
 		Object[] oa = ll.toArray();
+		
+		int k = 0;
 
 		nodeNames = new String[oa.length];
 		for (int j = 0; j < oa.length; j++) {
 			nodeNames[j] = (String) oa[j];
+			if (nodeNames[j].endsWith(".jar"))
+				k++;
 		}
 
 		list = new JList<String>(nodeNames);
+		list.setSelectedIndex(k);
 
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -667,7 +675,7 @@ public class MyFileChooser extends JFrame
 		panel.add(listView, BorderLayout.CENTER);
 
 		selComp = list;
-		list.setSelectedIndex(0);
+		//list.setSelectedIndex(0);
 		list.setFocusable(true);
 		
 		
@@ -767,58 +775,31 @@ public class MyFileChooser extends JFrame
 			String s = list.getSelectedValue();
 			if (s == null || s.equals("(empty folder)"))
 				s = "";
-			// String fn = listHead + File.separator + s;
+			
 			String fn = DrawFBP.makeAbsFileName(s, listHead);
 			if (currentNode == null) {
+				
 				File h = new File(fn);
-				if (h.isDirectory()) {
-					// text.setText(fn);
-					text.setText(listHead);
-					text2.setText("");
-					//selComp = text2; 	
-					//text2.setBackground(vLightBlue);
-					//text2.setEditable(true);
-					// Bob's bug!
-					/*
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							text2.requestFocusInWindow();	
-							text2.setEnabled(true);
-							text2.getCaret().setVisible(true);
-						}
-					});
-					*/
-					
-				} else {
-					text2.setText(s);
-					text.setText(listHead);
-					selComp = text2;
-				}
+				if (h.isDirectory())  
+					t_fileName.setText("");	
+				else  
+					t_fileName.setText(s);
+				t_dirName.setText(listHead);
+				//selComp = t_fileName;
+				
 			} else {
-				//String t = list.getSelectedValue();
+				// String t = list.getSelectedValue();
 				DefaultMutableTreeNode ch = currentNode; // findChild(currentNode,
 															// t);
 				if (ch.getChildCount() > 0) {
 					// text.setText(fn);
-					text.setText(listHead);
-					text2.setText("");
-					//selComp = text2; 
-					//text2.setBackground(vLightBlue);
-					//text2.setEditable(true);
-					/*
+					t_dirName.setText(listHead);
+					t_fileName.setText("");
 					
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							text2.requestFocusInWindow();
-							text2.setEnabled(true);
-							text2.getCaret().setVisible(true);
-						}
-					});
-					*/
 				} else {
-					text2.setText(list.getSelectedValue());
-					text.setText(listHead);
-					selComp = text2;
+					t_fileName.setText(list.getSelectedValue());
+					t_dirName.setText(listHead);
+					//selComp = t_fileName;
 				}
 			}
 
@@ -1094,7 +1075,7 @@ public class MyFileChooser extends JFrame
 
 	
 	public void actionPerformed(ActionEvent e) {
-		text.setBackground(Color.WHITE);
+		t_dirName.setBackground(Color.WHITE);
 
 		// if (e.getSource() == butParent) {
 		// ParentAction parentAction = new ParentAction();
@@ -1138,14 +1119,14 @@ public class MyFileChooser extends JFrame
 		list.setRequestFocusEnabled(false);
 		// changedField = null;
 
-		if (selComp == text || selComp == text2) {
+		if (selComp == t_dirName || selComp == t_fileName) {
 			selComp.setBackground(Color.WHITE);
 			((JTextField) selComp).setEditable(false);
 			((JTextField) selComp).getCaret().setVisible(false);
 			
 		}
 
-		text2.setBackground(Color.WHITE);
+		t_fileName.setBackground(Color.WHITE);
 		// cBox.repaint();
 
 		if (selComp instanceof MyButton) {
@@ -1156,7 +1137,7 @@ public class MyFileChooser extends JFrame
 
 		selComp = (Component) e.getSource();
 
-		if (selComp == text || selComp == text2) {
+		if (selComp == t_dirName || selComp == t_fileName) {
 
 			((JTextField) selComp).setRequestFocusEnabled(true);
 
@@ -1176,7 +1157,7 @@ public class MyFileChooser extends JFrame
 			list.setRequestFocusEnabled(true);
 
 			list.setSelectedIndex(rowNo);
-			text.setBackground(Color.WHITE);
+			t_dirName.setBackground(Color.WHITE);
 			// text2.setBackground(textBackground);
 			
 			// http://stackoverflow.com/questions/16392212/unable-to-type-or-delete-text-in-jtextfield
@@ -1257,13 +1238,13 @@ public class MyFileChooser extends JFrame
 	public void keyPressed(KeyEvent e) {
 
    	if (e.getKeyCode() == KeyEvent.VK_TAB) {
-			if (selComp == text || selComp == text2) {
+			if (selComp == t_dirName || selComp == t_fileName) {
 				selComp.setBackground(Color.WHITE);
 				((JTextField) selComp).setEditable(false);
 				((JTextField) selComp).getCaret().setVisible(false);
 			}
 
-			text2.setBackground(Color.WHITE);
+			t_fileName.setBackground(Color.WHITE);
 			// list.setSelectedIndex(-1);
 			cBox.repaint();
 			// if (saveAs)
@@ -1292,7 +1273,7 @@ public class MyFileChooser extends JFrame
 					selComp = (JComponent) mtp.getComponentBefore(dialog,
 							selComp);
 
-			if (selComp == text || selComp == text2) {
+			if (selComp == t_dirName || selComp == t_fileName) {
 				selComp.setBackground(vLightBlue);
 				((JTextField) selComp).getCaret().setVisible(true);
 				((JTextField) selComp).setEditable(true);
@@ -1317,8 +1298,8 @@ public class MyFileChooser extends JFrame
 		} else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
 			shift = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			 if (selComp instanceof JList || selComp == text || selComp ==
-			 text2) {
+			 if (selComp instanceof JList || selComp == t_dirName || selComp ==
+			 t_fileName) {
 
 			enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 			 }
@@ -1345,14 +1326,7 @@ public class MyFileChooser extends JFrame
 
 			return;
 		}
-		//else if (selComp == text || selComp == text2) {
-		//	selComp = (Component) e.getSource();
-		//}
-
-  		
-		// repaint();
-		// String u = list.getSelectedValue(); // force selection
-		// list.setSelectedValue(u, false);
+		
 		paintList();
 		list.repaint();
 		repaint();
@@ -1374,29 +1348,9 @@ public class MyFileChooser extends JFrame
 
 	
 	public void keyTyped(KeyEvent e) {
-		int i = 0;
-		//if (selComp == text2) {
-		//	text2.requestFocus();
-		//}
-		//selComp = (Component) e.getSource();
+		
 	}
-
-	//@Override
-	//public void changedUpdate(DocumentEvent e) {
-
-	//}
-
-	//@Override
-	//public void insertUpdate(DocumentEvent e) {
-
-	//}
-
-	//@Override
-	//public void removeUpdate(DocumentEvent e) {
-		// if (changedField != null) {
-		// selComp = changedField;
-		// }
-	//}
+ 
 
 	class CancelAction extends AbstractAction {
 
@@ -1415,8 +1369,8 @@ public class MyFileChooser extends JFrame
 		public void actionPerformed(ActionEvent e) {
 			result = CANCEL_OPTION;
 
-			String s = text.getText();
-			String t = text2.getText();
+			String s = t_dirName.getText();
+			String t = t_fileName.getText();
 			if (!(t.equals("")))
 				s += File.separator + t;
 			File f = new File(s);
@@ -1447,7 +1401,7 @@ public class MyFileChooser extends JFrame
 				f.delete();
 				// fullNodeName = listHead.getAbsolutePath();
 				// showFileNames();
-				text.setText(listHead);
+				t_dirName.setText(listHead);
 				// panel.remove(listView);
 				showList();
 
@@ -1459,7 +1413,7 @@ public class MyFileChooser extends JFrame
 	class EnterAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
-		public void actionPerformed(ActionEvent e) {	
+		public void actionPerformed(ActionEvent e) {
 
 			if (selComp instanceof MyButton) {
 				// ((MyButton) selComp).getAction().actionPerformed(new
@@ -1470,8 +1424,8 @@ public class MyFileChooser extends JFrame
 				return;
 			}
 
-			if (selComp == text) {
-				String u = text.getText();
+			if (selComp == t_dirName) {
+				String u = t_dirName.getText();
 				File h = new File(u);
 				if (!h.exists() || !h.isDirectory()) {
 					MyOptionPane.showMessageDialog(driver.frame, "File " + u
@@ -1481,50 +1435,63 @@ public class MyFileChooser extends JFrame
 				}
 				listHead = u;
 				// panel.remove(listView);
-				text.setBackground(vLightBlue);
+				t_dirName.setBackground(vLightBlue);
 				showList();
 				return;
 			}
-			//if (selComp == text2) {
-				// fullNodeName = text.getText() + File.separator
-				// + text2.getText();
-				// if (!saveAs)
-			//	processOK();
-			//}
-
-			if (!((selComp instanceof JList) || selComp == text2))
-				return;
+			// if (selComp == text2) {
+			// fullNodeName = text.getText() + File.separator
+			// + text2.getText();
+			// if (!saveAs)
+			// processOK();
+			// }
 
 			butNF.setEnabled(!inJarTree);
 			butDel.setEnabled(!inJarTree);
 
+			if (!((selComp instanceof JList) || selComp == t_fileName))
+				return;
+
 			String s = "";
 
-			int rowNo = list.getSelectedIndex();
-			if (nodeNames.length == 0)
+			if (selComp instanceof JList) {
+
+				int rowNo = list.getSelectedIndex();
+				if (nodeNames.length == 0 || rowNo == -1) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"Empty directory");
+					return;
+				}
+
+				s = nodeNames[rowNo];
+			} else
+				s = t_fileName.getText();
+
+			if (s == null || s.equals("")) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"No file specified");
 				return;
-			if (rowNo == -1)
-				return;
-			s = nodeNames[rowNo];
+			}
 
 			File f = null;
 
-			if (/*s.startsWith("JavaFBP") &&*/ s.toLowerCase().endsWith(".jar")) {
+			if (/* s.startsWith("JavaFBP") && */ s.toLowerCase()
+					.endsWith(".jar")) {
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
-				if (fCParms == driver.curDiag.fCPArr[DrawFBP.JARFILE]   || 
-						fCParms == driver.curDiag.fCPArr[DrawFBP.JHALL]   ) {					
+				if (fCParms == driver.curDiag.fCPArr[DrawFBP.JARFILE]
+						|| fCParms == driver.curDiag.fCPArr[DrawFBP.JHALL]) {
 					processOK();
 					return;
-				}				
-				
+				}
+
 				jarTree = buildJarFileTree(s);
 				inJarTree = true;
 				butNF.setEnabled(!inJarTree);
 				butDel.setEnabled(!inJarTree);
 				currentNode = jarTree;
-				text2.setText("");
+				t_fileName.setText("");
 
 				if (0 >= currentNode.getChildCount()) {
 					MyOptionPane.showMessageDialog(driver.frame,
@@ -1533,8 +1500,8 @@ public class MyFileChooser extends JFrame
 				}
 
 				listHead = s + "!";
-				text.setText(listHead);
-				
+				t_dirName.setText(listHead);
+
 				showList();
 
 			} else if (!inJarTree) {
@@ -1550,14 +1517,15 @@ public class MyFileChooser extends JFrame
 
 				if (!f.exists()) {
 
-					if (!saveAs /* || selComp == text2 && !(text2.equals("")) */)
+					if (!saveAs)
 						processOK();
-					else
-						MyOptionPane.showMessageDialog(
-								driver.frame,
-								"File/folder does not exist: "
+					else 
+						if (selComp != t_fileName) { 
+							MyOptionPane.showMessageDialog(driver.frame,
+								"Folder does not exist: "
 										+ f.getAbsolutePath());
-					return;
+							return;
+						}
 				}
 				if (f.isDirectory()
 						|| f.getName().toLowerCase().endsWith("package.json")) {
@@ -1591,7 +1559,7 @@ public class MyFileChooser extends JFrame
 
 			// }
 			dialog.repaint();
-			//frame.repaint();
+			// frame.repaint();
 		}
 
 	}
@@ -1602,11 +1570,11 @@ public class MyFileChooser extends JFrame
 		public void actionPerformed(ActionEvent e) {
 			// For now we will only shift from suggested file to text2
 
-			text2.setText(text3.getText());
+			t_fileName.setText(t_suggName.getText());
 			// text3.setText(s);
-			text2.requestFocusInWindow();
+			t_fileName.requestFocusInWindow();
 			selComp.setBackground(Color.WHITE);
-			selComp = text2;
+			selComp = t_fileName;
 			//text2.setBackground(vLightBlue);
 			list.repaint();
 
@@ -1617,14 +1585,14 @@ public class MyFileChooser extends JFrame
 
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
-			text2.setText("");
+			t_fileName.setText("");
 
 			if (!inJarTree) {
 				listHead = (new File(listHead)).getParent();
 				if (listHead == null)
 					listHead = System.getProperty("user.home");
 
-				text.setText(listHead);
+				t_dirName.setText(listHead);
 				// text2.setText("");
 				// fullNodeName = listHead;
 
@@ -1667,7 +1635,7 @@ public class MyFileChooser extends JFrame
 			panel.repaint();
 			//frame.repaint();
 			//frame.repaint();
-			text.repaint();
+			t_dirName.repaint();
 			repaint();
 
 		}
@@ -1830,17 +1798,7 @@ public class MyFileChooser extends JFrame
 		}
 	}
 
-	/*
-	class MyFileCompare implements Comparator<String> {
-
-		
-		public int compare(String s1, String s2) {			
-			return s1.toLowerCase().compareTo(s2.toLowerCase());
-		}
-
-		
-	}
-	*/
+	
 
 	
 

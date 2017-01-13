@@ -5,10 +5,10 @@ package com.jpaulmorrison.graphics;
 
 public final class VersionAndTimestamp {
 
-	static String version = "2.13.11";
+	static String version = "2.13.12";
 
 
-	static String date = "Dec. 15, 2016";
+	static String date = "Jan. 11, 2017";
 
 
 	static String getVersion() {

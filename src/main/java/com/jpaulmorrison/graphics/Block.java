@@ -1668,7 +1668,7 @@ public class Block implements ActionListener {
 
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			cFile = new File(fc.getSelectedFile());
+			cFile = new File(driver.getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Unable to read file " + cFile.getName());
@@ -1722,7 +1722,7 @@ public class Block implements ActionListener {
 		boolean injar = true;
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			String res = fc.getSelectedFile();
+			String res = driver.getSelFile(fc);
 
 			int i = res.indexOf("!");
 			if (i > -1) { // looking in a jar file (?)
@@ -1817,7 +1817,7 @@ public class Block implements ActionListener {
 				
 				if (javaClass == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Class '" + fc.getSelectedFile() + "' not found ("
+							"Class '" + driver.getSelFile(fc) + "' not found ("
 									+ error + ")");
 				}
 
@@ -1861,6 +1861,7 @@ public class Block implements ActionListener {
 				ll.add(f.toURI().toURL());
 			}
 
+			
 			f = new File(driver.javaFBPJarFile);
 			ll.add(f.toURI().toURL());
 
@@ -1931,7 +1932,7 @@ public class Block implements ActionListener {
 			File cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 
-				cFile = new File(fc.getSelectedFile());
+				cFile = new File(driver.getSelFile(fc));
 				if (cFile == null || !(cFile.exists())) {
 					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 							driver.frame,
@@ -1939,7 +1940,7 @@ public class Block implements ActionListener {
 							"File does not exist", JOptionPane.YES_NO_OPTION)) {
 						return;
 					}
-					codeFileName = fc.getSelectedFile();
+					codeFileName = driver.getSelFile(fc);
 				} else {
 					codeFileName = cFile.getAbsolutePath();
 					driver.properties.put(gl.srcDirProp,

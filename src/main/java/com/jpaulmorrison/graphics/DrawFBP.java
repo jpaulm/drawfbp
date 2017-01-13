@@ -188,6 +188,7 @@ public class DrawFBP extends JFrame
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
 	JMenuItem menuItem1 = null;
+	JMenuItem menuItem2 = null;
 	JTextField jtf = new JTextField();
 	
 	boolean allFiles = false;
@@ -777,18 +778,18 @@ public class DrawFBP extends JFrame
 		fileMenu.add(gNMenuItem);
 		gNMenuItem.addActionListener(this);
 
-		menuItem = new JMenuItem("Display Code");
+		menuItem = new JMenuItem("Display Generated Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
-		JMenuItem runMenu = new JMenuItem("Run Command");
+		//JMenuItem runMenu = new JMenuItem("Run Command");
 		
-		runMenu.setMnemonic(KeyEvent.VK_R);		
-		runMenu.setBorderPainted(true);		
-		fileMenu.add(runMenu);  		
-		runMenu.addActionListener(this);		
+		//runMenu.setMnemonic(KeyEvent.VK_R);		
+		//runMenu.setBorderPainted(true);		
+		//fileMenu.add(runMenu);  		
+		//runMenu.addActionListener(this);		
 		
-		fileMenu.addSeparator();
+		//fileMenu.addSeparator();
 		menuItem = new JMenuItem("Generate .fbp code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -806,9 +807,14 @@ public class DrawFBP extends JFrame
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
 
-		menuItem = new JMenuItem("Add Additional Run-Time Jar File");
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		menuItem2 = new JMenuItem("Add Additional Run-Time Jar File");
+		if (defaultCompLang == null
+				|| !( defaultCompLang.label.equals("Java")))  
+			menuItem2.setEnabled(false);  
+		else
+			menuItem2.setEnabled(true); 
+		fileMenu.add(menuItem2);
+		menuItem2.addActionListener(this);
 
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
@@ -1077,27 +1083,30 @@ public class DrawFBP extends JFrame
 		
 		
 
-		if (s.equals("Display Code")) {
+		if (s.equals("Display Generated Code")) {
 
 			File cFile = null;
 			GenLang gl = curDiag.diagLang;
 
 			// String ss = properties.get("currentImageDir");
-			String ss = properties.get(gl.netDirProp);
-			File genDir = null;
+			String ss = properties.get(gl.netDirProp);			 
+			String name = curDiag.diagFile.getName(); 
+			
 			if (ss == null)
-				genDir = new File(System.getProperty("user.home"));
-			else
-				genDir = new File(ss);
-
-			MyFileChooser fc = new MyFileChooser(genDir,
+				ss = System.getProperty("user.home");
+			
+			File file = new File(ss);
+			MyFileChooser fc = new MyFileChooser(file,
 					curDiag.fCPArr[GENCODE]);
+			int i = name.indexOf(".drw");
+			ss += File.separator + name.substring(0, i) + curDiag.fCPArr[GENCODE].fileExt;
+			fc.setSuggestedName(ss);
 
 			int returnVal = fc.showOpenDialog();
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				cFile = new File(fc.getSelectedFile());
+				cFile = new File(getSelFile(fc));
 			}
 			// }
 			if (cFile == null)
@@ -1133,7 +1142,7 @@ public class DrawFBP extends JFrame
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				cFile = new File(fc.getSelectedFile());
+				cFile = new File(getSelFile(fc));
 			}
 			// }
 			if (cFile == null)
@@ -1403,7 +1412,7 @@ public class DrawFBP extends JFrame
 
 			fFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				fFile = new File(fc.getSelectedFile());
+				fFile = new File(getSelFile(fc));
 			}
 			// }
 			if (fFile == null)
@@ -1752,10 +1761,14 @@ public class DrawFBP extends JFrame
 		defaultCompLang = gl;
 		jtf.setText(gl.showLangs());
 		jtf.repaint();
-		if (!defaultCompLang.label.equals("Java"))
+		if (!defaultCompLang.label.equals("Java")) {
 			menuItem1.setEnabled(false);  
-		else
+			menuItem2.setEnabled(false); 
+		}
+		else {
 			menuItem1.setEnabled(true); 
+			menuItem2.setEnabled(true); 
+		}
 		
 		fileMenu.remove(gNMenuItem);
 		
@@ -2547,6 +2560,13 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		return res;
 	}
+	
+	String getSelFile(MyFileChooser fc) {
+		String[] sa = new String[1]; 
+		fc.getSelectedFile(sa);  // getSelectedFile puts result in sa[0]
+		return sa[0];
+	}
+	
 	boolean locateJavaFBPJarFile() {
 		
 		String s = properties.get("javaFBPJarFile");
@@ -2562,7 +2582,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			cFile = new File(fc.getSelectedFile());
+			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
 				MyOptionPane.showMessageDialog(frame,
 						"Unable to read JavaFBP jar file " + cFile.getName());
@@ -2615,7 +2635,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			cFile = new File(fc.getSelectedFile());
+			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
 				MyOptionPane.showMessageDialog(frame,
 						"Unable to read additional jar file " + cFile.getName());
@@ -2661,7 +2681,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			cFile = new File(fc.getSelectedFile());
+			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
 				MyOptionPane.showMessageDialog(frame,
 						"Unable to read DrawFBP Help jar file " + cFile.getName());
@@ -3201,6 +3221,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				// make one tab with "(untitled)"
 				// Diagram curDiag = new Diagram(driver);
 				curDiag = getNewDiag();
+				frame.setTitle("Diagram: (untitled)");
 			} else {
 				jtp.setSelectedIndex(j - 1);
 				b = (ButtonTabComponent) jtp

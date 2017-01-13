@@ -2,7 +2,7 @@ package com.jpaulmorrison.graphics;
 
 //import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.Rectangle;
+
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -141,7 +141,7 @@ public class Diagram {
 			int returnVal = fc.showOpenDialog();
 
 			if (returnVal == MyFileChooser.APPROVE_OPTION)  
-				file = new File(fc.getSelectedFile());
+				file = new File(driver.getSelFile(fc));
 			if (file == null)
 				return null; 
 		}
@@ -231,24 +231,28 @@ public class Diagram {
 
 			String fn = "";
 			suggestedFileName = "";
-			File g = diagFile;  
+			File g = diagFile; 
+			MyFileChooser fc = null;
 			if (g != null) {
 				fn = g.getName();
 				suggestedFileName = s + File.separator + fn;
 				int i = suggestedFileName.lastIndexOf(".");
 				suggestedFileName = suggestedFileName.substring(0, i)
 						+ fCP.fileExt;
+			
+
+				fc = new MyFileChooser(f, fCP);
+
+				fc.setSuggestedName(suggestedFileName);
 			}
-
-			MyFileChooser fc = new MyFileChooser(f, fCP);
-
-			fc.setSuggestedName(suggestedFileName);
+			else
+				fc = new MyFileChooser(f, fCP);
 
 			int returnVal = fc.showOpenDialog(saveAs);
 
 			// String s;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				newFile = new File(fc.getSelectedFile());
+				newFile = new File(driver.getSelFile(fc));
 				s = newFile.getAbsolutePath();
 
 				if (s.endsWith("(empty folder)")) {
@@ -306,53 +310,21 @@ public class Diagram {
 							+ " is a directory");
 					return null;
 				}
-								
-				String t = "Overwrite existing file: " + newFile.getAbsolutePath()
-						+ "?";
-				 JOptionPane pane = new JOptionPane(t);
-				 DrawFBP.applyOrientation(pane);   
-			     pane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
-			     pane.setMessageType(JOptionPane.QUESTION_MESSAGE);
-			     int h = 100;
-			     int w = t.length() * driver.fontWidth;
-			     pane.setPreferredSize(new Dimension(w, h));
-			     JDialog dialog = pane.createDialog(driver.frame, "Confirm Overwrite");			     
-			     if (!dialog.isResizable()) {
-		             dialog.setResizable(true);
-		         }
-			     dialog.setVisible(true);
-			     Object selectedValue = pane.getValue();
-			     if (selectedValue == null)
+				if (!(JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+						driver.frame, "Overwrite existing file: " + newFile.getAbsolutePath()
+							+ "?", "Confirm overwrite",
+						 JOptionPane.YES_NO_OPTION)))  
 			    	 return null;
-			     response = ((Integer) selectedValue).intValue();
-				if (response == -1 || response == JOptionPane.CANCEL_OPTION)
+			} else {
+				if (!(JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+						driver.frame, "Create new file: " + newFile.getAbsolutePath()
+						+ "?", "Confirm create",
+						 JOptionPane.YES_NO_OPTION))) 
 					return null;
 			}
 			file = newFile;
 
-			if (!(file.exists())) {				
-				
-				String t = "Create new file: " + newFile.getAbsolutePath()
-						+ "?";
-				 JOptionPane pane = new JOptionPane(t);
-				 DrawFBP.applyOrientation(pane);   
-			     pane.setOptionType(JOptionPane.OK_CANCEL_OPTION);
-			     pane.setMessageType(JOptionPane.QUESTION_MESSAGE);
-			     int h = 100;
-			     int w = t.length() * driver.fontWidth;
-			     pane.setPreferredSize(new Dimension(w, h));
-			     JDialog dialog = pane.createDialog(driver.frame, "Confirm create");
-			     if (!dialog.isResizable()) {
-		             dialog.setResizable(true);
-		         }
-			     dialog.setVisible(true);
-			     Object selectedValue = pane.getValue();
-			     if (selectedValue == null)
-			    	 return null;
-			     response = ((Integer) selectedValue).intValue();
-				if (response == -1 || response == JOptionPane.CANCEL_OPTION)
-					return null;
-			}
+			
 		}
 
 	 
