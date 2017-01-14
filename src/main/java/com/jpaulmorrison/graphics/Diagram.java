@@ -346,11 +346,10 @@ public class Diagram {
 			//return file;
 		} else {
 			if (fCP.fileExt.equals(".drw")) {
+				
 				fileString = readFile(file);
 				diagFile = file;
-				// if (file == null){
-				// int i = 0;
-				// }
+				
 				if (fileString != null) {
 					String s = file.getAbsolutePath();
 					File oldFile = file;
@@ -367,6 +366,9 @@ public class Diagram {
 			//return diagFile;
 		}
 
+		
+		MyOptionPane.showMessageDialog(driver.frame, file.getName()
+					+ " saved");
 		return file;
 	}
 	
