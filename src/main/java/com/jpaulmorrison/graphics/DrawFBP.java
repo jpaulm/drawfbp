@@ -3582,7 +3582,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			curDiag.arrowRoot = null;
 			
 			if (panSwitch) {
-				Rectangle r = curDiag.area.getBounds();
+				Rectangle r = curDiag.area.getBounds();				
+				r = new Rectangle(r.x, r.y, r.width - 20, r.height - 40);
 				if (r.contains(x, y))
 					frame.setCursor(openPawCursor);
 				else

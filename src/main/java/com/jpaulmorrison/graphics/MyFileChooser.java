@@ -1188,8 +1188,8 @@ public class MyFileChooser extends JFrame
 
 				Point p = e.getLocationOnScreen();
 
-				if (mLoc != null && Math.abs(p.x - mLoc.x) < 6  // check for moved cursor...
-						&& Math.abs(p.y - mLoc.y) < 6) {
+				if (mLoc != null && Math.abs(p.x - mLoc.x) < 8  // allow for moved cursor...
+						&& Math.abs(p.y - mLoc.y) < 8) {
 
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 				}
