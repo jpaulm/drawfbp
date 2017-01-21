@@ -506,7 +506,7 @@ public class Block implements ActionListener {
 									driver.frame,
 									"Unable to read JavaFBP jar file - "
 											+ "so cannot process class information for "
-											+ description);
+											+ description, MyOptionPane.ERROR_MESSAGE);
 					driver.tryFindJarFile = false;
 				} else 
 					loadClass();
@@ -547,14 +547,14 @@ public class Block implements ActionListener {
 			} catch (ClassNotFoundException e) {
 				//System.out.println("Missing class name in " + fullClassName);
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Class name not found: " + fullClassName);
+						"Class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
 				javaClass = null;
 			} catch (NoClassDefFoundError e) {
 				//System.out.println("Missing internal class name in "
 				//		+ fullClassName);
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Internal class name not found: " + fullClassName);
+						"Internal class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
 				javaClass = null;
 			} 
@@ -617,7 +617,7 @@ public class Block implements ActionListener {
 			if (cs == null || !(cs.getCanonicalName().equals(compClass.getCanonicalName())  ||
 					cs.getCanonicalName().equals(subnetClass.getCanonicalName()))) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Class file not a valid FBP component");				
+						"Class file not a valid FBP component", MyOptionPane.ERROR_MESSAGE);				
 				return null;
 			}
 
@@ -634,7 +634,7 @@ public class Block implements ActionListener {
 
 			if (mainPresent) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Class file contains a 'main' method");
+						"Class file contains a 'main' method", MyOptionPane.ERROR_MESSAGE);
 				return null;
 			} else {
 				//this.classLoader = classLoader;
@@ -881,32 +881,43 @@ public class Block implements ActionListener {
 		//tfd.setBackground(lg);
 		panel.add(tfd);
 		
+		int i = fullClassName.indexOf("!");
+		String s1 = fullClassName.substring(0, i); 
+		String s2 = fullClassName.substring(i + 1); 
 		gbc.gridy = 1;
-		JTextField tf0 = new JTextField(" " + fullClassName + " ");
+		JTextField tf0 = new JTextField(" " + s1 + " ");
 		tf0.setEditable(false);
 		gbl.setConstraints(tf0, gbc);
 		tf0.setBackground(lg);
 		panel.add(tf0);
-
-		gbc.weightx = 1.5;
-		gbc.weighty = 0.5;
-		gbc.gridx = 0;
+		
 		gbc.gridy = 2;
-		gbc.gridwidth = ROWSIZE;
-		if (compDescr == null || compDescr.equals("")) {
-			compDescr = "(no description)";
-		}
-		JTextField tf1 = new JTextField(compDescr);
+		JTextField tf1 = new JTextField(" " + s2 + " ");
+		tf1.setForeground(Color.BLUE);
 		tf1.setEditable(false);
 		gbl.setConstraints(tf1, gbc);
 		tf1.setBackground(lg);
 		panel.add(tf1);
 
+		gbc.weightx = 1.5;
+		gbc.weighty = 0.5;
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		gbc.gridwidth = ROWSIZE;
+		if (compDescr == null || compDescr.equals("")) {
+			compDescr = "(no description)";
+		}
+		JTextField tf2 = new JTextField(compDescr);
+		tf2.setEditable(false);
+		gbl.setConstraints(tf2, gbc);
+		tf2.setBackground(lg);
+		panel.add(tf2);
+
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0.5;
 
 		gbc.gridwidth = 1;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 
 		JTextField[] tft = new JTextField[ROWSIZE];
 		tft[0] = new JTextField(" Port ");
@@ -1035,7 +1046,7 @@ public class Block implements ActionListener {
 		boolean output = (type.indexOf("out") > -1);
 		if (!input && !output) {
 			MyOptionPane.showMessageDialog(driver.frame, "Port type of \""
-					+ port + "\" must be \"in\" or \"out\"");
+					+ port + "\" must be \"in\" or \"out\"", MyOptionPane.ERROR_MESSAGE);
 			return 1;
 		}
 
@@ -1295,8 +1306,8 @@ public class Block implements ActionListener {
 
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Edit Item",
-					JOptionPane.PLAIN_MESSAGE, null, null, description);
-			if ((ans != null) && (ans.length() > 0)) {
+					MyOptionPane.PLAIN_MESSAGE, null, null, description);
+			if (ans != null/* && ans.length() > 0*/) {
 				description = ans.trim();
 				diag.changed = true;
 				if (this instanceof IIPBlock) {
@@ -1348,7 +1359,7 @@ public class Block implements ActionListener {
 				return;
 			if (codeFileName == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"No code associated with block");
+						"No code associated with block", MyOptionPane.WARNING_MESSAGE);
 				return;
 			}
 
@@ -1360,12 +1371,12 @@ public class Block implements ActionListener {
 			
 			if (codeFileName != null) {
 				if (!(codeFileName.toLowerCase().endsWith(".java"))) {
-					if (JOptionPane.YES_OPTION != MyOptionPane
+					if (MyOptionPane.YES_OPTION != MyOptionPane
 							.showConfirmDialog(
 									driver.frame,
 									"Non-Java source is associated with block - if you choose a Java class, you will lose this - go ahead?",
 									"Previous non-Java source",
-									JOptionPane.YES_NO_OPTION)) {
+									MyOptionPane.YES_NO_OPTION)) {
 						return;
 					}
 					codeFileName = null;
@@ -1385,7 +1396,7 @@ public class Block implements ActionListener {
 
 			if (diagramFileName == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Subnet not selected");
+						"Subnet not selected", MyOptionPane.ERROR_MESSAGE);
 			} else {
 				String t = diagramFileName;
 				File file = null;
@@ -1420,7 +1431,7 @@ public class Block implements ActionListener {
 
 			if (javaClass == null && fullClassName == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"No component code assigned");
+						"No component code assigned", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1428,7 +1439,7 @@ public class Block implements ActionListener {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"One of class name and full class name is null, but the other isn't:\n"
 						+ "class name - " + javaClass + "\n"
-						+ "full class name - " + fullClassName);
+						+ "full class name - " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1449,7 +1460,7 @@ public class Block implements ActionListener {
 		if (s.equals("Set Multiplexing Factor")) {
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Set Multiplexing Factor",
-					JOptionPane.PLAIN_MESSAGE, null, null, mpxfactor);
+					MyOptionPane.PLAIN_MESSAGE, null, null, mpxfactor);
 			if ((ans != null) && (ans.length() > 0)) {
 				mpxfactor = ans;
 				multiplex = true;
@@ -1466,7 +1477,7 @@ public class Block implements ActionListener {
 		if (s.equals("Display Description and Port Info")) {
 			if (javaClass == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"No class information associated with block");
+						"No class information associated with block", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1488,9 +1499,9 @@ public class Block implements ActionListener {
 			diag.cEncl = (Enclosure) this;
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Edit subnet label",
-					JOptionPane.PLAIN_MESSAGE, null, null,
+					MyOptionPane.PLAIN_MESSAGE, null, null,
 					diag.cEncl.description);
-			if ((ans != null) && (ans.length() > 0)) {
+			if (ans != null/* && ans.length() > 0*/) {
 				diag.cEncl.description = ans;
 			}
 			driver.frame.repaint();
@@ -1541,8 +1552,8 @@ public class Block implements ActionListener {
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text",
 					"Enter subnet diagram relative file name",
-					JOptionPane.PLAIN_MESSAGE, null, null, null);
-			if ((ans != null) && (ans.length() > 0)) {
+					MyOptionPane.PLAIN_MESSAGE, null, null, null);
+			if (ans != null/* && ans.length() > 0*/) {
 				ans = ans.trim();
 				if (!(ans.toLowerCase().endsWith(".drw")))
 					ans += ".drw";
@@ -1595,10 +1606,11 @@ public class Block implements ActionListener {
 	boolean editDescription(int option) {
 
 		final JTextArea area = new JTextArea(4, 3);
-
+		JScrollPane pane = new JScrollPane(area);
+		
 		area.setText(description);
 		area.setFont(driver.fontg);
-		JScrollPane pane = new JScrollPane(area);
+		//JScrollPane pane = new JScrollPane(area);
 		 
 		
 		// ensure area within frame gets focus
@@ -1622,19 +1634,14 @@ public class Block implements ActionListener {
 			if (driver.blockTypes[i].equals(type))
 				t = driver.blockNames[i];
 		}
-		String init = (option < DrawFBP.MODIFY) ? "Create " : "Modify ";
-		
-		
-
-		int result = JOptionPane.showOptionDialog(driver.frame, new Object[]{
-				"Enter/change name or description", pane}, init + t,
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-				null, null, null);
-		
+		String init = (option < DrawFBP.MODIFY) ? "Create " : "Modify ";		
 		
 
+		int result = MyOptionPane.showOptionDialog(driver.frame, new Object[]{ 
+				"Enter/change name or description", pane}, init + t);		
+		
 		if (option > DrawFBP.EDIT_NO_CANCEL) {
-			if (result != JOptionPane.OK_OPTION)
+			if (result != MyOptionPane.OK_OPTION)
 				return false;
 		}
 
@@ -1649,10 +1656,10 @@ public class Block implements ActionListener {
 
 	void linkToSubnetDiagram() {
 		if (diagramFileName != null) {
-			if (JOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
+			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame, "Block already associated with diagram ("
 							+ diagramFileName + ") - change it?",
-					"Change diagram", JOptionPane.YES_NO_OPTION)) {
+					"Change diagram", MyOptionPane.YES_NO_OPTION)) {
 				return;
 			}
 			diagramFileName = null;
@@ -1671,7 +1678,7 @@ public class Block implements ActionListener {
 			cFile = new File(driver.getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Unable to read file " + cFile.getName());
+						"Unable to read file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
 			}
 
 			File currentDiagramDir = cFile.getParentFile();
@@ -1693,11 +1700,11 @@ public class Block implements ActionListener {
 		String oldFullClassName = fullClassName;
 
 		if (javaClass != null) {
-			if (JOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
+			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame,
 					"Block already associated with class ("
 							+ javaClass.getName() + ") - change it?",
-					"Change class", JOptionPane.YES_NO_OPTION)) {
+					"Change class", MyOptionPane.YES_NO_OPTION)) {
 				return;
 			}
 			// javaClass = null;
@@ -1706,7 +1713,7 @@ public class Block implements ActionListener {
 
 		if (!driver.getJavaFBPJarFile()) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"JavaFBP jar file not specified or found");
+					"JavaFBP jar file not specified or found", MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -1762,7 +1769,7 @@ public class Block implements ActionListener {
 					cFile = new File(fs);
 					if (cFile == null || !(cFile.exists())) {
 						MyOptionPane.showMessageDialog(driver.frame,
-								"Unable to find file " + cFile.getName());
+								"Unable to find file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
 						return;
 					}
 				}
@@ -1818,7 +1825,7 @@ public class Block implements ActionListener {
 				if (javaClass == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Class '" + driver.getSelFile(fc) + "' not found ("
-									+ error + ")");
+									+ error + ")", MyOptionPane.ERROR_MESSAGE);
 				}
 
 				else {
@@ -1836,7 +1843,7 @@ public class Block implements ActionListener {
 		}
 
 		if (javaClass == null) {
-			MyOptionPane.showMessageDialog(driver.frame, "No class selected");
+			MyOptionPane.showMessageDialog(driver.frame, "No class selected", MyOptionPane.ERROR_MESSAGE);
 		} else {
 			if (!fullClassName.equals(oldFullClassName))
 				displayPortInfo();
@@ -1872,7 +1879,7 @@ public class Block implements ActionListener {
 			urls = ll.toArray(new URL[ll.size()]);
 		} catch (MalformedURLException e) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Malformed URL: " + fullClassName);
+					"Malformed URL: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 			// e.printStackTrace();
 			// javaClass = null;
 			urls = null;
@@ -1886,20 +1893,19 @@ public class Block implements ActionListener {
 
 		GenLang gl = driver.curDiag.diagLang;
 		if (codeFileName != null) {
-			int i = MyOptionPane.showConfirmDialog(driver.frame,
+			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(driver.frame,
 					"Block already associated with source code (" + codeFileName
 							+ ") - change it?",
-					"Change source code", JOptionPane.YES_NO_OPTION);
-			if (i != JOptionPane.YES_OPTION) {
+					"Change source code", MyOptionPane.YES_NO_OPTION))
 				return;
 			}
-		}
+		 
 
 		if (!(gl.label.equals("Java")) && javaClass != null) {
-			if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+			if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 					driver.frame,
 					"You have selected a non-Java language and there is a Java class associated with this block - go ahead?",
-					"Java previously used", JOptionPane.YES_NO_OPTION)) {
+					"Java previously used", MyOptionPane.YES_NO_OPTION)) {
 
 				javaClass = null;
 				codeFileName = null;
@@ -1909,10 +1915,10 @@ public class Block implements ActionListener {
 
 		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 				"Edit arbitrary string or browse (enter # to browse)",
-				"Enter/change source code name", JOptionPane.PLAIN_MESSAGE,
+				"Enter/change source code name", MyOptionPane.PLAIN_MESSAGE,
 				null, null, codeFileName);
 
-		if ((ans != null) && (ans.length() > 0)) {
+		if (ans != null/* && ans.length() > 0*/) {
 			codeFileName = ans.trim();
 			// javaClass = null;
 			diag.changed = true;
@@ -1934,10 +1940,10 @@ public class Block implements ActionListener {
 
 				cFile = new File(driver.getSelFile(fc));
 				if (cFile == null || !(cFile.exists())) {
-					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 							driver.frame,
 							"You have entered a file name that does not exist - go ahead?",
-							"File does not exist", JOptionPane.YES_NO_OPTION)) {
+							"File does not exist", MyOptionPane.YES_NO_OPTION)) {
 						return;
 					}
 					codeFileName = driver.getSelFile(fc);
@@ -1957,7 +1963,7 @@ public class Block implements ActionListener {
 
 		if (codeFileName == null) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"No code associated with block");
+					"No code associated with block", MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		String t = codeFileName;

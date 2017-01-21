@@ -39,6 +39,7 @@ public class DrawFBP extends JFrame
 	JLabel diagDesc;	
 	
 	JTextField jfl = null;	
+	JTextField jfs = null;	
 	
 	JLabel scaleLab;
 
@@ -345,6 +346,36 @@ public class DrawFBP extends JFrame
 
 		}
 		
+		/*
+		
+		MyOptionPane.showConfirmDialog(
+				frame,
+				"x", "y",	
+				MyOptionPane.OK_CANCEL_OPTION,
+				MyOptionPane.ERROR_MESSAGE);
+		MyOptionPane.showConfirmDialog(
+				frame,
+				"x", "y",	
+				MyOptionPane.OK_CANCEL_OPTION,
+				MyOptionPane.INFORMATION_MESSAGE);
+		
+		MyOptionPane.showConfirmDialog(
+				frame,
+				"x", "y",	
+				MyOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.WARNING_MESSAGE);
+		MyOptionPane.showConfirmDialog(
+				frame,
+				"x", "y",	
+				MyOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE);
+		MyOptionPane.showConfirmDialog(
+				frame,
+				"x", "y",	
+				MyOptionPane.OK_CANCEL_OPTION,
+				MyOptionPane.PLAIN_MESSAGE);
+		
+		*/
 
 		Iterator<Entry<String, String>> entries = jarFiles.entrySet().iterator();
 		String z = "";
@@ -377,10 +408,10 @@ public class DrawFBP extends JFrame
 		jfl = new JTextField("");		
 
 		jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
-		//jfl.setFont(fontg);
-		//jfl.addActionListener(this);
-		//jfl.setMnemonic(KeyEvent.VK_T);
+		
+		jfs = new JTextField("");		
 
+		jfs.setText("Font Size: " + defaultFontSize);
 		jtp = new JTabbedPaneWithCloseIcons(this);
 
 		jtp.setForeground(Color.BLACK);
@@ -395,7 +426,7 @@ public class DrawFBP extends JFrame
 			
 		} else {
 			MyOptionPane.showMessageDialog(frame,
-					"Couldn't find file: DrawFBP-logo-small.png");
+					"Couldn't find file: DrawFBP-logo-small.png", MyOptionPane.ERROR_MESSAGE);
 			// return null;
 		}
 
@@ -687,7 +718,7 @@ public class DrawFBP extends JFrame
 				.getResourceAsStream(s);
 		BufferedImage image = null;
 		if (is == null) {
-			MyOptionPane.showMessageDialog(frame, "Missing icon: " + s);			
+			MyOptionPane.showMessageDialog(frame, "Missing icon: " + s, MyOptionPane.ERROR_MESSAGE);			
 		}
 		else {
 			try {
@@ -876,18 +907,17 @@ public class DrawFBP extends JFrame
 		//JPanel jp1 = new JPanel();
 		Dimension dim = jtf.getPreferredSize();
 		jtf.setPreferredSize(new Dimension(fontWidth * 20, dim.height));
-		//jp1.add(jtf);
-		//jp1.setBackground(slateGray1);
-		//jtf.setBorder(BorderFactory.createLineBorder(slateGray1));
-		//jp1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
 		box0.add(Box.createRigidArea(new Dimension(20,0)));
 		box0.add(jtf); // languages
 		
 		box0.add(Box.createRigidArea(new Dimension(10,0)));
 		
-		//JPanel jp2 = new JPanel();
-		//jp2.add(jfl);
 		box0.add(jfl); // font list
+		
+		box0.add(Box.createRigidArea(new Dimension(10,0)));
+		
+		box0.add(jfs); // font size
 		menuBar.add(box0);
 
 		jtf.setText(defaultCompLang.showLangs());
@@ -899,6 +929,9 @@ public class DrawFBP extends JFrame
 		 
 		jfl.setFont(fontg);
 		jfl.setEditable(false);
+		
+		jfs.setFont(fontg);
+		jfs.setEditable(false);
 
 		//menuBar.add(Box.createGlue());
 		//menuBar.add(Box.createRigidArea(new Dimension(5,0)));
@@ -971,6 +1004,11 @@ public class DrawFBP extends JFrame
 			changeFonts();
 			return;
 		}
+		
+		if (e.getSource() == jfs) {
+			changeFontSize();
+			return;
+		}
 
 		String s = e.getActionCommand();
 
@@ -1041,35 +1079,35 @@ public class DrawFBP extends JFrame
 		if (s.equals("Generate .fbp code")) {
 			
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(frame, "No components specified");
+				MyOptionPane.showMessageDialog(frame, "No components specified", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			if (curDiag.title == null || curDiag.title.equals("(untitled)")) {
 
 				MyOptionPane.showMessageDialog(frame,
-						"Untitled diagram - please do Save first");
+						"Untitled diagram - please do Save first", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			CodeManager mc = new CodeManager(curDiag);
 			if (!mc.genFbpCode())
 				MyOptionPane.showMessageDialog(frame,
-						"Error in code generation");				 				
+						"Error in code generation", MyOptionPane.ERROR_MESSAGE);				 				
 		
 		return;
 	}
 
 		if (s.startsWith("Generate ")) {
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(frame, "No components specified");
+				MyOptionPane.showMessageDialog(frame, "No components specified", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			if (curDiag.title == null || curDiag.title.equals("(untitled)")) {
 
 				MyOptionPane.showMessageDialog(frame,
-						"Untitled diagram - please do Save first");
+						"Untitled diagram - please do Save first", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1102,7 +1140,7 @@ public class DrawFBP extends JFrame
 			ss += File.separator + name.substring(0, i) + curDiag.fCPArr[GENCODE].fileExt;
 			fc.setSuggestedName(ss);
 
-			int returnVal = fc.showOpenDialog();
+			int returnVal = fc.showOpenDialog(true);  // force saveAs
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -1159,6 +1197,7 @@ public class DrawFBP extends JFrame
 		}
 		*/		
 			
+		// Run Command temporarily disabled
 		
 		if (s.equals("Run Command")) {
 			String command = "";
@@ -1168,7 +1207,7 @@ public class DrawFBP extends JFrame
 
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Command with no diagram name",
-					JOptionPane.PLAIN_MESSAGE, null, null, command);
+					MyOptionPane.PLAIN_MESSAGE, null, null, command);
 
 			if (ans != null && ans.length() > 0) {
 				command = ans;
@@ -1184,13 +1223,13 @@ public class DrawFBP extends JFrame
 			String jSONNetworkDir = null;
 			if (curDiag.title == null)
 				MyOptionPane.showMessageDialog(frame,
-						"No diagram selected: executing command with no diagram JSON");
+						"No diagram selected: executing command with no diagram JSON", MyOptionPane.ERROR_MESSAGE);
 			else {
 				if (null == (jSONNetworkDir = properties
 						.get("currentJSONNetworkDir"))) {
 					MyOptionPane.showMessageDialog(frame,
 							"Diagram selected but JSON directory missing: generate JSON from diagram \n"
-							+ "will prompt for JSON directory");
+							+ "will prompt for JSON directory", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				
@@ -1198,7 +1237,7 @@ public class DrawFBP extends JFrame
 				File file = new File(fileName);
 				if (!file.isFile()){
 					MyOptionPane.showMessageDialog(frame,
-							"JSON file for diagram does not exist: generate JSON from diagram");
+							"JSON file for diagram does not exist: generate JSON from diagram", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				realCommand += " " + fileName;				
@@ -1206,7 +1245,7 @@ public class DrawFBP extends JFrame
 			
 			ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Actual command",
-					JOptionPane.PLAIN_MESSAGE, null, null, realCommand);
+					MyOptionPane.PLAIN_MESSAGE, null, null, realCommand);
 
 			if (ans != null && ans.length() > 0) {
 				realCommand = ans;
@@ -1350,8 +1389,7 @@ public class DrawFBP extends JFrame
 
 			if (curDiag.blocks.isEmpty()) {
 				MyOptionPane.showMessageDialog(null,
-						"Unable to export image for empty diagram",
-						"Empty diagram", JOptionPane.ERROR_MESSAGE);
+						"Unable to export image for empty diagram", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1386,7 +1424,7 @@ public class DrawFBP extends JFrame
 			MyOptionPane.showMessageDialog(frame,
 					"Image saved: " + file.getAbsolutePath());
 
-			// curDiag.imageFile = file;
+			//curDiag.imageFile = file;
 
 			currentImageDir = new File(file.getParent());
 			properties.put("currentImageDir", file.getParent());
@@ -1407,8 +1445,13 @@ public class DrawFBP extends JFrame
 
 			MyFileChooser fc = new MyFileChooser(currentImageDir,
 					curDiag.fCPArr[IMAGE]);
+			
+			
+			int i = curDiag.diagFile.getName().indexOf(".drw");
+			ss += File.separator + curDiag.diagFile.getName().substring(0, i) + curDiag.fCPArr[IMAGE].fileExt;
+			fc.setSuggestedName(ss);
 
-			int returnVal = fc.showOpenDialog();
+			int returnVal = fc.showOpenDialog(true);  // set to saveAs
 
 			fFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -1426,17 +1469,18 @@ public class DrawFBP extends JFrame
 			try {
 				buffer2 = ImageIO.read(fFile);
 			} catch (IOException e2) {
-				MyOptionPane.showMessageDialog(frame, "Could not get image");
+				MyOptionPane.showMessageDialog(frame, "Could not get image", MyOptionPane.ERROR_MESSAGE);
 			}
 			ImageIcon image = new ImageIcon(buffer2);
 
 			currentImageDir = new File(fFile.getParent());
 			properties.put("currentImageDir", fFile.getParent());
 			propertiesChanged = true;
-
+			//Graphics g = image.
+			//paintIcon(image,g,0,0);
 			MyOptionPane.showMessageDialog(frame, null,
 					"Image: " + fFile.getName(),
-					JOptionPane.INFORMATION_MESSAGE, image);
+					MyOptionPane.INFORMATION_MESSAGE, image);
 			frame.repaint();
 			return;
 
@@ -1468,13 +1512,12 @@ public class DrawFBP extends JFrame
 															+ "it can be found in project lib file, -\n"
 															+ "or downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar",
 													"Locate it?",		
-													JOptionPane.OK_CANCEL_OPTION,
-													JOptionPane.QUESTION_MESSAGE);
-									if (response == JOptionPane.OK_OPTION)
+													MyOptionPane.OK_CANCEL_OPTION);
+									if (response == MyOptionPane.OK_OPTION)
 										res = locateJhallJarFile();
 									else {
 										MyOptionPane.showMessageDialog(frame,
-												"No DrawFBP Help jar file located");
+												"No DrawFBP Help jar file located", MyOptionPane.ERROR_MESSAGE);
 										res = false;
 									}
 								}
@@ -1491,7 +1534,8 @@ public class DrawFBP extends JFrame
 										.showMessageDialog(
 												frame,
 												"DrawFBP Help jar file shown in properties does not exist\n"
-														+ "Use File/Locate DrawFBP Help File, and try Help again");
+														+ "Use File/Locate DrawFBP Help File, and try Help again", 
+														MyOptionPane.ERROR_MESSAGE);
 								return;
 							}
 							try {								
@@ -1510,7 +1554,7 @@ public class DrawFBP extends JFrame
 
 							if (helpSetClass == null) {
 								MyOptionPane.showMessageDialog(frame,
-										"HelpSet class not found in jar file or invalid");
+										"HelpSet class not found in jar file or invalid", MyOptionPane.ERROR_MESSAGE);
 								return;
 							}
 
@@ -1529,7 +1573,7 @@ public class DrawFBP extends JFrame
 								jHelpClass = cl.loadClass("javax.help.JHelp");
 								if (jHelpClass == null) {
 									MyOptionPane.showMessageDialog(frame,
-											"JHelp class not found in jar file");
+											"JHelp class not found in jar file", MyOptionPane.ERROR_MESSAGE);
 									return;
 								}
 								Constructor conjh = jHelpClass.getConstructor(helpSetClass);
@@ -1538,7 +1582,7 @@ public class DrawFBP extends JFrame
 								
 							} catch (Exception e2) {
 								MyOptionPane.showMessageDialog(frame,
-										"HelpSet could not be processed: " + e2);
+										"HelpSet could not be processed: " + e2, MyOptionPane.ERROR_MESSAGE);
 								return;
 							}
 						}
@@ -1609,7 +1653,7 @@ public class DrawFBP extends JFrame
 					+  "*    Authors: J.Paul Rodker Morrison,              *\n"
 					+  "*             Bob Corrick                          *\n"
 					+  "*                                                  *\n"
-					+  "*    Copyright 2009, ..., 2016                     *\n"
+					+  "*    Copyright 2009, ..., 2017                     *\n"
 					+  "*                                                  *\n"
 					+  "*    FBP web site: www.jpaulmorrison.com/fbp       *\n"
 					+  "*                                                  *\n"
@@ -1652,9 +1696,9 @@ public class DrawFBP extends JFrame
 
 			String ans = (String) MyOptionPane.showInputDialog(frame,
 					"Enter or change text", "Modify diagram description",
-					JOptionPane.PLAIN_MESSAGE, null, null, curDiag.desc);
+					MyOptionPane.PLAIN_MESSAGE, null, null, curDiag.desc);
 
-			if ((ans != null) && (ans.length() > 0)) {
+			if (ans != null/* && ans.length() > 0*/) {
 				curDiag.desc = ans;
 				curDiag.desc = curDiag.desc.replace('\n', ' ');
 				curDiag.desc = curDiag.desc.trim();
@@ -1682,7 +1726,7 @@ public class DrawFBP extends JFrame
 		if (s.equals("Block-related Actions")) {
 			Block b = selBlock;
 			if (b == null) {
-				MyOptionPane.showMessageDialog(frame, "Block not selected");
+				MyOptionPane.showMessageDialog(frame, "Block not selected", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			b.buildBlockPopupMenu();
@@ -1695,7 +1739,7 @@ public class DrawFBP extends JFrame
 		if (s.equals("Arrow-related Actions")) {
 			Arrow a = selArrow;
 			if (a == null) {
-				MyOptionPane.showMessageDialog(frame, "Arrow not selected");
+				MyOptionPane.showMessageDialog(frame, "Arrow not selected", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			a.buildArrowPopupMenu();
@@ -1759,7 +1803,7 @@ public class DrawFBP extends JFrame
 	void changeLanguage(GenLang gl) {
 		curDiag.diagLang = gl;
 		defaultCompLang = gl;
-		jtf.setText(gl.showLangs());
+		jtf.setText("Diagram Language: " +  gl.showLangs());
 		jtf.repaint();
 		if (!defaultCompLang.label.equals("Java")) {
 			menuItem1.setEnabled(false);  
@@ -2298,16 +2342,21 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (selectionValues[i].floatValue() == defaultFontSize)
 				j = i;
 		}
-		Object o = JOptionPane.showInputDialog(frame, "font style dialog",
-				"select a font style", JOptionPane.QUESTION_MESSAGE, null,
+		Float fs = (Float) MyOptionPane.showInputDialog(frame, "Font size dialog",
+				"Select a font size", MyOptionPane.PLAIN_MESSAGE, null,
 				selectionValues, selectionValues[j]);
-		defaultFontSize = ((Float) o).intValue();
-		float fs = (float) defaultFontSize;
+		if (fs == null)
+			return;
+		
+		defaultFontSize = (int) fs.intValue();
 		fontg = fontg.deriveFont(fs);
-		fontf = fontf.deriveFont(fs);		
+		fontf = fontf.deriveFont(fs);	
+		jfs.setText("Font Size: " + defaultFontSize);		 
 		adjustFonts();
+		frame.repaint(); 
 		properties.put("defaultFontSize", Integer.toString(defaultFontSize));
 		propertiesChanged = true;
+		MyOptionPane.showMessageDialog(frame, "Font size changed");
 		frame.repaint();
 		repaint();
 	}
@@ -2317,8 +2366,18 @@ void chooseFonts(MyFontChooser fontChooser){
 		editMenu = new JMenu(" Edit ");
 		helpMenu = new JMenu(" Help ");		
 		//runMenu = new JMenu(" Run ");
-		osg.setFont(fontg);
+		
+		int j = jtp.getTabCount();
+		for (int i = 0; i < j; i++) {	
+			ButtonTabComponent b = (ButtonTabComponent) jtp
+					.getTabComponentAt(i);
+			b.label.setFont(fontf);
+		}
+		jtp.repaint();
+		
+		//osg.setFont(fontg);
 		jfl.setFont(fontg);
+		jfs.setFont(fontg);
 		jtp.setFont(fontg);
 		zoom.setFont(fontg);
 		jtf.setFont(fontg);
@@ -2364,6 +2423,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		UIManager.put("Menu.font", fontg);
 		UIManager.put("MenuBar.font", fontg);
 		UIManager.put("MenuItem.font", fontg);
+		UIManager.put("Label.font", fontf);
 		/*
 		for (Object item : ht.keySet()) {
 			UIManager.put(item, fontg);
@@ -2543,18 +2603,23 @@ void chooseFonts(MyFontChooser fontChooser){
 			return res;
 		}
 
-		String msg;
-		if (jf != null && !(jf.exists()))
-			msg = "Unable to read JavaFBP jar file: " + javaFBPJarFile;
+		String msg = null;
+		if (jf != null) {
+			if (!jf.exists())
+			    msg = "Unable to read JavaFBP jar file: " + javaFBPJarFile;
+		}
 		else
 			msg = "JavaFBP jar file missing";
 
-		int response = MyOptionPane.showConfirmDialog(frame, msg, "Specify a JavaFBP jar file",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-		if (response == JOptionPane.OK_OPTION)
+		if (msg != null)
+		    MyOptionPane.showMessageDialog(frame, msg, MyOptionPane.ERROR_MESSAGE);
+		
+		int response = MyOptionPane.showConfirmDialog(frame, "Specify a JavaFBP jar file", "Locate JavaFBP jar file",
+				MyOptionPane.OK_CANCEL_OPTION /*, MyOptionPane.PLAIN_MESSAGE */);
+		if (response == MyOptionPane.OK_OPTION)
 			res = locateJavaFBPJarFile();
 		else {
-			MyOptionPane.showMessageDialog(frame, "No JavaFBP jar file located");
+			MyOptionPane.showMessageDialog(frame, "No JavaFBP jar file located", MyOptionPane.ERROR_MESSAGE);
 			res = false;
 		}
 
@@ -2585,7 +2650,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
 				MyOptionPane.showMessageDialog(frame,
-						"Unable to read JavaFBP jar file " + cFile.getName());
+						"Unable to read JavaFBP jar file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 			// diag.driver.currentDir = new File(cFile.getParent());
@@ -2594,7 +2659,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			
 			propertiesChanged = true;
 			MyOptionPane.showMessageDialog(frame,
-					"JavaFBP jar file location: " + cFile.getAbsolutePath());
+					"JavaFBP jar file location: " + cFile.getAbsolutePath(), MyOptionPane.INFORMATION_MESSAGE);
 			//jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
 			for (int i = 0; i < driver.jtp.getTabCount(); i++) {
 				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
@@ -2616,11 +2681,11 @@ void chooseFonts(MyFontChooser fontChooser){
 	boolean addAdditionalJarFile(){
 		
 		String ans = (String) MyOptionPane.showInputDialog(frame,
-				"Enter Description of Jar File", "Enter Description", 
-				JOptionPane.PLAIN_MESSAGE, null, null, null);
+				"Enter Description of jar file being added", "Enter Description", 
+				MyOptionPane.PLAIN_MESSAGE, null, null, null);
 		if (ans == null || ans.equals("")){
 			MyOptionPane.showMessageDialog(frame,
-					"No description entered");
+					"No description entered", MyOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 		
@@ -2638,7 +2703,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
 				MyOptionPane.showMessageDialog(frame,
-						"Unable to read additional jar file " + cFile.getName());
+						"Unable to read additional jar file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 			
@@ -2916,8 +2981,8 @@ void chooseFonts(MyFontChooser fontChooser){
 		if (curDiag.cEncl.editPortName) {
 			String ans = (String) MyOptionPane.showInputDialog(frame,
 					"Enter or change text", "Edit subnet port name",
-					JOptionPane.PLAIN_MESSAGE, null, null, snPort.name);
-			if ((ans != null) && (ans.length() > 0))
+					MyOptionPane.PLAIN_MESSAGE, null, null, snPort.name);
+			if (ans != null/* && ans.length() > 0*/) 
 				snPort.name = ans;
 			curDiag.cEncl.editPortName = false;
 		}
@@ -2988,7 +3053,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	static public void applyOrientation(Component c) {
 		c.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-
+		
 		if (c instanceof JMenu) {
 			JMenu menu = (JMenu) c;
 			int ncomponents = menu.getMenuComponentCount();
@@ -3269,9 +3334,9 @@ void chooseFonts(MyFontChooser fontChooser){
 				
 				if (
 				 	1 == jtp.getTabCount() && (s.equals("(untitled)") || s.equals("")) &&
-			   JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(frame,
+			   MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(frame,
 					"Choose one option", "Leave DrawFBP?",
-					JOptionPane.YES_NO_OPTION)) {
+					MyOptionPane.YES_NO_OPTION)) {
 				closeAppAction
 						.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 			}
@@ -4382,10 +4447,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					return;
 				if (curDiag.foundBlock.id == curDiag.currentArrow.fromId) {
 
-					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 							frame,
 							"Connecting arrow to originating block is deadlock-prone - do anyway?",
-							"Allow?", JOptionPane.YES_NO_OPTION)) {
+							"Allow?", MyOptionPane.YES_NO_OPTION)) {
 						Integer aid = new Integer(curDiag.currentArrow.id);
 						curDiag.arrows.remove(aid);
 						curDiag.foundBlock = null;
@@ -4404,17 +4469,15 @@ void chooseFonts(MyFontChooser fontChooser){
 					if (side == Side.BOTTOM) {
 						int answer = MyOptionPane.showConfirmDialog(frame,
 								"Connect arrow to bottom of block?",
-								"Please choose one", JOptionPane.YES_NO_OPTION,
-								JOptionPane.INFORMATION_MESSAGE);
-						if (answer != JOptionPane.YES_OPTION)
+								"Please choose one", MyOptionPane.YES_NO_OPTION);
+						if (answer != MyOptionPane.YES_OPTION)
 							OK = false;
 					}
 					if (side == Side.RIGHT) {
 						int answer = MyOptionPane.showConfirmDialog(frame,
 								"Connect arrow to righthand side?",
-								"Please choose one", JOptionPane.YES_NO_OPTION,
-								JOptionPane.INFORMATION_MESSAGE);
-						if (answer != JOptionPane.YES_OPTION)
+								"Please choose one", MyOptionPane.YES_NO_OPTION);
+						if (answer != MyOptionPane.YES_OPTION)
 							OK = false;
 					}
 				}
@@ -4461,12 +4524,15 @@ void chooseFonts(MyFontChooser fontChooser){
 										|| to instanceof ExtPortBlock
 										|| to instanceof Enclosure)))) {
 
+					if (!(from instanceof FileBlock || from instanceof PersonBlock || from instanceof ReportBlock || from instanceof LegendBlock ||
+							to instanceof FileBlock || to instanceof PersonBlock || to instanceof ReportBlock || to instanceof LegendBlock 	) ) {
 					if (!(from instanceof IIPBlock) && (a.upStreamPort == null
 							|| a.upStreamPort.trim().equals("")))
 						a.upStreamPort = "OUT";
 					if (!a.endsAtLine && (a.downStreamPort == null
 							|| a.downStreamPort.trim().equals("")))
 						a.downStreamPort = "IN";
+				}
 				}
 
 				Boolean error = false;
@@ -4493,7 +4559,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 				if (error) {
 					MyOptionPane.showMessageDialog(frame,
-							"Arrow attached to one or both wrong side(s) of blocks");
+							"Arrow attached to one or both wrong side(s) of blocks", MyOptionPane.WARNING_MESSAGE);
 					Integer aid = new Integer(a.id);
 					curDiag.arrows.remove(aid);
 				} else {
@@ -4556,6 +4622,8 @@ void chooseFonts(MyFontChooser fontChooser){
 											|| to instanceof ExtPortBlock
 											|| to instanceof Enclosure)))) {
 
+						if (!(from instanceof FileBlock || from instanceof PersonBlock || from instanceof ReportBlock || from instanceof LegendBlock ||
+								to instanceof FileBlock || to instanceof PersonBlock || to instanceof ReportBlock || to instanceof LegendBlock 	) ) {
 						if (!(from instanceof IIPBlock)
 								&& (a.upStreamPort == null
 										|| a.upStreamPort.trim().equals("")))
@@ -4566,6 +4634,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						if (a.endsAtLine && (a2.downStreamPort == null
 								|| a2.downStreamPort.trim().equals("")))
 							a2.downStreamPort = "IN";
+						}
 					}
 					a.downStreamPort = a2.downStreamPort;
 					// Block from = curDiag.blocks.get(new Integer(
@@ -4574,10 +4643,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					// to = curDiag.blocks.get(new Integer(a2.toId));
 
 					if (to == from) {
-						if (JOptionPane.NO_OPTION == MyOptionPane
+						if (MyOptionPane.NO_OPTION == MyOptionPane
 								.showConfirmDialog(frame,
 										"Connecting arrow to originating block is deadlock-prone - do anyway?",
-										"Allow?", JOptionPane.YES_NO_OPTION)) {
+										"Allow?", MyOptionPane.YES_NO_OPTION)) {
 							Integer aid = new Integer(curDiag.currentArrow.id);
 							curDiag.arrows.remove(aid);
 							curDiag.foundBlock = null;
@@ -4593,12 +4662,12 @@ void chooseFonts(MyFontChooser fontChooser){
 					if (from instanceof ExtPortBlock
 							&& from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))
 						MyOptionPane.showMessageDialog(frame,
-								"Arrow in wrong direction");
+								"Arrow in wrong direction", MyOptionPane.ERROR_MESSAGE);
 					else
 						if (to instanceof ExtPortBlock
 								&& to.type.equals(Block.Types.EXTPORT_IN_BLOCK))
 						MyOptionPane.showMessageDialog(frame,
-								"Arrow in wrong direction");
+								"Arrow in wrong direction", MyOptionPane.ERROR_MESSAGE);
 					else
 						error = false;
 					if (error) {

@@ -73,6 +73,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 		popup = new JDialog(driver.frame, Dialog.ModalityType.APPLICATION_MODAL);
 		popup.setFocusable(true);
+		DrawFBP.applyOrientation(popup);
 		popup.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				popup.dispose();
@@ -96,6 +97,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 				
 		prompt = "Select fonts for fixed and/or general characters";
 		popup.setTitle(prompt);
+		DrawFBP.applyOrientation(popup);
 
 		p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
 		
@@ -110,18 +112,18 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		jlG.setCellRenderer(new CellRenderer());
 
 		lsF = new JScrollPane(jlF);
-		lsF.setPreferredSize(new Dimension(400, 600));
+		lsF.setPreferredSize(new Dimension(1000, 800));
 		lsG = new JScrollPane(jlG);
-		lsG.setPreferredSize(new Dimension(400, 600));
+		lsG.setPreferredSize(new Dimension(1000, 800));
 		
 		fixedFont = driver.fixedFont;
-		lb1 = new JLabel("Fixed Fonts (" + fixedFont + ")");
+		lb1 = new JLabel("Fixed Fonts (current: " + fixedFont + ")");
 		b1.add(lb1);
 		b1.add(lsF);
 		jlF.setSelectedValue(fixedFont, true); 
 		
 		generalFont = driver.generalFont;
-		lb2 = new JLabel("General Fonts (" + generalFont + ")");
+		lb2 = new JLabel("General Fonts (current: " + generalFont + ")");
 		b2.add(lb2);
 		b2.add(lsG);
 		jlG.setSelectedValue(generalFont, true); 		
@@ -132,7 +134,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 				
 		popup.add(p);
 
-		popup.setBounds(100, 100, 800, 800);
+		//popup.setBounds(100, 100, 800, 800);
 
 		jlF.addListSelectionListener(this);
 		jlG.addListSelectionListener(this);
@@ -144,7 +146,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		lsG.repaint();
 
 		//popup.pack();
-		popup.setLocation(200, 100);
+		popup.setLocation(50, 100);
 		popup.pack();
 		//frame.pack();
 		 
@@ -188,7 +190,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 					MyOptionPane
 					.showMessageDialog(driver.frame, "Font '" + fixedFont 
 							+ "' selected as font for fixed-size characters.");
-					lb1.setText("Fixed Fonts (" + fixedFont + ")");
+					lb1.setText("Fixed Fonts (current: " + fixedFont + ")");
 					lb1.repaint();
 				}
 				else {
@@ -197,7 +199,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 					MyOptionPane
 						.showMessageDialog(driver.frame, "Font '" + generalFont
 								+ "' selected as font for general characters.");
-					lb2.setText("General Fonts (" + generalFont + ")");
+					lb2.setText("General Fonts (current: " + generalFont + ")");
 					lb2.repaint();
 				}
 								
@@ -227,16 +229,16 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			Dimension minSize2;
 			Dimension prefSize2;
 			Dimension maxSize2;
-			Dimension minSize = new Dimension(150, 15);
-			Dimension prefSize = new Dimension(150, 15);
+			Dimension minSize = new Dimension(100, 15);
+			Dimension prefSize = new Dimension(100, 15);
 			Dimension maxSize = new Dimension(Short.MAX_VALUE, 15);
 			JLabel lab1 = new JLabel((String) value);
 			lab1.setFont(new Font("Arial", Font.PLAIN, driver.defaultFontSize));
 			lab1.setMinimumSize(minSize);
 			lab1.setMaximumSize(maxSize);
 			lab1.setPreferredSize(prefSize);
-
 			jp.add(lab1);
+			
 			minSize2 = new Dimension(20, 15);
 			prefSize2 = new Dimension(20, 15);
 			maxSize2 = new Dimension(Short.MAX_VALUE, 15);
@@ -253,20 +255,45 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 			jp.add(lab2);
 			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
-
-			JLabel lab3 = new JLabel("\u4e2d\u6587\u6587\u672c\u793a\u4f8b"); // Chinese
-			// for
-			// "Sample Chinese text"
-
+			
+			JLabel lab3 = new JLabel("Русский образец текста");
+		    //  Russian for "Russian text sample"
 			lab3.setFont(new Font((String) value, Font.PLAIN,
 					driver.defaultFontSize));
-			minSize = new Dimension(100, 15);
-			prefSize = new Dimension(100, 15);
+			minSize = new Dimension(150, 15);
+			prefSize = new Dimension(150, 15);
 			lab3.setMinimumSize(minSize);
 			lab3.setMaximumSize(maxSize);
 			lab3.setPreferredSize(prefSize);
 
 			jp.add(lab3);
+			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
+
+			JLabel lab4 = new JLabel("\u0939\u093f\u0902\u0926\u0940 \u092a\u093e\u0920 \u0928\u092e\u0942\u0928\u093e");
+		    //  Hindi for "Hindi text sample"
+			lab4.setFont(new Font((String) value, Font.PLAIN,
+					driver.defaultFontSize));
+			minSize = new Dimension(150, 15);
+			prefSize = new Dimension(150, 15);
+			lab4.setMinimumSize(minSize);
+			lab4.setMaximumSize(maxSize);
+			lab4.setPreferredSize(prefSize);
+
+			jp.add(lab4);
+			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
+
+
+			JLabel lab5 = new JLabel("\u4e2d\u6587\u6587\u672c\u793a\u4f8b");  			
+			//  Chinese for "Chinese text sample"
+			lab5.setFont(new Font((String) value, Font.PLAIN,
+					driver.defaultFontSize));
+			minSize = new Dimension(100, 15);
+			prefSize = new Dimension(100, 15);
+			lab5.setMinimumSize(minSize);
+			lab5.setMaximumSize(maxSize);
+			lab5.setPreferredSize(prefSize);
+
+			jp.add(lab5);
 			Color vLightBlue = new Color(220, 235, 255);			
 			
 			if (isSelected) { 

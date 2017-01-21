@@ -99,7 +99,7 @@ public class IIPBlock extends Block {
 		}
 		if (!stk.isEmpty() || inQuotes || warning)
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Brackets not balanced in IIP string");
+					"Brackets not balanced in IIP string", MyOptionPane.ERROR_MESSAGE);
 		return res;
 	}
 }

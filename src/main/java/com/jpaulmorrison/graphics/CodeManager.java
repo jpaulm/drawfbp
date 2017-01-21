@@ -247,7 +247,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				if (block instanceof ProcessBlock) {
 					if (block.description == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
-								"One or more missing block descriptions");
+								"One or more missing block descriptions", MyOptionPane.WARNING_MESSAGE);
 						error = true;
 						return false;
 					}
@@ -273,8 +273,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 									driver.frame,
 									"Multiplex factor for " + "\""
 											+ block.description + "\"",
-									"Please enter number",
-									JOptionPane.QUESTION_MESSAGE);
+									"Please enter number");
 							if (d == null || d.equals("")) {
 								block.mpxfactor = "????";
 								error = true;
@@ -350,7 +349,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				Block to = diag.blocks.get(new Integer(a2.toId));
 				if (to == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Downstream block not found: from " + from.description);
+							"Downstream block not found: from " + from.description, MyOptionPane.ERROR_MESSAGE);
 					break;
 				}
 				if (from == null || to == null || from instanceof FileBlock
@@ -386,13 +385,15 @@ public class CodeManager implements ActionListener, DocumentListener {
 						&& to instanceof ProcessBlock) {
 
 					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+						String proc = to.description;
 						MyOptionPane.showMessageDialog(driver.frame,
-								"Duplicate port name: " + dnPort);
+								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
 					if (checkDupPort(upPort, from)) {
+						String proc = from.description;
 						MyOptionPane.showMessageDialog(driver.frame,
-								"Duplicate port name: " + upPort);
+								"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
 					if (from.multiplex) {
@@ -429,8 +430,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 					if (from instanceof IIPBlock
 							&& to instanceof ProcessBlock) {
 					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+						String proc = to.description;
 						MyOptionPane.showMessageDialog(driver.frame,
-								"Duplicate port name: " + dnPort);
+								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
 
@@ -488,6 +490,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 				contents[sno] = "\n /* Errors in generated code - they must be corrected for your program to run - \n\n"
 						+ "               remove this comment when you are done  */";
 				styles[sno] = errorStyle;
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Error in generated code", MyOptionPane.ERROR_MESSAGE);
 			}
 		}
 		// insert data from arrays
@@ -498,7 +502,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Couldn't insert text into text pane");
+					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 
@@ -555,7 +559,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		String fileString = driver.curDiag.readFile(file);
 		if (fileString == null) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Couldn't read file: " + file.getAbsolutePath());
+					"Couldn't read file: " + file.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		// changed = false;
@@ -593,7 +597,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			doc.insertString(0, fileString, normalStyle);
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Couldn't insert text into text pane");
+					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -832,18 +836,17 @@ public class CodeManager implements ActionListener, DocumentListener {
 	public boolean askAboutSaving() {
 		int answer = MyOptionPane.showConfirmDialog(driver.frame,
 				"Save generated or modified code?", "Save code",
-				JOptionPane.YES_NO_CANCEL_OPTION,
-				JOptionPane.INFORMATION_MESSAGE);
+				MyOptionPane.YES_NO_CANCEL_OPTION);
 
 		boolean b;
-		if (answer == JOptionPane.YES_OPTION) {
+		if (answer == MyOptionPane.YES_OPTION) {
 			// User clicked YES.
 			b = saveCode(/* SAVE_AS */);
 			// diag.diagLang = gl;
 			return b;
 		}
 
-		b = (answer == JOptionPane.NO_OPTION);
+		b = (answer == MyOptionPane.NO_OPTION);
 		// diag.diagLang = gl;
 		return b;
 	}
@@ -911,8 +914,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 		try {
 			fileString = doc.getText(0, doc.getLength());
 		} catch (BadLocationException ble) {
-			MyOptionPane.showMessageDialog(driver.driver.frame,
-					"Couldn't get text from text pane");
+			MyOptionPane.showMessageDialog(driver.frame,
+					"Couldn't get text from text pane", MyOptionPane.ERROR_MESSAGE);
 			// diag.changeCompLang();
 			return false;
 		}
@@ -959,7 +962,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		MyOptionPane.showMessageDialog(driver.frame, "File " + file.getName() + " saved");
+		//MyOptionPane.showMessageDialog(driver.frame, "File " + file.getName() + " saved");
 		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.properties.put(diag.diagLang.netDirProp, file.getParent());
@@ -1031,7 +1034,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			// String s = "";
 			if (block instanceof ProcessBlock && block.description == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"One or more missing block descriptions");
+						"One or more missing block descriptions", MyOptionPane.WARNING_MESSAGE);
 				// error = true;
 				return null;
 			}
@@ -1060,7 +1063,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Downstream block not found: from " + from.description);
+						"Downstream block not found: from " + from.description, MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
 			if (from == null || to == null || from instanceof FileBlock
@@ -1095,8 +1098,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 			dnPort = a2.dspMod;
 			if (from instanceof IIPBlock) {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+					String proc = to.description;
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Duplicate port name: " + dnPort);
+							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 				data += "\"data\":" + q(fromDesc) + ",\n";
@@ -1134,7 +1138,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			if (block instanceof ProcessBlock) {
 				if (block.description == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"One or more missing block descriptions");
+							"One or more missing block descriptions", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 					return false;
 				}
@@ -1157,7 +1161,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Downstream block not found");
+						"Downstream block not found", MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
 			if (from == null || to == null || from instanceof FileBlock
@@ -1196,25 +1200,27 @@ public class CodeManager implements ActionListener, DocumentListener {
 			if (from instanceof ProcessBlock
 					&& to instanceof ProcessBlock) {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+					String proc = to.description;
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Duplicate port name: " + dnPort);
+							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 				if (checkDupPort(upPort, from)) {
+					String proc = from.description;
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Duplicate port name: " + upPort);
+							"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 
 				if (from.multiplex) {
 
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Multiplexing not supported");
+							"Multiplexing not supported", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				} else if (to.multiplex) {
 
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Multiplexing not supported");
+							"Multiplexing not supported", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				} else
 
@@ -1223,8 +1229,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 			} else
 				if (from instanceof IIPBlock && to instanceof ProcessBlock) {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+					String proc = to.description;
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Duplicate port name: " + dnPort);
+							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 				code += cma + "'" + fromDesc + "' -> " + dnPort + " " + toDesc;
@@ -1244,7 +1251,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Couldn't insert text into text pane");
+					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
 			diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
 					diag.diagLang.netDirProp,
@@ -1291,8 +1298,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 		String c = b.fullClassName;
 		if (c == null) {
 			c = b.codeFileName;
-			if (c == null)
+			if (c == null) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Missing full class name for: " + b.description, MyOptionPane.ERROR_MESSAGE);
+			 
 				error = true;
+			}
 		}
 		if (!error) {
 			/*
@@ -1364,10 +1375,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 						upPort = z;
 						break;
 					}
-					if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 							driver.frame, "Invalid port name: " + upPort,
 							"Invalid output port name - try again?",
-							JOptionPane.YES_NO_OPTION)) {
+							MyOptionPane.YES_NO_OPTION)) {
 						// ok = false;
 						upPort = "????";
 						break;
@@ -1375,7 +1386,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				}
 				upPort = (String) MyOptionPane.showInputDialog(driver.frame,
 						"Output port from " + "\"" + from.description + "\"",
-						"Please enter port name", JOptionPane.QUESTION_MESSAGE);
+						"Please enter port name");
 				if (upPort == null)
 					return false;
 				diag.changed = true;
@@ -1394,10 +1405,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 					dnPort = z;
 					break;
 				}
-				if (JOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+				if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 						driver.frame, "Invalid port name: " + dnPort,
 						"Invalid input port name - try again?",
-						JOptionPane.YES_NO_OPTION)) {
+						MyOptionPane.YES_NO_OPTION)) {
 					// ok = false;
 					dnPort = "????";
 					break;
@@ -1405,7 +1416,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 			dnPort = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Input port to " + "\"" + to.description + "\"",
-					"Please enter port name", JOptionPane.QUESTION_MESSAGE);
+					"Please enter port name");
 			if (dnPort == null)
 				return false;
 			diag.changed = true;

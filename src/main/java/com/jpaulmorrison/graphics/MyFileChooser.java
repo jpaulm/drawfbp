@@ -141,12 +141,12 @@ public class MyFileChooser extends JFrame
 		//this.type = type;
 	}
 
-	int showOpenDialog(final boolean sa) {
+	int showOpenDialog(final boolean saveas) {
 
 		dialog = new JDialog(driver.frame, JDialog.ModalityType.APPLICATION_MODAL);
 		// dialog.setUndecorated(false);
 
-		saveAs = sa;
+		saveAs = saveas;
 
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -154,6 +154,7 @@ public class MyFileChooser extends JFrame
 			}
 		});
 
+		DrawFBP.applyOrientation(dialog);
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());		
 		
@@ -815,7 +816,7 @@ public class MyFileChooser extends JFrame
 		LinkedList<String> ll = new LinkedList<String>();
 		if (null == (fileString = driver.curDiag.readFile(f))) {
 			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file "
-					+ f.getName());
+					+ f.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		Integer errNo = new Integer(0);
@@ -921,7 +922,7 @@ public class MyFileChooser extends JFrame
 
 		if (ll.isEmpty()) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"No components or graphs in file: " + f.getName());
+					"No components or graphs in file: " + f.getName(), MyOptionPane.ERROR_MESSAGE);
 			//return null;
 		}
 
@@ -1377,14 +1378,14 @@ public class MyFileChooser extends JFrame
 			if (f.isDirectory()) {
 				if (f.list().length > 0) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Folder not empty - cannot be deleted");
+							"Folder not empty - cannot be deleted", MyOptionPane.ERROR_MESSAGE);
 
 					return;
 				}
 			} else {
 				if (driver.curDiag.diagramIsOpen(s)) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"File cannot be deleted while open");
+							"File cannot be deleted while open", MyOptionPane.ERROR_MESSAGE);
 
 					return;
 				}
@@ -1392,10 +1393,10 @@ public class MyFileChooser extends JFrame
 
 			String u = f.isDirectory() ? "folder" : "file";
 
-			if (JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(dialog,
+			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(dialog,
 					"Do you want to delete this " + u + ": " + f.getName()
 							+ "?", "File/folder delete",
-					JOptionPane.YES_NO_OPTION)) {
+					MyOptionPane.YES_NO_OPTION)) {
 
 				listHead = f.getParent();
 				f.delete();
@@ -1429,7 +1430,7 @@ public class MyFileChooser extends JFrame
 				File h = new File(u);
 				if (!h.exists() || !h.isDirectory()) {
 					MyOptionPane.showMessageDialog(driver.frame, "File " + u
-							+ " either doesn't exist or is not a directory");
+							+ " either doesn't exist or is not a directory", MyOptionPane.ERROR_MESSAGE);
 
 					return;
 				}
@@ -1459,7 +1460,7 @@ public class MyFileChooser extends JFrame
 				int rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Empty directory");
+							"Empty directory", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -1469,7 +1470,7 @@ public class MyFileChooser extends JFrame
 
 			if (s == null || s.equals("")) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"No file specified");
+						"No file specified", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -1495,7 +1496,7 @@ public class MyFileChooser extends JFrame
 
 				if (0 >= currentNode.getChildCount()) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Error in jar file");
+							"Error in jar file", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -1523,7 +1524,7 @@ public class MyFileChooser extends JFrame
 						if (selComp != t_fileName) { 
 							MyOptionPane.showMessageDialog(driver.frame,
 								"Folder does not exist: "
-										+ f.getAbsolutePath());
+										+ f.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
 							return;
 						}
 				}

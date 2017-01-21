@@ -7,7 +7,6 @@ import java.util.*;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import com.jpaulmorrison.graphics.DrawFBP.Side;
@@ -441,6 +440,8 @@ public class Arrow implements ActionListener {
 		JMenuItem menuItem;
 		Block from = diag.blocks.get(new Integer(fromId));
 		Block to = diag.blocks.get(new Integer(toId));
+		if (!(from instanceof FileBlock || from instanceof PersonBlock || from instanceof ReportBlock || from instanceof LegendBlock ||
+				to instanceof FileBlock || to instanceof PersonBlock || to instanceof ReportBlock || to instanceof LegendBlock 	) ) {
 		if (!(from instanceof ExtPortBlock) && !(from instanceof IIPBlock)) {
 			menuItem = new JMenuItem("Edit Upstream Port Name");
 			menuItem.addActionListener(this);
@@ -452,18 +453,22 @@ public class Arrow implements ActionListener {
 			diag.jpm.add(menuItem);
 		}
 		diag.jpm.addSeparator();
-		menuItem = new JMenuItem("Set Capacity");
-		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
-		menuItem = new JMenuItem("Remove Capacity");
-		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
-		diag.jpm.addSeparator();
+		 
+		
 		menuItem = new JMenuItem("Toggle Upstream Port Automatic / Normal");
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
 		
 		menuItem = new JMenuItem("Toggle Downstream Port Automatic / Normal");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
+		}
+		
+		diag.jpm.addSeparator();
+		menuItem = new JMenuItem("Set Capacity");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
+		menuItem = new JMenuItem("Remove Capacity");
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
 		diag.jpm.addSeparator();
@@ -510,9 +515,9 @@ public class Arrow implements ActionListener {
 
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					   "Enter or change text", "Edit upstream port name",
-					JOptionPane.PLAIN_MESSAGE, null, null, upStreamPort);
+					MyOptionPane.PLAIN_MESSAGE, null, null, upStreamPort);
 			
-			if (ans != null/* && ans.length() > 0 */) {
+			if (ans != null /* && ans.length() > 0*/ ) {
 				Block b = diag.blocks.get(new Integer(fromId));
 				// upStreamPort = ans;
 				diag.changed = true;
@@ -527,17 +532,18 @@ public class Arrow implements ActionListener {
 						found = true;					
 				}
 				if (found) {
+					String proc = driver.curDiag.blocks.get(fromId).description;
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Duplicate port name: " + ans);
-					// upStreamPort = "";
-					// return;
+							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
+					upStreamPort = "";
+					return;
 				}
 				upStreamPort = ans;
 
 				if (b.type.equals(Block.Types.EXTPORT_IN_BLOCK)
 						|| b instanceof IIPBlock) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Upstream port must be blank");
+							"Upstream port must be blank", MyOptionPane.ERROR_MESSAGE);
 					upStreamPort = "";
 				}
 			}
@@ -546,7 +552,7 @@ public class Arrow implements ActionListener {
 		} else if (s.equals("Edit Downstream Port Name") && endsAtBlock) {
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					 "Enter or change text", "Edit downstream port name",
-					JOptionPane.PLAIN_MESSAGE, null, null, downStreamPort);
+					MyOptionPane.PLAIN_MESSAGE, null, null, downStreamPort);
 			
 			
 			if (ans != null /* && ans.length() > 0 */) {
@@ -565,17 +571,18 @@ public class Arrow implements ActionListener {
 						found = true;
 				}
 				if (found) {
+					String proc = driver.curDiag.blocks.get(toId).description;
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Duplicate port name: " + ans);
-					// downStreamPort = "";
-					// return;
+							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
+					downStreamPort = "";
+					return;
 				}
 				
 				downStreamPort = ans;
 				
 				if (b.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Downstream port must be blank");
+							"Downstream port must be blank", MyOptionPane.ERROR_MESSAGE);
 					downStreamPort = "";
 				}
 			}
@@ -590,7 +597,7 @@ public class Arrow implements ActionListener {
 				capString = Integer.toString(capacity);
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Set Capacity",
-					JOptionPane.PLAIN_MESSAGE, null, null, capString);
+					MyOptionPane.PLAIN_MESSAGE, null, null, capString);
 			if ((ans != null) && (ans.length() > 0)) {
 				capacity = Integer.parseInt(ans);
 				if (capLegend == null) {
@@ -683,9 +690,9 @@ public class Arrow implements ActionListener {
 			 
 		} else if (s.equals("Delete")) {
 
-			if (JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					driver.frame, "Do you want to delete this arrow?", "Delete arrow",
-					 JOptionPane.YES_NO_OPTION)) {
+					 MyOptionPane.YES_NO_OPTION)) {
 				diag.delArrow(this);
 
 				diag.changed = true;

@@ -47,6 +47,7 @@ public class ButtonTabComponent extends JPanel {
     private final JTabbedPane pane;
     DrawFBP driver;
     Diagram diag;
+    JLabel label = null;
  
     public ButtonTabComponent(final JTabbedPane pane, DrawFBP driver) {
         //unset default FlowLayout' gaps
@@ -58,7 +59,7 @@ public class ButtonTabComponent extends JPanel {
         this.driver = driver;
         setOpaque(false);         
         
-        JLabel label = new JLabel();         
+        label = new JLabel();         
         add(label);
         label.setFont(driver.fontf);
         //add more space between the label and the button

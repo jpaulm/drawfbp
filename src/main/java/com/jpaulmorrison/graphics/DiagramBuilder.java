@@ -71,7 +71,7 @@ public class DiagramBuilder {
 		}
 
 		if (!bp.tc('<', 'o')) {
-			MyOptionPane.showMessageDialog(frame, "1st non-blank char not '<'");
+			MyOptionPane.showMessageDialog(frame, "1st non-blank char not '<'", MyOptionPane.ERROR_MESSAGE);
 			// terminate();
 			return;
 		}
@@ -125,7 +125,7 @@ public class DiagramBuilder {
 						t = (String) curFl.get(starttag);
 						if (t == null) {
 							MyOptionPane.showMessageDialog(frame, "Field '"
-									+ starttag + "' not defined for this class");
+									+ starttag + "' not defined for this class", MyOptionPane.ERROR_MESSAGE);
 							return;
 						}
 						if (t.charAt(0) == '*') // test if it's atomic
@@ -176,7 +176,7 @@ public class DiagramBuilder {
 						if (starttag.equals("net"))  // from code before 2.13.4
 							return;
 						MyOptionPane
-								.showMessageDialog(frame, "Tags don't match: " + starttag + " - " + endtag);
+								.showMessageDialog(frame, "Tags don't match: " + starttag + " - " + endtag, MyOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					if (atomic) {   // i.e. a leaf in the XML tree
@@ -261,7 +261,7 @@ public class DiagramBuilder {
 								type = item.get("type");
 								if (null == type) {
 									MyOptionPane.showMessageDialog(frame,
-											"No block type specified");
+											"No block type specified", MyOptionPane.ERROR_MESSAGE);
 									block = new ProcessBlock(diag);
 
 								} else if (type.equals(Block.Types.PROCESS_BLOCK)) {
@@ -311,7 +311,7 @@ public class DiagramBuilder {
 
 								} else {
 									MyOptionPane.showMessageDialog(frame,
-											"Undefined block type");
+											"Undefined block type", MyOptionPane.ERROR_MESSAGE);
 									block = new ProcessBlock(diag);
 								}
 								block.buildBlockFromXML(item);
@@ -398,7 +398,7 @@ public class DiagramBuilder {
 				if (!bp.tu()) {
 					// at this point, we have processed the whole input stream
 					if (!names.empty())
-						MyOptionPane.showMessageDialog(frame, "Tags remaining: " + names.elementAt(0));
+						MyOptionPane.showMessageDialog(frame, "Tags remaining: " + names.elementAt(0), MyOptionPane.WARNING_MESSAGE);
 					done = true;
 					break;
 				}
@@ -418,7 +418,7 @@ public class DiagramBuilder {
 					if (endsw || !atomic)
 						MyOptionPane.showMessageDialog(frame,
 								"Characters found not preceded by field start tag: \""
-										+ data + "\"");
+										+ data + "\"", MyOptionPane.ERROR_MESSAGE);
 			}
 
 		} // end of loop
@@ -431,7 +431,7 @@ public class DiagramBuilder {
 
 		if (curFl != null)
 			MyOptionPane.showMessageDialog(frame,
-					"Tags not completely processed");
+					"Tags not completely processed", MyOptionPane.WARNING_MESSAGE);
 
 		// check type compatibility for all arrows
 		// for (Arrow a: currentDiag.arrows.values()){
@@ -448,7 +448,7 @@ public class DiagramBuilder {
 		//	driver.properties.put("defaultCompLang", diag.compLang.label);
 		//	driver.propertiesChanged = true;
 		//}
-		driver.jtf.setText(diag.diagLang.showLangs());
+		driver.jtf.setText("Diagram Language: " + diag.diagLang.showLangs());
 		frame.repaint();
 	}
 

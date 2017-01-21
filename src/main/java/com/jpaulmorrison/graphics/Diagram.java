@@ -1,7 +1,5 @@
 package com.jpaulmorrison.graphics;
 
-//import java.awt.ComponentOrientation;
-import java.awt.Dimension;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -18,9 +16,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
-import javax.swing.JDialog;
-//import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+
 import javax.swing.JPopupMenu;
 
 
@@ -131,7 +127,7 @@ public class Diagram {
 			File f2 = new File(s);
 			if (!f2.exists()) {
 				MyOptionPane.showMessageDialog(driver.frame, "Directory '" + s
-						+ "' does not exist - reselect");
+						+ "' does not exist - reselect", MyOptionPane.ERROR_MESSAGE);
 				// return null;
 				f2 = new File(".");
 			}
@@ -164,7 +160,7 @@ public class Diagram {
 		//}
 		if (null == (fileString = readFile(file))) {
 			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file "
-					+ file.getName());
+					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		 
@@ -223,7 +219,7 @@ public class Diagram {
 			File f = new File(s);
 			if (!f.exists()) {
 				MyOptionPane.showMessageDialog(driver.frame, "Directory '" + s
-						+ "' does not exist - reselect");
+						+ "' does not exist - reselect", MyOptionPane.ERROR_MESSAGE);
 
 				f = new File(System.getProperty("user.home"));
 			}
@@ -257,24 +253,24 @@ public class Diagram {
 
 				if (s.endsWith("(empty folder)")) {
 					MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
-							+ newFile.getName());
+							+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 
 				if (newFile.getParentFile() == null) {
 					MyOptionPane.showMessageDialog(driver.frame, "Missing parent file for: "
-							+ newFile.getName());
+							+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 				if (!(newFile.getParentFile().exists())) {
 					MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
-							+ newFile.getAbsolutePath());
+							+ newFile.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 
 				if (s.toLowerCase().endsWith("~")) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Cannot save into backup file: " + s);
+							"Cannot save into backup file: " + s, MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 				File f2 = new File(s);
@@ -303,23 +299,23 @@ public class Diagram {
 					&& diagramIsOpen(newFile.getAbsolutePath()))
 				return null;
 
-			int response;
+			//int response;
 			if (newFile.exists()) {
 				if (newFile.isDirectory()) {
 					MyOptionPane.showMessageDialog(driver.frame, newFile.getName()
-							+ " is a directory");
+							+ " is a directory", MyOptionPane.WARNING_MESSAGE);
 					return null;
 				}
-				if (!(JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 						driver.frame, "Overwrite existing file: " + newFile.getAbsolutePath()
 							+ "?", "Confirm overwrite",
-						 JOptionPane.YES_NO_OPTION)))  
+						 MyOptionPane.YES_NO_OPTION)))  
 			    	 return null;
 			} else {
-				if (!(JOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 						driver.frame, "Create new file: " + newFile.getAbsolutePath()
 						+ "?", "Confirm create",
-						 JOptionPane.YES_NO_OPTION))) 
+						 MyOptionPane.YES_NO_OPTION))) 
 					return null;
 			}
 			file = newFile;
@@ -391,10 +387,9 @@ public class Diagram {
 
 			int answer = MyOptionPane.showConfirmDialog(driver.frame, 
 					 "Save changes to " + name + "?", "Save changes",
-					JOptionPane.YES_NO_CANCEL_OPTION,
-					JOptionPane.INFORMATION_MESSAGE);
+					MyOptionPane.YES_NO_CANCEL_OPTION);
 			File file = null;
-			if (answer == JOptionPane.YES_OPTION) {
+			if (answer == MyOptionPane.YES_OPTION) {
 				// User clicked YES.
 				if (diagFile == null) { // choose file
 
@@ -415,7 +410,7 @@ public class Diagram {
 				
 
 			}
-			if (answer == JOptionPane.CANCEL_OPTION)				
+			if (answer == MyOptionPane.CANCEL_OPTION)				
 				res = false;
 
 		}
@@ -562,7 +557,7 @@ public class Diagram {
 			if (s.equals(t)) {
 				File fs = new File(s);
 				MyOptionPane.showMessageDialog(driver.frame,
-						"File " + fs.getName() + " is open");
+						"File " + fs.getName() + " is open", MyOptionPane.WARNING_MESSAGE);
 				return true;
 			}
 		}
@@ -633,10 +628,9 @@ public class Diagram {
 
 	void delBlock(Block block, boolean choose) {
 		if (choose
-				&& JOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog( 
+				&& MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog( 
 						driver.frame, "Do you want to delete this block?", "Delete block",
-
-						 JOptionPane.YES_NO_OPTION))
+						 MyOptionPane.YES_NO_OPTION))
 			return;
 
 		// go down list repeatedly - until no more arrows to remove
