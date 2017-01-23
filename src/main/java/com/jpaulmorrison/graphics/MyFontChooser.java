@@ -112,9 +112,9 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		jlG.setCellRenderer(new CellRenderer());
 
 		lsF = new JScrollPane(jlF);
-		lsF.setPreferredSize(new Dimension(1000, 800));
+		lsF.setPreferredSize(new Dimension(800, 800));
 		lsG = new JScrollPane(jlG);
-		lsG.setPreferredSize(new Dimension(1000, 800));
+		lsG.setPreferredSize(new Dimension(800, 800));
 		
 		fixedFont = driver.fixedFont;
 		lb1 = new JLabel("Fixed Fonts (current: " + fixedFont + ")");
@@ -257,6 +257,33 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
 			
 			
+			JLabel lab3 = new JLabel("\u0420\u0443\u0441\u0441\u043a\u0438\u0439 " +
+			"\u043e\u0431\u0440\u0430\u0437\u0435\u0446 " +
+			"\u0442\u0435\u043a\u0441\u0442\u0430");
+		    //  Russian for "Russian text sample"
+			lab3.setFont(new Font((String) value, Font.PLAIN,
+					driver.defaultFontSize));
+			minSize = new Dimension(150, 15);
+			prefSize = new Dimension(150, 15);
+			lab3.setMinimumSize(minSize);
+			lab3.setMaximumSize(maxSize);
+			lab3.setPreferredSize(prefSize);
+
+			jp.add(lab3);
+			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
+			
+			JLabel lab4 = new JLabel("\u0939\u093f\u0902\u0926\u0940 \u092a\u093e\u0920 \u0928\u092e\u0942\u0928\u093e");
+		    //  Hindi for "Hindi text sample"
+			lab4.setFont(new Font((String) value, Font.PLAIN,
+					driver.defaultFontSize));
+			minSize = new Dimension(150, 15);
+			prefSize = new Dimension(150, 15);
+			lab4.setMinimumSize(minSize);
+			lab4.setMaximumSize(maxSize);
+			lab4.setPreferredSize(prefSize);
+
+			jp.add(lab4);
+			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
 		
 
 			JLabel lab5 = new JLabel("\u4e2d\u6587\u6587\u672c\u793a\u4f8b");  			
