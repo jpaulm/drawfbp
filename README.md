@@ -47,7 +47,8 @@ Features
 - Generate complete networks in Java, C#, JSON, or .fbp notation
 - Pan, zoom in/out
 - Keyboard-only usage (except positioning of blocks)
-- Choose fonts (fixed size and variable size, indicating support for Chinese), font sizes
+- Choose fonts (fixed size and variable size, indicating support for Russian, Hindi (Devanagari), and Chinese)
+- Change font size 
 - Structured Help facility
 - Export diagram as image
 - Print diagram
@@ -59,12 +60,12 @@ Features
 Running DrawFBP
 ----
 
-DrawFBP can be executed directly by executing the .jar file.  You can download it from Maven (search for DrawFBP), or from the latest release in the DrawFBP project Releases directory in GitHub; it can then be executed directly by double-clicking on it. 
+DrawFBP can be executed directly by executing its .jar file.  You can download it from Maven (search for DrawFBP), or from the latest release in the <a href="https://github.com/jpaulm/drawfbp/releases">DrawFBP Releases</a> directory in GitHub; it can then be executed directly by double-clicking on it. 
 
-Alternatively DrawFBP can be run from the command line by positioning to your DrawFBP folder, and entering 
+If you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and enter 
 
-    java -cp build\libs\drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
-    java -cp build\libs\drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
+    java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
+    java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
     
 Note: if you are displaying a network built using an earlier version of DrawFBP, with some or all of the component classes filled in, you will have to reaccess the component classes, as the naming conventions have changed.
 
@@ -78,9 +79,9 @@ Here is a very simple diagram built using DrawFBP, showing process names, names 
 JavaHelp facility
 ---
 
-DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the DrawFBP-Help.jar file.  This is the standard JavaHelp jar file, and can be found in the `lib` directory on the GitHub `drawfbp` project, or can be downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar .
+DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the `DrawFBP-Help.jar` file.  This is the standard JavaHelp jar file, and can be obtained from the downloaded DrawFBP jar file, or from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar .
 
-From then on DrawFBP will remember the location in your `DrawFBPProperties.xml` file.
+From then on DrawFBP will remember the location of your DrawFBP-Help.jar file in your `DrawFBPProperties.xml` file.
 
 XML Schema for `.drw` files
 ---
