@@ -1,5 +1,4 @@
 
-// this one worked - uses javac
 
 buildscript {  
     repositories {
@@ -58,7 +57,7 @@ nexusStaging {
 
 dependencies {
   compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
-	compile files('lib/DrawFBP-Help.jar') 
+	compile files('src/main/resources/DrawFBP-Help.jar') 
 }
 
 jar {
