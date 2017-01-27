@@ -271,7 +271,7 @@ public class DrawFBP extends JFrame
 				driver.new JarFileFilter(), "Jar files");
 
 		fCPArray[JHALL] = new FileChooserParms("jhallJarFile",
-				"Choose a directory for DrawFBP-Help.jar (JavaHelp)", ".jar",
+				"Choose a directory for the JavaHelp jar file", ".jar",
 				driver.new JarFileFilter(), "Help files");
 
 		
@@ -1508,9 +1508,9 @@ public class DrawFBP extends JFrame
 											.showConfirmDialog(
 													frame,
 													//"Locate it?",
-													"Specify the location of the DrawFBP-Help jar file -\n"
-															+ "it can be found in project lib file, -\n"
-															+ "or downloaded from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar",
+													"Specify the location of the JavaHelp jar file -\n"
+															+ "do a search on Maven Central for 'javahelp'\n"
+													        + "Artifact ID: javahelp",
 													"Locate it?",		
 													MyOptionPane.OK_CANCEL_OPTION);
 									if (response == MyOptionPane.OK_OPTION)
