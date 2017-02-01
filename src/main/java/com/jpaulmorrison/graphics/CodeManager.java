@@ -64,6 +64,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 		diag = d;
 		driver = d.driver;
 		dialog = new JDialog(driver.frame);
+		driver.depDialog = dialog;
+		
 		DrawFBP.applyOrientation(dialog);
 
 		// type = DrawFBP.GENCODE;
@@ -74,8 +76,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 				Boolean res = true;
 				if (changed)
 					res = askAboutSaving();
-				if (res)
+				if (res){
+					driver.depDialog = null;
 					dialog.dispose();
+				}
 			}
 
 		});
@@ -122,7 +126,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// diag.targetLang = langLabel;
 		changed = true;
 		diag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(
-				diag.diagLang.srcDirProp,
+				"Process", diag.diagLang.srcDirProp,
 				"Select " + diag.diagLang.showLangs()
 						+ " component from directory",
 				diag.diagLang.suggExtn, diag.diagLang.filter,
@@ -130,7 +134,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						+ diag.diagLang.showSuffixes());
 
 		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
-				diag.diagLang.netDirProp,
+				"Generated code", diag.diagLang.netDirProp,
 				"Specify file name for generated code",
 				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
 				diag.diagLang.label);
@@ -199,7 +203,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			} else
 				contents[0] = "namespace {";
 
-			contents[2] = "    // change this if you want \n ";
+			contents[2] = "    // change this if you want \n";
 
 			if (gl.label.equals("Java"))
 				contents[2] += "import com.jpaulmorrison.fbp.core.engine.*; \n";
@@ -224,9 +228,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 				diag.desc = " ";
 			contents[9] = "\"" + diag.desc + "\"";
 			if (gl.label.equals("Java"))
-				contents[10] = ";\n protected void define() { \n";
+				contents[10] = ";\nprotected void define() { \n";
 			else
-				contents[10] = ";\n public override void Define() { \n";
+				contents[10] = ";\npublic override void Define() { \n";
 
 			styles[0] = normalStyle;
 			styles[1] = packageNameStyle;
@@ -266,7 +270,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					descArray.put(new Integer(block.id), s);
 
 					if (!block.multiplex)
-						code += genComp(s, c, gl.label) + "; \n";  
+						code += "  " + genComp(s, c, gl.label) + "; \n";  
 					else {
 						if (block.mpxfactor == null) {
 							String d = (String) MyOptionPane.showInputDialog(
@@ -295,7 +299,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						// code += component + "(\"" + s + ":\" + i, " + c +
 						// "); ";
 
-						code += genCompMpx(s, c, gl.label) + "; ";
+						code += "  " + genCompMpx(s, c, gl.label) + "; ";
 						if (c.equals("????")) {
 							code += "       // <=== fill in component name";
 						}
@@ -330,8 +334,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 					if (t.toLowerCase().endsWith(".class"))
 						t = t.substring(0, t.length() - 6);
 
-					code += genComp(s, t, gl.label) + "; \n";
-					code += initialize + "(\"" + s + "\", " + component + "(\""
+					code += "  " + genComp(s, t, gl.label) + "; \n";
+					code += "  " + initialize + "(\"" + s + "\", " + component + "(\""
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
 				}
 
@@ -399,7 +403,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					if (from.multiplex) {
 						code += "for (int i = 0; i < " + compress(fromDesc)
 								+ "_count; i++)\n";
-						code += genConnect(arrow) + "(" + component + "(\""
+						code += "  " + genConnect(arrow) + "(" + component + "(\""
 								+ fromDesc + ":\" + i), " + _port + "("
 								+ q(upPort) + "), " + component + "(\"" + toDesc
 								+ "\"), " + _port + "(" + q(dnPort) + ")" + cap
@@ -409,7 +413,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					} else if (to.multiplex) {
 						code += "for (int i = 0; i < " + compress(toDesc)
 								+ "_count; i++)\n";
-						code += genConnect(arrow) + "(" + component + "("
+						code += "  " + genConnect(arrow) + "(" + component + "("
 								+ q(fromDesc) + "), " + _port + "(" + q(upPort)
 								+ ",i), " + component + "(\"" + toDesc
 								+ ":\" + i), " + _port + "(" + q(dnPort) + ")"
@@ -417,7 +421,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						if (arrow.dropOldest)
 							code += "c" + arrow.id + "." + sDO + "; \n";
 					} else {
-						code += genConnect(arrow) + "(" + component + "("
+						code += "  " + genConnect(arrow) + "(" + component + "("
 								+ q(fromDesc) + "), " + _port + "(" + q(upPort)
 								+ "), " + component + "(\"" + toDesc + "\"), "
 								+ _port + "(" + q(dnPort) + ")" + cap + "); \n";
@@ -436,14 +440,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 						error = true;
 					}
 
-					code += initialize + "(" + q(fromDesc) + ", " + component
+					code += "  " + initialize + "(" + q(fromDesc) + ", " + component
 							+ "(\"" + toDesc + "\"), " + _port + "(" + q(dnPort)
 							+ ")" + cap + "); \n";
 				}
 
 				if (from instanceof ExtPortBlock) {
 
-					code += genConnect(arrow) + "(" + component + "("
+					code += "  " + genConnect(arrow) + "(" + component + "("
 							+ q(fromDesc) + "), " + _port + "(\"OUT\"), "
 							+ component + "(\"" + toDesc + "\"), " + _port + "("
 							+ q(dnPort) + ")" + cap + "); \n";
@@ -451,7 +455,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						code += "c" + arrow.id + "." + sDO + "; \n";
 				} else if (to instanceof ExtPortBlock) {
 
-					code += genConnect(arrow) + "(" + component + "("
+					code += "  " + genConnect(arrow) + "(" + component + "("
 							+ q(fromDesc) + "), " + _port + "(" + q(upPort)
 							+ "), " + component + "(\"" + toDesc + "\"), "
 							+ _port + "(\"IN\" " + ")" + cap + "); \n";
@@ -465,16 +469,16 @@ public class CodeManager implements ActionListener, DocumentListener {
 				int i = s.indexOf(".");
 				if (i > -1)
 					s = s.substring(0, i);
-				code += "\n } \n";
+				code += "} \n";
 				if (gl.label.equals("Java"))
 					code += "public static void main(String[] argv) throws Exception  { \n"
-							+ " new " + s + "().go(); \n";
+							+ "  new " + s + "().go(); \n";
 				else
 					code += "internal static void main(String[] argv) { \n"
-							+ " new " + s + "().Go();\n }\n";
+							+ "  new " + s + "().Go();\n }\n";
 			}
 
-			code += "} \n \n";
+			code += "} \n";
 
 			int sno = 11;
 			contents[sno] = code;
@@ -1130,6 +1134,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		gl = driver.findGLFromLabel("FBP");
 		fbpMode = true;
 		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+				"Generated code",
 				"currentFBPNetworkDir", "Specify file name for generated code",
 				".fbp", diag.diagLang.filter, "fbp");
 
@@ -1254,6 +1259,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
 			diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+					"Generated code",
 					diag.diagLang.netDirProp,
 					"Specify file name for generated code",
 					"." + diag.diagLang.suggExtn, diag.diagLang.filter,
@@ -1273,6 +1279,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		// restore old language parameters
 		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+				"Generated code",
 				diag.diagLang.netDirProp,
 				"Specify file name for generated code",
 				"." + diag.diagLang.suggExtn, diag.diagLang.filter,

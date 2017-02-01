@@ -213,18 +213,7 @@ public class DiagramBuilder {
 								diag.diagLang = driver
 										.findGLFromLabel(saveData);
 								 
-								/*
-								driver.jtf.setText(diag.diagLang.showLangs());
-								diag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(diag.diagLang.srcDirProp, "Select "
-										+ diag.diagLang.showLangs() + " component from directory",
-										diag.diagLang.suggExtn, diag.diagLang.filter, "Components: "
-												+ diag.diagLang.showLangs() + " " + diag.diagLang.showSuffixes());
 								
-								diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(diag.diagLang.netDirProp,
-										"Specify file name for generated code",
-										"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-										diag.diagLang.showLangs());	
-								*/
 							}
 
 						else if (endtag.equals("generatedCodeFileName")) {

@@ -15,12 +15,13 @@ public class MyOptionPane {
 	static int YES_NO_OPTION = JOptionPane.YES_NO_OPTION;
 	static int YES_NO_CANCEL_OPTION = JOptionPane.YES_NO_CANCEL_OPTION;
 	static int CANCEL_OPTION = JOptionPane.CANCEL_OPTION;
+	static int DEFAULT_OPTION = JOptionPane.DEFAULT_OPTION;
 	static int OK_CANCEL_OPTION = JOptionPane.OK_CANCEL_OPTION;
 	static int YES_OPTION = JOptionPane.YES_OPTION;
 	static int NO_OPTION = JOptionPane.NO_OPTION;
 	static int OK_OPTION = JOptionPane.OK_OPTION;
 	static int PLAIN_MESSAGE = JOptionPane.PLAIN_MESSAGE;
-	
+	static int QUESTION_MESSAGE = JOptionPane.QUESTION_MESSAGE;	
 	static int INFORMATION_MESSAGE = JOptionPane.INFORMATION_MESSAGE;
 	static int WARNING_MESSAGE = JOptionPane.WARNING_MESSAGE;
 	static int ERROR_MESSAGE = JOptionPane.ERROR_MESSAGE;
@@ -28,7 +29,7 @@ public class MyOptionPane {
 	static Object showInputDialog(Component f,  Object message, String title, int messageType, Icon ico,
 			 Object[] options, Object initialValue) {
 		 
-		 JOptionPane pane = new JOptionPane(message, messageType, JOptionPane.OK_CANCEL_OPTION, ico,
+		 JOptionPane pane = new JOptionPane(message, messageType, OK_CANCEL_OPTION, ico,
 				  options, initialValue);
 		
 		/*
@@ -65,7 +66,7 @@ public class MyOptionPane {
 	}
 	
 	static Object showInputDialog(Component f,  Object message, String title) {
-		return showInputDialog(f,  message,  title,  MyOptionPane.PLAIN_MESSAGE, null, null, null);
+		return showInputDialog(f,  message,  title,  PLAIN_MESSAGE, null, null, null);
 	}
 	
 	
@@ -75,7 +76,7 @@ public class MyOptionPane {
 	
 	static void showMessageDialog(Component f,  Object message, String s, int i, ImageIcon ico) {
 		
-		JOptionPane pane = new JOptionPane(message, i, JOptionPane.DEFAULT_OPTION, ico);
+		JOptionPane pane = new JOptionPane(message, i, DEFAULT_OPTION, ico);
 		 
 		 //if (options != null)
 		//	 new Throwable().printStackTrace();
@@ -128,7 +129,7 @@ public class MyOptionPane {
 	     
 	}
 	static int showConfirmDialog(Component f,  Object message, String title, int optionType) {
-		return showConfirmDialog(f, message, title, optionType, JOptionPane.QUESTION_MESSAGE);
+		return showConfirmDialog(f, message, title, optionType, QUESTION_MESSAGE);
 	}
 
 	//-------------------------------------------
@@ -138,7 +139,7 @@ public class MyOptionPane {
 			String title) {
 
 		 
-		JOptionPane pane = new JOptionPane(message, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);		
+		JOptionPane pane = new JOptionPane(message, PLAIN_MESSAGE, OK_CANCEL_OPTION);		
 		
 		/*
 		http://stackoverflow.com/questions/27404362/custom-dialog-using-joptionpane-api-wont-dispose

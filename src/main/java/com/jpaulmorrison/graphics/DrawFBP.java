@@ -81,7 +81,7 @@ public class DrawFBP extends JFrame
 	Font fontf = null;
 	Font fontg = null;
 
-	int defaultFontSize;
+	float defaultFontSize;
 	GenLang defaultCompLang;
 
 	double scalingFactor;
@@ -138,7 +138,6 @@ public class DrawFBP extends JFrame
 	static final double FORCE_HORIZONTAL = 0.1; // can be static as this is a
 																	// slope
 
-	static final int EDIT_NO_CANCEL = 0;
 	static final int REG_CREATE = 1;
 	static final int MODIFY = 2;
 
@@ -201,6 +200,7 @@ public class DrawFBP extends JFrame
 	static Color lg = new Color(240, 240, 240); // very light gray
 	static Color slateGray1 = new Color(198, 226, 255);
 	JDialog popup2;
+	JDialog depDialog = null;
 
 	static enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
@@ -258,19 +258,19 @@ public class DrawFBP extends JFrame
 		// The missing array entries are language-dependent, and are set during diagram building or initialization
 		
 		
-		fCPArray[DIAGRAM] = new FileChooserParms("currentDiagramDir",
+		fCPArray[DIAGRAM] = new FileChooserParms("Diagram", "currentDiagramDir",
 				"Specify diagram name in diagram directory", ".drw",
 				driver.new DiagramFilter(), "Diagrams (*.drw, *.fbp)");
 
-		fCPArray[IMAGE] = new FileChooserParms("currentImageDir",
+		fCPArray[IMAGE] = new FileChooserParms("Image", "currentImageDir",
 				"Image: ", ".png", driver.new ImageFilter(),
 				"Image files");
 
-		fCPArray[JARFILE] = new FileChooserParms("javaFBPJarFile",
+		fCPArray[JARFILE] = new FileChooserParms("Jar file", "javaFBPJarFile",
 				"Choose a jar file for JavaFBP", ".jar",
 				driver.new JarFileFilter(), "Jar files");
 
-		fCPArray[JHALL] = new FileChooserParms("jhallJarFile",
+		fCPArray[JHALL] = new FileChooserParms("Java Help file", "jhallJarFile",
 				"Choose a directory for the JavaHelp jar file", ".jar",
 				driver.new JarFileFilter(), "Help files");
 
@@ -329,9 +329,9 @@ public class DrawFBP extends JFrame
 			fixedFont = "Courier";
 		String dfs = properties.get("defaultFontSize");
 		if (dfs == null)
-			defaultFontSize = 14;
+			defaultFontSize = 14.0f;
 		else
-			defaultFontSize = Integer.parseInt(dfs);
+			defaultFontSize = Float.parseFloat(dfs);
 
 		String dcl = properties.get("defaultCompLang");
 		//if (dcl.equals("NoFlo"))    // transitional!
@@ -395,10 +395,10 @@ public class DrawFBP extends JFrame
 			startProperties.put(s, properties.get(s));
 		}
 
-		fontg = new Font(generalFont, Font.PLAIN, defaultFontSize);
+		fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);
 
 		// read/create time
-		fontf = new Font(fixedFont, Font.PLAIN, defaultFontSize);
+		fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
 		osg.setFont(fontg);
 
 		FontMetrics metrics = osg.getFontMetrics(fontg);
@@ -1421,8 +1421,8 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
-			MyOptionPane.showMessageDialog(frame,
-					"Image saved: " + file.getAbsolutePath());
+			//MyOptionPane.showMessageDialog(frame,
+			//		"Image saved: " + file.getAbsolutePath());
 
 			//curDiag.imageFile = file;
 
@@ -1599,7 +1599,7 @@ public class DrawFBP extends JFrame
 						popup2.addKeyListener(new KeyAdapter() {
 							public void keyPressed(KeyEvent ev) {
 								if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
-									// frame2.setVisible(false);
+									// frame2.setVisible(false);									
 									popup2.dispose();
 								}
 								
@@ -1826,6 +1826,7 @@ public class DrawFBP extends JFrame
 		curDiag.filterOptions[0] = gl.showLangs();
 
 		curDiag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(
+				"Process",
 				gl.srcDirProp, "Select "
 						+ gl.showLangs()
 						+ " component from directory",
@@ -1834,7 +1835,7 @@ public class DrawFBP extends JFrame
 						+ gl.showSuffixes());
 
 		curDiag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
-				gl.netDirProp,
+				"Generated code", gl.netDirProp,
 				"Specify file name for generated code", "."
 						+ gl.suggExtn,
 				gl.filter, gl.showLangs());
@@ -1903,7 +1904,7 @@ public class DrawFBP extends JFrame
 		curDiag.maxBlockNo++;
 		block.id = curDiag.maxBlockNo;
 		curDiag.blocks.put(new Integer(block.id), block);
-		curDiag.changed = true;
+		//curDiag.changed = true;
 		selBlock = block;
 		// selArrowP = null;
 		return block;
@@ -2296,8 +2297,7 @@ public class DrawFBP extends JFrame
 			propertiesChanged = true;
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
-			fontg = new Font(generalFont, Font.PLAIN, defaultFontSize);
-			
+			fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);			
 			adjustFonts();
 			frame.repaint();
 			repaint();
@@ -2308,7 +2308,8 @@ public class DrawFBP extends JFrame
 			propertiesChanged = true;
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
-			fontf = new Font(fixedFont, Font.PLAIN, defaultFontSize);
+			fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
+			adjustFonts();
 			frame.repaint();
 			repaint();
 			
@@ -2339,7 +2340,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				new Float(16), new Float(18), new Float(20), new Float(22)};
 		int j = 0;
 		for (int i = 0; i < selectionValues.length; i++) {
-			if (selectionValues[i].floatValue() == defaultFontSize)
+			if (Float.compare(selectionValues[i].floatValue(), defaultFontSize) == 0)
 				j = i;
 		}
 		Float fs = (Float) MyOptionPane.showInputDialog(frame, "Font size dialog",
@@ -2348,13 +2349,13 @@ void chooseFonts(MyFontChooser fontChooser){
 		if (fs == null)
 			return;
 		
-		defaultFontSize = (int) fs.intValue();
+		defaultFontSize = fs.floatValue();
 		fontg = fontg.deriveFont(fs);
 		fontf = fontf.deriveFont(fs);	
 		jfs.setText("Font Size: " + defaultFontSize);		 
 		adjustFonts();
 		frame.repaint(); 
-		properties.put("defaultFontSize", Integer.toString(defaultFontSize));
+		properties.put("defaultFontSize", Float.toString(defaultFontSize));
 		propertiesChanged = true;
 		MyOptionPane.showMessageDialog(frame, "Font size changed");
 		frame.repaint();
@@ -2424,6 +2425,18 @@ void chooseFonts(MyFontChooser fontChooser){
 		UIManager.put("MenuBar.font", fontg);
 		UIManager.put("MenuItem.font", fontg);
 		UIManager.put("Label.font", fontf);
+		
+		for (Block block : curDiag.blocks.values()) {
+			block.draw(osg);
+		}
+		
+		for (Arrow arrow : curDiag.arrows.values()) {
+			arrow.draw(osg);
+		}
+		
+		if (depDialog != null)
+			depDialog.setFont(fontf);
+		
 		/*
 		for (Object item : ht.keySet()) {
 			UIManager.put(item, fontg);
@@ -3212,13 +3225,15 @@ void chooseFonts(MyFontChooser fontChooser){
 	}
 
 	public class FileChooserParms {
+		String name;
 		String propertyName;
 		String prompt;
 		String fileExt;
 		FileFilter filter;
 		String title;
 
-		FileChooserParms(String a, String b, String c, FileFilter d, String e) {
+		FileChooserParms(String x, String a, String b, String c, FileFilter d, String e) {
+			name = x;
 			propertyName = a;
 			prompt = b;
 			fileExt = c;
@@ -4350,7 +4365,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 				selArrow = curDiag.foundArrow;
 				// selBlockP = null;
-				curDiag.changed = true;
+				// curDiag.changed = true;
 				if (curDiag.foundArrow != null) {
 					Arrow arr = curDiag.foundArrow;
 					if (arr.endsAtLine || arr.endsAtBlock) {

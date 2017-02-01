@@ -97,16 +97,17 @@ public class Diagram {
 			fCPArr[i] = driver.fCPArray[i];
 		}
 		
-		fCPArr[DrawFBP.CLASS] = driver.new FileChooserParms("currentClassDir",
+		fCPArr[DrawFBP.CLASS] = driver.new FileChooserParms("Class", "currentClassDir",
 				"Select component from class directory", ".class",
 				driver.new JavaClassFilter(), "Class files");
 		
-		fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(diagLang.srcDirProp, "Select "
+		fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms("Process", diagLang.srcDirProp, "Select "
 				+ diagLang.showLangs() + " component from directory",
 				diagLang.suggExtn, diagLang.filter, "Components: "
 						+ diagLang.showLangs() + " " + diagLang.showSuffixes());
 		
-		fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(diagLang.netDirProp,
+		fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms("Generated code",
+				diagLang.netDirProp,
 				"Specify file name for generated code",
 				"." + diagLang.suggExtn, diagLang.filter,
 				diagLang.showLangs());		
@@ -363,8 +364,7 @@ public class Diagram {
 		}
 
 		
-		MyOptionPane.showMessageDialog(driver.frame, file.getName()
-					+ " saved");
+		MyOptionPane.showMessageDialog(driver.frame, fCP.name + " saved: " + file.getName());
 		return file;
 	}
 	

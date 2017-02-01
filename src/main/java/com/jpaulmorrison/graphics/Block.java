@@ -1631,8 +1631,10 @@ public class Block implements ActionListener {
 
 		String t = "";
 		for (int i = 0; i < driver.blockTypes.length; i++) {
-			if (driver.blockTypes[i].equals(type))
+			if (driver.blockTypes[i].equals(type)) {
 				t = driver.blockNames[i];
+				break;
+			}
 		}
 		String init = (option < DrawFBP.MODIFY) ? "Create " : "Modify ";		
 		
@@ -1640,10 +1642,10 @@ public class Block implements ActionListener {
 		int result = MyOptionPane.showOptionDialog(driver.frame, new Object[]{ 
 				"Enter/change name or description", pane}, init + t);		
 		
-		if (option > DrawFBP.EDIT_NO_CANCEL) {
+		//if (option > DrawFBP.EDIT_NO_CANCEL) {
 			if (result != MyOptionPane.OK_OPTION)
 				return false;
-		}
+		//}
 
 		description = area.getText();
 

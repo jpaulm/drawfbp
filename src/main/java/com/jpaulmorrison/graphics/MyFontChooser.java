@@ -233,7 +233,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			Dimension prefSize = new Dimension(100, 15);
 			Dimension maxSize = new Dimension(Short.MAX_VALUE, 15);
 			JLabel lab1 = new JLabel((String) value);
-			lab1.setFont(new Font("Arial", Font.PLAIN, driver.defaultFontSize));
+			lab1.setFont(new Font("Arial", Font.PLAIN, (int) driver.defaultFontSize));
 			lab1.setMinimumSize(minSize);
 			lab1.setMaximumSize(maxSize);
 			lab1.setPreferredSize(prefSize);
@@ -246,7 +246,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 			JLabel lab2 = new JLabel("Sample English Text \\");
 			lab2.setFont(new Font((String) value, Font.PLAIN,
-					driver.defaultFontSize));
+					(int) driver.defaultFontSize));
 			minSize = new Dimension(150, 15);
 			prefSize = new Dimension(150, 15);
 			lab2.setMinimumSize(minSize);
@@ -262,7 +262,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			"\u0442\u0435\u043a\u0441\u0442\u0430");
 		    //  Russian for "Russian text sample"
 			lab3.setFont(new Font((String) value, Font.PLAIN,
-					driver.defaultFontSize));
+					(int) driver.defaultFontSize));
 			minSize = new Dimension(150, 15);
 			prefSize = new Dimension(150, 15);
 			lab3.setMinimumSize(minSize);
@@ -275,7 +275,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			JLabel lab4 = new JLabel("\u0939\u093f\u0902\u0926\u0940 \u092a\u093e\u0920 \u0928\u092e\u0942\u0928\u093e");
 		    //  Hindi for "Hindi text sample"
 			lab4.setFont(new Font((String) value, Font.PLAIN,
-					driver.defaultFontSize));
+					(int) driver.defaultFontSize));
 			minSize = new Dimension(150, 15);
 			prefSize = new Dimension(150, 15);
 			lab4.setMinimumSize(minSize);
@@ -289,7 +289,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			JLabel lab5 = new JLabel("\u4e2d\u6587\u6587\u672c\u793a\u4f8b");  			
 			//  Chinese for "Chinese text sample"
 			lab5.setFont(new Font((String) value, Font.PLAIN,
-					driver.defaultFontSize));
+					(int) driver.defaultFontSize));
 			minSize = new Dimension(100, 15);
 			prefSize = new Dimension(100, 15);
 			lab5.setMinimumSize(minSize);
