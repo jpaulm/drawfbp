@@ -79,7 +79,7 @@ Here is a very simple diagram built using DrawFBP, showing process names, names 
 JavaHelp facility
 ---
 
-DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the `DrawFBP-Help.jar` file.  This is the standard JavaHelp jar file, and can be obtained from the downloaded DrawFBP jar file, or from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar .
+DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the `javahelp.jar` file.  This is the standard JavaHelp jar file, and can be obtained from Maven Central, by doing a search for artifact `javahelp`, or from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar , which has the same contents.
 
 From then on DrawFBP will remember the location of your DrawFBP-Help.jar file in your `DrawFBPProperties.xml` file.
 
