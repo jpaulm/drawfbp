@@ -1394,6 +1394,7 @@ public class DrawFBP extends JFrame
 			}
 
 			File file = null;
+			curDiag.imageFile = null;
 
 			// crop
 			int x1, w1, y1, h1;
@@ -1519,6 +1520,7 @@ public class DrawFBP extends JFrame
 			propertiesChanged = true;
 			//Graphics g = image.
 			//paintIcon(image,g,0,0);
+			curDiag.imageFile = fFile;
 			MyOptionPane.showMessageDialog(frame, null,
 					"Image: " + fFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE, image);

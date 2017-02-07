@@ -657,7 +657,8 @@ public class MyFileChooser extends JFrame
 		}
 
 		list = new JList<String>(nodeNames);
-		list.setSelectedIndex(k);
+		//list.setSelectedIndex(k);
+		list.setSelectedIndex(-1);
 
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -790,8 +791,8 @@ public class MyFileChooser extends JFrame
 				//if (h.isDirectory())  
 				//	t_fileName.setText("");	
 				//else  
-				if (!h.isDirectory()) 	
-					t_fileName.setText(s);
+				//if (!h.isDirectory()) 	
+				//	t_fileName.setText(s);
 				t_dirName.setText(listHead);
 				//selComp = t_fileName;
 				
@@ -805,7 +806,7 @@ public class MyFileChooser extends JFrame
 					//t_fileName.setText("");
 					
 				} else {
-					t_fileName.setText(list.getSelectedValue());
+					//t_fileName.setText(list.getSelectedValue());
 					t_dirName.setText(listHead);
 					//selComp = t_fileName;
 				}
@@ -1191,6 +1192,15 @@ public class MyFileChooser extends JFrame
 				
 				list.setSelectedIndex(rowNo);
 				list.repaint();
+				
+				String t = (String)list.getSelectedValue();
+				if (!t.equals("")) {
+					File f = new File(t_dirName.getText() + File.separator + t);
+					if (f.exists() && !f.isDirectory()) {
+						t_fileName.setText(t);				
+						t_fileName.repaint();
+					}
+				}
 
 			} else if (e.getClickCount() == 2) {
 
@@ -1319,7 +1329,8 @@ public class MyFileChooser extends JFrame
 		}
 
 		else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-			if (selComp instanceof JList) {
+			//if (selComp instanceof JList) {
+			if (selComp == t_fileName) {
 
 				deleteAction.actionPerformed(new ActionEvent(e, 0, ""));
 			}
@@ -1408,12 +1419,15 @@ public class MyFileChooser extends JFrame
 				listHead = f.getParent();
 				
 				if (!f.exists()) {
-					MyOptionPane.showMessageDialog(driver.frame, "File " + f.getName()
+					MyOptionPane.showMessageDialog(driver.frame, u + " "  + f.getName()
 							+ " doesn't exist", MyOptionPane.ERROR_MESSAGE);
 					//return;
 				}
-				else 
+				else {
 					f.delete();
+					MyOptionPane.showMessageDialog(driver.frame, u + " " + f.getName()
+					+ " deleted", MyOptionPane.INFORMATION_MESSAGE);
+				}
 					
 				// fullNodeName = listHead.getAbsolutePath();
 				// showFileNames();
@@ -1468,20 +1482,34 @@ public class MyFileChooser extends JFrame
 			if (!((selComp instanceof JList) || selComp == t_fileName))
 				return;
 
-			String s = "";
+			String s = t_fileName.getText();
 
-			if (selComp instanceof JList) {
+			//if (s == null || s.equals("")) {
 
-				int rowNo = list.getSelectedIndex();
-				if (nodeNames.length == 0 || rowNo == -1) {
-					MyOptionPane.showMessageDialog(driver.frame,
-							"Empty directory or no entry selected", MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
+				if (selComp instanceof JList) {
 
-				s = nodeNames[rowNo];
-			} else
-				s = t_fileName.getText();
+					int rowNo = list.getSelectedIndex();
+					if (nodeNames.length == 0 || rowNo == -1) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"Empty directory or no entry selected",
+								MyOptionPane.ERROR_MESSAGE);
+						return;
+					}
+
+					s = nodeNames[rowNo];
+
+					if (!s.equals("")) {
+						File f = new File(
+								t_dirName.getText() + File.separator + s);
+						if (f.exists() && !f.isDirectory()) {
+							t_fileName.setText(s);
+							t_fileName.repaint();
+						}
+					}
+					// t_fileName.setText(s);
+				} else
+					s = t_fileName.getText();
+			//}
 
 			if (s == null || s.equals("")) {
 				MyOptionPane.showMessageDialog(driver.frame,
