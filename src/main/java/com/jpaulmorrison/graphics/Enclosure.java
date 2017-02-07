@@ -80,7 +80,7 @@ public class Enclosure extends Block {
 		g.setStroke(str);
 		
 		
-		int hh = driver.fontHeight;
+		int hh = driver.gFontHeight;
 		if (draggingContents) {
 			//col = g.getColor();	
 			g.drawString("   Use enclosure title area to drag", x1, y - hh - 8);
@@ -110,7 +110,7 @@ public class Enclosure extends Block {
 		  g.setColor(col);
 		}
 		if (description != null) {
-			x = (x1 + x2 - description.length() * driver.fontWidth) / 2;
+			x = (x1 + x2 - description.length() * driver.gFontWidth) / 2;
 			g.drawString(description, x, y);
 		}
 
@@ -163,8 +163,8 @@ public class Enclosure extends Block {
 				if (snp.side == DrawFBP.Side.LEFT) {
 					x = cx - width / 2;
 					if (snp.name != null && !(snp.name.equals("")))
-						g.drawString(snp.name, x - 10 - driver.fontWidth
-								* snp.name.length(), snp.y - driver.fontHeight
+						g.drawString(snp.name, x - 10 - driver.gFontWidth
+								* snp.name.length(), snp.y - driver.gFontHeight
 								/ 2);
 					if (snp.substreamSensitive) {
 						GeneralPath gp = drawSemicircle(x, snp.y, +1);
@@ -174,7 +174,7 @@ public class Enclosure extends Block {
 					x = cx + width / 2;
 					if (snp.name != null && !(snp.name.equals("")))
 						g.drawString(snp.name, x + 10, snp.y
-								- driver.fontHeight / 2);
+								- driver.gFontHeight / 2);
 					if (snp.substreamSensitive) {
 						GeneralPath gp = drawSemicircle(x, snp.y, -1);
 						g.fill(gp);	

@@ -13,8 +13,8 @@ public class IIPBlock extends Block {
 	IIPBlock(Diagram ctlr) {
 		super(ctlr);
 		type = Block.Types.IIP_BLOCK;
-		width = driver.fontWidth * 20 + 4;
-		height = driver.fontHeight + 4;
+		//width = driver.fontWidth * 20 + 4;
+		height = driver.gFontHeight + 4;
 		//calcEdges();
 	}
 	
@@ -29,26 +29,23 @@ public class IIPBlock extends Block {
 		g.setFont(driver.fontf);
 		g.setColor(Color.GRAY);
 		if (description != null) {
-			FontMetrics metrics = g.getFontMetrics(g.getFont());
-			//width = metrics.charWidth('n'); 
-			//width = description.length() * width + 4;
-			width = 4;
-			for (int j = 0; j < description.length(); j++) {				
-				width += metrics.charWidth(description.charAt(j));
-			}
+			FontMetrics metrics = g.getFontMetrics(g.getFont());			
+			String t = description;
+			if (t.length() < 2)
+				t = " " + t;
+			byte[] str = t.getBytes();
+			width = 2 + metrics.bytesWidth(str, 0, t.length());
 		}
-		g.drawRoundRect(cx - width / 2, cy - height / 2, width, height, 6, 6);
+		g.drawRoundRect(cx - width / 2, cy - height / 2, width + 4, height, 6, 6);
 		if (this == driver.selBlock)
 			g.setColor(ly); // light yellow
-			else
+		else
 			g.setColor(lb); // light turquoise
-		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width - 1,
+		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width + 4 - 1,
 				height - 1, 6, 6);
 		g.setColor(Color.GRAY);
 		if (description != null) {
 			g.setColor(Color.GRAY);
-			// int len = description.length();
-			// String s = description.substring(0,len);
 			g.drawString(description, cx - width / 2 + 4, cy + 4);
 		}
 		// showZones(g);

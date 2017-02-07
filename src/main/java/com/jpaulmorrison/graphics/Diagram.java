@@ -84,6 +84,8 @@ public class Diagram {
 	
 	FoundPoint arrowRoot = null;  // used to draw blue circles where arrows can start
 	
+	File imageFile = null;
+	
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;
 		//driver.curDiag = this;
@@ -627,6 +629,8 @@ public class Diagram {
 	}
 
 	void delBlock(Block block, boolean choose) {
+		if (block == null)
+			return;
 		if (choose
 				&& MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog( 
 						driver.frame, "Do you want to delete this block?", "Delete block",

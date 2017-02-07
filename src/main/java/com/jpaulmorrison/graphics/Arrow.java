@@ -29,7 +29,7 @@ public class Arrow implements ActionListener {
 	boolean headMarked, tailMarked;
 	boolean dropOldest;
 	int capacity;
-	LegendBlock capLegend;   //Legend block associated with Arrow 
+	//LegendBlock capLegend;   //Legend block associated with Arrow 
 	
 	//Arrowhead tipArrowhead = null;    
 	Arrowhead extraArrowhead = null;
@@ -58,6 +58,7 @@ public class Arrow implements ActionListener {
 		id = diag.maxArrowNo;
 		//uspMod = null;
 		dspMod = null;
+		capacity = -1;
 	}
 
 	void draw(Graphics2D g) {
@@ -94,29 +95,7 @@ public class Arrow implements ActionListener {
 		 g.drawRect(fromX - 3, fromY - 3, 6, 6);
 		 return;
 		 }
-/*
-		if (from != null) {
-			if (fromSide == Side.TOP)
-				fromY = from.cy - from.height / 2;
-			else if (fromSide == Side.BOTTOM)
-				fromY = from.cy + from.height / 2;
-			else if (fromSide == Side.LEFT)
-				fromX = from.cx - from.width / 2;
-			else if (fromSide == Side.RIGHT)
-				fromX = from.cx + from.width / 2;
-		}
 
-		if (to != null) {
-			if (toSide == Side.TOP)
-				toY = to.cy - to.height / 2;
-			else if (toSide == Side.BOTTOM)
-				toY = to.cy + to.height / 2;
-			else if (toSide == Side.LEFT)
-				toX = to.cx - to.width / 2;
-			else if (toSide == Side.RIGHT)
-				toX = to.cx + to.width / 2;
-		}
-		*/
 
 		if (driver.selArrow == this)
 			g.setColor(Color.BLUE);
@@ -149,9 +128,17 @@ public class Arrow implements ActionListener {
 				else {
 					Shape shape = new Line2D.Double(fx, fy, tx, ty);
 					shape = zzstroke.createStrokedShape(shape);
-					g.draw(shape);
-					// g.setStroke(stroke);
+					g.draw(shape);					
 				}
+				
+				if (capacity > 0) {
+					
+					int x = (fx + tx) / 2;
+					int y = (fy + ty) / 2;
+					String s = "(" + capacity + ")";
+					x -= s.length() / 2;
+					g.drawString(s, x, y + 12);
+				}	
 
 				if (bend.marked) {
 					Color col = g.getColor();
@@ -164,6 +151,15 @@ public class Arrow implements ActionListener {
 				fy = ty;
 				
 			}
+		} else {
+			if (capacity > 0) {
+				
+				int x = (fx + endX) / 2;
+				int y = (fy + endY) / 2;
+				String s = "(" + capacity + ")";
+				x -= s.length() / 2;
+				g.drawString(s, x, y + 12);
+			}
 		}
 		tx = endX;
 		ty = endY;
@@ -174,7 +170,7 @@ public class Arrow implements ActionListener {
 			String s = to.mpxfactor;
 			if (s == null)
 				s = " ";
-			int i = s.length() * driver.fontWidth + 10;
+			int i = s.length() * driver.gFontWidth + 10;
 			x -= i;
 		}
 		
@@ -228,8 +224,8 @@ public class Arrow implements ActionListener {
 					
 				} else if (from.visible) {
 					g.setColor(Color.BLUE);
-					int y = fromY + driver.fontHeight;
-					int x2 = fromX + driver.fontWidth;
+					int y = fromY + driver.gFontHeight;
+					int x2 = fromX + driver.gFontWidth;
 					g.drawString(upStreamPort, x2, y);
 				}
 				g.setColor(Color.BLACK);
@@ -243,8 +239,8 @@ public class Arrow implements ActionListener {
 					
 				} else if (to.visible) {
 					g.setColor(Color.BLUE);
-					int y = toY - driver.fontHeight / 2;
-					x = toX - driver.fontWidth * (downStreamPort.length() + 1);
+					int y = toY - driver.gFontHeight / 2;
+					x = toX - driver.gFontWidth * (downStreamPort.length() + 1);
 					if (!endsAtLine && to != null && to.multiplex)
 						x -= 20;
 					g.drawString(downStreamPort, x, y);
@@ -350,6 +346,11 @@ public class Arrow implements ActionListener {
 		if (dropOldest) {
 			s += "<dropoldest>" + (dropOldest?"true":"false") + "</dropOldest>";
 		}
+		
+		if (capacity > 0)
+			s += "<capacity>" + capacity + "</capacity>";
+		
+		
 		if (bends != null) {
 			s += "<bends> ";
 
@@ -360,25 +361,6 @@ public class Arrow implements ActionListener {
 			}
 			s += "</bends> ";
 		}
-		/*
-		if (fromSide == Side.LEFT)
-			s += "<fromside> L </fromside>";
-		else if (fromSide == Side.RIGHT)
-			s += "<fromside> R </fromside>";
-		else if (fromSide == Side.TOP)
-			s += "<fromside> T </fromside>";
-		else if (fromSide == Side.BOTTOM)
-			s += "<fromside> B </fromside>";
-
-		if (toSide == Side.LEFT)
-			s += "<toside> L </toside>";
-		else if (toSide == Side.RIGHT)
-			s += "<toside> R </toside>";
-		else if (toSide == Side.TOP)
-			s += "<toside> T </toside>";
-		else if (toSide == Side.BOTTOM)
-			s += "<toside> B </toside>";
-*/
 		s += "</connection> \n";
 		return s;
 	}
@@ -407,6 +389,10 @@ public class Arrow implements ActionListener {
 		s = item.get("dropoldest");
 		if (s != null && s.equals("true")) 
 			dropOldest = true;
+		
+		s = item.get("capacity");
+		if (s != null)
+			capacity = Integer.parseInt(s); 
 		
 		s = item.get("fromid").trim();
 		fromId = Integer.parseInt(s);
@@ -591,15 +577,23 @@ public class Arrow implements ActionListener {
 		} else if (s.equals("Set Capacity")) {
 			
 			String capString = null;
-			if (capacity == 0)
+			if (capacity < 1)
 				capString = "";
 			else
 				capString = Integer.toString(capacity);
+			
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Set Capacity",
 					MyOptionPane.PLAIN_MESSAGE, null, null, capString);
 			if ((ans != null) && (ans.length() > 0)) {
-				capacity = Integer.parseInt(ans);
+				try {
+					capacity = Integer.parseInt(ans);
+				} catch (NumberFormatException e2) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"Capacity must be numeric", MyOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				/*
 				if (capLegend == null) {
 					diag.xa = 2;  // get around fudge in DrawFBP
 					diag.ya = 2;  // get around fudge in DrawFBP
@@ -620,14 +614,21 @@ public class Arrow implements ActionListener {
 						capLegend.cx -= 20;
 				}
 				capLegend.description = "(" + capacity + ")";
+				*/
 			}
 			driver.frame.repaint();
 			diag.changed = true;
 			
 		} else if (s.equals("Remove Capacity")) {
-			capacity = 0;
-			diag.delBlock(capLegend, false);
-			capLegend = null;
+			//if (capLegend == null) {
+			//	MyOptionPane.showMessageDialog(driver.frame,
+			//			"No capacity specified", MyOptionPane.WARNING_MESSAGE);
+			//	return;
+			//}
+			capacity = -1;
+			//final boolean NOCHOOSE = false;
+			//diag.delBlock(capLegend, NOCHOOSE);
+			//capLegend = null;
 			driver.frame.repaint();
 			diag.changed = true;
 
@@ -894,12 +895,10 @@ public class Arrow implements ActionListener {
 	
 	public class ZigzagStroke implements Stroke {
 		private float amplitude = 10.0f;
-		private float wavelength = 10.0f;
-	    private Stroke stroke;
+		private float wavelength = 10.0f;	    
 		private static final float FLATNESS = 1;
 
-		public ZigzagStroke( Stroke stroke, float amplitude, float wavelength ) {
-	        this.stroke = stroke;
+		public ZigzagStroke( Stroke stroke, float amplitude, float wavelength ) {	        
 	        this.amplitude = amplitude;
 	        this.wavelength = wavelength;
 		}
@@ -911,12 +910,9 @@ public class Arrow implements ActionListener {
 			float moveX = 0, moveY = 0;
 			float lastX = 0, lastY = 0;
 			float thisX = 0, thisY = 0;
-			int type = 0;
-			boolean first = false;
+			int type = 0;			
 			float next = 0;
 	        int phase = 0;
-
-			float factor = 1;
 
 			while ( !it.isDone() ) {
 				type = it.currentSegment( points );
@@ -924,8 +920,7 @@ public class Arrow implements ActionListener {
 				case PathIterator.SEG_MOVETO:
 					moveX = lastX = points[0];
 					moveY = lastY = points[1];
-					result.moveTo( moveX, moveY );
-					first = true;
+					result.moveTo( moveX, moveY );					
 	                next = wavelength/2;
 					break;
 
@@ -941,13 +936,10 @@ public class Arrow implements ActionListener {
 					float dy = thisY-lastY;
 					float distance = (float)Math.sqrt( dx*dx + dy*dy );
 					if ( distance >= next ) {
-						float r = 1.0f/distance;
-						float angle = (float)Math.atan2( dy, dx );
+						float r = 1.0f / distance;						
 						while ( distance >= next ) {
 							float x = lastX + next*dx*r;
-							float y = lastY + next*dy*r;
-	                        float tx = amplitude*dy*r;
-	                        float ty = amplitude*dx*r;
+							float y = lastY + next*dy*r;	                        
 							if ( (phase & 1) == 0 )
 	                            result.lineTo( x+amplitude*dy*r, y-amplitude*dx*r );
 	                        else
@@ -956,8 +948,7 @@ public class Arrow implements ActionListener {
 							phase++;
 						}
 					}
-					next -= distance;
-					first = false;
+					next -= distance;					
 					lastX = thisX;
 					lastY = thisY;
 	                if ( type == PathIterator.SEG_CLOSE )

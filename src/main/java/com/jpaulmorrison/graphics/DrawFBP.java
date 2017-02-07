@@ -58,7 +58,7 @@ public class DrawFBP extends JFrame
 	Graphics2D osg;
 
 	// SelectionArea area;
-	int fontWidth, fontHeight;
+	int gFontWidth, gFontHeight;
 
 	//Enclosure enclSelForDragging = null;
 	Enclosure enclSelForArrow = null;
@@ -402,8 +402,8 @@ public class DrawFBP extends JFrame
 		osg.setFont(fontg);
 
 		FontMetrics metrics = osg.getFontMetrics(fontg);
-		fontWidth = metrics.charWidth('n'); // should be the average!
-		fontHeight = metrics.getAscent() + metrics.getLeading();
+		gFontWidth = metrics.charWidth('n'); // should be the average!
+		gFontHeight = metrics.getAscent() + metrics.getLeading();
 
 		jfl = new JTextField("");		
 
@@ -626,7 +626,7 @@ public class DrawFBP extends JFrame
 		box1.add(diagDesc);
 		Font ft = fontg.deriveFont(Font.BOLD);
 		diagDesc.setFont(ft);
-		diagDesc.setPreferredSize(new Dimension(0, fontHeight * 2));
+		diagDesc.setPreferredSize(new Dimension(0, gFontHeight * 2));
 		diagDesc.setForeground(Color.BLUE);
 
 		box1.add(Box.createRigidArea(new Dimension(0, 4)));
@@ -838,7 +838,7 @@ public class DrawFBP extends JFrame
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
 
-		menuItem2 = new JMenuItem("Add Additional Run-Time Jar File");
+		menuItem2 = new JMenuItem("Add Additional Component Jar File");
 		if (defaultCompLang == null
 				|| !( defaultCompLang.label.equals("Java")))  
 			menuItem2.setEnabled(false);  
@@ -906,7 +906,7 @@ public class DrawFBP extends JFrame
 		Box box0 = new Box(BoxLayout.X_AXIS);
 		//JPanel jp1 = new JPanel();
 		Dimension dim = jtf.getPreferredSize();
-		jtf.setPreferredSize(new Dimension(fontWidth * 20, dim.height));
+		jtf.setPreferredSize(new Dimension(gFontWidth * 20, dim.height));
 		
 		box0.add(Box.createRigidArea(new Dimension(20,0)));
 		box0.add(jtf); // languages
@@ -1331,7 +1331,7 @@ public class DrawFBP extends JFrame
 			return;
 		}
 		
-		if (s.equals("Add Additional Run-Time Jar File")) {
+		if (s.equals("Add Additional Component Jar File")) {
 
 			addAdditionalJarFile();
 			return;
@@ -1402,6 +1402,34 @@ public class DrawFBP extends JFrame
 			y1 = Math.max(1, curDiag.minY - 20);
 			h1 = curDiag.maxY + 20 - y1;
 			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
+			/*
+			byte[] bytes = curDiag.title.getBytes();
+			
+			BufferedImage title = null;
+			try {
+				title = ImageIO.read(new ByteArrayInputStream(bytes));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			*/
+			BufferedImage combined = new BufferedImage(w1, h1, BufferedImage.TYPE_INT_ARGB);
+			Graphics g = combined.getGraphics();
+			g.drawImage(buffer2, 0, 0, null);	
+			Color col = g.getColor();
+			g.setColor(Color.BLUE);			
+			Font f = fontg.deriveFont(Font.ITALIC, 18.0f);
+			g.setFont(f);
+			int x = combined.getWidth() / 2;
+			//int y = frame.getHeight() / 2;
+			FontMetrics metrics = g.getFontMetrics(f);			
+			String t = curDiag.desc;			
+			byte[] str = t.getBytes();
+			int width = metrics.bytesWidth(str, 0, t.length());			
+			
+			g.drawString(t, x - width / 2, 20);
+			g.setColor(col);
+			//g.dispose();
 			
 			int i = curDiag.fCPArr[IMAGE].prompt.indexOf(":");
 			String fn;
@@ -1413,18 +1441,29 @@ public class DrawFBP extends JFrame
 			curDiag.fCPArr[IMAGE].prompt = curDiag.fCPArr[IMAGE].prompt
 					.substring(0, i) + ": " + fn;
 
-			file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
+			//file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
+			file = curDiag.genSave(null, fCPArray[IMAGE], combined);
 
 			if (file == null) {
 				MyOptionPane.showMessageDialog(frame, "File not saved");
 				// curDiag.imageFile = null;
+				g.dispose();
 				return;
 			}
+			
+			 
+			ImageIcon image = new ImageIcon(combined);
 
-			//MyOptionPane.showMessageDialog(frame,
-			//		"Image saved: " + file.getAbsolutePath());
-
-			//curDiag.imageFile = file;
+			
+			MyOptionPane.showMessageDialog(frame, null,
+					"Image: " + file.getName(), 
+					MyOptionPane.INFORMATION_MESSAGE, image);
+			
+			g.dispose();
+			
+			frame.repaint();
+			 
+			curDiag.imageFile = file;
 
 			currentImageDir = new File(file.getParent());
 			properties.put("currentImageDir", file.getParent());
@@ -1434,8 +1473,9 @@ public class DrawFBP extends JFrame
 		}
 		if (s.equals("Show Image")) {
 
-			File fFile = null;
-			// if (fFile == null) {
+			File fFile = curDiag.imageFile;
+			
+			if (fFile == null || !fFile.exists()) {
 
 			String ss = properties.get("currentImageDir");
 			if (ss == null)
@@ -1453,7 +1493,7 @@ public class DrawFBP extends JFrame
 
 			int returnVal = fc.showOpenDialog(true);  // set to saveAs
 
-			fFile = null;
+			//fFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				fFile = new File(getSelFile(fc));
 			}
@@ -1463,6 +1503,7 @@ public class DrawFBP extends JFrame
 
 			if (!(fFile.exists()))
 				return;
+			}
 
 			BufferedImage buffer2 = new BufferedImage(1200, 1000,
 					BufferedImage.TYPE_INT_RGB);
@@ -1842,14 +1883,11 @@ public class DrawFBP extends JFrame
 		
 		frame.repaint();
 
-	}
-	
-	Block createBlock(String blkType) {
-		return createBlock(blkType, true);
-	}
+	}	
 
-	Block createBlock(String blkType, boolean enterDesc) {
+	Block createBlock(String blkType) {
 		Block block = null;
+		boolean oneLine = false;
 		if (blkType == Block.Types.PROCESS_BLOCK) {
 			block = new ProcessBlock(curDiag);
 			block.isSubnet = willBeSubnet;
@@ -1857,19 +1895,24 @@ public class DrawFBP extends JFrame
 
 		else if (blkType == Block.Types.EXTPORT_IN_BLOCK
 				|| blkType == Block.Types.EXTPORT_OUT_BLOCK
-				|| blkType == Block.Types.EXTPORT_OUTIN_BLOCK)
+				|| blkType == Block.Types.EXTPORT_OUTIN_BLOCK){
+			oneLine = true; 
 			block = new ExtPortBlock(curDiag);
+		}
 
 		else if (blkType == Block.Types.FILE_BLOCK)
 			block = new FileBlock(curDiag);
 
-		else if (blkType == Block.Types.IIP_BLOCK)
+		else if (blkType == Block.Types.IIP_BLOCK) {
+			oneLine = true;
 			block = new IIPBlock(curDiag);
+		}
 
 		else if (blkType == Block.Types.LEGEND_BLOCK)
 			block = new LegendBlock(curDiag);
 
 		else if (blkType == Block.Types.ENCL_BLOCK) {
+			oneLine = true;  
 			block = new Enclosure(curDiag);
 			Point pt = curDiag.area.getLocation();
 			int y = Math.max(curDiag.ya - block.height / 2, pt.y + 6);
@@ -1891,15 +1934,26 @@ public class DrawFBP extends JFrame
 		if (block.cx == 0 || block.cy == 0)
 			return null; // fudge!
 		
-		if (enterDesc) {
-		if (!block.editDescription(REG_CREATE))
-			return null;
+		//if (enterDesc) {  
+		if (oneLine) {
+			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+					   "Enter text", "Enter single line value",
+					MyOptionPane.PLAIN_MESSAGE, null, null, block.description);
+				
+			if (ans == null )
+				return null;
+			else
+				block.description = ans;				 
+			}
+		else
+			if (!block.editDescription(REG_CREATE))
+				return null;
 
 		if (blkType == Block.Types.IIP_BLOCK) {
 			IIPBlock ib = (IIPBlock) block;
 			block.description = ib.checkNestedChars(block.description);
 		}
-		}
+		//}
 		block.calcEdges();
 		curDiag.maxBlockNo++;
 		block.id = curDiag.maxBlockNo;
@@ -1950,7 +2004,7 @@ public class DrawFBP extends JFrame
 		propertyDescriptions
 				.put("DrawFBP Help jar file", "jhallJarFile");
 		propertyDescriptions
-		.put("Additional Jar Files", "additionalJarFiles");
+		.put("Additional Component Jar Files", "additionalJarFiles");
 		  
 	}
 
@@ -2736,7 +2790,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			    
 			}
 			properties.put("additionalJarFiles", t);
-			//propertyDescriptions.put("Additional JarFiles", "additionalJarFiles");
+			
 			propertiesChanged = true;
 			
 		}
@@ -3820,7 +3874,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (block instanceof Enclosure) {
 					Enclosure enc = (Enclosure) block;
 					/* test for a hit within the rectangle at top */
-					int hh = fontHeight;
+					int hh = gFontHeight;
 					if (between(xa, block.leftEdge + block.width / 5,
 							block.rgtEdge - block.width / 5)
 							&& between(ya, block.topEdge - hh, block.topEdge
@@ -4408,7 +4462,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						}
 					} else { // if it is an enclosure block
 
-						int hh = fontHeight;
+						int hh = gFontHeight;
 						if (between(xa,
 								block.cx - block.width / 2 + block.width / 5,
 								block.cx + block.width / 2 - block.width / 5)

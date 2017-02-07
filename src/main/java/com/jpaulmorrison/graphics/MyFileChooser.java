@@ -68,6 +68,7 @@ public class MyFileChooser extends JFrame
 	MyButton butCancel = new MyButton();
 	MyButton butDel = new MyButton();
 	MyButton butNF = new MyButton();
+	 
 	MyButton butCopy = new MyButton();
 
 	MyTextField t_dirName = new MyTextField(100);
@@ -176,7 +177,7 @@ public class MyFileChooser extends JFrame
 		order.add(cBox);
 		order.add(butDel);
 		order.add(butCancel);
-
+		
 		t_dirName.setEditable(true);
 		t_dirName.setEnabled(true);
 
@@ -187,7 +188,7 @@ public class MyFileChooser extends JFrame
 		t_fileName.setRequestFocusEnabled(true);
 		//text2.addKeyListener(this);
 		//text2.getDocument().addDocumentListener(this);
-		t_fileName.setPreferredSize(new Dimension(100, driver.fontHeight + 2));
+		t_fileName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
 			
 		t_suggName.setEditable(false);
 		t_suggName.setEnabled(true);
@@ -225,6 +226,8 @@ public class MyFileChooser extends JFrame
 		butNF.setAction(newFolderAction);
 		butNF.setMnemonic(KeyEvent.VK_N);
 		butNF.setText("New Folder");
+		
+		butNF.setEnabled(false);
 
 		// butOK.setAction(okAction);
 		butOK.setAction(enterAction);
@@ -233,7 +236,8 @@ public class MyFileChooser extends JFrame
 		butDel.setAction(deleteAction);
 
 		butParent.setRequestFocusEnabled(true);
-		butNF.setRequestFocusEnabled(true);
+		if (saveAs)
+			butNF.setRequestFocusEnabled(true);
 		butCopy.setRequestFocusEnabled(true);
 
 		t_dirName.addMouseListener(this);
@@ -243,7 +247,8 @@ public class MyFileChooser extends JFrame
 
 		t_dirName.setFocusTraversalKeysEnabled(false);
 		butParent.setFocusTraversalKeysEnabled(false);
-		butNF.setFocusTraversalKeysEnabled(false);
+		if (saveAs)
+			butNF.setFocusTraversalKeysEnabled(false);
 		t_fileName.setFocusTraversalKeysEnabled(false);
 		butOK.setFocusTraversalKeysEnabled(false);
 		butDel.setFocusTraversalKeysEnabled(false);
@@ -251,7 +256,8 @@ public class MyFileChooser extends JFrame
 		butCopy.setFocusTraversalKeysEnabled(false);
 
 		butParent.setEnabled(true);
-		butNF.setEnabled(true);
+		if (saveAs)
+			butNF.setEnabled(true);
 		butOK.setEnabled(true);
 		// butCopy.setEnabled(saveAs);
 		butCopy.setEnabled(true);
@@ -341,7 +347,7 @@ public class MyFileChooser extends JFrame
 			pan2.add(t_suggName);
 			t_suggName.setBackground(Color.WHITE);
 			Dimension dim2 = t_suggName.getPreferredSize();
-			t_suggName.setPreferredSize(new Dimension(driver.fontWidth * 25, dim2.height));
+			t_suggName.setPreferredSize(new Dimension(driver.gFontWidth * 25, dim2.height));
 		}
 
 		c.gridx = 5;
@@ -781,9 +787,10 @@ public class MyFileChooser extends JFrame
 			if (currentNode == null) {
 				
 				File h = new File(fn);
-				if (h.isDirectory())  
-					t_fileName.setText("");	
-				else  
+				//if (h.isDirectory())  
+				//	t_fileName.setText("");	
+				//else  
+				if (!h.isDirectory()) 	
 					t_fileName.setText(s);
 				t_dirName.setText(listHead);
 				//selComp = t_fileName;
@@ -795,7 +802,7 @@ public class MyFileChooser extends JFrame
 				if (ch.getChildCount() > 0) {
 					// text.setText(fn);
 					t_dirName.setText(listHead);
-					t_fileName.setText("");
+					//t_fileName.setText("");
 					
 				} else {
 					t_fileName.setText(list.getSelectedValue());
@@ -1378,14 +1385,14 @@ public class MyFileChooser extends JFrame
 			if (f.isDirectory()) {
 				if (f.list().length > 0) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Folder not empty - cannot be deleted", MyOptionPane.ERROR_MESSAGE);
+							"Folder '" + f.getName()+ "' not empty - cannot be deleted", MyOptionPane.ERROR_MESSAGE);
 
 					return;
 				}
 			} else {
 				if (driver.curDiag.diagramIsOpen(s)) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"File cannot be deleted while open", MyOptionPane.ERROR_MESSAGE);
+							"File '" + f.getName() + "' cannot be deleted while open", MyOptionPane.ERROR_MESSAGE);
 
 					return;
 				}
@@ -1394,12 +1401,20 @@ public class MyFileChooser extends JFrame
 			String u = f.isDirectory() ? "folder" : "file";
 
 			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(dialog,
-					"Do you want to delete this " + u + ": " + f.getName()
+					"Do you want to delete this " + u + ": " + f.getAbsolutePath()
 							+ "?", "File/folder delete",
 					MyOptionPane.YES_NO_OPTION)) {
 
 				listHead = f.getParent();
-				f.delete();
+				
+				if (!f.exists()) {
+					MyOptionPane.showMessageDialog(driver.frame, "File " + f.getName()
+							+ " doesn't exist", MyOptionPane.ERROR_MESSAGE);
+					//return;
+				}
+				else 
+					f.delete();
+					
 				// fullNodeName = listHead.getAbsolutePath();
 				// showFileNames();
 				t_dirName.setText(listHead);
@@ -1447,7 +1462,7 @@ public class MyFileChooser extends JFrame
 			// processOK();
 			// }
 
-			butNF.setEnabled(!inJarTree);
+			butNF.setEnabled(!inJarTree && saveAs);
 			butDel.setEnabled(!inJarTree);
 
 			if (!((selComp instanceof JList) || selComp == t_fileName))
@@ -1460,7 +1475,7 @@ public class MyFileChooser extends JFrame
 				int rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Empty directory", MyOptionPane.ERROR_MESSAGE);
+							"Empty directory or no entry selected", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -1489,7 +1504,7 @@ public class MyFileChooser extends JFrame
 
 				jarTree = buildJarFileTree(s);
 				inJarTree = true;
-				butNF.setEnabled(!inJarTree);
+				butNF.setEnabled(!inJarTree && saveAs);
 				butDel.setEnabled(!inJarTree);
 				currentNode = jarTree;
 				t_fileName.setText("");
@@ -1586,7 +1601,7 @@ public class MyFileChooser extends JFrame
 
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
-			t_fileName.setText("");
+			//t_fileName.setText("");
 
 			if (!inJarTree) {
 				listHead = (new File(listHead)).getParent();
@@ -1617,7 +1632,7 @@ public class MyFileChooser extends JFrame
 
 				}
 			}
-			butNF.setEnabled(!inJarTree);
+			butNF.setEnabled(!inJarTree && saveAs);
 			butDel.setEnabled(!inJarTree);
 			// if (selComp instanceof MyButton) {
 			butParent.setSelected(false);
@@ -1656,7 +1671,9 @@ public class MyFileChooser extends JFrame
 
 				boolean b = f.mkdirs();
 				if (!b)
-					System.err.println("mkdirs did not succeed");
+					MyOptionPane.showMessageDialog(driver.frame,
+							"Folder not created: "
+									+ f.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
 				// panel.remove(listView);
 				// fullNodeName = s;
 				// showFileNames();

@@ -81,7 +81,7 @@ public class MyOptionPane {
 		 //if (options != null)
 		//	 new Throwable().printStackTrace();
 		 
-	     JDialog dialog = pane.createDialog(f, null);
+	     JDialog dialog = pane.createDialog(f, s);
 	     if (!dialog.isResizable())  
              dialog.setResizable(true);
 	     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); 

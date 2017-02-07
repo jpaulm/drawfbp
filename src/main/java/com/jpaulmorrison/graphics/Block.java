@@ -115,8 +115,8 @@ public class Block implements ActionListener {
 			return;
 		}
          
-		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy
-				+ height / 2);
+		calcDiagMaxAndMin(cx - width / 2 - 20, cx + width / 2 + 20, cy - height / 2, cy
+				+ height / 2 + 4 * driver.gFontHeight);
 
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;
@@ -136,7 +136,7 @@ public class Block implements ActionListener {
 			String s = mpxfactor;
 			if (s == null)
 				s = " ";
-			int i = s.length() * driver.fontWidth + 10;
+			int i = s.length() * driver.gFontWidth + 10;
 			x = tlx - i;
 			y = cy - 20 / 2;
 			g.setColor(Color.BLACK);
@@ -172,7 +172,7 @@ public class Block implements ActionListener {
 		if (!visible && this == driver.selBlock)
 			g.drawLine(tlx, tly, cx + width / 2, cy + height / 2);
 
-		int y = cy + height / 2 + driver.fontHeight + driver.fontHeight / 2;
+		int y = cy + height / 2 + driver.gFontHeight + driver.gFontHeight / 2;
 
 		if (diagramFileName != null) {
 			Font fontsave = g.getFont();
@@ -180,10 +180,10 @@ public class Block implements ActionListener {
 			g.setColor(Color.GRAY);
 			File gFile = new File(diagramFileName);
 			String name = gFile.getName();
-			int x = cx - name.length() * driver.fontWidth / 2;
+			int x = cx - name.length() * driver.gFontWidth / 2;
 			g.drawString(name, x, y);
 			g.setFont(fontsave);
-			y += driver.fontHeight;
+			y += driver.gFontHeight;
 		}
 
 		String name = null;
@@ -194,27 +194,27 @@ public class Block implements ActionListener {
 				g.setFont(driver.fontf);
 				g.setColor(Color.BLUE);
 				name = javaClass.getSimpleName()  + ".class";
-				int x = cx - name.length() * driver.fontWidth / 2;
+				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
-				y += driver.fontHeight;
+				y += driver.gFontHeight;
 			}
 
 			else if (fullClassName != null) {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				name = "Class not found or out of date - rechoose comp/subnet";
-				int x = cx - name.length() * driver.fontWidth / 2;
+				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
-				y += driver.fontHeight;
+				y += driver.gFontHeight;
 				name = fullClassName;
 				g.setColor(Color.RED);
-				x = cx - name.length() * driver.fontWidth / 2;
+				x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
 				g.setColor(Color.BLACK);
-				y += driver.fontHeight;
+				y += driver.gFontHeight;
 			}
 		}
 		if (codeFileName != null) {
@@ -226,7 +226,7 @@ public class Block implements ActionListener {
 				i = name.lastIndexOf("/");
 			name = name.substring(i + 1);
 			g.setColor(Color.BLACK);
-			int x = cx - name.length() * driver.fontWidth / 2;
+			int x = cx - name.length() * driver.gFontWidth / 2;
 			g.drawString(name, x, y);
 			g.setFont(fontsave);
 			g.setColor(Color.BLACK);
@@ -311,7 +311,7 @@ public class Block implements ActionListener {
 			maxX = Math.max(x, maxX);
 			if (!(str[i].trim().equals(""))) {
 				// minY = Math.min(minY, y);
-				y += driver.fontHeight;
+				y += driver.gFontHeight;
 				nonBlankLineFound = true;
 			}
 			if (nonBlankLineFound) {
@@ -326,16 +326,16 @@ public class Block implements ActionListener {
 		if (this instanceof ReportBlock)
 			y = cy - y;
 		else if (this instanceof PersonBlock)
-			y = cy + height / 2 + driver.fontHeight;
+			y = cy + height / 2 + driver.gFontHeight;
 		else
-			y = cy - y + driver.fontHeight;
+			y = cy - y + driver.gFontHeight;
 
-		y -= driver.fontHeight / 3; // fudge!
+		y -= driver.gFontHeight / 3; // fudge!
 		int saveY = y;
 
 		for (int i = 0; i < str.length; i++) {
 			g.drawString(str[i], x, y);
-			y += driver.fontHeight;
+			y += driver.gFontHeight;
 		}
 		if (this instanceof LegendBlock) {
 			height = y - saveY + 24;
@@ -1312,9 +1312,15 @@ public class Block implements ActionListener {
 				diag.changed = true;
 				if (this instanceof IIPBlock) {
 					IIPBlock ib = (IIPBlock) this;
-					description = ib.checkNestedChars(description);
-					width = description.length() * driver.fontWidth;
-					height = driver.fontHeight + 6;
+					description = ib.checkNestedChars(description);					
+					//height = driver.gFontHeight + 6;
+					FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
+					String t = description;
+					if (t.length() == 1)
+						t = " " + t + " ";
+					byte[] str = t.getBytes();
+					width = metrics.bytesWidth(str, 0, t.length());
+					
 
 					for (Arrow arrow : diag.arrows.values()) {
 						if (arrow.fromId == id && arrow.fromY == arrow.toY) // i.e.
@@ -1567,7 +1573,7 @@ public class Block implements ActionListener {
 
 			diag.excise((Enclosure) this, diag.tabNum, ans);
 
-			boolean NOCHOOSE = false;
+			final boolean NOCHOOSE = false;
 			diag.delBlock(this, NOCHOOSE);
 			diag.foundBlock = null;
 			driver.frame.repaint();
@@ -1590,7 +1596,8 @@ public class Block implements ActionListener {
 		}
 		
 		if (s.equals("Delete")) {
-			diag.delBlock(this, true);
+			final boolean CHOOSE = true;
+			diag.delBlock(this, CHOOSE);
 			diag.foundBlock = null;
 			diag.changed = true;
 			// diag.changeCompLang();
@@ -1602,6 +1609,8 @@ public class Block implements ActionListener {
 		// }
 
 	}
+	
+	// Used if not single line block contents
 
 	boolean editDescription(int option) {
 

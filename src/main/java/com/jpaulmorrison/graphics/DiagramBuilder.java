@@ -498,6 +498,7 @@ public class DiagramBuilder {
 		fl5.put("upstreamport", "*");
 		fl5.put("downstreamport", "*");
 		fl5.put("dropoldest", "*");
+		fl5.put("capacity", "*");
 		fl5.put("endsatline", "*");	
 		fl5.put("bends", "LinkedList");
 
