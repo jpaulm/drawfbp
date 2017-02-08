@@ -1,6 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 
@@ -85,6 +86,7 @@ public class MyOptionPane {
 	     if (!dialog.isResizable())  
              dialog.setResizable(true);
 	     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); 
+	     //dialog.setPreferredSize(new Dimension(200, 200));  //fudge
 	          	     
 	     dialog.pack();	     	     
 	     dialog.setVisible(true);

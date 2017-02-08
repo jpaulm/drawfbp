@@ -1388,55 +1388,73 @@ public class MyFileChooser extends JFrame
 		public void actionPerformed(ActionEvent e) {
 			result = CANCEL_OPTION;
 
-			String s = t_dirName.getText();
-			String t = t_fileName.getText();
-			if (!(t.equals("")))
-				s += File.separator + t;
-			File f = new File(s);
-			if (f.isDirectory()) {
-				if (f.list().length > 0) {
-					MyOptionPane.showMessageDialog(driver.frame,
-							"Folder '" + f.getName()+ "' not empty - cannot be deleted", MyOptionPane.ERROR_MESSAGE);
-
-					return;
-				}
-			} else {
-				if (driver.curDiag.diagramIsOpen(s)) {
-					MyOptionPane.showMessageDialog(driver.frame,
-							"File '" + f.getName() + "' cannot be deleted while open", MyOptionPane.ERROR_MESSAGE);
-
-					return;
-				}
-			}
-
-			String u = f.isDirectory() ? "folder" : "file";
-
-			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(dialog,
-					"Do you want to delete this " + u + ": " + f.getAbsolutePath()
-							+ "?", "File/folder delete",
-					MyOptionPane.YES_NO_OPTION)) {
-
-				listHead = f.getParent();
+			if (selComp instanceof JList) {
+				//String s = t_dirName.getText();
+				//String t = t_fileName.getText();
+				//if (!(t.equals("")))
+				//	s += File.separator + t;
+				//File f = new File(s);
 				
-				if (!f.exists()) {
-					MyOptionPane.showMessageDialog(driver.frame, u + " "  + f.getName()
-							+ " doesn't exist", MyOptionPane.ERROR_MESSAGE);
-					//return;
+				int rowNo = list.getSelectedIndex();
+				if (nodeNames.length == 0 || rowNo == -1) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"Empty directory or no entry selected",
+							MyOptionPane.ERROR_MESSAGE);
+					return;
 				}
-				else {
-					f.delete();
-					MyOptionPane.showMessageDialog(driver.frame, u + " " + f.getName()
-					+ " deleted", MyOptionPane.INFORMATION_MESSAGE);
-				}
-					
-				// fullNodeName = listHead.getAbsolutePath();
-				// showFileNames();
-				t_dirName.setText(listHead);
-				// panel.remove(listView);
-				showList();
 
+				String s = nodeNames[rowNo];
+				File f = new File(t_dirName.getText() + File.separator + s);
+				if (f.isDirectory()) {
+					if (f.list().length > 0) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"Folder '" + f.getName()
+										+ "' not empty - cannot be deleted",
+								MyOptionPane.ERROR_MESSAGE);
+
+						return;
+					}
+				} else {
+					if (driver.curDiag.diagramIsOpen(s)) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"File '" + f.getName()
+										+ "' cannot be deleted while open",
+								MyOptionPane.ERROR_MESSAGE);
+
+						return;
+					}
+				}
+
+				String u = f.isDirectory() ? "folder" : "file";
+
+				if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+						dialog,
+						"Do you want to delete this " + u + ": "
+								+ f.getAbsolutePath() + "?",
+						"File/folder delete", MyOptionPane.YES_NO_OPTION)) {
+
+					listHead = f.getParent();
+
+					if (!f.exists()) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								u + " " + f.getName() + " doesn't exist",
+								MyOptionPane.ERROR_MESSAGE);
+						// return;
+					} else {
+						f.delete();
+						MyOptionPane.showMessageDialog(driver.frame,
+								u + " " + f.getName() + " deleted",
+								MyOptionPane.INFORMATION_MESSAGE);
+					}
+
+					// fullNodeName = listHead.getAbsolutePath();
+					// showFileNames();
+					t_dirName.setText(listHead);
+					// panel.remove(listView);
+					showList();
+
+				}
 			}
-			//frame.repaint();
 		}
 	}
 

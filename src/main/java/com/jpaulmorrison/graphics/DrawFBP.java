@@ -1403,17 +1403,7 @@ public class DrawFBP extends JFrame
 			y1 = Math.max(1, curDiag.minY - 20);
 			h1 = curDiag.maxY + 20 - y1;
 			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
-			/*
-			byte[] bytes = curDiag.title.getBytes();
 			
-			BufferedImage title = null;
-			try {
-				title = ImageIO.read(new ByteArrayInputStream(bytes));
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			*/
 			BufferedImage combined = new BufferedImage(w1, h1, BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
 			g.drawImage(buffer2, 0, 0, null);	
@@ -1456,10 +1446,20 @@ public class DrawFBP extends JFrame
 			ImageIcon image = new ImageIcon(combined);
 
 			
-			MyOptionPane.showMessageDialog(frame, null,
-					"Image: " + file.getName(), 
-					MyOptionPane.INFORMATION_MESSAGE, image);
-			
+			JDialog popup = new JDialog();
+			JLabel jLabel = new JLabel(image);
+            
+            JPanel jPanel = new JPanel();
+            jPanel.add(jLabel);
+            popup.add(jPanel);
+            popup.setLocation(new Point(200, 200));
+            popup.pack();
+			//MyOptionPane.showMessageDialog(frame, null,
+			//		"Image: " + fFile.getName(),
+			//		MyOptionPane.INFORMATION_MESSAGE, image);
+            
+            popup.setVisible(true);
+            popup.repaint();
 			g.dispose();
 			
 			frame.repaint();
@@ -1521,9 +1521,20 @@ public class DrawFBP extends JFrame
 			//Graphics g = image.
 			//paintIcon(image,g,0,0);
 			curDiag.imageFile = fFile;
-			MyOptionPane.showMessageDialog(frame, null,
-					"Image: " + fFile.getName(),
-					MyOptionPane.INFORMATION_MESSAGE, image);
+			JDialog popup = new JDialog();
+			JLabel jLabel = new JLabel(image);
+            
+            JPanel jPanel = new JPanel();
+            jPanel.add(jLabel);
+            popup.add(jPanel);
+            popup.setLocation(new Point(200, 200));
+            popup.pack();
+			//MyOptionPane.showMessageDialog(frame, null,
+			//		"Image: " + fFile.getName(),
+			//		MyOptionPane.INFORMATION_MESSAGE, image);
+            
+            popup.setVisible(true);
+            popup.repaint();
 			frame.repaint();
 			return;
 
