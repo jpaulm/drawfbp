@@ -1388,6 +1388,9 @@ public class MyFileChooser extends JFrame
 		public void actionPerformed(ActionEvent e) {
 			result = CANCEL_OPTION;
 
+			if (!(selComp instanceof JList) && selComp != t_fileName)
+				return;
+			String s = null;
 			if (selComp instanceof JList) {
 				//String s = t_dirName.getText();
 				//String t = t_fileName.getText();
@@ -1403,7 +1406,10 @@ public class MyFileChooser extends JFrame
 					return;
 				}
 
-				String s = nodeNames[rowNo];
+				s = nodeNames[rowNo];
+			} else {
+				s = t_fileName.getText();
+			}
 				File f = new File(t_dirName.getText() + File.separator + s);
 				if (f.isDirectory()) {
 					if (f.list().length > 0) {
@@ -1455,7 +1461,7 @@ public class MyFileChooser extends JFrame
 
 				}
 			}
-		}
+		 
 	}
 
 	class EnterAction extends AbstractAction {
