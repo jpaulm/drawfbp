@@ -1385,156 +1385,138 @@ public class DrawFBP extends JFrame
 			//	frame.setCursor(defaultCursor);	
 			return;
 		}
-		if (s.equals("Export Image")) {
+		if (s.equals("Export Image") || s.equals("Show Image")) {
+			ImageIcon image = null;
 
-			if (curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(null,
-						"Unable to export image for empty diagram", MyOptionPane.ERROR_MESSAGE);
-				return;
+			if (s.equals("Export Image")) {
+
+				if (curDiag.blocks.isEmpty()) {
+					MyOptionPane.showMessageDialog(null,
+							"Unable to export image for empty diagram",
+							MyOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				File file = null;
+				curDiag.imageFile = null;
+
+				// crop
+				int x1, w1, y1, h1;
+				x1 = Math.max(1, curDiag.minX - 40);
+				w1 = curDiag.maxX + 40 - x1;
+				y1 = Math.max(1, curDiag.minY - 20);
+				h1 = curDiag.maxY + 20 - y1;
+				BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
+
+				BufferedImage combined = new BufferedImage(w1, h1,
+						BufferedImage.TYPE_INT_ARGB);
+				Graphics g = combined.getGraphics();
+				g.drawImage(buffer2, 0, 0, null);
+				Color col = g.getColor();
+				g.setColor(Color.BLUE);
+				Font f = fontg.deriveFont(Font.ITALIC, 18.0f);
+				g.setFont(f);
+				int x = combined.getWidth() / 2;
+				// int y = frame.getHeight() / 2;
+				FontMetrics metrics = g.getFontMetrics(f);
+				String t = curDiag.desc;
+				byte[] str = t.getBytes();
+				int width = metrics.bytesWidth(str, 0, t.length());
+
+				g.drawString(t, x - width / 2, 20);
+				g.setColor(col);
+				// g.dispose();
+
+				int i = curDiag.fCPArr[IMAGE].prompt.indexOf(":");
+				String fn;
+				if (curDiag.diagFile == null)
+					fn = "(null)";
+				else
+					fn = curDiag.diagFile.getName();
+
+				curDiag.fCPArr[IMAGE].prompt = curDiag.fCPArr[IMAGE].prompt
+						.substring(0, i) + ": " + fn;
+
+				file = curDiag.genSave(null, fCPArray[IMAGE], combined);
+
+				if (file == null) {
+					MyOptionPane.showMessageDialog(frame, "File not saved");
+					// curDiag.imageFile = null;
+					g.dispose();
+					return;
+				}
+
+				image = new ImageIcon(combined);
+				curDiag.imageFile = file;
+				Date date = new Date();
+				file.setLastModified(date.getTime());
 			}
+			else {
+				
+				File fFile = curDiag.imageFile;
 
-			File file = null;
-			curDiag.imageFile = null;
+				if (fFile == null || !fFile.exists()) {
 
-			// crop
-			int x1, w1, y1, h1;
-			x1 = Math.max(1, curDiag.minX - 40);
-			w1 = curDiag.maxX + 40 - x1;
-			y1 = Math.max(1, curDiag.minY - 20);
-			h1 = curDiag.maxY + 20 - y1;
-			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
-			
-			BufferedImage combined = new BufferedImage(w1, h1, BufferedImage.TYPE_INT_ARGB);
-			Graphics g = combined.getGraphics();
-			g.drawImage(buffer2, 0, 0, null);	
-			Color col = g.getColor();
-			g.setColor(Color.BLUE);			
-			Font f = fontg.deriveFont(Font.ITALIC, 18.0f);
-			g.setFont(f);
-			int x = combined.getWidth() / 2;
-			//int y = frame.getHeight() / 2;
-			FontMetrics metrics = g.getFontMetrics(f);			
-			String t = curDiag.desc;			
-			byte[] str = t.getBytes();
-			int width = metrics.bytesWidth(str, 0, t.length());			
-			
-			g.drawString(t, x - width / 2, 20);
-			g.setColor(col);
-			//g.dispose();
-			
-			int i = curDiag.fCPArr[IMAGE].prompt.indexOf(":");
-			String fn;
-			if (curDiag.diagFile == null) 
-				fn = "(null)";
-			else
-				fn = curDiag.diagFile.getName();
+					String ss = properties.get("currentImageDir");
+					if (ss == null)
+						currentImageDir = new File(
+								System.getProperty("user.home"));
+					else
+						currentImageDir = new File(ss);
 
-			curDiag.fCPArr[IMAGE].prompt = curDiag.fCPArr[IMAGE].prompt
-					.substring(0, i) + ": " + fn;
+					MyFileChooser fc = new MyFileChooser(currentImageDir,
+							curDiag.fCPArr[IMAGE]);
 
-			//file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
-			file = curDiag.genSave(null, fCPArray[IMAGE], combined);
+					int i = curDiag.diagFile.getName().indexOf(".drw");
+					ss += File.separator
+							+ curDiag.diagFile.getName().substring(0, i)
+							+ curDiag.fCPArr[IMAGE].fileExt;
+					fc.setSuggestedName(ss);
 
-			if (file == null) {
-				MyOptionPane.showMessageDialog(frame, "File not saved");
-				// curDiag.imageFile = null;
-				g.dispose();
-				return;
+					int returnVal = fc.showOpenDialog(true); // set to saveAs
+
+					// fFile = null;
+					if (returnVal == MyFileChooser.APPROVE_OPTION) {
+						fFile = new File(getSelFile(fc));
+					}
+					// }
+					if (fFile == null)
+						return;
+
+					if (!(fFile.exists()))
+						return;
+				}
+
+				BufferedImage buffer2 = new BufferedImage(1200, 1000,
+						BufferedImage.TYPE_INT_RGB);
+				try {
+					buffer2 = ImageIO.read(fFile);
+				} catch (IOException e2) {
+					MyOptionPane.showMessageDialog(frame, "Could not get image",
+							MyOptionPane.ERROR_MESSAGE);
+				}
+				image = new ImageIcon(buffer2);
+
+				currentImageDir = new File(fFile.getParent());
+				properties.put("currentImageDir", fFile.getParent());
+				propertiesChanged = true;
+
+				curDiag.imageFile = fFile;
 			}
-			
-			 
-			ImageIcon image = new ImageIcon(combined);
-
-			
 			JDialog popup = new JDialog();
+			popup.setTitle(curDiag.imageFile.getName()); 
 			JLabel jLabel = new JLabel(image);
-            
-            JPanel jPanel = new JPanel();
-            jPanel.add(jLabel);
-            popup.add(jPanel);
-            popup.setLocation(new Point(200, 200));
-            popup.pack();
-			//MyOptionPane.showMessageDialog(frame, null,
-			//		"Image: " + fFile.getName(),
-			//		MyOptionPane.INFORMATION_MESSAGE, image);
-            
-            popup.setVisible(true);
-            popup.repaint();
-			g.dispose();
+			JScrollPane jsp = new JScrollPane(jLabel);
 			
-			frame.repaint();
-			 
-			curDiag.imageFile = file;
-
-			currentImageDir = new File(file.getParent());
-			properties.put("currentImageDir", file.getParent());
-			propertiesChanged = true;
-			return;
-
-		}
-		if (s.equals("Show Image")) {
-
-			File fFile = curDiag.imageFile;
-			
-			if (fFile == null || !fFile.exists()) {
-
-			String ss = properties.get("currentImageDir");
-			if (ss == null)
-				currentImageDir = new File(System.getProperty("user.home"));
-			else
-				currentImageDir = new File(ss);
-
-			MyFileChooser fc = new MyFileChooser(currentImageDir,
-					curDiag.fCPArr[IMAGE]);
-			
-			
-			int i = curDiag.diagFile.getName().indexOf(".drw");
-			ss += File.separator + curDiag.diagFile.getName().substring(0, i) + curDiag.fCPArr[IMAGE].fileExt;
-			fc.setSuggestedName(ss);
-
-			int returnVal = fc.showOpenDialog(true);  // set to saveAs
-
-			//fFile = null;
-			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				fFile = new File(getSelFile(fc));
-			}
-			// }
-			if (fFile == null)
-				return;
-
-			if (!(fFile.exists()))
-				return;
-			}
-
-			BufferedImage buffer2 = new BufferedImage(1200, 1000,
-					BufferedImage.TYPE_INT_RGB);
-			try {
-				buffer2 = ImageIO.read(fFile);
-			} catch (IOException e2) {
-				MyOptionPane.showMessageDialog(frame, "Could not get image", MyOptionPane.ERROR_MESSAGE);
-			}
-			ImageIcon image = new ImageIcon(buffer2);
-
-			currentImageDir = new File(fFile.getParent());
-			properties.put("currentImageDir", fFile.getParent());
-			propertiesChanged = true;
-			//Graphics g = image.
-			//paintIcon(image,g,0,0);
-			curDiag.imageFile = fFile;
-			JDialog popup = new JDialog();
-			JLabel jLabel = new JLabel(image);
-            
-            JPanel jPanel = new JPanel();
-            jPanel.add(jLabel);
-            popup.add(jPanel);
-            popup.setLocation(new Point(200, 200));
-            popup.pack();
-			//MyOptionPane.showMessageDialog(frame, null,
-			//		"Image: " + fFile.getName(),
-			//		MyOptionPane.INFORMATION_MESSAGE, image);
-            
-            popup.setVisible(true);
-            popup.repaint();
+			Dimension dim = new Dimension(image.getIconWidth(),
+					image.getIconHeight());  
+						
+			popup.add(jsp, BorderLayout.CENTER);
+			popup.setLocation(new Point(200, 200));
+			//jsp.setPreferredSize(dim);
+			popup.pack();
+			popup.setVisible(true);
+			popup.repaint();
 			frame.repaint();
 			return;
 
