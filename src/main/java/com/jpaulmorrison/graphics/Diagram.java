@@ -84,7 +84,7 @@ public class Diagram {
 	
 	FoundPoint arrowRoot = null;  // used to draw blue circles where arrows can start
 	
-	File imageFile = null;
+	//File imageFile = null;
 	
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;

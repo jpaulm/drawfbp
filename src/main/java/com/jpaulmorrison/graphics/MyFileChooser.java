@@ -1328,13 +1328,13 @@ public class MyFileChooser extends JFrame
 			// }
 		}
 
-		else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+		//else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 			//if (selComp instanceof JList) {
-			if (selComp == t_fileName) {
+		//	if (selComp == t_fileName) {
 
-				deleteAction.actionPerformed(new ActionEvent(e, 0, ""));
-			}
-		}
+		//		deleteAction.actionPerformed(new ActionEvent(e, 0, ""));
+		//	}
+		//}
 
 		else if (selComp == cBox
 				&& ((e.getKeyCode() == KeyEvent.VK_UP) && driver.allFiles || (e
