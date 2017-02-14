@@ -115,7 +115,7 @@ public class Block implements ActionListener {
 			return;
 		}
          
-		calcDiagMaxAndMin(cx - width / 2 - 20, cx + width / 2 + 20, cy - height / 2, cy
+		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy
 				+ height / 2 + 4 * driver.gFontHeight);
 
 		int tlx = cx - width / 2;
@@ -279,12 +279,12 @@ public class Block implements ActionListener {
 		botEdge = cy + height / 2;
 	}
 	void calcDiagMaxAndMin(int xmin, int xmax, int ymin, int ymax) {
-		if (visible) {
-			diag.maxX = Math.max(xmax, diag.maxX);
-			diag.minX = Math.min(xmin, diag.minX);
-			diag.maxY = Math.max(ymax, diag.maxY);
-			diag.minY = Math.min(ymin, diag.minY);
-		}
+		//if (visible) {
+			diag.maxX = Math.max(xmax + 20, diag.maxX);
+			diag.minX = Math.min(xmin - 20, diag.minX);
+			diag.maxY = Math.max(ymax + 20, diag.maxY);
+			diag.minY = Math.min(ymin - 20, diag.minY);
+		//}
 	}
 	void centreDesc(Graphics2D g) {
 

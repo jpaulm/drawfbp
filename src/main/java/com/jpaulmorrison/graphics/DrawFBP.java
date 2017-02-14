@@ -1388,9 +1388,9 @@ public class DrawFBP extends JFrame
 		
 		if (s.equals("Export Image")) {
 
-			if (curDiag.blocks.isEmpty()) {
+			if (curDiag == null || curDiag.title == null || curDiag.blocks.isEmpty()) {
 				MyOptionPane.showMessageDialog(null,
-						"Unable to export image for empty diagram",
+						"Unable to export image for empty or unsaved diagram - please do save first",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -1406,24 +1406,26 @@ public class DrawFBP extends JFrame
 			h1 = curDiag.maxY + 20 - y1;
 			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
 
-			BufferedImage combined = new BufferedImage(w1, h1,
+			BufferedImage combined = new BufferedImage(w1, h1 + 40,
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
 			g.drawImage(buffer2, 0, 0, null);
-			Color col = g.getColor();
-			g.setColor(Color.BLUE);
-			Font f = fontg.deriveFont(Font.ITALIC, 18.0f);
-			g.setFont(f);
-			int x = combined.getWidth() / 2;
-			// int y = frame.getHeight() / 2;
-			FontMetrics metrics = g.getFontMetrics(f);
-			String t = curDiag.desc;
-			byte[] str = t.getBytes();
-			int width = metrics.bytesWidth(str, 0, t.length());
+			
+			if (curDiag.desc != null) {
+				Color col = g.getColor();
+				g.setColor(Color.BLUE);
+				Font f = fontg.deriveFont(Font.ITALIC, 18.0f);
+				g.setFont(f);
+				int x = combined.getWidth() / 2;
+				// int y = frame.getHeight() / 2;
+				FontMetrics metrics = g.getFontMetrics(f);
+				String t = curDiag.desc;
+				byte[] str = t.getBytes();
+				int width = metrics.bytesWidth(str, 0, t.length());
 
-			g.drawString(t, x - width / 2, 20);
-			g.setColor(col);
-			// g.dispose();
+				g.drawString(t, x - width / 2, buffer2.getHeight());
+				g.setColor(col);
+			}
 
 			int i = curDiag.fCPArr[IMAGE].prompt.indexOf(":");
 			String fn;
