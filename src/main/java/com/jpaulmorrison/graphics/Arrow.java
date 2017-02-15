@@ -157,12 +157,15 @@ public class Arrow implements ActionListener {
 				int x = (fx + endX) / 2;
 				int y = (fy + endY) / 2;
 				String s = "(" + capacity + ")";
-				x -= s.length() / 2;
+				x -= s.length() * driver.gFontWidth / 2;
 				g.drawString(s, x, y + 12);
+				calcLimits(x,  x + s.length() * driver.gFontWidth, y + 12, y + 12 + driver.gFontHeight);
+				
 			}
 		}
 		tx = endX;
 		ty = endY;
+		calcLimits(fx, tx, fy, ty);
 		
 
 		int x = endX;
@@ -255,18 +258,18 @@ public class Arrow implements ActionListener {
 	}
 	void calcLimits(int x1, int x2, int y1, int y2) {
 		if (x1 < x2) {
-			diag.maxX = Math.max(x2, diag.maxX);
-			diag.minX = Math.min(x1, diag.minX);
+			diag.maxX = Math.max(x2 + 20, diag.maxX);
+			diag.minX = Math.min(x1 - 20, diag.minX);
 		} else {
-			diag.maxX = Math.max(x1, diag.maxX);
-			diag.minX = Math.min(x2, diag.minX);
+			diag.maxX = Math.max(x1 + 20, diag.maxX);
+			diag.minX = Math.min(x2 - 20, diag.minX);
 		}
 		if (y1 < y2) {
-			diag.maxY = Math.max(y2, diag.maxY);
-			diag.minY = Math.min(y1, diag.minY);
+			diag.maxY = Math.max(y2 + 20, diag.maxY);
+			diag.minY = Math.min(y1 - 20, diag.minY);
 		} else {
-			diag.maxY = Math.max(y2, diag.maxY);
-			diag.minY = Math.min(y1, diag.minY);
+			diag.maxY = Math.max(y1 + 20, diag.maxY);
+			diag.minY = Math.min(y2 - 20, diag.minY);
 		}
 	}
 

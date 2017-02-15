@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RectangularShape;
 import java.awt.image.*;
 
 import javax.swing.*;
@@ -304,7 +305,7 @@ public class DrawFBP extends JFrame
 		int h = (int) dim.getHeight();
 		maxX = (int) (w * .8);
 		maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); // make buffer > frame
 		osg = buffer.createGraphics();
 
 		// http://www.oracle.com/technetwork/java/painting-140037.html
@@ -1400,30 +1401,38 @@ public class DrawFBP extends JFrame
 
 			// crop
 			int x1, w1, y1, h1;
-			x1 = Math.max(1, curDiag.minX - 40);
-			w1 = curDiag.maxX + 40 - x1;
-			y1 = Math.max(1, curDiag.minY - 20);
-			h1 = curDiag.maxY + 20 - y1;
-			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
+			x1 = Math.max(1, curDiag.minX);
+			w1 = curDiag.maxX - x1;
+			y1 = Math.max(1, curDiag.minY);
+			h1 = curDiag.maxY - y1;
+			
+			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1 + 20);
 
-			BufferedImage combined = new BufferedImage(w1, h1 + 40,
+			int y = buffer.getHeight();
+			int y2 = buffer2.getHeight();
+			
+			BufferedImage combined = new BufferedImage(w1, h1 + 100,
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
+			g.setColor(Color.WHITE);
+			g.fillRect(0, 0, w1, h1 + 100);
 			g.drawImage(buffer2, 0, 0, null);
-			
+			//g.setColor(Color.RED);
+			g.fillRect(0, h1 + 20, w1, 100);
+			 
 			if (curDiag.desc != null) {
 				Color col = g.getColor();
 				g.setColor(Color.BLUE);
 				Font f = fontg.deriveFont(Font.ITALIC, 18.0f);
 				g.setFont(f);
-				int x = combined.getWidth() / 2;
+				int x = combined.getWidth() / 2;				
 				// int y = frame.getHeight() / 2;
 				FontMetrics metrics = g.getFontMetrics(f);
 				String t = curDiag.desc;
 				byte[] str = t.getBytes();
 				int width = metrics.bytesWidth(str, 0, t.length());
 
-				g.drawString(t, x - width / 2, buffer2.getHeight());
+				g.drawString(t, x - width / 2, buffer2.getHeight() + 40);
 				g.setColor(col);
 			}
 
@@ -1488,7 +1497,7 @@ public class DrawFBP extends JFrame
 					return;
 			//}
 
-			BufferedImage buffer2 = new BufferedImage(1200, 1000,
+			BufferedImage buffer2 = new BufferedImage(1200, 2000, 
 					BufferedImage.TYPE_INT_RGB);
 			try {
 				buffer2 = ImageIO.read(fFile);

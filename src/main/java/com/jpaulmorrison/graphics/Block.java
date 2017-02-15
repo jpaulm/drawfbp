@@ -114,13 +114,12 @@ public class Block implements ActionListener {
 			showArrowEndAreas(g);
 			return;
 		}
-         
-		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy
-				+ height / 2 + 4 * driver.gFontHeight);
-
+         	
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;
 		g.setFont(driver.fontg);
+		
+		calcDiagMaxAndMin(tlx - 20, cx + width / 2 + 20, cy - height / 2, cy + height / 2 + 40);
 
 		g.setColor(Color.BLACK);
 		g.drawRoundRect(tlx, tly, width, height, 6, 6);
@@ -184,6 +183,7 @@ public class Block implements ActionListener {
 			g.drawString(name, x, y);
 			g.setFont(fontsave);
 			y += driver.gFontHeight;
+			calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
 		}
 
 		String name = null;
@@ -198,6 +198,7 @@ public class Block implements ActionListener {
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
 				y += driver.gFontHeight;
+				calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
 			}
 
 			else if (fullClassName != null) {
@@ -215,6 +216,7 @@ public class Block implements ActionListener {
 				g.setFont(fontsave);
 				g.setColor(Color.BLACK);
 				y += driver.gFontHeight;
+				calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
 			}
 		}
 		if (codeFileName != null) {
@@ -230,6 +232,7 @@ public class Block implements ActionListener {
 			g.drawString(name, x, y);
 			g.setFont(fontsave);
 			g.setColor(Color.BLACK);
+			calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
 		}
 		if (hNeighbour != null) {
 			g.setColor(Color.ORANGE);
@@ -282,7 +285,7 @@ public class Block implements ActionListener {
 		//if (visible) {
 			diag.maxX = Math.max(xmax + 20, diag.maxX);
 			diag.minX = Math.min(xmin - 20, diag.minX);
-			diag.maxY = Math.max(ymax + 20, diag.maxY);
+			diag.maxY = Math.max(ymax, diag.maxY);
 			diag.minY = Math.min(ymin - 20, diag.minY);
 		//}
 	}
