@@ -1406,7 +1406,7 @@ public class DrawFBP extends JFrame
 			y1 = Math.max(1, curDiag.minY);
 			h1 = curDiag.maxY - y1;
 			
-			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1 + 20);
+			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
 
 			int y = buffer.getHeight();
 			int y2 = buffer2.getHeight();
