@@ -54,7 +54,7 @@ public class DrawFBP extends JFrame
 
 	BufferedImage buffer = null;
 
-	int maxX, maxY;
+	//int maxX, maxY;
 
 	Graphics2D osg;
 
@@ -200,7 +200,8 @@ public class DrawFBP extends JFrame
 
 	static Color lg = new Color(240, 240, 240); // very light gray
 	static Color slateGray1 = new Color(198, 226, 255);
-	JDialog popup2;
+	//JDialog popup = null;
+	JDialog popup2 = null;
 	JDialog depDialog = null;
 
 	static enum Side {
@@ -303,9 +304,9 @@ public class DrawFBP extends JFrame
 
 		int w = (int) dim.getWidth();
 		int h = (int) dim.getHeight();
-		maxX = (int) (w * .8);
-		maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); // make buffer > frame
+		//maxX = (int) (w * .8);
+		//maxY = (int) (h * .8);
+		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); 
 		osg = buffer.createGraphics();
 
 		// http://www.oracle.com/technetwork/java/painting-140037.html
@@ -1406,19 +1407,25 @@ public class DrawFBP extends JFrame
 			y1 = Math.max(1, curDiag.minY);
 			h1 = curDiag.maxY - y1;
 			
+			int w = curDiag.area.getWidth();
+			int h = curDiag.area.getHeight();
+			w1 = Math.min(w1, w - x1);
+			h1 = Math.min(h1, h - y1);
+			
 			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
 
-			int y = buffer.getHeight();
-			int y2 = buffer2.getHeight();
+			//int w2 = buffer2.getWidth();
+			//int h2 = buffer2.getHeight();
 			
 			BufferedImage combined = new BufferedImage(w1, h1 + 100,
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
+			//Graphics g = buffer2.getGraphics();
 			g.setColor(Color.WHITE);
-			g.fillRect(0, 0, w1, h1 + 100);
+			//g.fillRect(0, 0, w1, h1 + 100);
 			g.drawImage(buffer2, 0, 0, null);
 			//g.setColor(Color.RED);
-			g.fillRect(0, h1 + 20, w1, 100);
+			g.fillRect(0, h1, w1, 100);
 			 
 			if (curDiag.desc != null) {
 				Color col = g.getColor();
@@ -1426,7 +1433,7 @@ public class DrawFBP extends JFrame
 				Font f = fontg.deriveFont(Font.ITALIC, 18.0f);
 				g.setFont(f);
 				int x = combined.getWidth() / 2;				
-				// int y = frame.getHeight() / 2;
+				//int x = buffer2.getWidth() / 2;
 				FontMetrics metrics = g.getFontMetrics(f);
 				String t = curDiag.desc;
 				byte[] str = t.getBytes();
@@ -1447,7 +1454,7 @@ public class DrawFBP extends JFrame
 					.substring(0, i) + ": " + fn;
 
 			file = curDiag.genSave(null, fCPArray[IMAGE], combined);
-
+			//file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
 			if (file == null) {
 				MyOptionPane.showMessageDialog(frame, "File not saved");
 				// curDiag.imageFile = null;
@@ -1513,18 +1520,23 @@ public class DrawFBP extends JFrame
 
 			//curDiag.imageFile = fFile;
 
+			
 			JDialog popup = new JDialog();
 			popup.setTitle(fFile.getName());
-			JLabel jLabel = new JLabel(image);			
-			
+			JLabel jLabel = new JLabel(image);	
+			jLabel.addComponentListener(this);			
 			JScrollPane jsp = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 					JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 			jsp.getViewport().add(jLabel);
 			Dimension dim = new Dimension(image.getIconWidth(), image.getIconHeight());
 			jsp.getViewport().setPreferredSize(dim);
+			jsp.getViewport().setBackground(Color.WHITE);
+			jLabel.setBackground(Color.WHITE);
 			popup.add(jsp, BorderLayout.CENTER);
 			popup.setLocation(new Point(200, 200));
+			popup.setBackground(Color.WHITE);
+			//popup.addComponentListener(this);
 			//popup.setPreferredSize(dim);
 			popup.pack();
 			popup.setVisible(true);
@@ -2016,23 +2028,23 @@ public class DrawFBP extends JFrame
 	}
 
 	void displayProperties() {
-		final JDialog jdialog = new JDialog(frame);
-		jdialog.addWindowListener(new WindowAdapter() {
+		final JFrame jf = new JFrame();
+		jf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
-				jdialog.dispose();
+				jf.dispose();
 			}
 		});
 				
 		JPanel panel = new JPanel(new GridBagLayout());
-		JScrollPane jsp = new JScrollPane(panel);
+		JScrollPane jsp = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
-		jdialog.setFocusable(true);
-		jdialog.requestFocusInWindow();
+		jf.setFocusable(true);
+		jf.requestFocusInWindow();
 		 
-		jdialog.addKeyListener(new KeyAdapter() {
+		jf.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent ev) {
 				if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					jdialog.dispose();
+					jf.dispose();
 				}
 			}
 		});
@@ -2130,20 +2142,20 @@ public class DrawFBP extends JFrame
 		}
 
 		//jsp.add(panel);
-		jdialog.add(jsp);		
-		jdialog.pack();
+		jf.add(jsp);		
+		jf.pack();
 		Point p = frame.getLocation();
-		jdialog.setLocation(p.x + 150, p.y + 50);
+		jf.setLocation(p.x + 150, p.y + 50);
 		//int height = 200 + properties.size() * 40;
-		jdialog.setSize(1200, 800);
+		jf.setSize(1200, 800);
 		//jsp.setVisible(true); 
 		panel.setVisible(true);
-		jdialog.setVisible(true);
-		jdialog.toFront();
+		jf.setVisible(true);
+		jf.toFront();
 		// jdialog.validate();
 		jsp.repaint();
 		panel.repaint();
-		jdialog.repaint();
+		jf.repaint();
 		frame.repaint();
 	}
 
@@ -3167,17 +3179,16 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	}
 
-	public void componentResized(ComponentEvent arg0) {
-		//int w = frame.getWidth();
-		//int h = frame.getHeight();
-		//curDiag.area.setPreferredSize(new Dimension(w - wDiff, h - hDiff));  // try
-		// int i = 0;
+	public void componentResized(ComponentEvent e) {
+		// TODO Auto-generated method stub
 	}
 
 	public void componentShown(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
+	
+	
 	public static void main(String[] args) {
 
 		// System.out.println("Locale: " + Locale.getDefault() + "\n");
@@ -4829,4 +4840,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			// do nothing
 		}
 	}
+
+
+	
 }
