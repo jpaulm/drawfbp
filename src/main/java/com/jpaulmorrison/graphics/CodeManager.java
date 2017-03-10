@@ -4,9 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
-import java.net.MalformedURLException; //import java.util.regex.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;

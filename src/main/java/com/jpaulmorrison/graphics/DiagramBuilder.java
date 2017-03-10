@@ -400,6 +400,8 @@ public class DiagramBuilder {
 			
 			if (data != null) {	
 				data = data.trim();
+				if (data.equals("null"))  // .drw builder occasionally inserting "null" 
+					data = "";
 				Pattern p = Pattern.compile("\\s*");
 				Matcher m = p.matcher(data);
 				if (!(data.equals("")) && !m.matches())

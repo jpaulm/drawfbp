@@ -204,7 +204,7 @@ public class Block implements ActionListener {
 			else if (fullClassName != null) {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
-				name = "Class not found or out of date - rechoose comp/subnet";
+				name = "Class not found or out of date - rechoose comp/subnet";   // ??????????????????
 				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);

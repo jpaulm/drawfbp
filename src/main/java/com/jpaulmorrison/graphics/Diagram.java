@@ -703,6 +703,7 @@ public class Diagram {
 													// diagram
 			changed = true;
 		}
+		
 		findCrossingArrows(enc);
 
 		// now go through arrows & blocks that were totally enclosed, and delete
@@ -721,6 +722,7 @@ public class Diagram {
 			enc.llb = null;
 		}
 
+		
 		// now go through arrows, looking for unattached ends
 		for (Arrow arrow : arrows.values()) {
 			Block from = blocks.get(new Integer(arrow.fromId));
@@ -733,14 +735,15 @@ public class Diagram {
 				maxBlockNo++;
 				eb.id = maxBlockNo;
 				arrow.fromId = eb.id;
-				if (enc.subnetPorts != null) {
+				eb.description = arrow.downStreamPort;
+				//if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
 						if (snp.side == Side.LEFT && arrow.toY == snp.y) {
 							eb.substreamSensitive = snp.substreamSensitive;
-							eb.description = snp.name;
+							eb.description = snp.name;  // ???????????????
 						}
 					}
-				}
+				//}
 				blocks.put(new Integer(arrow.fromId), eb);
 				eb.calcEdges();
 			}
@@ -752,14 +755,15 @@ public class Diagram {
 				maxBlockNo++;
 				eb.id = maxBlockNo;
 				arrow.toId = eb.id;
-				if (enc.subnetPorts != null) {
+				eb.description = arrow.upStreamPort;
+				//if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
 						if (snp.side == Side.RIGHT && arrow.toY == snp.y) {
 							eb.substreamSensitive = snp.substreamSensitive;
-							eb.description = snp.name;
+							eb.description = snp.name;  //???????????????
 						}
 					}
-				}
+				//}
 				blocks.put(new Integer(arrow.toId), eb);
 				eb.calcEdges();
 			}

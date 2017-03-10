@@ -162,6 +162,7 @@ public class Enclosure extends Block {
 			for (SubnetPort snp : subnetPorts) {
 				if (snp.side == DrawFBP.Side.LEFT) {
 					x = cx - width / 2;
+					//snp.name = "test";  // fudge
 					if (snp.name != null && !(snp.name.equals("")))
 						g.drawString(snp.name, x - 10 - driver.gFontWidth
 								* snp.name.length(), snp.y - driver.gFontHeight

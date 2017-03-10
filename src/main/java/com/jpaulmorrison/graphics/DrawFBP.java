@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.RectangularShape;
 import java.awt.image.*;
 
 import javax.swing.*;
@@ -215,8 +214,7 @@ public class DrawFBP extends JFrame
 	JLabel zoom = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
 	JRadioButton[] but = new JRadioButton[11];
-	
-	
+	Box box21 = new Box(BoxLayout.X_AXIS);
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -508,12 +506,8 @@ public class DrawFBP extends JFrame
 	}
 
 	private void buildUI(Container container) {
-
-		
 		
 		buildPropDescTable();
-
-		
 		
 		curDiag = getNewDiag();				
 
@@ -633,13 +627,15 @@ public class DrawFBP extends JFrame
 
 		box1.add(Box.createRigidArea(new Dimension(0, 4)));
 		Box box2 = new Box(BoxLayout.X_AXIS);
-		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));  // ????
+		//JScrollPane jsp = new JScrollPane();
+		//box2.add(jsp);
+		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));  
 		box1.add(box2);
 		//box2.add(Box.createHorizontalGlue());
 		box2.add(pan);
 		//.addbox2(Box.createHorizontalGlue());
 		box2.add(Box.createRigidArea(new Dimension(10, 0))); 
-		box2.add(Box.createHorizontalGlue());
+		//box2.add(Box.createHorizontalGlue());
 		pan.setSelected(false);
 		pan.setFont(fontg);		
 		pan.setActionCommand("Toggle Pan Switch");
@@ -650,33 +646,37 @@ public class DrawFBP extends JFrame
 		// pan.setPreferredSize(new Dimension(50, 20));
 		ButtonGroup butGroup = new ButtonGroup();
 
+		box21 = new Box(BoxLayout.X_AXIS);
+		box2.add(box21);
 		// "Subnet" is not a separate block type (it is a variant of "Process")
 		String buttonNames[] = {"Process", "Initial IP",
 				"Enclosure", "Subnet", "Ext Port - In", "Ext Port - Out",
 				"Ext Port - Out/In", "Legend", "File", "Person", "Report"};
-			
+		
+					
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
 			but[j].addActionListener(this);
 			butGroup.add(but[j]);
-			box2.add(but[j]);
-			// but[j].setFont(fontg);
+			box21.add(but[j]);
+			//jsp.add(but[j]);
+			//but[j].setFont(fontg);
 			but[j].setText(buttonNames[j]);
-			but[j].setFocusable(true);
+			but[j].setFocusable(true);			  
+			      
 		}
 
+		//box21.add(Box.createRigidArea(new Dimension(10,0)));
+		//box21.add(Box.createHorizontalStrut(10));
 		adjustFonts();
 
 		but[0].setSelected(true); // "Process"     
 
-		box2.add(Box.createHorizontalGlue());
-		Component[] comps = box2.getComponents();
-		for (int j = 0; j < comps.length; j++) {
-			if (comps[j] instanceof JRadioButton) {
-				JRadioButton jrb = (JRadioButton) comps[j];
-				jrb.getInputMap().put(escapeKS, "CLOSE");
-				jrb.getActionMap().put("CLOSE", escapeAction);
-			}
+		box2.add(Box.createRigidArea(new Dimension(10,0)));
+		//box2.add(Box.createHorizontalGlue());		
+		for (int j = 0; j < but.length; j++) {				
+			but[j].getInputMap().put(escapeKS, "CLOSE");
+			but[j].getActionMap().put("CLOSE", escapeAction);		
 		}
 
 		BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
@@ -708,8 +708,7 @@ public class DrawFBP extends JFrame
 		closedPawCursor = tk
 				.createCustomCursor(image, new Point(15, 15), "Paw");
 		
-		//image = loadImage("drag_icon.gif");
-		image = loadImage("drag_icon2.gif");
+		image = loadImage("drag_icon.gif");
 		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag"); 
 		
 	}
@@ -3064,6 +3063,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			snPort = new SubnetPort((int) p.y, s);
 			curDiag.cEncl.subnetPorts.add(snPort);
 		}
+		
 		if (curDiag.cEncl.editPortName) {
 			String ans = (String) MyOptionPane.showInputDialog(frame,
 					"Enter or change text", "Edit subnet port name",
@@ -3180,7 +3180,16 @@ void chooseFonts(MyFontChooser fontChooser){
 	}
 
 	public void componentResized(ComponentEvent e) {
-		// TODO Auto-generated method stub
+		Dimension dim = this.getSize();	
+		Dimension dim2 = new Dimension(dim.width / but.length, dim.height); 
+		int no = but.length;
+		for (int j = 0; j < no; j++) {
+			box21.remove(0);
+			but[j].setMaximumSize(dim2);  
+			box21.add(but[j]);
+		}
+		
+		box21.repaint();
 	}
 
 	public void componentShown(ComponentEvent arg0) {

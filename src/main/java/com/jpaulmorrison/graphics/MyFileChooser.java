@@ -806,9 +806,9 @@ public class MyFileChooser extends JFrame
 					//t_fileName.setText("");
 					
 				} else {
-					//t_fileName.setText(list.getSelectedValue());
+					t_fileName.setText(list.getSelectedValue());
 					t_dirName.setText(listHead);
-					//selComp = t_fileName;
+					selComp = t_fileName;
 				}
 			}
 

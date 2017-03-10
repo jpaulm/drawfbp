@@ -28,7 +28,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	DrawFBP driver;
 	//FontType ft = null;
 	//String result;
-	JDialog popup;
+	JDialog jDialog;
 	//String[] selFonts;
 	String[] fixedFonts, generalFonts;
 	JList<String> jlF = null;
@@ -71,19 +71,21 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 		String prompt = "";
 
-		popup = new JDialog(driver.frame, Dialog.ModalityType.APPLICATION_MODAL);
-		popup.setFocusable(true);
-		DrawFBP.applyOrientation(popup);
-		popup.addWindowListener(new WindowAdapter() {
+		jDialog = new JDialog(driver.frame, Dialog.ModalityType.APPLICATION_MODAL);
+		jDialog.setFocusable(true);
+		DrawFBP.applyOrientation(jDialog);
+		jDialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				popup.dispose();
+				jDialog.dispose();
 			}
 			// }
 		});
-		popup.addKeyListener(new KeyAdapter() {
+		//Dimension dim = driver.frame.getSize();
+		//jDialog.setPreferredSize(dim);
+		jDialog.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent ev) {
 				if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					popup.dispose();
+					jDialog.dispose();
 				}
 			}
 		});
@@ -96,8 +98,8 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		Box b2 = new Box(BoxLayout.Y_AXIS);
 				
 		prompt = "Select fonts for fixed and/or general characters";
-		popup.setTitle(prompt);
-		DrawFBP.applyOrientation(popup);
+		jDialog.setTitle(prompt);
+		DrawFBP.applyOrientation(jDialog);
 
 		p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
 		
@@ -132,7 +134,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		p.add(Box.createRigidArea(new Dimension(10, 0)));
 		p.add(b2);
 				
-		popup.add(p);
+		jDialog.add(p);
 
 		//popup.setBounds(100, 100, 800, 800);
 
@@ -141,18 +143,18 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 		lsF.revalidate();
 		lsG.revalidate();
-		popup.revalidate();
+		jDialog.revalidate();
 		lsF.repaint();
 		lsG.repaint();
 
 		//popup.pack();
-		popup.setLocation(50, 100);
-		popup.pack();
+		jDialog.setLocation(50, 100);
+		jDialog.pack();
 		//frame.pack();
 		 
 		//jl.setVisible(true);
 		//ls.setVisible(true);
-		popup.setVisible(true);
+		jDialog.setVisible(true);
 	}
 	
 	public String getFixedFont() {
@@ -170,7 +172,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	}
 	
 	void done() {
-		popup.setVisible(false);
+		jDialog.setVisible(false);
 		driver.frame.repaint();
 	}
 	
@@ -203,7 +205,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 					lb2.repaint();
 				}
 								
-				popup.repaint();
+				jDialog.repaint();
 				//popup.setVisible(false);
 				
 			}
@@ -285,6 +287,18 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			jp.add(lab4);
 			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
 		
+			JLabel lab40 = new JLabel("\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8\u4f8b");
+		    //  Japanese for "japanese text sample"
+			lab40.setFont(new Font((String) value, Font.PLAIN,
+					(int) driver.defaultFontSize));
+			minSize = new Dimension(150, 15);
+			prefSize = new Dimension(150, 15);
+			lab40.setMinimumSize(minSize);
+			lab40.setMaximumSize(maxSize);
+			lab40.setPreferredSize(prefSize);
+
+			jp.add(lab40);
+			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
 
 			JLabel lab5 = new JLabel("\u4e2d\u6587\u6587\u672c\u793a\u4f8b");  			
 			//  Chinese for "Chinese text sample"
@@ -308,7 +322,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 	
 	public void windowClosed(WindowEvent arg0) {
-		popup.setVisible(false);
+		jDialog.setVisible(false);
 
 	}
 
@@ -340,7 +354,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 	
 	public void windowClosing(WindowEvent e) {
-		popup.setVisible(false);
+		jDialog.setVisible(false);
 
 	}
 
