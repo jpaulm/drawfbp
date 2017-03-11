@@ -149,7 +149,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 				? "setDropOldest()"
 				: "SetDropOldest()";
 		
-		dialog.setTitle("Generated Code for " + diag.diagFile.getName());		
+		String fn = diag.diagFile == null ? "unknown" : diag.diagFile.getName();		
+			
+		dialog.setTitle("Generated Code for " + fn);		
 
 		dialog.setJMenuBar(createMenuBar());		
 
@@ -645,14 +647,18 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 		}
 		if (lang.equals("Java")) {
-			inData = inData.substring(2);
-			if (ins > 1)
-				inData = "@InPorts({" + inData + "})";
-			inData += "\n";
-			outData = outData.substring(2);
-			if (outs > 1)
-				outData = "@OutPorts({" + outData + "})";
-			outData += "\n";
+			if (!inData.equals("")) {
+			    inData = inData.substring(2);
+			    if (ins > 1)
+			    	inData = "@InPorts({" + inData + "})";
+			    inData += "\n";
+			}
+			if (!outData.equals("")) {
+				outData = outData.substring(2);
+				if (outs > 1)
+					outData = "@OutPorts({" + outData + "})";
+				outData += "\n";
+			}
 		}
 		return descr + inData + outData;
 	}

@@ -40,6 +40,7 @@ public class DrawFBP extends JFrame
 	
 	JTextField jfl = null;	
 	JTextField jfs = null;	
+	JTextField jfv = null;
 	
 	JLabel scaleLab;
 
@@ -346,37 +347,7 @@ public class DrawFBP extends JFrame
 
 		}
 		
-		/*
 		
-		MyOptionPane.showConfirmDialog(
-				frame,
-				"x", "y",	
-				MyOptionPane.OK_CANCEL_OPTION,
-				MyOptionPane.ERROR_MESSAGE);
-		MyOptionPane.showConfirmDialog(
-				frame,
-				"x", "y",	
-				MyOptionPane.OK_CANCEL_OPTION,
-				MyOptionPane.INFORMATION_MESSAGE);
-		
-		MyOptionPane.showConfirmDialog(
-				frame,
-				"x", "y",	
-				MyOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.WARNING_MESSAGE);
-		MyOptionPane.showConfirmDialog(
-				frame,
-				"x", "y",	
-				MyOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
-		MyOptionPane.showConfirmDialog(
-				frame,
-				"x", "y",	
-				MyOptionPane.OK_CANCEL_OPTION,
-				MyOptionPane.PLAIN_MESSAGE);
-		
-		*/
-
 		Iterator<Entry<String, String>> entries = jarFiles.entrySet().iterator();
 		String z = "";
 		String cma = "";
@@ -412,6 +383,11 @@ public class DrawFBP extends JFrame
 		jfs = new JTextField("");		
 
 		jfs.setText("Font Size: " + defaultFontSize);
+		
+		jfv = new JTextField();
+		
+		jfv.setText("V: " + VersionAndTimestamp.getVersion()); 
+		
 		jtp = new JTabbedPaneWithCloseIcons(this);
 
 		jtp.setForeground(Color.BLACK);
@@ -455,9 +431,7 @@ public class DrawFBP extends JFrame
 		buildUI(cont);		
 		
 		frame.add(Box.createRigidArea(new Dimension(0,10)));
-		//diagramName = properties.get("diagramName");		
-		//if (diagramName != null) 
-		//	openAction(diagramName);
+		
 		String t = properties.get("x"); 
 		int x = 0, y = 0, w2 = 1200, h2 = 800;
 		if (t != null)
@@ -919,6 +893,10 @@ public class DrawFBP extends JFrame
 		box0.add(Box.createRigidArea(new Dimension(10,0)));
 		
 		box0.add(jfs); // font size
+		
+        box0.add(Box.createRigidArea(new Dimension(10,0)));
+		
+		box0.add(jfv);
 		menuBar.add(box0);
 
 		jtf.setText(defaultCompLang.showLangs());
@@ -1954,18 +1932,19 @@ public class DrawFBP extends JFrame
 		
 		//if (enterDesc) {  
 		if (oneLine) {
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-					   "Enter text", "Enter single line value",
-					MyOptionPane.PLAIN_MESSAGE, null, null, block.description);
-				
-			if (ans == null )
-				return null;
-			else
-				block.description = ans;				 
+			if (blkType != Block.Types.ENCL_BLOCK) {
+				String d = "Enter single line value";
+				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+						"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null, null,
+						block.description);
+
+				if (ans == null)
+					return null;
+				else
+					block.description = ans;
 			}
-		else
-			if (!block.editDescription(REG_CREATE))
-				return null;
+		} else if (!block.editDescription(REG_CREATE))
+			return null;
 
 		if (blkType == Block.Types.IIP_BLOCK) {
 			IIPBlock ib = (IIPBlock) block;
@@ -4310,7 +4289,8 @@ void chooseFonts(MyFontChooser fontChooser){
 							File f = new File(
 									blockSelForDragging.diagramFileName);
 							Diagram saveCurDiag = curDiag;
-							if (null == openAction(f.getAbsolutePath()))
+							if (null == openAction(f.getAbsolutePath()) ||
+									curDiag.diagramIsOpen(f.getAbsolutePath())) 								 
 								curDiag = saveCurDiag;
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
@@ -4464,6 +4444,10 @@ void chooseFonts(MyFontChooser fontChooser){
 						return;
 					}
 				}
+				else
+					if (curDiag.findArrowCrossing)
+						MyOptionPane.showMessageDialog(frame,								
+						"No arrow detected");
 				curDiag.findArrowCrossing = false;
 				// }
 

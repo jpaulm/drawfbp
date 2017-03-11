@@ -672,10 +672,27 @@ public class Diagram {
 		driver.frame.repaint();
 	}
 
-	void excise(Enclosure enc, int tabno, String diagfn) {
+	void excise(Enclosure enc, int tabno) {
 
 		// *this* is a *new* diagram, which will contain all enclosed blocks and
 		// arrows, plus external ports
+		
+		String d = "Enter enclosure name";
+		Block b = (Block) enc;
+		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+				"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null, null,
+				b.description);
+
+		if (ans == null)
+			return;
+		else {			
+				ans = ans.trim();
+				if (!(ans.toLowerCase().endsWith(".drw")))
+					ans += ".drw";
+			
+			b.description = ans;
+			b.diag.title = ans;
+		}
 
 		clla = new LinkedList<Arrow>(); // crossing arrows
 
@@ -691,8 +708,8 @@ public class Diagram {
 		//File file = new File(diagfn);
 
 		findEnclosedBlocksAndArrows(enc);
-		for (Block b : enc.llb) {
-			blocks.put(new Integer(b.id), b);
+		for (Block bl : enc.llb) {
+			blocks.put(new Integer(bl.id), bl);
 			changed = true;
 		}
 
@@ -783,7 +800,7 @@ public class Diagram {
 		oldDiag.blocks.put(new Integer(block.id), block);
 		oldDiag.changed = true;
 		driver.selBlock = block;
-		block.diagramFileName = diagfn;
+		block.diagramFileName = block.description; 
 		block.isSubnet = true;
 
 		block.description = enc.description;

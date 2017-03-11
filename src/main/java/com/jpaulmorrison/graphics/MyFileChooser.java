@@ -995,6 +995,7 @@ public class MyFileChooser extends JFrame
 			JPanel jp = new JPanel();
 			BoxLayout gb = new BoxLayout(jp, BoxLayout.X_AXIS);
 			jp.setLayout(gb);
+			//jp.setPreferredSize(new Dimension(30,40));
 
 			jp.setBackground(Color.WHITE);
 			
@@ -1041,9 +1042,9 @@ public class MyFileChooser extends JFrame
 				}
 			//}
 
-			minSize = new Dimension(400, 15);
-			prefSize = new Dimension(400, 15);
-			maxSize = new Dimension(Short.MAX_VALUE, 15);
+			minSize = new Dimension(400, 20);
+			prefSize = new Dimension(400, 20);
+			maxSize = new Dimension(Short.MAX_VALUE, 20);
 
 			JLabel lab1;
 			if (s == null || s.charAt(0) == ' ')

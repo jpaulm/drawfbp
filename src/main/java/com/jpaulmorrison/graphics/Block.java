@@ -259,21 +259,25 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 		}
 		
-		if (driver.curDiag.arrowRoot != null) { 
-			if (driver.arrowEndForDragging == null ||
-			    !driver.arrowEndForDragging.headMarked && 
-				!driver.arrowEndForDragging.tailMarked) {	{
-			//g.setColor(Color.GRAY);
-		    //g.drawRect(driver.curDiag.arrowRoot.xa - 3, driver.curDiag.arrowRoot.ya - 3, 6, 6);
-		    //g.setColor(Color.BLACK);
-			Color col = g.getColor();
-			g.setColor(Color.BLUE);
-			g.drawOval(driver.curDiag.arrowRoot.x - 4, driver.curDiag.arrowRoot.y - 4, 8, 8);
-			g.setColor(col);
-		}
-		}
+		if (driver.curDiag.arrowRoot != null) {
+			if (driver.arrowEndForDragging == null
+					|| !driver.arrowEndForDragging.headMarked
+							&& !driver.arrowEndForDragging.tailMarked) {	
+				Enclosure enc = null;
+				if (type == Block.Types.ENCL_BLOCK)
+					enc = (Enclosure) this;
+
+				if (enc == null || enc.corner == null) {
+					Color col = g.getColor();
+					g.setColor(Color.BLUE);
+					g.drawOval(driver.curDiag.arrowRoot.x - 4,
+							driver.curDiag.arrowRoot.y - 4, 8, 8);
+					g.setColor(col);
+				}
+			}
 		}
 	}
+	 
 	
 	void calcEdges() {
 		leftEdge = cx - width / 2;
@@ -1193,6 +1197,9 @@ public class Block implements ActionListener {
 				diag.jpm.add(menuItem);
 				if (this instanceof ProcessBlock) {
 
+					menuItem = new JMenuItem("Toggle Subnet On/Off");
+					menuItem.addActionListener(this);
+					diag.jpm.add(menuItem);
 					menuItem = new JMenuItem("Select Subnet Diagram (.drw)");
 					menuItem.addActionListener(this);
 					diag.jpm.add(menuItem);
@@ -1336,6 +1343,9 @@ public class Block implements ActionListener {
 			driver.frame.update(driver.osg);
 			return;
 		}
+		
+		if (s.startsWith("Toggle Subnet On/Off"))
+			isSubnet = !isSubnet;
 
 		if (s.startsWith("Select Subnet Diagram")) {			
 			linkToSubnetDiagram();
@@ -1557,24 +1567,25 @@ public class Block implements ActionListener {
 		if (s.equals("Excise Subnet")) {
 			// Block must be an Enclosure
 			
-			
+			/*
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text",
 					"Enter subnet diagram relative file name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, null);
-			if (ans != null/* && ans.length() > 0*/) {
+			if (ans != null) {
 				ans = ans.trim();
 				if (!(ans.toLowerCase().endsWith(".drw")))
 					ans += ".drw";
 			}
 			else
 				return;
+			*/
 
 			Diagram diag = driver.getNewDiag();
-			diag.title = ans;
+			//diag.title = ans;
 			driver.jtp.setSelectedIndex(diag.tabNum);			
 
-			diag.excise((Enclosure) this, diag.tabNum, ans);
+			diag.excise((Enclosure) this, diag.tabNum);
 
 			final boolean NOCHOOSE = false;
 			diag.delBlock(this, NOCHOOSE);
