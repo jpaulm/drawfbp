@@ -3686,7 +3686,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (between(xa, block.leftEdge - 6 * scalingFactor,
 						block.leftEdge + 6 * scalingFactor)
 						&& between(ya, block.topEdge, block.botEdge)) {
-					arrowRoot = new FoundPoint(block.leftEdge, ya, Side.LEFT, block);					
+					fp = new FoundPoint(block.leftEdge, ya, Side.LEFT, block);					
 					break;
 				}
 
@@ -3694,7 +3694,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					if (between(xa, block.rgtEdge - 6 * scalingFactor,
 							block.rgtEdge + 6 * scalingFactor)
 							&& between(ya, block.topEdge, block.botEdge)) {
-					arrowRoot = new FoundPoint(block.rgtEdge, ya, Side.RIGHT, block);					
+					fp = new FoundPoint(block.rgtEdge, ya, Side.RIGHT, block);					
 					break;
 				}
 
@@ -3702,14 +3702,14 @@ void chooseFonts(MyFontChooser fontChooser){
 						if (between(ya, block.topEdge - 4 * scalingFactor,
 								block.topEdge + 4 * scalingFactor)
 								&& between(xa, block.leftEdge, block.rgtEdge)) {
-					arrowRoot = new FoundPoint(xa, block.topEdge, Side.TOP, block);					
+					fp = new FoundPoint(xa, block.topEdge, Side.TOP, block);					
 					break;
 				} 
 							if (between(ya, block.botEdge - 4 * scalingFactor,
 									block.botEdge + 4 * scalingFactor)
 									&& between(xa, block.leftEdge,
 											block.rgtEdge)) {
-					arrowRoot = new FoundPoint(xa, block.botEdge, Side.BOTTOM, block);					
+					fp = new FoundPoint(xa, block.botEdge, Side.BOTTOM, block);					
 					break;
 				}				
 			}
@@ -4248,9 +4248,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
-			//curDiag.arrowRoot = null; // for blue circles (possible arrow
-										// starts)
-
+			
 			Side side = null;
 			Point p2 = new Point(x, y);
 			p2 = gridAlign(p2);
@@ -4520,11 +4518,11 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			curDiag.foundBlock = null;
 
-			//FoundPoint fp = findArrowStart(xa, ya);   xxxxxxxxxxxxxxxxxxxxxx
-			//if (fp != null) {
-			//	curDiag.foundBlock = fp.b;
-			//	side = fp.side;
-			//}
+			FoundPoint fp = findArrowStart(xa, ya);    
+			if (fp != null) {
+				curDiag.foundBlock = fp.b;
+				side = fp.side;
+			}
 
 			if (curDiag.foundBlock != null // && leftButton
 			) {
