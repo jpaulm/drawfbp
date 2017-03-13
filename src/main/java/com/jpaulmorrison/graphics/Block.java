@@ -55,7 +55,7 @@ public class Block implements ActionListener {
 	int scan_pos = 0;
 	Block vNeighbour, hNeighbour; // block at same position, vert. or horiz.
 
-	boolean visible = true;
+	boolean visible = true;	
 
 	/* next four fields are not stored in .drw files */	
 	
@@ -63,7 +63,7 @@ public class Block implements ActionListener {
 	Class<?> javaClass; // selected Java class for block (fullClassName is equivalent in String format)
 	String compDescr;  // used for annotations only
 	boolean isSubnet;
-
+	
 	//JMenuItem[] sMenu;
 	Color lg = new Color(240, 240, 240); // very light gray
 	Color ly = new Color(255, 255, 200); // light yellow
@@ -259,7 +259,7 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 		}
 		
-		if (driver.curDiag.arrowRoot != null) {
+		if (driver.arrowRoot != null && driver.arrowRoot.b == this) {
 			if (driver.arrowEndForDragging == null
 					|| !driver.arrowEndForDragging.headMarked
 							&& !driver.arrowEndForDragging.tailMarked) {	
@@ -270,8 +270,8 @@ public class Block implements ActionListener {
 				if (enc == null || enc.corner == null) {
 					Color col = g.getColor();
 					g.setColor(Color.BLUE);
-					g.drawOval(driver.curDiag.arrowRoot.x - 4,
-							driver.curDiag.arrowRoot.y - 4, 8, 8);
+					g.drawOval(driver.arrowRoot.x - 4,
+							driver.arrowRoot.y - 4, 8, 8);
 					g.setColor(col);
 				}
 			}

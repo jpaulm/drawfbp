@@ -28,7 +28,7 @@ public class Enclosure extends Block {
 	
 	Enclosure(Diagram ctlr) {
 		super(ctlr);
-		type = Block.Types.ENCL_BLOCK;;
+		type = Block.Types.ENCL_BLOCK; 
 		width = 250;
 		height = 100;
 		subnetPorts = new LinkedList<SubnetPort>();

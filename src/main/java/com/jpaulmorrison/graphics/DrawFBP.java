@@ -112,6 +112,8 @@ public class DrawFBP extends JFrame
 	KeyStroke escapeKS = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
 
 	String blockType = Block.Types.PROCESS_BLOCK;
+	
+	FoundPoint arrowRoot = null;  // used to draw blue circles where arrows can start
 
 	int curx, cury;
 
@@ -163,15 +165,20 @@ public class DrawFBP extends JFrame
 	Cursor openPawCursor = null;
 	Cursor closedPawCursor = null;
 	Cursor drag_icon = null;
-	String blockNames[] = {"Process", "File", "Report", "Ext Port - In",
-			"Ext Port - Out", "Ext Port - Out/In", "Initial IP", "Legend",
-			"Person", "Enclosure"};
 	
-	String blockTypes[] = {Block.Types.PROCESS_BLOCK, Block.Types.FILE_BLOCK,
-			Block.Types.REPORT_BLOCK, Block.Types.EXTPORT_IN_BLOCK,
-			Block.Types.EXTPORT_OUT_BLOCK, Block.Types.EXTPORT_OUTIN_BLOCK,
-			Block.Types.IIP_BLOCK, Block.Types.LEGEND_BLOCK,
-			Block.Types.PERSON_BLOCK, Block.Types.ENCL_BLOCK};
+	// "Subnet" is not a separate block type (it is a variant of "Process")
+	
+	String blockNames[] = {"Process", "Initial IP",
+					"Enclosure", "Subnet", "ExtPorts: In", "... Out",
+					"... Out/In", "Legend", "File", "Person", "Report"};
+	
+	String blockTypes[] = {Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK, Block.Types.PROCESS_BLOCK,
+			 Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK, Block.Types.EXTPORT_OUTIN_BLOCK,
+			 Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK, Block.Types.REPORT_BLOCK,};	
+	
+	//String buttonNames[] = {"Process", "Initial IP",
+	//		"Enclosure", "Subnet", "ExtPorts: In", "... Out",
+	//		"... Out/In", "Legend", "File", "Person", "Report"};	
 	
 	HashMap<String, String> jarFiles = new HashMap<String, String> ();
 
@@ -215,7 +222,7 @@ public class DrawFBP extends JFrame
 	JLabel zoom = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
 	JRadioButton[] but = new JRadioButton[11];
-	Box box21 = new Box(BoxLayout.X_AXIS);
+	Box box21 = null;
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -229,9 +236,8 @@ public class DrawFBP extends JFrame
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
 
-		properties = new HashMap<String, String>();
-
-		
+		properties = new HashMap<String, String>();		
+			
 		genLangs = new GenLang[]{
 				new GenLang("Java", "java",  new JavaFileFilter()),
 				new GenLang("C#", "cs",  new CsharpFileFilter()),
@@ -386,7 +392,7 @@ public class DrawFBP extends JFrame
 		
 		jfv = new JTextField();
 		
-		jfv.setText("V: " + VersionAndTimestamp.getVersion()); 
+		jfv.setText("Ver: " + VersionAndTimestamp.getVersion()); 
 		
 		jtp = new JTabbedPaneWithCloseIcons(this);
 
@@ -622,11 +628,6 @@ public class DrawFBP extends JFrame
 
 		box21 = new Box(BoxLayout.X_AXIS);
 		box2.add(box21);
-		// "Subnet" is not a separate block type (it is a variant of "Process")
-		String buttonNames[] = {"Process", "Initial IP",
-				"Enclosure", "Subnet", "Ext Port - In", "Ext Port - Out",
-				"Ext Port - Out/In", "Legend", "File", "Person", "Report"};
-		
 					
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
@@ -635,10 +636,10 @@ public class DrawFBP extends JFrame
 			box21.add(but[j]);
 			//jsp.add(but[j]);
 			//but[j].setFont(fontg);
-			but[j].setText(buttonNames[j]);
-			but[j].setFocusable(true);			  
-			      
+			but[j].setText(blockNames[j]);
+			but[j].setFocusable(true);		 
 		}
+		but[but.length - 1].setAlignmentX(Component.RIGHT_ALIGNMENT);
 
 		//box21.add(Box.createRigidArea(new Dimension(10,0)));
 		//box21.add(Box.createHorizontalStrut(10));
@@ -1813,13 +1814,13 @@ public class DrawFBP extends JFrame
 			} else if (s.equals("Report")) {
 				blockType = Block.Types.REPORT_BLOCK;
 
-			} else if (s.equals("Ext Port - In")) {
+			} else if (s.equals("ExtPorts: In")) {
 				blockType = Block.Types.EXTPORT_IN_BLOCK; // In
 
-			} else if (s.equals("Ext Port - Out")) {
+			} else if (s.equals("... Out")) {
 				blockType = Block.Types.EXTPORT_OUT_BLOCK;// Out
 
-			} else if (s.equals("Ext Port - Out/In")) {
+			} else if (s.equals("... Out/In")) {
 				blockType = Block.Types.EXTPORT_OUTIN_BLOCK; // Out/In
 
 			} else if (s.equals("Initial IP")) {
@@ -3167,7 +3168,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			but[j].setMaximumSize(dim2);  
 			box21.add(but[j]);
 		}
-		
+		//dim2.width = 50;
+		//but[4].setMinimumSize(dim2);
 		box21.repaint();
 	}
 
@@ -3684,7 +3686,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (between(xa, block.leftEdge - 6 * scalingFactor,
 						block.leftEdge + 6 * scalingFactor)
 						&& between(ya, block.topEdge, block.botEdge)) {
-					fp = new FoundPoint(block.leftEdge, ya, Side.LEFT, block);
+					arrowRoot = new FoundPoint(block.leftEdge, ya, Side.LEFT, block);					
 					break;
 				}
 
@@ -3692,7 +3694,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					if (between(xa, block.rgtEdge - 6 * scalingFactor,
 							block.rgtEdge + 6 * scalingFactor)
 							&& between(ya, block.topEdge, block.botEdge)) {
-					fp = new FoundPoint(block.rgtEdge, ya, Side.RIGHT, block);
+					arrowRoot = new FoundPoint(block.rgtEdge, ya, Side.RIGHT, block);					
 					break;
 				}
 
@@ -3700,14 +3702,14 @@ void chooseFonts(MyFontChooser fontChooser){
 						if (between(ya, block.topEdge - 4 * scalingFactor,
 								block.topEdge + 4 * scalingFactor)
 								&& between(xa, block.leftEdge, block.rgtEdge)) {
-					fp = new FoundPoint(xa, block.topEdge, Side.TOP, block);
+					arrowRoot = new FoundPoint(xa, block.topEdge, Side.TOP, block);					
 					break;
 				} 
 							if (between(ya, block.botEdge - 4 * scalingFactor,
 									block.botEdge + 4 * scalingFactor)
 									&& between(xa, block.leftEdge,
 											block.rgtEdge)) {
-					fp = new FoundPoint(xa, block.botEdge, Side.BOTTOM, block);
+					arrowRoot = new FoundPoint(xa, block.botEdge, Side.BOTTOM, block);					
 					break;
 				}				
 			}
@@ -3719,7 +3721,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
-			curDiag.arrowRoot = null;
+			arrowRoot = null;
 			
 			if (panSwitch) {
 				Rectangle r = curDiag.area.getBounds();				
@@ -3809,7 +3811,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			
 			FoundPoint fp = findArrowStart(xa, ya);
 			if (fp != null)
-				curDiag.arrowRoot = fp;
+				arrowRoot = fp;
 
 			repaint();
 		}
@@ -4185,9 +4187,9 @@ void chooseFonts(MyFontChooser fontChooser){
 				block.cx += xa - oldx;
 				block.cy += ya - oldy;
 				block.calcEdges();
-				if (curDiag.arrowRoot != null) {
-					curDiag.arrowRoot.x += xa - oldx;
-					curDiag.arrowRoot.y += ya - oldy;
+				if (arrowRoot != null  && arrowRoot.b == block) {
+					arrowRoot.x += xa - oldx;
+					arrowRoot.y += ya - oldy;
 				}
 
 				if (block instanceof Enclosure) {
@@ -4246,7 +4248,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
-			curDiag.arrowRoot = null; // for blue circles (possible arrow
+			//curDiag.arrowRoot = null; // for blue circles (possible arrow
 										// starts)
 
 			Side side = null;
@@ -4284,14 +4286,20 @@ void chooseFonts(MyFontChooser fontChooser){
 
 						// if it was a small move, or a big jump, just get
 						// subnet, or display options
-						if (leftButton && blockSelForDragging.isSubnet
-								&& blockSelForDragging.diagramFileName != null) {
-							File f = new File(
-									blockSelForDragging.diagramFileName);
-							Diagram saveCurDiag = curDiag;
-							if (null == openAction(f.getAbsolutePath()) ||
-									curDiag.diagramIsOpen(f.getAbsolutePath())) 								 
-								curDiag = saveCurDiag;
+						if (leftButton && blockSelForDragging.isSubnet) {
+							if (blockSelForDragging.diagramFileName == null) { 
+								MyOptionPane.showMessageDialog(null,
+										"No subnet diagram assigned",
+										MyOptionPane.INFORMATION_MESSAGE);								
+							} else {
+								File f = new File(
+										blockSelForDragging.diagramFileName);
+								Diagram saveCurDiag = curDiag;
+								if (null == openAction(f.getAbsolutePath())
+										|| curDiag.diagramIsOpen(
+												f.getAbsolutePath()))
+									curDiag = saveCurDiag;
+							}
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
 							curDiag.jpm.show(frame, curDiag.xa + 100,
@@ -4512,11 +4520,11 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			curDiag.foundBlock = null;
 
-			FoundPoint fp = findArrowStart(xa, ya);
-			if (fp != null) {
-				curDiag.foundBlock = fp.b;
-				side = fp.side;
-			}
+			//FoundPoint fp = findArrowStart(xa, ya);   xxxxxxxxxxxxxxxxxxxxxx
+			//if (fp != null) {
+			//	curDiag.foundBlock = fp.b;
+			//	side = fp.side;
+			//}
 
 			if (curDiag.foundBlock != null // && leftButton
 			) {

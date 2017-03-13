@@ -82,7 +82,7 @@ public class Diagram {
 	String[] filterOptions = {"", "All (*.*)"};
 	//Rectangle curMenuRect = null;
 	
-	FoundPoint arrowRoot = null;  // used to draw blue circles where arrows can start
+	// FoundPoint arrowRoot = null;  // used to draw blue circles where arrows can start
 	
 	//File imageFile = null;
 	
