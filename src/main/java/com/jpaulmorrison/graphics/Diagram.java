@@ -672,27 +672,10 @@ public class Diagram {
 		driver.frame.repaint();
 	}
 
-	void excise(Enclosure enc, int tabno) {
+	void excise(Enclosure enc, String diagfn) {
 
 		// *this* is a *new* diagram, which will contain all enclosed blocks and
 		// arrows, plus external ports
-		
-		String d = "Enter enclosure name";
-		Block b = (Block) enc;
-		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-				"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null, null,
-				b.description);
-
-		if (ans == null)
-			return;
-		else {			
-				ans = ans.trim();
-				if (!(ans.toLowerCase().endsWith(".drw")))
-					ans += ".drw";
-			
-			b.description = ans;
-			b.diag.title = ans;
-		}
 
 		clla = new LinkedList<Arrow>(); // crossing arrows
 
@@ -708,8 +691,8 @@ public class Diagram {
 		//File file = new File(diagfn);
 
 		findEnclosedBlocksAndArrows(enc);
-		for (Block bl : enc.llb) {
-			blocks.put(new Integer(bl.id), bl);
+		for (Block b : enc.llb) {
+			blocks.put(new Integer(b.id), b);
 			changed = true;
 		}
 
@@ -720,11 +703,11 @@ public class Diagram {
 													// diagram
 			changed = true;
 		}
-		
-		findCrossingArrows(enc);
+		findCrossingArrows(enc, this);  // found arrows are added to List clla
 
 		// now go through arrows & blocks that were totally enclosed, and delete
 		// them from oldDiag
+		
 		if (enc.lla != null) {
 			for (Arrow arrow : enc.lla) {
 				oldDiag.delArrow(arrow);
@@ -739,11 +722,11 @@ public class Diagram {
 			enc.llb = null;
 		}
 
-		
 		// now go through arrows, looking for unattached ends
 		for (Arrow arrow : arrows.values()) {
 			Block from = blocks.get(new Integer(arrow.fromId));
-			Block to = blocks.get(new Integer(arrow.toId));
+			Arrow a = arrow.findTerminalArrow();
+			Block to = blocks.get(new Integer(a.toId));
 			if (from == null) {
 				ExtPortBlock eb = new ExtPortBlock(this);
 				eb.cx = arrow.fromX - eb.width / 2;
@@ -752,15 +735,14 @@ public class Diagram {
 				maxBlockNo++;
 				eb.id = maxBlockNo;
 				arrow.fromId = eb.id;
-				eb.description = arrow.downStreamPort;
-				//if (enc.subnetPorts != null) {
+				if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
 						if (snp.side == Side.LEFT && arrow.toY == snp.y) {
 							eb.substreamSensitive = snp.substreamSensitive;
-							eb.description = snp.name;  // ???????????????
+							eb.description = snp.name;
 						}
 					}
-				//}
+				}
 				blocks.put(new Integer(arrow.fromId), eb);
 				eb.calcEdges();
 			}
@@ -772,15 +754,14 @@ public class Diagram {
 				maxBlockNo++;
 				eb.id = maxBlockNo;
 				arrow.toId = eb.id;
-				eb.description = arrow.upStreamPort;
-				//if (enc.subnetPorts != null) {
+				if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
 						if (snp.side == Side.RIGHT && arrow.toY == snp.y) {
 							eb.substreamSensitive = snp.substreamSensitive;
-							eb.description = snp.name;  //???????????????
+							eb.description = snp.name;
 						}
 					}
-				//}
+				}
 				blocks.put(new Integer(arrow.toId), eb);
 				eb.calcEdges();
 			}
@@ -800,10 +781,11 @@ public class Diagram {
 		oldDiag.blocks.put(new Integer(block.id), block);
 		oldDiag.changed = true;
 		driver.selBlock = block;
-		block.diagramFileName = block.description; 
+		block.diagramFileName = diagfn;
 		block.isSubnet = true;
 
-		block.description = enc.description;
+		//block.description = enc.description;
+		block.description = diagfn;
 		enc.description = "Enclosure can be deleted";
 
 		desc = block.description;
@@ -895,20 +877,57 @@ public class Diagram {
 			}
 		}
 
-		// look for arrows connecting blocks which are within enclosure
+		// look for arrows which are within enclosure
 		enc.lla = new LinkedList<Arrow>();
 		for (Arrow arrow : oldDiag.arrows.values()) {
+			boolean included = true;
+			int x1 = arrow.fromX;
+			int y1 = arrow.fromY;
+			int x2 = arrow.toX;
+			int y2 = arrow.toY;
+			if (arrow.bends != null) {
+				//int i = 0;
+				for (Bend bend : arrow.bends) {
+					x2 = bend.x;
+					y2 = bend.y;
+					if (!(x1 > enc.cx - enc.width / 2
+							&& x1 < enc.cx + enc.width / 2
+							&& x2 > enc.cx - enc.width / 2
+							&& x2 < enc.cx + enc.width / 2
+							&& y1 > enc.cy - enc.height / 2
+							&& y1 < enc.cy + enc.height / 2
+							&& y2 > enc.cy - enc.height / 2
+							&& y2 < enc.cy + enc.height / 2)) {
+						included = false;
+						break;
+					}
+					x1 = x2;
+					y1 = y2;
+				}
+				x2 = arrow.toX;
+				y2 = arrow.toY;
+			}
+			if (!(x1 > enc.cx - enc.width / 2 
+					&& x1 < enc.cx + enc.width / 2
+					&& x2 > enc.cx - enc.width / 2
+					&& x2 < enc.cx + enc.width / 2
+					&& y1 > enc.cy - enc.height / 2
+					&& y1 < enc.cy + enc.height / 2
+					&& y2 > enc.cy - enc.height / 2
+					&& y2 < enc.cy + enc.height / 2))
+				included = false;
 
-			Block from = oldDiag.blocks.get(new Integer(arrow.fromId));
-			Block to = oldDiag.blocks.get(new Integer(arrow.toId));
-
-			if (enc.llb.contains(from) || enc.llb.contains(to))
+			if (included)
 				enc.lla.add(arrow);
 		}
 	}
-
-	void findCrossingArrows(Enclosure enc) {
+	
+	
+	
+	void findCrossingArrows(Enclosure enc, Diagram diag) {
+		//diag param is new Diagram, where arrow copies will be added
 		Diagram oldDiag = enc.diag;
+		
 		for (Arrow arrow : oldDiag.arrows.values()) {
 			// now test if arrow crosses a boundary
 			// if (crosses(arrow, enc, DrawFBP.Side.LEFT)
@@ -916,14 +935,16 @@ public class Diagram {
 			// || crosses(arrow, enc, DrawFBP.Side.TOP)
 			// || crosses(arrow, enc, DrawFBP.Side.BOTTOM))
 			Block from = oldDiag.blocks.get(new Integer(arrow.fromId));
-			Block to = oldDiag.blocks.get(new Integer(arrow.toId));
+			Arrow a = arrow.findTerminalArrow();
+			Block to = oldDiag.blocks.get(new Integer(a.toId));
 			if (enc.llb.contains(from) && !(enc.llb.contains(to))
 					|| !(enc.llb.contains(from)) && enc.llb.contains(to)) {
 
 				Arrow arr2 = arrow.makeCopy(this);
 				Integer aid = new Integer(arr2.id);
-				arrows.put(aid, arr2);
-				clla.add(arrow); // keep old arrow
+				diag.arrows.put(aid, arr2);
+				clla.add(arrow); 
+				// keep old arrow
 				// arrow.deleteOnSave = true;
 				changed = true;
 			}

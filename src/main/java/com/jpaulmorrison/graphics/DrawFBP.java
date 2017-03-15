@@ -911,39 +911,7 @@ public class DrawFBP extends JFrame
 		jfl.setEditable(false);
 		
 		jfs.setFont(fontg);
-		jfs.setEditable(false);
-
-		//menuBar.add(Box.createGlue());
-		//menuBar.add(Box.createRigidArea(new Dimension(5,0)));
-
-		//menuBar.add(box);
-		// box.add(Box.createRigidArea(new Dimension(60, 0)));
-		//box.add(Box.createGlue());
-
-		//pan.setSelected(false);
-		//pan.setFont(fontg);
-		// box.add(pan);
-		//pan.setActionCommand("Toggle Pan Switch");
-		//pan.addActionListener(this);
-		//pan.setBackground(slateGray1);
-		//pan.setBorderPaintedFlat(false);
-		// pan.setBorder(null);
-		// pan.setPreferredSize(new Dimension(50, 20));
-		//menuBar.add(Box.createRigidArea(new Dimension(20,0)));
-		//menuBar.add(pan);
-
-		//grid.setFont(fontg);		
-		//grid.setSelected(true);
-		// box.add(grid);
-		//grid.setActionCommand("Toggle Click to Grid");
-		//grid.addActionListener(this);
-		//grid.setBackground(slateGray1);
-		//grid.setBorderPaintedFlat(false);
-		
-		// grid.setBorder(null);
-		// grid.setPreferredSize(new Dimension(50, 20));
-		//menuBar.add(Box.createRigidArea(new Dimension(10,0)));
-		//menuBar.add(grid);
+		jfs.setEditable(false);		
 
 		JMenuItem menu_help = new JMenuItem("Launch Help");
 		helpMenu.add(menu_help);
@@ -3746,7 +3714,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			
 				
 			selBlockM = null;
-			// look for corner of an enclosure			
+			// look for corner of an enclosure	- if corner not null, you will see diagonal arrows at corners		
 			for (Block block : curDiag.blocks.values()) {
 				// block.calcEdges();
 				if (block instanceof Enclosure) {
@@ -3778,17 +3746,24 @@ void chooseFonts(MyFontChooser fontChooser){
 						break;
 					}
 				}
-
-				//if (between(xa, block.leftEdge - 6, block.rgtEdge + 6)
-				//		&& between(ya, block.topEdge - 6, block.botEdge + 6))  
-				//	selBlockM = block;  // mousing select
+				
 				
 				// logic to change cursor to drag_icon
+				int hh = gFontHeight;
+				boolean udi;
+				if (block.type.equals(Block.Types.ENCL_BLOCK)) {
+					udi = between(xa, block.leftEdge + block.width / 5,
+							block.rgtEdge - block.width / 5)
+							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2);						
+				}
+				else {
+					udi = between(xa, block.leftEdge + 6 * scalingFactor,
+							block.rgtEdge - 6 * scalingFactor)
+							&& between(ya, block.topEdge + 6 * scalingFactor,
+									block.botEdge - 6 * scalingFactor);
+				}
 				
-				if (between(xa, block.leftEdge + 6 * scalingFactor,
-						block.rgtEdge - 6 * scalingFactor)
-						&& between(ya, block.topEdge + 6 * scalingFactor,
-								block.botEdge - 6 * scalingFactor)) {
+				if (udi) {							 					 
 					selBlockM = block;  // mousing select
 					if (!use_drag_icon) {
 						if (curDiag.jpm == null && !panSwitch)
@@ -3852,8 +3827,11 @@ void chooseFonts(MyFontChooser fontChooser){
 			cury = ya;
 			
 			if (panSwitch) {
-				Rectangle r = curDiag.area.getBounds();
-				if (r.contains(x, y)) {
+				//Rectangle r = curDiag.area.getBounds();
+				Dimension d = curDiag.area.getSize(); 
+				//if (r.contains(x, y)) {
+				if (x >= curDiag.area.getX() && x <= curDiag.area.getX() + d.width &&
+					y >= curDiag.area.getY() && y <= curDiag.area.getY() + d.height) {	
 					frame.setCursor(closedPawCursor);
 					panX = xa;
 					panY = ya;

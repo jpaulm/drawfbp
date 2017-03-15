@@ -1567,31 +1567,33 @@ public class Block implements ActionListener {
 		if (s.equals("Excise Subnet")) {
 			// Block must be an Enclosure
 			
-			/*
+			Diagram diag = driver.getNewDiag();
+			//diag.title = ans;
+			driver.jtp.setSelectedIndex(diag.tabNum);
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text",
 					"Enter subnet diagram relative file name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, null);
-			if (ans != null) {
+			if (ans != null/* && ans.length() > 0*/) {
 				ans = ans.trim();
 				if (!(ans.toLowerCase().endsWith(".drw")))
 					ans += ".drw";
 			}
 			else
 				return;
-			*/
-
-			Diagram diag = driver.getNewDiag();
-			//diag.title = ans;
-			driver.jtp.setSelectedIndex(diag.tabNum);			
-
-			diag.excise((Enclosure) this, diag.tabNum);
+			
+			diag.desc= ans;
+			diag.title = ans;
+			
+			//--------------------
+			diag.excise((Enclosure) this, ans);
+			//--------------------
 
 			final boolean NOCHOOSE = false;
-			diag.delBlock(this, NOCHOOSE);
-			diag.foundBlock = null;
+			driver.curDiag.delBlock(this, NOCHOOSE);
+			driver.curDiag.foundBlock = null;
 			driver.frame.repaint();
-			diag.changed = true;
+			driver.curDiag.changed = true;
 			return;
 
 		}

@@ -874,6 +874,7 @@ public class Arrow implements ActionListener {
 		arr.fromId = this.fromId;
 		arr.toId = this.toId;
 		arr.id = this.id;
+		arr.capacity = this.capacity;
 		arr.endsAtBlock = this.endsAtBlock;
 		arr.endsAtLine = this.endsAtLine;
 		if (this.bends != null) {
