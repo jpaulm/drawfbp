@@ -481,6 +481,7 @@ public class DiagramBuilder {
 		fl3.put("mpxfactor", "*");
 		fl3.put("substreamsensitive", "*");
 		fl3.put("invisible", "*");		
+		fl3.put("issubnet", "*");	
 		fl3.put("subnetports", "LinkedList");
 
 		HashMap<String, String> fl4 = new HashMap<String, String>();

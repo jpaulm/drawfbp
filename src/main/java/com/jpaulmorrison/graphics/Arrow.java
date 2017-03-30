@@ -622,16 +622,8 @@ public class Arrow implements ActionListener {
 			driver.frame.repaint();
 			diag.changed = true;
 			
-		} else if (s.equals("Remove Capacity")) {
-			//if (capLegend == null) {
-			//	MyOptionPane.showMessageDialog(driver.frame,
-			//			"No capacity specified", MyOptionPane.WARNING_MESSAGE);
-			//	return;
-			//}
-			capacity = -1;
-			//final boolean NOCHOOSE = false;
-			//diag.delBlock(capLegend, NOCHOOSE);
-			//capLegend = null;
+		} else if (s.equals("Remove Capacity")) {			
+			capacity = -1;			
 			driver.frame.repaint();
 			diag.changed = true;
 
@@ -664,6 +656,7 @@ public class Arrow implements ActionListener {
 
 		} else if (s.equals("Drag New or Existing Bend")) {
 			createBend(driver.curx, driver.cury);
+			diag.changed = true;
 			
 		} else if (s.equals("Add Extra Arrowhead")) {
 			Point p = new Point(driver.curx, driver.cury);
@@ -685,11 +678,13 @@ public class Arrow implements ActionListener {
 			tx = toX;
 			ty = toY;
 			if (pointInLine(p, fx, fy, tx, ty)) 
-				extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);			
+				extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);	
+			diag.changed = true;
 			return;
 			
 		} else if (s.equals("Remove Extra Arrowhead")) {
 			extraArrowhead = null;
+			diag.changed = true;
 			return;
 			 
 		} else if (s.equals("Delete")) {
@@ -706,12 +701,9 @@ public class Arrow implements ActionListener {
 
 			driver.frame.repaint();
 			diag.foundArrow = null;
-
+			diag.changed = true;
 		}
-		//if (s.equals("Exit")) {
-		//	diag.foundArrow = null;
-		//	driver.frame.repaint();
-		//}
+		
 	}
 
 	void createBend(int bendx, int bendy) {
@@ -780,7 +772,7 @@ public class Arrow implements ActionListener {
 		return d <= 6.0;
 	}
 
-	Arrow findTerminalArrow() {
+	Arrow findArrowEndingAtBlock() {
 		if (endsAtBlock)
 			return this;
 		int id = toId;		   // not a block, so toId must be a line ID
@@ -793,7 +785,12 @@ public class Arrow implements ActionListener {
 					id = arrow.toId;
 					break;
 				}
-			}			
+			}
+			if (id == toId) {
+				//MyOptionPane.showMessageDialog(driver.frame,
+				//		"Can't find connecting arrow", MyOptionPane.ERROR_MESSAGE);
+				return null; 
+			}
 		}		
 	}
 

@@ -787,7 +787,7 @@ public class MyFileChooser extends JFrame
 			String fn = DrawFBP.makeAbsFileName(s, listHead);
 			if (currentNode == null) {
 				
-				File h = new File(fn);
+				//File h = new File(fn);
 				//if (h.isDirectory())  
 				//	t_fileName.setText("");	
 				//else  
@@ -1122,7 +1122,6 @@ public class MyFileChooser extends JFrame
 		// repaint();
 	}
 
-	@SuppressWarnings("unused")
 	public void mouseClicked(MouseEvent e) {
 
 		list.setSelectedIndex(-1);
@@ -1422,7 +1421,7 @@ public class MyFileChooser extends JFrame
 						return;
 					}
 				} else {
-					if (driver.curDiag.diagramIsOpen(s)) {
+					if (-1 != driver.curDiag.diagramIsOpen(s)) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"File '" + f.getName()
 										+ "' cannot be deleted while open",

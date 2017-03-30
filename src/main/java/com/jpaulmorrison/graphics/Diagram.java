@@ -66,6 +66,8 @@ public class Diagram {
 	boolean clickToGrid;
 
 	int xa, ya;
+	
+	Block parent = null;
 
 	// File imageFile = null;
 
@@ -92,6 +94,7 @@ public class Diagram {
 		blocks = new ConcurrentHashMap<Integer, Block>();
 		arrows = new ConcurrentHashMap<Integer, Arrow>();
 		clickToGrid = true;
+		parent = null;
 		driver.grid.setSelected(clickToGrid);
 		//file = null;
 		diagLang = driver.defaultCompLang;
@@ -172,18 +175,22 @@ public class Diagram {
 				currentDiagramDir.getAbsolutePath());
 		driver.propertiesChanged = true;
 
-		if (!(file.getName().toLowerCase().endsWith(".drw"))) {
-			if (diagramIsOpen(file.getAbsolutePath()))
-				return null;
-			diagFile = file;
+		//if (!(file.getName().toLowerCase().endsWith(".drw"))) {
+		int i = diagramIsOpen(file.getAbsolutePath());
+		if (-1 != i) {
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp
+					.getTabComponentAt(i);
+			//driver.curDiag = b.diag;
+			driver.jtp.setSelectedIndex(i);
+			diagFile = b.diag.diagFile;
 			return file;
 		}
 
 		title = file.getName();
 		if (title.toLowerCase().endsWith(".drw"))
 			title = title.substring(0, title.length() - 4);
-		if (diagramIsOpen(file.getAbsolutePath()))
-			return null;
+		//if (diagramIsOpen(file.getAbsolutePath()))
+		//	return null;
 		diagFile = file;
 		blocks.clear();
 		arrows.clear();
@@ -299,7 +306,7 @@ public class Diagram {
 				return null;
 
 			if (fCP.fileExt.equals(".drw")
-					&& diagramIsOpen(newFile.getAbsolutePath()))
+					&& -1 != diagramIsOpen(newFile.getAbsolutePath()))
 				return null;
 
 			//int response;
@@ -462,7 +469,7 @@ public class Diagram {
 		// fileString += "<genCodeFileName>" + genCodeFileName
 		// + "</genCodeFileName> ";
 
-		
+				
 		fileString += "<clicktogrid>" + (clickToGrid?"true":"false") + "</clicktogrid> \n" ;
 
 		fileString += "<blocks>";
@@ -542,8 +549,9 @@ public class Diagram {
 		return true;
 	} // writeFile
 	
-	boolean diagramIsOpen(String s) {
-		for (int i = 0; i < driver.jtp.getTabCount(); i++) {
+	int diagramIsOpen(String s) {
+		int j = driver.jtp.getTabCount();
+		for (int i = 0; i < j; i++) {
 			ButtonTabComponent b = (ButtonTabComponent) driver.jtp
 					.getTabComponentAt(i);
 
@@ -557,13 +565,13 @@ public class Diagram {
 				continue;
 			String t = f.getAbsolutePath();
 			if (s.equals(t)) {
-				File fs = new File(s);
-				MyOptionPane.showMessageDialog(driver.frame,
-						"File " + fs.getName() + " is open", MyOptionPane.WARNING_MESSAGE);
-				return true;
+				//File fs = new File(s);
+				//MyOptionPane.showMessageDialog(driver.frame,
+				//		"File " + fs.getName() + " is open", MyOptionPane.WARNING_MESSAGE);
+				return i;
 			}
 		}
-		return false;
+		return -1;
 	}
 	
 	String getSuffix(String s) {
@@ -672,68 +680,72 @@ public class Diagram {
 		driver.frame.repaint();
 	}
 
-	void excise(Enclosure enc, String diagfn) {
+	Block excise(Enclosure enc) {
 
-		// *this* is a *new* diagram, which will contain all enclosed blocks and
+		// *this* is the *old* diagram 
+		
+		driver.getNewDiag();		
+		
+		// *driver.curDiag* will contain new diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
+		
+		driver.curDiag.maxBlockNo = this.maxBlockNo;
 
 		clla = new LinkedList<Arrow>(); // crossing arrows
 
-		Diagram oldDiag = enc.diag;
-		driver.curDiag = this;
-
-		maxBlockNo = Math.max(oldDiag.maxBlockNo, enc.id); // will be used for
-															// new double-lined
-															// block
+		//maxBlockNo = Math.max(maxBlockNo, enc.id); // will be used for
+		//													// new double-lined
+		//													// block
 
 		enc.calcEdges();
 
 		//File file = new File(diagfn);
 
 		findEnclosedBlocksAndArrows(enc);
+		
 		for (Block b : enc.llb) {
-			blocks.put(new Integer(b.id), b);
+			driver.curDiag.blocks.put(new Integer(b.id), b);
 			changed = true;
+			maxBlockNo = Math.max(b.id, maxBlockNo);
 		}
 
 		for (Arrow a : enc.lla) {
-			Arrow arr2 = a.makeCopy(this); // delBlock will delete old ones
+			Arrow arr2 = a.makeCopy(driver.curDiag); // delBlock will delete old ones
 
-			arrows.put(new Integer(arr2.id), arr2); // add copy of arrow to new
+			driver.curDiag.arrows.put(new Integer(arr2.id), arr2); // add copy of arrow to new
 													// diagram
 			changed = true;
 		}
-		findCrossingArrows(enc, this);  // found arrows are added to List clla
+		findCrossingArrows(enc);  // found arrows are added to List clla
 
 		// now go through arrows & blocks that were totally enclosed, and delete
 		// them from oldDiag
 		
 		if (enc.lla != null) {
 			for (Arrow arrow : enc.lla) {
-				oldDiag.delArrow(arrow);
+				delArrow(arrow);
 			}
 			enc.lla = null;
 		}
 		boolean NOCHOOSE = false;
 		if (enc.llb != null) {
 			for (Block block : enc.llb) {
-				oldDiag.delBlock(block, NOCHOOSE);
+				delBlock(block, NOCHOOSE);
 			}
 			enc.llb = null;
 		}
 
 		// now go through arrows, looking for unattached ends
-		for (Arrow arrow : arrows.values()) {
-			Block from = blocks.get(new Integer(arrow.fromId));
-			Arrow a = arrow.findTerminalArrow();
-			Block to = blocks.get(new Integer(a.toId));
+		for (Arrow arrow : driver.curDiag.arrows.values()) {
+			Block from = driver.curDiag.blocks.get(new Integer(arrow.fromId));
+			
 			if (from == null) {
 				ExtPortBlock eb = new ExtPortBlock(this);
 				eb.cx = arrow.fromX - eb.width / 2;
 				eb.cy = arrow.fromY;
 				eb.type = Block.Types.EXTPORT_IN_BLOCK;
-				maxBlockNo++;
-				eb.id = maxBlockNo;
+				//driver.curDiag.maxBlockNo++;
+				//eb.id = driver.curDiag.maxBlockNo;
 				arrow.fromId = eb.id;
 				if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
@@ -743,16 +755,21 @@ public class Diagram {
 						}
 					}
 				}
-				blocks.put(new Integer(arrow.fromId), eb);
+				driver.curDiag.blocks.put(new Integer(arrow.fromId), eb);
 				eb.calcEdges();
 			}
+			
+			Block to = null;
+			Arrow a = arrow.findArrowEndingAtBlock();
+			if (a != null)
+				to = driver.curDiag.blocks.get(new Integer(a.toId));
 			if (to == null) {
 				ExtPortBlock eb = new ExtPortBlock(this);
 				eb.cx = arrow.toX + eb.width / 2;
 				eb.cy = arrow.toY;
 				eb.type = Block.Types.EXTPORT_OUT_BLOCK;
-				maxBlockNo++;
-				eb.id = maxBlockNo;
+				driver.curDiag.maxBlockNo++;
+				eb.id = driver.curDiag.maxBlockNo;
 				arrow.toId = eb.id;
 				if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
@@ -762,7 +779,7 @@ public class Diagram {
 						}
 					}
 				}
-				blocks.put(new Integer(arrow.toId), eb);
+				driver.curDiag.blocks.put(new Integer(arrow.toId), eb);
 				eb.calcEdges();
 			}
 		}
@@ -771,24 +788,26 @@ public class Diagram {
 		 * build double-lined block in old diagram
 		 */
 
-		Block block = new ProcessBlock(oldDiag);
+		Block block = new ProcessBlock(this);
 		
-		block.cx = oldDiag.xa;
-		block.cy = oldDiag.ya;
+		block.cx = xa;
+		block.cy = ya;
 		block.calcEdges();
-		oldDiag.maxBlockNo++;
-		block.id = oldDiag.maxBlockNo;
-		oldDiag.blocks.put(new Integer(block.id), block);
-		oldDiag.changed = true;
+		//maxBlockNo++;
+		//block.id = maxBlockNo;
+		blocks.put(new Integer(block.id), block);
+		changed = true;
 		driver.selBlock = block;
-		block.diagramFileName = diagfn;
+		block.diagramFileName = enc.diag.desc;
 		block.isSubnet = true;
+		driver.curDiag.parent = block;
+		
 
 		//block.description = enc.description;
-		block.description = diagfn;
+		block.description = enc.diag.desc;
 		enc.description = "Enclosure can be deleted";
 
-		desc = block.description;
+		driver.curDiag.desc = block.description;
 		if (desc != null)
 			desc = desc.replace('\n', ' ');
 
@@ -804,10 +823,10 @@ public class Diagram {
 		Integer aid;
 		for (Arrow arrow : clla) {
 			aid = new Integer(arrow.id);
-			oldDiag.arrows.put(aid, arrow);
+			arrows.put(aid, arrow);
 
-			Block from = oldDiag.blocks.get(new Integer(arrow.fromId));
-			Block to = oldDiag.blocks.get(new Integer(arrow.toId));
+			Block from = blocks.get(new Integer(arrow.fromId));
+			Block to = blocks.get(new Integer(arrow.toId));
 			if (to == null) {
 				arrow.toId = block.id;
 				Side side = findQuadrant(arrow.fromX, arrow.fromY, block);
@@ -837,7 +856,7 @@ public class Diagram {
 			}
 
 		}
-
+		return block;
 	}
 
 	Side findQuadrant(int x, int y, Block b) {
@@ -862,24 +881,26 @@ public class Diagram {
 	}
 
 	void findEnclosedBlocksAndArrows(Enclosure enc) {
+		
 		// look for blocks which are within enclosure
-		Diagram oldDiag = enc.diag; // old diagram, saved whenever a block is
+		
+		//Diagram oldDiag = enc.diag; // old diagram, saved whenever a block is
 									// created
 		enc.llb = new LinkedList<Block>();
-		for (Block block : oldDiag.blocks.values()) {
+		for (Block block : blocks.values()) {
 			if (block == enc)
 				continue;
-			if (block.cx - block.width / 2 >= enc.cx - enc.width / 2
-					&& block.cx + block.width / 2 <= enc.cx + enc.width / 2
-					&& block.cy - block.height / 2 >= enc.cy - enc.height / 2
-					&& block.cy + block.height / 2 <= enc.cy + enc.height / 2) {
+			if (block.leftEdge >= enc.leftEdge
+					&& block.rgtEdge <= enc.rgtEdge
+					&& block.topEdge >= enc.topEdge
+					&& block.botEdge <= enc.botEdge) {
 				enc.llb.add(block); // set aside for action
 			}
 		}
 
 		// look for arrows which are within enclosure
 		enc.lla = new LinkedList<Arrow>();
-		for (Arrow arrow : oldDiag.arrows.values()) {
+		for (Arrow arrow : arrows.values()) {
 			boolean included = true;
 			int x1 = arrow.fromX;
 			int y1 = arrow.fromY;
@@ -924,25 +945,23 @@ public class Diagram {
 	
 	
 	
-	void findCrossingArrows(Enclosure enc, Diagram diag) {
-		//diag param is new Diagram, where arrow copies will be added
-		Diagram oldDiag = enc.diag;
+	void findCrossingArrows(Enclosure enc) {
+		 
+		//Diagram oldDiag = enc.diag;
 		
-		for (Arrow arrow : oldDiag.arrows.values()) {
+		for (Arrow arrow : arrows.values()) {
+			
 			// now test if arrow crosses a boundary
-			// if (crosses(arrow, enc, DrawFBP.Side.LEFT)
-			// || crosses(arrow, enc, DrawFBP.Side.RIGHT)
-			// || crosses(arrow, enc, DrawFBP.Side.TOP)
-			// || crosses(arrow, enc, DrawFBP.Side.BOTTOM))
-			Block from = oldDiag.blocks.get(new Integer(arrow.fromId));
-			Arrow a = arrow.findTerminalArrow();
-			Block to = oldDiag.blocks.get(new Integer(a.toId));
+			 
+			Block from = blocks.get(new Integer(arrow.fromId));
+			Arrow a = arrow.findArrowEndingAtBlock();
+			Block to = blocks.get(new Integer(a.toId));
 			if (enc.llb.contains(from) && !(enc.llb.contains(to))
 					|| !(enc.llb.contains(from)) && enc.llb.contains(to)) {
 
-				Arrow arr2 = arrow.makeCopy(this);
+				Arrow arr2 = arrow.makeCopy(driver.curDiag);
 				Integer aid = new Integer(arr2.id);
-				diag.arrows.put(aid, arr2);
+				driver.curDiag.arrows.put(aid, arr2);
 				clla.add(arrow); 
 				// keep old arrow
 				// arrow.deleteOnSave = true;

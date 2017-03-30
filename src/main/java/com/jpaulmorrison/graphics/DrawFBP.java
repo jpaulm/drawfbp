@@ -169,8 +169,8 @@ public class DrawFBP extends JFrame
 	// "Subnet" is not a separate block type (it is a variant of "Process")
 	
 	String blockNames[] = {"Process", "Initial IP",
-					"Enclosure", "Subnet", "ExtPorts: In", "... Out",
-					"... Out/In", "Legend", "File", "Person", "Report"};
+					"Enclosure", "Subnet", "ExtP In", "ExtP Out",
+					"ExtP O/I", "Legend", "File", "Person", "Report"};
 	
 	String blockTypes[] = {Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK, Block.Types.PROCESS_BLOCK,
 			 Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK, Block.Types.EXTPORT_OUTIN_BLOCK,
@@ -267,7 +267,7 @@ public class DrawFBP extends JFrame
 		
 		fCPArray[DIAGRAM] = new FileChooserParms("Diagram", "currentDiagramDir",
 				"Specify diagram name in diagram directory", ".drw",
-				driver.new DiagramFilter(), "Diagrams (*.drw, *.fbp)");
+				driver.new DiagramFilter(), "Diagrams (*.drw)");
 
 		fCPArray[IMAGE] = new FileChooserParms("Image", "currentImageDir",
 				"Image: ", ".png", driver.new ImageFilter(),
@@ -489,7 +489,7 @@ public class DrawFBP extends JFrame
 		
 		buildPropDescTable();
 		
-		curDiag = getNewDiag();				
+		getNewDiag();				
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -503,11 +503,11 @@ public class DrawFBP extends JFrame
 				Diagram diag = b.diag;
 
 				if (diag == null) {
-					curDiag = getNewDiag();
+					getNewDiag();
 					// diag = new Diagram(driver);
 					// b.diag = diag;
 				}
-				curDiag = diag;
+				//curDiag = diag;
 
 				frame.repaint();
 
@@ -930,7 +930,7 @@ public class DrawFBP extends JFrame
 		return;
 	}
 
-	Diagram getNewDiag() {
+	void getNewDiag() {
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
 		diag.area = sa;
@@ -939,11 +939,11 @@ public class DrawFBP extends JFrame
 		jtp.add(sa, new JLabel());
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
 		jtp.setTabComponentAt(i, b);
-		jtp.setSelectedIndex(i);
+		jtp.setSelectedIndex(i);		
 		b.diag = diag;
 		diag.tabNum = i;
-		
-		return diag;
+		curDiag = diag;		
+		return;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -987,7 +987,7 @@ public class DrawFBP extends JFrame
 
 			int i = jtp.getTabCount();
 			if (i > 1 || curDiag.diagFile != null || curDiag.changed)
-				curDiag = getNewDiag();
+				getNewDiag();
 
 			jtp.setSelectedIndex(curDiag.tabNum);
 
@@ -1486,6 +1486,7 @@ public class DrawFBP extends JFrame
 			//popup.setPreferredSize(dim);
 			popup.pack();
 			popup.setVisible(true);
+			popup.setAlwaysOnTop(true);
 			popup.repaint();
 			frame.repaint();
 			return;
@@ -1709,6 +1710,8 @@ public class DrawFBP extends JFrame
 				curDiag.desc = curDiag.desc.replace('\n', ' ');
 				curDiag.desc = curDiag.desc.trim();
 				curDiag.changed = true;
+				if (curDiag.parent != null)
+					curDiag.parent.description = ans;
 			}
 			frame.repaint();
 			return;
@@ -1921,8 +1924,8 @@ public class DrawFBP extends JFrame
 		}
 		//}
 		block.calcEdges();
-		curDiag.maxBlockNo++;
-		block.id = curDiag.maxBlockNo;
+		//curDiag.maxBlockNo++;
+		//block.id = curDiag.maxBlockNo;
 		curDiag.blocks.put(new Integer(block.id), block);
 		//curDiag.changed = true;
 		selBlock = block;
@@ -2115,15 +2118,7 @@ public class DrawFBP extends JFrame
 		sa.getInputMap().put(escapeKS, "CLOSE");
 
 		sa.getActionMap().put("CLOSE", escapeAction);
-		/* experimental
-		if (curDiag == null)
-			sa.setPreferredSize(new Dimension(1200, 800));
-		else {
-			int w = frame.getWidth();
-			int h = frame.getHeight();
-			sa.setPreferredSize(new Dimension(w - wDiff, h - hDiff));
-		}
-		*/
+		
 		return sa;
 	}
 
@@ -2139,7 +2134,8 @@ public class DrawFBP extends JFrame
 		// Diagram diag = b.diag;
 
 		if (i > 1 || curDiag.diagFile != null || curDiag.changed)
-			curDiag = getNewDiag();
+			getNewDiag();
+		jtp.setSelectedIndex(curDiag.tabNum);
 
 		file = curDiag.open(file);
 		if (file == null) {
@@ -2199,7 +2195,7 @@ public class DrawFBP extends JFrame
 
 		jtp.setSelectedIndex(i);
 
-		curDiag.tabNum = i;
+		//curDiag.tabNum = i;
 
 		curDiag.title = file.getName();
 		curDiag.diagFile = file;
@@ -2263,8 +2259,10 @@ public class DrawFBP extends JFrame
 	static String makeAbsFileName(String current, String parent) {
 		if (current.equals(""))
 			return parent;
-		if (current.startsWith("/") || current.substring(1, 2).equals(":"))
+		if (current.startsWith("/"))
 			return current;
+		if (current.length() < 2 || current.substring(1, 2).equals(":"))				
+			return current;		
 
 		String cur = current.replace('\\', '/');
 		String par = parent.replace('\\', '/');
@@ -2895,7 +2893,7 @@ void chooseFonts(MyFontChooser fontChooser){
 	*/
 
 	void checkCompatibility(Arrow a) {
-		Arrow a2 = a.findTerminalArrow();
+		Arrow a2 = a.findArrowEndingAtBlock();
 		Block from = curDiag.blocks.get(new Integer(a.fromId));
 		Block to = curDiag.blocks.get(new Integer(a2.toId));
 		// String downPort = a2.downStreamPort;
@@ -3330,7 +3328,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (j == 0) {
 				// make one tab with "(untitled)"
 				// Diagram curDiag = new Diagram(driver);
-				curDiag = getNewDiag();
+				getNewDiag();
 				frame.setTitle("Diagram: (untitled)");
 			} else {
 				jtp.setSelectedIndex(j - 1);
@@ -4262,6 +4260,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 						// if it was a small move, or a big jump, just get
 						// subnet, or display options
+						
 						if (leftButton && blockSelForDragging.isSubnet) {
 							if (blockSelForDragging.diagramFileName == null) { 
 								MyOptionPane.showMessageDialog(null,
@@ -4271,23 +4270,46 @@ void chooseFonts(MyFontChooser fontChooser){
 								File f = new File(
 										blockSelForDragging.diagramFileName);
 								Diagram saveCurDiag = curDiag;
-								if (null == openAction(f.getAbsolutePath())
-										|| curDiag.diagramIsOpen(
-												f.getAbsolutePath()))
+								int i = curDiag.diagramIsOpen(f.getAbsolutePath());
+								if (i > -1 ){
+									ButtonTabComponent b = (ButtonTabComponent) jtp
+											.getTabComponentAt(i);
+									curDiag = b.diag;
+									//curDiag.tabNum = i;
+									jtp.setSelectedIndex(i);
+									
+									repaint();
+									return;
+								}
+								if (null == openAction(f.getAbsolutePath()))
 									curDiag = saveCurDiag;
+								curDiag.parent = blockSelForDragging;
 							}
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
+							//if (frame == null)
+							//	curDiag = new Diagram(driver);
+							
+							curDiag = blockSelForDragging.diag;
+							
+							int i, j, k;
+							if (curDiag == null) 
+								i = 1;
+							else
+								if (curDiag.jpm == null)
+									j = 1;  
+							if (frame == null)
+								k = 1;
 							curDiag.jpm.show(frame, curDiag.xa + 100,
 									curDiag.ya + 100);
 
 						}
 						// blockSelForDragging = null;
-					} else {
+					 } // else {
 						curDiag.changed = true;
-					}
+					//}
 					repaint();
-					// return;
+					//return;
 				}
 
 			}
@@ -4673,7 +4695,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					Block from = curDiag.blocks.get(new Integer(a.fromId));
 					// Block to = curDiag.blocks.get(new Integer(
 					// a.toId));
-					Arrow a2 = curDiag.currentArrow.findTerminalArrow();
+					Arrow a2 = curDiag.currentArrow.findArrowEndingAtBlock();
 					Block to = curDiag.blocks.get(new Integer(a2.toId));
 
 					if (from != null
