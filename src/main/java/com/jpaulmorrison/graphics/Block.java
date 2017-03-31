@@ -1717,7 +1717,8 @@ public class Block implements ActionListener {
 			diag.xa = driver.frame.getWidth() / 2 + 100;
 			diag.ya = driver.frame.getHeight() / 2;
 			driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK);
-			driver.saveAction(false);
+			//if (diag.askAboutSaving())				
+			//	driver.saveAction(false);
 			
 		} else {
 			
@@ -1787,7 +1788,8 @@ public class Block implements ActionListener {
 				diag.xa = driver.frame.getWidth() / 2 + 100;
 				diag.ya = driver.frame.getHeight() / 2;
 				driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK);
-				driver.saveAction(false);
+				//if (diag.askAboutSaving())				
+				//	driver.saveAction(false);				
 			}
 		}
 

@@ -707,6 +707,7 @@ public class Diagram {
 			driver.curDiag.blocks.put(new Integer(b.id), b);
 			changed = true;
 			maxBlockNo = Math.max(b.id, maxBlockNo);
+			b.diag = driver.curDiag;
 		}
 
 		for (Arrow a : enc.lla) {

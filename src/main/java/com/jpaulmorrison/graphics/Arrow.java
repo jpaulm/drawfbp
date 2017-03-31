@@ -42,7 +42,7 @@ public class Arrow implements ActionListener {
 
 	Diagram diag;
 
-	Arrow(Diagram ctlr) {
+	Arrow(Diagram d) {
 		super();
 		endsAtBlock = false;
 		endsAtLine = false;
@@ -52,8 +52,8 @@ public class Arrow implements ActionListener {
 		toX = -1;   //OK!
 		toY = -1;
 		toId = -1;
-		diag = ctlr;
-		driver = ctlr.driver;
+		diag = d;
+		driver = d.driver;
 		diag.maxArrowNo++;
 		id = diag.maxArrowNo;
 		//uspMod = null;

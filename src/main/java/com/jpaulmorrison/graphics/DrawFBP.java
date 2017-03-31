@@ -4245,7 +4245,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (e.getClickCount() == 2 || !leftButton) {
 				// enclSelForDragging = null;
 				// arrowEndForDragging = null;
-				// bendForDragging = null;
+				// bendForDragging = null;								
 
 				if (blockSelForDragging != null) {
 					selBlock = blockSelForDragging;
