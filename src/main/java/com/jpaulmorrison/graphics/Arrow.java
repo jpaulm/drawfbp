@@ -419,6 +419,7 @@ public class Arrow implements ActionListener {
 	void buildArrowPopupMenu() {
 		diag.jpm = new JPopupMenu("            Arrow-related Actions");
 		// driver.curPopup = jpm;
+		//diag.jpm.setLocation(fromX + 100, fromY + 100);
 		diag.jpm.setVisible(true);
 		JLabel label2 = new JLabel();
 		label2.setText(diag.jpm.getLabel());
@@ -487,12 +488,7 @@ public class Arrow implements ActionListener {
 		menuItem = new JMenuItem("Delete");
 		diag.jpm.add(menuItem);
 		menuItem.addActionListener(this);
-		//menuItem = new JMenuItem("Exit");
-		//jpm.add(menuItem);
-		//menuItem.addActionListener(this);
-		//diag.curMenuRect = new Rectangle(p.x, p.y, d.width, d.height);
-		//return jpm;
-
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {

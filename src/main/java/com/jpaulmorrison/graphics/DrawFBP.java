@@ -1734,10 +1734,12 @@ public class DrawFBP extends JFrame
 		}
 		if (s.equals("Block-related Actions")) {
 			Block b = selBlock;
+			
 			if (b == null) {
 				MyOptionPane.showMessageDialog(frame, "Block not selected", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			curDiag = b.diag;
 			b.buildBlockPopupMenu();
 			use_drag_icon = false;
 			curDiag.jpm.show(frame, curDiag.xa + 100, curDiag.ya + 100);
@@ -1752,6 +1754,7 @@ public class DrawFBP extends JFrame
 				return;
 			}
 			a.buildArrowPopupMenu();
+			curDiag = a.diag;
 			curDiag.jpm.show(frame, a.toX + 100, a.toY + 100);
 			frame.repaint();
 			return;
@@ -3551,7 +3554,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	public class SelectionArea extends JComponent implements MouseInputListener {
 		static final long serialVersionUID = 111L;
-		int oldx, oldy, oldoldx, oldoldy;
+		int oldx, oldy, mousePressedX, mousePressedY;
 
 		public SelectionArea() {
 
@@ -3682,7 +3685,13 @@ void chooseFonts(MyFontChooser fontChooser){
 			return fp;
 		}
 
-		public void mouseMoved(MouseEvent e) {			
+		public void mouseMoved(MouseEvent e) {	
+			int i = jtp.getSelectedIndex();
+			if (i == -1)
+				return;
+			ButtonTabComponent b = (ButtonTabComponent) jtp
+					.getTabComponentAt(i);
+			curDiag = b.diag;	
 
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
@@ -3810,6 +3819,13 @@ void chooseFonts(MyFontChooser fontChooser){
 		 */
 
 		public void mousePressed(MouseEvent e) {
+			int i = jtp.getSelectedIndex();
+			if (i == -1)
+				return;
+			ButtonTabComponent b = (ButtonTabComponent) jtp
+					.getTabComponentAt(i);
+			curDiag = b.diag;	
+			
 			Side side = null;
 			leftButton = (e.getModifiers() & InputEvent.BUTTON1_MASK) ==
 			 InputEvent.BUTTON1_MASK;
@@ -3823,6 +3839,13 @@ void chooseFonts(MyFontChooser fontChooser){
 			ya = y;
 			curx = xa;
 			cury = ya;
+			
+			if (curDiag.jpm != null) {	
+				curDiag.jpm.setVisible(false);
+				curDiag.jpm = null;
+				frame.repaint();
+				return;
+			}
 			
 			if (panSwitch) {
 				//Rectangle r = curDiag.area.getBounds();
@@ -3863,8 +3886,8 @@ void chooseFonts(MyFontChooser fontChooser){
 							block.rgtEdge - block.width / 5)
 							&& between(ya, block.topEdge - hh, block.topEdge
 									+ hh / 2)) {
-						oldoldx = oldx = xa;
-						oldoldy = oldy = ya;
+						mousePressedX = oldx = xa;
+						mousePressedY = oldy = ya;
 						blockSelForDragging = block;
 						break;
 					}
@@ -3904,8 +3927,8 @@ void chooseFonts(MyFontChooser fontChooser){
 							block.rgtEdge - 4 * scalingFactor)
 							&& between(ya, block.topEdge + 4 * scalingFactor,
 									block.botEdge - 4 * scalingFactor)) {
-						oldoldx = oldx = xa;
-						oldoldy = oldy = ya;
+						mousePressedX = oldx = xa;
+						mousePressedY = oldy = ya;
 						blockSelForDragging = block;						
 						break;
 					}
@@ -4016,8 +4039,13 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 
 		public void mouseDragged(MouseEvent e) {
-			// boolean left = (e.getModifiers() & InputEvent.BUTTON1_MASK) ==
-			// InputEvent.BUTTON1_MASK;
+			 
+			int i = jtp.getSelectedIndex();
+			if (i == -1)
+				return;
+			ButtonTabComponent b = (ButtonTabComponent) jtp
+					.getTabComponentAt(i);
+			curDiag = b.diag;	
 
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
@@ -4031,7 +4059,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			
 			if (e.getClickCount() == 2) {
 			  
-				blockSelForDragging = null;
+				//blockSelForDragging = null;
 				//enclSelForDragging = null;
 				arrowEndForDragging = null;
 				bendForDragging = null;
@@ -4140,11 +4168,11 @@ void chooseFonts(MyFontChooser fontChooser){
 				//return;
 			}
 
-			if (blockSelForDragging != null) { // set in mouse_pressed
+			if (blockSelForDragging != null) { // set in mousePressed
 
-				if (curDiag.clickToGrid && Math.abs(xa - oldx) < 6
-						&& Math.abs(ya - oldy) < 6) // do not respond to small
-													// twitches
+				if (curDiag.clickToGrid && Math.abs(xa - oldx) < 6 && Math.abs(ya - oldy) < 6 ||   // do not respond 
+						Math.abs(xa - blockSelForDragging.cx)  > 100 ||  // to small twitches 
+								Math.abs(ya - blockSelForDragging.cy) > 100) // or big twitches!
 					return;
 				Block block = blockSelForDragging;
 				displayAlignmentLines(block);
@@ -4160,9 +4188,12 @@ void chooseFonts(MyFontChooser fontChooser){
 						arrow.toY += ya - oldy;
 					}
 				}
+				
 				block.cx += xa - oldx;
 				block.cy += ya - oldy;
+				
 				block.calcEdges();
+				
 				if (arrowRoot != null  && arrowRoot.b == block) {
 					arrowRoot.x += xa - oldx;
 					arrowRoot.y += ya - oldy;
@@ -4172,10 +4203,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					Enclosure enc = (Enclosure) block;
 
 					if (enc.llb != null) {
-						for (Block b : enc.llb) {
-							b.cx += xa - oldx;
-							b.cy += ya - oldy;
-							b.calcEdges();
+						for (Block bk : enc.llb) {
+							bk.cx += xa - oldx;
+							bk.cy += ya - oldy;
+							bk.calcEdges();
 						}
 					}
 					if (enc.lla != null) {
@@ -4185,9 +4216,9 @@ void chooseFonts(MyFontChooser fontChooser){
 							a.toX += xa - oldx;
 							a.toY += ya - oldy;
 							if (a.bends != null)
-								for (Bend b : a.bends) {
-									b.x += xa - oldx;
-									b.y += ya - oldy;
+								for (Bend bd : a.bends) {
+									bd.x += xa - oldx;
+									bd.y += ya - oldy;
 								}
 						}
 					}
@@ -4195,6 +4226,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 				oldx = xa;
 				oldy = ya;
+				
 				curDiag.changed = true;
 				repaint();
 
@@ -4211,11 +4243,19 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 
 		public void mouseReleased(MouseEvent e) {
+			
+			int i = jtp.getSelectedIndex();
+			if (i == -1)
+				return;
+			ButtonTabComponent b = (ButtonTabComponent) jtp
+					.getTabComponentAt(i);
+			curDiag = b.diag;	
 
 			int x = (int) e.getX();
 			int y = (int) e.getY();
 
 			if (curDiag.jpm != null) {
+				curDiag.jpm.setVisible(false);
 				curDiag.jpm = null;
 				frame.repaint();
 				return;
@@ -4251,12 +4291,12 @@ void chooseFonts(MyFontChooser fontChooser){
 					selBlock = blockSelForDragging;
 					// this tests if mouse has moved (approximately) - ignore
 					// small twitches and also big jumps!
-					if (between(oldoldx, x - 4 * scalingFactor,
+					if (between(mousePressedX, x - 4 * scalingFactor,
 							x + 4 * scalingFactor)
-							&& between(oldoldy, y - 4 * scalingFactor,
+							&& between(mousePressedY, y - 4 * scalingFactor,
 									y + 4 * scalingFactor)
-							|| Math.abs(oldoldx - x) > 100
-							|| Math.abs(oldoldy - y) > 100) {
+							|| Math.abs(mousePressedX - x) > 100
+							|| Math.abs(mousePressedY - y) > 100) {
 
 						// if it was a small move, or a big jump, just get
 						// subnet, or display options
@@ -4270,11 +4310,11 @@ void chooseFonts(MyFontChooser fontChooser){
 								File f = new File(
 										blockSelForDragging.diagramFileName);
 								Diagram saveCurDiag = curDiag;
-								int i = curDiag.diagramIsOpen(f.getAbsolutePath());
-								if (i > -1 ){
-									ButtonTabComponent b = (ButtonTabComponent) jtp
+								int i2 = curDiag.diagramIsOpen(f.getAbsolutePath());
+								if (i2 > -1 ){
+									ButtonTabComponent b2 = (ButtonTabComponent) jtp
 											.getTabComponentAt(i);
-									curDiag = b.diag;
+									curDiag = b2.diag;
 									//curDiag.tabNum = i;
 									jtp.setSelectedIndex(i);
 									
@@ -4292,14 +4332,13 @@ void chooseFonts(MyFontChooser fontChooser){
 							
 							curDiag = blockSelForDragging.diag;
 							
-							int i, j, k;
+							int j;
 							if (curDiag == null) 
-								i = 1;
+								j = 1;
 							else
 								if (curDiag.jpm == null)
 									j = 1;  
-							if (frame == null)
-								k = 1;
+							
 							curDiag.jpm.show(frame, curDiag.xa + 100,
 									curDiag.ya + 100);
 
@@ -4443,6 +4482,7 @@ void chooseFonts(MyFontChooser fontChooser){
 							return;
 						}
 						arr.buildArrowPopupMenu();
+						curDiag = arr.diag;
 						// curDiag.currentArrow.lastX = xa;
 						// curDiag.currentArrow.lastY = ya;
 						curDiag.jpm.show(e.getComponent(), xa, ya);

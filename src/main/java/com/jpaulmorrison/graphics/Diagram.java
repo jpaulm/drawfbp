@@ -689,13 +689,13 @@ public class Diagram {
 		// *driver.curDiag* will contain new diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
 		
-		driver.curDiag.maxBlockNo = this.maxBlockNo;
+		//driver.curDiag.maxBlockNo = this.maxBlockNo;
 
 		clla = new LinkedList<Arrow>(); // crossing arrows
 
-		//maxBlockNo = Math.max(maxBlockNo, enc.id); // will be used for
-		//													// new double-lined
-		//													// block
+		driver.curDiag.maxBlockNo = this.maxBlockNo + 2; // will be used for
+															// new double-lined
+															// block
 
 		enc.calcEdges();
 

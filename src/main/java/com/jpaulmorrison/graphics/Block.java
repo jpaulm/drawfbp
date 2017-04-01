@@ -1141,6 +1141,7 @@ public class Block implements ActionListener {
 	void buildBlockPopupMenu() {
 		diag.jpm = new JPopupMenu("            Block-related Actions");
 		// driver.curPopup = jpm;
+		diag.jpm.setLocation(cx + 100, cy + 100);
 		diag.jpm.setVisible(true);
 		JMenuItem menuItem = null;
 		JLabel label2 = new JLabel();
