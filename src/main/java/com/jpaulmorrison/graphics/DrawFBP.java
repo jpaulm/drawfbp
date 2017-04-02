@@ -2133,8 +2133,8 @@ public class DrawFBP extends JFrame
 		String fname = fn;
 
 		int i = jtp.getTabCount();
-		// ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-		// Diagram diag = b.diag;
+		//ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+		//curDiag = b.diag;
 
 		if (i > 1 || curDiag.diagFile != null || curDiag.changed)
 			getNewDiag();

@@ -1675,39 +1675,60 @@ public class Block implements ActionListener {
 			}
 			diagramFileName = null;
 		}
-		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-				"Enter name", "Enter subnet diagram relative file name",
-				MyOptionPane.PLAIN_MESSAGE, null, null, null);
-		if (ans != null) {
-			ans = ans.trim();
-			if (!(ans.toLowerCase().endsWith(".drw")))
-				ans += ".drw";
-		} else
-			return;
+		
 
 		String t = driver.properties.get("currentDiagramDir");
 		if (t == null)
 			t = System.getProperty("user.home");
 
-		String dFN = t + File.separator + ans;
 		
-		/* 
-		 * Need to clean this up a bit!
-		 */
-		
-		File f = new File(dFN);
-		int res = 0;
-		File df = null;
-		if (!(f.exists())) {			
-			df = driver.openAction(dFN);
+		MyFileChooser fc = new MyFileChooser(new File(t),
+				diag.fCPArr[DrawFBP.DIAGRAM]);
+
+		int returnVal = fc.showOpenDialog();
+		String dFN = null;
+		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			dFN = driver.getSelFile(fc);
+			driver.curDiag.changed = true;	
+			
+		File	df = driver.openAction(dFN);
 			if (df == null)
 				return;
+			/*
+			int i = diag.diagramIsOpen(df.getAbsolutePath());
+			if (i > -1 ){
+				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
+						.getTabComponentAt(i);
+				driver.curDiag = b.diag;
+				//curDiag.tabNum = i;
+				driver.jtp.setSelectedIndex(i);					
+				driver.frame.repaint();
+				return;
+			}
+			*/
+			//driver.getNewDiag();
 			diagramFileName = dFN;
 			diag = driver.curDiag;
 			isSubnet = true;
+			
+			int res = MyOptionPane.showConfirmDialog(driver.frame,
+					"File already exists - erase contents?", "Erase contents?",
+					MyOptionPane.YES_NO_OPTION);
+			if (res != MyOptionPane.YES_OPTION)
+				return;
+			
+			Set<Integer> set = diag.arrows.keySet();
+			for (Integer i : set) {
+				diag.arrows.remove(i);
+			}
+			set = diag.blocks.keySet();
+			for (Integer i : set) {
+				diag.blocks.remove(i);
+			}
+			
 			diag.diagFile = df;
-			diag.desc = ans;
-			diag.title = ans;
+			diag.desc = df.getName(); 
+			diag.title = df.getName();
 			driver.jtp.setSelectedIndex(diag.tabNum);
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Fill in names for Ext Ports In and Out",
@@ -1718,9 +1739,9 @@ public class Block implements ActionListener {
 			diag.xa = driver.frame.getWidth() / 2 + 100;
 			diag.ya = driver.frame.getHeight() / 2;
 			driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK);
-			//if (diag.askAboutSaving())				
-			//	driver.saveAction(false);
+		 
 			
+		/*
 		} else {
 			
 				int i = diag.diagramIsOpen(f.getAbsolutePath());
@@ -1734,16 +1755,7 @@ public class Block implements ActionListener {
 					return;
 				}
 			
-			/*
-			 * Diagram file with that names exists, so 3 cases: 
-			 * 
-			 * (CANCEL) - - forget it! 
-			 * 
-			 * (YES) - clean out old diagram, and start new diagram file with that name 
-			 * 
-			 * (NO) - get old file and modify it  
-			 * 
-			 */
+			
 			
 			res = MyOptionPane.showConfirmDialog(driver.frame,
 					"File already exists - erase contents?", "Erase contents?",
@@ -1789,9 +1801,8 @@ public class Block implements ActionListener {
 				diag.xa = driver.frame.getWidth() / 2 + 100;
 				diag.ya = driver.frame.getHeight() / 2;
 				driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK);
-				//if (diag.askAboutSaving())				
-				//	driver.saveAction(false);				
-			}
+				*/			
+			 
 		}
 
 		diag.parent = this;
