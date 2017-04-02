@@ -1424,7 +1424,7 @@ public class Block implements ActionListener {
 			driver.frame.repaint();
 			inputPortAttrs = null;
 			outputPortAttrs = null;
-			//isSubnet = false;
+			isSubnet = false;
 			diag.changed = true;
 			return;
 
@@ -1701,7 +1701,7 @@ public class Block implements ActionListener {
 						.getTabComponentAt(i);
 				driver.curDiag = b.diag;
 				//curDiag.tabNum = i;
-				driver.jtp.setSelectedIndex(i);					
+				driver.jtp.setSelectedIndex(i);					 
 				driver.frame.repaint();
 				return;
 			}
@@ -1711,21 +1711,22 @@ public class Block implements ActionListener {
 			diag = driver.curDiag;
 			isSubnet = true;
 			
-			int res = MyOptionPane.showConfirmDialog(driver.frame,
-					"File already exists - erase contents?", "Erase contents?",
-					MyOptionPane.YES_NO_OPTION);
-			if (res != MyOptionPane.YES_OPTION)
-				return;
-			
-			Set<Integer> set = diag.arrows.keySet();
-			for (Integer i : set) {
-				diag.arrows.remove(i);
+			if (df.exists()) {
+				int res = MyOptionPane.showConfirmDialog(driver.frame,
+						"File already exists - erase contents?",
+						"Erase contents?", MyOptionPane.YES_NO_OPTION);
+				if (res != MyOptionPane.YES_OPTION)
+					return;
+
+				Set<Integer> set = diag.arrows.keySet();
+				for (Integer i : set) {
+					diag.arrows.remove(i);
+				}
+				set = diag.blocks.keySet();
+				for (Integer i : set) {
+					diag.blocks.remove(i);
+				}
 			}
-			set = diag.blocks.keySet();
-			for (Integer i : set) {
-				diag.blocks.remove(i);
-			}
-			
 			diag.diagFile = df;
 			diag.desc = df.getName(); 
 			diag.title = df.getName();
