@@ -1689,11 +1689,14 @@ public class Block implements ActionListener {
 		String dFN = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			dFN = driver.getSelFile(fc);
+			String suff = diag.fCPArr[DrawFBP.DIAGRAM].fileExt;
+			if (!(dFN.endsWith(suff)))
+				dFN += suff;
 			driver.curDiag.changed = true;	
 			
 		File	df = driver.openAction(dFN);
-			if (df == null)
-				return;
+		if (df == null)
+			return;
 			/*
 			int i = diag.diagramIsOpen(df.getAbsolutePath());
 			if (i > -1 ){
@@ -1712,20 +1715,20 @@ public class Block implements ActionListener {
 			isSubnet = true;
 			
 			if (df.exists()) {
-				int res = MyOptionPane.showConfirmDialog(driver.frame,
-						"File already exists - erase contents?",
-						"Erase contents?", MyOptionPane.YES_NO_OPTION);
-				if (res != MyOptionPane.YES_OPTION)
+				//int res = MyOptionPane.showConfirmDialog(driver.frame,
+				//		"File already exists - erase contents?",
+				//		"Erase contents?", MyOptionPane.YES_NO_OPTION);
+				//if (res != MyOptionPane.YES_OPTION)
 					return;
 
-				Set<Integer> set = diag.arrows.keySet();
-				for (Integer i : set) {
-					diag.arrows.remove(i);
-				}
-				set = diag.blocks.keySet();
-				for (Integer i : set) {
-					diag.blocks.remove(i);
-				}
+				//Set<Integer> set = diag.arrows.keySet();
+				//for (Integer i : set) {
+				//	diag.arrows.remove(i);
+				//}
+				//set = diag.blocks.keySet();
+				//for (Integer i : set) {
+				//	diag.blocks.remove(i);
+				//}
 			}
 			diag.diagFile = df;
 			diag.desc = df.getName(); 

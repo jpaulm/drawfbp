@@ -11,6 +11,7 @@ import java.awt.GridBagLayout;
 import java.awt.Rectangle;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -669,8 +670,9 @@ public class MyFileChooser extends JFrame
 
 		order.remove(3);
 		order.add(3, list);
-
-		list.setFixedCellHeight(driver.fontg.getSize() + 2);
+		
+		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+		list.setFixedCellHeight(metrics.getHeight());
 
 		list.setCellRenderer(renderer);
 		list.setEnabled(true);
