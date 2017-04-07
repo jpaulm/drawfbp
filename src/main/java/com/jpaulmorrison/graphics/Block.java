@@ -1735,7 +1735,7 @@ public class Block implements ActionListener {
 			diag.title = df.getName();
 			driver.jtp.setSelectedIndex(diag.tabNum);
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Fill in names for Ext Ports In and Out",
+					"New subnet: fill in names for Ext Ports In and Out",
 					MyOptionPane.INFORMATION_MESSAGE);
 			diag.xa = driver.frame.getWidth() / 2 - 300;
 			diag.ya = driver.frame.getHeight() / 2;
