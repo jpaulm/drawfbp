@@ -335,7 +335,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						t = t.substring(0, t.length() - 6);
 
 					code += "  " + genComp(s, t, gl.label) + "; \n";
-					code += "  " + initialize + "(\"" + s + "\", " + component + "(\""
+					code += "  " + initialize + "(\"" + eb.description + "\", " + component + "(\""
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
 				}
 
