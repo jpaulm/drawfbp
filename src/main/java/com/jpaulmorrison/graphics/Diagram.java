@@ -260,23 +260,28 @@ public class Diagram {
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				newFile = new File(driver.getSelFile(fc));
 				s = newFile.getAbsolutePath();
-
+				
 				if (s.endsWith("(empty folder)")) {
 					MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
 							+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 
-				if (newFile.getParentFile() == null) {
-					MyOptionPane.showMessageDialog(driver.frame, "Missing parent file for: "
-							+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
-					return null;
+				if (!s.endsWith(fCP.fileExt)){
+					s += fCP.fileExt;
+					newFile = new File(s);
 				}
-				if (!(newFile.getParentFile().exists())) {
-					MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
-							+ newFile.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
-					return null;
-				}
+				 if (newFile.getParentFile() == null) {
+				 	MyOptionPane.showMessageDialog(driver.frame, "Missing parent file for: "
+				 			+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
+				 	return null;
+				 }
+				
+				 if (!(newFile.getParentFile().exists())) {
+				 	MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
+				 			+ newFile.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
+				 	return null;
+				 }
 
 				if (s.toLowerCase().endsWith("~")) {
 					MyOptionPane.showMessageDialog(driver.frame,

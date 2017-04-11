@@ -2264,7 +2264,7 @@ public class DrawFBP extends JFrame
 			return parent;
 		if (current.startsWith("/"))
 			return current;
-		if (current.length() < 2 || current.substring(1, 2).equals(":"))				
+		if (current.length() > 1 && current.substring(1, 2).equals(":"))				
 			return current;		
 
 		String cur = current.replace('\\', '/');
