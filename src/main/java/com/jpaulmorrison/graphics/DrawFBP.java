@@ -4171,8 +4171,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (blockSelForDragging != null) { // set in mousePressed
 
 				if (curDiag.clickToGrid && Math.abs(xa - oldx) < 6 && Math.abs(ya - oldy) < 6 ||   // do not respond 
-						Math.abs(xa - blockSelForDragging.cx)  > 100 ||  // to small twitches 
-								Math.abs(ya - blockSelForDragging.cy) > 100) // or big twitches!
+					Math.abs(xa - oldx) > 200 ||  // to small twitches 
+				 	Math.abs(ya - oldy) > 200)    //   or big twitches!
 					return;
 				Block block = blockSelForDragging;
 				displayAlignmentLines(block);
@@ -4208,6 +4208,7 @@ void chooseFonts(MyFontChooser fontChooser){
 							bk.cy += ya - oldy;
 							bk.calcEdges();
 						}
+						repaint();                  
 					}
 					if (enc.lla != null) {
 						for (Arrow a : enc.lla) {
@@ -4221,6 +4222,7 @@ void chooseFonts(MyFontChooser fontChooser){
 									bd.y += ya - oldy;
 								}
 						}
+						repaint();           
 					}
 				}
 

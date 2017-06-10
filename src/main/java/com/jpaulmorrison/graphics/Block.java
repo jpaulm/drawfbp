@@ -1542,6 +1542,7 @@ public class Block implements ActionListener {
 		if (s.startsWith("Drag Contents")) {
 			Enclosure enc = (Enclosure) this;
 			enc.draggingContents = true;
+			driver.blockSelForDragging = this;
 			diag.findEnclosedBlocksAndArrows(enc);
 			driver.frame.repaint();
 			diag.changed = true;
