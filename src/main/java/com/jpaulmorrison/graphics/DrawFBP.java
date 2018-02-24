@@ -654,7 +654,8 @@ public class DrawFBP extends JFrame
 			but[j].getActionMap().put("CLOSE", escapeAction);		
 		}
 
-		BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
+		BufferedImage image = 
+				loadImage("DrawFBP-logo-small.png");
 		frame.setIconImage(image);
 		leafIcon = new ImageIcon(image);
 
@@ -690,8 +691,10 @@ public class DrawFBP extends JFrame
 	
 	BufferedImage loadImage(String s) {
 		
-		InputStream is = this.getClass().getClassLoader() 
-				.getResourceAsStream(s);
+		//InputStream is = this.getClass() 
+		//		.getResourceAsStream(s);
+		InputStream is = this.getClass().getResourceAsStream("/resources/" + s);
+		//InputStream is = this.getClass().getResourceAsStream(s);
 		BufferedImage image = null;
 		if (is == null) {
 			MyOptionPane.showMessageDialog(frame, "Missing icon: " + s, MyOptionPane.ERROR_MESSAGE);			

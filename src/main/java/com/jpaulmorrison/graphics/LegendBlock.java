@@ -23,8 +23,13 @@ public class LegendBlock extends Block {
 		if (description != null && !(description.trim().equals(""))) {
 			g.setColor(Color.BLACK);
 			// g.setColor(Color.GRAY);
-			//drawDesc(g);	
+			//drawDesc(g);
+			Font oldf = g.getFont();
+			float fl = oldf.getSize2D();
+			Font f = oldf.deriveFont((float)(fl * 1.2));
+			g.setFont(f);
 			centreDesc(g);
+			g.setFont(oldf);
 		}
 		 
 		else {
