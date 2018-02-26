@@ -398,7 +398,6 @@ public class DrawFBP extends JFrame
 
 		jtp.setForeground(Color.BLACK);
 		jtp.setBackground(Color.WHITE);
-
 		
 		BufferedImage image = loadImage("DrawFBP-logo-small.png");
 		
@@ -690,11 +689,9 @@ public class DrawFBP extends JFrame
 	}
 	
 	BufferedImage loadImage(String s) {
+				
+		InputStream is = this.getClass().getResourceAsStream("/" + s);
 		
-		//InputStream is = this.getClass() 
-		//		.getResourceAsStream(s);
-		InputStream is = this.getClass().getResourceAsStream("/resources/" + s);
-		//InputStream is = this.getClass().getResourceAsStream(s);
 		BufferedImage image = null;
 		if (is == null) {
 			MyOptionPane.showMessageDialog(frame, "Missing icon: " + s, MyOptionPane.ERROR_MESSAGE);			

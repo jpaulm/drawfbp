@@ -128,7 +128,10 @@ task writeNewPom << {
                     name 'GNU Lesser General Public License, Version 3.0'
                     url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
                 }
-            }
+            }         
+            
+             sourceSets.main.resources.srcDirs = [ "src/main/resources" ]
+   // sourceSets.main.resources.includes = [ "**/*.png" ]
    
         }
     }.writeTo("pom.xml")
