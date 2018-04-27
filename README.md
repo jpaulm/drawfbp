@@ -18,11 +18,14 @@ DrawFBP also generates a network definition in .fbp notation.  This was original
 
 For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
-Three Youtube videos are currently available showing how to use DrawFBP, for drawing diagrams, and generating running JavaFBP networks, using the Eclipse IDE:
+Six Youtube videos are currently available showing how to use DrawFBP, for drawing diagrams, and generating running JavaFBP networks, using the Eclipse IDE:
 
 - https://www.youtube.com/watch?v=OrKenPOV4Js
 - https://www.youtube.com/watch?v=9NXYNxDjFWY
 - https://www.youtube.com/watch?v=-AmzfhV2hIU
+- https://www.youtube.com/watch?v=F0lKQpIjfVE
+- https://www.youtube.com/watch?v=5brTDk8cpNo
+- https://youtu.be/IvTAexROKSA  (simple interactive systems using WebSockets, with demo of JavaFBP-WebSockets - JavaFBP and HTML5)
 
 #### Getting Started
 
