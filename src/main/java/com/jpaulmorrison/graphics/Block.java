@@ -86,6 +86,7 @@ public class Block implements ActionListener {
 		static String ENCL_BLOCK = "O";
 		static String PERSON_BLOCK = "P";
 		static String REPORT_BLOCK = "R";
+		static String UP = "Z";
 	}
 
 	Block(Diagram d) {
@@ -438,7 +439,7 @@ public class Block implements ActionListener {
 		String s;
 		type = item.get("type");
 		description = item.get("description");
-		if (type.equals("I") && description != null && description.substring(0,1).equals("\""))
+		if (type.equals("I") && description != null && description.length() > 0 && description.substring(0,1).equals("\""))
 			description = description.substring(1,description.length() - 1);				
 		
 		if (type == null)

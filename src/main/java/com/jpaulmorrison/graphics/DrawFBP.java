@@ -174,12 +174,8 @@ public class DrawFBP extends JFrame
 	
 	String blockTypes[] = {Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK, Block.Types.PROCESS_BLOCK,
 			 Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK, Block.Types.EXTPORT_OUTIN_BLOCK,
-			 Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK, Block.Types.REPORT_BLOCK,};	
-	
-	//String buttonNames[] = {"Process", "Initial IP",
-	//		"Enclosure", "Subnet", "ExtPorts: In", "... Out",
-	//		"... Out/In", "Legend", "File", "Person", "Report"};	
-	
+			 Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK, Block.Types.REPORT_BLOCK};
+		
 	HashMap<String, String> jarFiles = new HashMap<String, String> ();
 
 	// JPopupMenu curPopup = null; // currently active popup menu
@@ -221,6 +217,8 @@ public class DrawFBP extends JFrame
 	
 	JLabel zoom = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
+	JButton up = new JButton("Up");
+	
 	JRadioButton[] but = new JRadioButton[11];
 	Box box21 = null;
 
@@ -611,22 +609,29 @@ public class DrawFBP extends JFrame
 		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));  
 		box1.add(box2);
 		//box2.add(Box.createHorizontalGlue());
-		box2.add(pan);
-		//.addbox2(Box.createHorizontalGlue());
-		box2.add(Box.createRigidArea(new Dimension(10, 0))); 
-		//box2.add(Box.createHorizontalGlue());
+		box2.add(pan);		
+		box2.add(Box.createRigidArea(new Dimension(10, 0))); 		
 		pan.setSelected(false);
 		pan.setFont(fontg);		
 		pan.setActionCommand("Toggle Pan Switch");
 		pan.addActionListener(this);
 		pan.setBackground(slateGray1);
 		pan.setBorderPaintedFlat(false);
+		
+		up.setFont(fontg);		
+		up.setActionCommand("Go Up One Level");
+		up.addActionListener(this);
+		up.setBackground(slateGray1);
+		up.setEnabled(false);
+				
 		// pan.setBorder(null);
 		// pan.setPreferredSize(new Dimension(50, 20));
 		ButtonGroup butGroup = new ButtonGroup();
 
 		box21 = new Box(BoxLayout.X_AXIS);
 		box2.add(box21);
+		box2.add(Box.createRigidArea(new Dimension(10,0)));	
+		box2.add(up);	
 					
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
@@ -654,7 +659,8 @@ public class DrawFBP extends JFrame
 		}
 
 		BufferedImage image = 
-				loadImage("DrawFBP-logo-small.png");
+				loadImage("DrawFBP-logo-small.jpg");
+				//loadImage("javaIcon.jpg");
 		frame.setIconImage(image);
 		leafIcon = new ImageIcon(image);
 
@@ -2404,6 +2410,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		zoom.setFont(fontg);
 		jtf.setFont(fontg);
 		pan.setFont(fontg);
+		up.setFont(fontg);
 		grid.setFont(fontg);
 		scaleLab.setFont(fontg);
 		fileMenu.setFont(fontg);

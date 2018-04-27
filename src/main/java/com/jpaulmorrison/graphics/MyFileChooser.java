@@ -654,7 +654,7 @@ public class MyFileChooser extends JFrame
 		for (int j = 0; j < oa.length; j++) {
 			nodeNames[j] = (String) oa[j];
 			if (nodeNames[j].endsWith(".jar"))
-				k++;
+				k = k + 1;  //get rid of spurious "unused" message			
 		}
 
 		list = new JList<String>(nodeNames);
@@ -670,6 +670,11 @@ public class MyFileChooser extends JFrame
 
 		order.remove(3);
 		order.add(3, list);
+		//list.setFixedCellHeight(driver.fontg.getSize() + 2);
+		
+		//list.setFixedCellHeight(14);
+		//list.setFixedCellWidth(60);
+		
 		
 		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
 		list.setFixedCellHeight(metrics.getHeight());
@@ -693,10 +698,12 @@ public class MyFileChooser extends JFrame
 		// list.requestFocusInWindow();
 		paintList();
 
+		//panel.validate();
+		
 		//frame.pack();
 		listView.repaint();
 		dialog.repaint();
-		panel.validate();
+ 		
 		panel.repaint();
 		//frame.repaint();
 
@@ -786,7 +793,7 @@ public class MyFileChooser extends JFrame
 			if (s == null || s.equals("(empty folder)"))
 				s = "";
 			
-			String fn = DrawFBP.makeAbsFileName(s, listHead);
+			//String fn = DrawFBP.makeAbsFileName(s, listHead);
 			if (currentNode == null) {
 				
 				//File h = new File(fn);
@@ -815,6 +822,8 @@ public class MyFileChooser extends JFrame
 			}
 
 		}
+		
+		panel.validate();
 		repaint();
 	}
 
@@ -975,7 +984,7 @@ public class MyFileChooser extends JFrame
 		}
 	}
 
-	class ListRenderer implements ListCellRenderer<String> {
+	class ListRenderer extends JLabel implements ListCellRenderer<String>  {
 		static final long serialVersionUID = 111L;
 
 		Dimension minSize;
@@ -984,8 +993,9 @@ public class MyFileChooser extends JFrame
 		DrawFBP driver;
 
 		public ListRenderer(DrawFBP driver) {
-			this.driver = driver;
-		}
+			this.driver = driver;			
+		    setOpaque(true);
+		   	}
 
 		public Component getListCellRendererComponent(
 				JList<? extends String> list, String value, int index,
@@ -994,17 +1004,21 @@ public class MyFileChooser extends JFrame
 			Color bisque = new Color(255, 228, 196);
 			String s = (String) value;
 			Icon icon = driver.leafIcon;
-			JPanel jp = new JPanel();
-			BoxLayout gb = new BoxLayout(jp, BoxLayout.X_AXIS);
-			jp.setLayout(gb);
+			
+			//JPanel jp = new JPanel();	
+			//JLabel jp = this;
+			//BoxLayout gb = new BoxLayout(jp, BoxLayout.X_AXIS);
+			//jp.setLayout(gb);
 			//jp.setPreferredSize(new Dimension(30,40));
+			//setPreferredSize(new Dimension(150,20));
 
-			jp.setBackground(Color.WHITE);
+			setBackground(Color.WHITE);
 			
 			// System.out.println("|" + s + "|");
 			// if (s.equals(""))
 			// return jp;
 
+			int j = 0;
 			if (s == null || s.equals("(empty folder)"))
 				icon = null;
 			else if (s.toLowerCase().endsWith(".jar"))
@@ -1022,24 +1036,26 @@ public class MyFileChooser extends JFrame
 					icon = driver.javaIcon;
 				else if (s.toLowerCase().endsWith(".class"))
 					icon = driver.classIcon;
+				//else if (s.toLowerCase().endsWith(".drw")) //fudge
+				//	setText("xxxx");
 			}
 
 			//if (selComp instanceof JList) {
 			if (s == null)
-				jp.setBackground(vLightBlue);
+				setBackground(vLightBlue);
 			
 			else if (/*listHead.equals(listShowingJarFile)
 						&& */ s.toLowerCase().endsWith(".jar") || inJarTree)
-					jp.setBackground(goldenRod);
+					setBackground(goldenRod);
 				else
-					jp.setBackground(vLightBlue);
+					setBackground(vLightBlue);
 
 				if (isSelected) {
 					if (/*listHead.equals(listShowingJarFile)
 							&& */ s.toLowerCase().endsWith(".jar") || inJarTree)
-						jp.setBackground(bisque);
+						setBackground(bisque);
 					else
-						jp.setBackground(lightBlue);
+						setBackground(lightBlue);
 					// System.out.println("Selected " + index);
 				}
 			//}
@@ -1048,18 +1064,24 @@ public class MyFileChooser extends JFrame
 			prefSize = new Dimension(400, 20);
 			maxSize = new Dimension(Short.MAX_VALUE, 20);
 
-			JLabel lab1;
-			if (s == null || s.charAt(0) == ' ')
-				lab1 = new JLabel(s);
-			else
-				lab1 = new JLabel(s, icon, JLabel.LEFT);
-			lab1.setFont(driver.fontg);
-			lab1.setMinimumSize(minSize);
-			lab1.setMaximumSize(maxSize);
-			lab1.setPreferredSize(prefSize);
-			// lab1.setBackground(Color.WHITE);
-			jp.add(lab1);
-			return jp;
+			//JLabel lab1;
+			if (s == null || s.charAt(0) == ' ') {				
+				setText(s);
+			}
+			else {
+				//lab1 = new JLabel(s, icon, JLabel.LEFT);
+				setText(s);
+				setIcon(icon);
+			}
+			setFont(driver.fontg);
+			//lab1.setMinimumSize(minSize);
+			//lab1.setMaximumSize(maxSize);
+			setPreferredSize(prefSize); 
+			setMaximumSize(maxSize);
+			setMinimumSize(minSize);
+			if (s.equals("a.drw"))
+				return this;
+			return this;
 		}
 	}
 
@@ -1389,9 +1411,12 @@ public class MyFileChooser extends JFrame
 
 		public void actionPerformed(ActionEvent e) {
 			result = CANCEL_OPTION;
+			
 
-			if (!(selComp instanceof JList) && selComp != t_fileName)
+			if (!(selComp instanceof JList) && selComp != t_fileName){
+				
 				return;
+			}
 			String s = null;
 			if (selComp instanceof JList) {
 				//String s = t_dirName.getText();
@@ -1458,6 +1483,7 @@ public class MyFileChooser extends JFrame
 					// fullNodeName = listHead.getAbsolutePath();
 					// showFileNames();
 					t_dirName.setText(listHead);
+					panel.validate();
 					// panel.remove(listView);
 					showList();
 
@@ -1628,6 +1654,7 @@ public class MyFileChooser extends JFrame
 			}
 
 			// }
+			panel.validate();
 			dialog.repaint();
 			// frame.repaint();
 		}
@@ -1646,6 +1673,7 @@ public class MyFileChooser extends JFrame
 			selComp.setBackground(Color.WHITE);
 			selComp = t_fileName;
 			//text2.setBackground(vLightBlue);
+			panel.validate();
 			list.repaint();
 
 		}
@@ -1735,6 +1763,7 @@ public class MyFileChooser extends JFrame
 				// selComp = text2;
 
 			}
+			panel.validate();
 			repaint();
 		}
 	}
