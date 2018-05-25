@@ -209,7 +209,7 @@ public class Block implements ActionListener {
 			else if (fullClassName != null) {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
-				name = "Class not found or out of date - rechoose comp/subnet";   // ??????????????????
+				name = "Class not found or out of date - rechoose comp/subnet";   
 				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
@@ -1240,17 +1240,11 @@ public class Block implements ActionListener {
 					menuItem3.addActionListener(this);
 					diag.jpm.add(menuItem3);
 						
-					if (diag.diagLang == null) {							
-						menuItem1.setEnabled(false);
-					}
-					if (diag.diagLang.label.equals("JSON")){
-						menuItem1.setEnabled(false);
-						menuItem2.setEnabled(false);
-					}
-					if (!(diag.diagLang.label.equals("Java"))){						
-						menuItem3.setEnabled(false);
-					}
-						
+					menuItem1.setEnabled(diag.diagLang != null && 							
+						diag.diagLang.label.equals("Java"));
+					menuItem2.setEnabled(menuItem1.isEnabled());
+					menuItem3.setEnabled(menuItem1.isEnabled());
+											
 					diag.jpm.addSeparator();
 					menuItem = new JMenuItem(
 							"Clear Associated Diagram and/or Class");
@@ -1427,6 +1421,7 @@ public class Block implements ActionListener {
 			outputPortAttrs = null;
 			isSubnet = false;
 			diag.changed = true;
+			diag.driver.repaint();
 			return;
 
 		}

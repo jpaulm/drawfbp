@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -17,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -48,6 +50,8 @@ public class MyFileChooser extends JFrame
 	private static final long serialVersionUID = 1L;
 	public static int APPROVE_OPTION = 0;
 	public static int CANCEL_OPTION = 1;
+	
+	
 
 	//FileFilter filter = null;
 	JDialog dialog = null;
@@ -121,9 +125,18 @@ public class MyFileChooser extends JFrame
 	
 	DrawFBP.FileChooserParms fCParms;
 	
-	Point mLoc = null;
+	public ClickListener clickListener;
+	public Timer clickTimer;
+	
+	public static int clickInterval = 0;
 
 	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP) {
+		
+		clickListener = new ClickListener();
+		clickInterval = (Integer)Toolkit.getDefaultToolkit().
+		        getDesktopProperty("awt.multiClickInterval");
+		clickTimer = new Timer( clickInterval, clickListener);
+		clickTimer.setRepeats(false);
 			
 		if (!f.exists()) 
 			listHead = System.getProperty("user.home");
@@ -157,6 +170,7 @@ public class MyFileChooser extends JFrame
 		});
 
 		DrawFBP.applyOrientation(dialog);
+		
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());		
 		
@@ -228,7 +242,7 @@ public class MyFileChooser extends JFrame
 		butNF.setMnemonic(KeyEvent.VK_N);
 		butNF.setText("New Folder");
 		
-		butNF.setEnabled(false);
+		//butNF.setEnabled(false);
 
 		// butOK.setAction(okAction);
 		butOK.setAction(enterAction);
@@ -664,7 +678,8 @@ public class MyFileChooser extends JFrame
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		list.addKeyListener(this);
-		list.addMouseListener(this);
+		//ClickListener cL = new ClickListener();
+		list.addMouseListener(clickListener);
 		list.addListSelectionListener(this);
 		list.setFocusTraversalKeysEnabled(false);
 
@@ -1182,6 +1197,12 @@ public class MyFileChooser extends JFrame
 		}
 
 		if (e.getSource() instanceof JList) {
+			
+			// shouldn't happen  -- force a divide by zero!
+			int div_by_0 = -1;
+			div_by_0 /= div_by_0; 
+			/*
+
 			selComp = list;
 			int rowNo = list.locationToIndex(e.getPoint());
 			if (rowNo == -1)
@@ -1192,54 +1213,56 @@ public class MyFileChooser extends JFrame
 			list.setSelectedIndex(rowNo);
 			t_dirName.setBackground(Color.WHITE);
 			// text2.setBackground(textBackground);
-			
+
 			// http://stackoverflow.com/questions/16392212/unable-to-type-or-delete-text-in-jtextfield
-			//http://stackoverflow.com/questions/13415150/java-swing-form-and-cannot-type-text-in-newly-added-jtextfield
-			//(this says don't use keylistener!)
-			//		http://stackoverflow.com/questions/22642401/jtextfield-and-keylistener-java-swing?rq=1
-			//		textField.getDocument().addDocumentListener(...); 
-			//new code 
-			
-					
-			//text2.requestFocusInWindow();
-			//text2.setBackground(vLightBlue);
-			//text2.getCaret().setVisible(true);
+			// http://stackoverflow.com/questions/13415150/java-swing-form-and-cannot-type-text-in-newly-added-jtextfield
+			// (this says don't use keylistener!)
+			// http://stackoverflow.com/questions/22642401/jtextfield-and-keylistener-java-swing?rq=1
+			// textField.getDocument().addDocumentListener(...);
+			// new code
+
+			// text2.requestFocusInWindow();
+			// text2.setBackground(vLightBlue);
+			// text2.getCaret().setVisible(true);
 
 			// String fn = listHead + File.separator + nodeNames[rowNo];
 
-			
-			if (e.getClickCount() == 1) {
-				mLoc = e.getLocationOnScreen();
-				
-				if (nodeNames[rowNo].equals("(empty folder"))
-					return;			
-				
-				list.setSelectedIndex(rowNo);
-				list.repaint();
-				
-				String t = (String)list.getSelectedValue();
-				if (!t.equals("")) {
-					File f = new File(t_dirName.getText() + File.separator + t);
-					if (f.exists() && !f.isDirectory()) {
-						t_fileName.setText(t);				
-						t_fileName.repaint();
-					}
+			// if (e.getClickCount() == 1) {
+			// clickPoint = e.getLocationOnScreen();
+
+			if (nodeNames[rowNo].equals("(empty folder"))
+				return;
+
+			list.setSelectedIndex(rowNo);
+			list.repaint();
+
+			String t = (String) list.getSelectedValue();
+			if (!t.equals("")) {
+				File f = new File(t_dirName.getText() + File.separator + t);
+				if (f.exists() && !f.isDirectory()) {
+					t_fileName.setText(t);
+					t_fileName.repaint();
 				}
+			}
+			// xxxx
 
-			} else if (e.getClickCount() == 2) {
+			// } else
+			if (e.getClickCount() == 2) {
 
-				Point p = e.getLocationOnScreen();
+				// Point p = e.getLocationOnScreen();
 
-				if (mLoc != null && Math.abs(p.x - mLoc.x) < 8  // allow for moved cursor...
-						&& Math.abs(p.y - mLoc.y) < 8) {
+				// if (clickPoint != null && Math.abs(p.x - clickPoint.x) < 8 //
+				// allow for moved cursor...
+				// && Math.abs(p.y - clickPoint.y) < 8) {
 
-					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-				}
+				enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+				// }
 
 			}
-
+*/
 		}
-
+        
+       
 		if (selComp == cBox) {
 			selComp.setFocusable(true);
 			cBox.requestFocusInWindow();
@@ -1384,9 +1407,8 @@ public class MyFileChooser extends JFrame
 	}
 
 	
-	public void valueChanged(ListSelectionEvent e) {
+	public void valueChanged(ListSelectionEvent e) {		
 		paintList();
-
 	}
 
 	
@@ -1459,6 +1481,7 @@ public class MyFileChooser extends JFrame
 				}
 
 				String u = f.isDirectory() ? "folder" : "file";
+				String v = "F" + u.substring(1);
 
 				if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 						dialog,
@@ -1470,13 +1493,13 @@ public class MyFileChooser extends JFrame
 
 					if (!f.exists()) {
 						MyOptionPane.showMessageDialog(driver.frame,
-								u + " " + f.getName() + " doesn't exist",
+								v + " " + f.getName() + " doesn't exist",
 								MyOptionPane.ERROR_MESSAGE);
 						// return;
 					} else {
 						f.delete();
 						MyOptionPane.showMessageDialog(driver.frame,
-								u + " " + f.getName() + " deleted",
+								v + " " + f.getName() + " deleted",
 								MyOptionPane.INFORMATION_MESSAGE);
 					}
 
@@ -1551,9 +1574,10 @@ public class MyFileChooser extends JFrame
 					s = nodeNames[rowNo];
 
 					if (!s.equals("")) {
-						File f = new File(
-								t_dirName.getText() + File.separator + s);
-						if (f.exists() && !f.isDirectory()) {
+						//String v = t_dirName.getText();
+						//File f = new File(v + File.separator + s);
+						//if (f.exists() && !f.isDirectory()) {                         
+						if (s.endsWith(".class")) {
 							t_fileName.setText(s);
 							t_fileName.repaint();
 						}
@@ -1761,6 +1785,7 @@ public class MyFileChooser extends JFrame
 				// showFileNames();
 				showList();
 				// selComp = text2;
+				
 
 			}
 			panel.validate();
@@ -1899,8 +1924,75 @@ public class MyFileChooser extends JFrame
 		}
 	}
 
-	
+	public class ClickListener extends MouseAdapter implements ActionListener
+	{
+	    //private final static int clickInterval = (Integer)Toolkit.getDefaultToolkit().
+	    //    getDesktopProperty("awt.multiClickInterval");
+	    
+	    // private final static int clickInterval = 200;
 
+	    MouseEvent lastEvent;
+	        	     
+	    
+	    public void mouseClicked (MouseEvent e)
+	    
+	    
+	    {
+	    	
+	   // 	System.out.println(e.getClickCount());
+	        if (e.getClickCount() > 2) return;
+
+	        lastEvent = e;
+
+	        if (clickTimer.isRunning())
+	        {
+	        	clickTimer.stop();
+	            doubleClick( lastEvent );
+	        }
+	        else
+	        {
+	        	clickTimer.restart();
+	        }
+	    }
+
+	    public void actionPerformed(ActionEvent e)
+	    {
+	    	clickTimer.stop();
+	        singleClick( lastEvent );
+	    }
+
+	    
+	    public void singleClick(MouseEvent e) {
+	    	selComp = list;
+			int rowNo = list.locationToIndex(e.getPoint());
+			if (rowNo == -1)
+				return;
+
+			list.setRequestFocusEnabled(true);
+
+			list.setSelectedIndex(rowNo);
+			t_dirName.setBackground(Color.WHITE);
+			
+
+			if (nodeNames[rowNo].equals("(empty folder"))
+				return;
+
+			list.setSelectedIndex(rowNo);
+			list.repaint();
+
+			String t = (String) list.getSelectedValue();
+			if (!t.equals("")) {
+				File f = new File(t_dirName.getText() + File.separator + t);
+				if (f.exists() && !f.isDirectory()) {
+					t_fileName.setText(t);
+					t_fileName.repaint();
+				}
+			}
+	    }
+	    public void doubleClick(MouseEvent e) {
+	    	enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+	    }	
 	
+	}
 
 }

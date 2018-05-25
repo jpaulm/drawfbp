@@ -120,13 +120,13 @@ public class Diagram {
 	}
 
 	public File open(File f) {
-		File file = null;
+		File file = null;  
 		String fileString = null;
 
 		if (f != null) 
-		file = f;
-		else {
-
+			file = f;
+		
+		if (f == null || f.isDirectory()) {		
 			String s = driver.properties.get("currentDiagramDir");
 			if (s == null)
 				s = System.getProperty("user.home");
@@ -148,7 +148,7 @@ public class Diagram {
 				return null; 
 		}
 		
-		if (!(hasSuffix(file.getName()))) {
+		if (!(hasSuffix(file.getName())) && !(file.isDirectory())) {
 			String name = file.getAbsolutePath();
 			name += ".drw";
 			file = new File(name);

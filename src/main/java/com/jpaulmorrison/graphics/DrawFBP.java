@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
 
 import javax.swing.*;
+//import javax.swing.Timer;
 import javax.swing.event.*;
 
 import java.util.*;
@@ -18,6 +19,7 @@ import java.net.*;
 import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
+import com.jpaulmorrison.graphics.MyFileChooser.ClickListener;
 
 import java.lang.reflect.*;
 
@@ -108,6 +110,7 @@ public class DrawFBP extends JFrame
 	CloseTabAction closeTabAction = null;
 	CloseAppAction closeAppAction = null;
 	EscapeAction escapeAction = null;
+	//UpAction upAction = null;
 
 	KeyStroke escapeKS = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
 
@@ -217,10 +220,15 @@ public class DrawFBP extends JFrame
 	
 	JLabel zoom = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
-	JButton up = new JButton("Up");
+	JButton up = new JButton("Go to Directory");
 	
 	JRadioButton[] but = new JRadioButton[11];
 	Box box21 = null;
+	
+	
+	//public Timer clickTimer;
+	public MyFileChooser.ClickListener clickListener;
+	
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -233,6 +241,11 @@ public class DrawFBP extends JFrame
 		
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
+		
+		
+		//public final static int clickInterval = 200;
+		//MyFileChooser.ClickListener clickListener = new MyFileChooser.ClickListener();
+		//clickTimer = new Timer( clickInterval, clickListener);
 
 		properties = new HashMap<String, String>();		
 			
@@ -290,6 +303,8 @@ public class DrawFBP extends JFrame
 	private void createAndShowGUI() {
 
 		// Create and set up the window.
+		
+		
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
@@ -415,6 +430,7 @@ public class DrawFBP extends JFrame
 		closeTabAction = new CloseTabAction();
 		closeAppAction = new CloseAppAction();
 		escapeAction = new EscapeAction();
+		//upAction = new UpAction();
 
 		frame.addWindowListener(new WindowAdapter() {
 
@@ -619,10 +635,10 @@ public class DrawFBP extends JFrame
 		pan.setBorderPaintedFlat(false);
 		
 		up.setFont(fontg);		
-		up.setActionCommand("Go Up One Level");
+		up.setActionCommand("Go to Folder");
 		up.addActionListener(this);
 		up.setBackground(slateGray1);
-		up.setEnabled(false);
+		//up.setEnabled(false);
 				
 		// pan.setBorder(null);
 		// pan.setPreferredSize(new Dimension(50, 20));
@@ -1337,6 +1353,18 @@ public class DrawFBP extends JFrame
 			//	frame.setCursor(openPawCursor);
 			//else 
 			//	frame.setCursor(defaultCursor);	
+			return;
+		}
+		
+		if (s.equals("Go to Folder")) {			
+			String w = null;
+			File f = curDiag.diagFile;
+			if (f != null) {
+				w = f.getParent();	
+			}
+			//w = f.getAbsolutePath();
+			openAction(w);
+
 			return;
 		}
 		
@@ -3396,6 +3424,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 		}
 	}
+		
+		
 
 	public class JavaFileFilter extends FileFilter {
 		@Override
@@ -3868,8 +3898,8 @@ void chooseFonts(MyFontChooser fontChooser){
 					frame.setCursor(defaultCursor);
 			}
 			
-			if (e.getClickCount() == 2)
-				return;
+			//if (e.getClickCount() == 2)
+			//	return;
 
 			curDiag.foundBlock = null;
 			selBlock = null;
