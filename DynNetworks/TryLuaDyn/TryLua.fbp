@@ -1,0 +1,13 @@
+Gen(ThLua), Gen2(ThLua), 
+Concat(ThLua), Repl(ThLua), Drop(ThLua),
+
+Gen OUT -> IN[0] Concat, Gen2 OUT -> IN[1] Concat,
+Concat OUT -> IN Repl OUT -> IN Drop,
+
+'5000' -> COUNT Gen,
+'5000' -> COUNT Gen2,
+'../../LuaScripts\\gen.lua' -> PROG Gen, 
+'../../LuaScripts\\gen.lua' -> PROG Gen2,
+'../../LuaScripts\\concat.lua' -> PROG Concat,
+'../../LuaScripts\\repl.lua' -> PROG Repl,
+'../../LuaScripts\\drop.lua' -> PROG Drop;

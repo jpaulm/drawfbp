@@ -1,0 +1,10 @@
+# thxscan has been converted so .fbp notation can use commas or 
+#  end of line between "clauses"
+# comments follow the noflo convention
+
+'..\\..\\TestData\\POMPIERS.FIL' -> OPT Lire(ThFileRd)
+Lire OUT -> IN Ecrire(ThFileWt),
+'c:\\temp\\infqueue.dat' -> OPT Ecrire  * -> * Lire2(ThFileRd)
+Lire2 OUT ->  IN Ecrire2(ThFileWt) 
+'..\\..\\TestData\\autres.FIL' ->  OPT Ecrire2
+'c:\\temp\\infqueue.dat' -> OPT Lire2
