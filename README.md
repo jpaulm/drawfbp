@@ -62,7 +62,9 @@ Do these builds in this order:
 
 Right click on the "solution" line, and do `Build Solution`
 
-If you get errors, you may have to build individual projects (sometimes this will require more than one try); if you only get warnings, you can proceed
+If you get errors, you may have to build individual projects (sometimes this will require more than one try); if you only get warnings, you can proceed.
+
+If you get a message saying "unknown compiler version", try reinstalling Boost.
 
 "Dynamic" Networks
 ---
