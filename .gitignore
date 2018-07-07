@@ -15,6 +15,7 @@ hs_err_pid*
 *.build
 
 #VC++ stuff
+.vs
 *.tlog
 *.log
 *.pch
