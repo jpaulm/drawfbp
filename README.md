@@ -26,7 +26,7 @@ Services supported by Lua interface, and some sample CppFBP/Lua scripts
 Prerequisites
 ---
 
-Download and install Visual C++ 2010 Express (or higher version)
+Download and install Microsoft Visual Studio
 
 Download and install `Boost` - http://www.boost.org/
 
@@ -62,7 +62,9 @@ Do these builds in this order:
 
 Right click on the "solution" line, and do `Build Solution`
 
-If you get errors, you may have to build individual projects (sometimes this will require more than one try); if you only get warnings, you can proceed
+If you get errors, you may have to build individual projects (sometimes this will require more than one try); if you only get warnings, you can proceed.
+
+If you get a message saying "unknown compiler version", try reinstalling Boost.
 
 "Dynamic" Networks
 ---
