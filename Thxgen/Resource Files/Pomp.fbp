@@ -1,5 +1,5 @@
 # thxscan has been converted so .fbp notation can use commas or 
-#  end of line between "clauses"
+#  end of line between "clauses"  - Thxgen doesn't handle this yet...
 # comments follow the noflo convention
 
 'c:\\threadn\\pompiers.fil' -> OPT Lire("../CppFBPComponents/Components/ThFileRd") OUT -> 

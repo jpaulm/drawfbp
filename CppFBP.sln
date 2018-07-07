@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppFBPCore", "CppFBPCore\CppFBPCore.vcxproj", "{CD601953-D9D2-4A73-BC98-962132D532F4}"
 EndProject
@@ -16,6 +16,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestSubnets", "TestSubnets\
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Thxgen", "Thxgen\Thxgen.vcxproj", "{FC15EBBB-A017-4C60-B65E-FB534FD0D6C4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CD601953-D9D2-4A73-BC98-962132D532F4} = {CD601953-D9D2-4A73-BC98-962132D532F4}
+		{DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F} = {DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CopyFile", "TestNetworks\CopyFile\CopyFile.vcxproj", "{D324AC2E-065C-4C89-A889-0A181C7688E3}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -39,6 +43,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimingTest1", "TestNetworks
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TryLua", "TestNetworks\TryLua\TryLua.vcxproj", "{A96FB3AE-C6C8-46CF-BA0F-D5593BE35E43}"
 	ProjectSection(ProjectDependencies) = postProject
+		{CD601953-D9D2-4A73-BC98-962132D532F4} = {CD601953-D9D2-4A73-BC98-962132D532F4}
 		{DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F} = {DDAECF69-DCC6-4FFE-8EEC-1641BD277B1F}
 	EndProjectSection
 EndProject
@@ -254,5 +259,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B9CF2DB2-4434-4256-9F99-4C5431E73886}
 	EndGlobalSection
 EndGlobal

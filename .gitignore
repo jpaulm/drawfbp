@@ -24,10 +24,12 @@ hs_err_pid*
 *.exe
 *.opensdf
 *.opendb
-*/output.fil
-*/autres.fil
 **/Release/
 **/Debug/
+
+#data files
+*/output.fil
+*/autres.fil
 
 # System crap
 Thumbs.db
