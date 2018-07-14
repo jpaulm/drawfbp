@@ -12,6 +12,8 @@ FBP is a particular form of dataflow programming based on bounded buffers, infor
 
 One interesting aspect of this implementation is that it supports the scripting language `Lua`, so large parts of your networks can be written in a scripting language if desired.
 
+For some history, including a description of "static" vs. "dynamic", see https://github.com/jpaulm/threadn/blob/master/README.md .
+
 Web sites for FBP: 
 * http://www.jpaulmorrison.com/fbp/
 * https://github.com/flowbased/flowbased.org/wiki
