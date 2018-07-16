@@ -168,28 +168,33 @@ void main(int argc, char *argv[]) {
 		proc_ptr = label_ptr->proc_ptr;
 
 		while (proc_ptr != 0) {
-			auto j = strlen(proc_ptr->comp_name) - 1;
-			auto k = j;
+			if (proc_ptr->comp_name[0] == '\0')
+				comp_name_end[0] = '\0';
+			else {
 
-			while (j >= 0) {
-				if (proc_ptr->comp_name[j] == '/')
-					break;
-				j--;
+				auto j = strlen(proc_ptr->comp_name) - 1;
+				auto k = j;
+
+				while (j >= 0) {
+					if (proc_ptr->comp_name[j] == '/')
+						break;
+					j--;
+				}
+				memcpy(comp_name_end, &proc_ptr->comp_name[j + 1], k - j);
+				comp_name_end[k - j] = '\0';
 			}
-			memcpy(comp_name_end, &proc_ptr->comp_name[j + 1], k - j);
-			comp_name_end[k - j] = '\0';
 
-			j = -1;
+			auto m = -1;
 
 			for (int i = 0; i < modentnas; i++) {
 				if (strcmp(comp_name_end, modents[i].name) == 0) {
-					j = i;
+					m = i;
 					break;
 				}
 			}
-			if (j == -1) {
+			if (m == -1) {
 				strcpy(modents[modentnas].name, comp_name_end);
-				j = modentnas;
+				m = modentnas;
 				modentnas++;
 
 				if (!proc_ptr->composite) {
@@ -202,6 +207,7 @@ void main(int argc, char *argv[]) {
 					fputs(gen_area, fpo);
 				}
 			}
+
 			gen_ptr = gen_area;
 			strcpy(gen_ptr, "proc_ent P");
 			gen_ptr = strchr(gen_ptr, '\0');
@@ -443,4 +449,4 @@ void main(int argc, char *argv[]) {
 retn:
 	system("pause");  // to see console
 	return;
-	}
+}

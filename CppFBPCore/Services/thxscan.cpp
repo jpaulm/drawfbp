@@ -16,6 +16,7 @@
 #define EOF 0xff
 #endif 
 
+char curr_char;
 
 #define TC(label,ch) { if (curr_char != ch) goto label; \
     *o_ptr = curr_char; o_ptr++;  \
@@ -45,7 +46,7 @@
 
 #define SC      { curr_char = getc(fp); }
 
-char curr_char;
+//char curr_char;
 
 int scan_blanks(FILE *fp);
 int scan_sym(FILE *fp, char * out_str);
@@ -98,9 +99,7 @@ int thxscan(FILE *fp, label_ent *label_tab, char file_name[10])
 	//int label_ct;
 	bool eq_arrow;
 	IIP *IIP_ptr;
-	//FILE *fp2;
-	//int res;
-
+	
 	ret_code = 0;
 	
 	curr_char = getc(fp);
@@ -116,25 +115,25 @@ int thxscan(FILE *fp, label_ent *label_tab, char file_name[10])
 	out_num[0] = '\0';
 	cnxt_hold = 0;
 	
+	scan_blanks(fp);
 
-netloop:
-	scan_blanks(fp);  // skip blanks, comments, etc.
+netloop:	   
 	TCO(X0,'\'');
-	goto Xs;
+	goto Xs;       // quote found - scan off rest of IIP
 X0:
 	if (scan_sym(fp, out_str) != 0) {  // this could be a network label or a process name...
 		printf("Name error\n");
 		ret_code = 4;
 		goto exit;  
 	}
-	scan_blanks(fp);
+	
 	TCO(X2,':');
 	strcpy_s(label_curr->label, out_str);  // it was a label		  
 	printf("Scanning Network: %s\n",out_str);
+	scan_blanks(fp);
 
 bigloop:	
 	
-	scan_blanks(fp);
 	cnxt_hold = 0;
 	IIPlen = -1;
 	TCO(X1,'\'');
@@ -158,7 +157,8 @@ X2:
 
 	proc_curr = find_or_build_proc(procname);
 
-	scan_blanks(fp);	
+	if (4 == scan_blanks(fp))
+		goto bigloop;
 	
 	goto X3;
 
@@ -197,7 +197,7 @@ X3:
 	TCO(rest_of_comp, ')');
 	goto NN2;
 rest_of_comp:	
-	//scan_blanks(fp);
+	
 	TCO(NQ6,'"');           // this says that comp name may be surrounded by double quotes (not included in comp_name)
 NQ6: 
 	o_ptr = comp_name;      // if no data between brackets, comp_name will not be modified...
@@ -225,54 +225,39 @@ NB1:
 	// comp scanned off, if any
 	strcpy_s(upstream_name, procname);	    // in case this proc is the upstream of another arrow
 	
-	scan_blanks(fp);
-
+	if (4 == scan_blanks(fp)) 	
+		goto bigloop;
 
 	TCO(NQ1,'?');
 	proc_curr->trace = 1;
+	if (4 == scan_blanks(fp))
+		goto bigloop;
 NQ1: 
-
-	//if (cnxt_hold != 0) {
-	//  strcpy(cnxt_hold->downstream_name, procname);
-	//  cnxt_hold = 0;
-	//}
-
 	
-	scan_blanks(fp);
-
-
-	//o_ptr = out_str;
-	//TC(outport,'*');     /* automatic port */
-	//*o_ptr = '\0';
-	//IIPlen = -1;
-	//goto GUy;
-
-//outport:  -- same as upstream port
-	
-	//scan_blanks(fp);
-
-
 	TCO(tsc,EOF);
 	eof_found = TRUE;
 	goto nxtnet;
 
 tsc:
-	TCO(tiip,';'); 
+	TCO(tcom,';'); 
+	scan_blanks(fp);
 nxtnet:
 	// this is a fudge because multiple nets are not currently supported 
 	IIPlen = -1;
-	scan_blanks(fp);
+		
 	TCO(nextnet,EOF); 
 	goto exit;
 
-tiip:	   
-	IIPlen = -1;
-	TCO(get_up_port,',');	
+tcom:	
 	
-	scan_blanks(fp);
+	IIPlen = -1;
+	TCO(not_com,',');	
+	
+	scan_blanks(fp); 
 	goto bigloop; 
 
-get_up_port:	
+not_com:	
+	
 	o_ptr = out_str;
 	TC(outport,'*');     /* automatic port */
 	*o_ptr = '\0';
@@ -299,8 +284,7 @@ GNx:
 NNx:  
 	TCO(elemerr,']');
 	*o_ptr = '\0';
-	upstream_elem_no = atoi(out_num);
-	scan_blanks(fp);
+	upstream_elem_no = atoi(out_num);	
 
 tArrow: 
 	scan_blanks(fp);
@@ -483,9 +467,10 @@ exit:
 /* 
 
 Scan off blanks or EOLs - returns: 
-4 if EOF encountered in a comment
+4 if EOL encountered
 0 otherwise
 
+Comments start with a # and continue until EOL 
 */
 
 int scan_blanks(FILE *fp)
@@ -499,13 +484,12 @@ sbs:
 		continue;
 not_blank: 
 		TCO(not_EOL, '\n');
+		res = 4;
 		continue;
 not_EOL:
 		TCO(ncom,'#');   // comment runs from #-sign to end of line
 		for (;;) {
 			TCO(tasu,EOF);
-			//printf("EOF encountered within comment\n");
-			//res = 4;
 			goto exit;
 tasu:
 			TCO(nnl,eol);		
@@ -525,12 +509,13 @@ exit:
 
 /*
 Scan off a network label or process name (this is used for ports as well, as we don't know if a string is a port until later...)
+
+Allowable characters are alphameric, hyphen, underscore
 */
 inline int scan_sym(FILE *fp, char * out_str)
 {
 	//extern char curr_char;
 	char * o_ptr;
-//	int i;
 
 	o_ptr = out_str;
 X4:
@@ -543,9 +528,8 @@ NN4:
 	TC(NU4,'_');
 	goto X5;
 NU4:
-	TCO(ES4,'\\');
-    CC;
-	
+	TC(ES4,'-');
+    	
 X5:
 	goto X4;
 ES4:
