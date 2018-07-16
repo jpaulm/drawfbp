@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Include="Resource Files\Pomp.fbp" />
     <None Include="Resource Files\TestInfQ.fbp" />
+    <None Include="Resource Files\GithubSynchronization.fbp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source Files\Thxgen.cpp">
