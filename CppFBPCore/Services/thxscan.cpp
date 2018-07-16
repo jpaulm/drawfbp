@@ -510,7 +510,9 @@ exit:
 /*
 Scan off a network label or process name (this is used for ports as well, as we don't know if a string is a port until later...)
 
-Allowable characters are alphameric, hyphen, underscore
+Allowable characters are alphameric, hyphen, underscore; if character is preceded by backslash, will be accepted
+
+This routine exits when an nonallowed character (or EOL) is encountered
 */
 inline int scan_sym(FILE *fp, char * out_str)
 {
@@ -529,10 +531,14 @@ NN4:
 	goto X5;
 NU4:
 	TC(ES4,'-');
-    	
+	goto X5;
+ES4:
+	TCO(ES5, '\\');  // as per discussion on https://groups.google.com/forum/#!searchin/flow-based-programming/commas -
+	                //             find "Special characters in process names" 
+	CC;    	
 X5:
 	goto X4;
-ES4:
+ES5:
 	*o_ptr = '\0';           
 	return(0);
 }
