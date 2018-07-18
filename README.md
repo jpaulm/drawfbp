@@ -73,7 +73,11 @@ If you get a message saying "unknown compiler version", try reinstalling Boost.
 
 The projects whose names are of the form `xxxDyn` are "dynamic" versions of the projects named `xxx` - they start by scanning off the `.fbp` network definitions (via the `CppFBP` module with the `DYNAM` parameter set to `true`), and then run the resulting network structures.
 
+Testing Thxgen
+---
 
+This program takes .fbp file and generates a .cpp network definition. If you want to try it, run Thxgen on your cloned repository - in debug mode...  To change the file being scanned, change Command Arguments in Debugging Properties...
+ 
 Testing "TimingTest1" (console application)
 ---
 
