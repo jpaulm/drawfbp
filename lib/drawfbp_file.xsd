@@ -29,7 +29,25 @@
                                     <xs:element name="codefilename" type="xs:string" minOccurs="0"/>
                                     <xs:element name="diagramfilename" type="xs:string" minOccurs="0"/>
                                     <xs:element name="blockclassname" type="xs:string" minOccurs="0"/>   
-                                    <xs:element name="mpxfactor" type="xs:integer" minOccurs="0" />      		          
+                                    <xs:element name="mpxfactor" type="xs:integer" minOccurs="0" />  
+                                    <xs:element name="issubnet" type="xs:boolean" minOccurs="0"/>
+                                    <xs:element name="substreamsensitive" type="xs:boolean" minOccurs="0"/>
+                                    <xs:element name="subnetports" minOccurs="0">
+                                      <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="subnetport" maxOccurs="unbounded" > 
+                                               <xs:complexType>
+                                                  <xs:all>     
+                                                     <xs:element name="name" type="xs:string" minOccurs="0"/>       
+                                                     <xs:element name="y" type="xs:integer" minOccurs="0"/>
+                                                     <xs:element name="side" type="xs:string" minOccurs="0"/>
+                                                     <xs:element name="substreamsensitive" type="xs:boolean" minOccurs="0"/>                                                    
+                                                  </xs:all> 
+                                               </xs:complexType>
+                                            </xs:element> 
+                                         </xs:sequence>
+                                      </xs:complexType>
+                                    </xs:element>
                                </xs:all> 
                            </xs:complexType>
                       </xs:element> 
