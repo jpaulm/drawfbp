@@ -172,8 +172,8 @@ public class DrawFBP extends JFrame
 	// "Subnet" is not a separate block type (it is a variant of "Process")
 	
 	String blockNames[] = {"Process", "Initial IP",
-					"Enclosure", "Subnet", "ExtP In", "ExtP Out",
-					"ExtP O/I", "Legend", "File", "Person", "Report"};
+					"Enclosure", "Subnet", "ExtPorts: In", "... Out", "... Out/In", 
+					"Legend", "File", "Person", "Report"};
 	
 	String blockTypes[] = {Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK, Block.Types.PROCESS_BLOCK,
 			 Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK, Block.Types.EXTPORT_OUTIN_BLOCK,

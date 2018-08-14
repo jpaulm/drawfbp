@@ -857,6 +857,7 @@ public class Block implements ActionListener {
 		return opt;
 	}
 
+	
 	void displayPortInfo() {
 		buildMetadata();   
 		final JDialog jdialog = new JDialog(driver.frame);
@@ -865,17 +866,17 @@ public class Block implements ActionListener {
 				jdialog.dispose();
 			}
 		});
-
+	
 		jdialog.setTitle("Description and Port Information");
 		jdialog.toFront();
 		JPanel panel = new JPanel(new GridBagLayout());
-
+	
 		panel.setBackground(Color.GRAY);
 				
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		panel.setLayout(gbl);
-
+	
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0.5;
 		gbc.weighty = 0.5;
@@ -910,7 +911,7 @@ public class Block implements ActionListener {
 		gbl.setConstraints(tf1, gbc);
 		tf1.setBackground(lg);
 		panel.add(tf1);
-
+	
 		gbc.weightx = 1.5;
 		gbc.weighty = 0.5;
 		gbc.gridx = 0;
@@ -924,13 +925,13 @@ public class Block implements ActionListener {
 		gbl.setConstraints(tf2, gbc);
 		tf2.setBackground(lg);
 		panel.add(tf2);
-
+	
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.weightx = 0.5;
-
+	
 		gbc.gridwidth = 1;
 		gbc.gridy = 4;
-
+	
 		JTextField[] tft = new JTextField[ROWSIZE];
 		tft[0] = new JTextField(" Port ");
 		tft[1] = new JTextField(" Type ");
@@ -938,7 +939,7 @@ public class Block implements ActionListener {
 		tft[3] = new JTextField(" Function ");
 		tft[4] = new JTextField(" Connected? ");
 		displayRow(gbc, gbl, tft, panel, Color.BLUE);
-
+	
 		for (AInPort ip : inputPortAttrs.values()) {
 			JTextField[] tfi = new JTextField[ROWSIZE];
 			tfi[0] = new JTextField(ip.value);
@@ -962,7 +963,7 @@ public class Block implements ActionListener {
 			gbc.weightx = 0.5;
 			displayRow(gbc, gbl, tfi, panel, Color.BLACK);
 		}
-
+	
 		for (AOutPort op : outputPortAttrs.values()) {
 			JTextField[] tfo = new JTextField[ROWSIZE];
 			tfo[0] = new JTextField(op.value);
@@ -984,7 +985,7 @@ public class Block implements ActionListener {
 			tfo[4] = new JTextField(results[res]);
 			displayRow(gbc, gbl, tfo, panel, Color.BLACK);
 		}
-
+	
 		LinkedList<String> lst = checkUnmatchedPorts();
 		for (String ls : lst) {
 			JTextField[] tfu = new JTextField[ROWSIZE];
@@ -998,7 +999,7 @@ public class Block implements ActionListener {
 			tfu[4] = new JTextField("?");
 			displayRow(gbc, gbl, tfu, panel, Color.BLACK);
 		}
-
+	
 		jdialog.add(panel);
 		//jdialog.pack();  
 		
@@ -1033,6 +1034,7 @@ public class Block implements ActionListener {
 		driver.frame.repaint();
 	}
 
+	
 	void displayRow(GridBagConstraints gbc, GridBagLayout gbl, JTextField[] tf,
 			JPanel panel, Color col) {
 		gbc.gridx = 0;

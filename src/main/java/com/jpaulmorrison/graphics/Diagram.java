@@ -461,8 +461,9 @@ public class Diagram {
 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
 "xsi:noNamespaceSchemaLocation=\"https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd\">";
 
+		fileString += "<net>";
 		if (desc != null)
-			fileString += "<net> <desc>" + desc + "</desc> ";
+			fileString += "<desc>" + desc + "</desc> ";
 
 		// if (title != null)
 		// fileString += "<title>" + title + "</title> ";
