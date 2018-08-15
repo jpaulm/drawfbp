@@ -866,7 +866,7 @@ public class Diagram {
 
 		}
 		
-		 suggest....
+		// suggested file name....
 		
 		return block;
 	}
