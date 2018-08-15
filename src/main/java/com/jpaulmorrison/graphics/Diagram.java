@@ -756,10 +756,10 @@ public class Diagram {
 				arrow.fromId = eb.id;
 				if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
-						if (snp.side == Side.LEFT && arrow.toY == snp.y) {
+						if (snp.side == Side.LEFT && Math.abs(arrow.toY - snp.y)<= 6) {
 							eb.substreamSensitive = snp.substreamSensitive;
 							eb.description = snp.name;
-						}
+						}						
 					}
 				}
 				driver.curDiag.blocks.put(new Integer(arrow.fromId), eb);
@@ -780,7 +780,7 @@ public class Diagram {
 				arrow.toId = eb.id;
 				if (enc.subnetPorts != null) {
 					for (SubnetPort snp : enc.subnetPorts) {
-						if (snp.side == Side.RIGHT && arrow.toY == snp.y) {
+						if (snp.side == Side.RIGHT && Math.abs(arrow.fromY - snp.y)<= 6) {
 							eb.substreamSensitive = snp.substreamSensitive;
 							eb.description = snp.name;
 						}
@@ -845,6 +845,7 @@ public class Diagram {
 						arrow.toX = block.cx - block.width / 2;
 						arrow.toY = block.cy;
 					}
+					//arrow.upStreamPort = "UPS";
 				}
 			}
 
@@ -859,10 +860,14 @@ public class Diagram {
 						arrow.fromX = block.cx + block.width / 2;
 						arrow.fromY = block.cy;
 					}
+					//arrow.downStreamPort = "DNS"; 
 				}
 			}
 
 		}
+		
+		 suggest....
+		
 		return block;
 	}
 
