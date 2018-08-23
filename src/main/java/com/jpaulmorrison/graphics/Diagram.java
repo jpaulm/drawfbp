@@ -148,6 +148,12 @@ public class Diagram {
 				return null; 
 		}
 		
+		if (file.isDirectory()) {
+			MyOptionPane.showMessageDialog(driver.frame,
+							"File is directory: " + file.getAbsolutePath());
+			return null;
+		}
+		
 		if (!(hasSuffix(file.getName())) && !(file.isDirectory())) {
 			String name = file.getAbsolutePath();
 			name += ".drw";
@@ -165,7 +171,7 @@ public class Diagram {
 			//return null;
 		//}
 		if (null == (fileString = readFile(file))) {
-			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file "
+			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file: "
 					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
@@ -521,12 +527,18 @@ public class Diagram {
 
 				fileString = fileBuffer.toString();
 			} catch (IOException e) {
+				MyOptionPane.showMessageDialog(driver.frame, "I/O Exception: "
+						+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 				fileString = "";
 			}
 
 		} catch (FileNotFoundException e) {
+			MyOptionPane.showMessageDialog(driver.frame, "File not found: "
+					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		} catch (IOException e) {
+			MyOptionPane.showMessageDialog(driver.frame, "I/O Exception 2: "
+					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		return fileString;
@@ -683,7 +695,7 @@ public class Diagram {
 		blocks.remove(aid);
 		// changeCompLang();
 
-		driver.frame.repaint();
+		//driver.frame.repaint();
 	}
 
 	Block excise(Enclosure enc) {
@@ -821,7 +833,7 @@ public class Diagram {
 		block.cx = enc.cx;
 		block.cy = enc.cy;
 		block.calcEdges();
-		driver.frame.repaint();
+		//driver.frame.repaint();
 
 		// now go through crossing arrows that were held and reinsert them
 		// in old diagram,

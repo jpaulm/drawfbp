@@ -135,8 +135,9 @@ public class MyFileChooser extends JFrame
 		clickListener = new ClickListener();
 		clickInterval = (Integer)Toolkit.getDefaultToolkit().
 		        getDesktopProperty("awt.multiClickInterval");
-		clickTimer = new Timer( clickInterval, clickListener);
-		clickTimer.setRepeats(false);
+		
+		//clickTimer = new Timer( clickInterval, clickListener);
+		//clickTimer.setRepeats(false);
 			
 		if (!f.exists()) 
 			listHead = System.getProperty("user.home");
@@ -271,7 +272,7 @@ public class MyFileChooser extends JFrame
 		butCopy.setFocusTraversalKeysEnabled(false);
 
 		butParent.setEnabled(true);
-		if (saveAs)
+		//if (saveAs)
 			butNF.setEnabled(true);
 		butOK.setEnabled(true);
 		// butCopy.setEnabled(saveAs);
@@ -719,7 +720,7 @@ public class MyFileChooser extends JFrame
 		listView.repaint();
 		dialog.repaint();
  		
-		panel.repaint();
+		//panel.repaint();
 		//frame.repaint();
 
 	}
@@ -1199,7 +1200,7 @@ public class MyFileChooser extends JFrame
 		if (e.getSource() instanceof JList) {
 			
 			// shouldn't happen  -- force a divide by zero!
-			int div_by_0 = -1;
+			int div_by_0 = 0;
 			div_by_0 /= div_by_0; 
 			/*
 
@@ -1395,7 +1396,7 @@ public class MyFileChooser extends JFrame
 		
 		paintList();
 		list.repaint();
-		repaint();
+		//repaint();
 	}
 
 	
@@ -1758,7 +1759,7 @@ public class MyFileChooser extends JFrame
 			//frame.repaint();
 			//frame.repaint();
 			t_dirName.repaint();
-			repaint();
+			//repaint();
 
 		}
 	}
@@ -1789,7 +1790,7 @@ public class MyFileChooser extends JFrame
 
 			}
 			panel.validate();
-			repaint();
+			//repaint();
 		}
 	}
 
@@ -1925,7 +1926,10 @@ public class MyFileChooser extends JFrame
 	}
 
 	public class ClickListener extends MouseAdapter implements ActionListener
+	
 	{
+		// Dependency on swing.Timer removed - seems to work!
+		
 	    //private final static int clickInterval = (Integer)Toolkit.getDefaultToolkit().
 	    //    getDesktopProperty("awt.multiClickInterval");
 	    
@@ -1939,30 +1943,34 @@ public class MyFileChooser extends JFrame
 	    
 	    {
 	    	
-	   // 	System.out.println(e.getClickCount());
+	    	//System.out.println(e.getClickCount());
 	        if (e.getClickCount() > 2) return;
 
 	        lastEvent = e;
+	        
+	        firstClick( lastEvent );    // try this
 
-	        if (clickTimer.isRunning())
+	        //if (clickTimer.isRunning())
+	        if (e.getClickCount() == 2)
 	        {
-	        	clickTimer.stop();
-	            doubleClick( lastEvent );
+	        //	clickTimer.stop();
+	            secondClick( lastEvent );
 	        }
-	        else
-	        {
-	        	clickTimer.restart();
-	        }
+	        //else
+	        //{
+	        	//clickTimer.restart();
+	        //}
 	    }
 
 	    public void actionPerformed(ActionEvent e)
 	    {
 	    	clickTimer.stop();
-	        singleClick( lastEvent );
+	        firstClick( lastEvent );
 	    }
 
 	    
-	    public void singleClick(MouseEvent e) {
+	    public void firstClick(MouseEvent e) {
+	    	
 	    	selComp = list;
 			int rowNo = list.locationToIndex(e.getPoint());
 			if (rowNo == -1)
@@ -1989,10 +1997,10 @@ public class MyFileChooser extends JFrame
 				}
 			}
 	    }
-	    public void doubleClick(MouseEvent e) {
+	    public void secondClick(MouseEvent e) {
 	    	enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 	    }	
 	
 	}
-
-}
+	
+}  

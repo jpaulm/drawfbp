@@ -173,7 +173,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	
 	void done() {
 		jDialog.setVisible(false);
-		driver.frame.repaint();
+		//driver.frame.repaint();
 	}
 	
 	public void valueChanged(ListSelectionEvent e) {
