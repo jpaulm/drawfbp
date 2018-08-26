@@ -36,7 +36,11 @@ apply plugin: 'application'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+<<<<<<< HEAD
 version = '2.15.1'
+=======
+version = '2.15.0'
+>>>>>>> 23e5c023823f708643005263dcc9a2deab13a34b
 group = 'com.jpaulmorrison'
 
 description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and will generate JavaFBP or C#FBP networks.'
@@ -120,7 +124,11 @@ task writeNewPom << {
         project {
             groupId 'com.jpaulmorrison'
             artifactId 'drawfbp'
+<<<<<<< HEAD
             version '2.15.1'
+=======
+            version '2.15.0'
+>>>>>>> 23e5c023823f708643005263dcc9a2deab13a34b
         
             inceptionYear '2016'
             licenses {
@@ -157,7 +165,11 @@ uploadArchives {
         packaging 'jar'
         // optionally artifactId can be defined here         
         url 'https://github.com/jpaulm/drawfbp'
+<<<<<<< HEAD
         version '2.15.1'
+=======
+        version '2.15.0'
+>>>>>>> 23e5c023823f708643005263dcc9a2deab13a34b
         scm {
           connection 'scm:git:https://github.com/jpaulm.git'
           developerConnection 'scm:git:https://github.com/jpaulm.git'
