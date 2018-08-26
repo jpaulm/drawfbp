@@ -532,7 +532,7 @@ public class Arrow implements ActionListener {
 					upStreamPort = "";
 				}
 			}
-			driver.frame.repaint();
+			//driver.frame.repaint();
 
 		} else if (s.equals("Edit Downstream Port Name") && endsAtBlock) {
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
@@ -571,7 +571,7 @@ public class Arrow implements ActionListener {
 					downStreamPort = "";
 				}
 			}
-			driver.frame.repaint();
+			//driver.frame.repaint();
 			
 		} else if (s.equals("Set Capacity")) {
 			
@@ -615,12 +615,12 @@ public class Arrow implements ActionListener {
 				capLegend.description = "(" + capacity + ")";
 				*/
 			}
-			driver.frame.repaint();
+			//driver.frame.repaint();
 			diag.changed = true;
 			
 		} else if (s.equals("Remove Capacity")) {			
 			capacity = -1;			
-			driver.frame.repaint();
+			//driver.frame.repaint();
 			diag.changed = true;
 
 		} else if (s.equals("Toggle Upstream Port Automatic / Normal")) {
@@ -628,7 +628,7 @@ public class Arrow implements ActionListener {
 				upStreamPort = "*";
 			else
 				upStreamPort = null;
-			driver.frame.repaint();
+			//driver.frame.repaint();
 			diag.changed = true;
 
 		} else if (s.equals("Toggle Downstream Port Automatic / Normal")) {
@@ -636,7 +636,7 @@ public class Arrow implements ActionListener {
 				downStreamPort = "*";
 			else
 				downStreamPort = null;
-			driver.frame.repaint();
+			//driver.frame.repaint();
 			diag.changed = true;
 
 		} else if (s.equals("Toggle DropOldest")) {
@@ -695,7 +695,7 @@ public class Arrow implements ActionListener {
 
 			}
 
-			driver.frame.repaint();
+			//driver.frame.repaint();
 			diag.foundArrow = null;
 			diag.changed = true;
 		}
