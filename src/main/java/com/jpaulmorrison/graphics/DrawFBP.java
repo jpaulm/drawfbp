@@ -20,6 +20,9 @@ import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
 
+import javax.swing.tree.*;
+
+
 import java.lang.reflect.*;
 
 import javax.swing.filechooser.FileFilter;
@@ -226,9 +229,9 @@ public class DrawFBP extends JFrame
 	
 	
 	//public Timer clickTimer;
-	public MyFileChooser.ClickListener clickListener;
+	//public MyFileChooser.ClickListener clickListener;
 	
-	private final int REFRESH_TIME = 250;
+	private final int REFRESH_TIME = 200;  // 1/5 secs.
 	javax.swing.Timer timer = new javax.swing.Timer(REFRESH_TIME, new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {
@@ -312,15 +315,13 @@ public class DrawFBP extends JFrame
 	private void createAndShowGUI() {
 
 		// Create and set up the window.
-		
-		
 
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		//Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
 
 		frame = this;
 		frame.setTitle("DrawFBP Diagram Generator");
-		SwingUtilities.updateComponentTreeUI(frame);
+		//SwingUtilities.updateComponentTreeUI(frame);
 		// frame = new JFrame("DrawFBP Diagram Generator");
 		frame.setUndecorated(false); // can't change size of JFrame title,
 										// though!
@@ -329,23 +330,45 @@ public class DrawFBP extends JFrame
 
 		applyOrientation(frame);
 
-		int w = (int) dim.getWidth();
-		int h = (int) dim.getHeight();
+		//int w = (int) dim.getWidth();
+		//int h = (int) dim.getHeight();
 		//maxX = (int) (w * .8);
 		//maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); 
-		osg = buffer.createGraphics();
-
+		//buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); 
+		//osg = buffer.createGraphics();
+		//osg = (Graphics2D) buffer.getGraphics();
+		setVisible(true);   
+		
+		osg = (Graphics2D) getGraphics();		
+		
 		// http://www.oracle.com/technetwork/java/painting-140037.html
 
 		bs = new BasicStroke(1.5f, BasicStroke.CAP_ROUND, // width 1.5
 				BasicStroke.JOIN_ROUND);
 		osg.setStroke(bs);
-		osg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		
 
 		// UIDefaults def = UIManager.getLookAndFeelDefaults();
 		// UIDefaults def = UIManager.getDefaults();
+		
+		//osg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		//		RenderingHints.VALUE_ANTIALIAS_ON);
+
+		RenderingHints rh = new RenderingHints(
+	             RenderingHints.KEY_TEXT_ANTIALIASING,
+	             RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+		rh.put(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+		rh.put(RenderingHints.KEY_STROKE_CONTROL,
+				RenderingHints.VALUE_STROKE_NORMALIZE);
+		rh.put(RenderingHints.KEY_RENDERING,
+				RenderingHints.VALUE_RENDER_QUALITY);
+		rh.put(RenderingHints.KEY_DITHERING,
+				RenderingHints.VALUE_DITHER_ENABLE);
+		rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
+				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+	    osg.setRenderingHints(rh);
 
 		readPropertiesFile();				
 		
@@ -503,6 +526,8 @@ public class DrawFBP extends JFrame
 		    actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
 		       "Open " + diagramName));
 		}
+	    
+	    
 		//frame.repaint();
 		
 	}
@@ -964,8 +989,7 @@ public class DrawFBP extends JFrame
 	void getNewDiag() {
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
-		diag.area = sa;
-		
+		diag.area = sa;			
 		int i = jtp.getTabCount();
 		jtp.add(sa, new JLabel());
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
@@ -974,6 +998,7 @@ public class DrawFBP extends JFrame
 		b.diag = diag;
 		diag.tabNum = i;
 		curDiag = diag;		
+			
 		return;
 	}
 
@@ -1401,7 +1426,8 @@ public class DrawFBP extends JFrame
 			w1 = Math.min(w1, w - x1);
 			h1 = Math.min(h1, h - y1);
 			
-			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
+			//BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
+			BufferedImage buffer2 = (BufferedImage)createImage(w1, h1);
 
 			//int w2 = buffer2.getWidth();
 			//int h2 = buffer2.getHeight();
@@ -2178,7 +2204,7 @@ public class DrawFBP extends JFrame
 		int i = jtp.getTabCount();
 		//ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 		//curDiag = b.diag;
-
+		
 		if (i > 1 || curDiag.diagFile != null || curDiag.changed)
 			getNewDiag();
 		jtp.setSelectedIndex(curDiag.tabNum);
@@ -3148,6 +3174,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 	}
 
+		
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
 		//oldW = getSize().width;
@@ -3597,6 +3624,8 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	}
 	
+	
+	
 
 	public class SelectionArea extends JComponent implements MouseInputListener {
 		static final long serialVersionUID = 111L;
@@ -3604,42 +3633,29 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		public SelectionArea() {
 
-			setOpaque(true);
+			setOpaque(false);
 
 			addMouseListener(this);
 			addMouseMotionListener(this);
 			// setFont(fontg);
 
 			setBackground(Color.WHITE);
-			setPreferredSize(new Dimension(4000, 3000)); // experimental
+			//setPreferredSize(new Dimension(4000, 3000)); // experimental
+			pack();
 
 		}
 
-		public void paint(Graphics g) {
+		 
+		public void paintComponent(Graphics g) {
 
 			// Paint background if we're opaque.
-			//osg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-			//		RenderingHints.VALUE_ANTIALIAS_ON);
-
-			RenderingHints rh = new RenderingHints(
-		             RenderingHints.KEY_TEXT_ANTIALIASING,
-		             RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-			rh.put(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-			rh.put(RenderingHints.KEY_STROKE_CONTROL,
-					RenderingHints.VALUE_STROKE_NORMALIZE);
-			rh.put(RenderingHints.KEY_RENDERING,
-					RenderingHints.VALUE_RENDER_QUALITY);
-			rh.put(RenderingHints.KEY_DITHERING,
-					RenderingHints.VALUE_DITHER_ENABLE);
-			rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
-					RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		    osg.setRenderingHints(rh);
+			super.paintComponent(g);   // ?????
+			
 			if (isOpaque()) {
 				//osg.setColor(getBackground());
-				osg.setColor(Color.WHITE);
+				g.setColor(Color.WHITE);
 				
-				osg.fillRect(0, 1, (int) (getWidth()/scalingFactor), (int) (getHeight()/scalingFactor - 1));
+				g.fillRect(0, 1, (int) (getWidth()/scalingFactor), (int) (getHeight()/scalingFactor - 1));
 			}
 
 			int i = jtp.getSelectedIndex();
@@ -3655,13 +3671,14 @@ void chooseFonts(MyFontChooser fontChooser){
 			grid.setSelected(diag.clickToGrid);
 			
 			//repaint();
+			Graphics2D g2d = (Graphics2D) g;
 			
 			for (Block block : diag.blocks.values()) {
-				block.draw(osg);
+				block.draw(g2d);
 			}
 			
 			for (Arrow arrow : diag.arrows.values()) {
-				arrow.draw(osg);
+				arrow.draw(g2d);
 			}
 			
 			String s = diag.desc;
@@ -3671,17 +3688,16 @@ void chooseFonts(MyFontChooser fontChooser){
 				s = " ";
 			
 			diagDesc.setText(s);
- 
-			Graphics2D g2d = (Graphics2D) g;
-						
-			g2d.scale(scalingFactor, scalingFactor);
-			
-			
 
+			
+						
+			g2d.scale(scalingFactor, scalingFactor);	
+			
 			//g2d.translate(xTranslate, yTranslate);
 
 			// Now copy that off-screen image onto the screen
-			g2d.drawImage(buffer, 0, 0 , null); 	
+			//g2d.drawImage(buffer, 0, 0 , null); 	???		
+			
 		}
 		
 		
@@ -4379,13 +4395,6 @@ void chooseFonts(MyFontChooser fontChooser){
 							//	curDiag = new Diagram(driver);
 							
 							curDiag = blockSelForDragging.diag;
-							
-							int j;
-							if (curDiag == null) 
-								j = 1;
-							else
-								if (curDiag.jpm == null)
-									j = 1;  
 							
 							curDiag.jpm.show(frame, curDiag.xa + 100,
 									curDiag.ya + 100);
