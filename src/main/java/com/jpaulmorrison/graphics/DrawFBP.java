@@ -228,7 +228,7 @@ public class DrawFBP extends JFrame
 	//public Timer clickTimer;
 	public MyFileChooser.ClickListener clickListener;
 	
-	private final int REFRESH_TIME = 250;
+	private final int REFRESH_TIME = 200;
 	javax.swing.Timer timer = new javax.swing.Timer(REFRESH_TIME, new ActionListener() {
 
         public void actionPerformed(ActionEvent e) {

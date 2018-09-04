@@ -133,7 +133,7 @@ public class Block implements ActionListener {
 		else  
 			g.setColor(lb); // light turquoise
 
-		g.fillRoundRect(tlx + 1, tly + 1, width - 1, height - 1, 6, 6);
+		g.fillRoundRect(tlx + 1, tly + 1, width - 2, height - 2, 6, 6);
 
 		if (multiplex) {
 			int x, y;
