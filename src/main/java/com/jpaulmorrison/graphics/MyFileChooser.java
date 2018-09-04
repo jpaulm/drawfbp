@@ -1801,6 +1801,7 @@ public class MyFileChooser extends JFrame
 		}
 
 		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
 
 			Color c = (this == selComp) ? vLightBlue : Color.WHITE;
 			
@@ -1883,9 +1884,11 @@ public class MyFileChooser extends JFrame
 			super(i);
 		}
 
-		public void paint(Graphics g) {
-			super.paint(g);
+		 
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
 			
+			//System.out.println("MTF");
 			if (this == selComp) {
 				setBackground(vLightBlue);
 				setEditable(true);
@@ -1906,14 +1909,15 @@ public class MyFileChooser extends JFrame
 			}
 			
 		}
+		 
 	}
 	
 	class MyButton extends JButton {
 
 		private static final long serialVersionUID = 1L;
 
-		public void paint(Graphics g) {
-			super.paint(g);
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
 			// if (isSelected())
 			if (this == selComp)
 				g.setColor(vLightBlue);

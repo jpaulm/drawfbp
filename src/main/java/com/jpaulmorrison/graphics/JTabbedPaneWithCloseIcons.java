@@ -48,8 +48,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		}
 	}
 
-	public void paint(Graphics g) {
-		super.paint(g);
+ 
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		int tabno = getSelectedIndex();
 		for (int i = 0; i < driver.jtp.getTabCount(); i++) {
 			String s = "";
@@ -86,4 +87,5 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 			j.setText(s);
 		}
 	}
+	 
 }

@@ -103,14 +103,16 @@ public class ButtonTabComponent extends JPanel {
         }
  
         //we don't want to update UI for this button
-        public void updateUI() {
-        }
- 
+        //public void updateUI() {
+        //}
+
         //paint the cross
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g.create();
+            Graphics2D g2 = (Graphics2D) g;
+            //System.out.println("BTC");
             //shift the image for pressed buttons
+             
             if (getModel().isPressed()) {
                 g2.translate(1, 1);
             }
@@ -124,10 +126,12 @@ public class ButtonTabComponent extends JPanel {
             int delta = 4;
             g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight() - delta - 1);
             g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight() - delta - 1);
-            g2.dispose();
+             
+            //g2.dispose();
         }
+       
     }
- 
+  
     private final static MouseListener buttonMouseListener = new MouseAdapter() {
         public void mouseEntered(MouseEvent e) {
             Component component = e.getComponent();
