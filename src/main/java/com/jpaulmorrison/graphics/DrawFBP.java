@@ -2,7 +2,9 @@ package com.jpaulmorrison.graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
@@ -313,7 +315,7 @@ public class DrawFBP extends JFrame
 
 		// Create and set up the window.
 
-		//Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
 
 		frame = this;
@@ -327,16 +329,16 @@ public class DrawFBP extends JFrame
 
 		applyOrientation(frame);
 
-		//int w = (int) dim.getWidth();
-		//int h = (int) dim.getHeight();
+		int w = (int) dim.getWidth();
+		int h = (int) dim.getHeight();
 		//maxX = (int) (w * .8);
 		//maxY = (int) (h * .8);
-		//buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); 
+		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); 
 		//osg = buffer.createGraphics();
-		//osg = (Graphics2D) buffer.getGraphics();
-		setVisible(true);   
+		osg = (Graphics2D) buffer.getGraphics();
+		//setVisible(true);   
 		
-		osg = (Graphics2D) getGraphics();		
+		//osg = (Graphics2D) getGraphics();		
 		
 		// http://www.oracle.com/technetwork/java/painting-140037.html
 
@@ -650,12 +652,13 @@ public class DrawFBP extends JFrame
 		diagDesc.setForeground(Color.BLUE);
 
 		box1.add(Box.createRigidArea(new Dimension(0, 4)));
-		Box box2 = new Box(BoxLayout.X_AXIS);
+		Box box2 = new Box(BoxLayout.X_AXIS);		
 		//JScrollPane jsp = new JScrollPane();
 		//box2.add(jsp);
 		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));  
-		box1.add(box2);
+		//box1.add(box2);
 		//box2.add(Box.createHorizontalGlue());
+		//box2.add(Box.createHorizontalStrut(0));
 		box2.add(pan);		
 		box2.add(Box.createRigidArea(new Dimension(10, 0))); 		
 		pan.setSelected(false);
@@ -678,8 +681,10 @@ public class DrawFBP extends JFrame
 		box21 = new Box(BoxLayout.X_AXIS);
 		box2.add(box21);
 		box2.add(Box.createRigidArea(new Dimension(10,0)));	
-		box2.add(up);	
-					
+		box2.add(up);
+		//box2.add(Box.createHorizontalStrut(0));
+		frame.pack();
+									
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
 			but[j].addActionListener(this);
@@ -692,6 +697,8 @@ public class DrawFBP extends JFrame
 		}
 		but[but.length - 1].setAlignmentX(Component.RIGHT_ALIGNMENT);
 
+		box1.add(box2);
+		
 		//box21.add(Box.createRigidArea(new Dimension(10,0)));
 		//box21.add(Box.createHorizontalStrut(10));
 		adjustFonts();
@@ -1423,8 +1430,8 @@ public class DrawFBP extends JFrame
 			w1 = Math.min(w1, w - x1);
 			h1 = Math.min(h1, h - y1);
 			
-			//BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
-			BufferedImage buffer2 = (BufferedImage)createImage(w1, h1);
+			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
+			//BufferedImage buffer = (BufferedImage)createImage(w1, h1);
 
 			//int w2 = buffer2.getWidth();
 			//int h2 = buffer2.getHeight();
@@ -1432,12 +1439,15 @@ public class DrawFBP extends JFrame
 			BufferedImage combined = new BufferedImage(w1, h1 + 100,
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
+			
 			//Graphics g = buffer2.getGraphics();
 			g.setColor(Color.WHITE);
+			
 			//g.fillRect(0, 0, w1, h1 + 100);
 			g.drawImage(buffer2, 0, 0, null);
 			//g.setColor(Color.RED);
 			g.fillRect(0, h1, w1, 100);
+			
 			 
 			if (curDiag.desc != null) {
 				Color col = g.getColor();
@@ -1451,7 +1461,7 @@ public class DrawFBP extends JFrame
 				byte[] str = t.getBytes();
 				int width = metrics.bytesWidth(str, 0, t.length());
 
-				g.drawString(t, x - width / 2, buffer2.getHeight() + 40);
+				g.drawString(t, x - width / 2, buffer.getHeight() + 40);
 				g.setColor(col);
 			}
 
@@ -3170,8 +3180,22 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 		}
 	}
+	
+	/*
+	public static BufferedImage getScreenShot(
+		    Component component) {
 
-		
+		    BufferedImage image = new BufferedImage(
+		      component.getWidth(),
+		      component.getHeight(),
+		      BufferedImage.TYPE_INT_RGB
+		      );
+		    // call the Component's paint method, using
+		    // the Graphics object of the image.
+		    component.paint( image.getGraphics() ); // alternately use .printAll(..)
+		    return image;
+		  }
+	*/	
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
 		//oldW = getSize().width;
@@ -3630,7 +3654,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		public SelectionArea() {
 
-			setOpaque(false);
+			setOpaque(true);
 
 			addMouseListener(this);
 			addMouseMotionListener(this);
@@ -4932,6 +4956,9 @@ void chooseFonts(MyFontChooser fontChooser){
 		public void mouseClicked(MouseEvent arg0) {
 			// do nothing
 		}
+
+
+		
 	}
 
 
