@@ -1326,7 +1326,7 @@ public class Block implements ActionListener {
 					calcEdges();
 				}
 			}
-			driver.frame.update(driver.osg);
+			//driver.frame.update(driver.osg);
 			diag.changed = true;
 			return;
 		}

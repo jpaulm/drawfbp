@@ -2,15 +2,13 @@ package com.jpaulmorrison.graphics;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
 
 import javax.swing.*;
-//import javax.swing.Timer;
+
 import javax.swing.event.*;
 
 import java.util.*;
@@ -333,7 +331,7 @@ public class DrawFBP extends JFrame
 		int h = (int) dim.getHeight();
 		//maxX = (int) (w * .8);
 		//maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB); 
+		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB); 
 		//osg = buffer.createGraphics();
 		osg = (Graphics2D) buffer.getGraphics();
 		//setVisible(true);   
@@ -1419,24 +1417,24 @@ public class DrawFBP extends JFrame
 			//curDiag.imageFile = null;
 
 			// crop
-			int x1, w1, y1, h1;
-			x1 = Math.max(1, curDiag.minX);
-			w1 = curDiag.maxX - x1;
-			y1 = Math.max(1, curDiag.minY);
-			h1 = curDiag.maxY - y1;
+			int min_x, max_w, min_y, max_h;
+			min_x = Math.max(1, curDiag.minX);
+			max_w = curDiag.maxX - min_x;
+			min_y = Math.max(1, curDiag.minY);
+			max_h = curDiag.maxY - min_y;
 			
 			int w = curDiag.area.getWidth();
 			int h = curDiag.area.getHeight();
-			w1 = Math.min(w1, w - x1);
-			h1 = Math.min(h1, h - y1);
+			max_w = Math.min(max_w, w - min_x);
+			max_h = Math.min(max_h, h - min_y) + 20;
 			
-			BufferedImage buffer2 = buffer.getSubimage(x1, y1, w1, h1);
+			BufferedImage buffer2 = buffer.getSubimage(min_x, min_y, max_w, max_h);
 			//BufferedImage buffer = (BufferedImage)createImage(w1, h1);
 
 			//int w2 = buffer2.getWidth();
 			//int h2 = buffer2.getHeight();
 			
-			BufferedImage combined = new BufferedImage(w1, h1 + 100,
+			BufferedImage combined = new BufferedImage(max_w, max_h + 100,
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
 			
@@ -1445,8 +1443,9 @@ public class DrawFBP extends JFrame
 			
 			//g.fillRect(0, 0, w1, h1 + 100);
 			g.drawImage(buffer2, 0, 0, null);
+			//g.drawImage(buffer, 0, 0, null);
 			//g.setColor(Color.RED);
-			g.fillRect(0, h1, w1, 100);
+			g.fillRect(0, max_h, max_w, 80);
 			
 			 
 			if (curDiag.desc != null) {
@@ -1461,7 +1460,7 @@ public class DrawFBP extends JFrame
 				byte[] str = t.getBytes();
 				int width = metrics.bytesWidth(str, 0, t.length());
 
-				g.drawString(t, x - width / 2, buffer.getHeight() + 40);
+				g.drawString(t, x - width / 2, buffer2.getHeight() + 40);
 				g.setColor(col);
 			}
 
@@ -3670,13 +3669,13 @@ void chooseFonts(MyFontChooser fontChooser){
 		public void paintComponent(Graphics g) {
 
 			// Paint background if we're opaque.
-			super.paintComponent(g);   // ?????
+			//super.paintComponent(g);   
 			
 			if (isOpaque()) {
 				//osg.setColor(getBackground());
-				g.setColor(Color.WHITE);
+				osg.setColor(Color.WHITE);
 				
-				g.fillRect(0, 1, (int) (getWidth()/scalingFactor), (int) (getHeight()/scalingFactor - 1));
+				osg.fillRect(0, 1, (int) (getWidth()/scalingFactor), (int) (getHeight()/scalingFactor - 1));
 			}
 
 			int i = jtp.getSelectedIndex();
@@ -3691,15 +3690,15 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			grid.setSelected(diag.clickToGrid);
 			
-			//repaint();
-			Graphics2D g2d = (Graphics2D) g;
+			repaint();
+			//Graphics2D g2d = (Graphics2D) g;
 			
 			for (Block block : diag.blocks.values()) {
-				block.draw(g2d);
+				block.draw(osg);
 			}
 			
 			for (Arrow arrow : diag.arrows.values()) {
-				arrow.draw(g2d);
+				arrow.draw(osg);
 			}
 			
 			String s = diag.desc;
@@ -3710,14 +3709,14 @@ void chooseFonts(MyFontChooser fontChooser){
 			
 			diagDesc.setText(s);
 
-			
+			Graphics2D g2d = (Graphics2D) g;
 						
 			g2d.scale(scalingFactor, scalingFactor);	
 			
 			//g2d.translate(xTranslate, yTranslate);
 
 			// Now copy that off-screen image onto the screen
-			//g2d.drawImage(buffer, 0, 0 , null); 	???		
+			g2d.drawImage(buffer, 0, 0 , null); 	 	
 			
 		}
 		
