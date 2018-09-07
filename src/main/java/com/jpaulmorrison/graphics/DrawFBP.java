@@ -227,14 +227,14 @@ public class DrawFBP extends JFrame
 	//public MyFileChooser.ClickListener clickListener;
 	
 
-	private final int REFRESH_TIME = 200;
+	//private final int REFRESH_TIME = 200;
 
-	javax.swing.Timer timer = new javax.swing.Timer(REFRESH_TIME, new ActionListener() {
+	//javax.swing.Timer timer = new javax.swing.Timer(REFRESH_TIME, new ActionListener() {
 
-        public void actionPerformed(ActionEvent e) {
-           repaint();
-        }
-    });
+    //    public void actionPerformed(ActionEvent e) {
+    //       repaint();
+    //    }
+    //});
     
 
 	// constructor
@@ -246,7 +246,7 @@ public class DrawFBP extends JFrame
 		scalingFactor = 1.0d;
 		driver = this;
 		
-		timer.start();
+		//timer.start();
 		
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
@@ -364,7 +364,7 @@ public class DrawFBP extends JFrame
 		rh.put(RenderingHints.KEY_DITHERING,
 				RenderingHints.VALUE_DITHER_ENABLE);
 		rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
-				RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+				RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
 	    osg.setRenderingHints(rh);
 
 		readPropertiesFile();				
@@ -420,7 +420,10 @@ public class DrawFBP extends JFrame
 		fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
 		osg.setFont(fontg);
 
-		FontMetrics metrics = osg.getFontMetrics(fontg);
+		FontMetrics metrics = null;
+		
+		metrics = osg.getFontMetrics(fontg);
+		
 		gFontWidth = metrics.charWidth('n'); // should be the average!
 		gFontHeight = metrics.getAscent() + metrics.getLeading();
 
@@ -999,7 +1002,9 @@ public class DrawFBP extends JFrame
 		jtp.setSelectedIndex(i);		
 		b.diag = diag;
 		diag.tabNum = i;
-		curDiag = diag;		
+		
+		curDiag = diag;	
+		repaint();
 			
 		return;
 	}

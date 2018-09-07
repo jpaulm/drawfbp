@@ -6,11 +6,7 @@ import javax.swing.*;
 
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 
-import javax.imageio.ImageIO;
 
 class SplashWindow extends JWindow {
 	static final long serialVersionUID = 111L;

@@ -44,33 +44,70 @@ import java.awt.event.*;
  */
 public class ButtonTabComponent extends JPanel {
 	static final long serialVersionUID = 111L;
-    private final JTabbedPane pane;
+    // private final JTabbedPane pane;
     DrawFBP driver;
     Diagram diag;
     JLabel label = null;
+    boolean selected;
  
-    public ButtonTabComponent(final JTabbedPane pane, DrawFBP driver) {
+    public ButtonTabComponent(final JTabbedPane jtp, DrawFBP driver) {
         //unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        if (pane == null) {
+        if (jtp == null) {
             throw new NullPointerException("TabbedPane is null");
         }
-        this.pane = pane;
+        //this.pane = pane;
         this.driver = driver;
         setOpaque(false);         
         
         label = new JLabel();         
         add(label);
-        label.setFont(driver.fontf);
+        
+        
+        
         //add more space between the label and the button
+        
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
-        //tab button
-        JButton button = new TabButton();
+         
+        TabButton button = new TabButton(jtp);
+        button.diag = diag;
         add(button);
         //add more space to the top of the component
         setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));        
     }
- 
+    
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);        
+        label.setFont(driver.fontf);
+        String s = "(untitled)";
+        //Diagram d = b.diag;        
+        		
+		if (diag != null) {			
+		 
+		if (diag.diagFile == null){
+			if (diag.title == null)
+				s = "(untitled)";
+			else
+				s = diag.title;
+		}
+		else {
+			if (selected) {
+				s = diag.diagFile.getAbsolutePath();
+				
+			} else {
+				s = diag.diagFile.getName();
+			}
+		}
+		 
+
+		if (diag != null && diag.changed)
+			s = "* " + s;
+		
+		label.setText(s);
+    }
+    }
+   
+ /*
 	private class TabButton extends JButton implements ActionListener {
     	static final long serialVersionUID = 111L;
         public TabButton() {
@@ -149,4 +186,5 @@ public class ButtonTabComponent extends JPanel {
             }
         }
     };
+    */
 }
