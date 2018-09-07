@@ -14,7 +14,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+
 import javax.swing.JTabbedPane;
 import javax.swing.plaf.basic.BasicButtonUI;
 
@@ -66,7 +66,7 @@ import javax.swing.plaf.basic.BasicButtonUI;
             Graphics2D g2 = (Graphics2D) g;
             //System.out.println("BTC");
             //shift the image for pressed buttons
-            // g2 = null; 
+            //g2 = null; 
            
 			
 

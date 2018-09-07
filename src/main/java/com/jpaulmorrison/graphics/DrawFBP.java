@@ -462,7 +462,7 @@ public class DrawFBP extends JFrame
 		closeTabAction = new CloseTabAction();
 		closeAppAction = new CloseAppAction();
 		escapeAction = new EscapeAction();
-		//upAction = new UpAction();
+		
 
 		frame.addWindowListener(new WindowAdapter() {
 
@@ -509,7 +509,7 @@ public class DrawFBP extends JFrame
 		frame.setVisible(true);
 		frame.addComponentListener(this);
 		
-		//frame.repaint();
+		frame.repaint();
 
 		//wDiff = frame.getWidth() - curDiag.area.getWidth();
 		//hDiff = frame.getHeight() - curDiag.area.getHeight();
@@ -556,7 +556,7 @@ public class DrawFBP extends JFrame
 				}
 				//curDiag = diag;
 
-				//frame.repaint();
+				frame.repaint();
 
 			}
 		};
@@ -986,7 +986,7 @@ public class DrawFBP extends JFrame
 
 		menuBar.getActionMap().put("CLOSE", escapeAction);
 		menuBar.setVisible(true);
-		//repaint();
+		repaint();
 
 		return;
 	}
@@ -1054,7 +1054,7 @@ public class DrawFBP extends JFrame
 
 			jtp.setSelectedIndex(curDiag.tabNum);
 
-			//frame.repaint();
+			frame.repaint();
 
 			return;
 
@@ -1079,7 +1079,7 @@ public class DrawFBP extends JFrame
 						frame,
 						"Language group changed to "
 								+ defaultCompLang.showLangs());
-				//frame.repaint();
+				frame.repaint();
 
 				return;
 			}
@@ -1568,7 +1568,7 @@ public class DrawFBP extends JFrame
 			popup.setVisible(true);
 			popup.setAlwaysOnTop(true);
 			popup.repaint();
-			//frame.repaint();
+			frame.repaint();
 			return;
 		}
 		 
@@ -1773,7 +1773,7 @@ public class DrawFBP extends JFrame
 			popup.requestFocusInWindow();
 				
 			popup.repaint();
-			//frame.repaint();
+			frame.repaint();
 			return;
 
 		}
@@ -1793,7 +1793,7 @@ public class DrawFBP extends JFrame
 				if (curDiag.parent != null)
 					curDiag.parent.description = ans;
 			}
-			//frame.repaint();
+			frame.repaint();
 			return;
 
 		}
@@ -1808,7 +1808,7 @@ public class DrawFBP extends JFrame
 					.nextInt(curDiag.area.getHeight() - 200);
 			if (null != createBlock(blockType))
 				curDiag.changed = true;
-			//frame.repaint();
+			frame.repaint();
 			return;
 
 		}
@@ -1823,7 +1823,7 @@ public class DrawFBP extends JFrame
 			b.buildBlockPopupMenu();
 			use_drag_icon = false;
 			curDiag.jpm.show(frame, curDiag.xa + 100, curDiag.ya + 100);
-			//frame.repaint();
+			frame.repaint();
 			return;
 
 		}
@@ -1836,13 +1836,13 @@ public class DrawFBP extends JFrame
 			a.buildArrowPopupMenu();
 			curDiag = a.diag;
 			curDiag.jpm.show(frame, a.toX + 100, a.toY + 100);
-			//frame.repaint();
+			frame.repaint();
 			return;
 		}
 
 		setBlkType(s);
 
-		//frame.repaint();
+		frame.repaint();
 	}
  
 	
@@ -1932,7 +1932,7 @@ public class DrawFBP extends JFrame
 						+ gl.suggExtn,
 				gl.filter, gl.showLangs());
 		
-		//frame.repaint();
+		frame.repaint();
 
 	}	
 
@@ -2189,7 +2189,7 @@ public class DrawFBP extends JFrame
 		jsp.repaint();
 		panel.repaint();
 		jf.repaint();
-		//frame.repaint();
+		frame.repaint();
 	}
 
 	SelectionArea getNewArea() {
@@ -2257,7 +2257,7 @@ public class DrawFBP extends JFrame
 		frame.setTitle("Diagram: " + curDiag.title);
 		// curDiag.tabNum = i;
 		jtp.setSelectedIndex(curDiag.tabNum);
-		//frame.repaint();
+		frame.repaint();
 		return file;
 	}
 
@@ -2293,7 +2293,7 @@ public class DrawFBP extends JFrame
 		propertiesChanged = true;
 
 		curDiag.changed = false;
-		//frame.repaint();
+		frame.repaint();
 	}
 
 	/*
@@ -2400,7 +2400,7 @@ public class DrawFBP extends JFrame
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);			
 			adjustFonts();
-			//frame.repaint();
+			frame.repaint();
 			//repaint();
 		}
 
@@ -2411,7 +2411,7 @@ public class DrawFBP extends JFrame
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
 			adjustFonts();
-			//frame.repaint();
+			frame.repaint();
 			//repaint();
 			
 		}
@@ -2459,7 +2459,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		properties.put("defaultFontSize", Float.toString(defaultFontSize));
 		propertiesChanged = true;
 		MyOptionPane.showMessageDialog(frame, "Font size changed");
-		//frame.repaint();
+		frame.repaint();
 		//repaint();
 	}
 
@@ -2555,7 +2555,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 		frame.setJMenuBar(menuBar);
 
-		//frame.repaint();
+		frame.repaint();
 	}
 
 	// between just checks that the value val is >= lim1 and <= lim2 - or the inverse
@@ -3109,7 +3109,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		curDiag.findArrowCrossing = false;
 		curDiag.cEncl = null;
-		//repaint();
+		repaint();
 	}
 
 	void displayAlignmentLines(Block block) {
@@ -3442,7 +3442,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				}
 			}
 
-			//frame.repaint();
+			frame.repaint();
 		}
 	}
 
@@ -3455,13 +3455,13 @@ void chooseFonts(MyFontChooser fontChooser){
 				Integer aid = new Integer(curDiag.currentArrow.id);
 				curDiag.arrows.remove(aid);
 				curDiag.currentArrow = null;   // terminate arrow drawing
-				//repaint();
+				repaint();
 				return;				
 			}
 			
 			if (e.getSource() == jHelpViewer){				
 				popup2.dispose();
-				//repaint();
+				repaint();
 				return;
 			}
 			 
@@ -3652,7 +3652,7 @@ void chooseFonts(MyFontChooser fontChooser){
 	
 	
 
-	public class SelectionArea extends JComponent implements MouseInputListener {
+	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
 
@@ -3666,7 +3666,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			setBackground(Color.WHITE);
 			//setPreferredSize(new Dimension(4000, 3000)); // experimental
-			pack();
+			//pack();
 
 		}
 
@@ -3695,7 +3695,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			grid.setSelected(diag.clickToGrid);
 			
-			repaint();
+			//repaint();
 			//Graphics2D g2d = (Graphics2D) g;
 			
 			for (Block block : diag.blocks.values()) {
@@ -3802,7 +3802,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (enclSelForArrow != null) {
 				enclSelForArrow.corner = null;
 				enclSelForArrow = null;
-				//repaint();
+				repaint();
 				return;
 			}
 			
@@ -3882,7 +3882,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (fp != null)
 				arrowRoot = fp;
 
-			//repaint();
+			repaint();
 		}
 
 		public void mouseEntered(MouseEvent e) {
@@ -3930,7 +3930,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (curDiag.jpm != null) {	
 				curDiag.jpm.setVisible(false);
 				curDiag.jpm = null;
-				//frame.repaint();
+				frame.repaint();
 				return;
 			}
 			
@@ -3959,7 +3959,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			//arrowEndForDragging = null;
 			//bendForDragging = null;
 
-			//frame.repaint();
+			frame.repaint();
 
 			
 			// look for side or corner of an enclosure
@@ -4068,7 +4068,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				oy = blockSelForDragging.cy;
 				ow = blockSelForDragging.width;
 				oh = blockSelForDragging.height;
-				//repaint();
+				repaint();
 				return;
 			}
 			/*
@@ -4122,7 +4122,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 				
 			}
-			//repaint();
+			repaint();
 		}
 
 		public void mouseDragged(MouseEvent e) {
@@ -4174,7 +4174,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				curDiag.changed = true;
 				panX = xa;
 				panY = ya;
-				//repaint();
+				repaint();
 				return;
 			}
 
@@ -4193,7 +4193,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					arr.toY = ya;
 				}
 				curDiag.changed = true;
-				//repaint();
+				repaint();
 				return;
 			}
 
@@ -4201,7 +4201,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				bendForDragging.x = xa;
 				bendForDragging.y = ya;
 				curDiag.changed = true;
-				//repaint();
+				repaint();
 				return;
 			}
 			
@@ -4216,7 +4216,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					enc.cy = ya + enc.height / 2;
 					enc.calcEdges();
 					curDiag.changed = true;
-					//repaint();
+					repaint();
 					return;
 				}
 				if (enc.corner == Corner.BOTTOMLEFT) {
@@ -4226,7 +4226,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					enc.cy = ya - enc.height / 2;
 					enc.calcEdges();
 					curDiag.changed = true;
-					//repaint();
+					repaint();
 					return;
 				}
 				if (enc.corner == Corner.TOPRIGHT) {
@@ -4236,7 +4236,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					enc.cy = ya + enc.height / 2;
 					enc.calcEdges();
 					curDiag.changed = true;
-					//repaint();
+					repaint();
 					return;
 				}
 				if (enc.corner == Corner.BOTTOMRIGHT) {
@@ -4246,7 +4246,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					enc.cy = ya - enc.height / 2;
 					enc.calcEdges();
 					curDiag.changed = true;
-					//repaint();
+					repaint();
 					return;
 				}
 
@@ -4295,7 +4295,7 @@ void chooseFonts(MyFontChooser fontChooser){
 							bk.cy += ya - oldy;
 							bk.calcEdges();
 						}
-						//repaint();                  
+						repaint();                  
 					}
 					if (enc.lla != null) {
 						for (Arrow a : enc.lla) {
@@ -4309,7 +4309,7 @@ void chooseFonts(MyFontChooser fontChooser){
 									bd.y += ya - oldy;
 								}
 						}
-						//repaint();           
+						repaint();           
 					}
 				}
 
@@ -4317,7 +4317,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				oldy = ya;
 				
 				curDiag.changed = true;
-				//repaint();
+				repaint();
 
 				// block.calcEdges();
 			}
@@ -4328,7 +4328,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				curDiag.currentArrow.toY = ya;
 				curDiag.changed = true;
 			}
-			//repaint();
+			repaint();
 		}
 
 		public void mouseReleased(MouseEvent e) {
@@ -4346,7 +4346,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (curDiag.jpm != null) {
 				curDiag.jpm.setVisible(false);
 				curDiag.jpm = null;
-				//frame.repaint();
+				frame.repaint();
 				return;
 			}
 
@@ -4362,7 +4362,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			if (curDiag.area.contains(x, y) && panSwitch) {
 				frame.setCursor(openPawCursor);
-				//repaint();
+				repaint();
 				return;
 			}
 
@@ -4407,7 +4407,7 @@ void chooseFonts(MyFontChooser fontChooser){
 									//curDiag.tabNum = i;
 									jtp.setSelectedIndex(i);
 									
-									//repaint();
+									repaint();
 									return;
 								}
 								if (null == openAction(f.getAbsolutePath()))
@@ -4429,7 +4429,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					 } // else {
 						curDiag.changed = true;
 					//}
-					//repaint();
+					repaint();
 					//return;
 				}
 
@@ -4463,7 +4463,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				arr.headMarked = false;
 				arrowEndForDragging = null;
 				curDiag.changed = true;
-				//repaint();
+				repaint();
 				return;
 			}
 
@@ -4471,7 +4471,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				bendForDragging.marked = false;
 				bendForDragging = null;
 				curDiag.changed = true;
-				//repaint();
+				repaint();
 				return;
 			}
 
@@ -4527,7 +4527,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 				// blockSelForDragging = null;
 
-				//repaint();
+				repaint();
 				return;
 			}
 			if (blockSelForDragging != null
@@ -4535,7 +4535,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				((Enclosure) blockSelForDragging).corner = null;
 				blockSelForDragging = null;
 				curDiag.changed = true;
-				//repaint();
+				repaint();
 				return;
 			}
 			curDiag.foundBlock = null;
@@ -4560,7 +4560,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 						if (curDiag.findArrowCrossing) {
 							processSubnetPort(arr);
-							//repaint();
+							repaint();
 							return;
 						}
 						arr.buildArrowPopupMenu();
@@ -4568,7 +4568,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						// curDiag.currentArrow.lastX = xa;
 						// curDiag.currentArrow.lastY = ya;
 						curDiag.jpm.show(e.getComponent(), xa, ya);
-						//repaint();
+						repaint();
 						return;
 					}
 				}
@@ -4627,7 +4627,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				curDiag.ya = ya;
 				if (!(blockType.equals("")) && null != createBlock(blockType))
 					curDiag.changed = true;
-				//frame.repaint();
+				frame.repaint();
 				// repaint();
 
 				//repaint();
@@ -4664,7 +4664,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						curDiag.foundBlock = null;
 						curDiag.currentArrow = null;
 
-						//repaint();
+						repaint();
 						return;
 					}
 				}
@@ -4696,7 +4696,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					curDiag.arrows.remove(aid);
 					curDiag.foundBlock = null;
 					curDiag.currentArrow = null;
-					//repaint();
+					repaint();
 					return;
 				}
 
@@ -4779,7 +4779,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				curDiag.currentArrow = null;
 				// curDiag.changed = true;
 
-				//repaint();
+				repaint();
 				return;
 			}
 			// currentDiag.foundBlock must be null
@@ -4860,7 +4860,7 @@ void chooseFonts(MyFontChooser fontChooser){
 							curDiag.foundBlock = null;
 							curDiag.currentArrow = null;
 
-							//repaint();
+							repaint();
 							return;
 						}
 
@@ -4922,7 +4922,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						curDiag.arrows.remove(aid);
 						curDiag.foundBlock = null;
 						curDiag.currentArrow = null;
-						//repaint();
+						repaint();
 						return;
 					}
 					// repaint();
@@ -4950,7 +4950,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				curDiag.currentArrow.toX = x;
 				curDiag.currentArrow.toY = y;
 				curDiag.changed = true;
-				//repaint();
+				repaint();
 				// return;
 				// }
 			}

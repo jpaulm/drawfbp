@@ -440,7 +440,7 @@ public class DiagramBuilder {
 		//	driver.propertiesChanged = true;
 		//}
 		driver.jtf.setText("Diagram Language: " + diag.diagLang.showLangs());
-		//frame.repaint();
+		frame.repaint();
 	}
 
 	public static void createTables(

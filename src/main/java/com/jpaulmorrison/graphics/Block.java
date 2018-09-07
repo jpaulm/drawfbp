@@ -1031,7 +1031,7 @@ public class Block implements ActionListener {
 		jdialog.validate();
 		panel.repaint();
 		jdialog.repaint();
-		//driver.frame.repaint();
+		driver.frame.repaint();
 	}
 
 	
@@ -1424,7 +1424,7 @@ public class Block implements ActionListener {
 			isSubnet = false;
 			diag.changed = true;
 			//diag.driver.repaint();
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			return;
 
 		}
@@ -1454,7 +1454,7 @@ public class Block implements ActionListener {
 			multiplex = !multiplex;
 			if (!multiplex)
 				mpxfactor = null;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
 			return;
 
@@ -1491,7 +1491,7 @@ public class Block implements ActionListener {
 				&& s.equals("Toggle Substream Sensitive / Normal")) {
 			ExtPortBlock eb = (ExtPortBlock) this;
 			eb.substreamSensitive = !eb.substreamSensitive;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
 			return;
 
@@ -1506,7 +1506,7 @@ public class Block implements ActionListener {
 			if (ans != null/* && ans.length() > 0*/) {
 				diag.cEncl.description = ans;
 			}
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
 			return;
 
@@ -1519,7 +1519,7 @@ public class Block implements ActionListener {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Select arrow crossing left or right side");
 			diag.findArrowCrossing = true;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
 			return;
 
@@ -1532,7 +1532,7 @@ public class Block implements ActionListener {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Select arrow crossing left or right side");
 			diag.findArrowCrossing = true;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
 			return;
 
@@ -1543,7 +1543,7 @@ public class Block implements ActionListener {
 			enc.draggingContents = true;
 			driver.blockSelForDragging = this;
 			diag.findEnclosedBlocksAndArrows(enc);
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
 			return;
 		}
@@ -1575,7 +1575,7 @@ public class Block implements ActionListener {
 			final boolean NOCHOOSE = false;
 			driver.curDiag.delBlock(this, NOCHOOSE);
 			driver.curDiag.foundBlock = null;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			driver.curDiag.changed = true;
 			return;
 
@@ -1583,14 +1583,14 @@ public class Block implements ActionListener {
 		if (s.equals("Toggle Visible/Invisible")) {
 			visible = !visible;
 			diag.changed = true;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			return;
 		}
 		if (s.equals("Toggle Colour")) {
 			Enclosure enc = (Enclosure) this;
 			enc.coloured = !enc.coloured;
 			diag.changed = true;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			return;
 		}
 		
@@ -1600,7 +1600,7 @@ public class Block implements ActionListener {
 			diag.foundBlock = null;
 			diag.changed = true;
 			// diag.changeCompLang();
-			//driver.frame.repaint();
+			driver.frame.repaint();
 		}
 		// if (s.equals("Exit")) {
 		// diag.foundBlock = null;

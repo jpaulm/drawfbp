@@ -532,9 +532,10 @@ public class Arrow implements ActionListener {
 					upStreamPort = "";
 				}
 			}
-			//driver.frame.repaint();
+			driver.frame.repaint();
+			return;
 
-		} else if (s.equals("Edit Downstream Port Name") && endsAtBlock) {
+		}  if (s.equals("Edit Downstream Port Name") && endsAtBlock) {
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					 "Enter or change text", "Edit downstream port name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, downStreamPort);
@@ -571,9 +572,11 @@ public class Arrow implements ActionListener {
 					downStreamPort = "";
 				}
 			}
-			//driver.frame.repaint();
+			driver.frame.repaint();
+			return;
 			
-		} else if (s.equals("Set Capacity")) {
+		} 
+		if (s.equals("Set Capacity")) {
 			
 			String capString = null;
 			if (capacity < 1)
@@ -615,44 +618,58 @@ public class Arrow implements ActionListener {
 				capLegend.description = "(" + capacity + ")";
 				*/
 			}
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
+			return;
 			
-		} else if (s.equals("Remove Capacity")) {			
+		}  if (s.equals("Remove Capacity")) {			
 			capacity = -1;			
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
+			return;
 
-		} else if (s.equals("Toggle Upstream Port Automatic / Normal")) {
+		}   if (s.equals("Toggle Upstream Port Automatic / Normal")) {
 			if (upStreamPort == null || !upStreamPort.equals("*"))
 				upStreamPort = "*";
 			else
 				upStreamPort = null;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
-
-		} else if (s.equals("Toggle Downstream Port Automatic / Normal")) {
+			return;
+		}  if (s.equals("Toggle Downstream Port Automatic / Normal")) {
 			if (downStreamPort == null || !downStreamPort.equals("*"))
 				downStreamPort = "*";
 			else
 				downStreamPort = null;
-			//driver.frame.repaint();
+			driver.frame.repaint();
 			diag.changed = true;
+			return;
 
-		} else if (s.equals("Toggle DropOldest")) {
-			dropOldest = !dropOldest;		
+		}  if (s.equals("Toggle DropOldest")) {
+			dropOldest = !dropOldest;	
+			driver.frame.repaint();
+			diag.changed = true;
+			return;
 			
-		} else if (s.equals("Drag Tail")) {
+		}  if (s.equals("Drag Tail")) {
 			tailMarked = true;
 			driver.arrowEndForDragging = this;
+			driver.frame.repaint();
+			diag.changed = true;
+			return;
 
-		} else if (s.equals("Drag Head")) {
+		}  if (s.equals("Drag Head")) {
 			headMarked = true;
 			driver.arrowEndForDragging = this;
+			driver.frame.repaint();
+			diag.changed = true;
+			return;
 
-		} else if (s.equals("Drag New or Existing Bend")) {
+		}  if (s.equals("Drag New or Existing Bend")) {
 			createBend(driver.curx, driver.cury);
 			diag.changed = true;
+			driver.frame.repaint();			
+			return;
 			
 		} else if (s.equals("Add Extra Arrowhead")) {
 			Point p = new Point(driver.curx, driver.cury);
@@ -676,11 +693,13 @@ public class Arrow implements ActionListener {
 			if (pointInLine(p, fx, fy, tx, ty)) 
 				extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);	
 			diag.changed = true;
+			driver.frame.repaint();
 			return;
 			
-		} else if (s.equals("Remove Extra Arrowhead")) {
+		}  if (s.equals("Remove Extra Arrowhead")) {
 			extraArrowhead = null;
 			diag.changed = true;
+			driver.frame.repaint();
 			return;
 			 
 		} else if (s.equals("Delete")) {
@@ -692,12 +711,11 @@ public class Arrow implements ActionListener {
 
 				diag.changed = true;
 				diag.currentArrow = null;
-
+				driver.frame.repaint();
+				diag.foundArrow = null;
 			}
-
-			//driver.frame.repaint();
-			diag.foundArrow = null;
-			diag.changed = true;
+			
+			
 		}
 		
 	}

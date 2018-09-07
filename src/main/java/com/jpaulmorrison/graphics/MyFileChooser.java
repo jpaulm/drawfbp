@@ -531,7 +531,7 @@ public class MyFileChooser extends JFrame
 		// if (!saveAs)
 		// textBackground = Color.WHITE;
 
-		//frame.repaint();
+		repaint();
 
 		return result;
 	}
@@ -1159,7 +1159,7 @@ public class MyFileChooser extends JFrame
 
 		}
 
-		// repaint();
+		repaint();
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -1176,7 +1176,7 @@ public class MyFileChooser extends JFrame
 		}
 
 		t_fileName.setBackground(Color.WHITE);
-		// cBox.repaint();
+		cBox.repaint();
 
 		if (selComp instanceof MyButton) {
 			((MyButton) selComp).setSelected(false);
@@ -1396,7 +1396,7 @@ public class MyFileChooser extends JFrame
 		
 		paintList();
 		list.repaint();
-		//repaint();
+		repaint();
 	}
 
 	
@@ -1681,7 +1681,7 @@ public class MyFileChooser extends JFrame
 			// }
 			panel.validate();
 			dialog.repaint();
-			// frame.repaint();
+			//frame.repaint();
 		}
 
 	}
@@ -1757,9 +1757,8 @@ public class MyFileChooser extends JFrame
 			panel.validate();
 			panel.repaint();
 			//frame.repaint();
-			//frame.repaint();
 			t_dirName.repaint();
-			//repaint();
+			repaint();
 
 		}
 	}
@@ -1790,7 +1789,7 @@ public class MyFileChooser extends JFrame
 
 			}
 			panel.validate();
-			//repaint();
+			repaint();
 		}
 	}
 

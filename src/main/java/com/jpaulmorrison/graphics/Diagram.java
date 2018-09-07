@@ -695,7 +695,7 @@ public class Diagram {
 		blocks.remove(aid);
 		// changeCompLang();
 
-		//driver.frame.repaint();
+		driver.frame.repaint();
 	}
 
 	Block excise(Enclosure enc) {
@@ -833,7 +833,7 @@ public class Diagram {
 		block.cx = enc.cx;
 		block.cy = enc.cy;
 		block.calcEdges();
-		//driver.frame.repaint();
+		driver.frame.repaint();
 
 		// now go through crossing arrows that were held and reinsert them
 		// in old diagram,
