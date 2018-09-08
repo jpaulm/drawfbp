@@ -961,7 +961,7 @@ public class DrawFBP extends JFrame
 		box0.add(jfv);
 		menuBar.add(box0);
 
-		jtf.setText(defaultCompLang.showLangs());
+		jtf.setText("Diagram Language: " + defaultCompLang.showLangs());
 		jtf.setFont(fontg);
 		jtf.setEditable(false);
 		
@@ -3680,7 +3680,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				//osg.setColor(getBackground());
 				osg.setColor(Color.WHITE);
 				
-				osg.fillRect(0, 1, (int) (getWidth()/scalingFactor), (int) (getHeight()/scalingFactor - 1));
+				osg.fillRect(0, 0, (int) (getWidth()/scalingFactor), (int) (getHeight()/scalingFactor - 0));
 			}
 
 			int i = jtp.getSelectedIndex();

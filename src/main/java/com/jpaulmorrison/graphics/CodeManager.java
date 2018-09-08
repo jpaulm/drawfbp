@@ -34,7 +34,6 @@ public class CodeManager implements ActionListener, DocumentListener {
 	boolean packageNameChanged = false;
 	// String targetLang;
 
-	// final boolean SAVE_AS = true;
 	boolean error = false;
 
 	boolean fbpMode; // generating .fbp notation
@@ -560,7 +559,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		dialog.setTitle("Displayed Code: " + file.getName());
 		// genLang = gl;
 
-		String fileString = driver.curDiag.readFile(file);
+		String fileString = driver.curDiag.readFile(file, false);
 		if (fileString == null) {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Couldn't read file: " + file.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);

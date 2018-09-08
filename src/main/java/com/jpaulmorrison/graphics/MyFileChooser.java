@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -126,15 +125,15 @@ public class MyFileChooser extends JFrame
 	DrawFBP.FileChooserParms fCParms;
 	
 	public ClickListener clickListener;
-	public Timer clickTimer;
+	//public Timer clickTimer;
 	
-	public static int clickInterval = 0;
+	//public static int clickInterval = 0;
 
 	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP) {
 		
 		clickListener = new ClickListener();
-		clickInterval = (Integer)Toolkit.getDefaultToolkit().
-		        getDesktopProperty("awt.multiClickInterval");
+		//clickInterval = (Integer)Toolkit.getDefaultToolkit().
+		//        getDesktopProperty("awt.multiClickInterval");
 		
 		//clickTimer = new Timer( clickInterval, clickListener);
 		//clickTimer.setRepeats(false);
@@ -849,7 +848,7 @@ public class MyFileChooser extends JFrame
 		File f = new File(fileName);
 		String fileString;
 		LinkedList<String> ll = new LinkedList<String>();
-		if (null == (fileString = driver.curDiag.readFile(f))) {
+		if (null == (fileString = driver.curDiag.readFile(f, false))) {
 			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file "
 					+ f.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
@@ -1967,7 +1966,7 @@ public class MyFileChooser extends JFrame
 
 	    public void actionPerformed(ActionEvent e)
 	    {
-	    	clickTimer.stop();
+	    	//clickTimer.stop();
 	        firstClick( lastEvent );
 	    }
 

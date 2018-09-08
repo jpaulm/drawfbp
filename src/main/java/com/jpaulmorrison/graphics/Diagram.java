@@ -170,7 +170,7 @@ public class Diagram {
 
 			//return null;
 		//}
-		if (null == (fileString = readFile(file))) {
+		if (null == (fileString = readFile(file, false))) {
 			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file: "
 					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
@@ -340,6 +340,7 @@ public class Diagram {
 					return null;
 			}
 			file = newFile;
+			diagFile = file;
 
 			
 		}
@@ -364,7 +365,7 @@ public class Diagram {
 		} else {
 			if (fCP.fileExt.equals(".drw")) {
 				
-				fileString = readFile(file);
+				fileString = readFile(file, saveAs);
 				diagFile = file;
 				
 				if (fileString != null) {
@@ -380,6 +381,7 @@ public class Diagram {
 				fileString = (String) contents;
 
 			writeFile(file, fileString);
+			
 			//return diagFile;
 		}
 
@@ -510,7 +512,7 @@ public class Diagram {
 	}
 
 
-	public String readFile(File file) {
+	public String readFile(File file, boolean saveAs) {
 		StringBuffer fileBuffer;
 		String fileString = null;
 		int i;
@@ -533,7 +535,8 @@ public class Diagram {
 			}
 
 		} catch (FileNotFoundException e) {
-			MyOptionPane.showMessageDialog(driver.frame, "File not found: "
+			if (!saveAs)
+				MyOptionPane.showMessageDialog(driver.frame, "File not found: "
 					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		} catch (IOException e) {
