@@ -5,7 +5,7 @@ Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
 #### Latest release is 2.14.2.  This can be obtained by searching for DrawFBP on Maven. Go to https://search.maven.org/ - then search for DrawFBP (not case-sensitive).  Download the .jar file from here, and execute using Java Platform SE binary.  
 
-Two experimental pre-releases, v2.15.0 and v2.15.1, were posted to Github, to see if unnecessary repaints are causing excessive CPU usage, but have since been deleted.  **We think this has now been solved with v2.15.2 - in pre-Release status...**
+Two experimental pre-releases, v2.15.0 and v2.15.1, were posted to Github, to see if unnecessary repaints are causing excessive CPU usage, but have since been deleted.  **This has now been solved with v2.15.2.**
 
 Description
 -----------
@@ -74,6 +74,8 @@ If you wish to run DrawFBP from the command line, position to the folder contain
     java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
     
 Note: if you are displaying a network built using an earlier version of DrawFBP, with some or all of the component classes filled in, you will have to reaccess the component classes, as the naming conventions have changed.
+
+DrawFBP properties are held in a file called <code>DrawFBPProperties.xml</code> in the user's home directory.  If this does not exist, it will be created the first time the user runs DrawFBP - it is automatically updated as the user uses various DrawFBP facilities.
 
 Sample DrawFBP network
 ---
