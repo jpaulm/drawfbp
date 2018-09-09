@@ -376,12 +376,17 @@ public class DrawFBP extends JFrame
 			generalFont = "Arial";
 		if (null == (fixedFont = properties.get("fixedFont")))
 			fixedFont = "Courier";
+		
 		String dfs = properties.get("defaultFontSize");
-		if (dfs == null)
+		if (dfs == null) {
 			defaultFontSize = 14.0f;
+			dfs = "14.0";
+		}
 		else
-			defaultFontSize = Float.parseFloat(dfs);
-
+			defaultFontSize = Float.parseFloat(dfs);		
+		
+		properties.put("defaultFontSize", dfs);
+		
 		String dcl = properties.get("defaultCompLang");
 		//if (dcl.equals("NoFlo"))    // transitional!
 		//	dcl = "JSON";
@@ -2480,6 +2485,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		//osg.setFont(fontg);
 		jfl.setFont(fontg);
 		jfs.setFont(fontg);
+		jfv.setFont(fontg);
 		jtp.setFont(fontg);
 		zoom.setFont(fontg);
 		jtf.setFont(fontg);
@@ -2577,8 +2583,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			String uh = System.getProperty("user.home");
 			propertiesFile = new File(uh + File.separator
 					+ "DrawFBPProperties.xml");
-			if (!propertiesFile.exists())
-				return false;
+						 
 		}
 		BufferedReader in = null;
 		String s = null;
