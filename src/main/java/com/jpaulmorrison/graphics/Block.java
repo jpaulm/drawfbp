@@ -65,10 +65,7 @@ public class Block implements ActionListener {
 	boolean isSubnet;
 	
 	//JMenuItem[] sMenu;
-	Color lg = new Color(240, 240, 240); // very light gray
-	Color ly = new Color(255, 255, 200); // light yellow
-	Color lb = new Color(200, 255, 255); // light blue (turquoise actually)
-	Color grey = new Color(170, 244, 255); // sort of grey (?)
+	
 	
 	int ROWSIZE = 5;
 	String codeFileName;
@@ -129,9 +126,9 @@ public class Block implements ActionListener {
 		g.setColor(Color.BLACK);
 		g.drawRoundRect(tlx, tly, width, height, 6, 6);
 		if (this == driver.selBlock)
-			g.setColor(ly); // light yellow
+			g.setColor(DrawFBP.ly); // light yellow
 		else  
-			g.setColor(lb); // light turquoise
+			g.setColor(DrawFBP.lb); // light turquoise
 
 		g.fillRoundRect(tlx + 1, tly + 1, width - 2, height - 2, 6, 6);
 
@@ -146,9 +143,9 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 			g.drawRoundRect(x, y, i - 1, 20, 2, 2);
 			if (this == driver.selBlock)
-				g.setColor(ly); // light yellow
+				g.setColor(DrawFBP.ly); // light yellow
 			else
-				g.setColor(lb); // light turquoise
+				g.setColor(DrawFBP.lb); // light turquoise
 			g.fillRoundRect(x + 1, y + 1, i - 2, 19, 2, 2);
 			g.setColor(Color.BLACK);
 			if (mpxfactor != null)
@@ -273,32 +270,14 @@ public class Block implements ActionListener {
 					enc = (Enclosure) this;
 
 				if (enc == null || enc.corner == null) {
-					drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y);
+					driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y);
 					
 				}
 			}
 		}
 	}
 	 
-	void drawBlueCircle(Graphics g, int x, int y){
-		Color col = g.getColor();
-		g.setColor(Color.BLUE);
-		g.drawOval(x - 4, y - 4, 8, 8);
-		String s = "Click here to start an arrow";
-		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);			
-		byte[] str = s.getBytes();
-		int w = metrics.bytesWidth(str, 0, s.length());	
-		g.setColor(Color.black);
-		g.drawRect(x + 12, y + 10, w + 13, 23);
-		g.setColor(ly);
-		g.fillRect(x + 13, y + 11, w + 11, 21);
-		Font font = g.getFont();
-		g.setColor(Color.black);
-		g.setFont(driver.fontg); 
-		g.drawString(s, x + 15, y + 28);
-		g.setColor(col);
-		g.setFont(font);
-	}
+	
 	void calcEdges() {
 		leftEdge = cx - width / 2;
 		rgtEdge = cx + width / 2;
@@ -677,7 +656,7 @@ public class Block implements ActionListener {
 
 	 
 	void showArrowEndAreas(Graphics2D g) {
-		g.setColor(grey);   
+		g.setColor(DrawFBP.grey);   
 
 		g.fillRect(cx - width / 2 - 1, cy - height / 2 - 1, 4, height); // left
 		if (!(this instanceof Enclosure))
@@ -916,7 +895,7 @@ public class Block implements ActionListener {
 		JTextField tf0 = new JTextField(" " + s1 + " ");
 		tf0.setEditable(false);
 		gbl.setConstraints(tf0, gbc);
-		tf0.setBackground(lg);
+		tf0.setBackground(DrawFBP.lg);
 		panel.add(tf0);
 		
 		gbc.gridy = 2;
@@ -924,7 +903,7 @@ public class Block implements ActionListener {
 		tf1.setForeground(Color.BLUE);
 		tf1.setEditable(false);
 		gbl.setConstraints(tf1, gbc);
-		tf1.setBackground(lg);
+		tf1.setBackground(DrawFBP.lg);
 		panel.add(tf1);
 	
 		gbc.weightx = 1.5;
@@ -938,7 +917,7 @@ public class Block implements ActionListener {
 		JTextField tf2 = new JTextField(compDescr);
 		tf2.setEditable(false);
 		gbl.setConstraints(tf2, gbc);
-		tf2.setBackground(lg);
+		tf2.setBackground(DrawFBP.lg);
 		panel.add(tf2);
 	
 		gbc.fill = GridBagConstraints.BOTH;
@@ -1058,7 +1037,7 @@ public class Block implements ActionListener {
 			if (i == ROWSIZE - 1)
 				gbc.weightx = 0.75;
 			gbl.setConstraints(tf[i], gbc);
-			tf[i].setBackground(lg);
+			tf[i].setBackground(DrawFBP.lg);
 			tf[i].setForeground(col);
 			gbc.gridx++;
 			panel.add(tf[i]);

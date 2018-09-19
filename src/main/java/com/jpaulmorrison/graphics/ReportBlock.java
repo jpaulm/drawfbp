@@ -68,9 +68,9 @@ public class ReportBlock extends Block {
 		g.setColor(Color.BLACK);
 		g.drawPolygon(ptx, pty, 11);
 		if (this == driver.selBlock)
-			g.setColor(ly); // light yellow
+			g.setColor(DrawFBP.ly); // light yellow
 		else
-			g.setColor(lb); // light turquoise
+			g.setColor(DrawFBP.lb); // light turquoise
 		ptx[0] += 1;
 		ptx[1] += 1;
 		pty[1] += 1;

@@ -201,7 +201,10 @@ public class DrawFBP extends JFrame
 	boolean gFontChanged, fFontChanged;
 
 	static Color lg = new Color(240, 240, 240); // very light gray
-	static Color slateGray1 = new Color(198, 226, 255);
+	static Color slateGray1 = new Color(198, 226, 255);	
+	static Color ly = new Color(255, 255, 200); // light yellow
+	static Color lb = new Color(200, 255, 255); // light blue (turquoise actually)
+	static Color grey = new Color(170, 244, 255); // sort of grey (?)
 	//JDialog popup = null;
 	JDialog popup2 = null;
 	JDialog depDialog = null;
@@ -3220,6 +3223,29 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 	}
 
+	void drawBlueCircle(Graphics g, int x, int y){
+		Color col = g.getColor();
+		g.setColor(Color.BLUE);
+		g.drawOval(x - 4, y - 4, 8, 8);
+		String s;
+		if (curDiag.currentArrow == null)
+			s = "Click here to start an arrow";
+		else
+			s = "Click here to end arrow";
+		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);			
+		byte[] str = s.getBytes();
+		int w = metrics.bytesWidth(str, 0, s.length());	
+		g.setColor(Color.black);
+		g.drawRect(x + 12, y + 10, w + 13, 23);
+		g.setColor(ly);
+		g.fillRect(x + 13, y + 11, w + 11, 21);
+		Font font = g.getFont();
+		g.setColor(Color.black);
+		g.setFont(driver.fontg); 
+		g.drawString(s, x + 15, y + 28);
+		g.setColor(col);
+		g.setFont(font);
+	}
 	public void componentHidden(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 
@@ -4331,6 +4357,17 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			if (curDiag.currentArrow != null) { // this ensures the line
 												// stays visible
+				for (Block block : curDiag.blocks.values()) {
+					//if (arr.tailMarked) {
+						//arr.fromId = -1;
+					    Arrow arr = curDiag.currentArrow;
+						if (arr.touches(block, xa, ya)) {
+							Graphics g = getGraphics();
+							drawBlueCircle(g, xa, ya);
+							break;
+						}
+					//}					
+				}
 				curDiag.currentArrow.toX = xa;
 				curDiag.currentArrow.toY = ya;
 				curDiag.changed = true;
