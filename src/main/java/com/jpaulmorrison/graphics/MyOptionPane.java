@@ -1,14 +1,12 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class MyOptionPane {	

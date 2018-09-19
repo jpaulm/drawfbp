@@ -273,17 +273,32 @@ public class Block implements ActionListener {
 					enc = (Enclosure) this;
 
 				if (enc == null || enc.corner == null) {
-					Color col = g.getColor();
-					g.setColor(Color.BLUE);
-					g.drawOval(driver.arrowRoot.x - 4,
-							driver.arrowRoot.y - 4, 8, 8);
-					g.setColor(col);
+					drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y);
+					
 				}
 			}
 		}
 	}
 	 
-	
+	void drawBlueCircle(Graphics g, int x, int y){
+		Color col = g.getColor();
+		g.setColor(Color.BLUE);
+		g.drawOval(x - 4, y - 4, 8, 8);
+		String s = "Click here to start an arrow";
+		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);			
+		byte[] str = s.getBytes();
+		int w = metrics.bytesWidth(str, 0, s.length());	
+		g.setColor(Color.black);
+		g.drawRect(x + 12, y + 10, w + 13, 23);
+		g.setColor(ly);
+		g.fillRect(x + 13, y + 11, w + 11, 21);
+		Font font = g.getFont();
+		g.setColor(Color.black);
+		g.setFont(driver.fontg); 
+		g.drawString(s, x + 15, y + 28);
+		g.setColor(col);
+		g.setFont(font);
+	}
 	void calcEdges() {
 		leftEdge = cx - width / 2;
 		rgtEdge = cx + width / 2;

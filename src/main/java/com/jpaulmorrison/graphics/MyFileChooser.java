@@ -1033,7 +1033,7 @@ public class MyFileChooser extends JFrame
 			// if (s.equals(""))
 			// return jp;
 
-			int j = 0;
+			
 			if (s == null || s.equals("(empty folder)"))
 				icon = null;
 			else if (s.toLowerCase().endsWith(".jar"))
@@ -1104,7 +1104,7 @@ public class MyFileChooser extends JFrame
 		static final long serialVersionUID = 111L;
 
 		@Override
-		public Component getListCellRendererComponent(JList list, Object value,
+		public Component getListCellRendererComponent(JList<?> list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus) {
 			String s = (String) value;
 			if (!s.startsWith("All"))

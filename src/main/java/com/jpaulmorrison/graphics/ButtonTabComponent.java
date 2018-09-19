@@ -33,9 +33,7 @@ package com.jpaulmorrison.graphics;
 //package components;
  
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
-import java.awt.event.*;
  
 /**
  * Component to be used as tabComponent;

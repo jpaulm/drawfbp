@@ -8,7 +8,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
 
 import javax.swing.*;
-
 import javax.swing.event.*;
 
 import java.util.*;
@@ -753,6 +752,7 @@ public class DrawFBP extends JFrame
 		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag"); 
 		
 	}
+	
 	
 	BufferedImage loadImage(String s) {
 				
@@ -3205,6 +3205,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		    return image;
 		  }
 	*/	
+		
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
 		//oldW = getSize().width;
@@ -3373,6 +3374,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			title = e;
 		}
 	}
+	
 
 	public class CloseAppAction extends AbstractAction {
 
@@ -3662,8 +3664,8 @@ void chooseFonts(MyFontChooser fontChooser){
 		int oldx, oldy, mousePressedX, mousePressedY;
 
 		public SelectionArea() {
-
-			setOpaque(true);
+			
+			setOpaque(true);	
 
 			addMouseListener(this);
 			addMouseMotionListener(this);
@@ -4966,10 +4968,15 @@ void chooseFonts(MyFontChooser fontChooser){
 			// do nothing
 		}
 
-
+	 
 		
 	}
 
 
-	
 }
+
+	
+	
+
+	
+
