@@ -3231,7 +3231,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		if (curDiag.currentArrow == null)
 			s = "Click here to start an arrow";
 		else
-			s = "Arrow started - click or release";
+			s = "Arrow started - hold down to next block";
 		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);			
 		byte[] str = s.getBytes();
 		int w = metrics.bytesWidth(str, 0, s.length());	
