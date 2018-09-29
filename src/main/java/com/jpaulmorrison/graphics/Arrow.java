@@ -29,6 +29,8 @@ public class Arrow implements ActionListener {
 	boolean headMarked, tailMarked;
 	boolean dropOldest;
 	int capacity;
+	int endX2, endY2;
+	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
 	
 	//Arrowhead tipArrowhead = null;    
@@ -49,8 +51,7 @@ public class Arrow implements ActionListener {
 		bends = null;
 		upStreamPort = null;
 		downStreamPort = null;
-		toX = -1;   //OK!
-		toY = -1;
+		toX = toY = -1; 
 		toId = -1;
 		diag = d;
 		driver = d.driver;
@@ -59,6 +60,7 @@ public class Arrow implements ActionListener {
 		//uspMod = null;
 		dspMod = null;
 		capacity = -1;
+		endX2 = endY2 = -1;
 	}
 
 	void draw(Graphics2D g) {
@@ -75,9 +77,11 @@ public class Arrow implements ActionListener {
 			
 		}
 		
-
-		if (toX == -1) 
+ 
+		if (toX == -1) {
 			endX = diag.xa;
+			
+		}
 		else
 			endX = toX;
 		
@@ -85,14 +89,15 @@ public class Arrow implements ActionListener {
 			endY = diag.ya;
 		else
 			endY = toY;
-
+ 
 		g.setColor(Color.GRAY);
 
 		Stroke stroke = g.getStroke();
 		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
 
 		if (toX == -1) {
-		 g.drawRect(fromX - 3, fromY - 3, 6, 6);
+		 g.drawRect(fromX - 3, fromY - 3, 6, 6);		  
+		 
 		 return;
 		 }
 
@@ -202,9 +207,11 @@ public class Arrow implements ActionListener {
 		
 		calcLimits(fx, x, fy, toY);
 
-		if (!endsAtBlock && !endsAtLine) {
-			//g.drawRect(fromX - 3, fromY - 3, 6, 6);
-			g.drawRect(x - 3, toY - 3, 6, 6);
+		if (!endsAtBlock && !endsAtLine) {			
+			g.drawRect(x - 3, toY - 3, 6, 6);	
+			if (toId == -1  && endX2 > -1)
+				diag.driver.drawBlueCircle(g, endX2, endY2, 3);
+			 
 		} else if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
 					from instanceof IIPBlock) && to != null && (to instanceof ProcessBlock

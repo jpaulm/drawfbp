@@ -3223,15 +3223,17 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 	}
 
-	void drawBlueCircle(Graphics g, int x, int y){
+	void drawBlueCircle(Graphics g, int x, int y, int opt){
 		Color col = g.getColor();
 		g.setColor(Color.BLUE);
 		g.drawOval(x - 4, y - 4, 8, 8);
 		String s;
-		if (curDiag.currentArrow == null)
+		if (opt == 1)
 			s = "Click here to start an arrow";
+		else if (opt == 2)
+			s = "Hold button down to connect arrow to another block";
 		else
-			s = "Arrow started - hold down to next block";
+			s = "Arrow not complete - hit ESC to cancel";
 		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);			
 		byte[] str = s.getBytes();
 		int w = metrics.bytesWidth(str, 0, s.length());	
@@ -4356,18 +4358,22 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 
 			if (curDiag.currentArrow != null) { // this ensures the line
-												// stays visible
+				/*								// stays visible
 				for (Block block : curDiag.blocks.values()) {
 					//if (arr.tailMarked) {
 						//arr.fromId = -1;
 					    Arrow arr = curDiag.currentArrow;
 						if (arr.touches(block, xa, ya)) {
-							Graphics g = getGraphics();
-							drawBlueCircle(g, xa, ya);
+							//Graphics g = getGraphics();
+							//drawBlueCircle(g, xa, ya);
 							break;
 						}
 					//}					
 				}
+				
+				Graphics g = getGraphics();   
+				drawBlueCircle(g, xa, ya, 3); 
+				*/
 				curDiag.currentArrow.toX = xa;
 				curDiag.currentArrow.toY = ya;
 				curDiag.changed = true;
@@ -4977,7 +4983,10 @@ void chooseFonts(MyFontChooser fontChooser){
 				}
 				x = xa;
 				y = ya;
-
+				curDiag.currentArrow.endX2 = x;
+				curDiag.currentArrow.endY2 = y;
+				
+				
 				if (xa != curDiag.currentArrow.lastX) {
 					double s = ya - curDiag.currentArrow.lastY;
 					double t = xa - curDiag.currentArrow.lastX;

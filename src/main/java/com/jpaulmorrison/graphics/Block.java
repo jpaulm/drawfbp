@@ -269,8 +269,10 @@ public class Block implements ActionListener {
 				if (type == Block.Types.ENCL_BLOCK)
 					enc = (Enclosure) this;
 
-				if (enc == null || enc.corner == null) {
-					driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y);
+				if ((enc == null || enc.corner == null)) {
+					int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
+					if (opt == 1 || driver.curDiag.currentArrow.bends == null)
+						driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, opt);
 					
 				}
 			}
