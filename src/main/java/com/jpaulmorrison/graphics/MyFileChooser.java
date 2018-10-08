@@ -125,19 +125,11 @@ public class MyFileChooser extends JFrame
 	DrawFBP.FileChooserParms fCParms;
 	
 	public ClickListener clickListener;
-	//public Timer clickTimer;
 	
-	//public static int clickInterval = 0;
-
 	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP) {
 		
 		clickListener = new ClickListener();
-		//clickInterval = (Integer)Toolkit.getDefaultToolkit().
-		//        getDesktopProperty("awt.multiClickInterval");
-		
-		//clickTimer = new Timer( clickInterval, clickListener);
-		//clickTimer.setRepeats(false);
-			
+					
 		if (!f.exists()) 
 			listHead = System.getProperty("user.home");
 		else 	
@@ -147,13 +139,6 @@ public class MyFileChooser extends JFrame
 
 		fCParms = fCP;
 		
-		// text3.setEditable(false);
-		//frame = driver.frame;
-		//filter = driver.curDiag.saveInfoArray[type].filter;
-		//fileExt = driver.curDiag.saveInfoArray[type].fileExt;
-		//prompt = driver.curDiag.saveInfoArray[type].prompt;
-		//title = driver.curDiag.saveInfoArray[type].title;
-		//this.type = type;
 	}
 
 	int showOpenDialog(final boolean saveas) {
@@ -1930,12 +1915,7 @@ public class MyFileChooser extends JFrame
 	public class ClickListener extends MouseAdapter implements ActionListener
 	
 	{
-		// Dependency on swing.Timer removed - seems to work!
 		
-	    //private final static int clickInterval = (Integer)Toolkit.getDefaultToolkit().
-	    //    getDesktopProperty("awt.multiClickInterval");
-	    
-	    // private final static int clickInterval = 200;
 
 	    MouseEvent lastEvent;
 	        	     
@@ -1950,23 +1930,18 @@ public class MyFileChooser extends JFrame
 
 	        lastEvent = e;
 	        
-	        firstClick( lastEvent );    // try this
-
-	        //if (clickTimer.isRunning())
+	        firstClick( lastEvent );    
+	        
 	        if (e.getClickCount() == 2)
-	        {
-	        //	clickTimer.stop();
+	        {	        
 	            secondClick( lastEvent );
 	        }
-	        //else
-	        //{
-	        	//clickTimer.restart();
-	        //}
+	       
 	    }
 
 	    public void actionPerformed(ActionEvent e)
 	    {
-	    	//clickTimer.stop();
+	    	
 	        firstClick( lastEvent );
 	    }
 

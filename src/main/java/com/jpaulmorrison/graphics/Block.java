@@ -272,7 +272,7 @@ public class Block implements ActionListener {
 				if ((enc == null || enc.corner == null)) {
 					int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
 					if (opt == 1 || driver.curDiag.currentArrow.bends == null)
-						driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, opt);
+					driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, opt);
 					
 				}
 			}

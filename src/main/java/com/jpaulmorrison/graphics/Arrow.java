@@ -207,6 +207,10 @@ public class Arrow implements ActionListener {
 		
 		calcLimits(fx, x, fy, toY);
 
+		//int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
+		//if (opt == 1 || driver.curDiag.currentArrow.bends == null)
+		//	driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 2);
+		
 		if (!endsAtBlock && !endsAtLine) {			
 			g.drawRect(x - 3, toY - 3, 6, 6);	
 			if (toId == -1  && endX2 > -1)

@@ -8,6 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.event.*;
 
 import java.util.*;
@@ -223,22 +224,11 @@ public class DrawFBP extends JFrame
 	
 	JRadioButton[] but = new JRadioButton[11];
 	Box box21 = null;
+	  
+	Timer ttStartTimer = null;
+	Timer ttEndTimer = null;
+	boolean drawToolTip = false;
 	
-	
-	//public Timer clickTimer;
-	//public MyFileChooser.ClickListener clickListener;
-	
-
-	//private final int REFRESH_TIME = 200;
-
-	//javax.swing.Timer timer = new javax.swing.Timer(REFRESH_TIME, new ActionListener() {
-
-    //    public void actionPerformed(ActionEvent e) {
-    //       repaint();
-    //    }
-    //});
-    
-
 	// constructor
 	DrawFBP(String[] args) {
 		if (args.length == 1)
@@ -754,6 +744,32 @@ public class DrawFBP extends JFrame
 		image = loadImage("drag_icon.gif");
 		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag"); 
 		
+		ttStartTimer = new Timer(0, new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				drawToolTip = true;
+				ttEndTimer.restart(); 
+				repaint();
+			}
+		});
+		ttEndTimer = new Timer(0, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				drawToolTip = false;
+				ttStartTimer.stop();
+				ttEndTimer.stop();
+				repaint();
+			}
+		});
+	//}
+	
+	//drawToolTip = false;
+	//ttStartTimer.setRepeats(false);
+	ttStartTimer.setInitialDelay(1000);  // 1 sec
+	ttStartTimer.setDelay(600000);
+	ttEndTimer.setInitialDelay(10000);   // 10 secs
+	ttEndTimer.setDelay(600000);
+	ttStartTimer.start();
+	//ttEndTimer.start();		
 	}
 	
 	
@@ -3223,30 +3239,42 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 	}
 
-	void drawBlueCircle(Graphics g, int x, int y, int opt){
+	
+	
+	void drawBlueCircle(Graphics g, int x, int y, int opt) {
 		Color col = g.getColor();
+		
 		g.setColor(Color.BLUE);
 		g.drawOval(x - 4, y - 4, 8, 8);
-		String s;
-		if (opt == 1)
-			s = "Click here to start an arrow";
-		else if (opt == 2)
-			s = "Hold button down to connect arrow to another block";
-		else
-			s = "Arrow not complete - hit ESC to cancel";
-		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);			
-		byte[] str = s.getBytes();
-		int w = metrics.bytesWidth(str, 0, s.length());	
-		g.setColor(Color.black);
-		g.drawRect(x + 12, y + 10, w + 13, 23);
-		g.setColor(ly);
-		g.fillRect(x + 13, y + 11, w + 11, 21);
-		Font font = g.getFont();
-		g.setColor(Color.black);
-		g.setFont(driver.fontg); 
-		g.drawString(s, x + 15, y + 28);
-		g.setColor(col);
-		g.setFont(font);
+
+		if (drawToolTip) {
+			
+			//ttStartTimer.restart();
+			
+			String s;
+			
+			if (opt == 1)
+				s = "Click here to start an arrow";
+			else if (opt == 2)
+				s = "Hold button down to connect arrow to another block";
+			else
+				s = "Arrow not complete - click on block or line, or hit ESC";
+			FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+			byte[] str = s.getBytes();
+			int w = metrics.bytesWidth(str, 0, s.length());
+			g.setColor(Color.black);
+			g.drawRect(x + 12, y + 10, w + 13, 23);
+			g.setColor(ly);
+			g.fillRect(x + 13, y + 11, w + 11, 21);
+			Font font = g.getFont();
+			g.setColor(Color.black);
+			g.setFont(driver.fontg);
+			g.drawString(s, x + 15, y + 28);
+			g.setColor(col);
+			g.setFont(font);
+			
+			//ttEndTimer.restart();
+		}
 	}
 	public void componentHidden(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
@@ -3811,6 +3839,13 @@ void chooseFonts(MyFontChooser fontChooser){
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
+			drawToolTip = false; 
+			if (!ttEndTimer.isRunning())  				
+				ttStartTimer.restart();	
+			else			
+				ttEndTimer.stop();				
+			 
+			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
 			curDiag = b.diag;	
@@ -4165,6 +4200,14 @@ void chooseFonts(MyFontChooser fontChooser){
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
+			if (!ttEndTimer.isRunning()) {
+				drawToolTip = false; 
+				ttStartTimer.restart();	
+			}
+			//if (ttEndTimer.isRunning()) 
+			//	ttEndTimer.stop();				
+			 
+			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
 			curDiag = b.diag;	
@@ -4358,22 +4401,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 
 			if (curDiag.currentArrow != null) { // this ensures the line
-				/*								// stays visible
-				for (Block block : curDiag.blocks.values()) {
-					//if (arr.tailMarked) {
-						//arr.fromId = -1;
-					    Arrow arr = curDiag.currentArrow;
-						if (arr.touches(block, xa, ya)) {
-							//Graphics g = getGraphics();
-							//drawBlueCircle(g, xa, ya);
-							break;
-						}
-					//}					
-				}
+				 								// stays visible
 				
-				Graphics g = getGraphics();   
-				drawBlueCircle(g, xa, ya, 3); 
-				*/
 				curDiag.currentArrow.toX = xa;
 				curDiag.currentArrow.toY = ya;
 				curDiag.changed = true;
