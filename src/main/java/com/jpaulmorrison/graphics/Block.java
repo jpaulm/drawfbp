@@ -1545,7 +1545,9 @@ public class Block implements ActionListener {
 		}
 
 		if (s.equals("Excise Subnet")) {
-			// Block must be an Enclosure			
+			// Block must be an Enclosure	
+			
+			// remember no file names need to have been filled in at this point
 			
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change name",
@@ -1557,22 +1559,39 @@ public class Block implements ActionListener {
 					ans += ".drw";
 			}
 			else
-				return;
-			
-						
-			//--------------------
-			Block b = diag.excise((Enclosure) this);
-			//--------------------
+				return;			
+			/*
+			 *  Excise will 
+"excise" those blocks and arrows which are completely enclosed by the Enclosure block, and create a new 
+subnet including those blocks and arrows.  Arrows that cross the Enclosure boundary will have External Ports
+attached to them, which can be edited to specify the external port names, or to toggle the substream sensitivity 
+indicator.
 
-			// from here on driver.curDiag will be the new (subnet) diagram
-			b.description = ans;
-			driver.curDiag.desc= ans;
-			driver.curDiag.title = ans;
+The "source" network will be shown with a new
+"subnet" block labelled ?.drw - the description 
+of the enclosure also becomes the title of the subnet diagram (shown in bold underneath the editing area). 
+Arrows crossing the Enclosure boundary in the "source" diagram 
+will be attached roughly to the new subnet block - if
+the user wishes to change their position, they can be adjusted using the 
+arrow "drag" function - either dragging the tail or the head of the arrow as appropriate. 
+
+The old diagram will be modified, and a new subnet diagram created, with "external ports" filled in. 			
+*/
+			
+			//--------------------
+			diag.excise((Enclosure) this, ans);  
+			// diag is the diagram being modified, this is the "enclosure" block within it
+			// ans is the name chosen for the (new) subnet
+			//--------------------
+			
 			final boolean NOCHOOSE = false;
-			driver.curDiag.delBlock(this, NOCHOOSE);
+			driver.curDiag.delBlock(this, NOCHOOSE);  //delete enclosure block 
 			driver.curDiag.foundBlock = null;
-			driver.frame.repaint();
+			driver.curDiag.desc = ans; 
+			driver.curDiag.title = ans;
+			
 			driver.curDiag.changed = true;
+			driver.frame.repaint();
 			return;
 
 		}

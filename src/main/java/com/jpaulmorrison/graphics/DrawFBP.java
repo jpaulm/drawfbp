@@ -4080,10 +4080,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					 * the following leaves a strip around the outside of each
 					 * block that cannot be used for dragging!
 					 */
-					if (between(xa, block.leftEdge + 4 * scalingFactor,
-							block.rgtEdge - 4 * scalingFactor)
-							&& between(ya, block.topEdge + 4 * scalingFactor,
-									block.botEdge - 4 * scalingFactor)) {
+					if (between(xa, block.leftEdge + 6 * scalingFactor,
+							block.rgtEdge - 6 * scalingFactor)
+							&& between(ya, block.topEdge + 6 * scalingFactor,
+									block.botEdge - 6 * scalingFactor)) {
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
 						blockSelForDragging = block;						
@@ -4478,8 +4478,8 @@ void chooseFonts(MyFontChooser fontChooser){
 								File f = new File(
 										blockSelForDragging.diagramFileName);
 								Diagram saveCurDiag = curDiag;
-								int i2 = curDiag.diagramIsOpen(f.getAbsolutePath());
-								if (i2 > -1 ){
+								int tabno2 = curDiag.diagramIsOpen(f.getAbsolutePath());
+								if (tabno2 > -1 ){
 									ButtonTabComponent b2 = (ButtonTabComponent) jtp
 											.getTabComponentAt(i);
 									curDiag = b2.diag;

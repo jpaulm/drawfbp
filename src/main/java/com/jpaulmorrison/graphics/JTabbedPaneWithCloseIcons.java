@@ -3,6 +3,7 @@ package com.jpaulmorrison.graphics;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * A JTabbedPane which has a close ('X') icon on each tab.
@@ -33,6 +34,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 				File f = driver.curDiag.diagFile;
 				if (f != null) {
 				    File currentDiagramDir = f.getParentFile();
+				    if (driver.properties == null)
+				    	driver.properties = new HashMap <String, String>();
+				    	
 				    driver.properties
 						.put("currentDiagramDir", currentDiagramDir.getAbsolutePath());  
 				    driver.propertiesChanged = true;  

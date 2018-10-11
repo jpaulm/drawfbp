@@ -585,7 +585,7 @@ public class Diagram {
 			if (i == tabNum)
 				continue;
 			String t = f.getAbsolutePath();
-			if (s.equals(t)) {
+			if (t.endsWith(s)) {
 				//File fs = new File(s);
 				//MyOptionPane.showMessageDialog(driver.frame,
 				//		"File " + fs.getName() + " is open", MyOptionPane.WARNING_MESSAGE);
@@ -701,13 +701,13 @@ public class Diagram {
 		driver.frame.repaint();
 	}
 
-	Block excise(Enclosure enc) {
+	void excise(Enclosure enc, String subnetName) {
 
-		// *this* is the *old* diagram 
+		// *this* is the *old* diagram; enc is the Enclosure block within it 
 		
 		driver.getNewDiag();		
 		
-		// *driver.curDiag* will contain new diagram, which will eventually contain all enclosed blocks and
+		// *driver.curDiag* will contain new subnet diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
 		
 		//driver.curDiag.maxBlockNo = this.maxBlockNo;
@@ -766,6 +766,17 @@ public class Diagram {
 				eb.cx = arrow.fromX - eb.width / 2;
 				eb.cy = arrow.fromY;
 				eb.type = Block.Types.EXTPORT_IN_BLOCK;
+				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+						"Enter or change portname",
+						"Enter external input port name",
+						MyOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (ans != null/* && ans.length() > 0*/) {
+					ans = ans.trim();					
+				}
+				else
+					return;
+				//arrow.downStreamPort = ans;
+				eb.description = ans;
 				//driver.curDiag.maxBlockNo++;
 				//eb.id = driver.curDiag.maxBlockNo;
 				arrow.fromId = eb.id;
@@ -773,10 +784,19 @@ public class Diagram {
 					for (SubnetPort snp : enc.subnetPorts) {
 						if (snp.side == Side.LEFT && Math.abs(arrow.toY - snp.y)<= 6) {
 							eb.substreamSensitive = snp.substreamSensitive;
-							eb.description = snp.name;
+							snp.name = ans;
+							//eb.description = snp.name;							
 						}						
 					}
 				}
+				else {
+					enc.subnetPorts = new LinkedList<SubnetPort>();
+					SubnetPort snp = new SubnetPort();
+					enc.subnetPorts.add(snp);
+					snp.name = ans;
+					//side, sssensitive?
+				}
+					
 				driver.curDiag.blocks.put(new Integer(arrow.fromId), eb);
 				eb.calcEdges();
 			}
@@ -790,6 +810,18 @@ public class Diagram {
 				eb.cx = arrow.toX + eb.width / 2;
 				eb.cy = arrow.toY;
 				eb.type = Block.Types.EXTPORT_OUT_BLOCK;
+				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+						"Enter or change portname",
+						"Enter external output port name",
+						MyOptionPane.PLAIN_MESSAGE, null, null, null);
+				if (ans != null/* && ans.length() > 0*/) {
+					ans = ans.trim();					
+				}
+				else
+					return;
+				//arrow.upStreamPort = ans;
+				eb.description = ans;
+				
 				driver.curDiag.maxBlockNo++;
 				eb.id = driver.curDiag.maxBlockNo;
 				arrow.toId = eb.id;
@@ -797,7 +829,8 @@ public class Diagram {
 					for (SubnetPort snp : enc.subnetPorts) {
 						if (snp.side == Side.RIGHT && Math.abs(arrow.fromY - snp.y)<= 6) {
 							eb.substreamSensitive = snp.substreamSensitive;
-							eb.description = snp.name;
+							snp.name = ans;
+							//eb.description = snp.name;	
 						}
 					}
 				}
@@ -823,7 +856,7 @@ public class Diagram {
 		block.diagramFileName = enc.diag.desc;
 		block.isSubnet = true;
 		driver.curDiag.parent = block;
-		
+		//block.diagramFileName = "newname";		
 
 		//block.description = enc.description;
 		block.description = enc.diag.desc;
@@ -860,7 +893,7 @@ public class Diagram {
 						arrow.toX = block.cx - block.width / 2;
 						arrow.toY = block.cy;
 					}
-					//arrow.upStreamPort = "UPS";
+					arrow.downStreamPort = "DSP";    
 				}
 			}
 
@@ -875,15 +908,17 @@ public class Diagram {
 						arrow.fromX = block.cx + block.width / 2;
 						arrow.fromY = block.cy;
 					}
-					//arrow.downStreamPort = "DNS"; 
+					arrow.upStreamPort = "USP"; 
 				}
 			}
 
 		}
 		
-		// suggested file name....
+		block.description = subnetName;
+		block.diagramFileName = subnetName;
+		//block.diag.diagFile = new File(block.diagramFileName);
 		
-		return block;
+		return;
 	}
 
 	Side findQuadrant(int x, int y, Block b) {
