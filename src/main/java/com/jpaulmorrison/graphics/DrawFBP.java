@@ -238,15 +238,8 @@ public class DrawFBP extends JFrame
 		scalingFactor = 1.0d;
 		driver = this;
 		
-		//timer.start();
-		
 		diagDesc = new JLabel("  ");
-		grid = new JCheckBox("Grid");
-		
-		
-		//public final static int clickInterval = 200;
-		//MyFileChooser.ClickListener clickListener = new MyFileChooser.ClickListener();
-		//clickTimer = new Timer( clickInterval, clickListener);
+		grid = new JCheckBox("Grid");		
 
 		properties = new HashMap<String, String>();		
 			
@@ -762,14 +755,12 @@ public class DrawFBP extends JFrame
 		});
 	//}
 	
-	//drawToolTip = false;
-	//ttStartTimer.setRepeats(false);
-	ttStartTimer.setInitialDelay(1000);  // 1 sec
+	ttStartTimer.setInitialDelay(2000);  // 2 sec
 	ttStartTimer.setDelay(600000);
 	ttEndTimer.setInitialDelay(10000);   // 10 secs
 	ttEndTimer.setDelay(600000);
 	ttStartTimer.start();
-	//ttEndTimer.start();		
+			
 	}
 	
 	
@@ -3065,6 +3056,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		return new Point2D.Double(xi, yi);
 	}
 
+	/*
 	void processSubnetPort(Arrow arr) {
 
 		SubnetPort snPort = null;
@@ -3114,7 +3106,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				snPort = snp;
 		}
 		if (snPort == null) {
-			snPort = new SubnetPort((int) p.y, s);
+			snPort = new SubnetPort(0, (int) p.y, s);
 			curDiag.cEncl.subnetPorts.add(snPort);
 		}
 		
@@ -3122,7 +3114,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			String ans = (String) MyOptionPane.showInputDialog(frame,
 					"Enter or change text", "Edit subnet port name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, snPort.name);
-			if (ans != null/* && ans.length() > 0*/) 
+			if (ans != null) 
 				snPort.name = ans;
 			curDiag.cEncl.editPortName = false;
 		}
@@ -3135,7 +3127,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		curDiag.cEncl = null;
 		repaint();
 	}
-
+*/
 	void displayAlignmentLines(Block block) {
 
 		if (!(block instanceof ProcessBlock))
@@ -3248,9 +3240,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		g.drawOval(x - 4, y - 4, 8, 8);
 
 		if (drawToolTip) {
-			
-			//ttStartTimer.restart();
-			
+									
 			String s;
 			
 			if (opt == 1)
@@ -3271,9 +3261,8 @@ void chooseFonts(MyFontChooser fontChooser){
 			g.setFont(driver.fontg);
 			g.drawString(s, x + 15, y + 28);
 			g.setColor(col);
-			g.setFont(font);
+			g.setFont(font);			
 			
-			//ttEndTimer.restart();
 		}
 	}
 	public void componentHidden(ComponentEvent arg0) {
@@ -4204,9 +4193,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				drawToolTip = false; 
 				ttStartTimer.restart();	
 			}
-			//if (ttEndTimer.isRunning()) 
-			//	ttEndTimer.stop();				
-			 
+				
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
@@ -4459,10 +4446,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					selBlock = blockSelForDragging;
 					// this tests if mouse has moved (approximately) - ignore
 					// small twitches and also big jumps!
-					if (between(mousePressedX, x - 4 * scalingFactor,
-							x + 4 * scalingFactor)
-							&& between(mousePressedY, y - 4 * scalingFactor,
-									y + 4 * scalingFactor)
+					if (between(mousePressedX, x - 6 * scalingFactor,
+							x + 6 * scalingFactor)
+							&& between(mousePressedY, y - 6 * scalingFactor,
+									y + 6 * scalingFactor)
 							|| Math.abs(mousePressedX - x) > 100
 							|| Math.abs(mousePressedY - y) > 100) {
 
@@ -4631,17 +4618,19 @@ void chooseFonts(MyFontChooser fontChooser){
 				}
 
 				selArrow = curDiag.foundArrow;
-				// selBlockP = null;
-				// curDiag.changed = true;
+				
+				
 				if (curDiag.foundArrow != null) {
 					Arrow arr = curDiag.foundArrow;
 					if (arr.endsAtLine || arr.endsAtBlock) {
 
+						/*
 						if (curDiag.findArrowCrossing) {
 							processSubnetPort(arr);
 							repaint();
 							return;
 						}
+						*/
 						arr.buildArrowPopupMenu();
 						curDiag = arr.diag;
 						// curDiag.currentArrow.lastX = xa;
@@ -4651,14 +4640,13 @@ void chooseFonts(MyFontChooser fontChooser){
 						return;
 					}
 				}
-				else
-					if (curDiag.findArrowCrossing)
-						MyOptionPane.showMessageDialog(frame,								
-						"No arrow detected");
-				curDiag.findArrowCrossing = false;
-				// }
-
-				// if (curDiag.currentArrow == null) {
+				//else
+				//	if (curDiag.findArrowCrossing)
+				//		MyOptionPane.showMessageDialog(frame,								
+				//		"No arrow detected");
+				//curDiag.findArrowCrossing = false;
+				
+				
 
 				curDiag.foundBlock = null;
 

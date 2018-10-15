@@ -5,7 +5,6 @@ import java.awt.Graphics2D;
 
 public class ExtPortBlock extends Block {
 	
-
 	boolean substreamSensitive = false;
 
 	ExtPortBlock(Diagram diag) {
@@ -13,6 +12,7 @@ public class ExtPortBlock extends Block {
 		width = 36;
 		height = 28;
 		type = Block.Types.EXTPORT_IN_BLOCK;
+				
 		//calcEdges();
 	}
 	

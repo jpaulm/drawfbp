@@ -71,8 +71,8 @@ public class Diagram {
 
 	// File imageFile = null;
 
-	boolean findArrowCrossing = false;
-	Enclosure cEncl = null;
+	//boolean findArrowCrossing = false;
+	//Enclosure cEncl = null;
 	LinkedList<Arrow> clla = null;
 
 	//String genCodeFileName;
@@ -767,10 +767,10 @@ public class Diagram {
 				eb.cy = arrow.fromY;
 				eb.type = Block.Types.EXTPORT_IN_BLOCK;
 				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-						"Enter or change portname",
+						"Enter or change portname", 
 						"Enter external input port name",
 						MyOptionPane.PLAIN_MESSAGE, null, null, null);
-				if (ans != null/* && ans.length() > 0*/) {
+				if (ans != null) {
 					ans = ans.trim();					
 				}
 				else
@@ -811,10 +811,10 @@ public class Diagram {
 				eb.cy = arrow.toY;
 				eb.type = Block.Types.EXTPORT_OUT_BLOCK;
 				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-						"Enter or change portname",
+						"Enter or change portname",   
 						"Enter external output port name",
 						MyOptionPane.PLAIN_MESSAGE, null, null, null);
-				if (ans != null/* && ans.length() > 0*/) {
+				if (ans != null) {
 					ans = ans.trim();					
 				}
 				else

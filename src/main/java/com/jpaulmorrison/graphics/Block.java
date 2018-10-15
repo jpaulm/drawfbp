@@ -31,13 +31,9 @@ public class Block implements ActionListener {
 
 	int cx, cy; // coords of centre
 
-	// int x, y; // used for dragging
-
-	// int sdcx, sdcy; // center before adjustment
-
 	int id;
 
-	int tlx, tly;
+	//int tlx, tly;
 
 	static final int BLOCKWIDTH = 92; // was 76;
 
@@ -48,21 +44,21 @@ public class Block implements ActionListener {
 
 	Diagram diag;
 
-	LegendBlock lblk;
+	//LegendBlock lblk;
 	String mpxfactor = null;
 	HashMap<String, AInPort> inputPortAttrs;
 	HashMap<String, AOutPort> outputPortAttrs;
-	int scan_pos = 0;
+	//int scan_pos = 0;
 	Block vNeighbour, hNeighbour; // block at same position, vert. or horiz.
 
 	boolean visible = true;	
+	boolean isSubnet;
 
-	/* next four fields are not stored in .drw files */	
+	/* next three fields are not stored in .drw files */	
 	
 	URLClassLoader classLoader = null;
 	Class<?> javaClass; // selected Java class for block (fullClassName is equivalent in String format)
 	String compDescr;  // used for annotations only
-	boolean isSubnet;
 	
 	//JMenuItem[] sMenu;
 	
@@ -1157,7 +1153,7 @@ public class Block implements ActionListener {
 		//}
 
 		if (this instanceof Enclosure) {
-			menuItem = new JMenuItem("Edit Subnet Label");
+			menuItem = new JMenuItem("Edit Enclosure Label");
 			menuItem.addActionListener(this);
 			diag.jpm.add(menuItem);
 			menuItem = new JMenuItem("Edit Subnet Port Name");
@@ -1410,7 +1406,8 @@ public class Block implements ActionListener {
 		if (s.equals("Clear Associated Diagram and/or Class")) {
 
 			codeFileName = null;
-			diagramFileName = null;
+			diagramFileName = null;    
+			description = null;   
 			javaClass = null;
 			fullClassName = null;
 			diag.changed = true;
@@ -1492,15 +1489,15 @@ public class Block implements ActionListener {
 			return;
 
 		}
-		if (s.equals("Edit Subnet Label")) {
+		if (s.equals("Edit Enclosure Label")) {
 			// Block must be an Enclosure
-			diag.cEncl = (Enclosure) this;
+			//diag.cEncl = (Enclosure) this;
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-					"Enter or change text", "Edit subnet label",
+					"Enter or change text", "Edit enclosure label",
 					MyOptionPane.PLAIN_MESSAGE, null, null,
-					diag.cEncl.description);
+					/*diag.cEncl.*/description);
 			if (ans != null/* && ans.length() > 0*/) {
-				diag.cEncl.description = ans;
+				/*diag.cEncl.*/description = ans;
 			}
 			driver.frame.repaint();
 			diag.changed = true;
@@ -1509,6 +1506,9 @@ public class Block implements ActionListener {
 		}
 		if (s.equals("Edit Subnet Port Name")) {
 			// Block must be an Enclosure
+			MyOptionPane.showMessageDialog(driver.frame,
+					"Deprecated - do excise first, then use subnet");
+			/*
 			// this sets switch, which next click on arrow will test
 			diag.cEncl = (Enclosure) this;
 			diag.cEncl.editPortName = true;
@@ -1517,11 +1517,15 @@ public class Block implements ActionListener {
 			diag.findArrowCrossing = true;
 			driver.frame.repaint();
 			diag.changed = true;
+			*/
 			return;
 
 		}
 		if (s.equals("Toggle Substream Sensitivity")) {
 			// Block must be an Enclosure
+			MyOptionPane.showMessageDialog(driver.frame,
+					"Deprecated - do excise first, then use subnet");
+			/*
 			// this sets switch, which next click on arrow will test
 			diag.cEncl = (Enclosure) this;
 			diag.cEncl.changeSubstreamSensitivity = !diag.cEncl.changeSubstreamSensitivity;
@@ -1530,10 +1534,11 @@ public class Block implements ActionListener {
 			diag.findArrowCrossing = true;
 			driver.frame.repaint();
 			diag.changed = true;
+			*/
 			return;
 
 		}
-
+ 
 		if (s.startsWith("Drag Contents")) {
 			Enclosure enc = (Enclosure) this;
 			enc.draggingContents = true;

@@ -2,15 +2,15 @@ package com.jpaulmorrison.graphics;
 import java.util.*;
 
 public class SubnetPort {
-  //int x;
+  int x;
   int y;
   String name; 
   DrawFBP.Side side;
   boolean substreamSensitive = false;
   SubnetPort(){	 
   }
-  SubnetPort(int y, DrawFBP.Side s){
-	  //this.x = x;
+  SubnetPort(int x, int y, DrawFBP.Side s){
+	  this.x = x;
 	  this.y = y;
 	  side = s;
   }
@@ -25,9 +25,9 @@ public class SubnetPort {
 			side = DrawFBP.Side.LEFT;
 		else
 		side = DrawFBP.Side.RIGHT;
-		//String ss = item.get("substreamsensitive");
-		//if (ss != null)
-		//	substreamSensitive = true;
+		String ss = item.get("substreamsensitive");
+		if (ss != null)
+			substreamSensitive = true;
 			
   }
 }
