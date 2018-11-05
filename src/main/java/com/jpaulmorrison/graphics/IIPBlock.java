@@ -3,7 +3,7 @@ package com.jpaulmorrison.graphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -19,7 +19,7 @@ public class IIPBlock extends Block {
 	}
 	
 	@Override
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;

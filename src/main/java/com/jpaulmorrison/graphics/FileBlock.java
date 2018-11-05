@@ -1,6 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.GeneralPath;
 
@@ -15,7 +16,7 @@ public class FileBlock extends Block {
 	}
 	
 	@Override
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;
@@ -37,9 +38,9 @@ public class FileBlock extends Block {
 			g.setColor(DrawFBP.ly); // light yellow
 			else
 			g.setColor(DrawFBP.lb); // light turquoise	
-		g.fill(gp);
+		((Graphics2D)g).fill(gp);
 		g.setColor(Color.BLACK);
-		g.draw(gp);
+		((Graphics2D)g).draw(gp);
 		y = cy - height + height / 2 - 8;
 		x = cx - width / 2;
 		g.drawArc(x, y, width, 20, 190, 160);	

@@ -1,6 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class ExtPortBlock extends Block {
@@ -17,7 +18,7 @@ public class ExtPortBlock extends Block {
 	}
 	
 	@Override
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 		if (!visible)
 			return;
 		int c = cx;
@@ -36,10 +37,11 @@ public class ExtPortBlock extends Block {
 			g.setColor(Color.RED);
 			g.drawString(description, cx - description.length()
 					* driver.gFontWidth / 2, cy + 24);
+			g.setColor(Color.BLACK);
 		}
 	}
 
-	void drawIn(Graphics2D g, int ctr, int w) {
+	void drawIn(Graphics g, int ctr, int w) {
 		int ptx[] = new int[7];
 		int pty[] = new int[7];
 		
@@ -99,7 +101,7 @@ public class ExtPortBlock extends Block {
 		calcDiagMaxAndMin(left, right, top, bottom);
 	}
 
-	void drawOut(Graphics2D g, int ctr, int w) {
+	void drawOut(Graphics g, int ctr, int w) {
 		int ptx[] = new int[7];
 		int pty[] = new int[7];
 		

@@ -10,9 +10,9 @@ public class FoundPoint extends Point {
 	 */
 	private static final long serialVersionUID = 1L;	
 	Side side;
-	Block b;
+	Block block;
 	
-	FoundPoint(int x, int y, Side s, Block block) {
-		this.x = x; this.y = y; side = s; b = block;
+	FoundPoint(int x, int y, Side s, Block blk) {
+		this.x = x; this.y = y; side = s; block = blk;
 	}
 }

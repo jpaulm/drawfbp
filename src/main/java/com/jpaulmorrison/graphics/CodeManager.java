@@ -346,7 +346,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			for (Arrow arrow : diag.arrows.values()) {
 				// generate a connection or initialize
 				Block from = diag.blocks.get(new Integer(arrow.fromId));
-				Arrow a2 = arrow.findArrowEndingAtBlock();
+				Arrow a2 = arrow.findLastArrowInChain();
 				if (a2 == null)
 					continue;
 				Block to = diag.blocks.get(new Integer(a2.toId));
@@ -1066,7 +1066,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		for (Arrow arrow : diag.arrows.values()) {
 			// generate a connection or initialize
 			Block from = diag.blocks.get(new Integer(arrow.fromId));
-			Arrow a2 = arrow.findArrowEndingAtBlock();
+			Arrow a2 = arrow.findLastArrowInChain();
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -1165,7 +1165,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		for (Arrow arrow : diag.arrows.values()) {
 			Block from = diag.blocks.get(new Integer(arrow.fromId));
-			Arrow a2 = arrow.findArrowEndingAtBlock();
+			Arrow a2 = arrow.findLastArrowInChain();
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -1372,7 +1372,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 	boolean getPortNames(Arrow arrow) {
 		Block from = diag.blocks.get(new Integer(arrow.fromId));
-		Arrow a2 = arrow.findArrowEndingAtBlock();
+		Arrow a2 = arrow.findLastArrowInChain();
 		Block to = diag.blocks.get(new Integer(a2.toId));
 		String z;
 

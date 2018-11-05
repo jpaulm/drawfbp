@@ -14,7 +14,7 @@ public class LegendBlock extends Block {
 	}
 
 	@Override
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;

@@ -1,7 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 
 public class ReportBlock extends Block {
 	
@@ -14,7 +14,7 @@ public class ReportBlock extends Block {
 	}
 	
 	@Override
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;

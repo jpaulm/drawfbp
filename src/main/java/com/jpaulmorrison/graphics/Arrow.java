@@ -30,6 +30,8 @@ public class Arrow implements ActionListener {
 	boolean dropOldest;
 	int capacity;
 	int endX2, endY2;
+	Arrow orig;
+	String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
 	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
 	
@@ -54,16 +56,13 @@ public class Arrow implements ActionListener {
 		toX = toY = -1; 
 		toId = -1;
 		diag = d;
-		driver = d.driver;
-		diag.maxArrowNo++;
-		id = diag.maxArrowNo;
-		//uspMod = null;
-		dspMod = null;
+		driver = d.driver;		
 		capacity = -1;
 		endX2 = endY2 = -1;
+		
 	}
 
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 
 		int endX, endY;
 		Block from = null;
@@ -79,8 +78,7 @@ public class Arrow implements ActionListener {
 		
  
 		if (toX == -1) {
-			endX = diag.xa;
-			
+			endX = diag.xa;   
 		}
 		else
 			endX = toX;
@@ -92,7 +90,7 @@ public class Arrow implements ActionListener {
  
 		g.setColor(Color.GRAY);
 
-		Stroke stroke = g.getStroke();
+		Stroke stroke = ((Graphics2D)g).getStroke();
 		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
 
 		if (toX == -1) {
@@ -133,7 +131,7 @@ public class Arrow implements ActionListener {
 				else {
 					Shape shape = new Line2D.Double(fx, fy, tx, ty);
 					shape = zzstroke.createStrokedShape(shape);
-					g.draw(shape);					
+					((Graphics2D)g).draw(shape);					
 				}
 				
 				if (capacity > 0) {
@@ -194,7 +192,7 @@ public class Arrow implements ActionListener {
 		else {
 			Shape shape = new Line2D.Double(fx, fy, tx, ty);
 			shape = zzstroke.createStrokedShape(shape);
-			g.draw(shape);
+			((Graphics2D)g).draw(shape);
 			// g.setStroke(stroke);
 		}
 
@@ -244,6 +242,7 @@ public class Arrow implements ActionListener {
 				}
 				g.setColor(Color.BLACK);
 			}
+			
 			if (downStreamPort != null
 					&& !endsAtLine
 					&& to != null
@@ -286,7 +285,7 @@ public class Arrow implements ActionListener {
 
 	
 
-	void drawCircleFrom(Graphics2D g, int fx, int fy, int tx, int ty,
+	void drawCircleFrom(Graphics g, int fx, int fy, int tx, int ty,
 			Color color, int size) {
 		Color col = g.getColor();
 		g.setColor(color);
@@ -313,7 +312,7 @@ public class Arrow implements ActionListener {
 		g.setColor(col);
 	}
 
-	void drawCircleTo(Graphics2D g, int fx, int fy, int tx, int ty,
+	void drawCircleTo(Graphics g, int fx, int fy, int tx, int ty,
 			Color color, int size) {
 		Color col = g.getColor();
 		g.setColor(color);
@@ -797,7 +796,7 @@ public class Arrow implements ActionListener {
 		return d <= 6.0;
 	}
 
-	Arrow findArrowEndingAtBlock() {
+	Arrow findLastArrowInChain() {
 		if (endsAtBlock)
 			return this;
 		int id = toId;		   // not a block, so toId must be a line ID
@@ -819,6 +818,9 @@ public class Arrow implements ActionListener {
 		}		
 	}
 
+	// gives boolean result (touches - yes/no), if point (x, y) is within 2 pixels of a side; 
+	//   sets *side* as "side-effect"
+	
 	boolean touches(Block b, int x, int y) {
 		DrawFBP.Side side = null;
 		if (driver.nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2, b.cx
@@ -883,37 +885,6 @@ public class Arrow implements ActionListener {
 		
 		}
 	
-	
-
-	Arrow makeCopy(Diagram d) {
-		Arrow arr = new Arrow(d);
-		arr.fromX = this.fromX;
-		arr.fromY = this.fromY;
-		arr.toX = this.toX;
-		arr.toY = this.toY;
-		arr.lastX = this.lastX;
-		arr.lastY = this.lastY;
-		arr.fromId = this.fromId;
-		arr.toId = this.toId;
-		arr.id = this.id;
-		arr.capacity = this.capacity;
-		arr.endsAtBlock = this.endsAtBlock;
-		arr.endsAtLine = this.endsAtLine;
-		if (this.bends != null) {
-			arr.bends = new LinkedList<Bend>();
-			for (Bend b : this.bends) {
-				Bend b2 = new Bend(b.x, b.y);
-				arr.bends.add(b2);
-			}
-		}
-		arr.upStreamPort = this.upStreamPort;
-		arr.downStreamPort = this.downStreamPort;
-		//arr.fromSide = this.fromSide;
-		//arr.toSide = this.toSide;
-		arr.diag = d;
-		return arr;
-
-	}
 	
 	/* Thanks to Jerry Huxtable 
 	 *   http://www.jhlabs.com/java/java2d/strokes/
@@ -999,7 +970,7 @@ class Arrowhead {
 		this.toY = toY;
 		}
 	
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 		
 			// toX/toY is tip of arrow and fx/fy is a point on the line -
 			// fx/fy is used to determine direction & angle
@@ -1052,8 +1023,8 @@ class Arrowhead {
 				g.setColor(FOREST_GREEN);
 			else
 				g.setColor(ORANGE_RED);
-			g.fill(shape);
-			g.draw(shape);
+			((Graphics2D)g).fill(shape);
+			((Graphics2D)g).draw(shape);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 
 	public class PersonBlock extends Block {
 		
@@ -14,7 +14,7 @@ import java.awt.Graphics2D;
 		}
 		
 		@Override
-		void draw (Graphics2D g) {
+		void draw (Graphics g) {
 			if (!visible && this != driver.selBlock) {
 				showZones(g);
 				return;

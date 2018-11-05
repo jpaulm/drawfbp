@@ -97,7 +97,7 @@ public class Block implements ActionListener {
 
 	}
 
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 
 		if (diag == null) // fudge
 			return;
@@ -257,7 +257,7 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 		}
 		
-		if (driver.arrowRoot != null && driver.arrowRoot.b == this) {
+		if (driver.arrowRoot != null && driver.arrowRoot.block == this) {
 			if (driver.arrowEndForDragging == null
 					|| !driver.arrowEndForDragging.headMarked
 							&& !driver.arrowEndForDragging.tailMarked) {	
@@ -290,7 +290,7 @@ public class Block implements ActionListener {
 			diag.minY = Math.min(ymin - 20, diag.minY);
 		//}
 	}
-	void centreDesc(Graphics2D g) {
+	void centreDesc(Graphics g) {
 
 		g.setColor(Color.BLACK);
 
@@ -349,7 +349,7 @@ public class Block implements ActionListener {
 	}
 
 	 
-	void showZones(Graphics2D g) {
+	void showZones(Graphics g) {
 		if (diag.currentArrow == null) {
 			if (driver.selBlockM == this)
 				showArrowEndAreas(g);
@@ -653,7 +653,7 @@ public class Block implements ActionListener {
 	}
 
 	 
-	void showArrowEndAreas(Graphics2D g) {
+	void showArrowEndAreas(Graphics g) {
 		g.setColor(DrawFBP.grey);   
 
 		g.fillRect(cx - width / 2 - 1, cy - height / 2 - 1, 4, height); // left
@@ -1059,7 +1059,7 @@ public class Block implements ActionListener {
 		for (Arrow arrow : diag.arrows.values()) {
 			//if (arrow.endsAtLine)
 			//	continue;
-			Arrow arr = arrow.findArrowEndingAtBlock(); 
+			Arrow arr = arrow.findLastArrowInChain(); 
 			if (arr == null)
 				return 2;
 			if (id == arr.toId && arr.downStreamPort != null
@@ -1590,7 +1590,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			//--------------------
 			
 			final boolean NOCHOOSE = false;
-			driver.curDiag.delBlock(this, NOCHOOSE);  //delete enclosure block 
+			//driver.curDiag.delBlock(this, NOCHOOSE);  //delete enclosure block 
 			driver.curDiag.foundBlock = null;
 			driver.curDiag.desc = ans; 
 			driver.curDiag.title = ans;

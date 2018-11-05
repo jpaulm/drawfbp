@@ -3,6 +3,7 @@ package com.jpaulmorrison.graphics;
 //import java.awt.AlphaComposite;
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 import java.awt.geom.GeneralPath;
@@ -53,7 +54,7 @@ public class Enclosure extends Block {
 	
 
 	@Override
-	void draw(Graphics2D g) {
+	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;
@@ -63,8 +64,8 @@ public class Enclosure extends Block {
 		else
 			g.setColor(Color.BLUE);
 		float dash[] = {4.0f};
-		BasicStroke str = (BasicStroke) g.getStroke();
-		g.setStroke(new BasicStroke(1.2f, BasicStroke.CAP_BUTT,
+		BasicStroke str = (BasicStroke) ((Graphics2D)g).getStroke();
+		((Graphics2D)g).setStroke(new BasicStroke(1.2f, BasicStroke.CAP_BUTT,
 				BasicStroke.JOIN_MITER, 6.0f, dash, 0.0f));
 		int x = cx - width / 2;
 		int y = cy - height / 2;
@@ -77,7 +78,7 @@ public class Enclosure extends Block {
 		g.drawLine(x + width, y, x + width, y + height);
 		g.drawLine(x, y + height, x + width, y + height);
 		g.drawLine(x, y, x, y + height);
-		g.setStroke(str);
+		((Graphics2D)g).setStroke(str);
 		
 		
 		int hh = driver.gFontHeight;
@@ -86,12 +87,12 @@ public class Enclosure extends Block {
 			g.drawString("   Use enclosure title area to drag", x1, y - hh - 8);
 			//g.setColor(Color.LIGHT_GRAY);
 			 g.setColor(new Color(221, 221, 221));			 				
-			 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); 
+			 ((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f)); 
 			 g.fillRect(x, y, width, height);
 			 g.setColor(col);
 		}	
 		else
-			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+			((Graphics2D)g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
 
 		// draw small rectangle at top
 		
@@ -160,25 +161,28 @@ public class Enclosure extends Block {
 		if (subnetPorts != null) {
 			g.setColor(Color.RED);
 			for (SubnetPort snp : subnetPorts) {
+								
+				snp.name = snp.eb.description;
+				
 				if (snp.side == DrawFBP.Side.LEFT) {
-					x = cx - width / 2;
+					snp.x = cx - width / 2;
 					
-					if (snp.name != null && !(snp.name.equals("")))
-						g.drawString(snp.name, x - 10 - driver.gFontWidth
-								* snp.name.length(), snp.y - driver.gFontHeight
-								/ 2);
+					//if (snp.name != null && !(snp.name.equals("")))
+					//	g.drawString(snp.name, snp.x - 10 - driver.gFontWidth
+					//			* snp.name.length(), snp.y - driver.gFontHeight
+					//			/ 2);
 					if (snp.substreamSensitive) {
-						GeneralPath gp = drawSemicircle(x, snp.y, +1);
-						g.fill(gp);						
+						GeneralPath gp = drawSemicircle(snp.x, snp.y, +1);
+						((Graphics2D)g).fill(gp);						
 					}
 				} else { // if RIGHT
-					x = cx + width / 2;
-					if (snp.name != null && !(snp.name.equals("")))
-						g.drawString(snp.name, x + 10, snp.y
-								- driver.gFontHeight / 2);
+					snp.x = cx + width / 2;
+					//if (snp.name != null && !(snp.name.equals("")))
+					//	g.drawString(snp.name, snp.x + 10, snp.y
+					//			- driver.gFontHeight / 2);
 					if (snp.substreamSensitive) {
-						GeneralPath gp = drawSemicircle(x, snp.y, -1);
-						g.fill(gp);	
+						GeneralPath gp = drawSemicircle(snp.x, snp.y, -1);
+						((Graphics2D)g).fill(gp);	
 					}
 				}
 			}
