@@ -723,13 +723,13 @@ public class Diagram {
 			blocks.remove(bid);
 			driver.sbnDiag.maxBlockNo = Math.max(blk.id, driver.sbnDiag.maxBlockNo);
 			blk.diag = driver.sbnDiag;
-			blk.id = driver.sbnDiag.maxBlockNo++;
+			//blk.id = driver.sbnDiag.maxBlockNo++;
 			driver.sbnDiag.blocks.put(new Integer(blk.id), blk);
 		}
 			
 		ProcessBlock subnetBlock = buildSubnetBlock(driver.origDiag, enc);
 		
-		copyArrows(enc);   // categorize arrows in (old) Diagram, making copies of "crossers"
+		driver.origDiag.copyArrows(enc, subnetBlock);   // categorize arrows in (old) Diagram, making copies of "crossers"
 		
 		// get arrows that were totally enclosed, delete from old diagram and add to new diagram
 		
@@ -738,22 +738,25 @@ public class Diagram {
 			arrows.remove(aid);
 			driver.sbnDiag.arrows.put(aid, arrow); // add arrow to new
 													// diagram
+			arrow.diag = driver.sbnDiag;
+			driver.selArrow = arrow;
 			changed = true;
 		}
 				
 		// now go through remaining arrows, creating appropriate ExtPortBlock's
 		
-		for (Arrow arrow : driver.sbnDiag.arrows.values()) {
+		for (Arrow arrow : driver.origDiag.arrows.values()) {
 						
 			if (arrow.type.equals("I")) {
-				driver.origDiag.arrows.put(new Integer(arrow.orig.id), arrow.orig);
+				driver.sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
+				
 				ExtPortBlock eb = new ExtPortBlock(driver.sbnDiag);
 				eb.cx = arrow.fromX - eb.width / 2;
 				eb.cy = arrow.fromY;
 				eb.type = Block.Types.EXTPORT_IN_BLOCK;					
 				driver.sbnDiag.maxBlockNo++;
 				eb.id = driver.sbnDiag.maxBlockNo;
-				arrow.fromId = eb.id;
+				arrow.copy.fromId = eb.id;
 				//arrow.toId = subnetBlock.id;
 				arrow.upStreamPort = "OUT";
 				//arrow.type = "I";
@@ -784,9 +787,9 @@ public class Diagram {
 				
 				eb.calcEdges();
 				//arrow.toId = subnetBlock.id;
-				Point fixed = new Point(arrow.orig.fromX, arrow.orig.fromY);
-				if (arrow.orig.bends != null) {
-					for (Bend bend : arrow.orig.bends) {
+				Point fixed = new Point(arrow.fromX, arrow.fromY);
+				if (arrow.bends != null) {
+					for (Bend bend : arrow.bends) {
 						fixed.x = bend.x;   // use first section
 						fixed.y = bend.y;
 					}
@@ -794,20 +797,21 @@ public class Diagram {
 				
 				Point var = computeArrowVar(fixed, subnetBlock);
 				
-				arrow.orig.toX = var.x;
-				arrow.orig.toY = var.y;		
+				arrow.toX = var.x;
+				arrow.toY = var.y;	
+				arrow.toId = subnetBlock.id;
 			}
 			
 			
 			if (arrow.type.equals("O")) {		
-				driver.origDiag.arrows.put(new Integer(arrow.orig.id), arrow.orig);
+				driver.sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
 				ExtPortBlock eb = new ExtPortBlock(driver.sbnDiag);
 				eb.cx = arrow.toX + eb.width / 2;
 				eb.cy = arrow.toY;
 				eb.type = Block.Types.EXTPORT_OUT_BLOCK;				
 				driver.sbnDiag.maxBlockNo++;
 				eb.id = driver.sbnDiag.maxBlockNo;
-				arrow.toId = eb.id;
+				arrow.copy.toId = eb.id;
 				//arrow.fromId = subnetBlock.id;
 				arrow.downStreamPort = "IN";
 				//arrow.type = "O";
@@ -838,11 +842,12 @@ public class Diagram {
 				
 				eb.calcEdges();
 				//arrow.fromId = subnetBlock.id;
-				Point fixed = new Point(arrow.orig.toX, arrow.orig.toY);				
+				Point fixed = new Point(arrow.toX, arrow.toY);				
 				Point var = computeArrowVar(fixed, subnetBlock);
 				
-				arrow.orig.fromX = var.x;
-				arrow.orig.fromY = var.y;
+				arrow.fromX = var.x;
+				arrow.fromY = var.y;
+				arrow.fromId = subnetBlock.id;
 			}
 		}
 		
@@ -969,7 +974,7 @@ public class Diagram {
 	
 	
 	
-	void copyArrows(Enclosure enc) {
+	void copyArrows(Enclosure enc, Block snBlock) {
 		
 		for (Arrow arrow : arrows.values()) {
 					 
@@ -985,7 +990,8 @@ public class Diagram {
 				// copy arrow
 				
 				Arrow arrCopy = new Arrow(driver.sbnDiag);
-				arrCopy.orig = arrow;
+				//arrCopy.orig = arrow;
+				arrow.copy = arrCopy;
 				if (from == null)
 					arrow.type = "O";
 				else 
@@ -1000,6 +1006,7 @@ public class Diagram {
 				
 				arrCopy.fromId = arrow.fromId;
 				arrCopy.toId = arrow.toId;
+				driver.sbnDiag.maxArrowNo = Math.max(driver.sbnDiag.maxArrowNo, arrow.id);
 				arrCopy.id = driver.sbnDiag.maxArrowNo++;
 				arrCopy.capacity = arrow.capacity;
 				arrCopy.endsAtBlock = arrow.endsAtBlock;
@@ -1025,8 +1032,12 @@ public class Diagram {
 				//arr.fromSide = arrow.fromSide;
 				//arr.toSide = arrow.toSide;
 				//Diagram d = diag;
-				arrCopy.diag = driver.sbnDiag;				
-
+				arrCopy.diag = driver.sbnDiag;	
+				if (arrow.type.equals("I"))
+					arrow.toId = snBlock.id;
+				else
+					arrow.fromId = snBlock.id;
+				arrow.diag = driver.origDiag;
 				Integer aid = new Integer(arrCopy.id);
 				driver.sbnDiag.arrows.put(aid, arrCopy);
 				//arrCopy.orig = arrow;
@@ -1072,6 +1083,7 @@ public class Diagram {
 
 		subnetBlock.cx = enc.cx;
 		subnetBlock.cy = enc.cy;
+		subnetBlock.diag = driver.origDiag;
 		subnetBlock.calcEdges();
 		return subnetBlock;
 	}

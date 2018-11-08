@@ -30,7 +30,7 @@ public class Arrow implements ActionListener {
 	boolean dropOldest;
 	int capacity;
 	int endX2, endY2;
-	Arrow orig;
+	Arrow copy;
 	String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
 	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
@@ -102,7 +102,7 @@ public class Arrow implements ActionListener {
 
 		if (driver.selArrow == this)
 			g.setColor(Color.BLUE);
-		else if ((from instanceof ProcessBlock
+		if ((from instanceof ProcessBlock
 				|| from instanceof ExtPortBlock || from instanceof Enclosure)
 				&& (to instanceof ProcessBlock || to instanceof ExtPortBlock
 						|| to instanceof Enclosure || endsAtLine))
@@ -154,7 +154,7 @@ public class Arrow implements ActionListener {
 				fy = ty;
 				
 			}
-		} else {
+		} else  
 			if (capacity > 0) {
 				
 				int x = (fx + endX) / 2;
@@ -165,7 +165,7 @@ public class Arrow implements ActionListener {
 				calcLimits(x,  x + s.length() * driver.gFontWidth, y + 12, y + 12 + driver.gFontHeight);
 				
 			}
-		}
+		 
 		tx = endX;
 		ty = endY;
 		calcLimits(fx, tx, fy, ty);
@@ -230,7 +230,7 @@ public class Arrow implements ActionListener {
 
 		if (toX != -1 && (endsAtBlock || endsAtLine)) {
 			if (upStreamPort != null
-					&& (from instanceof ProcessBlock || from instanceof Enclosure)) {
+					&& (from instanceof ProcessBlock || from instanceof Enclosure || from instanceof ExtPortBlock)) {
 				if (upStreamPort.equals("*")) {
 					drawCircleFrom(g, fromX, fromY, endX, endY, Color.BLUE, 8);
 					
@@ -238,6 +238,7 @@ public class Arrow implements ActionListener {
 					g.setColor(Color.BLUE);
 					int y = fromY + driver.gFontHeight;
 					int x2 = fromX + driver.gFontWidth;
+					g.setColor(Color.BLACK);
 					g.drawString(upStreamPort, x2, y);
 				}
 				g.setColor(Color.BLACK);
@@ -246,7 +247,7 @@ public class Arrow implements ActionListener {
 			if (downStreamPort != null
 					&& !endsAtLine
 					&& to != null
-					&& (to instanceof ProcessBlock || to instanceof Enclosure)) {
+					&& (to instanceof ProcessBlock || to instanceof Enclosure || from instanceof ExtPortBlock)) {
 				if (downStreamPort.equals("*")) {
 					drawCircleTo(g, fx, fy, toX, toY, Color.BLUE, 8);
 					
@@ -254,6 +255,7 @@ public class Arrow implements ActionListener {
 					g.setColor(Color.BLUE);
 					int y = toY - driver.gFontHeight / 2;
 					x = toX - driver.gFontWidth * (downStreamPort.length() + 1);
+					g.setColor(Color.BLACK);
 					if (!endsAtLine && to != null && to.multiplex)
 						x -= 20;
 					g.drawString(downStreamPort, x, y);
