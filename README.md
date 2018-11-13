@@ -51,6 +51,7 @@ Features
 - Indicate "drop oldest" attribute for given connection
 - Generate complete networks in Java, C#, JSON, or .fbp notation
 - Pan, zoom in/out
+- Drag portion only of diagram (using Enclosure block)
 - Go to folder from diagram (v2.14.1)
 - Keyboard-only usage (except positioning of blocks)
 - Choose fonts (fixed size and variable size, indicating support for Russian, Hindi (Devanagari), and Chinese)
