@@ -30,7 +30,8 @@ public class Arrow implements ActionListener {
 	boolean dropOldest;
 	int capacity;
 	int endX2, endY2;
-	Arrow copy;
+	Arrow copy;   // this field and orig are set by Enclosure "excise" function 
+	Arrow orig;   //                              do.
 	String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
 	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
@@ -247,7 +248,7 @@ public class Arrow implements ActionListener {
 			if (downStreamPort != null
 					&& !endsAtLine
 					&& to != null
-					&& (to instanceof ProcessBlock || to instanceof Enclosure || from instanceof ExtPortBlock)) {
+					&& (to instanceof ProcessBlock || to instanceof Enclosure || to instanceof ExtPortBlock)) {
 				if (downStreamPort.equals("*")) {
 					drawCircleTo(g, fx, fy, toX, toY, Color.BLUE, 8);
 					
@@ -802,21 +803,28 @@ public class Arrow implements ActionListener {
 		if (endsAtBlock)
 			return this;
 		int id = toId;		   // not a block, so toId must be a line ID
+		
+		Arrow a = null;
 		while (true) {
+			//if (a != null)
+			//	return a;
 			for (Arrow arrow : diag.arrows.values()) {
 				if (id == arrow.id) {
-					if (arrow.endsAtBlock)
-						return arrow;
-					
-					id = arrow.toId;
+					if (arrow.endsAtBlock) {						
+						a = arrow;
+						break;
+					}
+
+	
 					break;
 				}
 			}
-			if (id == toId) {
-				//MyOptionPane.showMessageDialog(driver.frame,
-				//		"Can't find connecting arrow", MyOptionPane.ERROR_MESSAGE);
+			if (a == null) {
+				MyOptionPane.showMessageDialog(driver.frame,
+					"Can't find connecting arrow", MyOptionPane.ERROR_MESSAGE);
 				return null; 
 			}
+			return a;
 		}		
 	}
 

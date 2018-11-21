@@ -1,6 +1,8 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -81,7 +83,9 @@ public class ExtPortBlock extends Block {
 		ptx[6] += 1;
 		g.fillPolygon(ptx, pty, 7);
 		
+		g.setColor(Color.BLACK);
 		if (substreamSensitive) {
+			/*
 			//GeneralPath gp = Enclosure.drawSemicircle(right + 4, cy, +1);
 			//g.fill(gp);
 			int ptx2[] = new int[3];
@@ -94,9 +98,20 @@ public class ExtPortBlock extends Block {
 			pty2[2] = bottom;
 			g.setColor(Color.BLUE);
 			g.drawPolygon(ptx2, pty2, 3);		
-			g.fillPolygon(ptx2, pty2, 3);	
+			g.fillPolygon(ptx2, pty2, 3);
+			*/
+			Font ff = g.getFont();			
+			Font ffb = ff.deriveFont(Font.BOLD, 18.0f);
+			g.setFont(ffb);			
+			FontMetrics metrics = g.getFontMetrics(ffb);
+			String t = "SS";
+			byte[] str = t.getBytes();
+			int width = metrics.bytesWidth(str, 0, t.length());
+
+			g.drawString(t, cx - width / 2, cy + 5);			
+			g.setFont(ff);
 		}
-		g.setColor(Color.BLACK);
+		
 		g.drawLine(left, cy - height, left, cy + height);
 		
 		calcDiagMaxAndMin(left, right, top, bottom);
@@ -141,8 +156,9 @@ public class ExtPortBlock extends Block {
 		ptx[6] += 1;
 		pty[6] += 1;
 		g.fillPolygon(ptx, pty, 7);
-		
+		g.setColor(Color.BLACK);
 		if (substreamSensitive){
+			/*
 			//g.setColor(Color.RED);			
 			//GeneralPath gp = Enclosure.drawSemicircle(left - 4, cy, +1);
 			//g.fill(gp);	
@@ -156,9 +172,20 @@ public class ExtPortBlock extends Block {
 			pty2[2] = bottom;
 			g.setColor(Color.BLUE);
 			g.drawPolygon(ptx2, pty2, 3);		
-			g.fillPolygon(ptx2, pty2, 3);	
+			g.fillPolygon(ptx2, pty2, 3);
+			*/
+			Font ff = g.getFont();			
+			Font ffb = ff.deriveFont(Font.BOLD, 18.0f);
+			g.setFont(ffb);			
+			FontMetrics metrics = g.getFontMetrics(ffb);
+			String t = "SS";
+			byte[] str = t.getBytes();
+			int width = metrics.bytesWidth(str, 0, t.length());
+
+			g.drawString(t, cx - width / 2, cy + 5);			
+			g.setFont(ff);
 		}
-		g.setColor(Color.BLACK);
+		
 		if (!type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
 			g.drawLine(right, cy - height, right, cy + height);
 		

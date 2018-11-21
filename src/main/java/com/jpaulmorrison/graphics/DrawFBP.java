@@ -3656,7 +3656,32 @@ void chooseFonts(MyFontChooser fontChooser){
 			//pack();
 
 		}
-
+		
+		// a is "from" arrow; a2 may be same, or arrow that a joins to...
+		void defaultPortNames(Arrow a) {
+			Block from = curDiag.blocks.get(new Integer(a.fromId));
+			Block to = curDiag.blocks.get(new Integer(a.toId));
+			Arrow a2 = a.findLastArrowInChain();
+			to = curDiag.blocks.get(new Integer(a2.toId));
+			if (from != null
+					&& (from instanceof ProcessBlock || from instanceof ExtPortBlock)
+					&& (a2.endsAtBlock && to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock)) ) {
+				if (a.upStreamPort == null
+								|| a.upStreamPort.trim().equals("")) 
+					a.upStreamPort = "OUT";	
+				
+				if (a2.downStreamPort == null
+						|| a2.downStreamPort.trim().equals(""))
+					a2.downStreamPort = "IN";
+			}
+			
+			if (from instanceof IIPBlock && a2.endsAtBlock && to != null && to instanceof ProcessBlock )  {
+				if (a2.downStreamPort == null
+						|| a2.downStreamPort.trim().equals(""))
+					a2.downStreamPort = "IN";
+			}
+			 
+		}
 		 
 		public void paintComponent(Graphics g) {
 
@@ -4719,23 +4744,14 @@ void chooseFonts(MyFontChooser fontChooser){
 				a.toY = ya;
 
 				// a.toSide = side;
+				
+
+				defaultPortNames(a);
+				
 				from = curDiag.blocks.get(new Integer(a.fromId));
 				Block to = curDiag.blocks.get(new Integer(a.toId));
 				Arrow a2 = a.findLastArrowInChain();
 				to = curDiag.blocks.get(new Integer(a2.toId));
-
-				if (from != null
-						&& from instanceof ProcessBlock) {
-					if (a.upStreamPort == null
-									|| a.upStreamPort.trim().equals("")) 
-						a.upStreamPort = "OUT";
-				}
-				
-				if (a2.endsAtBlock && to != null && (to instanceof ProcessBlock)) {
-					if (a2.downStreamPort == null
-							|| a2.downStreamPort.trim().equals(""))
-						a2.downStreamPort = "IN";
-				}
 
 				Boolean error = false;
 				if (to instanceof IIPBlock && from instanceof ProcessBlock) {
@@ -4807,27 +4823,15 @@ void chooseFonts(MyFontChooser fontChooser){
 					// use id of target line, not of target block
 					curDiag.currentArrow.toId = curDiag.foundArrow.id;
 
+					
+					defaultPortNames(a);
+					
 					Block from = curDiag.blocks.get(new Integer(a.fromId));
-					// Block to = curDiag.blocks.get(new Integer(
-					// a.toId));
+					Block to = curDiag.blocks.get(new Integer(
+					 a.toId));
 					Arrow a2 = a.findLastArrowInChain();
-					Block to = curDiag.blocks.get(new Integer(a2.toId));
-
-					if (from != null
-							&& from instanceof ProcessBlock) {
-						if (a.upStreamPort == null || a.upStreamPort
-										.trim().equals(""))
-							a.upStreamPort = "OUT";
-					}
-					if (a2.endsAtBlock && to != null && (to instanceof ProcessBlock)) {
-						if (a2.downStreamPort == null
-								|| a2.downStreamPort.trim().equals(""))
-							a2.downStreamPort = "IN";
-					} 
-								
-					
-					//a.downStreamPort = a2.downStreamPort;
-					
+					to = curDiag.blocks.get(new Integer(a2.toId));
+										
 					if (to == from) {
 						if (MyOptionPane.NO_OPTION == MyOptionPane
 								.showConfirmDialog(frame,

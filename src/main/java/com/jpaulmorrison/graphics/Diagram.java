@@ -642,10 +642,10 @@ public class Diagram {
 		}
 		for (Arrow arr : ll) {
 			Integer aid = new Integer(arr.id);
-			driver.origDiag.arrows.remove(aid);
+			arrows.remove(aid);
 		}
 		Integer aid = new Integer(arrow.id);
-		driver.origDiag.arrows.remove(aid);
+		arrows.remove(aid);
 	}
 
 	void delBlock(Block block, boolean choose) {
@@ -659,27 +659,47 @@ public class Diagram {
 
 		// go down list repeatedly - until no more arrows to remove
 		LinkedList<Arrow> ll = new LinkedList<Arrow>();
-		while (true) {
-			boolean found = false;
+		//while (true) {
+			//boolean found = false;
 			for (Arrow arrow : arrows.values()) {
-				if (arrow.fromId == block.id) {
-					// arrow.delArrow();
+				if (arrow.fromId == block.id) {					
 					ll.add(arrow);
 					arrow.fromId = -1;
-					found = true;
+					//found = true;
 					break;
 				}
-				if (arrow.toId == block.id) {
-					// arrow.delArrow();
-					ll.add(arrow);
-					arrow.toId = -1;
-					found = true;
-					break;
+				//if (arrow.endsAtBlock && arrow.toId == block.id) {					
+				//	ll.add(arrow);
+				//	arrow.toId = -1;
+				//	found = true;
+				//	break;
+				//}
+				Arrow a = arrow;				
+				while (a.endsAtLine){
+					Integer aid = new Integer(a.id);
+					//ll.add(a);
+					//a.toId = -1;
+					a = driver.origDiag.arrows.get(aid);
+				}	
+				
+				if (a.toId != block.id) 				
+					break; 
+				
+				a = arrow;
+				while (a.endsAtLine){
+					Integer aid = new Integer(a.id);
+					ll.add(a);
+					a.toId = -1;
+					a = driver.origDiag.arrows.get(aid);
+				}	
+				if (a.toId != block.id){
+					ll.add(a);
+					a.toId = -1;
 				}
 			}
-			if (!found)
-				break;
-		}
+			//if (!found)
+			//	break;
+		//}
 
 		for (Arrow arrow : ll)
 			delArrow(arrow);
@@ -751,14 +771,14 @@ public class Diagram {
 				driver.sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
 				
 				ExtPortBlock eb = new ExtPortBlock(driver.sbnDiag);
-				eb.cx = arrow.fromX - eb.width / 2;
-				eb.cy = arrow.fromY;
+				eb.cx = arrow.copy.fromX - eb.width / 2;
+				eb.cy = arrow.copy.fromY;
 				eb.type = Block.Types.EXTPORT_IN_BLOCK;					
 				driver.sbnDiag.maxBlockNo++;
 				eb.id = driver.sbnDiag.maxBlockNo;
 				arrow.copy.fromId = eb.id;
 				//arrow.toId = subnetBlock.id;
-				arrow.upStreamPort = "OUT";
+				arrow.copy.upStreamPort = "OUT";
 				//arrow.type = "I";
 				driver.sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
@@ -806,14 +826,14 @@ public class Diagram {
 			if (arrow.type.equals("O")) {		
 				driver.sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
 				ExtPortBlock eb = new ExtPortBlock(driver.sbnDiag);
-				eb.cx = arrow.toX + eb.width / 2;
-				eb.cy = arrow.toY;
+				eb.cx = arrow.copy.toX + eb.width / 2;
+				eb.cy = arrow.copy.toY;
 				eb.type = Block.Types.EXTPORT_OUT_BLOCK;				
 				driver.sbnDiag.maxBlockNo++;
 				eb.id = driver.sbnDiag.maxBlockNo;
 				arrow.copy.toId = eb.id;
 				//arrow.fromId = subnetBlock.id;
-				arrow.downStreamPort = "IN";
+				arrow.copy.downStreamPort = "IN";
 				//arrow.type = "O";
 				driver.sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
@@ -979,19 +999,23 @@ public class Diagram {
 		for (Arrow arrow : arrows.values()) {
 					 
 			Block from = blocks.get(new Integer(arrow.fromId));
-			Block to = blocks.get(new Integer(arrow.toId));		
+			Block to = blocks.get(new Integer(arrow.toId));
+			Arrow a2 = arrow.findLastArrowInChain(); 
+			if (a2 != null)
+				to = blocks.get(new Integer(a2.toId));
 			arrow.type = " ";
 			
 			// test if arrow crosses a boundary; if so, copy 
-			if (to == null && from != null || from == null && to != null) {
-			//if (enc.llb.contains(from) && !(enc.llb.contains(to))
-			//		|| !(enc.llb.contains(from)) && enc.llb.contains(to)) {
+			
+			if (to == null && from != null ||
+					from == null && to != null) { 			
 				
 				// copy arrow
 				
 				Arrow arrCopy = new Arrow(driver.sbnDiag);
 				//arrCopy.orig = arrow;
 				arrow.copy = arrCopy;
+				arrCopy.orig = arrow;
 				if (from == null)
 					arrow.type = "O";
 				else 
@@ -1015,20 +1039,24 @@ public class Diagram {
 					//Rectangle r = new Rectangle(enc.cx - enc.width / 2, enc.cy - enc.height / 2, enc.width, enc.height);
 					//arrCopy.bends = new LinkedList<Bend>();
 					for (Bend b : arrow.bends) {
+						
 						if (from == null){
-							arrCopy.toX = b.x;   // use first segment
+							arrCopy.toX = b.x;   
 							arrCopy.toY = b.y;
 							break;
 						}
 						else {
-							arrCopy.fromX = b.x;  // use last segment
-							arrCopy.fromY = b.y;
-							// this if-clause does not break!
+							arrCopy.fromX = b.x;  
+							arrCopy.fromY = b.y;							
 						}
+						
+						//Bend b2 = new Bend(b.x, b.y);
+						//arrCopy.bends.add(b2);
 					}
 				}
 				arrCopy.upStreamPort = arrow.upStreamPort;
-				arrCopy.downStreamPort = arrow.downStreamPort;				
+				arrCopy.downStreamPort = arrow.downStreamPort;	
+				
 				//arr.fromSide = arrow.fromSide;
 				//arr.toSide = arrow.toSide;
 				//Diagram d = diag;
