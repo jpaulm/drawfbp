@@ -3,7 +3,7 @@ DrawFBP
 
 Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-#### Latest release is 2.15.4.  The jar file is now available and can be obtained by looking at the latest Release.  It will shortly be available on Maven: go to https://search.maven.org/ - then search for DrawFBP (not case-sensitive).  Download the .jar file from here, and execute using Java Platform SE binary.  
+#### Latest good release is 2.15.4.  The jar file is now available and can be obtained by looking in Releases.  The version on Maven has problems, so you should go back to (or stay with) v2.15.4.   Download the .jar file from here, and execute using Java Platform SE binary.  
 
 Description
 -----------
@@ -11,6 +11,8 @@ Description
 DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP).  Diagrams are saved in DrawFBP XML format, and can actually be used to generate JavaFBP networks, which can then be compiled and run on an IDE such as Eclipse.
 
 DrawFBP supports "stepwise refinement" or "top-down development" by supporting subnets - blocks in the diagram that can specify lower level diagrams, which can in turn specify lower level ones, and so on.  DrawFBP allows the user to draw a diagram just using short, descriptive names for blocks (nodes) and to fill in either component or subnet names later.  Multiple levels can be held under separate tabs, allowing the user to jump back and forth between different levels of a design.
+
+Alternatively, complex diagrams can be turned into multi-level diagrams by using the "excise" function of the Enclosure block: a group of blocks can be converted into a separate subnet and replaced by a "subnet" block, containing appropriate "external port" blocks, in one operation (see Youtube DrawFBP 5 - https://www.youtube.com/watch?v=5brTDk8cpNo around 9:06).  
 
 DrawFBP can generate networks for Java, C#, and NoFlo.  These are kept separate in the DrawFBP dialogs and typically use different libraries.
 
@@ -49,6 +51,7 @@ Features
 - Indicate "drop oldest" attribute for given connection
 - Generate complete networks in Java, C#, JSON, or .fbp notation
 - Pan, zoom in/out
+- Drag portion only of diagram (using Enclosure block)
 - Go to folder from diagram (v2.14.1)
 - Keyboard-only usage (except positioning of blocks)
 - Choose fonts (fixed size and variable size, indicating support for Russian, Hindi (Devanagari), and Chinese)
