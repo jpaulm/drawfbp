@@ -120,9 +120,7 @@ public class Arrow implements ActionListener {
 		int fx, fy, tx, ty;
 		fx = fromX;
 		fy = fromY;
-		//tx = toX;
-		//ty = toY;
-		//int autoX = -1, autoY = -1;  // only used for automatic ports
+		 
 		if (bends != null) {
 			for (Bend bend : bends) {
 				tx = bend.x;
@@ -210,12 +208,20 @@ public class Arrow implements ActionListener {
 		//if (opt == 1 || driver.curDiag.currentArrow.bends == null)
 		//	driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 2);
 		
-		if (!endsAtBlock && !endsAtLine) {			
-			g.drawRect(x - 3, toY - 3, 6, 6);	
-			if (toId == -1  && endX2 > -1)
-				diag.driver.drawBlueCircle(g, endX2, endY2, 3);
+		if (!endsAtBlock && !endsAtLine) 		
+			g.drawRect(x - 3, toY - 3, 6, 6);
+		
+		if (fromId == -1)
+			diag.driver.drawBlueCircle(g, fromX, fromY, 3);
+		
+		if (toId == -1)
+				if (endX2 > -1)
+					diag.driver.drawBlueCircle(g, endX2, endY2, 3);
+				else
+					diag.driver.drawBlueCircle(g, toX, toY, 3);
 			 
-		} else if (endsAtBlock) {
+		
+		if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
 					from instanceof IIPBlock) && to != null && (to instanceof ProcessBlock
 							|| to instanceof ExtPortBlock || to instanceof Enclosure)) {
@@ -223,11 +229,8 @@ public class Arrow implements ActionListener {
 				ah.draw(g);				
 			}
 
-		} else if (endsAtLine) {
+		} else if (endsAtLine)  
 			drawCircleTo(g, fx, fy, x, toY, Color.BLACK, 4);
-			// g.drawOval(toX - 2, toY - 2, 4, 4);
-			// g.fillOval(toX - 2, toY - 2, 4, 4);
-		}
 
 		if (toX != -1 && (endsAtBlock || endsAtLine)) {
 			if (upStreamPort != null

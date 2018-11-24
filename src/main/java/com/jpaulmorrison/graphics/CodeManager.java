@@ -351,8 +351,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 					continue;
 				Block to = diag.blocks.get(new Integer(a2.toId));
 				if (to == null) {
+					String s = "Downstream block not found";
+					if (from != null)
+						s += ": from " + from.description;
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Downstream block not found: from " + from.description, MyOptionPane.ERROR_MESSAGE);
+							s, MyOptionPane.ERROR_MESSAGE);
 					break;
 				}
 				if (from == null || to == null || from instanceof FileBlock

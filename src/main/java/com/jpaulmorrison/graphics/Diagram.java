@@ -433,9 +433,11 @@ public class Diagram {
 		    currentDiagramDir = diagFile.getParentFile();
 		    driver.properties.put("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
-		    if (res)
-		        driver.properties.put("currentDiagram",
-				    diagFile.getAbsolutePath());
+		    if (res) {
+		    	String s = diagFile.getAbsolutePath();
+		    	if (s.endsWith(".drw"))
+		    		driver.properties.put("currentDiagram", s);
+		    }
 		    else
 		    	driver.properties.remove("currentDiagram");
 		}
@@ -666,7 +668,7 @@ public class Diagram {
 					ll.add(arrow);
 					arrow.fromId = -1;
 					//found = true;
-					break;
+					continue;
 				}
 				//if (arrow.endsAtBlock && arrow.toId == block.id) {					
 				//	ll.add(arrow);
@@ -679,27 +681,25 @@ public class Diagram {
 					Integer aid = new Integer(a.id);
 					//ll.add(a);
 					//a.toId = -1;
-					a = driver.origDiag.arrows.get(aid);
+					a = arrows.get(aid);
 				}	
 				
 				if (a.toId != block.id) 				
-					break; 
+					continue; 
 				
 				a = arrow;
 				while (a.endsAtLine){
 					Integer aid = new Integer(a.id);
 					ll.add(a);
 					a.toId = -1;
-					a = driver.origDiag.arrows.get(aid);
+					a = arrows.get(aid);
 				}	
-				if (a.toId != block.id){
+				if (a.toId == block.id){
 					ll.add(a);
 					a.toId = -1;
 				}
 			}
-			//if (!found)
-			//	break;
-		//}
+			
 
 		for (Arrow arrow : ll)
 			delArrow(arrow);
