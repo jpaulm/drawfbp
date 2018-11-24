@@ -331,7 +331,8 @@ public class Diagram {
 					return null;
 			}
 			file = newFile;
-			diagFile = file;
+			
+			//	diagFile = file;
 
 			
 		}
