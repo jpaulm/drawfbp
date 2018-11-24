@@ -3,7 +3,7 @@ DrawFBP
 
 Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-#### Latest good release is 2.15.4.  The jar file is now available and can be obtained by looking in Releases.  The version on Maven has problems, so you should go back to (or stay with) v2.15.4.   Download the .jar file from here, and execute using Java Platform SE binary.  
+#### Latest release is 2.15.5.  This jar file is now available and can be obtained by looking in Releases.  On Maven, releases cannot be updated, so this release will be made available on Maven as 2.15.6 (v2.15.6 in Github Releases will be identical).  Download the .jar file from Releases (or Maven shortly), and execute using Java Platform SE binary.  
 
 Description
 -----------
