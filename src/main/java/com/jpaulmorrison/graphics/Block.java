@@ -257,22 +257,23 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 		}
 		
-		if (driver.arrowRoot != null && driver.arrowRoot.block == this) {
-			if (driver.arrowEndForDragging == null
-					|| !driver.arrowEndForDragging.headMarked
-							&& !driver.arrowEndForDragging.tailMarked) {	
-				Enclosure enc = null;
-				if (type == Block.Types.ENCL_BLOCK)
-					enc = (Enclosure) this;
+		//if (driver.arrowRoot != null && driver.arrowRoot.block == this) {
+		//	if (driver.arrowEndForDragging == null
+		//			|| !driver.arrowEndForDragging.headMarked
+		//					&& !driver.arrowEndForDragging.tailMarked) {	
+			//	Enclosure enc = null;
+			//	if (type == Block.Types.ENCL_BLOCK)
+			//		enc = (Enclosure) this;
 
-				if ((enc == null || enc.corner == null)) {
-					int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
-					if (opt == 1 || driver.curDiag.currentArrow.bends == null)
-					driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, opt);
-					
-				}
-			}
-		}
+				//if ((enc == null || enc.corner == null)) {
+				//	int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
+				//	if (opt == 1 || driver.curDiag.currentArrow.bends == null)
+		int opt = 1;
+		if (driver.arrowRoot != null)
+			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, opt);					
+				//}
+		//	}
+		//}
 	}
 	 
 	
@@ -403,10 +404,11 @@ public class Block implements ActionListener {
 		if (mpxfactor != null)
 			s += "<mpxfactor>" + mpxfactor + "</mpxfactor> \n";
 		if (this instanceof Enclosure) {
-			Enclosure ol = (Enclosure) this;
+			//Enclosure ol = (Enclosure) this;
 			// if (ol.description != null)
 			// s += "<description>" + ol.description + "</description> ";
 			s += "\n";
+			/*
 			s += "<subnetports>";
 			for (SubnetPort snp : ol.subnetPorts) {
 				s += "<subnetport> <y>" + snp.y + "</y>";
@@ -419,6 +421,7 @@ public class Block implements ActionListener {
 				s += "</subnetport> \n";
 			}
 			s += "</subnetports>";
+			*/
 		}
 		s += "</block> \n";
 		return s;
@@ -1508,16 +1511,7 @@ public class Block implements ActionListener {
 			// Block must be an Enclosure
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Deprecated - do excise first, then use subnet");
-			/*
-			// this sets switch, which next click on arrow will test
-			diag.cEncl = (Enclosure) this;
-			diag.cEncl.editPortName = true;
-			MyOptionPane.showMessageDialog(driver.frame,
-					"Select arrow crossing left or right side");
-			diag.findArrowCrossing = true;
-			driver.frame.repaint();
-			diag.changed = true;
-			*/
+			
 			return;
 
 		}
@@ -1525,16 +1519,7 @@ public class Block implements ActionListener {
 			// Block must be an Enclosure
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Deprecated - do excise first, then use subnet");
-			/*
-			// this sets switch, which next click on arrow will test
-			diag.cEncl = (Enclosure) this;
-			diag.cEncl.changeSubstreamSensitivity = !diag.cEncl.changeSubstreamSensitivity;
-			MyOptionPane.showMessageDialog(driver.frame,
-					"Select arrow crossing left or right side");
-			diag.findArrowCrossing = true;
-			driver.frame.repaint();
-			diag.changed = true;
-			*/
+			
 			return;
 
 		}

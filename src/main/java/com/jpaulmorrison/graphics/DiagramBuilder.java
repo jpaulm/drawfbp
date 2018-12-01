@@ -56,7 +56,7 @@ public class DiagramBuilder {
 		boolean arrowBuilt = false;
 	
 		Enclosure cEncl = null;
-		SubnetPort snp = null;
+		//SubnetPort snp = null;
 
 		String endtag = null;
 
@@ -158,12 +158,12 @@ public class DiagramBuilder {
 							thisArrow.buildArrow(item);
 							arrowBuilt = true;
 
-						} else if (starttag.equals("subnetport")) {
-							snp = new SubnetPort();
+						//} else if (starttag.equals("subnetport")) {
+						//	snp = new SubnetPort();
 
-						} else if (starttag.equals("subnetports")) {
-							cEncl = new Enclosure(diag);
-							cEncl.buildEncl(item);
+						//} else if (starttag.equals("subnetports")) {
+						//	cEncl = new Enclosure(diag);
+						//	cEncl.buildEncl(item);
 						} 
 						item.clear();
 					}
@@ -281,8 +281,8 @@ public class DiagramBuilder {
 											ExtPortBlock eb = (ExtPortBlock) block;
 											eb.substreamSensitive = true;
 										}
-										if (snp != null)
-											snp.substreamSensitive = true;										
+										//if (snp != null)
+										//	snp.substreamSensitive = true;										
 									}
 								} else if (type.equals(Block.Types.IIP_BLOCK)) {
 									block = new IIPBlock(diag);
@@ -332,6 +332,7 @@ public class DiagramBuilder {
 							Bend bend = new Bend();
 							bend.buildBend(item);
 							thisArrow.bends.add(bend);
+							/*
 						} else if (endtag.equals("subnetport")) {
 
 							snp.buildBlockFromXML(item);
@@ -339,7 +340,9 @@ public class DiagramBuilder {
 								snp.substreamSensitive = true;
 							cEncl.subnetPorts.add(snp);
 							snp = null;
+							*/
 						} 
+						
 						clsNames.pop();
 						fldLists.pop();
 						if (!fldLists.empty())

@@ -20,6 +20,8 @@ import java.net.*;
 import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
+//import com.jpaulmorrison.graphics.DrawFBP.Side;
+
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
@@ -87,7 +89,7 @@ public class DrawFBP extends JFrame
 	float defaultFontSize;
 	GenLang defaultCompLang;
 
-	double scalingFactor;
+	static double scalingFactor;
 	//int xTranslate = 0; // 400;
 	//int yTranslate = 0; // 400;
 
@@ -116,7 +118,7 @@ public class DrawFBP extends JFrame
 
 	String blockType = Block.Types.PROCESS_BLOCK;
 	
-	FoundPoint arrowRoot = null;  // used to draw blue circles where arrows can start
+	FoundPoint arrowRoot = null;  // this is used to draw blue circles where arrows can start
 
 	int curx, cury;
 
@@ -3033,11 +3035,11 @@ void chooseFonts(MyFontChooser fontChooser){
 	/*
 	 * Test if point (xp, yp) is "near" line defined by (x1, y1) and (x2, y2)
 	 */
-	boolean nearpln(int xp, int yp, int x1, int y1, int x2, int y2) {
+	static boolean nearpln(int xp, int yp, int x1, int y1, int x2, int y2) {
 
 		Rectangle2D r = new Rectangle2D.Double(xp - gridUnitSize
-				* scalingFactor, yp - gridUnitSize * scalingFactor,
-				gridUnitSize * 2 * scalingFactor, gridUnitSize * 2
+				* scalingFactor / 2, yp - gridUnitSize * scalingFactor / 2,
+				gridUnitSize * scalingFactor, gridUnitSize 
 						* scalingFactor);
 		Line2D line = new Line2D.Float(x1, y1, x2, y2);
 		return line.intersects(r);
@@ -3151,7 +3153,31 @@ void chooseFonts(MyFontChooser fontChooser){
 		    return image;
 		  }
 	*/	
+	
+	// gives result Side or null (touches - yes/no), if point (x, y) is within 2 pixels of a side; 
 		
+		static Side touches(Block b, int x, int y) {
+			Side side = null;   
+			if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2, b.cx
+					- b.width / 2, b.cy + b.height / 2)) {
+				side = Side.LEFT;
+			}
+			if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2, b.cx
+					+ b.width / 2, b.cy - b.height / 2)) {
+				side = Side.TOP;
+			}
+			if (nearpln(x, y, b.cx + b.width / 2, b.cy - b.height / 2, b.cx
+					+ b.width / 2, b.cy + b.height / 2)) {
+				side = Side.RIGHT;
+			}
+			if (nearpln(x, y, b.cx - b.width / 2, b.cy + b.height / 2, b.cx
+					+ b.width / 2, b.cy + b.height / 2)) {
+				side = Side.BOTTOM;
+			}
+			
+			return side;
+		}
+
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider) e.getSource();
 		//oldW = getSize().width;
@@ -3172,7 +3198,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		Color col = g.getColor();
 		
 		g.setColor(Color.BLUE);
-		g.drawOval(x - 4, y - 4, 8, 8);
+		g.drawOval(x - 3, y - 3, 6, 6);
 
 		if (drawToolTip) {
 									
@@ -3184,7 +3210,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				s = "Hold button down to connect arrow to another block";
 			else
 				s = "Arrow not complete - click on block or line, or hit ESC";
-			FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+			FontMetrics metrics = g.getFontMetrics(driver.fontg);
 			byte[] str = s.getBytes();
 			int w = metrics.bytesWidth(str, 0, s.length());
 			g.setColor(Color.black);
@@ -3742,9 +3768,9 @@ void chooseFonts(MyFontChooser fontChooser){
 		FoundPoint findArrowEnd(int xa, int ya) {
 
 			FoundPoint fp = null;
-			for (Block block : curDiag.blocks.values()) {
+			for (Block block : curDiag.blocks.values()) { 
 				
-				if (!(between(xa, block.leftEdge - 6 * scalingFactor, block.rgtEdge + 6 * scalingFactor)))
+				if (!(between(xa, block.leftEdge - 4 * scalingFactor, block.rgtEdge + 4 * scalingFactor)))
 					continue;
 
 				if (!(between(ya, block.topEdge - 4 * scalingFactor, block.botEdge + 4 * scalingFactor)))
@@ -3752,36 +3778,27 @@ void chooseFonts(MyFontChooser fontChooser){
 				
 				/* look for block edge touching xa and ya */
 				
-				if (between(xa, block.leftEdge - 4 * scalingFactor,
-						block.leftEdge + 4 * scalingFactor)
-						&& between(ya, block.topEdge, block.botEdge)) {
-					fp = new FoundPoint(block.leftEdge, ya, Side.LEFT, block);					
-					break;
-				}
-
+				Side side = touches(block, xa, ya); 
+				if (side == null )
+					continue;
 				
-					if (between(xa, block.rgtEdge - 4 * scalingFactor,
-							block.rgtEdge + 4 * scalingFactor)
-							&& between(ya, block.topEdge, block.botEdge)) {
-					fp = new FoundPoint(block.rgtEdge, ya, Side.RIGHT, block);					
-					break;
-				}
-
+				if (side == Side.LEFT)
+					xa = block.leftEdge;
+				else
+					if (side == Side.RIGHT)
+						xa = block.rgtEdge;
+					else
+						if (side == Side.TOP)
+							ya = block.topEdge;
+						else
+							if (side == Side.BOTTOM)
+								ya = block.botEdge;
 				
-						if (between(ya, block.topEdge - 4 * scalingFactor,
-								block.topEdge + 4 * scalingFactor)
-								&& between(xa, block.leftEdge, block.rgtEdge)) {
-					fp = new FoundPoint(xa, block.topEdge, Side.TOP, block);					
-					break;
-				} 
-							if (between(ya, block.botEdge - 4 * scalingFactor,
-									block.botEdge + 4 * scalingFactor)
-									&& between(xa, block.leftEdge,
-											block.rgtEdge)) {
-					fp = new FoundPoint(xa, block.botEdge, Side.BOTTOM, block);					
-					break;
-				}				
+				fp = new FoundPoint(xa, ya, side, block);	
+				
+				break;					
 			}
+			
 			return fp;
 		}
 
@@ -4042,44 +4059,26 @@ void chooseFonts(MyFontChooser fontChooser){
 				}
 
 				/* check for possible starts of arrows */
-				if (between(xa, block.leftEdge - 4 * scalingFactor,
-						block.leftEdge + 4 * scalingFactor)
-						&& between(ya, block.topEdge, block.botEdge)) {
+				
+				 side = touches(block, xa, ya);
+				 if (side != null){
 					curDiag.foundBlock = block;
-					xa = block.leftEdge;
-					// ya = ya;
-					side = Side.LEFT;
+					if (side == Side.LEFT)
+						xa = block.leftEdge;
+					else
+						if (side == Side.RIGHT)
+							xa = block.rgtEdge;
+						else
+							if (side == Side.TOP)
+								ya = block.topEdge;
+							else
+								if (side == Side.BOTTOM)
+									ya = block.botEdge;
+					driver.arrowRoot = new FoundPoint(xa, ya, side, block);
 					break;
-				}
-				if (between(xa, block.rgtEdge - 4 * scalingFactor,
-						block.rgtEdge + 4 * scalingFactor)
-						&& between(ya, block.topEdge, block.botEdge)) {
-					curDiag.foundBlock = block;
-					xa = block.rgtEdge;
-					// ya = ya;
-					side = Side.RIGHT;
-					break;
-				}
-				if (between(ya, block.topEdge - 4 * scalingFactor,
-						block.topEdge + 4 * scalingFactor)
-						&& between(xa, block.leftEdge, block.rgtEdge)
-						&& !(block instanceof Enclosure)) {
-					curDiag.foundBlock = block;
-					// xa = xa;
-					ya = block.topEdge;
-					side = Side.TOP;
-					break;
-				}
-				if (between(ya, block.botEdge - 4 * scalingFactor,
-						block.botEdge + 4 * scalingFactor)
-						&& between(xa, block.leftEdge, block.rgtEdge)) {
-					curDiag.foundBlock = block;
-					// xa = xa;
-					ya = block.botEdge;
-					side = Side.BOTTOM;
-					break;
-				}
-				// }
+				 }
+				 
+				 
 
 			}
 
@@ -4122,25 +4121,14 @@ void chooseFonts(MyFontChooser fontChooser){
 				arrow.fromY = ya;
 				
 				arrow.fromId = curDiag.foundBlock.id;
+				//arrow.fromId = -1;
 				curDiag.currentArrow = arrow;
 				arrow.lastX = xa; // save last x and y
 				arrow.lastY = ya;
 				Integer aid = new Integer(arrow.id);
-				curDiag.arrows.put(aid, arrow);
+				curDiag.arrows.put(aid, arrow);				
 				
-				// curDiag.changed = true;
-				//arrow.fromSide = side;	
-				//if (from != null) {
-					if (side == Side.TOP)
-						arrow.fromY = curDiag.foundBlock.cy - curDiag.foundBlock.height / 2;
-					else if (side == Side.BOTTOM)
-						arrow.fromY = curDiag.foundBlock.cy + curDiag.foundBlock.height / 2;
-					else if (side == Side.LEFT)
-						arrow.fromX = curDiag.foundBlock.cx - curDiag.foundBlock.width / 2;
-					else if (side == Side.RIGHT)
-						arrow.fromX = curDiag.foundBlock.cx + curDiag.foundBlock.width / 2;
-				//}
-					curDiag.foundBlock = null;
+				curDiag.foundBlock = null;
 
 				
 			}
@@ -4473,14 +4461,14 @@ void chooseFonts(MyFontChooser fontChooser){
 				for (Block block : curDiag.blocks.values()) {
 					if (arr.tailMarked) {
 						arr.fromId = -1;
-						if (arr.touches(block, arr.fromX, arr.fromY)) {
+						if (null != touches(block, arr.fromX, arr.fromY)) {
 							arr.fromId = block.id;
 							break;
 						}
 					}
 					if (arr.headMarked) {
 						arr.toId = -1;
-						if (arrowEndForDragging.touches(block,
+						if (null != touches(block,
 								arrowEndForDragging.toX,
 								arrowEndForDragging.toY)) {
 							arr.toId = block.id;
@@ -4585,6 +4573,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				
 				if (curDiag.foundArrow != null) {
 					Arrow arr = curDiag.foundArrow;
+					//arr.fromId = curDiag.foundBlock.id;
 					if (arr.endsAtLine || arr.endsAtBlock) {
 						
 						arr.buildArrowPopupMenu();
@@ -4665,10 +4654,10 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			FoundPoint fp = findArrowEnd(xa, ya);    
 			if (fp != null) {
-				curDiag.foundBlock = fp.block;
+				curDiag.foundBlock = fp.block;				
 				side = fp.side;
-				xa = fp.x;
-				ya = fp.y;
+				//xa = fp.x;
+				//ya = fp.y;
 			}
 
 			if (curDiag.foundBlock != null // && leftButton
@@ -4803,6 +4792,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				for (Arrow arrow : curDiag.arrows.values()) {
 					if (arrow != a && curDiag.matchArrow(xa, ya, arrow))
 						curDiag.foundArrow = arrow;
+					break;
 				}
 
 				if (curDiag.foundArrow != null) { // && leftButton
@@ -4865,7 +4855,10 @@ void chooseFonts(MyFontChooser fontChooser){
 						curDiag.arrows.remove(aid);
 					} else {
 						curDiag.changed = true;
+						
 						// checkCompatibility(curDiag.currentArrow);
+						
+						/*
 						if (to != null) {
 							if (side == Side.TOP)
 								curDiag.currentArrow.toY = to.cy
@@ -4878,6 +4871,7 @@ void chooseFonts(MyFontChooser fontChooser){
 							else if (side == Side.RIGHT)
 								curDiag.currentArrow.toX = to.cx + to.width / 2;
 						}
+						*/
 					}
 
 					curDiag.currentArrow = null;

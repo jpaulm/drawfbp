@@ -15,7 +15,7 @@ public class Enclosure extends Block {
 	
 	
 	DrawFBP.Corner corner = null;
-	LinkedList<SubnetPort> subnetPorts = null;
+	//LinkedList<SubnetPort> subnetPorts = null;
 	boolean editPortName = false;
 	boolean changeSubstreamSensitivity = false;
 	boolean coloured = true;
@@ -32,7 +32,7 @@ public class Enclosure extends Block {
 		type = Block.Types.ENCL_BLOCK; 
 		width = 250;
 		height = 100;
-		subnetPorts = new LinkedList<SubnetPort>();
+		//subnetPorts = new LinkedList<SubnetPort>();
 	}
 	void buildEncl(HashMap<String, String> item) {
 		String s;
@@ -158,6 +158,7 @@ public class Enclosure extends Block {
 				g.drawLine(x + 8, y + 8, x + 4, y + 8);
 			}
 		}
+		/*
 		if (subnetPorts != null) {
 			g.setColor(Color.RED);
 			for (SubnetPort snp : subnetPorts) {
@@ -188,6 +189,7 @@ public class Enclosure extends Block {
 			}
 			g.setColor(Color.BLACK);
 		}
+		*/
 		//showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
 				cy - height / 2, cy + height / 2);

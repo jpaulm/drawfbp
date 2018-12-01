@@ -213,7 +213,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 				contents[3] = "";
 
 			contents[4] = "public class ";
-			contents[5] = diag.title;
+			
+			String w = diag.title;
+			if (w.endsWith(".drw"))
+				w = w.substring(0, w.length()-4);
+			contents[5] = w;
+			
 			if (gl.label.equals("Java"))
 				contents[6] = " extends ";
 			else
@@ -328,6 +333,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						t = "SubOI";
 					}
 					s = makeUniqueDesc(s); // and make it unique
+					//s = makeUniqueDesc(s); // and make it unique
 					// if (!(t.toLowerCase().endsWith(".class")))
 					// t += ".class";
 					if (t.toLowerCase().endsWith(".class"))
@@ -336,6 +342,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					code += "  " + genComp(s, t, gl.label) + "; \n";
 					code += "  " + initialize + "(\"" + eb.description + "\", " + component + "(\""
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
+					descArray.put(new Integer(block.id), s);
 				}
 
 				if (block instanceof IIPBlock)

@@ -9,13 +9,13 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import com.jpaulmorrison.graphics.DrawFBP.Side;
+//import com.jpaulmorrison.graphics.DrawFBP.Side;
 
 public class Arrow implements ActionListener {
 
 	DrawFBP driver;
 	int fromX, fromY, toX, toY;
-	int lastX, lastY; // "last" x and y
+	int lastX = -1, lastY = -1; // "last" x and y
 	int fromId, toId, id = 0;
 	boolean endsAtBlock, endsAtLine;
 	LinkedList<Bend> bends;
@@ -206,19 +206,20 @@ public class Arrow implements ActionListener {
 
 		//int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
 		//if (opt == 1 || driver.curDiag.currentArrow.bends == null)
-		//	driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 2);
+		//if (lastX != -1)
+		//	driver.drawBlueCircle(g, lastX, lastY, 2); 
 		
 		if (!endsAtBlock && !endsAtLine) 		
 			g.drawRect(x - 3, toY - 3, 6, 6);
 		
-		if (fromId == -1)
-			diag.driver.drawBlueCircle(g, fromX, fromY, 3);
+		//if (fromId == -1)
+		//	diag.driver.drawBlueCircle(g, fromX, fromY, 3);
 		
-		if (toId == -1)
-				if (endX2 > -1)
-					diag.driver.drawBlueCircle(g, endX2, endY2, 3);
-				else
-					diag.driver.drawBlueCircle(g, toX, toY, 3);
+		//if (toId == -1)
+		//		if (endX2 > -1)
+		//			diag.driver.drawBlueCircle(g, endX2, endY2, 3);
+		//		else
+		//			diag.driver.drawBlueCircle(g, toX, toY, 3);
 			 
 		
 		if (endsAtBlock) {
@@ -559,39 +560,41 @@ public class Arrow implements ActionListener {
 			
 			if (ans != null /* && ans.length() > 0 */) {
 				
-				Block b = diag.blocks.get(new Integer(toId));
+				Arrow arr = findLastArrowInChain();
+				Block b = diag.blocks.get(new Integer(arr.toId));
 
 				diag.changed = true;
 				boolean found = false;
 				for (Arrow a : diag.arrows.values()) {
-					if (a.fromId == toId && a.upStreamPort != null
+					if (a.fromId == arr.toId && a.upStreamPort != null
 							&& a.upStreamPort.equals(ans) || 
-						a.toId == toId
+						a.toId == arr.toId
 							&& a.downStreamPort != null
 							&& a.downStreamPort.equals(ans) 
-						    && !(downStreamPort.equals(ans)))
+						    && !(arr.downStreamPort.equals(ans)))
 						found = true;
 				}
 				if (found) {
 					String proc = driver.curDiag.blocks.get(toId).description;
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
-					downStreamPort = "";
+					arr.downStreamPort = "";
 					return;
 				}
 				
-				downStreamPort = ans;
+				arr.downStreamPort = ans;
 				
 				if (b.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Downstream port must be blank", MyOptionPane.ERROR_MESSAGE);
-					downStreamPort = "";
+					arr.downStreamPort = "";
 				}
+				
 			}
 			driver.frame.repaint();
-			return;
-			
+			return;			
 		} 
+		
 		if (s.equals("Set Capacity")) {
 			
 			String capString = null;
@@ -740,7 +743,7 @@ public class Arrow implements ActionListener {
 		Bend bn = null;
 		int index = 0;
 		if (bends == null) {
-			if (driver.nearpln(bendx, bendy, fromX, fromY, toX, toY)) {
+			if (DrawFBP.nearpln(bendx, bendy, fromX, fromY, toX, toY)) {
 				bends = new LinkedList<Bend>();
 				bn = new Bend(bendx, bendy);
 				if (fromX == toX) // if line vertical
@@ -764,7 +767,7 @@ public class Arrow implements ActionListener {
 					driver.bendForDragging = bn;
 					return;
 				}
-				if (driver.nearpln(bendx, bendy, x, y, b.x, b.y)) {
+				if (DrawFBP.nearpln(bendx, bendy, x, y, b.x, b.y)) {
 					bn = new Bend(bendx, bendy);
 					if (x == b.x) // if line vertical
 						bn.x = x;
@@ -780,7 +783,7 @@ public class Arrow implements ActionListener {
 				index++;
 			}
 
-			if (driver.nearpln(bendx, bendy, x, y, toX, toY)) {
+			if (DrawFBP.nearpln(bendx, bendy, x, y, toX, toY)) {
 				bn = new Bend(bendx, bendy);
 				if (x == toX) // if line vertical
 					bn.x = x;
@@ -831,37 +834,7 @@ public class Arrow implements ActionListener {
 		}		
 	}
 
-	// gives boolean result (touches - yes/no), if point (x, y) is within 2 pixels of a side; 
-	//   sets *side* as "side-effect"
 	
-	boolean touches(Block b, int x, int y) {
-		DrawFBP.Side side = null;
-		if (driver.nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2, b.cx
-				- b.width / 2, b.cy + b.height / 2)) {
-			side = Side.LEFT;
-		}
-		if (driver.nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2, b.cx
-				+ b.width / 2, b.cy - b.height / 2)) {
-			side = Side.TOP;
-		}
-		if (driver.nearpln(x, y, b.cx + b.width / 2, b.cy - b.height / 2, b.cx
-				+ b.width / 2, b.cy + b.height / 2)) {
-			side = Side.RIGHT;
-		}
-		if (driver.nearpln(x, y, b.cx - b.width / 2, b.cy + b.height / 2, b.cx
-				+ b.width / 2, b.cy + b.height / 2)) {
-			side = Side.BOTTOM;
-		}
-		if (side != null) {
-			//if (tailMarked)
-			//	fromSide = side;
-			//if (headMarked)
-			//	toSide = side;
-			return true;
-		}
-		return false;
-	}
-
 	boolean checkSides() {
 		Block from = diag.blocks.get(new Integer(fromId));
 		Block to = diag.blocks.get(new Integer(toId));

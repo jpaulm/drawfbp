@@ -766,12 +766,14 @@ public class Diagram {
 				
 		// now go through remaining arrows, creating appropriate ExtPortBlock's
 		
+		
 		for (Arrow arrow : driver.origDiag.arrows.values()) {
 						
 			if (arrow.type.equals("I")) {
 				driver.sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
 				
 				ExtPortBlock eb = new ExtPortBlock(driver.sbnDiag);
+				
 				eb.cx = arrow.copy.fromX - eb.width / 2;
 				eb.cy = arrow.copy.fromY;
 				eb.type = Block.Types.EXTPORT_IN_BLOCK;					
@@ -796,15 +798,7 @@ public class Diagram {
 				
 				arrow.downStreamPort = ans;
 				
-				//SubnetPort snp = new SubnetPort();
-				//enc.subnetPorts.add(snp);
-				//snp.name = ans;
-                //determine side
-				//snp.y = to.cx; 
-				//snp.eb = eb;  // cross reference from the external port block to the subnet port object
 				
-				//snp.side = DrawFBP.Side.LEFT;
-				//side, sssensitive?
 				
 				eb.calcEdges();
 				//arrow.toId = subnetBlock.id;
@@ -949,6 +943,15 @@ public class Diagram {
 		// look for arrows which are within enclosure
 		enc.lla = new LinkedList<Arrow>();
 		for (Arrow arrow : arrows.values()) {
+			Block from = blocks.get(new Integer(arrow.fromId));
+			Block to = blocks.get(new Integer(arrow.toId));
+			Arrow a2 = arrow.findLastArrowInChain(); 
+			if (a2 != null)
+				to = blocks.get(new Integer(a2.toId));
+			
+			if (enc.llb.contains(from)  && enc.llb.contains(to)) 
+				enc.lla.add(arrow);
+			/*
 			boolean included = true;
 			int x1 = arrow.fromX;
 			int y1 = arrow.fromY;
@@ -988,6 +991,7 @@ public class Diagram {
 
 			if (included)
 				enc.lla.add(arrow);
+			*/
 		}
 		
 		 
