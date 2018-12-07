@@ -44,7 +44,7 @@ public class Diagram {
 
 	boolean changed = false;
 
-	Arrow currentArrow = null;
+	// Arrow currentArrow = null;
 
 	int maxBlockNo = 0;
 
@@ -54,9 +54,7 @@ public class Diagram {
 
 	int maxX = 0, maxY = 0;
 
-	Block foundBlock;
-
-	Arrow foundArrow;
+	//Block foundBlock;
 
 	boolean clickToGrid;
 
@@ -611,22 +609,38 @@ public class Diagram {
 
 		int x1 = arrow.fromX;
 		int y1 = arrow.fromY;
+		int segNo = 0;
 		int x2, y2;
 		if (arrow.bends != null) {
 			for (Bend bend : arrow.bends) {
 				x2 = bend.x;
 				y2 = bend.y;
-				if (driver.nearpln(x, y, x1, y1, x2, y2)) 
-					return true;				
+				if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
+					if (driver.currentArrow != null) {
+						driver.currentArrow.segNo = segNo;
+						driver.currentArrow.sqOffset = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+					}
+					return true;
+				}
+
 				x1 = x2;
-				y1 = y2;				
+				y1 = y2;
+				segNo++;
 			}
 		}
 
 		x2 = arrow.toX;
 		y2 = arrow.toY;
-		return driver.nearpln(x, y, x1, y1, x2, y2);
+		if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
+			if (driver.currentArrow != null) {
+				driver.currentArrow.segNo = segNo;
+				driver.currentArrow.sqOffset = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+			}
+			return true;
+		}
+		return false;
 	}
+	
 	void delArrow(Arrow arrow) {
 		LinkedList<Arrow> ll = new LinkedList<Arrow>();
 		// go down list repeatedly - until no more arrows to remove
@@ -1008,7 +1022,7 @@ public class Diagram {
 			Arrow a2 = arrow.findLastArrowInChain(); 
 			if (a2 != null)
 				to = blocks.get(new Integer(a2.toId));
-			arrow.type = " ";
+			//arrow.type = " ";
 			
 			// test if arrow crosses a boundary; if so, copy 
 			

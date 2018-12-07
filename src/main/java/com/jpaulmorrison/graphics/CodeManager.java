@@ -262,14 +262,21 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 					String s = cleanDesc(block);
 					
-					String c = null;
-					if (block.javaClass != null) {
-					    c = cleanComp(block);
-					    if (c.toLowerCase().endsWith(".class"))
+					String c = "Invalid class"; 
+					 
+					if (block.javaClass == null) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"Class name missing for '" + s + "' - diagram needs to be updated",
+								MyOptionPane.WARNING_MESSAGE);
+						//return false;						 
+
+					} else {
+						c = cleanComp(block);
+						if (c.toLowerCase().endsWith(".class"))
 							c = c.substring(0, c.length() - 6);
 					}
-					else
-						c = "Invalid class";
+					
+					 
 					
 					descArray.put(new Integer(block.id), s);
 
@@ -1055,6 +1062,50 @@ public class CodeManager implements ActionListener, DocumentListener {
 				// error = true;
 				return null;
 			}
+			if (block instanceof ExtPortBlock) {
+				ExtPortBlock eb = (ExtPortBlock) block;
+				String s = "";
+				String t;
+				if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
+					s = "SUBIN";
+					if (eb.substreamSensitive)
+						t = "SubInSS";
+					else
+						t = "SubIn";
+				} else
+					if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+					s = "SUBOUT";
+					if (eb.substreamSensitive)
+						t = "SubOutSS";
+					else
+						t = "SubOut";
+				} else {
+					s = "SUBOI";
+					t = "SubOI";
+				}
+				s = makeUniqueDesc(s); // and make it unique
+				
+				if (t.toLowerCase().endsWith(".class"))
+					t = t.substring(0, t.length() - 6);
+
+				data += comma + q(s) + ":{ \"component\" :" + q(t)
+				+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
+				+ block.cy + "}}";
+				comma = "\n,";
+				//code += "  " + initialize + "(\"" + eb.description + "\", " + component + "(\""
+				//		+ s + "\"), " + _port + "(\"NAME\")); \n";
+				data += "\"data\":" + q(s) + ",\n";
+			//} else
+				//data += "\"src\": {\n \"process\" :" + q(fromDesc)
+					//	+ ",\n\"port\":" + q(upPort) + "\n},";
+
+			data += "\"tgt\": {\n \"process\" :" + q(s) + ",\n\"port\":"
+					+ q(dnPort) + "}\n}";
+			comma = "\n,";
+		//}
+		data += "\n]\n}";
+				descArray.put(new Integer(block.id), s);
+			}
 
 			if (block instanceof ProcessBlock) {
 				String s = cleanDesc(block);
@@ -1152,7 +1203,38 @@ public class CodeManager implements ActionListener, DocumentListener {
 				".fbp", diag.diagLang.filter, "fbp");
 
 		for (Block block : diag.blocks.values()) {
+			if (block instanceof ExtPortBlock) {
+				ExtPortBlock eb = (ExtPortBlock) block;
+				String s = "";
+				String t;
+				if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
+					s = "SUBIN";
+					if (eb.substreamSensitive)
+						t = "SubInSS";
+					else
+						t = "SubIn";
+				} else
+					if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+					s = "SUBOUT";
+					if (eb.substreamSensitive)
+						t = "SubOutSS";
+					else
+						t = "SubOut";
+				} else {
+					s = "SUBOI";
+					t = "SubOI";
+				}
+				s = makeUniqueDesc(s); // and make it unique
+				
+				//if (t.toLowerCase().endsWith(".class"))
+				//	t = t.substring(0, t.length() - 6);
 
+				code += cma + s + "(" + t + ")";
+				//cma = "\n,";
+		//}
+		//code += "\n\n}";
+				descArray.put(new Integer(block.id), s);
+			}
 			if (block instanceof ProcessBlock) {
 				if (block.description == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
@@ -1164,13 +1246,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 				String s = cleanDesc(block);
 				// String s = cleanComp(block);
 				code += cma + s + "(" + s + ")";
-				cma = ",\n";
+				
 				descArray.put(new Integer(block.id), s);
 				// cdescArray.put(new Integer(block.id), s);
 			}
 			if (block instanceof IIPBlock) {
 				descArray.put(new Integer(block.id), block.description);
 			}
+			cma  = ",\n";
 		}
 
 		for (Arrow arrow : diag.arrows.values()) {
@@ -1200,7 +1283,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			dialog.repaint();
 
 			if (!(from instanceof IIPBlock)) {
-				upPort = arrow.upStreamPort;
+				upPort = a2.upStreamPort;
 				upPort = upPort.replaceAll("-", "\\\\-");
 				upPort = upPort.replaceAll("\\.", "\\\\.");
 				upPort = makeUniquePort(upPort, from);
@@ -1217,7 +1300,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 			if (from instanceof ProcessBlock
 					&& to instanceof ProcessBlock) {
-				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+				if (!a2.endsAtLine && checkDupPort(dnPort, to)) {
 					String proc = to.description;
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
@@ -1246,7 +1329,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 							+ " " + toDesc;
 			} else
 				if (from instanceof IIPBlock && to instanceof ProcessBlock) {
-				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+				if (checkDupPort(dnPort, to)) {
 					String proc = to.description;
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
@@ -1256,11 +1339,17 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 
 			if (from instanceof ExtPortBlock) {
-				code += cma + fromDesc + " out -> " + dnPort + " " + toDesc;
+				code += cma + fromDesc + " OUT -> " + dnPort + " " + toDesc;
+				code +=  "\n";
+				code += cma + "'" + from.description + "' -> NAME " + fromDesc; 
 
 			} else if (to instanceof ExtPortBlock) {
-				code += cma + fromDesc + " -> in " + toDesc;
+				code += cma + fromDesc + " " + upPort + " -> IN " + toDesc;
+				code +=  "\n";
+				code += cma + "'" + to.description + "' -> NAME " + toDesc;
 			}
+			cma = ", ";
+			code += "\n";
 		}
 
 		// insert string data
@@ -1404,12 +1493,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 						break;
 					}
 				}
+				
 				upPort = (String) MyOptionPane.showInputDialog(driver.frame,
 						"Output port from " + "\"" + from.description + "\"",
 						"Please enter port name");
-				if (upPort == null)
-					return false;
+				//if (upPort == null)
+				//	return false;
 				diag.changed = true;
+				break;
 
 			}
 
@@ -1437,9 +1528,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 			dnPort = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Input port to " + "\"" + to.description + "\"",
 					"Please enter port name");
-			if (dnPort == null)
-				return false;
+			//if (dnPort == null)
+			//	return false;
 			diag.changed = true;
+			break;
 
 		}
 
@@ -1451,6 +1543,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 	String validatePortName(String s) {
 		if (s == null || s.equals("") || s.equals("????"))
 			return null;
+		if (s.equals("*")) 
+			return s;
 		Pattern p = Pattern.compile("[a-zA-Z][\\d\\-\\_\\.\\[\\]a-zA-Z]*"); // Allow
 																			// hyphen
 																			// (for

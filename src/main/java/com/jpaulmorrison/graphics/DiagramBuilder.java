@@ -422,7 +422,19 @@ public class DiagramBuilder {
 		//	//driver.grid.setSelected(diag.clickToGrid);
 		//	item.put(sym, "true");
 		//}
-
+		for (Arrow a : diag.arrows.values()) {
+			Block fromBlock = diag.blocks.get(new Integer(a.fromId));
+			if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
+					|| fromBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+				a.upStreamPort = "OUT";
+			
+			Arrow a2 = a.findLastArrowInChain();
+			Block toBlock = diag.blocks.get(new Integer(a2.toId));
+			if (toBlock.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
+					|| toBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+				a2.downStreamPort = "IN";
+		}
+		
 		if (curFl != null)
 			MyOptionPane.showMessageDialog(frame,
 					"Tags not completely processed", MyOptionPane.WARNING_MESSAGE);

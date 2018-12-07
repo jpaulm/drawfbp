@@ -13,6 +13,7 @@ import java.util.*;
 
 import javax.swing.*;
 
+import com.jpaulmorrison.graphics.Arrow.Arrowhead;
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
 
 public class Block implements ActionListener {
@@ -268,12 +269,14 @@ public class Block implements ActionListener {
 				//if ((enc == null || enc.corner == null)) {
 				//	int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
 				//	if (opt == 1 || driver.curDiag.currentArrow.bends == null)
-		int opt = 1;
+		
 		if (driver.arrowRoot != null)
-			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, opt);					
-				//}
-		//	}
-		//}
+			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 1);		
+		if (driver.arrowEnd != null) {			
+			g.drawRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);
+			//g.fillRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);				
+		}
+		
 	}
 	 
 	
@@ -351,10 +354,10 @@ public class Block implements ActionListener {
 
 	 
 	void showZones(Graphics g) {
-		if (diag.currentArrow == null) {
+		if (driver.currentArrow == null) {
 			if (driver.selBlockM == this)
 				showArrowEndAreas(g);
-		} else if (diag.currentArrow.fromId != id)
+		} else if (driver.currentArrow.fromId != id)
 			showArrowEndAreas(g);
 	}
  
@@ -1574,9 +1577,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// ans is the name chosen for the (new) subnet
 			//--------------------
 			
-			final boolean NOCHOOSE = false;
+			//final boolean NOCHOOSE = false;
 			//driver.curDiag.delBlock(this, NOCHOOSE);  //delete enclosure block 
-			driver.curDiag.foundBlock = null;
+			//foundBlock = null;
 			driver.curDiag.desc = ans; 
 			driver.curDiag.title = ans;
 			
@@ -1602,7 +1605,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (s.equals("Delete")) {
 			final boolean CHOOSE = true;
 			diag.delBlock(this, CHOOSE);
-			diag.foundBlock = null;
+			//foundBlock = null;
 			diag.changed = true;
 			// diag.changeCompLang();
 			driver.frame.repaint();

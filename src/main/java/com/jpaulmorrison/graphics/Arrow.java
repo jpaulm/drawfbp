@@ -18,7 +18,10 @@ public class Arrow implements ActionListener {
 	int lastX = -1, lastY = -1; // "last" x and y
 	int fromId, toId, id = 0;
 	boolean endsAtBlock, endsAtLine;
+	int segNo; // only relevant if endsAtLine
+	int sqOffset;  // ditto
 	LinkedList<Bend> bends;
+	String type = "";
 	String upStreamPort, downStreamPort;
 	//String uspMod;   //  upstream port after lowercasing
 	String dspMod;   // downStreamPort after lowercasing 
@@ -32,7 +35,7 @@ public class Arrow implements ActionListener {
 	int endX2, endY2;
 	Arrow copy;   // this field and orig are set by Enclosure "excise" function 
 	Arrow orig;   //                              do.
-	String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
+	//String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
 	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
 	
@@ -72,11 +75,11 @@ public class Arrow implements ActionListener {
 			
 		}
 		Block to = null;
-		if (!endsAtLine && toId > -1) {
-			to = diag.blocks.get(new Integer(toId));
-			
+		if (toId > -1) {
+			to = diag.blocks.get(new Integer(toId));			
 		}
-		
+		Arrow a = findLastArrowInChain();
+		to = diag.blocks.get(new Integer(a.toId));
  
 		if (toX == -1) {
 			endX = diag.xa;   
@@ -204,22 +207,10 @@ public class Arrow implements ActionListener {
 		
 		calcLimits(fx, x, fy, toY);
 
-		//int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
-		//if (opt == 1 || driver.curDiag.currentArrow.bends == null)
-		//if (lastX != -1)
-		//	driver.drawBlueCircle(g, lastX, lastY, 2); 
+		
 		
 		if (!endsAtBlock && !endsAtLine) 		
-			g.drawRect(x - 3, toY - 3, 6, 6);
-		
-		//if (fromId == -1)
-		//	diag.driver.drawBlueCircle(g, fromX, fromY, 3);
-		
-		//if (toId == -1)
-		//		if (endX2 > -1)
-		//			diag.driver.drawBlueCircle(g, endX2, endY2, 3);
-		//		else
-		//			diag.driver.drawBlueCircle(g, toX, toY, 3);
+			g.drawRect(x - 3, toY - 3, 6, 6);		
 			 
 		
 		if (endsAtBlock) {
@@ -227,7 +218,8 @@ public class Arrow implements ActionListener {
 					from instanceof IIPBlock) && to != null && (to instanceof ProcessBlock
 							|| to instanceof ExtPortBlock || to instanceof Enclosure)) {
 				Arrowhead ah = new Arrowhead(fx, fy, toX, toY);  
-				ah.draw(g);				
+				ah.draw(g);	
+				driver.arrowEnd = null;
 			}
 
 		} else if (endsAtLine)  
@@ -429,8 +421,6 @@ public class Arrow implements ActionListener {
 
 		diag.maxArrowNo = Math.max(id, diag.maxArrowNo);
 
-		
-
 	}
 
 	void buildArrowPopupMenu() {
@@ -447,6 +437,8 @@ public class Arrow implements ActionListener {
 		JMenuItem menuItem;
 		Block from = diag.blocks.get(new Integer(fromId));
 		Block to = diag.blocks.get(new Integer(toId));
+		Arrow a = findLastArrowInChain();
+		to = diag.blocks.get(new Integer(a.toId));
 		if (!(from instanceof FileBlock || from instanceof PersonBlock || from instanceof ReportBlock || from instanceof LegendBlock ||
 				to instanceof FileBlock || to instanceof PersonBlock || to instanceof ReportBlock || to instanceof LegendBlock 	) ) {
 		if (!(from instanceof ExtPortBlock) && !(from instanceof IIPBlock)) {
@@ -699,7 +691,7 @@ public class Arrow implements ActionListener {
 				for (Bend bend : bends) {
 					tx = bend.x;
 					ty = bend.y;
-					if (pointInLine(p, fx, fy, tx, ty)) {
+					if (DrawFBP.pointInLine(p, fx, fy, tx, ty)) {
 						extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);
 						return;
 					}
@@ -709,7 +701,7 @@ public class Arrow implements ActionListener {
 			}
 			tx = toX;
 			ty = toY;
-			if (pointInLine(p, fx, fy, tx, ty)) 
+			if (DrawFBP.pointInLine(p, fx, fy, tx, ty)) 
 				extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);	
 			diag.changed = true;
 			driver.frame.repaint();
@@ -729,9 +721,9 @@ public class Arrow implements ActionListener {
 				diag.delArrow(this);
 
 				diag.changed = true;
-				diag.currentArrow = null;
+				driver.currentArrow = null;
 				driver.frame.repaint();
-				diag.foundArrow = null;
+				
 			}
 			
 			
@@ -800,44 +792,43 @@ public class Arrow implements ActionListener {
 		return ((x1 - b.x) * (x1 - b.x) + (y1 - b.y) * (y1 - b.y)) < 6 * 6;
 	}
 	
-	boolean pointInLine(Point p, int fx, int fy, int tx, int ty){
-		double d = Line2D.ptLineDist((double) fx, (double) fy, (double) tx, (double) ty, (double) p.x, (double) p.y);
-		return d <= 6.0;
-	}
+	
 
 	Arrow findLastArrowInChain() {
-		if (endsAtBlock)
+		if (endsAtBlock || !endsAtLine)
 			return this;
-		int id = toId;		   // not a block, so toId must be a line ID
-		
-		Arrow a = null;
+
+		int id = toId; // not a block, so toId must be a line ID
+
 		while (true) {
-			//if (a != null)
-			//	return a;
+			Arrow a = null;
 			for (Arrow arrow : diag.arrows.values()) {
 				if (id == arrow.id) {
-					if (arrow.endsAtBlock) {						
-						a = arrow;
-						break;
-					}
-
-	
+					a = arrow;
+					id = a.toId;
 					break;
 				}
 			}
 			if (a == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-					"Can't find connecting arrow", MyOptionPane.ERROR_MESSAGE);
-				return null; 
+						"Can't find connecting arrow",
+						MyOptionPane.ERROR_MESSAGE);
+				break;
 			}
-			return a;
-		}		
-	}
+			
+			if (a.endsAtBlock)
+				return a;
+		}
 
+		return null;
+
+	}
 	
 	boolean checkSides() {
 		Block from = diag.blocks.get(new Integer(fromId));
 		Block to = diag.blocks.get(new Integer(toId));
+		Arrow a = findLastArrowInChain();
+		to = diag.blocks.get(new Integer(a.toId));
 		if (!(from instanceof ProcessBlock)
 				&& !(from instanceof ExtPortBlock))
 			return true;
@@ -947,13 +938,13 @@ public class Arrow implements ActionListener {
 
 	}
 class Arrowhead {
-	int fx, fy, toX, toY;
+	int fx, fy, toX, toY;	
 		
 	Arrowhead(int fx, int fy, int toX, int toY) {
 		this.fx = fx; 
 		this.fy = fy;
 		this.toX = toX; 
-		this.toY = toY;
+		this.toY = toY;		
 		}
 	
 	void draw(Graphics g) {
@@ -1003,12 +994,15 @@ class Arrowhead {
 			at.rotate(theta);
 			// at.rotate(theta,toX,toY);
 			Shape shape = at.createTransformedShape(path);
-			if (checkStatus == Status.UNCHECKED)
-				g.setColor(Color.BLACK);
-			else if (checkStatus == Status.COMPATIBLE)
-				g.setColor(FOREST_GREEN);
-			else
-				g.setColor(ORANGE_RED);
+			
+				if (checkStatus == Status.UNCHECKED)
+					g.setColor(Color.BLACK);
+				else if (checkStatus == Status.COMPATIBLE)
+					g.setColor(FOREST_GREEN);
+				else
+					g.setColor(ORANGE_RED);
+			
+			
 			((Graphics2D)g).fill(shape);
 			((Graphics2D)g).draw(shape);
 		}
