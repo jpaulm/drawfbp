@@ -105,7 +105,7 @@ public class DrawFBP extends JFrame
 
 	String diagramName = null;
 
-	Arrow arrowEndForDragging = null;
+	Arrow arrowEndForDragging = null;   /// only used for Drag Head and Drag Tail
 
 	Bend bendForDragging = null;
 	CloseTabAction closeTabAction = null;
@@ -117,8 +117,8 @@ public class DrawFBP extends JFrame
 
 	String blockType = Block.Types.PROCESS_BLOCK;
 	
-	FoundPoint arrowRoot = null;  // this is used to draw blue circles where arrows can start
-	FoundPoint arrowEnd = null;
+	FoundPoint arrowRoot = null;  // this is used to draw blue circle where arrows can start
+	FoundPoint arrowEnd = null;   // this is used to draw black square where arrows can end
 	//Arrow foundArrow = null;  
 	Arrow currentArrow = null;
 	Block foundBlock;
@@ -4363,17 +4363,26 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 
 			if (currentArrow != null) { // this ensures the line
-				 								// stays visible
-				
+										// stays visible
+
 				currentArrow.toX = xa;
 				currentArrow.toY = ya;
 				curDiag.changed = true;
 				arrowEnd = null;
-				FoundPoint fp = findBlockEdge(xa, ya);    
+				// change end of line symbol when cursor crosses a block edge
+				FoundPoint fp = findBlockEdge(xa, ya);
 				if (fp != null) {
-					foundBlock = fp.block;				
-					//side = fp.side;
-					arrowEnd = fp;    
+					foundBlock = fp.block;
+					// side = fp.side;
+					arrowEnd = fp;
+				} else
+					for (Arrow arrow : curDiag.arrows.values()) {
+						if (arrow == currentArrow)
+							continue;
+						if (curDiag.matchArrow(xa, ya, arrow)) {
+							arrowEnd = new FoundPoint(xa, ya, null, null);
+							break;
+						}
 					}
 
 			}
@@ -4507,6 +4516,7 @@ void chooseFonts(MyFontChooser fontChooser){
 								arrowEndForDragging.toX,
 								arrowEndForDragging.toY)) {
 							arr.toId = block.id;
+							arr.endsAtBlock = true;
 							break;
 						}
 					}
@@ -4841,9 +4851,8 @@ void chooseFonts(MyFontChooser fontChooser){
 					// see if xa and ya are "close" to specified arrow
 					if (arrow != a && curDiag.matchArrow(xa, ya, arrow)){
 						foundArrow = arrow;
-						
-					}
-					break;
+						break;
+					}					
 				}
 
 				if (foundArrow != null) { // && leftButton
@@ -4936,6 +4945,8 @@ void chooseFonts(MyFontChooser fontChooser){
 				// have a
 				// bend
 
+				// appears to be a delete arrow???
+				
 				if (currentArrow != null) {
 					if (!(between(xa, currentArrow.toX - 4 * scalingFactor,
 							currentArrow.toX + 4 * scalingFactor)

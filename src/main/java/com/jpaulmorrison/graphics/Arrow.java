@@ -79,7 +79,8 @@ public class Arrow implements ActionListener {
 			to = diag.blocks.get(new Integer(toId));			
 		}
 		Arrow a = findLastArrowInChain();
-		to = diag.blocks.get(new Integer(a.toId));
+		if (a != null)
+			to = diag.blocks.get(new Integer(a.toId));
  
 		if (toX == -1) {
 			endX = diag.xa;   
@@ -223,7 +224,7 @@ public class Arrow implements ActionListener {
 			}
 
 		} else if (endsAtLine)  
-			drawCircleTo(g, fx, fy, x, toY, Color.BLACK, 4);
+			drawCircle(g, toX, toY, Color.BLACK, 6);
 
 		if (toX != -1 && (endsAtBlock || endsAtLine)) {
 			if (upStreamPort != null
@@ -282,7 +283,19 @@ public class Arrow implements ActionListener {
 		}
 	}
 
-	
+	void drawCircle(Graphics g, int cx, int cy,
+			Color color, int size) {
+		Color col = g.getColor();
+		g.setColor(color);		
+		int x = cx;
+		int y = cy;
+		
+		x -= size / 2;
+		y -= size / 2;
+		g.drawOval(x, y, size, size);
+		g.fillOval(x, y, size, size);
+		g.setColor(col);
+	}
 
 	void drawCircleFrom(Graphics g, int fx, int fy, int tx, int ty,
 			Color color, int size) {
@@ -799,9 +812,10 @@ public class Arrow implements ActionListener {
 			return this;
 
 		int id = toId; // not a block, so toId must be a line ID
-
+		Arrow a = null;		
 		while (true) {
-			Arrow a = null;
+			if (id == -1)
+				break;
 			for (Arrow arrow : diag.arrows.values()) {
 				if (id == arrow.id) {
 					a = arrow;
@@ -818,9 +832,10 @@ public class Arrow implements ActionListener {
 			
 			if (a.endsAtBlock)
 				return a;
+			id = a.toId;
 		}
 
-		return null;
+		return a;
 
 	}
 	

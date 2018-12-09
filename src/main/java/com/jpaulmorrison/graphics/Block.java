@@ -13,7 +13,6 @@ import java.util.*;
 
 import javax.swing.*;
 
-import com.jpaulmorrison.graphics.Arrow.Arrowhead;
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
 
 public class Block implements ActionListener {
@@ -272,9 +271,12 @@ public class Block implements ActionListener {
 		
 		if (driver.arrowRoot != null)
 			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 1);		
-		if (driver.arrowEnd != null) {			
+		if (driver.arrowEnd != null) {
+			Color col = g.getColor();
+			g.setColor(Color.BLACK);
 			g.drawRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);
-			//g.fillRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);				
+			//g.fillRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);	
+			g.setColor(Color.BLACK);
 		}
 		
 	}
