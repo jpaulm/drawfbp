@@ -3,9 +3,7 @@ DrawFBP
 
 Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-#### Latest release is 2.15.6.  This jar file is now available and can be obtained by looking in Releases.  This release is now available on Maven - just search for DrawFBP (any case), download the .jar file, and execute using Java Platform SE binary.  
-
-However... there is a bug in the Java generate function - will be fixed in the next release...
+#### Latest release is v2.15.7 (pre-release).  This jar file is now available and can be obtained by looking in Releases.  This release is not yet available on Maven, as it requires more testing.  However, I feel it is better than v2.15.6, so try it first!
 
 Description
 -----------
@@ -16,7 +14,7 @@ DrawFBP supports "stepwise refinement" or "top-down development" by supporting s
 
 Alternatively, complex diagrams can be turned into multi-level diagrams by using the "excise" function of the Enclosure block: a group of blocks can be converted into a separate subnet and replaced by a "subnet" block, containing appropriate "external port" blocks, in one operation (see Youtube DrawFBP 5 - https://www.youtube.com/watch?v=5brTDk8cpNo around 9:06).  
 
-DrawFBP can generate networks for Java, C#, and NoFlo.  These are kept separate in the DrawFBP dialogs and typically use different libraries.
+DrawFBP can generate networks for Java, C#, and NoFlo (JSON).  These are kept separate in the DrawFBP dialogs and typically use different libraries.
 
 DrawFBP also generates a network definition in .fbp notation.  This was originally defined by Wayne Stevens, and has been somewhat modified for NoFlo.  It will also be usable as input to the C++ implementation, called CppFBP. 
 
