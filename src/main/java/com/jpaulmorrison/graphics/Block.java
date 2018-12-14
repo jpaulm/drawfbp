@@ -276,7 +276,7 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 			g.drawRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);
 			//g.fillRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);	
-			g.setColor(Color.BLACK);
+			g.setColor(col);
 		}
 		
 	}
@@ -552,7 +552,8 @@ public class Block implements ActionListener {
 				 
 		try {
 			
-			classLoader = new URLClassLoader(urls);
+			classLoader = new URLClassLoader(urls, this.getClass()
+					.getClassLoader());
 		
 			javaClass = classLoader.loadClass(cn);
 			
@@ -598,7 +599,7 @@ public class Block implements ActionListener {
 		if (0 <= fn.substring(j, j + 1).compareTo("4"))  // if javafbp jar file version not less than 4.0.0
 		    seg = "core.engine.";
 		String owner = "jpmorrsn";
-		if (0 <= fn.substring(j, j + 3).compareTo("4.1"))  // if javafbp jar file version not less than 4.0.0
+		if (0 <= fn.substring(j, j + 3).compareTo("4.1"))  // if javafbp jar file version greater than 4.0.0
 		    owner = "jpaulmorrison";
 		
 		Class<?> cls;	
@@ -611,7 +612,9 @@ public class Block implements ActionListener {
 					.loadClass("com." + owner + ".fbp." + seg + "Network");
 
 			Class<?> subnetClass = classLoader
-					.loadClass("com." + owner + ".fbp." + seg + "SubNet");
+					.loadClass("com." + owner + ".fbp." + seg + "SubNet");	
+			
+			Object obj = new Object();
 
 			int i = jf.lastIndexOf(".class"); 			
 			if (i != -1)
@@ -625,11 +628,40 @@ public class Block implements ActionListener {
 					return null;
 			}
 
-			Class<?> cs = cls.getSuperclass();
-			if (cs == null || !(cs.getCanonicalName().equals(compClass.getCanonicalName())  ||
-					cs.getCanonicalName().equals(subnetClass.getCanonicalName()))) {
+			//MethodHandle h2 = MethodHandles.lookup().findSpecial(Object.class, "toString",
+			//        MethodType.methodType(String.class),
+			//        Test.class);
+			Class<?> cs = (Class<?>) cls.getSuperclass();
+			URLClassLoader ucl = (URLClassLoader) cls.getClassLoader();
+			//URLClassLoader ucl2 = new URLClassLoader(ucl.getURLs(), ucl);
+			try {
+			cs = ucl.loadClass(cs.getName()); 
+			}  catch (ClassNotFoundException e) {
+				
+			}
+			/*
+			System.out.println("Classloader of class:"
+			        + cls.getClassLoader());
+			System.out.println("Name of superclass:"
+			        + cs.toString());
+			System.out.println("Classloader of superclass:"
+			        + cs.getClassLoader());
+			System.out.println("Classloader of comp class:"
+			        + compClass.getClassLoader());
+			System.out.println("Classloader of subnet class:"
+			        + subnetClass.getClassLoader());
+			System.out.println("Classloader of obj class:"
+			        + obj.getClass().getClassLoader());
+			*/
+			if (cs != null && cs == obj.getClass()){
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Class file not a valid FBP component", MyOptionPane.ERROR_MESSAGE);				
+						"Class superclass is Object", MyOptionPane.ERROR_MESSAGE);				
+				return null;
+			}
+			if (cs == null || !(cs.getCanonicalName().equals(compClass.getCanonicalName())  ||
+					!cs.getCanonicalName().equals(subnetClass.getCanonicalName()))) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Class file not a valid FBP component or subnet", MyOptionPane.ERROR_MESSAGE);				
 				return null;
 			}
 
@@ -1555,7 +1587,7 @@ public class Block implements ActionListener {
 			}
 			else
 				return;			
-			/*
+			/**
 			 *  Excise will 
 "excise" those blocks and arrows which are completely enclosed by the Enclosure block, and create a new 
 subnet including those blocks and arrows.  Arrows that cross the Enclosure boundary will have External Ports
@@ -1877,7 +1909,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					javaClass = null;
 				else {
 					// Create a new class loader with the directory
-					classLoader = new URLClassLoader(urls);
+					classLoader = new URLClassLoader(urls, this.getClass()
+							.getClassLoader());
 					try {
 						javaClass = classLoader.loadClass(res2);
 					} catch (ClassNotFoundException e2) {
@@ -1929,7 +1962,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 						else {
 
 							// Create a new class loader with the directory
-							classLoader = new URLClassLoader(urls);
+							classLoader = new URLClassLoader(urls, this.getClass()
+									.getClassLoader());
 
 							try {
 								javaClass = classLoader.loadClass(u);
@@ -1988,25 +2022,27 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		LinkedList<URL> ll = new LinkedList<URL>();
 		URL[] urls = null;
 		try {
-			ll.add(f.toURI().toURL());
+			
+			ll.add(f.toURI().toURL());			
+			 
+			File f2 = new File(driver.javaFBPJarFile);
+			ll.add(f2.toURI().toURL());
 
+			for (String jfv : driver.jarFiles.values()) {
+				f2 = new File(jfv);
+				ll.add(f2.toURI().toURL());
+			}
+			
 			String curClsDir = driver.properties.get("currentClassDir")
 					+ File.separator;
 
 			if (null != curClsDir) {
-				f = new File(curClsDir);
-				ll.add(f.toURI().toURL());
+				f2 = new File(curClsDir);
+				ll.add(f2.toURI().toURL());
 			}
-
-			
-			f = new File(driver.javaFBPJarFile);
-			ll.add(f.toURI().toURL());
-
-			for (String jfv : driver.jarFiles.values()) {
-				f = new File(jfv);
-				ll.add(f.toURI().toURL());
-			}
+			 
 			urls = ll.toArray(new URL[ll.size()]);
+			
 		} catch (MalformedURLException e) {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Malformed URL: " + fullClassName, MyOptionPane.ERROR_MESSAGE);

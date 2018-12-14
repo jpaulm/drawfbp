@@ -581,7 +581,7 @@ public class Diagram {
 					return i;
 				}
 			}
-			if (s.endsWith(d.title))
+			if (d.title != null && s.endsWith(d.title))
 				return i;
 		}
 		return -1;
