@@ -4517,7 +4517,18 @@ void chooseFonts(MyFontChooser fontChooser){
 								arrowEndForDragging.toY)) {
 							arr.toId = block.id;
 							arr.endsAtBlock = true;
+							arr.endsAtLine = false;
 							break;
+						}
+						for (Arrow arrow : curDiag.arrows.values()){
+							if (curDiag.matchArrow(xa, ya, arrow)){
+								arr.toX = xa;
+								arr.toY = ya;
+								arr.toId = arrow.id;
+								arr.endsAtLine = true;
+								arr.endsAtBlock = false;
+								break;
+							}
 						}
 					}
 				}

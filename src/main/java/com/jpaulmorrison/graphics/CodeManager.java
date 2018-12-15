@@ -370,7 +370,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						s += ": from " + from.description;
 					MyOptionPane.showMessageDialog(driver.frame,
 							s, MyOptionPane.ERROR_MESSAGE);
-					break;
+					//break;
 				}
 				if (from == null || to == null || from instanceof FileBlock
 						|| from instanceof ReportBlock
