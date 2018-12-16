@@ -3835,7 +3835,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
-			arrowRoot = null;
+			//arrowRoot = null;
 			
 			if (panSwitch) {
 				Rectangle r = curDiag.area.getBounds();				
@@ -4163,7 +4163,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
-			arrowRoot = null;
+			//arrowRoot = null;
 			if (!ttEndTimer.isRunning()) {
 				drawToolTip = false; 
 				ttStartTimer.restart();	
@@ -4615,7 +4615,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			if (currentArrow == null) {
 
 				// Look for a line to detect, for deletion, etc. - logic to end arrow at a line comes in a later section... 
-				currentArrow = null;
+				//currentArrow = null;
 				// if (!leftButton) {
 				for (Arrow arrow : curDiag.arrows.values()) {
 					if (curDiag.matchArrow(xa, ya, arrow)) {
@@ -4631,9 +4631,9 @@ void chooseFonts(MyFontChooser fontChooser){
 					//Arrow arr = foundArrow;
 					//arr.fromId = curDiag.foundBlock.id;
 					if (currentArrow.endsAtLine || currentArrow.endsAtBlock) {
-						
-						currentArrow.buildArrowPopupMenu();
 						curDiag = currentArrow.diag;
+						currentArrow.buildArrowPopupMenu();
+						
 						// currentArrow.lastX = xa;
 						// currentArrow.lastY = ya;
 						curDiag.jpm.show(e.getComponent(), xa, ya);

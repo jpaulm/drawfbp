@@ -70,11 +70,12 @@ public class Arrow implements ActionListener {
 
 		int endX, endY;
 		Block from = null;
+		Block to = null;
 		if (fromId > -1) {
 			from = diag.blocks.get(new Integer(fromId));
 			
 		}
-		Block to = null;
+		
 		if (toId > -1) {
 			to = diag.blocks.get(new Integer(toId));			
 		}
@@ -221,6 +222,7 @@ public class Arrow implements ActionListener {
 				Arrowhead ah = new Arrowhead(fx, fy, toX, toY);  
 				ah.draw(g);	
 				driver.arrowEnd = null;
+				//driver.currentArrow = null;
 			}
 
 		} else if (endsAtLine)  
@@ -450,7 +452,13 @@ public class Arrow implements ActionListener {
 		JMenuItem menuItem;
 		Block from = diag.blocks.get(new Integer(fromId));
 		Block to = diag.blocks.get(new Integer(toId));
-		Arrow a = findLastArrowInChain();
+		Arrow a = this.findLastArrowInChain();
+		if (a == null) {
+			MyOptionPane.showMessageDialog(driver.frame,
+					"Can't find connecting arrow",
+					MyOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		to = diag.blocks.get(new Integer(a.toId));
 		if (!(from instanceof FileBlock || from instanceof PersonBlock || from instanceof ReportBlock || from instanceof LegendBlock ||
 				to instanceof FileBlock || to instanceof PersonBlock || to instanceof ReportBlock || to instanceof LegendBlock 	) ) {
@@ -510,6 +518,7 @@ public class Arrow implements ActionListener {
 		menuItem = new JMenuItem("Delete");
 		diag.jpm.add(menuItem);
 		menuItem.addActionListener(this);
+		diag.driver.currentArrow = null;
 		
 	}
 
@@ -814,8 +823,9 @@ public class Arrow implements ActionListener {
 		int id = toId; // not a block, so toId must be a line ID
 		Arrow a = null;		
 		while (true) {
-			if (id == -1)
-				break;
+			if (id == -1)  			
+				break;				
+			 
 			for (Arrow arrow : diag.arrows.values()) {
 				if (id == arrow.id) {
 					a = arrow;
@@ -823,12 +833,8 @@ public class Arrow implements ActionListener {
 					break;
 				}
 			}
-			if (a == null) {
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Can't find connecting arrow",
-						MyOptionPane.ERROR_MESSAGE);
-				break;
-			}
+			if (a == null)  
+				break;			 
 			
 			if (a.endsAtBlock)
 				return a;

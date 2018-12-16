@@ -429,6 +429,12 @@ public class DiagramBuilder {
 				a.upStreamPort = "OUT";
 			
 			Arrow a2 = a.findLastArrowInChain();
+			if (a2 == null) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Can't find connecting arrow",
+						MyOptionPane.ERROR_MESSAGE);
+				break;
+			}
 			Block toBlock = diag.blocks.get(new Integer(a2.toId));
 			if (toBlock.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
 					|| toBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
