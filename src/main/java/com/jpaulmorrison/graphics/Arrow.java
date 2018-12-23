@@ -18,8 +18,7 @@ public class Arrow implements ActionListener {
 	int lastX = -1, lastY = -1; // "last" x and y
 	int fromId, toId, id = 0;
 	boolean endsAtBlock, endsAtLine;
-	int segNo; // only relevant if endsAtLine
-	int sqOffset;  // ditto
+	int segNo; // only relevant if endsAtLine	
 	LinkedList<Bend> bends;
 	String type = "";
 	String upStreamPort, downStreamPort;
@@ -377,6 +376,7 @@ public class Arrow implements ActionListener {
 		if (capacity > 0)
 			s += "<capacity>" + capacity + "</capacity>";
 		
+		s += "<segno>" + segNo + "</segno>";
 		
 		if (bends != null) {
 			s += "<bends> ";
@@ -420,6 +420,10 @@ public class Arrow implements ActionListener {
 		s = item.get("capacity");
 		if (s != null)
 			capacity = Integer.parseInt(s); 
+		
+		s = item.get("segno");		
+		if (s != null)
+			segNo = Integer.parseInt(s); 
 		
 		s = item.get("fromid").trim();
 		fromId = Integer.parseInt(s);

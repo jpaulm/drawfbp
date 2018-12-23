@@ -605,62 +605,57 @@ public class Diagram {
 		return j > -1;
 	}
 
-	boolean matchArrow(int x, int y, Arrow arrow) {
+	Arrow matchArrow(int x, int y, Arrow arr) {
 
-		int x1 = arrow.fromX;
-		int y1 = arrow.fromY;
-		int segNo = 0;
-		int x2, y2;
-		if (arrow.bends != null) {
-			for (Bend bend : arrow.bends) {
-				x2 = bend.x;
-				y2 = bend.y;
-				if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
-					if (driver.currentArrow != null) {
-						driver.currentArrow.segNo = segNo;
-						driver.currentArrow.sqOffset = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+		for (Arrow arrow : arrows.values()) {
+			if (arrow == arr)
+				continue;
+			// see if xa and ya are "close" to specified arrow
+			int x1 = arrow.fromX;
+			int y1 = arrow.fromY;
+			int segNo = 0;
+			int x2, y2;
+			if (arrow.bends != null) {
+				for (Bend bend : arrow.bends) {
+					x2 = bend.x;
+					y2 = bend.y;
+					if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
+						if (arrow != null) {
+							arrow.segNo = segNo;
+						}
+						return arrow;
 					}
-					return true;
+
+					x1 = x2;
+					y1 = y2;
+					segNo++;
 				}
+			}
 
-				x1 = x2;
-				y1 = y2;
-				segNo++;
+			x2 = arrow.toX;
+			y2 = arrow.toY;
+			if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
+				if (arrow != null) {
+					arrow.segNo = segNo;
+				}
+				return arrow;
 			}
 		}
-
-		x2 = arrow.toX;
-		y2 = arrow.toY;
-		if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
-			if (driver.currentArrow != null) {
-				driver.currentArrow.segNo = segNo;
-				driver.currentArrow.sqOffset = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-			}
-			return true;
-		}
-		return false;
+		return null;
 	}
 	
 	void delArrow(Arrow arrow) {
-		LinkedList<Arrow> ll = new LinkedList<Arrow>();
-		// go down list repeatedly - until no more arrows to remove
-		while (true) {
-			boolean found = false;
-			for (Arrow arr : arrows.values()) {
-				if (arr.endsAtLine && arr.toId == arrow.id) {
-					arr.toId = -1;
-					ll.add(arr);
-					found = true;
-					break;
-				}
+		//LinkedList<Arrow> ll = new LinkedList<Arrow>();
+		// go down list looking for arrows which end at this arrow
+		
+		for (Arrow arr : arrows.values()) {
+			if (arr.endsAtLine && arr.toId == arrow.id) {
+				Integer aid = new Integer(arr.id);
+				arrows.remove(aid);
+				arr.toId = -1;									
 			}
-			if (!found)
-				break;
-		}
-		for (Arrow arr : ll) {
-			Integer aid = new Integer(arr.id);
-			arrows.remove(aid);
-		}
+		}			
+				
 		Integer aid = new Integer(arrow.id);
 		arrows.remove(aid);
 	}
@@ -675,49 +670,16 @@ public class Diagram {
 			return;
 
 		// go down list repeatedly - until no more arrows to remove
-		LinkedList<Arrow> ll = new LinkedList<Arrow>();
-		//while (true) {
-			//boolean found = false;
-			for (Arrow arrow : arrows.values()) {
-				if (arrow.fromId == block.id) {					
-					ll.add(arrow);
-					arrow.fromId = -1;
-					//found = true;
-					continue;
-				}
-				//if (arrow.endsAtBlock && arrow.toId == block.id) {					
-				//	ll.add(arrow);
-				//	arrow.toId = -1;
-				//	found = true;
-				//	break;
-				//}
-				Arrow a = arrow;				
-				while (a.endsAtLine){
-					Integer aid = new Integer(a.id);
-					//ll.add(a);
-					//a.toId = -1;
-					a = arrows.get(aid);
-				}	
-				
-				if (a.toId != block.id) 				
-					continue; 
-				
-				a = arrow;
-				while (a.endsAtLine){
-					Integer aid = new Integer(a.id);
-					ll.add(a);
-					a.toId = -1;
-					a = arrows.get(aid);
-				}	
-				if (a.toId == block.id){
-					ll.add(a);
-					a.toId = -1;
-				}
-			}
+		 
+		for (Arrow arrow : arrows.values()) {
+			if (arrow.fromId == block.id) 
+				delArrow(arrow);
 			
-
-		for (Arrow arrow : ll)
-			delArrow(arrow);
+			if (arrow.endsAtBlock) {
+				if (arrow.toId == block.id) 
+					delArrow(arrow);	
+			}			
+		}
 
 		changed = true;
 		Integer aid = new Integer(block.id);
@@ -1052,6 +1014,7 @@ public class Diagram {
 				driver.sbnDiag.maxArrowNo = Math.max(driver.sbnDiag.maxArrowNo, arrow.id);
 				arrCopy.id = driver.sbnDiag.maxArrowNo++;
 				arrCopy.capacity = arrow.capacity;
+				arrCopy.segNo = arrow.segNo;
 				arrCopy.endsAtBlock = arrow.endsAtBlock;
 				arrCopy.endsAtLine = arrow.endsAtLine;
 				if (arrow.bends != null) {

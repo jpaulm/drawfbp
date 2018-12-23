@@ -15,10 +15,9 @@ public class DiagramBuilder {
 		/***********************************************************************
 		 * 
 		 * This method scans off the XML-like network definition. Most of the
-		 * logic takes place when endtags are encountered. There are two
-		 * situations where things get more complex: a) when a connection
-		 * (arrow) has embedded bends, and b) when an enclosure block has
-		 * embedded subnetports
+		 * logic takes place when endtags are encountered. There is one
+		 * situation where things get more complex: when a connection
+		 * (arrow) has embedded bends
 		 * 
 		 */
 
@@ -523,6 +522,7 @@ public class DiagramBuilder {
 		fl5.put("downstreamport", "*");
 		fl5.put("dropoldest", "*");
 		fl5.put("capacity", "*");
+		fl5.put("segno", "*");
 		fl5.put("endsatline", "*");	
 		fl5.put("bends", "LinkedList");
 

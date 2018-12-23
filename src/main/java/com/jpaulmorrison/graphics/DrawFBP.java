@@ -4376,14 +4376,8 @@ void chooseFonts(MyFontChooser fontChooser){
 					// side = fp.side;
 					arrowEnd = fp;
 				} else
-					for (Arrow arrow : curDiag.arrows.values()) {
-						if (arrow == currentArrow)
-							continue;
-						if (curDiag.matchArrow(xa, ya, arrow)) {
-							arrowEnd = new FoundPoint(xa, ya, null, null);
-							break;
-						}
-					}
+					if (null != curDiag.matchArrow(xa, ya, currentArrow)) 
+						arrowEnd = new FoundPoint(xa, ya, null, null);						
 
 			}
 			repaint();
@@ -4512,26 +4506,27 @@ void chooseFonts(MyFontChooser fontChooser){
 					}
 					if (arr.headMarked) {
 						arr.toId = -1;
-						if (null != touches(block,
-								arrowEndForDragging.toX,
+						if (null != touches(block, arrowEndForDragging.toX,
 								arrowEndForDragging.toY)) {
 							arr.toId = block.id;
 							arr.endsAtBlock = true;
 							arr.endsAtLine = false;
 							break;
 						}
-						for (Arrow arrow : curDiag.arrows.values()){
-							if (curDiag.matchArrow(xa, ya, arrow)){
-								arr.toX = xa;
-								arr.toY = ya;
-								arr.toId = arrow.id;
-								arr.endsAtLine = true;
-								arr.endsAtBlock = false;
-								break;
-							}
-						}
 					}
 				}
+				Arrow arrow = null;
+				
+				// check if line touches line (arrow)
+				
+				if (null != (arrow = curDiag.matchArrow(xa, ya, currentArrow))) {
+					arr.toX = xa;
+					arr.toY = ya;
+					arr.toId = arrow.id;
+					arr.endsAtLine = true;
+					arr.endsAtBlock = false;					
+				}
+				 
 				arr.tailMarked = false;
 				arr.headMarked = false;
 				arrowEndForDragging = null;
@@ -4571,19 +4566,14 @@ void chooseFonts(MyFontChooser fontChooser){
 					}
 					blockSelForDragging.vNeighbour = null;
 				}
-
-				// boolean atFromEnd = true;
+				
 				for (Arrow arrow : curDiag.arrows.values()) {
-					if (arrow.fromId == blockSelForDragging.id) {
-						// arrow.adjust(atFromEnd);
-						// arrow.adjustSlope(fromEnd);
+					if (arrow.fromId == blockSelForDragging.id) {						
 						arrow.fromX += blockSelForDragging.cx - savex;
 						arrow.fromY += blockSelForDragging.cy - savey;
 					}
 					if (arrow.toId == blockSelForDragging.id
-							&& !arrow.endsAtLine) {
-						// arrow.adjust(!atFromEnd);
-						// arrow.adjustSlope(!fromEnd);
+							&& !arrow.endsAtLine) {						
 						arrow.toX += blockSelForDragging.cx - savex;
 						arrow.toY += blockSelForDragging.cy - savey;
 					}
@@ -4614,15 +4604,14 @@ void chooseFonts(MyFontChooser fontChooser){
 			foundBlock = null;
 			if (currentArrow == null) {
 
-				// Look for a line to detect, for deletion, etc. - logic to end arrow at a line comes in a later section... 
-				//currentArrow = null;
+				// Look for a line to detect, for deletion, etc. - logic to end
+				// arrow at a line comes in a later section...
+				// currentArrow = null;
 				// if (!leftButton) {
-				for (Arrow arrow : curDiag.arrows.values()) {
-					if (curDiag.matchArrow(xa, ya, arrow)) {
-						currentArrow = arrow;
-						break;
-					}
-				}
+
+				Arrow arrow = null;
+				if (null != (arrow = curDiag.matchArrow(xa, ya, currentArrow))) 
+					currentArrow = arrow;
 
 				selArrow = currentArrow;
 				
@@ -4857,40 +4846,37 @@ void chooseFonts(MyFontChooser fontChooser){
 			) {
 
 				Arrow foundArrow = null;
-				Arrow a = currentArrow;
-				for (Arrow arrow : curDiag.arrows.values()) {
-					// see if xa and ya are "close" to specified arrow
-					if (arrow != a && curDiag.matchArrow(xa, ya, arrow)){
-						foundArrow = arrow;
-						break;
-					}					
-				}
+				Arrow arrow = null;
+				
+				// see if xa and ya are "close" to specified arrow
+				if (null != (arrow = curDiag.matchArrow(xa, ya, currentArrow)))
+					foundArrow = arrow;				
 
 				if (foundArrow != null) { // && leftButton
 
 					if (x != curx) {
-						double s = y - a.lastY;
-						double t = x - a.lastX;
+						double s = ya - foundArrow.lastY;
+						double t = xa - foundArrow.lastX;
 						s = s / t;
 						if (Math.abs(s) < FORCE_HORIZONTAL) // force horizontal
-							y = currentArrow.lastY;
+							ya = currentArrow.lastY;
 						if (Math.abs(s) > FORCE_VERTICAL) // force vertical
-							x = currentArrow.lastX;
+							xa = currentArrow.lastX;
 					}
-					a.toX = x; 					
-					a.toY = y;
+					currentArrow.toX = xa; 					
+					currentArrow.toY = ya;
 					currentArrow.endsAtLine = true;
 
 					// use id of target line, not of target block
 					currentArrow.toId = foundArrow.id;
 
 					
-					defaultPortNames(a);
+					defaultPortNames(foundArrow);
 					
-					Block from = curDiag.blocks.get(new Integer(a.fromId));
+					Block from = curDiag.blocks.get(new Integer(foundArrow.fromId));
 					Block to = curDiag.blocks.get(new Integer(
-					 a.toId));
-					Arrow a2 = a.findLastArrowInChain();
+							foundArrow.toId));
+					Arrow a2 = foundArrow.findLastArrowInChain();
 					to = curDiag.blocks.get(new Integer(a2.toId));
 										
 					if (to == from) {
