@@ -605,10 +605,10 @@ public class Diagram {
 		return j > -1;
 	}
 
-	Arrow matchArrow(int x, int y, Arrow arr) {
+	Arrow matchArrow(int x, int y) {
 
 		for (Arrow arrow : arrows.values()) {
-			if (arrow == arr)
+			if (arrow.toId == -1)
 				continue;
 			// see if xa and ya are "close" to specified arrow
 			int x1 = arrow.fromX;

@@ -3239,6 +3239,15 @@ void chooseFonts(MyFontChooser fontChooser){
 			
 		}
 	}
+	
+	void drawBlackSquare(Graphics g, int x, int y) {
+		Color col = g.getColor();
+		g.setColor(Color.BLACK);
+		g.drawRect(x - 3, y - 3, 6, 6);
+		g.fillRect(x - 3, y - 3, 6, 6);
+		g.setColor(col);
+	}
+
 	public void componentHidden(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 
@@ -3822,6 +3831,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				return;
 			drawToolTip = false; 
 			arrowRoot = null;
+			arrowEnd = null;
 			if (!ttEndTimer.isRunning())  				
 				ttStartTimer.restart();	
 			else			
@@ -3835,8 +3845,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			int x = (int) Math.round(e.getX() / scalingFactor);
 			int y = (int) Math.round(e.getY() / scalingFactor);
 			int xa, ya;
-			//arrowRoot = null;
-			
+						
 			if (panSwitch) {
 				Rectangle r = curDiag.area.getBounds();				
 				r = new Rectangle(r.x, r.y, r.width - 20, r.height - 40);
@@ -3936,6 +3945,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					arrowRoot = fp;	
 				else
 					arrowEnd = fp;
+			
+			Arrow arr = curDiag.matchArrow(xa, ya);
+			if (arr != null)
+				arrowEnd = new FoundPoint(xa, ya, null, null); 
 
 			repaint();
 		}
@@ -4376,7 +4389,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					// side = fp.side;
 					arrowEnd = fp;
 				} else
-					if (null != curDiag.matchArrow(xa, ya, currentArrow)) 
+					if (null != curDiag.matchArrow(xa, ya)) 
 						arrowEnd = new FoundPoint(xa, ya, null, null);						
 
 			}
@@ -4515,18 +4528,20 @@ void chooseFonts(MyFontChooser fontChooser){
 						}
 					}
 				}
+				
+				/*
 				Arrow arrow = null;
 				
 				// check if line touches line (arrow)
 				
-				if (null != (arrow = curDiag.matchArrow(xa, ya, currentArrow))) {
-					arr.toX = xa;
-					arr.toY = ya;
-					arr.toId = arrow.id;
-					arr.endsAtLine = true;
-					arr.endsAtBlock = false;					
+				if (null != (arrow = curDiag.matchArrow(xa, ya))) {
+					arrow.toX = xa;
+					arrow.toY = ya;
+					arrow.toId = arrow.id;
+					arrow.endsAtLine = true;
+					arrow.endsAtBlock = false;					
 				}
-				 
+				*/ 
 				arr.tailMarked = false;
 				arr.headMarked = false;
 				arrowEndForDragging = null;
@@ -4610,7 +4625,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				// if (!leftButton) {
 
 				Arrow arrow = null;
-				if (null != (arrow = curDiag.matchArrow(xa, ya, currentArrow))) 
+				if (null != (arrow = curDiag.matchArrow(xa, ya))) 
 					currentArrow = arrow;
 
 				selArrow = currentArrow;
@@ -4710,6 +4725,8 @@ void chooseFonts(MyFontChooser fontChooser){
 						&& between(currentArrow.fromY,
 								y - 4 * scalingFactor, y + 4 * scalingFactor))
 					return;
+				
+				/*
 				if (foundBlock.id == currentArrow.fromId) {
 
 					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
@@ -4725,6 +4742,7 @@ void chooseFonts(MyFontChooser fontChooser){
 						return;
 					}
 				}
+				*/
 				boolean OK = true;
 				Block from = curDiag.blocks
 						.get(new Integer(currentArrow.fromId));
@@ -4841,31 +4859,28 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 			// currentDiag.foundBlock must be null
 			// see if we can end an arrow on a line or line segment
-			if (currentArrow != null && foundBlock == null
-			// && leftButton
-			) {
+			if (currentArrow != null && foundBlock == null) {
 
 				Arrow foundArrow = null;
 				Arrow arrow = null;
 				
 				// see if xa and ya are "close" to specified arrow
-				if (null != (arrow = curDiag.matchArrow(xa, ya, currentArrow)))
-					foundArrow = arrow;				
-
-				if (foundArrow != null) { // && leftButton
+				if (null != (arrow = curDiag.matchArrow(xa, ya))) {
+					foundArrow = arrow;							
 
 					if (x != curx) {
 						double s = ya - foundArrow.lastY;
 						double t = xa - foundArrow.lastX;
 						s = s / t;
 						if (Math.abs(s) < FORCE_HORIZONTAL) // force horizontal
-							ya = currentArrow.lastY;
+							ya = foundArrow.lastY;
 						if (Math.abs(s) > FORCE_VERTICAL) // force vertical
-							xa = currentArrow.lastX;
+							xa = foundArrow.lastX;
 					}
 					currentArrow.toX = xa; 					
 					currentArrow.toY = ya;
 					currentArrow.endsAtLine = true;
+					currentArrow.upStreamPort = "OUT";
 
 					// use id of target line, not of target block
 					currentArrow.toId = foundArrow.id;
@@ -4873,7 +4888,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					
 					defaultPortNames(foundArrow);
 					
-					Block from = curDiag.blocks.get(new Integer(foundArrow.fromId));
+					Block from = curDiag.blocks.get(new Integer(currentArrow.fromId));
 					Block to = curDiag.blocks.get(new Integer(
 							foundArrow.toId));
 					Arrow a2 = foundArrow.findLastArrowInChain();

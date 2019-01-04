@@ -270,14 +270,10 @@ public class Block implements ActionListener {
 				//	if (opt == 1 || driver.curDiag.currentArrow.bends == null)
 		
 		if (driver.arrowRoot != null)
-			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 1);		
-		if (driver.arrowEnd != null) {
-			Color col = g.getColor();
-			g.setColor(Color.BLACK);
-			g.drawRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);
-			//g.fillRect(driver.arrowEnd.x - 3, driver.arrowEnd.y - 3, 6, 6);	
-			g.setColor(col);
-		}
+			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 1);
+		
+		if (driver.arrowEnd != null)  
+			driver.drawBlackSquare(g, driver.arrowEnd.x, driver.arrowEnd.y);		 
 		
 	}
 	 
