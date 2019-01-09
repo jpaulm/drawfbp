@@ -67,6 +67,7 @@
                                     <xs:element name="fromid" type="xs:integer"/>
                                     <xs:element name="toid" type="xs:integer"/>
                                     <xs:element name="id" type="xs:integer"/>
+                                    <xs:element name="segno" type="xs:integer"/>
                                     <xs:element name="upstreamport" type="xs:string"  minOccurs="0"/>
                                     <xs:element name="downstreamport" type="xs:string"  minOccurs="0"/>  
                                     <xs:element name="dropoldest" type="xs:boolean" minOccurs="0"/>  
