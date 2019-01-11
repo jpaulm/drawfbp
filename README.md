@@ -92,7 +92,14 @@ JavaHelp facility
 
 DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the `javahelp.jar` file.  This is the standard JavaHelp jar file, and can be obtained from Maven Central, by doing a search for artifact `javahelp`, or from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar , which has the same contents.
 
-From then on DrawFBP will remember the location of your DrawFBP-Help.jar file in your `DrawFBPProperties.xml` file.
+From then on, DrawFBP will remember the location of your DrawFBP-Help.jar file in your `DrawFBPProperties.xml` file.
+
+"math.geom2d" jar file
+---
+
+As of Release v2.15.10, DrawFBP requires this jar file.  The first time you run this release, you will be prompted to locate this jar file.  This can be obtained from Maven Central, by doing a search for artifact `math.geom2d`.
+
+From then on, DrawFBP will remember the location of this jar file in your `DrawFBPProperties.xml` file.
 
 XML Schema for `.drw` files
 ---
