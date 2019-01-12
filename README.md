@@ -5,6 +5,8 @@ Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
 #### Latest release is v2.15.9.  This jar file is now available and can be obtained by searching Maven for "drawfbp" (without quotes), or by looking in Releases. 
 
+As of Release v2.15.10, DrawFBP requires the "math.geom2d" jar file - see below.
+
 Description
 -----------
 
@@ -97,9 +99,7 @@ From then on, DrawFBP will remember the location of your DrawFBP-Help.jar file i
 "math.geom2d" jar file
 ---
 
-As of Release v2.15.10, DrawFBP requires this jar file.  The first time you run this release, you will be prompted to locate this jar file.  This can be obtained from Maven Central, by doing a search for artifact `math.geom2d`.
-
-From then on, DrawFBP will remember the location of this jar file in your `DrawFBPProperties.xml` file.
+As of Release v2.15.10, DrawFBP requires this jar file.  Download it from Maven Central, by doing a search for artifact `math.geom2d`, and update your project Properties/Build Path entry to specify its location.
 
 XML Schema for `.drw` files
 ---
