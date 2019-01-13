@@ -78,7 +78,7 @@ If you wish to run DrawFBP from the command line, position to the folder contain
     java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
     java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
     
-From v2.15.10 onwards, run DrawFBP from the command line as follows:    
+From v2.15.10 onwards, run DrawFBP from the command line as follows (assuming `javaGeom-0.11.1` is in the root directory for `drawfbp`):    
 
     java -cp 'javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar' com.jpaulmorrison.graphics.DrawFBP
     
