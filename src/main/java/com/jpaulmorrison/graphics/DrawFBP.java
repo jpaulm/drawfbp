@@ -1,9 +1,30 @@
 package com.jpaulmorrison.graphics;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.ComponentOrientation;
+import java.awt.Container;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.*;
-import java.awt.geom.Line2D;
-import java.awt.geom.Rectangle2D;
+
+import math.geom2d.line.DegeneratedLine2DException;
+import math.geom2d.line.Line2D;
+import math.geom2d.Point2D;
+import math.geom2d.line.StraightLine2D;
+
 import java.awt.image.*;
 
 import javax.swing.*;
@@ -1822,16 +1843,21 @@ public class DrawFBP extends JFrame
 			return;
 
 		}
+		
+		int x, y;
+		
+		x = 100 + (new Random())
+				.nextInt(curDiag.area.getWidth() - 200);
+		y = 100 + (new Random())
+				.nextInt(curDiag.area.getHeight() - 200);
+		
 		if (s.equals("New Block")) {
 			// if (newItemMenu == null) {
 			// newItemMenu = buildNewItemMenu(driver);
 			// }
 			// newItemMenu.setVisible(true);
-			curDiag.xa = 100 + (new Random())
-					.nextInt(curDiag.area.getWidth() - 200);
-			curDiag.ya = 100 + (new Random())
-					.nextInt(curDiag.area.getHeight() - 200);
-			if (null != createBlock(blockType))
+			
+			if (null != createBlock(blockType, x, y))
 				curDiag.changed = true;
 			frame.repaint();
 			return;
@@ -1847,7 +1873,7 @@ public class DrawFBP extends JFrame
 			curDiag = b.diag;
 			b.buildBlockPopupMenu();
 			use_drag_icon = false;
-			curDiag.jpm.show(frame, curDiag.xa + 100, curDiag.ya + 100);
+			curDiag.jpm.show(frame, x + 100, y + 100);
 			frame.repaint();
 			return;
 
@@ -1961,7 +1987,7 @@ public class DrawFBP extends JFrame
 
 	}	
 
-	Block createBlock(String blkType) {
+	Block createBlock(String blkType, int xa, int ya) {
 		Block block = null;
 		boolean oneLine = false;
 		if (blkType == Block.Types.PROCESS_BLOCK) {
@@ -1991,8 +2017,8 @@ public class DrawFBP extends JFrame
 			oneLine = true;  
 			block = new Enclosure(curDiag);
 			Point pt = curDiag.area.getLocation();
-			int y = Math.max(curDiag.ya - block.height / 2, pt.y + 6);
-			block.cy = ((curDiag.ya + block.height / 2) + y) / 2;
+			int y = Math.max(ya - block.height / 2, pt.y + 6);
+			block.cy = ((ya + block.height / 2) + y) / 2;
 		}
 
 		else if (blkType == Block.Types.PERSON_BLOCK)
@@ -2005,8 +2031,8 @@ public class DrawFBP extends JFrame
 
 		block.type = blkType;
 
-		block.cx = curDiag.xa;
-		block.cy = curDiag.ya;
+		block.cx = xa;
+		block.cy = ya;
 		if (block.cx == 0 || block.cy == 0)
 			return null; // fudge!
 		
@@ -3035,27 +3061,32 @@ void chooseFonts(MyFontChooser fontChooser){
 			a.checkStatus = Status.INCOMPATIBLE;
 	}
 	
-	static boolean pointInLine(Point p, int fx, int fy, int tx, int ty){
-		double d = Line2D.ptLineDist((double) fx, (double) fy, (double) tx, (double) ty, (double) p.x, (double) p.y);
-		boolean b = d <= 4.0;
-		//b = b && between(p.x, fx, tx);
-		//b = b && between (p.y, fy, ty);
-		return b;
+	boolean pointInLine(Point2D p, int fx, int fy, int tx, int ty){
+		Line2D line = new Line2D((double) fx, (double) fy, (double) tx, (double) ty);
+		double d = 0.0;
+		//try {
+		d = line.distance(p);
+		//} catch (DegeneratedLine2DException e) {
+			
+		//}
+		
+		return d < 4;
 	}
 	
 	/**
 	 * Test if point (xp, yp) is "near" line defined by (x1, y1) and (x2, y2)
 	 */
-	static boolean nearpln(int xp, int yp, int x1, int y1, int x2, int y2) {
-
-		//Point p = new Point(xp, yp);
-		//return pointInLine(p, x1, y1, x2, y2);
-		Rectangle2D r = new Rectangle2D.Double(xp - gridUnitSize
-				* scalingFactor / 2, yp - gridUnitSize * scalingFactor / 2,
-				gridUnitSize * scalingFactor, gridUnitSize 
-						* scalingFactor);
-		Line2D line = new Line2D.Float(x1, y1, x2, y2);
-		return line.intersects(r);
+	static boolean nearpln(int xp, int yp, int x1, int y1, int x2, int y2) {		
+		
+		Line2D line = new Line2D(x1, y1, x2, y2);
+		Point2D p = new Point2D(xp, yp);
+		double d = 0.0;
+		//try {
+		    d = line.distance(p);
+		//} catch (DegeneratedLine2DException e) {
+			
+		//}
+		return d < 4.0;
 	}
 
 	/*
@@ -3106,14 +3137,14 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 	}
 
-	Point gridAlign(Point p) {
-		Point p2 = p;
+	Point2D gridAlign(Point2D p) {
+		Point2D p2 = p;
 		if (curDiag.clickToGrid) {
-			int x = ((int) (p.getX() + gridUnitSize / 2) / gridUnitSize)
+			int x = ((int) (p.x() + gridUnitSize / 2) / gridUnitSize)
 					* gridUnitSize;
-			int y = ((int) (p.getY() + gridUnitSize / 2) / gridUnitSize)
+			int y = ((int) (p.y() + gridUnitSize / 2) / gridUnitSize)
 					* gridUnitSize;
-			p2 = new Point(x, y);
+			p2 = new Point2D(x, y);
 		}
 		return p2;
 	}
@@ -3243,8 +3274,8 @@ void chooseFonts(MyFontChooser fontChooser){
 	void drawBlackSquare(Graphics g, int x, int y) {
 		Color col = g.getColor();
 		g.setColor(Color.BLACK);
-		g.drawRect(x - 3, y - 3, 6, 6);
-		g.fillRect(x - 3, y - 3, 6, 6);
+		g.drawRect(x - 2, y - 2, 4, 4);
+		g.fillRect(x - 2, y - 2, 4, 4);
 		g.setColor(col);
 	}
 
@@ -3805,19 +3836,21 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (side == null )
 					continue;
 				
+				fp = new FoundPoint(xa, ya, side, block);	
+				
 				if (side == Side.LEFT)
-					xa = block.leftEdge;
+					fp.x = block.leftEdge;
 				else
 					if (side == Side.RIGHT)
-						xa = block.rgtEdge;
+						fp.x = block.rgtEdge;
 					else
 						if (side == Side.TOP)
-							ya = block.topEdge;
+							fp.y = block.topEdge;
 						else
 							if (side == Side.BOTTOM)
-								ya = block.botEdge;
+								fp.y = block.botEdge;
 				
-				fp = new FoundPoint(xa, ya, side, block);	
+				//fp = new FoundPoint(xa, ya, side, block);	
 				
 				break;					
 			}
@@ -3825,6 +3858,95 @@ void chooseFonts(MyFontChooser fontChooser){
 			return fp;
 		}
 
+		// see if x and y are "close" to any arrow - if so, return it, else null
+		FoundPoint findArrow(int x, int y) {
+			
+			FoundPoint fp = null;
+
+			for (Arrow arrow : curDiag.arrows.values()) {
+				if (arrow.toId == -1)
+					continue;
+				
+				int x1 = arrow.fromX;
+				int y1 = arrow.fromY;
+				int segNo = 0;
+				int x2, y2;
+				
+				if (arrow.bends != null) {
+					for (Bend bend : arrow.bends) {
+						x2 = bend.x;
+						y2 = bend.y;
+						if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
+							fp = new FoundPoint(x, y, arrow, segNo);											
+							return fp;
+						}
+
+						x1 = x2;
+						y1 = y2;
+						segNo++;
+					}
+				}
+
+				x2 = arrow.toX;
+				y2 = arrow.toY;
+				if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {				
+					fp = new FoundPoint(x, y, arrow, segNo);				
+					return fp;
+				}
+			}
+			return null;
+		}
+		void adjustArrowsEndingAtLine(Arrow arrow) {
+			for (Arrow arr : curDiag.arrows.values()) {
+				if (!arr.endsAtLine)
+					continue;
+				if (arr.toId != arrow.id)
+					continue;
+				int x1 = arrow.fromX; 
+				int y1 = arrow.fromY;
+				int x2 = arrow.toX; 
+				int y2 = arrow.toY;
+				int i = arr.segNo;
+				Bend b = null;
+				if (arrow.bends != null) {
+					if (i > 0) {
+						b = arrow.bends.get(i - 1);
+						x1 = b.x;
+						y1 = b.y;
+					}
+					if (i < arrow.bends.size()) {
+						b = arrow.bends.get(i);
+						x2 = b.x;
+						y2 = b.y;
+					}					
+				}
+				Point2D p1 = new Point2D((double)x1, (double)y1);
+				Point2D p2 = new Point2D((double)x2, (double)y2);
+				Line2D line = new Line2D(p1, p2); // correct segment of arow
+				
+				int xp = arr.fromX; 
+				int yp = arr.fromY;				
+				
+				if (arr.bends != null) {
+					i = arr.bends.size();					
+					b = arr.bends.get(i - 1);
+					xp = b.x;
+					yp = b.y;
+				}	
+				
+				Point2D point = new Point2D((double)xp, (double)yp);
+				
+				StraightLine2D perp = line.perpendicular(point);
+				point = line.intersection(perp);
+				if (point != null) {
+					arr.toX = (int) point.x();
+					arr.toY = (int) point.y();
+				}
+				arr.extraArrowhead = null;
+				adjustArrowsEndingAtLine(arr);  // call recursively
+			}
+		}
+		
 		public void mouseMoved(MouseEvent e) {	
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
@@ -3855,10 +3977,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					frame.setCursor(defaultCursor);
 			}  
 
-			Point p = new Point(x, y);
+			Point2D p = new Point2D(x, y);
 			p = gridAlign(p);
-			xa = (int) p.x;
-			ya = (int) p.y;
+			xa = (int) p.x();
+			ya = (int) p.y();
 
 			if (enclSelForArrow != null) {
 				enclSelForArrow.corner = null;
@@ -3945,10 +4067,10 @@ void chooseFonts(MyFontChooser fontChooser){
 					arrowRoot = fp;	
 				else
 					arrowEnd = fp;
-			
-			Arrow arr = curDiag.matchArrow(xa, ya);
-			if (arr != null)
-				arrowEnd = new FoundPoint(xa, ya, null, null); 
+			else {
+			    arrowEnd = findArrow(xa, ya);
+			}
+			 
 
 			repaint();
 		}
@@ -4192,10 +4314,10 @@ void chooseFonts(MyFontChooser fontChooser){
 			int xa, ya;
 			
 
-			Point p = new Point(x, y);
+			Point2D p = new Point2D(x, y);
 			p = gridAlign(p);
-			xa = (int) p.getX();
-			ya = (int) p.getY();
+			xa = (int) p.x();
+			ya = (int) p.y();
 			
 			if (e.getClickCount() == 2) {
 			  
@@ -4316,16 +4438,20 @@ void chooseFonts(MyFontChooser fontChooser){
 					return;
 				Block block = blockSelForDragging;
 				displayAlignmentLines(block);
-
+				
 				for (Arrow arrow : curDiag.arrows.values()) {
 
 					if (arrow.fromId == block.id) {
 						arrow.fromX += xa - oldx;
 						arrow.fromY += ya - oldy;
+						arrow.extraArrowhead = null;
+						adjustArrowsEndingAtLine(arrow);  // must be recursive
 					}
-					if (arrow.toId == block.id && !arrow.endsAtLine) {
+					if (arrow.toId == block.id && arrow.endsAtBlock) {
 						arrow.toX += xa - oldx;
 						arrow.toY += ya - oldy;
+						arrow.extraArrowhead = null;
+						adjustArrowsEndingAtLine(arrow);  // must be recursive
 					}
 				}
 				
@@ -4384,13 +4510,15 @@ void chooseFonts(MyFontChooser fontChooser){
 				arrowEnd = null;
 				// change end of line symbol when cursor crosses a block edge
 				FoundPoint fp = findBlockEdge(xa, ya);
+				
 				if (fp != null) {
 					foundBlock = fp.block;
 					// side = fp.side;
 					arrowEnd = fp;
-				} else
-					if (null != curDiag.matchArrow(xa, ya)) 
-						arrowEnd = new FoundPoint(xa, ya, null, null);						
+				} else {
+					arrowEnd = findArrow(xa, ya);
+					
+				}
 
 			}
 			repaint();
@@ -4423,10 +4551,10 @@ void chooseFonts(MyFontChooser fontChooser){
 			int xa, ya;
 			
 			Side side = null;
-			Point p2 = new Point(x, y);
+			Point2D p2 = new Point2D(x, y);
 			p2 = gridAlign(p2);
-			xa = (int) p2.getX();
-			ya = (int) p2.getY();
+			xa = (int) p2.x();
+			ya = (int) p2.y();
 
 			if (curDiag.area.contains(x, y) && panSwitch) {
 				frame.setCursor(openPawCursor);
@@ -4434,10 +4562,10 @@ void chooseFonts(MyFontChooser fontChooser){
 				return;
 			}
 
-			if (currentArrow == null) {
-				xa = curx; // used for bend dragging
-				ya = cury;
-			}
+			//if (currentArrow == null) { 
+			//	xa = curx; // used for bend dragging
+			//	ya = cury;
+			//}
 
 			if (e.getClickCount() == 2 || !leftButton) {
 				// enclSelForDragging = null;
@@ -4489,8 +4617,8 @@ void chooseFonts(MyFontChooser fontChooser){
 							
 							curDiag = blockSelForDragging.diag;
 							
-							curDiag.jpm.show(frame, curDiag.xa + 100,
-									curDiag.ya + 100);
+							curDiag.jpm.show(frame, xa + 100,
+									ya + 100);
 
 						}
 						// blockSelForDragging = null;
@@ -4624,9 +4752,11 @@ void chooseFonts(MyFontChooser fontChooser){
 				// currentArrow = null;
 				// if (!leftButton) {
 
-				Arrow arrow = null;
-				if (null != (arrow = curDiag.matchArrow(xa, ya))) 
-					currentArrow = arrow;
+				FoundPoint fp = findArrow(xa, ya);
+				if (fp != null && fp.arrow != null) {
+					currentArrow = fp.arrow;
+					arrowEnd = fp;
+				}
 
 				selArrow = currentArrow;
 				
@@ -4695,9 +4825,9 @@ void chooseFonts(MyFontChooser fontChooser){
 				// if (left)
 				// return;
 
-				curDiag.xa = xa;
-				curDiag.ya = ya;
-				if (!(blockType.equals("")) && null != createBlock(blockType))
+				//curDiag.xa = xa;
+				//curDiag.ya = ya;
+				if (!(blockType.equals("")) && null != createBlock(blockType, xa, ya))
 					curDiag.changed = true;
 				frame.repaint();
 				// repaint();
@@ -4861,12 +4991,13 @@ void chooseFonts(MyFontChooser fontChooser){
 			// see if we can end an arrow on a line or line segment
 			if (currentArrow != null && foundBlock == null) {
 
-				Arrow foundArrow = null;
-				Arrow arrow = null;
+				Arrow foundArrow = null;				
 				
 				// see if xa and ya are "close" to specified arrow
-				if (null != (arrow = curDiag.matchArrow(xa, ya))) {
-					foundArrow = arrow;							
+				fp = findArrow(xa, ya);
+				if (fp != null && fp.arrow != null) {
+					foundArrow = fp.arrow;
+					arrowEnd = fp;
 
 					if (x != curx) {
 						double s = ya - foundArrow.lastY;
@@ -4880,6 +5011,7 @@ void chooseFonts(MyFontChooser fontChooser){
 					currentArrow.toX = xa; 					
 					currentArrow.toY = ya;
 					currentArrow.endsAtLine = true;
+					currentArrow.segNo = fp.segNo;
 					currentArrow.upStreamPort = "OUT";
 
 					// use id of target line, not of target block

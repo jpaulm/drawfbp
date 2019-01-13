@@ -1703,6 +1703,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 	}
 
 	void assignSubnetDiagram() {
+		int xa, ya;
 		if (diagramFileName != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame,
@@ -1775,75 +1776,15 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			MyOptionPane.showMessageDialog(driver.frame,
 					"New subnet: fill in names for Ext Ports In and Out",
 					MyOptionPane.INFORMATION_MESSAGE);
-			diag.xa = driver.frame.getWidth() / 2 - 300;
-			diag.ya = driver.frame.getHeight() / 2;
-			driver.createBlock(Block.Types.EXTPORT_IN_BLOCK);
-			diag.xa = driver.frame.getWidth() / 2 + 100;
-			diag.ya = driver.frame.getHeight() / 2;
-			driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK);
+			xa = driver.frame.getWidth() / 2 - 300;
+			ya = driver.frame.getHeight() / 2;
+			driver.createBlock(Block.Types.EXTPORT_IN_BLOCK, xa, ya);
+			xa = driver.frame.getWidth() / 2 + 100;
+			ya = driver.frame.getHeight() / 2;
+			driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK, xa, ya);
 		 
 			
-		/*
-		} else {
-			
-				int i = diag.diagramIsOpen(f.getAbsolutePath());
-				if (i > -1 ){
-					ButtonTabComponent b = (ButtonTabComponent) driver.jtp
-							.getTabComponentAt(i);
-					driver.curDiag = b.diag;
-					//curDiag.tabNum = i;
-					driver.jtp.setSelectedIndex(i);					
-					driver.frame.repaint();
-					return;
-				}
-			
-			
-			
-			res = MyOptionPane.showConfirmDialog(driver.frame,
-					"File already exists - erase contents?", "Erase contents?",
-					MyOptionPane.YES_NO_CANCEL_OPTION);
-			if (res == MyOptionPane.CANCEL_OPTION)
-				return;
-
-			if (res == MyOptionPane.NO_OPTION) {
-				df = driver.openAction(dFN);
-				if (df == null)
-					return;
-				diagramFileName = dFN;
-				diag = driver.curDiag;
-				isSubnet = true;
-				diag.diagFile = df;
-				diag.desc = ans;
-				diag.title = ans;
-				driver.jtp.setSelectedIndex(diag.tabNum);
-			} else {
-				f.delete();
-
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Starting new subnet: " + f.getName(),
-						MyOptionPane.INFORMATION_MESSAGE);
-
-				df = driver.openAction(dFN);
-				if (df == null)
-					return;
-				diagramFileName = dFN;
-				diag = driver.curDiag;
-				isSubnet = true;
-				diag.diagFile = df;
-				diag.desc = ans;
-				diag.title = ans;
-				driver.jtp.setSelectedIndex(diag.tabNum);
-
-				MyOptionPane.showMessageDialog(driver.frame,
-						"Fill in names for Ext Ports In and Out",
-						MyOptionPane.INFORMATION_MESSAGE);
-				diag.xa = driver.frame.getWidth() / 2 - 300;
-				diag.ya = driver.frame.getHeight() / 2;
-				driver.createBlock(Block.Types.EXTPORT_IN_BLOCK);
-				diag.xa = driver.frame.getWidth() / 2 + 100;
-				diag.ya = driver.frame.getHeight() / 2;
-				driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK);
-				*/			
+		
 			 
 		}
 

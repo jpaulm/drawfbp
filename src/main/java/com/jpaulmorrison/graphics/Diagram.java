@@ -58,7 +58,7 @@ public class Diagram {
 
 	boolean clickToGrid;
 
-	int xa, ya;
+	//int xa, ya;
 	
 	Block parent = null;
 
@@ -605,44 +605,7 @@ public class Diagram {
 		return j > -1;
 	}
 
-	Arrow matchArrow(int x, int y) {
-
-		for (Arrow arrow : arrows.values()) {
-			if (arrow.toId == -1)
-				continue;
-			// see if xa and ya are "close" to specified arrow
-			int x1 = arrow.fromX;
-			int y1 = arrow.fromY;
-			int segNo = 0;
-			int x2, y2;
-			if (arrow.bends != null) {
-				for (Bend bend : arrow.bends) {
-					x2 = bend.x;
-					y2 = bend.y;
-					if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
-						if (arrow != null) {
-							arrow.segNo = segNo;
-						}
-						return arrow;
-					}
-
-					x1 = x2;
-					y1 = y2;
-					segNo++;
-				}
-			}
-
-			x2 = arrow.toX;
-			y2 = arrow.toY;
-			if (DrawFBP.nearpln(x, y, x1, y1, x2, y2)) {
-				if (arrow != null) {
-					arrow.segNo = segNo;
-				}
-				return arrow;
-			}
-		}
-		return null;
-	}
+	
 	
 	void delArrow(Arrow arrow) {
 		//LinkedList<Arrow> ll = new LinkedList<Arrow>();
@@ -724,7 +687,7 @@ public class Diagram {
 			driver.sbnDiag.blocks.put(new Integer(blk.id), blk);
 		}
 			
-		ProcessBlock subnetBlock = buildSubnetBlock(driver.origDiag, enc);
+		ProcessBlock subnetBlock = buildSubnetBlock(driver.origDiag, enc, enc.cx, enc.cy);
 		
 		driver.origDiag.copyArrows(enc, subnetBlock);   // categorize arrows in (old) Diagram, making copies of "crossers"
 		
@@ -1062,11 +1025,11 @@ public class Diagram {
 	/*
 	 * build double-lined block in old diagram
 	 */
-	ProcessBlock buildSubnetBlock(Diagram diag, Enclosure enc) {
+	ProcessBlock buildSubnetBlock(Diagram diag, Enclosure enc, int x, int y) {
 		ProcessBlock subnetBlock = new ProcessBlock(diag);
 
-		subnetBlock.cx = xa;
-		subnetBlock.cy = ya;
+		subnetBlock.cx = x;
+		subnetBlock.cy = y;
 		subnetBlock.calcEdges();
 		diag.maxBlockNo++;
 		subnetBlock.id = diag.maxBlockNo;

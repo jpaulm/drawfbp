@@ -1,8 +1,19 @@
 package com.jpaulmorrison.graphics;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.*;
-import java.awt.geom.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.FlatteningPathIterator;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.PathIterator;
+
+import math.geom2d.*;
+// import math.geom2d.line.Line2D;
+
 import java.util.*;
 
 import javax.swing.JLabel;
@@ -67,7 +78,7 @@ public class Arrow implements ActionListener {
 
 	void draw(Graphics g) {
 
-		int endX, endY;
+		//int endX, endY;
 		Block from = null;
 		Block to = null;
 		if (fromId > -1) {
@@ -82,6 +93,7 @@ public class Arrow implements ActionListener {
 		if (a != null)
 			to = diag.blocks.get(new Integer(a.toId));
  
+		/*
 		if (toX == -1) {
 			endX = diag.xa;   
 		}
@@ -92,7 +104,7 @@ public class Arrow implements ActionListener {
 			endY = diag.ya;
 		else
 			endY = toY;
- 
+		 */
 		g.setColor(Color.GRAY);
 
 		Stroke stroke = ((Graphics2D)g).getStroke();
@@ -126,24 +138,27 @@ public class Arrow implements ActionListener {
 		fy = fromY;
 		 
 		if (bends != null) {
+			boolean capDrawn = false;
+			int segno = 0;
 			for (Bend bend : bends) {
 				tx = bend.x;
 				ty = bend.y;
 				if (!dropOldest)
 					g.drawLine(fx, fy, tx, ty);
 				else {
-					Shape shape = new Line2D.Double(fx, fy, tx, ty);
+					Shape shape = (Shape) new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
 					shape = zzstroke.createStrokedShape(shape);
 					((Graphics2D)g).draw(shape);					
 				}
 				
-				if (capacity > 0) {
+				if (capacity > 0 && segno == bends.size() / 2 && !capDrawn) {
 					
 					int x = (fx + tx) / 2;
 					int y = (fy + ty) / 2;
 					String s = "(" + capacity + ")";
 					x -= s.length() / 2;
 					g.drawString(s, x, y + 12);
+					capDrawn = true;
 				}	
 
 				if (bend.marked) {
@@ -155,13 +170,13 @@ public class Arrow implements ActionListener {
 				calcLimits(fx, tx, fy, ty);
 				fx = tx;
 				fy = ty;
-				
+				segno++;
 			}
 		} else  
 			if (capacity > 0) {
 				
-				int x = (fx + endX) / 2;
-				int y = (fy + endY) / 2;
+				int x = (fx + toX) / 2;
+				int y = (fy + toY) / 2;
 				String s = "(" + capacity + ")";
 				x -= s.length() * driver.gFontWidth / 2;
 				g.drawString(s, x, y + 12);
@@ -169,12 +184,12 @@ public class Arrow implements ActionListener {
 				
 			}
 		 
-		tx = endX;
-		ty = endY;
+		tx = toX;
+		ty = toY;
 		calcLimits(fx, tx, fy, ty);
 		
 
-		int x = endX;
+		int x = toX;
 		if (to != null && endsAtBlock && to.multiplex) {
 			String s = to.mpxfactor;
 			if (s == null)
@@ -193,7 +208,7 @@ public class Arrow implements ActionListener {
 		if (!dropOldest)
 			g.drawLine(fx, fy, tx, ty);
 		else {
-			Shape shape = new Line2D.Double(fx, fy, tx, ty);
+			Shape shape = new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
 			shape = zzstroke.createStrokedShape(shape);
 			((Graphics2D)g).draw(shape);
 			// g.setStroke(stroke);
@@ -231,7 +246,7 @@ public class Arrow implements ActionListener {
 			if (upStreamPort != null
 					&& (from instanceof ProcessBlock || from instanceof Enclosure || from instanceof ExtPortBlock)) {
 				if (upStreamPort.equals("*")) {
-					drawCircleFrom(g, fromX, fromY, endX, endY, Color.BLUE, 8);
+					drawCircleFrom(g, fromX, fromY, toX, toY, Color.BLUE, 8);
 					
 				} else if (from.visible) {
 					g.setColor(Color.BLUE);
@@ -632,28 +647,7 @@ public class Arrow implements ActionListener {
 							"Capacity must be numeric", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				/*
-				if (capLegend == null) {
-					diag.xa = 2;  // get around fudge in DrawFBP
-					diag.ya = 2;  // get around fudge in DrawFBP
-					capLegend = (LegendBlock) diag.driver.createBlock(
-							Block.Types.LEGEND_BLOCK, false);
-
-					int x = toX;
-					int y = toY;
-					if (bends != null) {
-						Bend bd = bends.peek();
-						x = bd.x;
-						y = bd.y;
-					}
-
-					capLegend.cx = (fromX + x) / 2;
-					capLegend.cy = (fromY + y) / 2 + 20;
-					if (fromX == x)
-						capLegend.cx -= 20;
-				}
-				capLegend.description = "(" + capacity + ")";
-				*/
+				
 			}
 			driver.frame.repaint();
 			diag.changed = true;
@@ -709,7 +703,7 @@ public class Arrow implements ActionListener {
 			return;
 			
 		} else if (s.equals("Add Extra Arrowhead")) {
-			Point p = new Point(driver.curx, driver.cury);
+			Point2D p = new Point2D((double)driver.curx, (double)driver.cury);
 			int fx = fromX;
 			int fy = fromY; 
 			int tx, ty;			
@@ -717,8 +711,9 @@ public class Arrow implements ActionListener {
 				for (Bend bend : bends) {
 					tx = bend.x;
 					ty = bend.y;
-					if (DrawFBP.pointInLine(p, fx, fy, tx, ty)) {
+					if (driver.pointInLine(p, fx, fy, tx, ty)) {
 						extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);
+						diag.changed = true;
 						return;
 					}
 					fx = tx;
@@ -727,7 +722,7 @@ public class Arrow implements ActionListener {
 			}
 			tx = toX;
 			ty = toY;
-			if (DrawFBP.pointInLine(p, fx, fy, tx, ty)) 
+			if (driver.pointInLine(p, fx, fy, tx, ty)) 
 				extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);	
 			diag.changed = true;
 			driver.frame.repaint();
@@ -902,9 +897,9 @@ public class Arrow implements ActionListener {
 	        this.wavelength = wavelength;
 		}
 
-		public Shape createStrokedShape( Shape shape ) {
+		public Shape createStrokedShape(Shape shape ) {
 			GeneralPath result = new GeneralPath();
-			PathIterator it = new FlatteningPathIterator( shape.getPathIterator( null ), FLATNESS );
+			PathIterator it = new FlatteningPathIterator(((Shape) shape).getPathIterator( null ), FLATNESS );
 			float points[] = new float[6];
 			float moveX = 0, moveY = 0;
 			float lastX = 0, lastY = 0;
@@ -962,6 +957,7 @@ public class Arrow implements ActionListener {
 		}
 
 	}
+	
 class Arrowhead {
 	int fx, fy, toX, toY;	
 		
