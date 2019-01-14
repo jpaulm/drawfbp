@@ -73,12 +73,14 @@ DrawFBP can be executed directly by executing its .jar file.  You can download i
 
 DrawFBP has been compiled to run on Java 1.7 (contrary to the comment in the Dec. 14 commit!).
 
+As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be located from Maven Central, by doing a search for artifact `math.geom2d`; after downloading, for Eclipse you can then update your project Properties/Build Path entry to specify its location.
+
 If you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and enter 
 
     java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
     java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
     
-From v2.15.10 onwards, you will need to position to the folder containing DrawFBP, and enter the following (assuming `javaGeom-0.11.1` is in the root directory for `drawfbp`):    
+From v2.15.10 onwards, you will need to position to the DrawFBP folder, and enter the following (assuming `javaGeom-0.11.1` is in the root directory for DrawFBP):    
 
     java -cp 'javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar' com.jpaulmorrison.graphics.DrawFBP
     
@@ -99,11 +101,6 @@ JavaHelp facility
 DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the `javahelp.jar` file.  This is the standard JavaHelp jar file, and can be obtained from Maven Central, by doing a search for artifact `javahelp`, or from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar , which has the same contents.
 
 From then on, DrawFBP will remember the location of your DrawFBP-Help.jar file in your `DrawFBPProperties.xml` file.
-
-"math.geom2d" jar file
----
-
-As of Release v2.15.10, DrawFBP requires this jar file.  Download it from Maven Central, by doing a search for artifact `math.geom2d`, and update your project Properties/Build Path entry to specify its location.
 
 XML Schema for `.drw` files
 ---
