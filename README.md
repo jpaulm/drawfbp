@@ -87,12 +87,12 @@ As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be 
 
 - if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and enter 
 
-    java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
-    java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
+        java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
+        java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
     
 - from v2.15.10 onwards, to run from the command line, you will need to position to your DrawFBP folder, and enter the following (assuming `javaGeom-0.11.1` is in the root directory for DrawFBP):    
 
-    java -cp 'javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar' com.jpaulmorrison.graphics.DrawFBP
+        java -cp 'javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar' com.jpaulmorrison.graphics.DrawFBP
     
 Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes filled in, you will have to reaccess the component classes, as the naming conventions have changed.
 
