@@ -5,7 +5,9 @@ Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
 #### Latest release is v2.15.9.  This jar file is now available and can be obtained by searching Maven for "drawfbp" (without quotes), or by looking in Releases. 
 
-As of Release v2.15.10 (under construction), DrawFBP requires the "math.geom2d" jar file - see below.
+#### v2.15.10 is in pre-release status.
+
+As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file - see below.
 
 Description
 -----------
@@ -30,6 +32,12 @@ Six Youtube videos are currently available showing how to use DrawFBP, for drawi
 - https://www.youtube.com/watch?v=F0lKQpIjfVE
 - https://www.youtube.com/watch?v=5brTDk8cpNo
 - https://youtu.be/IvTAexROKSA  (simple interactive systems using WebSockets, with demo of JavaFBP-WebSockets - JavaFBP and HTML5)
+
+#### Installing DrawFBP
+
+- Obtain the jar file `drawfbp-x.y.z.jar`, save it.
+- (As of v2.15.10) obtain jar file `math.geom2d`, save it.
+- Run under Eclipse, or run as described below under "Running DrawFBP".
 
 #### Getting Started
 
@@ -73,14 +81,18 @@ DrawFBP can be executed directly by executing its .jar file.  You can download i
 
 DrawFBP has been compiled to run on Java 1.7 (contrary to the comment in the Dec. 14 commit!).
 
-If you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and enter 
+As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`; after downloading:
 
-    java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
-    java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
+- for Eclipse you can then update your project Properties/Build Path entry to specify its location.
+
+- if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and enter 
+
+        java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
+        java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
     
-From v2.15.10 onwards, you will need to position to the folder containing DrawFBP, and enter the following (assuming `javaGeom-0.11.1` is in the root directory for `drawfbp`):    
+- from v2.15.10 onwards, to run from the command line, you will need to position to your DrawFBP folder, and enter the following (assuming `javaGeom-0.11.1` is in the root directory for DrawFBP):    
 
-    java -cp 'javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar' com.jpaulmorrison.graphics.DrawFBP
+        java -cp 'javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar' com.jpaulmorrison.graphics.DrawFBP
     
 Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes filled in, you will have to reaccess the component classes, as the naming conventions have changed.
 
@@ -99,11 +111,6 @@ JavaHelp facility
 DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the `javahelp.jar` file.  This is the standard JavaHelp jar file, and can be obtained from Maven Central, by doing a search for artifact `javahelp`, or from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar , which has the same contents.
 
 From then on, DrawFBP will remember the location of your DrawFBP-Help.jar file in your `DrawFBPProperties.xml` file.
-
-"math.geom2d" jar file
----
-
-As of Release v2.15.10, DrawFBP requires this jar file.  Download it from Maven Central, by doing a search for artifact `math.geom2d`, and update your project Properties/Build Path entry to specify its location.
 
 XML Schema for `.drw` files
 ---
