@@ -84,7 +84,7 @@ To run from the command line, enter
         java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
         java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
 
-As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`.  After downloading:
+As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for v2.15.10 in drawfbp/Releases.  After downloading:
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
