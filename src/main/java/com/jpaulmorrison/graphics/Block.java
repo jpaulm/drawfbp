@@ -186,7 +186,7 @@ public class Block implements ActionListener {
 
 		String name = null;
 		if (diag.diagLang != null
-				&& diag.diagLang.label.equals("Java")) {
+				&& (diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#"))) {
 			if (javaClass != null) {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
@@ -1271,9 +1271,10 @@ public class Block implements ActionListener {
 					diag.jpm.add(menuItem3);
 						
 					menuItem1.setEnabled(diag.diagLang != null && 							
-						diag.diagLang.label.equals("Java"));
+						(diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#")));
 					menuItem2.setEnabled(menuItem1.isEnabled());
-					menuItem3.setEnabled(menuItem1.isEnabled());
+					menuItem3.setEnabled(diag.diagLang != null && 							
+							diag.diagLang.label.equals("Java")); 
 											
 					diag.jpm.addSeparator();
 					menuItem = new JMenuItem(
@@ -1397,6 +1398,7 @@ public class Block implements ActionListener {
 
 		if (s.equals("Choose Component/Subnet Class")) {
 			
+			/*
 			if (codeFileName != null) {
 				if (!(codeFileName.toLowerCase().endsWith(".java"))) {
 					if (MyOptionPane.YES_OPTION != MyOptionPane
@@ -1410,6 +1412,7 @@ public class Block implements ActionListener {
 					codeFileName = null;
 				}
 			}
+			*/
 			try {
 				selectJavaClass();
 			} catch (MalformedURLException e1) {

@@ -816,15 +816,17 @@ public class Arrow implements ActionListener {
 	
 
 	Arrow findLastArrowInChain() {
-		if (endsAtBlock || !endsAtLine)
+		if (endsAtBlock)  
 			return this;
+		if (!endsAtLine)
+			return null;
 
-		int id = toId; // not a block, so toId must be a line ID
+		int id = toId; // toId not a block, so toId must be a line ID
 		Arrow a = null;		
 		while (true) {
 			if (id == -1)  			
-				break;				
-			 
+				return null;
+			
 			for (Arrow arrow : diag.arrows.values()) {
 				if (id == arrow.id) {
 					a = arrow;
@@ -833,15 +835,13 @@ public class Arrow implements ActionListener {
 				}
 			}
 			if (a == null)  
-				break;			 
+				return a;			 
 			
 			if (a.endsAtBlock)
 				return a;
+			
 			id = a.toId;
 		}
-
-		return a;
-
 	}
 	
 	boolean checkSides() {

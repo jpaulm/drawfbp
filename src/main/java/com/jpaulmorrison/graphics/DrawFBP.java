@@ -3064,11 +3064,11 @@ void chooseFonts(MyFontChooser fontChooser){
 	boolean pointInLine(Point2D p, int fx, int fy, int tx, int ty){
 		Line2D line = new Line2D((double) fx, (double) fy, (double) tx, (double) ty);
 		double d = 0.0;
-		//try {
+		try {
 		d = line.distance(p);
-		//} catch (DegeneratedLine2DException e) {
+		} catch (DegeneratedLine2DException e) {
 			
-		//}
+		}
 		
 		return d < 4;
 	}
@@ -3081,11 +3081,11 @@ void chooseFonts(MyFontChooser fontChooser){
 		Line2D line = new Line2D(x1, y1, x2, y2);
 		Point2D p = new Point2D(xp, yp);
 		double d = 0.0;
-		//try {
+		try {
 		    d = line.distance(p);
-		//} catch (DegeneratedLine2DException e) {
+		} catch (DegeneratedLine2DException e) {
 			
-		//}
+		}
 		return d < 4.0;
 	}
 
@@ -3936,8 +3936,9 @@ void chooseFonts(MyFontChooser fontChooser){
 				
 				Point2D point = new Point2D((double)xp, (double)yp);
 				
-				StraightLine2D perp = line.perpendicular(point);
-				point = line.intersection(perp);
+				//StraightLine2D perp = line.perpendicular(point);
+				StraightLine2D open = new StraightLine2D(xp, yp, arr.toX - xp, arr.toY - yp);
+				point = line.intersection(open);
 				if (point != null) {
 					arr.toX = (int) point.x();
 					arr.toY = (int) point.y();
@@ -4636,7 +4637,7 @@ void chooseFonts(MyFontChooser fontChooser){
 				foundBlock = null;
 				// curDiag.changed = true;
 				Arrow arr = arrowEndForDragging;
-
+										
 				for (Block block : curDiag.blocks.values()) {
 					if (arr.tailMarked) {
 						arr.fromId = -1;
@@ -4645,6 +4646,7 @@ void chooseFonts(MyFontChooser fontChooser){
 							break;
 						}
 					}
+					FoundPoint fp; 
 					if (arr.headMarked) {
 						arr.toId = -1;
 						if (null != touches(block, arrowEndForDragging.toX,
@@ -4652,26 +4654,28 @@ void chooseFonts(MyFontChooser fontChooser){
 							arr.toId = block.id;
 							arr.endsAtBlock = true;
 							arr.endsAtLine = false;
+							arr.toX = arrowEndForDragging.toX;
+							arr.toY = arrowEndForDragging.toY;
+							break;
+						}
+						else if (null != (fp = findArrow(arrowEndForDragging.toX,
+								arrowEndForDragging.toY))){
+							arr.toId = fp.arrow.id;
+							arr.endsAtBlock = false;
+							arr.endsAtLine = true;
+							arr.toX = arrowEndForDragging.toX;
+							arr.toY = arrowEndForDragging.toY;
 							break;
 						}
 					}
 				}
-				
-				/*
-				Arrow arrow = null;
-				
-				// check if line touches line (arrow)
-				
-				if (null != (arrow = curDiag.matchArrow(xa, ya))) {
-					arrow.toX = xa;
-					arrow.toY = ya;
-					arrow.toId = arrow.id;
-					arrow.endsAtLine = true;
-					arrow.endsAtBlock = false;					
+				if (arr.toId == -1 || arr.fromId == -1) {
+					arr.toX = -1;
 				}
-				*/ 
+				
 				arr.tailMarked = false;
 				arr.headMarked = false;
+				
 				arrowEndForDragging = null;
 				curDiag.changed = true;
 				repaint();
