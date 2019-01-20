@@ -90,7 +90,7 @@ As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be 
 
 - if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and add `javaGeom-0.11.1` to your classpath, as follows (assuming `javaGeom-0.11.1` is in the root directory for DrawFBP):    
 
-        java -cp 'javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar' com.jpaulmorrison.graphics.DrawFBP
+        java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar" com.jpaulmorrison.graphics.DrawFBP
         
 - if you want access to the Java annotations of your components, add the jar file(s) containing them (JavaFBP and possibly others) to the list, or to the project Properties/Build Path (for Eclipse). 
 
