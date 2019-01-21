@@ -635,6 +635,7 @@ public class Block implements ActionListener {
 			}  catch (ClassNotFoundException e) {
 				
 			}
+			
 			/*
 			System.out.println("Classloader of class:"
 			        + cls.getClassLoader());
@@ -654,8 +655,11 @@ public class Block implements ActionListener {
 						"Class superclass is Object", MyOptionPane.ERROR_MESSAGE);				
 				return null;
 			}
-			if (cs == null || !(cs.getCanonicalName().equals(compClass.getCanonicalName())  ||
-					!cs.getCanonicalName().equals(subnetClass.getCanonicalName()))) {
+			if (cs == null)
+				return null;
+			String superCls = cs.getCanonicalName();
+			if (!(superCls.equals(compClass.getCanonicalName())  ||
+					superCls.equals(subnetClass.getCanonicalName()))) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Class file not a valid FBP component or subnet", MyOptionPane.ERROR_MESSAGE);				
 				return null;
@@ -911,6 +915,8 @@ public class Block implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = ROWSIZE;
+		if (description == null)
+			description = " ";
 		String desc = description.replace('\n',  ' '); 
 		JTextField tfd = new JTextField(" " + desc + " ");
 		Font ft = tfd.getFont();
