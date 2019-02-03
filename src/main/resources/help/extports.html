@@ -35,6 +35,8 @@ operations that can be performed on it.&nbsp; These are the following:<br>
 <ul style="color: rgb(0, 153, 0);">
   <li>"Edit Item" <span style="color: rgb(0, 0, 0);"></span><br>
   </li>
+  <li>Toggle Substream Sensitive / Normal </li>
+  <li>Toggle Visible/Invisible </li>
   <li>"Delete" </li>
 </ul>
 <p>An External Port can be connected by arrows to any block type - see
@@ -52,5 +54,17 @@ entered together, but separated by a colon, as follows:<br>
 </div>
 <br>
 <br>
+<h3 style="color: rgb(0, 0, 153);">Edit Subnet Port Name (deprecated)</h3>
+<p>The user will be prompted to enter the subnet port name.</p>
+<h3 style="color: rgb(0, 0, 153);">Toggle Substream Sensitivity (deprecated)</h3>
+<p>Substream sensitivity is related to the idea that in FBP a subnet can be set up to process a substream as if it
+were a complete stream, closing down at end of substream, rather than having to wait for the whole stream to be processed. </p> 
+<p> In this case, this subnet port will cause the subnet to see end of stream, resulting in the usual wave of close-downs through the network.  
+This is the only situation in FBP where processes can be closed down, and then restarted.</p>
+<p>Subnet port symbols with substream sensitivity enabled will be marked with an "SS".</p>  
+<h3 style="color: rgb(0, 0, 153);">Toggle Visible/Invisible</h3>
+<p>Self-explanatory.</p>
+<h3 style="color: rgb(0, 0, 153);">Delete</h3>
+<p>Self-explanatory.</p>
 </body>
 </html>

@@ -262,7 +262,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 					String s = cleanDesc(block);
 					
-					String c = "Invalid class"; 
+					String c = "\"Invalid class\""; 
+					error = true;
 					 
 					if (block.javaClass == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
@@ -545,7 +546,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		if (className == null)
 			className = "????";
 		if (lang.equals("Java")) {
-			if (!(className.equals("Invalid class")))
+			if (!(className.equals("\"Invalid class\"")))
 				className += ".class";
 			return "component(\"" + name + "\"," + className + ")";
 		}
