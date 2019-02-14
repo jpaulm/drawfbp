@@ -37,7 +37,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 
-version = '2.15.10'
+version = '2.16.1'
 
 group = 'com.jpaulmorrison'
 
@@ -129,7 +129,7 @@ task writeNewPom << {
             groupId 'com.jpaulmorrison'
             artifactId 'drawfbp'
 
-            version '2.15.10'
+            version '2.16.1'
 
         
             inceptionYear '2016'
@@ -168,7 +168,7 @@ uploadArchives {
         // optionally artifactId can be defined here         
         url 'https://github.com/jpaulm/drawfbp'
 
-        version '2.15.10'
+        version '2.16.1'
         
         scm {
           connection 'scm:git:https://github.com/jpaulm.git'

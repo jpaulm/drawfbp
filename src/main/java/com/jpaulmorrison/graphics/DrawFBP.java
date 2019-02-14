@@ -890,7 +890,7 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Display Generated Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		/*
+		 
 		fileMenu.addSeparator();		
 		compMenu = new JMenuItem("Compile Code");	
 		compMenu.setEnabled(currLang != null &&
@@ -905,7 +905,7 @@ public class DrawFBP extends JFrame
 		runMenu.setBorderPainted(true);		
 		fileMenu.add(runMenu);  		
 		runMenu.addActionListener(this);
-		*/
+		 
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Generate .fbp code");
 		fileMenu.add(menuItem);
@@ -1995,7 +1995,7 @@ public class DrawFBP extends JFrame
 				
 		menuItem1.setEnabled(currLang.label.equals("Java"));  
 		menuItem2.setEnabled(currLang.label.equals("Java")); 
-		//compMenu.setEnabled(currLang.label.equals("Java")); 
+		compMenu.setEnabled(currLang.label.equals("Java")); 
 		
 		fileMenu.remove(gNMenuItem); 
 		
