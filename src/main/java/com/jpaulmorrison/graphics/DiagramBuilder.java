@@ -452,7 +452,7 @@ public class DiagramBuilder {
 		//	b.checkArrows();
 		//}
 		if (diag.diagLang == null) {
-			diag.diagLang = driver.defaultCompLang;
+			diag.diagLang = driver.currLang;
 			diag.changed = true;
 		} 
 		//else {

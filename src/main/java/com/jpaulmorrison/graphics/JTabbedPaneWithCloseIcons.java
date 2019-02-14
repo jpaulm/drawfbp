@@ -39,12 +39,12 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 				    	
 				    driver.properties
 						.put("currentDiagramDir", currentDiagramDir.getAbsolutePath());  
-				    driver.propertiesChanged = true;  
+				    //driver.propertiesChanged = true;  
 				}
 
 				 
 				if (driver.curDiag != null && driver.curDiag.diagLang != null && 
-						driver.curDiag.diagLang != driver.defaultCompLang) {
+						driver.curDiag.diagLang != driver.currLang) {
 					driver.changeLanguage(driver.curDiag.diagLang);
 				}
 				 

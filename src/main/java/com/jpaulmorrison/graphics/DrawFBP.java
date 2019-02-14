@@ -40,14 +40,10 @@ import java.net.*;
 import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
-//import com.jpaulmorrison.graphics.DrawFBP.Side;
 
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-//import javax.help.*;
 
 public class DrawFBP extends JFrame
 		implements
@@ -107,7 +103,7 @@ public class DrawFBP extends JFrame
 	Font fontg = null;
 
 	float defaultFontSize;
-	GenLang defaultCompLang;
+	GenLang currLang;
 
 	static double scalingFactor;
 	//int xTranslate = 0; // 400;
@@ -115,7 +111,7 @@ public class DrawFBP extends JFrame
 
 	BasicStroke bs;
 
-	boolean propertiesChanged = false;
+	//boolean propertiesChanged = false;
 
 	ImageIcon favicon = null;
 	// String zipFileName;
@@ -222,6 +218,7 @@ public class DrawFBP extends JFrame
 	JMenuItem[] gMenu = null;
 	JMenuItem menuItem1 = null;
 	JMenuItem menuItem2 = null;
+	JMenuItem compMenu = null;
 	JTextField jtf = new JTextField();
 	
 	boolean allFiles = false;
@@ -405,12 +402,12 @@ public class DrawFBP extends JFrame
 		//if (dcl.equals("NoFlo"))    // transitional!
 		//	dcl = "JSON";
 		if (dcl == null) {
-			defaultCompLang = findGLFromLabel("Java");
-			propertiesChanged = true;
+			currLang = findGLFromLabel("Java");
+			//propertiesChanged = true;
 		} else {
 			if (dcl.equals("NoFlo"))    // transitional!
 				dcl = "JSON";
-			defaultCompLang = findGLFromLabel(dcl);			
+			currLang = findGLFromLabel(dcl);			
 
 		}
 		
@@ -812,12 +809,12 @@ public class DrawFBP extends JFrame
 		return image;
 	}
 
-	public void createMenuBar() throws IOException {
+	public JMenuBar createMenuBar() {
 
 		//JMenu editMenu;
 
 		// Create the menu bar.
-		menuBar = new JMenuBar();
+		JMenuBar menuBar = new JMenuBar();
 		// menuBar.add(Box.createRigidArea(new Dimension(20, 0)));
 		// menuBar.setColor(new Color(200, 255, 255));
 
@@ -893,38 +890,39 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Display Generated Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		/*
+		fileMenu.addSeparator();		
+		compMenu = new JMenuItem("Compile Code");	
+		compMenu.setEnabled(currLang != null &&
+				 currLang.label.equals("Java"));
+		compMenu.setMnemonic(KeyEvent.VK_C);		
+		compMenu.setBorderPainted(true);		
+		fileMenu.add(compMenu);  		
+		compMenu.addActionListener(this);
+		
+		JMenuItem runMenu = new JMenuItem("Run Java Code");		
+		runMenu.setMnemonic(KeyEvent.VK_R);		
+		runMenu.setBorderPainted(true);		
+		fileMenu.add(runMenu);  		
+		runMenu.addActionListener(this);
+		*/
 		fileMenu.addSeparator();
-		//JMenuItem runMenu = new JMenuItem("Run Command");
-		
-		//runMenu.setMnemonic(KeyEvent.VK_R);		
-		//runMenu.setBorderPainted(true);		
-		//fileMenu.add(runMenu);  		
-		//runMenu.addActionListener(this);		
-		
-		//fileMenu.addSeparator();
 		menuItem = new JMenuItem("Generate .fbp code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
-		//if (curDiag != null
-		//		&&curDiag.diagLang != null
-		//		&& curDiag.diagLang.label.equals("Java")){
+		
 		menuItem1 = new JMenuItem("Locate JavaFBP Jar File");
-		if (defaultCompLang == null
-				|| !( defaultCompLang.label.equals("Java")))  
-			menuItem1.setEnabled(false);  
-		else
-			menuItem1.setEnabled(true); 
+		
+		menuItem1.setEnabled(currLang != null &&
+				 currLang.label.equals("Java"));
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
 
 		menuItem2 = new JMenuItem("Add Additional Component Jar File");
-		if (defaultCompLang == null
-				|| !( defaultCompLang.label.equals("Java")))  
-			menuItem2.setEnabled(false);  
-		else
-			menuItem2.setEnabled(true); 
+		menuItem2.setEnabled(currLang != null &&
+				 currLang.label.equals("Java"));
 		fileMenu.add(menuItem2);
 		menuItem2.addActionListener(this);
 
@@ -1005,10 +1003,10 @@ public class DrawFBP extends JFrame
 		box0.add(jfv);
 		menuBar.add(box0);
 
-		jtf.setText("Diagram Language: " + defaultCompLang.showLangs());
+		jtf.setText("Diagram Language: " + currLang.showLangs());
 		jtf.setFont(fontg);
 		jtf.setEditable(false);
-		
+				
 		//jtf.setBackground(slateGray1);
 		//jfl.setBackground(slateGray1);
 		 
@@ -1032,7 +1030,7 @@ public class DrawFBP extends JFrame
 		menuBar.setVisible(true);
 		repaint();
 
-		return;
+		return menuBar;
 	}
 
 	void getNewDiag() {
@@ -1054,6 +1052,7 @@ public class DrawFBP extends JFrame
 			
 		return;
 	}
+	
 
 	@SuppressWarnings("rawtypes")
 	public void actionPerformed(ActionEvent e) {
@@ -1111,12 +1110,12 @@ public class DrawFBP extends JFrame
 			if (e.getSource() == gMenu[j]) {
 				GenLang gl = genLangs[j];
 								
-				defaultCompLang = gl;
+				currLang = gl;
 
-				properties.put("defaultCompLang", defaultCompLang.label);
-				propertiesChanged = true;
-				if (curDiag != null && curDiag.diagLang != defaultCompLang) {
-					curDiag.diagLang = defaultCompLang;
+				properties.put("defaultCompLang", currLang.label);
+				//propertiesChanged = true;
+				if (curDiag != null && curDiag.diagLang != currLang) {
+					curDiag.diagLang = currLang;
 					curDiag.changed = true;
 				}
 				changeLanguage(gl);
@@ -1124,7 +1123,7 @@ public class DrawFBP extends JFrame
 				MyOptionPane.showMessageDialog(
 						frame,
 						"Language group changed to "
-								+ defaultCompLang.showLangs());
+								+ currLang.showLangs());
 				frame.repaint();
 
 				return;
@@ -1216,13 +1215,12 @@ public class DrawFBP extends JFrame
 			return;
 		}
 		
-		/*
-		if (s.equals("Run Code")) {
+		 
+		if (s.equals("Compile Code")) {
 
 			File cFile = null;
 			GenLang gl = curDiag.diagLang;
-
-			// String ss = properties.get("currentImageDir");
+			
 			String ss = properties.get(gl.netDirProp);
 			File genDir = null;
 			if (ss == null)
@@ -1231,7 +1229,7 @@ public class DrawFBP extends JFrame
 				genDir = new File(ss);
 
 			MyFileChooser fc = new MyFileChooser(genDir,
-					curDiag.fCPArr[GENCODE], frame);
+					curDiag.fCPArr[GENCODE]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -1240,139 +1238,182 @@ public class DrawFBP extends JFrame
 				cFile = new File(getSelFile(fc));
 			}
 			// }
-			if (cFile == null)
-				return;
+			if (cFile == null || !(cFile.exists()))
+				return;			
+		
+			
+			String srcDir = cFile.getAbsolutePath();
+			srcDir = srcDir.replace('\\', '/');
+			int j = srcDir.lastIndexOf("/");
+			
+			String progName = srcDir.substring(j + 1); 
+			
+			int k = srcDir.indexOf("/src");
+			srcDir = srcDir.substring(0, k + 4);	
 
-			if (!(cFile.exists()))
-				return;
-
-			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-			int result = compiler.run(null, null, null,
-			             cFile.getAbsolutePath());
-
+			String t = cFile.getAbsolutePath().substring(k + 5, j);
+			 
+			String clsDir = srcDir.replace("src", "bin");			
+						
+			new File(clsDir).mkdirs();
+			driver.properties.put("currentClassDir", clsDir);
+						 
+			Process proc = null;
+			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", "\"" + javaFBPJarFile + ";.\"", "-d", "\"" + clsDir + "\"", 
+					 "-sourcepath", "\"" + srcDir + "\"",  "\"" + t + "/" + progName + "\"");			
+							
+			pb.directory(new File(srcDir));			
+			
+			pb.redirectErrorStream(true); 			
+			
+			int i = 0;
+			try {
+				proc = pb.start();
+			
+			BufferedReader br=new BufferedReader(
+		            new InputStreamReader(
+		               proc.getInputStream()));
+		            String line;
+		            while((line=br.readLine())!=null){
+		               System.out.println(line);
+		               //System.out.flush();
+		            }
+			}
+			catch (NullPointerException npe){
+				i = 1;
+			}
+			catch (IOException ioe){
+				i = 2;
+			}
+			catch (IndexOutOfBoundsException iobe){
+				i = 3;
+			}
+			catch (SecurityException se){
+				i = 4;
+			}
+			if (proc != null) {
+				try {
+					proc.waitFor();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			proc.destroy();
+			int u = proc.exitValue();
+			
+			if (u == 0)
+				MyOptionPane.showMessageDialog(frame,
+					"Program compiled - " + srcDir + "/" + t + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
+			else
+				MyOptionPane.showMessageDialog(frame,
+						"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + "/" + progName + ".java", MyOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
-		*/		
-			
-		// Run Command temporarily disabled
+	 	
 		
-		if (s.equals("Run Command")) {
-			String command = "";
-			readPropertiesFile();
-			if (null == (command = properties.get("runCommand")))
-				command = "echo Enter command";
+		if (s.equals("Run Java Code")) {
+		
+			File cFile = null;
+			GenLang gl = curDiag.diagLang;
+			
+			String ss = properties.get("currentClassDir");
+			File clsDir = null;
+			if (ss == null)
+				clsDir = new File(System.getProperty("user.home"));
+			else
+				clsDir = new File(ss);
 
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-					"Enter or change text", "Command with no diagram name",
-					MyOptionPane.PLAIN_MESSAGE, null, null, command);
+			MyFileChooser fc = new MyFileChooser(clsDir,
+					curDiag.fCPArr[CLASS]);
+			
+			int returnVal = fc.showOpenDialog();
 
-			if (ans != null && ans.length() > 0) {
-				command = ans;
-
-				properties.put("runCommand", command);
-				propertiesChanged = true;
+			cFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+				ss = getSelFile(fc);
+				cFile = new File(ss);
 			}
-			Process p = null;
-			String realCommand = "";
-			if ((System.getProperty("os.name")).startsWith("Windows"))
-				realCommand += "cmd /c ";
-			realCommand += command;
-			String jSONNetworkDir = null;
-			if (curDiag.title == null)
+			// }
+			if (cFile == null || !(cFile.exists()))
+				return;
+					
+			
+			//ss = cFile.getAbsolutePath();
+			ss = ss.replace('\\', '/');
+			int j = ss.lastIndexOf("/");
+			
+			String progName = ss.substring(j + 1); 
+			
+			ss = ss.substring(0, ss.length() - 6);     // drop .class suffix			
+			
+			int k = ss.indexOf("/bin");
+			clsDir = new File(ss.substring(0, k + 4));	
+
+			String t = ss.substring(k + 5, j);			
+			
+			clsDir.mkdirs();
+			driver.properties.put("currentClassDir", ss.substring(0, k + 4));
+			progName = progName.substring(0, progName.length() - 6);
+						 
+			Process proc = null;
+			ProcessBuilder pb = new ProcessBuilder("java", "-cp", "\"" + javaFBPJarFile + ";.\"",  
+					 "\"" + t + "/" + progName + "\"");			
+							
+			pb.directory(clsDir);			
+			
+			pb.redirectErrorStream(true); 			
+			
+			int i = 0;
+			try {
+				proc = pb.start();
+			
+			BufferedReader br=new BufferedReader(
+		            new InputStreamReader(
+		               proc.getInputStream()));
+		            String line;
+		            while((line=br.readLine())!=null){
+		               System.out.println(line);
+		               //System.out.flush();
+		            }
+			}
+			catch (NullPointerException npe){
+				i = 1;
+			}
+			catch (IOException ioe){
+				i = 2;
+			}
+			catch (IndexOutOfBoundsException iobe){
+				i = 3;
+			}
+			catch (SecurityException se){
+				i = 4;
+			}
+			if (proc != null) {
+				try {
+					proc.waitFor();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			proc.destroy();
+			int u = proc.exitValue();
+			
+			 
+			
+		
+			//int v = cFile.getAbsolutePath().indexOf("src");
+			//String z = cFile.getAbsolutePath().substring(v + 3);
+			if (u == 0)
 				MyOptionPane.showMessageDialog(frame,
-						"No diagram selected: executing command with no diagram JSON", MyOptionPane.ERROR_MESSAGE);
-			else {
-				if (null == (jSONNetworkDir = properties
-						.get("currentJSONNetworkDir"))) {
-					MyOptionPane.showMessageDialog(frame,
-							"Diagram selected but JSON directory missing: generate JSON from diagram \n"
-							+ "will prompt for JSON directory", MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				String fileName = jSONNetworkDir + File.separator + curDiag.title + ".json";
-				File file = new File(fileName);
-				if (!file.isFile()){
-					MyOptionPane.showMessageDialog(frame,
-							"JSON file for diagram does not exist: generate JSON from diagram", MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				realCommand += " " + fileName;				
-			}
-			
-			ans = (String) MyOptionPane.showInputDialog(driver.frame,
-					"Enter or change text", "Actual command",
-					MyOptionPane.PLAIN_MESSAGE, null, null, realCommand);
-
-			if (ans != null && ans.length() > 0) {
-				realCommand = ans;
-
-				//properties.put("runCommand", realCommand);
-				//propertiesChanged = true;
-			}
-			
-			try {
-				p = Runtime.getRuntime().exec(realCommand);
-
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			// final JEditorPane pane = new JEditorPane();
-
-			final JFrame jframe = new JFrame("Run Output");
-			final JEditorPane pane = new JEditorPane("text/plain", " ");
-			pane.setEditable(false);
-			JScrollPane scrollPane = new JScrollPane(pane);
-			jframe.add(scrollPane);
-			jframe.setVisible(true);
-			pane.setVisible(true);
-			scrollPane.setVisible(true);
-			pane.setFont(fontf);
-			jframe.setSize(600, 400);
-			jframe.setLocation(100, 50);
-			jframe.addWindowListener(new WindowAdapter() {
-
-				@Override
-				public void windowClosing(final WindowEvent ev) {
-					jframe.dispose();
-				}
-			});
-
-			MyRunnable r = new MyRunnable(pane) {
-				public void run() {
-					BufferedReader input = new BufferedReader(
-							new InputStreamReader(proc.getInputStream()));
-					String line = null;
-
-					try {
-						while ((line = input.readLine()) != null) {
-							try {
-								Document doc = pane.getDocument();
-								doc.insertString(doc.getLength(), line, null);
-							} catch (BadLocationException exc) {
-								exc.printStackTrace();
-							}
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			};
-
-			r.proc = p;
-			new Thread(r).start();
-
-			try {
-				r.proc.waitFor();
-			} catch (InterruptedException ev) {
-				// TODO Auto-generated catch block
-				ev.printStackTrace();
-			}
-
+					"Program completed - " + clsDir + "/" + t + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
+			else
+				MyOptionPane.showMessageDialog(frame,
+						"Program test failed, rc: " + u + " - " + clsDir + "/" + t + "/" + progName + ".java", MyOptionPane.INFORMATION_MESSAGE);
+			return;
 		}
-
+ 
 		if (s.equals("Clear Language Association")) {
 			curDiag.diagLang = null;
 			curDiag.changed = true;
@@ -1588,7 +1629,7 @@ public class DrawFBP extends JFrame
 
 			currentImageDir = new File(fFile.getParent());
 			properties.put("currentImageDir", fFile.getParent());
-			propertiesChanged = true;
+			//propertiesChanged = true;
 
 			//curDiag.imageFile = fFile;
 
@@ -1944,20 +1985,19 @@ public class DrawFBP extends JFrame
 	}
 	
 	void changeLanguage(GenLang gl) {
-		curDiag.diagLang = gl;
-		defaultCompLang = gl;
-		jtf.setText("Diagram Language: " +  gl.showLangs());
-		jtf.repaint();
-		if (!defaultCompLang.label.equals("Java")) {
-			menuItem1.setEnabled(false);  
-			menuItem2.setEnabled(false); 
-		}
-		else {
-			menuItem1.setEnabled(true); 
-			menuItem2.setEnabled(true); 
-		}
 		
-		fileMenu.remove(gNMenuItem);
+		curDiag.diagLang = gl;
+		properties.put("defaultCompLang", gl.label);
+		currLang = gl;
+		jtf.setText("Diagram Language: " +  gl.showLangs());
+		
+		jtf.repaint();
+				
+		menuItem1.setEnabled(currLang.label.equals("Java"));  
+		menuItem2.setEnabled(currLang.label.equals("Java")); 
+		//compMenu.setEnabled(currLang.label.equals("Java")); 
+		
+		fileMenu.remove(gNMenuItem); 
 		
 		String u = "Generate ";
 		if (curDiag != null)
@@ -2341,7 +2381,7 @@ public class DrawFBP extends JFrame
 		frame.setTitle("Diagram: " + curDiag.title);
 		properties
 				.put("currentDiagramDir", currentDiagramDir.getAbsolutePath());
-		propertiesChanged = true;
+		//propertiesChanged = true;
 
 		curDiag.changed = false;
 		frame.repaint();
@@ -2446,7 +2486,7 @@ public class DrawFBP extends JFrame
 		
 		if (gFontChanged) {
 			properties.put("generalFont", generalFont);
-			propertiesChanged = true;
+			//propertiesChanged = true;
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);			
@@ -2457,7 +2497,7 @@ public class DrawFBP extends JFrame
 
 		if (fFontChanged) {
 			properties.put("fixedFont", fixedFont);
-			propertiesChanged = true;
+			//propertiesChanged = true;
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
@@ -2508,7 +2548,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		adjustFonts();
 		//frame.repaint(); 
 		properties.put("defaultFontSize", Float.toString(defaultFontSize));
-		propertiesChanged = true;
+		//propertiesChanged = true;
 		MyOptionPane.showMessageDialog(frame, "Font size changed");
 		frame.repaint();
 		//repaint();
@@ -2599,12 +2639,9 @@ void chooseFonts(MyFontChooser fontChooser){
 		 */
 		// UIManager.put("Button.select", slateGray1);
 
-		try {
-			createMenuBar();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		menuBar = createMenuBar();
+		
 		frame.setJMenuBar(menuBar);
 
 		frame.repaint();
@@ -2823,7 +2860,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			javaFBPJarFile = cFile.getAbsolutePath();
 			properties.put("javaFBPJarFile", javaFBPJarFile);
 			
-			propertiesChanged = true;
+			//propertiesChanged = true;
 			MyOptionPane.showMessageDialog(frame,
 					"JavaFBP jar file location: " + cFile.getAbsolutePath(), MyOptionPane.INFORMATION_MESSAGE);
 			//jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
@@ -2890,7 +2927,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 			properties.put("additionalJarFiles", t);
 			
-			propertiesChanged = true;
+			//propertiesChanged = true;
 			
 		}
 		return true;
@@ -2921,7 +2958,7 @@ void chooseFonts(MyFontChooser fontChooser){
 			// diag.driver.currentDir = new File(cFile.getParent());
 			jhallJarFile = cFile.getAbsolutePath();
 			properties.put("jhallJarFile", jhallJarFile);
-			propertiesChanged = true;
+			//propertiesChanged = true;
 			MyOptionPane.showMessageDialog(frame, "DrawFBP Help jar file location: " + cFile.getAbsolutePath());
 			return true;
 		} else
@@ -3393,14 +3430,17 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		String showLangs() {
 			String s = "";
-			for (int i = 0; i < langs.length; i++) {
-				if (i == 1)
-					s += " (+ ";
-				if (i > 1)
-					s += ", ";
-				s += langs[i].language;
-				if (i > 0 && i == (langs.length - 1))
-					s += ")";
+			if (langs.length == 1)
+				s = langs[0].language;
+			else {
+
+				s = "(";
+				for (int i = 0; i < langs.length; i++) {
+					if (i > 0)
+						s += ", ";
+					s += langs[i].language;		
+				}
+				s += ")";
 			}
 			return s;
 		}
@@ -3799,10 +3839,13 @@ void chooseFonts(MyFontChooser fontChooser){
 			}
 			
 			String s = diag.desc;
-			if (s != null)
+			if (s != null){
+				if (s.trim().equals(""))
+					s = "(no description)";
 				s = s.replace('\n', ' ');
-			else 
-				s = " ";
+			}
+			//else 
+			//	s = "(no description)";
 			
 			diagDesc.setText(s);
 

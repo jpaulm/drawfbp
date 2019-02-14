@@ -177,18 +177,22 @@ public class CodeManager implements ActionListener, DocumentListener {
 			}
 		}
 
+		String w = diag.title;
+		if (w.endsWith(".drw"))
+			w = w.substring(0, w.length()-4);
+		
 		if (gl.label.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
 			if (packageName == null) {
-				packageName = "xxxxxx";
-				//packageName = (String) MyOptionPane.showInputDialog(dialog,
-				//		"Please fill in a package/namespace name", null);
-				//packageName = packageName.trim();
-				//driver.properties.put("currentPackageName", packageName);
+				packageName = (String) MyOptionPane.showInputDialog(dialog,
+						"Please fill in a package/namespace name", null);
+				packageName = packageName.trim();				
+				driver.properties.put("currentPackageName", packageName);
 				//driver.propertiesChanged = true;
 			}
 		}
-
+		
+		
 		String[] contents;
 		if (gl.label.equals("JSON")) {
 			contents = new String[1];
@@ -202,7 +206,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			} else
 				contents[0] = "namespace {";
 
-			contents[2] = "    // change this if you want \n";
+			contents[2] = " //change package name if desired\n";  
 
 			if (gl.label.equals("Java"))
 				contents[2] += "import com.jpaulmorrison.fbp.core.engine.*; \n";
@@ -214,9 +218,6 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 			contents[4] = "public class ";
 			
-			String w = diag.title;
-			if (w.endsWith(".drw"))
-				w = w.substring(0, w.length()-4);
 			contents[5] = w;
 			
 			if (gl.label.equals("Java"))
@@ -229,7 +230,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			else
 				contents[8] = " {\nstring description = ";
 			if (diag.desc == null)
-				diag.desc = " ";
+				diag.desc = "(no description)";
 			contents[9] = "\"" + diag.desc + "\"";
 			if (gl.label.equals("Java"))
 				contents[10] = ";\nprotected void define() { \n";
@@ -610,7 +611,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			String pkg = (String) driver.properties.get("currentPackageName");
 			if (pkg != null && !(pkg.equals(packageName))) {
 				driver.properties.put("currentPackageName", packageName);
-				driver.propertiesChanged = true;
+				//driver.propertiesChanged = true;
 			}
 		}
 
@@ -946,14 +947,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 		}
 
 		File file = null;
-		// if (diag.genCodeFileName != null)
-		// file = new File(diag.genCodeFileName);
-
-		// if (file == null)
-		// saveAs = true;
-		// if (saveAs)
+		
 		file = null;
 
+		// done during code save action
+		/*
 		if (diag.fCPArr[DrawFBP.GENCODE].fileExt.equals(".java")) {
 			try {
 				String t = doc.getText(0, doc.getLength());
@@ -978,7 +976,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				ble.printStackTrace();
 			}
 		}
-
+		 */
 		file = diag.genSave(file, diag.fCPArr[DrawFBP.GENCODE], fileString);
 
 		if (file == null) {
@@ -991,12 +989,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.properties.put(diag.diagLang.netDirProp, file.getParent());
-		driver.propertiesChanged = true;
+		//driver.propertiesChanged = true;
 		changed = false;
 
 		if (packageNameChanged) {
 			driver.properties.put("packageName", packageName);
-			driver.propertiesChanged = true;
+			//driver.propertiesChanged = true;
 		}
 
 		// diag.targetLang = gl.label;
@@ -1423,8 +1421,9 @@ public class CodeManager implements ActionListener, DocumentListener {
 			 * c.lastIndexOf("."); if (j > -1) c = c.substring(0, j); }
 			 */
 			int i = c.indexOf("!");
-			if (i > -1 && i < c.length() - 1)
-				c = c.substring(i + 1);
+			if (i > -1 && i < c.length() - 1) {				
+					c = c.substring(i + 1);				
+			}
 			if (c.toLowerCase().endsWith(".class"))
 				c = c.substring(0, c.length() - 6);
 		}

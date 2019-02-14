@@ -1779,8 +1779,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				//}
 			}
 			diag.diagFile = df;
-			diag.desc = df.getName(); 
-			diag.title = df.getName();
+			//diag.desc = df.getName(); 
+			//diag.title = df.getName();
 			driver.jtp.setSelectedIndex(diag.tabNum);
 			MyOptionPane.showMessageDialog(driver.frame,
 					"New subnet: fill in names for Ext Ports In and Out",
@@ -1942,7 +1942,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 					driver.properties.put("currentClassDir",
 							fp.getAbsolutePath());
-					driver.propertiesChanged = true;
+					//driver.propertiesChanged = true;
 					fullClassName = fp.getAbsolutePath() + "!"
 							+ javaClass.getName();
 
@@ -2063,7 +2063,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					codeFileName = cFile.getAbsolutePath();
 					driver.properties.put(gl.srcDirProp,
 							cFile.getParentFile().getAbsolutePath());
-					driver.propertiesChanged = true;
+					//driver.propertiesChanged = true;
 				}
 
 			}

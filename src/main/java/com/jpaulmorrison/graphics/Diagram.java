@@ -86,7 +86,7 @@ public class Diagram {
 		parent = null;
 		driver.grid.setSelected(clickToGrid);
 		//file = null;
-		diagLang = driver.defaultCompLang;
+		diagLang = driver.currLang;
 		for (int i = 0; i < fCPArr.length; i++){
 			fCPArr[i] = driver.fCPArray[i];
 		}
@@ -168,7 +168,7 @@ public class Diagram {
 		File currentDiagramDir = file.getParentFile();
 		driver.properties.put("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
-		driver.propertiesChanged = true;
+		//driver.propertiesChanged = true;
 
 		//if (!(file.getName().toLowerCase().endsWith(".drw"))) {
 		int i = diagramIsOpen(file.getAbsolutePath());
@@ -309,6 +309,7 @@ public class Diagram {
 					&& -1 != diagramIsOpen(newFile.getAbsolutePath()))
 				return null;
 
+			/*
 			//int response;
 			if (newFile.exists()) {
 				if (newFile.isDirectory()) {
@@ -328,6 +329,8 @@ public class Diagram {
 						 MyOptionPane.YES_NO_OPTION))) 
 					return null;
 			}
+			*/
+						
 			file = newFile;
 			
 			//	diagFile = file;
@@ -335,7 +338,8 @@ public class Diagram {
 			
 		}
 
-	 
+		// finished choosing file...
+		
 		if (fCP == fCPArr[DrawFBP.IMAGE]) {
 			Path path = file.toPath();
 			try {
@@ -351,8 +355,10 @@ public class Diagram {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//return file;
+			
 		} else {
+			
+			// if not image
 			if (fCP.fileExt.equals(".drw")) {
 				
 				fileString = readFile(file, saveAs);
@@ -367,8 +373,57 @@ public class Diagram {
 				}
 				fileString = buildFile();
 				//file = diagFile;
-			} else
+			} else {
+				
+				// if not .drw or image
 				fileString = (String) contents;
+				int s = fileString.indexOf("package ");  // if java
+				int t = fileString.substring(s + 8).indexOf(";");
+				String pkg = fileString.substring(s + 8, s + 8 + t);
+				String fs = file.getAbsolutePath();
+								
+				int v = fs.indexOf("\\src\\");
+				int w = fs.indexOf(title);
+				String pkg2 = fs.substring(v + 5, w - 1);
+				pkg2 = pkg2.replace('\\', '/');
+				pkg2 = pkg2.replace('/', '.');
+				if (!(pkg.equals(pkg2))) {
+					int ans = MyOptionPane.showConfirmDialog(driver.frame,"Package name in file: " + pkg + ",\n" +
+							"   suggested package name from file name is: " + pkg2 + ", \n   do you want to change old name?", "Change package?",
+							MyOptionPane.YES_NO_CANCEL_OPTION);
+					
+					if (ans != MyOptionPane.CANCEL_OPTION){	
+						if (ans == MyOptionPane.YES_OPTION){	
+							pkg = pkg2;
+							MyOptionPane.showMessageDialog(driver.frame,
+									"Package name changed: " + pkg);
+													
+						}
+						driver.properties.put("currentPackageName", pkg);
+						//driver.propertiesChanged = true;											
+					}
+					fileString = fileString.substring(0, s + 8) + pkg + fileString.substring(s + 8 + t);
+				}
+			}
+				if (newFile.exists()) {
+					if (newFile.isDirectory()) {
+						MyOptionPane.showMessageDialog(driver.frame, newFile.getName()
+								+ " is a directory", MyOptionPane.WARNING_MESSAGE);
+						return null;
+					}
+					if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+							driver.frame, "Overwrite existing file: " + newFile.getAbsolutePath()
+								+ "?", "Confirm overwrite",
+							 MyOptionPane.YES_NO_OPTION)))  
+				    	 return null;
+				} else {
+					if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+							driver.frame, "Create new file: " + newFile.getAbsolutePath()
+							+ "?", "Confirm create",
+							 MyOptionPane.YES_NO_OPTION))) 
+						return null;
+				}
+			//}
 
 			writeFile(file, fileString);
 			
@@ -449,7 +504,7 @@ public class Diagram {
 		driver.properties.put("width", t);
 		t = Integer.toString(driver.frame.getHeight());
 		driver.properties.put("height", t);
-		driver.propertiesChanged = true;
+		//driver.propertiesChanged = true;
 		
 		return res;
 
