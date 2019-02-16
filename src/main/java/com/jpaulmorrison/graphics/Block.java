@@ -540,7 +540,7 @@ public class Block implements ActionListener {
 		
 		File f = new File(fn);	
 		
-		URL[] urls = buildUrls(f);
+		URL[] urls = driver.buildUrls(f);
 		
 		if (urls == null)
 			javaClass = null;
@@ -1849,7 +1849,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 				res = res.substring(0, i) + "!" + res2;
 
-				URL[] urls = buildUrls(f);
+				URL[] urls = driver.buildUrls(f);
 
 				if (urls == null)
 					javaClass = null;
@@ -1901,7 +1901,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					//try {
 						classFound = true;
 
-						URL[] urls = buildUrls(fp);
+						URL[] urls = driver.buildUrls(fp);
 
 						if (urls == null)
 							javaClass = null;
@@ -1964,42 +1964,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		return;
 	}
 
-	URL[] buildUrls(File f) {
-		LinkedList<URL> ll = new LinkedList<URL>();
-		URL[] urls = null;
-		try {
-			
-			ll.add(f.toURI().toURL());			
-			 
-			File f2 = new File(driver.javaFBPJarFile);
-			ll.add(f2.toURI().toURL());
-
-			for (String jfv : driver.jarFiles.values()) {
-				f2 = new File(jfv);
-				ll.add(f2.toURI().toURL());
-			}
-			
-			String curClsDir = driver.properties.get("currentClassDir")
-					+ File.separator;
-
-			if (null != curClsDir) {
-				f2 = new File(curClsDir);
-				ll.add(f2.toURI().toURL());
-			}
-			 
-			urls = ll.toArray(new URL[ll.size()]);
-			
-		} catch (MalformedURLException e) {
-			MyOptionPane.showMessageDialog(driver.frame,
-					"Malformed URL: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
-			// e.printStackTrace();
-			// javaClass = null;
-			urls = null;
-			e.printStackTrace();
-		}
-
-		return urls;
-	}
+	
 
 	void selectSourceCode() {
 

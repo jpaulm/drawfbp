@@ -1266,7 +1266,7 @@ public class DrawFBP extends JFrame
 			
 			pb.redirectErrorStream(true); 			
 			
-			int i = 0;
+			//int i = 0;
 			try {
 				proc = pb.start();
 			
@@ -1280,16 +1280,16 @@ public class DrawFBP extends JFrame
 		            }
 			}
 			catch (NullPointerException npe){
-				i = 1;
+			//	i = 1;
 			}
 			catch (IOException ioe){
-				i = 2;
+			//	i = 2;
 			}
 			catch (IndexOutOfBoundsException iobe){
-				i = 3;
+			//	i = 3;
 			}
 			catch (SecurityException se){
-				i = 4;
+			//	i = 4;
 			}
 			if (proc != null) {
 				try {
@@ -1315,7 +1315,7 @@ public class DrawFBP extends JFrame
 		if (s.equals("Run Java Code")) {
 		
 			File cFile = null;
-			GenLang gl = curDiag.diagLang;
+			//GenLang gl = curDiag.diagLang;
 			
 			String ss = properties.get("currentClassDir");
 			File clsDir = null;
@@ -1353,18 +1353,58 @@ public class DrawFBP extends JFrame
 			String t = ss.substring(k + 5, j);			
 			
 			clsDir.mkdirs();
-			driver.properties.put("currentClassDir", ss.substring(0, k + 4));
+			driver.properties.put("currentClassDir", clsDir.getAbsolutePath());
+						
 			progName = progName.substring(0, progName.length() - 6);
+			progName = t.replace("\\", "/") + "/" + progName;
+			progName = progName.replace("/",  ".");
+			//String thisCls = clsDir + "/" + t + "/" + progName;
+			//thisCls = thisCls.replace("\\",  "/");
+			URL[] urls = buildUrls(null);
+			
+			URLClassLoader loader = null;
+			Class<?> cls = null;
+			if (urls != null) {
+
+				// Create a new class loader with the directory
+				loader = new URLClassLoader(urls,
+						this.getClass().getClassLoader());
+
+				try {
+					//cls = loader.loadClass(thisCls);
+					cls = loader.loadClass(progName);
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			// Class<?> cls = null;
+			// cls = loader.loaderClass(thisCls);			
+			
+			Method meth = null;
+			try {
+				meth = cls.getMethod("main", String[].class);
+			} catch (NoSuchMethodException | SecurityException e2) {
+				meth = null;
+				MyOptionPane.showMessageDialog(frame,
+						"Program " + progName + " has no 'main' method", MyOptionPane.ERROR_MESSAGE);
+			}	
+			if (meth == null) {
+				
+				return;
+			}
+				
+			//progName = progName.substring(0, progName.length() - 6);
 						 
 			Process proc = null;
 			ProcessBuilder pb = new ProcessBuilder("java", "-cp", "\"" + javaFBPJarFile + ";.\"",  
-					 "\"" + t + "/" + progName + "\"");			
+					 "\"" + progName + "\"");			
 							
 			pb.directory(clsDir);			
 			
 			pb.redirectErrorStream(true); 			
 			
-			int i = 0;
+			//int i = 0;
 			try {
 				proc = pb.start();
 			
@@ -1378,16 +1418,16 @@ public class DrawFBP extends JFrame
 		            }
 			}
 			catch (NullPointerException npe){
-				i = 1;
+			//	i = 1;
 			}
 			catch (IOException ioe){
-				i = 2;
+			//	i = 2;
 			}
 			catch (IndexOutOfBoundsException iobe){
-				i = 3;
+			//	i = 3;
 			}
 			catch (SecurityException se){
-				i = 4;
+			//	i = 4;
 			}
 			if (proc != null) {
 				try {
@@ -1407,10 +1447,10 @@ public class DrawFBP extends JFrame
 			//String z = cFile.getAbsolutePath().substring(v + 3);
 			if (u == 0)
 				MyOptionPane.showMessageDialog(frame,
-					"Program completed - " + clsDir + "/" + t + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
+					"Program completed - " + clsDir + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
 			else
 				MyOptionPane.showMessageDialog(frame,
-						"Program test failed, rc: " + u + " - " + clsDir + "/" + t + "/" + progName + ".java", MyOptionPane.INFORMATION_MESSAGE);
+						"Program test failed, rc: " + u + " - " + clsDir + "/" + progName + ".java", MyOptionPane.INFORMATION_MESSAGE);
 			return;
 		}
  
@@ -3201,6 +3241,43 @@ void chooseFonts(MyFontChooser fontChooser){
 		return null;
 	}
 
+	URL[] buildUrls(File f) {
+		LinkedList<URL> ll = new LinkedList<URL>();
+		URL[] urls = null;
+		try {
+			
+			if (f != null)
+				ll.add(f.toURI().toURL());			
+			 
+			File f2 = new File(javaFBPJarFile);
+			ll.add(f2.toURI().toURL());
+
+			for (String jfv : jarFiles.values()) {
+				f2 = new File(jfv);
+				ll.add(f2.toURI().toURL());
+			}
+			
+			String curClsDir = properties.get("currentClassDir")
+					+ File.separator;
+
+			if (null != curClsDir) {
+				f2 = new File(curClsDir);
+				ll.add(f2.toURI().toURL());
+			}
+			 
+			urls = ll.toArray(new URL[ll.size()]);
+			
+		} catch (MalformedURLException e) {
+			MyOptionPane.showMessageDialog(driver.frame,
+					"Malformed URL: " + f, MyOptionPane.ERROR_MESSAGE);
+			// e.printStackTrace();
+			// javaClass = null;
+			urls = null;
+			e.printStackTrace();
+		}
+
+		return urls;
+	}
 	static public void applyOrientation(Component c) {
 		c.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		
