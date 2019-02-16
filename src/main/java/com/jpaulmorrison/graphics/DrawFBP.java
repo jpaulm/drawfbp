@@ -1304,7 +1304,8 @@ public class DrawFBP extends JFrame
 			
 			if (u == 0)
 				MyOptionPane.showMessageDialog(frame,
-					"Program compiled - " + srcDir + "/" + t + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
+					"Program compiled - " + srcDir + "/" + t + "/" + progName + "\n" +
+				"   into - " + clsDir + "/" + progName.substring(0, progName.length() - 5) + ".class", MyOptionPane.INFORMATION_MESSAGE);
 			else
 				MyOptionPane.showMessageDialog(frame,
 						"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + "/" + progName + ".java", MyOptionPane.INFORMATION_MESSAGE);
@@ -1338,7 +1339,12 @@ public class DrawFBP extends JFrame
 			if (cFile == null || !(cFile.exists()))
 				return;
 					
-			
+			if (!(ss.endsWith(".class"))) {
+				MyOptionPane.showMessageDialog(frame,
+						"Executable " + ss + " must end in '.class'", MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+				
 			//ss = cFile.getAbsolutePath();
 			ss = ss.replace('\\', '/');
 			int j = ss.lastIndexOf("/");
@@ -3337,16 +3343,19 @@ void chooseFonts(MyFontChooser fontChooser){
 		}
 
 	public void stateChanged(ChangeEvent e) {
-		JSlider source = (JSlider) e.getSource();
+		Object source =  e.getSource();
+		if (source instanceof JSlider) {
+			JSlider js = (JSlider) source;
 		//oldW = getSize().width;
 		//oldH = getSize().height;
-		if (!source.getValueIsAdjusting()) {
-			scalingFactor = ((int) source.getValue()) / 100.0;
-			String scale = (int) source.getValue() + "%";
+		if (!(js).getValueIsAdjusting()) {
+			scalingFactor = ((int) js.getValue()) / 100.0;
+			String scale = (int) js.getValue() + "%";
 			scaleLab.setText(scale);
-			frame.pack();
-			frame.setPreferredSize(new Dimension(1200, 800)); 	
+			//frame.pack();
+			//frame.setPreferredSize(new Dimension(1200, 800)); 	
 			//frame.repaint();
+		}
 		}
 	}
 

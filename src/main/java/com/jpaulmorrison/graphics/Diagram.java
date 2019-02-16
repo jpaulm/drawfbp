@@ -283,8 +283,8 @@ public class Diagram {
 							"Cannot save into backup file: " + s, MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
-				File f2 = new File(s);
-				if (!(f2.exists()) || f2.isDirectory()) {
+				//File f2 = new File(s);
+				if (!(newFile.exists()) || newFile.isDirectory()) {
 
 					String suff = getSuffix(s);
 					if (suff == null)
@@ -299,8 +299,9 @@ public class Diagram {
 					}
 				}
 
-				// newFile.getParentFile().mkdirs();
+				  newFile.getParentFile().mkdirs();
 			}
+		 
 
 			if (newFile == null)
 				return null;
@@ -309,34 +310,13 @@ public class Diagram {
 					&& -1 != diagramIsOpen(newFile.getAbsolutePath()))
 				return null;
 
-			/*
-			//int response;
-			if (newFile.exists()) {
-				if (newFile.isDirectory()) {
-					MyOptionPane.showMessageDialog(driver.frame, newFile.getName()
-							+ " is a directory", MyOptionPane.WARNING_MESSAGE);
-					return null;
-				}
-				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-						driver.frame, "Overwrite existing file: " + newFile.getAbsolutePath()
-							+ "?", "Confirm overwrite",
-						 MyOptionPane.YES_NO_OPTION)))  
-			    	 return null;
-			} else {
-				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-						driver.frame, "Create new file: " + newFile.getAbsolutePath()
-						+ "?", "Confirm create",
-						 MyOptionPane.YES_NO_OPTION))) 
-					return null;
-			}
-			*/
-						
+									
 			file = newFile;
 			
 			//	diagFile = file;
 
-			
-		}
+		}	
+		
 
 		// finished choosing file...
 		
@@ -405,26 +385,29 @@ public class Diagram {
 					fileString = fileString.substring(0, s + 8) + pkg + fileString.substring(s + 8 + t);
 				}
 			}
-				if (newFile.exists()) {
-					if (newFile.isDirectory()) {
-						MyOptionPane.showMessageDialog(driver.frame, newFile.getName()
+		 //newFile = file;
+				//if (newFile != null){
+					if (file.exists()) {
+					if (file.isDirectory()) {
+						MyOptionPane.showMessageDialog(driver.frame, file.getName()
 								+ " is a directory", MyOptionPane.WARNING_MESSAGE);
 						return null;
 					}
 					if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-							driver.frame, "Overwrite existing file: " + newFile.getAbsolutePath()
+							driver.frame, "Overwrite existing file: " + file.getAbsolutePath()
 								+ "?", "Confirm overwrite",
 							 MyOptionPane.YES_NO_OPTION)))  
 				    	 return null;
 				} else {
 					if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-							driver.frame, "Create new file: " + newFile.getAbsolutePath()
+							driver.frame, "Create new file: " + file.getAbsolutePath()
 							+ "?", "Confirm create",
 							 MyOptionPane.YES_NO_OPTION))) 
 						return null;
 				}
 			//}
 
+				//}
 			writeFile(file, fileString);
 			
 			//return diagFile;
