@@ -1248,19 +1248,33 @@ public class DrawFBP extends JFrame
 			
 			String progName = srcDir.substring(j + 1); 
 			
+			String clsDir;
+			String t;
 			int k = srcDir.indexOf("/src");
-			srcDir = srcDir.substring(0, k + 4);	
-
-			String t = cFile.getAbsolutePath().substring(k + 5, j);
-			 
-			String clsDir = srcDir.replace("src", "bin");			
-						
-			new File(clsDir).mkdirs();
-			driver.properties.put("currentClassDir", clsDir);
+			if (k > -1)	{			
+				srcDir = srcDir.substring(0, k + 4);	
+				t = cFile.getAbsolutePath().substring(k + 5, j) + "/";				 
+				clsDir = srcDir.replace("src", "bin");
+			}
+			else {
+				srcDir = srcDir.substring(0, j);
+				clsDir = srcDir;
+				t = "";
+			}
+			properties.put(srcDir, gl.netDirProp);
+			
+			File fd = new File(clsDir);
+			
+			if (fd == null || !fd.exists()) {						
+				fd.mkdirs();
+				driver.properties.put("currentClassDir", clsDir);
+				MyOptionPane.showMessageDialog(frame,
+					"'bin' directory created - " + clsDir, MyOptionPane.INFORMATION_MESSAGE);
+			}
 						 
 			Process proc = null;
 			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", "\"" + javaFBPJarFile + ";.\"", "-d", "\"" + clsDir + "\"", 
-					 "-sourcepath", "\"" + srcDir + "\"",  "\"" + t + "/" + progName + "\"");			
+					 "-sourcepath", "\"" + srcDir + "\"",  "-Xlint:unchecked", "\"" + t + progName + "\"");			
 							
 			pb.directory(new File(srcDir));			
 			
