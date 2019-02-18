@@ -1247,13 +1247,17 @@ public class DrawFBP extends JFrame
 			int j = srcDir.lastIndexOf("/");
 			
 			String progName = srcDir.substring(j + 1); 
+			srcDir = srcDir.substring(0, j);
+			(new File(srcDir)).mkdirs();
+			properties.put(gl.netDirProp, srcDir);
 			
 			String clsDir;
 			String t;
 			int k = srcDir.indexOf("/src");
 			if (k > -1)	{			
 				srcDir = srcDir.substring(0, k + 4);	
-				t = cFile.getAbsolutePath().substring(k + 5, j) + "/";				 
+				t = cFile.getAbsolutePath().substring(k + 5, j) + "/";
+				t = t.replace("\\",  "/");			 
 				clsDir = srcDir.replace("src", "bin");
 			}
 			else {
@@ -1261,8 +1265,7 @@ public class DrawFBP extends JFrame
 				clsDir = srcDir;
 				t = "";
 			}
-			properties.put(srcDir, gl.netDirProp);
-			
+						
 			File fd = new File(clsDir);
 			
 			if (fd == null || !fd.exists()) {						
@@ -1271,6 +1274,9 @@ public class DrawFBP extends JFrame
 				MyOptionPane.showMessageDialog(frame,
 					"'bin' directory created - " + clsDir, MyOptionPane.INFORMATION_MESSAGE);
 			}
+			
+			MyOptionPane.showMessageDialog(frame,
+					"Compiling program - " + srcDir + "/" + t + progName, MyOptionPane.INFORMATION_MESSAGE);
 						 
 			Process proc = null;
 			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", "\"" + javaFBPJarFile + ";.\"", "-d", "\"" + clsDir + "\"", 
@@ -1318,11 +1324,11 @@ public class DrawFBP extends JFrame
 			
 			if (u == 0)
 				MyOptionPane.showMessageDialog(frame,
-					"Program compiled - " + srcDir + "/" + t + "/" + progName + "\n" +
-				"   into - " + clsDir + "/" + progName.substring(0, progName.length() - 5) + ".class", MyOptionPane.INFORMATION_MESSAGE);
+					"Program compiled - " + srcDir + "/" + t + progName + "\n" +
+				"   into - " + clsDir + "/" + t + progName.substring(0, progName.length() - 5) + ".class", MyOptionPane.INFORMATION_MESSAGE);
 			else
 				MyOptionPane.showMessageDialog(frame,
-						"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + "/" + progName + ".java", MyOptionPane.INFORMATION_MESSAGE);
+						"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + progName + ".java", MyOptionPane.WARNING_MESSAGE);
 			return;
 		}
 	 	
@@ -1414,7 +1420,8 @@ public class DrawFBP extends JFrame
 				return;
 			}
 				
-			//progName = progName.substring(0, progName.length() - 6);
+			MyOptionPane.showMessageDialog(frame,
+					"Starting program - " + clsDir + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
 						 
 			Process proc = null;
 			ProcessBuilder pb = new ProcessBuilder("java", "-cp", "\"" + javaFBPJarFile + ";.\"",  
@@ -1470,7 +1477,7 @@ public class DrawFBP extends JFrame
 					"Program completed - " + clsDir + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
 			else
 				MyOptionPane.showMessageDialog(frame,
-						"Program test failed, rc: " + u + " - " + clsDir + "/" + progName + ".java", MyOptionPane.INFORMATION_MESSAGE);
+						"Program test failed, rc: " + u + " - " + clsDir + "/" + progName + ".java", MyOptionPane.WARNING_MESSAGE);
 			return;
 		}
  
