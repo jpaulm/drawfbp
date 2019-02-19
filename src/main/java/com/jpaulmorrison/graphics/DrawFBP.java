@@ -1255,22 +1255,25 @@ public class DrawFBP extends JFrame
 			String t;
 			int k = srcDir.indexOf("/src");
 			if (k > -1)	{			
-				srcDir = srcDir.substring(0, k + 4);	
+				//srcDir = srcDir.substring(0, k + 4);	
 				t = cFile.getAbsolutePath().substring(k + 5, j) + "/";
 				t = t.replace("\\",  "/");			 
 				clsDir = srcDir.replace("src", "bin");
+				srcDir = srcDir.substring(0, k + 4);
 			}
 			else {
 				srcDir = srcDir.substring(0, j);
 				clsDir = srcDir;
 				t = "";
 			}
+			properties.put("currentClassDir", clsDir);
+			clsDir = clsDir.substring(0, k + 4); 		
 						
 			File fd = new File(clsDir);
 			
 			if (fd == null || !fd.exists()) {						
 				fd.mkdirs();
-				driver.properties.put("currentClassDir", clsDir);
+				//driver.properties.put("currentClassDir", clsDir);
 				MyOptionPane.showMessageDialog(frame,
 					"'bin' directory created - " + clsDir, MyOptionPane.INFORMATION_MESSAGE);
 			}
