@@ -130,7 +130,7 @@ public class MyFileChooser extends JFrame
 		
 		clickListener = new ClickListener();
 					
-		if (!f.exists()) 
+		if (f == null || !f.exists()) 
 			listHead = System.getProperty("user.home");
 		else 	
 			listHead = f.getAbsolutePath();	

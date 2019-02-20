@@ -39,18 +39,9 @@ operations that can be performed on it.&nbsp; Currently there are seven:</p>
 
 <br>
 <h3 style="color: rgb(0, 0, 153);">Edit Subnet Port Name (deprecated)</h3>
-<p>After this function is selected, the user is prompted to select 
-one of the arrows crossing either the lefthand or righthand 
-boundary of the Enclosure block.  The user will then be prompted to enter the port name.</p>
-<p>If you do an Excise (see below), this information will automatically be copied to the generated External Port blocks.</p>
+<p>This function can now be performed by editing the External Port block in the appropriate subnet.</p>
 <h3 style="color: rgb(0, 0, 153);">Toggle Substream Sensitivity (deprecated)</h3>
-<p>This works the same way.  The "substream sensitivity" indication on the graph is a red semicircle.</p>
-<p>Substream sensitivity is related to the idea that in FBP a subnet can be set up to process a substream as if it
-were a complete stream.  This uses the open and close bracket IPs to start and close down the subnet, respectively,
-provided the subnet's input and output ports are marked appropriately.  In this case, the close bracket
-will cause the subnet to see end of stream, causing the usual wave of close-downs through the network.  This is the
-only situation in FBP where processes can be closed down, and then restarted.</p>
-<p>If you do an Excise, this information will automatically be copied to the generated External Port blocks.</p>
+<p>This function can now be performed by editing the External Port block in the appropriate subnet.</p>
 <h3 style="color: rgb(0, 0, 153);">Excise Subnet</h3>
 <p>This function will 
 "excise" those blocks and arrows which are completely enclosed by the Enclosure block, and create a new 
@@ -70,3 +61,4 @@ Dragging below).
 
 </body>
 </html>
+

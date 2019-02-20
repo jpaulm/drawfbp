@@ -219,6 +219,8 @@ public class DrawFBP extends JFrame
 	JMenuItem menuItem1 = null;
 	JMenuItem menuItem2 = null;
 	JMenuItem compMenu = null;
+	JMenuItem runMenu = null;
+	
 	JTextField jtf = new JTextField();
 	
 	boolean allFiles = false;
@@ -900,7 +902,9 @@ public class DrawFBP extends JFrame
 		fileMenu.add(compMenu);  		
 		compMenu.addActionListener(this);
 		
-		JMenuItem runMenu = new JMenuItem("Run Java Code");		
+		runMenu = new JMenuItem("Run Java Code");	
+		runMenu.setEnabled(currLang != null &&
+				 currLang.label.equals("Java"));
 		runMenu.setMnemonic(KeyEvent.VK_R);		
 		runMenu.setBorderPainted(true);		
 		fileMenu.add(runMenu);  		
@@ -1753,8 +1757,8 @@ public class DrawFBP extends JFrame
 													frame,
 													//"Locate it?",
 													"Specify the location of the JavaHelp jar file -\n"
-															+ "do a search on Maven Central for 'javahelp'\n"
-													        + "Artifact ID: javahelp",
+															+ "do a search on Maven Central for 'javahelp' - \n"
+													        + "Group ID:javax.help Artifact ID:javahelp",
 													"Locate it?",		
 													MyOptionPane.OK_CANCEL_OPTION);
 									if (response == MyOptionPane.OK_OPTION)
@@ -2066,6 +2070,7 @@ public class DrawFBP extends JFrame
 		menuItem1.setEnabled(currLang.label.equals("Java"));  
 		menuItem2.setEnabled(currLang.label.equals("Java")); 
 		compMenu.setEnabled(currLang.label.equals("Java")); 
+		runMenu.setEnabled(currLang.label.equals("Java")); 
 		
 		fileMenu.remove(gNMenuItem); 
 		
