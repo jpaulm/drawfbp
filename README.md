@@ -3,7 +3,7 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-Latest release is v2.16.1, which is on Maven Central, but a bug has been found in the Compile function.  A fix will be posted shortly, which will be Release v2.16.2.
+Latest release is v2.16.1, which is on Maven Central, but a bug has been found in the Compile function - in the case where the program being compiled is in the 'src' folder for the project.  A fix will be posted shortly, which will be Release v2.16.2.
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
 
@@ -83,7 +83,7 @@ DrawFBP can be executed directly by executing its .jar file, but, as of v2.15.10
 
 DrawFBP has been compiled to run on Java 1.7 (contrary to the comment in the Dec. 14 commit!).
 
-As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for v2.15.10 in drawfbp/Releases.  After downloading:
+As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Relaeses starting with v2.15.10 in drawfbp/Releases.  After downloading:
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
@@ -95,7 +95,7 @@ As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be 
 
 - to run under Linux, replace the semi-colon(s) with colons(s).        
     
-Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes filled in, you will have to reaccess the component classes, as the naming conventions have changed.
+Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes (from JavaFBP) filled in, you will have to reaccess the component classes, as the naming conventions have changed slightly.
 
 **DrawFBP properties** are held in a file called <code>DrawFBPProperties.xml</code> in the user's home directory.  If this does not exist, it will be created the first time the user runs DrawFBP - it is automatically updated as the user uses various DrawFBP facilities.
 
