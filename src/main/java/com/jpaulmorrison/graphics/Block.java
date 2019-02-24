@@ -500,25 +500,21 @@ public class Block implements ActionListener {
 		if (fullClassName != null) {
 			if (fullClassName.indexOf("!") == -1) {// if no "!", language is not
 													// Java...
-				driver.tryFindJarFile = false;
+				//driver.tryFindJarFile = false;
 				if (fullClassName.toLowerCase().endsWith(".json")) {
 					codeFileName = fullClassName;
 					fullClassName = null;
 				}
 				return;
 			}
-			if (driver.tryFindJarFile) {
-				if (!driver.getJavaFBPJarFile()) {
-					MyOptionPane
-							.showMessageDialog(
-									driver.frame,
-									"Unable to read JavaFBP jar file - "
-											+ "so cannot process class information for "
-											+ description, MyOptionPane.ERROR_MESSAGE);
-					driver.tryFindJarFile = false;
-				} else 
-					loadClass();
-			}
+			//if (driver.tryFindJarFile) {
+				if (!driver.locateJavaFBPJarFile()) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"JavaFBP jar file not found", MyOptionPane.ERROR_MESSAGE);
+					return;
+				} 
+				loadClass();
+			//}
 			// diag.compLang = driver.findGLFromLabel("Java");
 		}
 		}
@@ -1819,9 +1815,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// fullClassName = null;
 		}
 
-		if (!driver.getJavaFBPJarFile()) {
+		if (!driver.locateJavaFBPJarFile()) {
 			MyOptionPane.showMessageDialog(driver.frame,
-					"JavaFBP jar file not specified or found", MyOptionPane.ERROR_MESSAGE);
+					"JavaFBP jar file not found", MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
 

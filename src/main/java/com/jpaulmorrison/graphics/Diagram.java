@@ -100,9 +100,9 @@ public class Diagram {
 				diagLang.suggExtn, diagLang.filter, "Components: "
 						+ diagLang.showLangs() + " " + diagLang.showSuffixes());
 		
-		fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms("Generated code",
+		fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms("Code",
 				diagLang.netDirProp,
-				"Specify file name for generated code",
+				"Specify file name for code",
 				"." + diagLang.suggExtn, diagLang.filter,
 				diagLang.showLangs());		
 				

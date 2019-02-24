@@ -34,8 +34,8 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 				File f = driver.curDiag.diagFile;
 				if (f != null) {
 				    File currentDiagramDir = f.getParentFile();
-				    if (driver.properties == null)
-				    	driver.properties = new HashMap <String, String>();
+				    //if (driver.properties == null)
+				    //	driver.properties = new HashMap <String, String>();
 				    	
 				    driver.properties
 						.put("currentDiagramDir", currentDiagramDir.getAbsolutePath());  

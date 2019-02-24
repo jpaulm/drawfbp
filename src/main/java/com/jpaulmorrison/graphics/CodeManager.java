@@ -993,7 +993,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		changed = false;
 
 		if (packageNameChanged) {
-			driver.properties.put("packageName", packageName);
+			driver.properties.put("currentPackageName", packageName);
 			//driver.propertiesChanged = true;
 		}
 

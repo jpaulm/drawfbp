@@ -150,7 +150,7 @@ public class DrawFBP extends JFrame
 	public static int DIAGRAM = 1;
 	public static int IMAGE = 2;
 	public static int JARFILE = 3;
-	public static int JHALL = 4;
+	public static int JHELP = 4;
 	public static int PROCESS = 5;
 	public static int GENCODE = 6;
 
@@ -206,7 +206,7 @@ public class DrawFBP extends JFrame
 	// JPopupMenu curPopup = null; // currently active popup menu
 
 	//String scale;
-	boolean tryFindJarFile = true;
+	//boolean tryFindJarFile = true;
 	boolean willBeSubnet = false;
 
 	JMenuBar menuBar = null;
@@ -310,7 +310,7 @@ public class DrawFBP extends JFrame
 				"Choose a jar file for JavaFBP", ".jar",
 				driver.new JarFileFilter(), "Jar files");
 
-		fCPArray[JHALL] = new FileChooserParms("Java Help file", "jhallJarFile",
+		fCPArray[JHELP] = new FileChooserParms("Java Help file", "jhallJarFile",
 				"Choose a directory for the JavaHelp jar file", ".jar",
 				driver.new JarFileFilter(), "Help files");
 
@@ -379,9 +379,9 @@ public class DrawFBP extends JFrame
 		rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
 				RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
 	    osg.setRenderingHints(rh);
-
-		readPropertiesFile();				
 		
+	    readPropertiesFile(); 
+	    
 		properties.put("versionNo", "v" + VersionAndTimestamp.getVersion());
 		properties.put("date", VersionAndTimestamp.getDate());
 		
@@ -1245,6 +1245,12 @@ public class DrawFBP extends JFrame
 			if (cFile == null || !(cFile.exists()))
 				return;			
 		
+			String source = curDiag.readFile(cFile, false);
+			int m = source.indexOf("package");
+			int n = source.substring(m + 8).indexOf(";");
+			String pkg = source.substring(m + 8, n + m + 8);
+			pkg = pkg.trim();
+			properties.put("currentPackageName",  pkg);
 			
 			String srcDir = cFile.getAbsolutePath();
 			srcDir = srcDir.replace('\\', '/');
@@ -1259,11 +1265,14 @@ public class DrawFBP extends JFrame
 			String t;
 			int k = srcDir.indexOf("/src");
 			if (k > -1)	{			
-				//srcDir = srcDir.substring(0, k + 4);	
-				t = cFile.getAbsolutePath().substring(k + 5, j) + "/";
-				t = t.replace("\\",  "/");			 
+				if (j < k + 5)
+					t = "";
+				else {
+					t = cFile.getAbsolutePath().substring(k + 5, j) + "/";
+					t = t.replace("\\",  "/");	
+				}
 				clsDir = srcDir.replace("src", "bin");
-				srcDir = srcDir.substring(0, k + 4);
+				srcDir = srcDir.substring(0, k + 4);  // drop after src
 			}
 			else {
 				srcDir = srcDir.substring(0, j);
@@ -1271,9 +1280,11 @@ public class DrawFBP extends JFrame
 				t = "";
 			}
 			properties.put("currentClassDir", clsDir);
-			clsDir = clsDir.substring(0, k + 4); 		
+			clsDir = clsDir.substring(0, k + 4); 	// drop after bin	
 						
 			File fd = new File(clsDir);
+			
+			pkg = pkg.replace(".",  "/");
 			
 			if (fd == null || !fd.exists()) {						
 				fd.mkdirs();
@@ -1286,6 +1297,10 @@ public class DrawFBP extends JFrame
 					"Compiling program - " + srcDir + "/" + t + progName, MyOptionPane.INFORMATION_MESSAGE);
 						 
 			Process proc = null;
+			
+			if(javaFBPJarFile == null)
+				locateJavaFBPJarFile();
+				
 			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", "\"" + javaFBPJarFile + ";.\"", "-d", "\"" + clsDir + "\"", 
 					 "-sourcepath", "\"" + srcDir + "\"",  "-Xlint:unchecked", "\"" + t + progName + "\"");			
 							
@@ -1332,10 +1347,10 @@ public class DrawFBP extends JFrame
 			if (u == 0)
 				MyOptionPane.showMessageDialog(frame,
 					"Program compiled - " + srcDir + "/" + t + progName + "\n" +
-				"   into - " + clsDir + "/" + t + progName.substring(0, progName.length() - 5) + ".class", MyOptionPane.INFORMATION_MESSAGE);
+				"   into - " + clsDir + "/" + pkg + "/" + progName.substring(0, progName.length() - 5) + ".class", MyOptionPane.INFORMATION_MESSAGE);
 			else
 				MyOptionPane.showMessageDialog(frame,
-						"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + progName + ".java", MyOptionPane.WARNING_MESSAGE);
+						"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + progName, MyOptionPane.WARNING_MESSAGE);
 			return;
 		}
 	 	
@@ -2093,8 +2108,8 @@ public class DrawFBP extends JFrame
 						+ gl.showSuffixes());
 
 		curDiag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
-				"Generated code", gl.netDirProp,
-				"Specify file name for generated code", "."
+				"Code", gl.netDirProp,
+				"Specify file name for code", "."
 						+ gl.suggExtn,
 				gl.filter, gl.showLangs());
 		
@@ -2774,7 +2789,9 @@ void chooseFonts(MyFontChooser fontChooser){
 				if (k > 0) {
 					if (!(key.equals("additionalJarFiles"))) {
 					    s = s.substring(0, k).trim();
-					    properties.put(key, s);
+					    key = key.replace("\\",  "/");
+					    if (-1 == key.indexOf("/")) // compensate for old bug!
+					    	properties.put(key, s);
 					}
 					else {
 						s = s.substring(0, k).trim();
@@ -2864,7 +2881,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 	
 	
-	
+	/*
 
 	boolean getJavaFBPJarFile() {
 		if (javaFBPJarFile == null) {
@@ -2893,7 +2910,7 @@ void chooseFonts(MyFontChooser fontChooser){
 		    MyOptionPane.showMessageDialog(frame, msg, MyOptionPane.ERROR_MESSAGE);
 		
 		int response = MyOptionPane.showConfirmDialog(frame, "Specify a JavaFBP jar file", "Locate JavaFBP jar file",
-				MyOptionPane.OK_CANCEL_OPTION /*, MyOptionPane.PLAIN_MESSAGE */);
+				MyOptionPane.OK_CANCEL_OPTION );
 		if (response == MyOptionPane.OK_OPTION)
 			res = locateJavaFBPJarFile();
 		else {
@@ -2903,7 +2920,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		return res;
 	}
-	
+	*/
 	String getSelFile(MyFileChooser fc) {
 		String[] sa = new String[1]; 
 		fc.getSelectedFile(sa);  // getSelectedFile puts result in sa[0]
@@ -2913,11 +2930,20 @@ void chooseFonts(MyFontChooser fontChooser){
 	boolean locateJavaFBPJarFile() {
 		
 		String s = properties.get("javaFBPJarFile");
-		File f = null;
-		if (s == null)
-			f = new File(System.getProperty("user.home"));
-		else
-			f = (new File(s)).getParentFile();
+		
+		if (s != null) {
+			javaFBPJarFile = s;
+			return true;
+		}
+		
+		MyOptionPane.showMessageDialog(frame, "Use File Chooser to locate JavaFBP jar file", MyOptionPane.ERROR_MESSAGE);
+		
+		File f = new File(System.getProperty("user.home"));
+		 
+		//else 
+		//	f = (new File(s)).getParentFile();
+		
+		
 		
 		MyFileChooser fc = new MyFileChooser(f, fCPArray[JARFILE]);
 		
@@ -3012,13 +3038,19 @@ void chooseFonts(MyFontChooser fontChooser){
 	boolean locateJhallJarFile() {
 
 		String s = properties.get("jhallJarFile");
-		File f = null;
-		if (s == null)
-			f = new File(System.getProperty("user.home"));
-		else
-			f = (new File(s)).getParentFile();
+		//File f = null;
+		if (s != null){
+			jhallJarFile = s;
+			return true;
+		}
+		
+		MyOptionPane.showMessageDialog(frame, "Use File Chooser to locate JavaHelp jar file", MyOptionPane.ERROR_MESSAGE);
+		
+		File f = new File(System.getProperty("user.home"));
+		//else
+		//	f = (new File(s)).getParentFile();
 
-		MyFileChooser fc = new MyFileChooser(f, fCPArray[JHALL]);
+		MyFileChooser fc = new MyFileChooser(f, fCPArray[JHELP]);
 
 		int returnVal = fc.showOpenDialog();
 
@@ -3642,7 +3674,7 @@ void chooseFonts(MyFontChooser fontChooser){
 
 			jtp.removeTabAt(i);
 			
-			driver.properties.remove("currentDiagram");
+			properties.remove("currentDiagram");
 
 			int j = jtp.getTabCount();
 			if (j == 0) {

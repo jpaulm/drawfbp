@@ -204,7 +204,7 @@ public class MyFileChooser extends JFrame
 			dialog.setTitle(s);
 		else {
 			if (fCParms == driver.curDiag.fCPArr[DrawFBP.GENCODE])
-				fCParms.prompt = "Specify file name for generated code - for diagram: " + driver.curDiag.title + ".drw";
+				fCParms.prompt = "Specify file name for code - for diagram: " + driver.curDiag.title + ".drw";
 			 
 			dialog.setTitle(fCParms.prompt);
 			if (fCParms == driver.curDiag.fCPArr[DrawFBP.CLASS])
@@ -1586,7 +1586,7 @@ public class MyFileChooser extends JFrame
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
 				if (fCParms == driver.curDiag.fCPArr[DrawFBP.JARFILE]
-						|| fCParms == driver.curDiag.fCPArr[DrawFBP.JHALL]) {
+						|| fCParms == driver.curDiag.fCPArr[DrawFBP.JHELP]) {
 					processOK();
 					return;
 				}
