@@ -1,9 +1,9 @@
 DrawFBP
 =======
 
-Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
+#### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-#### Latest release is v2.16.1.  This jar file is now available and can be obtained from the DrawFBP project Releases folder.  
+Latest release is v2.16.1, which is on Maven Central, but a bug has been found in the Compile function.  A fix will be posted shortly, which will be Release v2.16.2.
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
 
@@ -72,7 +72,9 @@ Features
 - Drag blocks, sections of diagram (using "Enclosure"), heads or tails of arrows; create or drag bends in arrows
 - "Grid" positioning on/off
 - Extra arrowhead (one per arrow)
-
+- New Functions (as of v2.16.1): 
+- Compile Java program
+- Run Java program
 
 Running DrawFBP
 ----
@@ -80,11 +82,6 @@ Running DrawFBP
 DrawFBP can be executed directly by executing its .jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  You can download DrawFBP from Maven (search for DrawFBP), or from the latest release in the <a href="https://github.com/jpaulm/drawfbp/releases">DrawFBP Releases</a> directory in GitHub. 
 
 DrawFBP has been compiled to run on Java 1.7 (contrary to the comment in the Dec. 14 commit!).
-
-To run from the command line, enter 
-
-        java -jar drawfbp-x.y.z.jar com.jpmorrsn.graphics.DrawFBP (for v2.12.x and lower)
-        java -jar drawfbp-x.y.z.jar com.jpaulmorrison.graphics.DrawFBP (for v2.13.0 and higher)
 
 As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for v2.15.10 in drawfbp/Releases.  After downloading:
 
