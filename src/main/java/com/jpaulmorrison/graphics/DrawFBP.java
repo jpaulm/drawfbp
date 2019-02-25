@@ -1221,7 +1221,8 @@ public class DrawFBP extends JFrame
 		
 		 
 		if (s.equals("Compile Code")) {
-
+			compileCode();
+			/*
 			File cFile = null;
 			GenLang gl = curDiag.diagLang;
 			
@@ -1351,12 +1352,15 @@ public class DrawFBP extends JFrame
 			else
 				MyOptionPane.showMessageDialog(frame,
 						"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + progName, MyOptionPane.WARNING_MESSAGE);
+			*/
 			return;
 		}
 	 	
 		
 		if (s.equals("Run Java Code")) {
+			runJavaCode();
 		
+			/*
 			File cFile = null;
 			//GenLang gl = curDiag.diagLang;
 			
@@ -1500,6 +1504,7 @@ public class DrawFBP extends JFrame
 			else
 				MyOptionPane.showMessageDialog(frame,
 						"Program test failed, rc: " + u + " - " + clsDir + "/" + progName + ".java", MyOptionPane.WARNING_MESSAGE);
+			*/
 			return;
 		}
  
@@ -2736,7 +2741,302 @@ void chooseFonts(MyFontChooser fontChooser){
 
 		frame.repaint();
 	}
+	
+	void compileCode(){		
+		
+		File cFile = null;
+		GenLang gl = curDiag.diagLang;
+		
+		String ss = properties.get(gl.netDirProp);
+		File genDir = null;
+		if (ss == null)
+			genDir = new File(System.getProperty("user.home"));
+		else
+			genDir = new File(ss);
 
+		MyFileChooser fc = new MyFileChooser(genDir,
+				curDiag.fCPArr[GENCODE]);
+
+		int returnVal = fc.showOpenDialog();
+
+		cFile = null;
+		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			cFile = new File(getSelFile(fc));
+		}
+		// }
+		if (cFile == null || !(cFile.exists()))
+			return;			
+	
+		String source = curDiag.readFile(cFile, false);
+		int m = source.indexOf("package");
+		int n = source.substring(m + 8).indexOf(";");
+		String pkg = source.substring(m + 8, n + m + 8);
+		pkg = pkg.trim();
+		properties.put("currentPackageName",  pkg);
+		
+		String srcDir = cFile.getAbsolutePath();
+		srcDir = srcDir.replace('\\', '/');
+		int j = srcDir.lastIndexOf("/");
+		
+		String progName = srcDir.substring(j + 1); 
+		srcDir = srcDir.substring(0, j);
+		(new File(srcDir)).mkdirs();
+		properties.put(gl.netDirProp, srcDir);
+		
+		String clsDir;
+		String t;
+		int k = srcDir.indexOf("/src");
+		if (k > -1)	{			
+			if (j < k + 5)
+				t = "";
+			else {
+				t = cFile.getAbsolutePath().substring(k + 5, j) + "/";
+				t = t.replace("\\",  "/");	
+			}
+			clsDir = srcDir.replace("src", "bin");
+			srcDir = srcDir.substring(0, k + 4);  // drop after src
+		}
+		else {
+			srcDir = srcDir.substring(0, j);
+			clsDir = srcDir;
+			t = "";
+		}
+		properties.put("currentClassDir", clsDir);
+		clsDir = clsDir.substring(0, k + 4); 	// drop after bin	
+					
+		File fd = new File(clsDir);
+		
+		pkg = pkg.replace(".",  "/");
+		
+		if (fd == null || !fd.exists()) {						
+			fd.mkdirs();
+			//driver.properties.put("currentClassDir", clsDir);
+			MyOptionPane.showMessageDialog(frame,
+				"'bin' directory created - " + clsDir, MyOptionPane.INFORMATION_MESSAGE);
+		}
+		
+		if(javaFBPJarFile == null)
+			locateJavaFBPJarFile();
+		
+		MyOptionPane.showMessageDialog(frame,
+				"Compiling program - " + srcDir + "/" + t + progName, MyOptionPane.INFORMATION_MESSAGE);
+					 
+		Process proc = null;
+		
+		
+			
+		ProcessBuilder pb = new ProcessBuilder("javac", "-cp", "\"" + javaFBPJarFile + ";.\"", "-d", "\"" + clsDir + "\"", 
+				 "-sourcepath", "\"" + srcDir + "\"",  "-Xlint:unchecked", "\"" + t + progName + "\"");			
+						
+		pb.directory(new File(srcDir));			
+		
+		pb.redirectErrorStream(true); 			
+		
+		//int i = 0;
+		try {
+			proc = pb.start();
+		
+		BufferedReader br=new BufferedReader(
+	            new InputStreamReader(
+	               proc.getInputStream()));
+	            String line;
+	            while((line=br.readLine())!=null){
+	               System.out.println(line);
+	               //System.out.flush();
+	            }
+		}
+		catch (NullPointerException npe){
+		//	i = 1;
+		}
+		catch (IOException ioe){
+		//	i = 2;
+		}
+		catch (IndexOutOfBoundsException iobe){
+		//	i = 3;
+		}
+		catch (SecurityException se){
+		//	i = 4;
+		}
+		if (proc != null) {
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		proc.destroy();
+		int u = proc.exitValue();
+		
+		if (u == 0)
+			MyOptionPane.showMessageDialog(frame,
+				"Program compiled - " + srcDir + "/" + t + progName + "\n" +
+			"   into - " + clsDir + "/" + pkg + "/" + progName.substring(0, progName.length() - 5) + ".class", MyOptionPane.INFORMATION_MESSAGE);
+		else
+			MyOptionPane.showMessageDialog(frame,
+					"Program compile failed, rc: " + u + " - " + srcDir + "/" + t + progName, MyOptionPane.WARNING_MESSAGE);
+		
+	}
+
+	void runJavaCode(){
+		File cFile = null;
+		//GenLang gl = curDiag.diagLang;
+		
+		String ss = properties.get("currentClassDir");
+		File clsDir = null;
+		if (ss == null)
+			clsDir = new File(System.getProperty("user.home"));
+		else
+			clsDir = new File(ss);
+
+		MyFileChooser fc = new MyFileChooser(clsDir,
+				curDiag.fCPArr[CLASS]);
+		
+		int returnVal = fc.showOpenDialog();
+
+		cFile = null;
+		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			ss = getSelFile(fc);
+			cFile = new File(ss);
+		}
+		// }
+		if (cFile == null || !(cFile.exists()))
+			return;
+				
+		if (!(ss.endsWith(".class"))) {
+			MyOptionPane.showMessageDialog(frame,
+					"Executable " + ss + " must end in '.class'", MyOptionPane.ERROR_MESSAGE);
+			return;
+		}
+			
+		//ss = cFile.getAbsolutePath();
+		ss = ss.replace('\\', '/');
+		int j = ss.lastIndexOf("/");
+		
+		String progName = ss.substring(j + 1); 
+		
+		ss = ss.substring(0, ss.length() - 6);     // drop .class suffix			
+		
+		int k = ss.indexOf("/bin");
+		String t = "";
+		if (k > -1)	{			
+			if (j > k + 5){
+				t = cFile.getAbsolutePath().substring(k + 5, j);
+				t = t.replace("\\",  "/");	
+			}
+			
+			clsDir = new File(ss.substring(0, k + 4));  // drop after bin
+		}
+		
+		
+		//clsDir = new File(ss.substring(0, k + 4));	
+
+		//String t = ss.substring(k + 5, j);		
+		
+		
+		clsDir.mkdirs();
+		driver.properties.put("currentClassDir", clsDir.getAbsolutePath());
+					
+		progName = progName.substring(0, progName.length() - 6);
+		progName = t.replace("\\", "/") + "/" + progName;
+		progName = progName.replace("/",  ".");
+		//String thisCls = clsDir + "/" + t + "/" + progName;
+		//thisCls = thisCls.replace("\\",  "/");
+		URL[] urls = buildUrls(null);
+		
+		URLClassLoader loader = null;
+		Class<?> cls = null;
+		if (urls != null) {
+
+			// Create a new class loader with the directory
+			loader = new URLClassLoader(urls,
+					this.getClass().getClassLoader());
+
+			try {
+				//cls = loader.loadClass(thisCls);
+				cls = loader.loadClass(progName);
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		// Class<?> cls = null;
+		// cls = loader.loaderClass(thisCls);			
+		
+		Method meth = null;
+		try {
+			meth = cls.getMethod("main", String[].class);
+		} catch (NoSuchMethodException | SecurityException e2) {
+			meth = null;
+			MyOptionPane.showMessageDialog(frame,
+					"Program " + progName + " has no 'main' method", MyOptionPane.ERROR_MESSAGE);
+		}	
+		if (meth == null) {
+			
+			return;
+		}
+		
+		//if(javaFBPJarFile == null)
+		//	locateJavaFBPJarFile();
+		
+		MyOptionPane.showMessageDialog(frame,
+				"Starting program - " + clsDir + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
+					 
+		Process proc = null;
+		ProcessBuilder pb = new ProcessBuilder("java", "-cp", "\"" + javaFBPJarFile + ";.\"",  
+				 "\"" + progName + "\"");			
+						
+		pb.directory(clsDir);			
+		
+		pb.redirectErrorStream(true); 			
+		
+		//int i = 0;
+		try {
+			proc = pb.start();
+		
+		BufferedReader br=new BufferedReader(
+	            new InputStreamReader(
+	               proc.getInputStream()));
+	            String line;
+	            while((line=br.readLine())!=null){
+	               System.out.println(line);
+	               //System.out.flush();
+	            }
+		}
+		catch (NullPointerException npe){
+		//	i = 1;
+		}
+		catch (IOException ioe){
+		//	i = 2;
+		}
+		catch (IndexOutOfBoundsException iobe){
+		//	i = 3;
+		}
+		catch (SecurityException se){
+		//	i = 4;
+		}
+		if (proc != null) {
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		proc.destroy();
+		int u = proc.exitValue();		
+	
+		//int v = cFile.getAbsolutePath().indexOf("src");
+		//String z = cFile.getAbsolutePath().substring(v + 3);
+		if (u == 0)
+			MyOptionPane.showMessageDialog(frame,
+				"Program completed - " + clsDir + "/" + progName, MyOptionPane.INFORMATION_MESSAGE);
+		else
+			MyOptionPane.showMessageDialog(frame,
+					"Program test failed, rc: " + u + " - " + clsDir + "/" + progName + ".java", MyOptionPane.WARNING_MESSAGE);
+	}
+	
+	
 	// between just checks that the value val is >= lim1 and <= lim2 - or the inverse
 	
 	static boolean between(int val, int lim1, int lim2) {
@@ -3311,6 +3611,8 @@ void chooseFonts(MyFontChooser fontChooser){
 	URL[] buildUrls(File f) {
 		LinkedList<URL> ll = new LinkedList<URL>();
 		URL[] urls = null;
+		if(javaFBPJarFile == null)
+			locateJavaFBPJarFile();
 		try {
 			
 			if (f != null)
