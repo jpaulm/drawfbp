@@ -357,32 +357,41 @@ public class Diagram {
 				
 				// if not .drw or image
 				fileString = (String) contents;
-				int s = fileString.indexOf("package ");  // if java
-				int t = fileString.substring(s + 8).indexOf(";");
-				String pkg = fileString.substring(s + 8, s + 8 + t);
-				String fs = file.getAbsolutePath();
-								
-				int v = fs.indexOf("\\src\\");
-				int w = fs.indexOf(title);
-				String pkg2 = fs.substring(v + 5, w - 1);
-				pkg2 = pkg2.replace('\\', '/');
-				pkg2 = pkg2.replace('/', '.');
-				if (!(pkg.equals(pkg2))) {
-					int ans = MyOptionPane.showConfirmDialog(driver.frame,"Package name in file: " + pkg + ",\n" +
-							"   suggested package name from file name is: " + pkg2 + ", \n   do you want to change old name?", "Change package?",
-							MyOptionPane.YES_NO_CANCEL_OPTION);
-					
-					if (ans != MyOptionPane.CANCEL_OPTION){	
-						if (ans == MyOptionPane.YES_OPTION){	
-							pkg = pkg2;
-							MyOptionPane.showMessageDialog(driver.frame,
-									"Package name changed: " + pkg);
-													
+				if (driver.currLang.label.equals("Java")) {
+					int s = fileString.indexOf("package "); // if java
+					int t = fileString.substring(s + 8).indexOf(";");
+					String pkg = fileString.substring(s + 8, s + 8 + t);
+					String fs = file.getAbsolutePath();
+					fs = fs.replace("\\", "/");
+					int v = fs.indexOf("/src/");
+					int w = fs.indexOf(".java");
+					int u = fs.substring(0, w).lastIndexOf("/");
+
+					String pkg2 = fs.substring(v + 5, u);
+					pkg2 = pkg2.replace('\\', '/');
+					pkg2 = pkg2.replace('/', '.');
+					if (!(pkg.equals(pkg2))) {
+						int ans = MyOptionPane.showConfirmDialog(driver.frame,
+								"Package name in file: " + pkg + ",\n"
+										+ "   suggested package name from file name is: "
+										+ pkg2
+										+ ", \n   do you want to change old name?",
+								"Change package?",
+								MyOptionPane.YES_NO_CANCEL_OPTION);
+
+						if (ans != MyOptionPane.CANCEL_OPTION) {
+							if (ans == MyOptionPane.YES_OPTION) {
+								pkg = pkg2;
+								MyOptionPane.showMessageDialog(driver.frame,
+										"Package name changed: " + pkg);
+
+							}
+							driver.properties.put("currentPackageName", pkg);
+							// driver.propertiesChanged = true;
 						}
-						driver.properties.put("currentPackageName", pkg);
-						//driver.propertiesChanged = true;											
+						fileString = fileString.substring(0, s + 8) + pkg
+								+ fileString.substring(s + 8 + t);
 					}
-					fileString = fileString.substring(0, s + 8) + pkg + fileString.substring(s + 8 + t);
 				}
 			}
 		 //newFile = file;
