@@ -37,7 +37,7 @@ Six Youtube videos are currently available showing how to use DrawFBP, for drawi
 
 - Obtain the jar file `drawfbp-x.y.z.jar`, save it.
 - (As of v2.15.10) obtain jar file `math.geom2d`, save it.
-- Run under Eclipse, or run as described below under "Running DrawFBP".
+- Run as described below under "Running DrawFBP".
 
 #### Getting Started
 
