@@ -81,17 +81,19 @@ Running DrawFBP
 
 DrawFBP can be executed directly by executing its .jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  You can download DrawFBP from Maven (search for DrawFBP), or from the latest release in the <a href="https://github.com/jpaulm/drawfbp/releases">DrawFBP Releases</a> directory in GitHub. 
 
-DrawFBP has been compiled to run on Java 1.7 (contrary to the comment in the Dec. 14 commit!).
+DrawFBP has been compiled to run on Java 1.8.
 
-As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Relaeses starting with v2.15.10 in drawfbp/Releases.  After downloading:
+As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Releases starting with v2.15.10 in drawfbp/Releases.  After downloading:
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
-- if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and add `javaGeom-0.11.1` to your classpath, as follows (assuming `javaGeom-0.11.1` is in the root directory for DrawFBP):    
+- if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, then type
 
-        java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar" com.jpaulmorrison.graphics.DrawFBP
+        java -cp "lib/*" com.jpaulmorrison.graphics.DrawFBP
         
-- if you want access to the Java annotations of your components, add the jar file(s) containing them (JavaFBP and possibly others) to the list, or to the project Properties/Build Path (for Eclipse). 
+- if you want access to the Java annotations of your components, add the jar file(s) containing them (at least JavaFBP and possibly others) to the project Properties/Build Path (for Eclipse), or e.g. type on the command line  
+
+        java -cp "lib/*;..\javafbp\build\libs\javafbp-4.1.0.jar" com.jpaulmorrison.graphics.DrawFBP
 
 - to run under Linux, replace the semi-colon(s) with colons(s).        
     
