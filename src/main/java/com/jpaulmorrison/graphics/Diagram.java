@@ -367,9 +367,12 @@ public class Diagram {
 					int w = fs.indexOf(".java");
 					int u = fs.substring(0, w).lastIndexOf("/");
 
-					String pkg2 = fs.substring(v + 5, u);
-					pkg2 = pkg2.replace('\\', '/');
-					pkg2 = pkg2.replace('/', '.');
+					String pkg2 = "(null)";
+					if (v + 5 < u) { 
+						pkg2 = fs.substring(v + 5, u);
+						pkg2 = pkg2.replace('\\', '/');
+						pkg2 = pkg2.replace('/', '.');
+					}
 					if (!(pkg.equals(pkg2))) {
 						int ans = MyOptionPane.showConfirmDialog(driver.frame,
 								"Package name in file: " + pkg + ",\n"
@@ -391,6 +394,7 @@ public class Diagram {
 						}
 						fileString = fileString.substring(0, s + 8) + pkg
 								+ fileString.substring(s + 8 + t);
+						//changed = true;
 					}
 				}
 			}

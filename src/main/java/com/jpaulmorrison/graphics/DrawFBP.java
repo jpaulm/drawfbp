@@ -2818,6 +2818,10 @@ void chooseFonts(MyFontChooser fontChooser){
 		if(javaFBPJarFile == null)
 			locateJavaFBPJarFile();
 		
+		//String clsName = progName.replace(".java", ".class");
+		
+		//(new File(clsDir + "/" + t + clsName)).delete();  // make sure old class has been deleted
+		
 		MyOptionPane.showMessageDialog(frame,
 				"Compiling program - " + srcDir + "/" + t + progName, MyOptionPane.INFORMATION_MESSAGE);
 					 
