@@ -97,7 +97,11 @@ The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` fo
 
         java -cp "lib/*;..\javafbp\build\libs\javafbp-4.1.0.jar" com.jpaulmorrison.graphics.DrawFBP
 
-- to run under Linux, replace the semi-colon(s) with colons(s).        
+- to run under Linux, replace the semi-colon(s) with colons(s).   
+
+- Note: this technique will pick up the latest Release.  If you want to use a different release, use something like
+
+        java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-x.y.z.jar" com.jpaulmorrison.graphics.DrawFBP
     
 Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes (from JavaFBP) filled in, you will have to reaccess the component classes, as the naming conventions have changed slightly.
 
