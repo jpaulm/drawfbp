@@ -87,7 +87,9 @@ As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be 
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
-- if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, then type
+The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` folder, so you can just do as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself - DrawFBP will then remember its location.
+
+- if you wish to run DrawFBP from the command line, using the latest release of DrawFBP, position to the folder containing the DrawFBP jar file, then type
 
         java -cp "lib/*" com.jpaulmorrison.graphics.DrawFBP
         
