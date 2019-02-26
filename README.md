@@ -3,7 +3,7 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-Latest release is v2.16.1, which is on Maven Central, but a bug has been found in the Compile function - in the case where the program being compiled is in the 'src' folder for the project.  A fix will be posted shortly, which will be Release v2.16.2.
+Latest release is v2.16.1, which is on Maven Central, but a bug has been found in the Compile function - in the case where the program being compiled is in the `src` folder for the project.  A fix will be posted shortly, which will be Release v2.16.2.
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
 
@@ -81,19 +81,27 @@ Running DrawFBP
 
 DrawFBP can be executed directly by executing its .jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  You can download DrawFBP from Maven (search for DrawFBP), or from the latest release in the <a href="https://github.com/jpaulm/drawfbp/releases">DrawFBP Releases</a> directory in GitHub. 
 
-DrawFBP has been compiled to run on Java 1.7 (contrary to the comment in the Dec. 14 commit!).
+DrawFBP has been compiled to run on Java 1.8.
 
-As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Relaeses starting with v2.15.10 in drawfbp/Releases.  After downloading:
+As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Releases starting with v2.15.10 in drawfbp/Releases.  After downloading:
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
-- if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, and add `javaGeom-0.11.1` to your classpath, as follows (assuming `javaGeom-0.11.1` is in the root directory for DrawFBP):    
+The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` folder, so you can just do as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself (it is also included in the assets for the latest release) - DrawFBP will then remember its location.
 
-        java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-2.15.10.jar" com.jpaulmorrison.graphics.DrawFBP
+- if you wish to run DrawFBP from the command line, using the latest release of DrawFBP, position to the folder containing the DrawFBP jar file, then type
+
+        java -cp "lib/*" com.jpaulmorrison.graphics.DrawFBP
         
-- if you want access to the Java annotations of your components, add the jar file(s) containing them (JavaFBP and possibly others) to the list, or to the project Properties/Build Path (for Eclipse). 
+- if you want access to the Java annotations of your components, add the jar file(s) containing them (at least JavaFBP and possibly others) to the project Properties/Build Path (for Eclipse), or e.g. type on the command line  
 
-- to run under Linux, replace the semi-colon(s) with colons(s).        
+        java -cp "lib/*;..\javafbp\build\libs\javafbp-4.1.0.jar" com.jpaulmorrison.graphics.DrawFBP
+
+- to run under Linux, replace the semi-colon(s) with colons(s).   
+
+- Note: this technique will pick up the latest Release.  If you want to use a different release, use something like
+
+        java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-x.y.z.jar" com.jpaulmorrison.graphics.DrawFBP
     
 Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes (from JavaFBP) filled in, you will have to reaccess the component classes, as the naming conventions have changed slightly.
 
