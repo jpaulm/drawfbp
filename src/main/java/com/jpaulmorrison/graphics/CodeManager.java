@@ -950,33 +950,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		
 		file = null;
 
-		// done during code save action
-		/*
-		if (diag.fCPArr[DrawFBP.GENCODE].fileExt.equals(".java")) {
-			try {
-				String t = doc.getText(0, doc.getLength());
-				int i = t.indexOf("package");
-				if (i > -1) {
-					int j = t.indexOf(";", i);
-					if (j > -1) {
-						String s = doc.getText(i + 8, j - i - 8);
-						s = s.trim();
-						if (packageName != null && !(packageName.equals(s))) {
-							packageName = s;
-							driver.properties.put("currentPackageName",
-									packageName);
-							driver.propertiesChanged = true;
-							MyOptionPane.showMessageDialog(driver.frame,
-									"Package name changed: " + packageName);
-						}
-					}
-				}
-
-			} catch (BadLocationException ble) {
-				ble.printStackTrace();
-			}
-		}
-		 */
+		
 		file = diag.genSave(file, diag.fCPArr[DrawFBP.GENCODE], fileString);
 
 		if (file == null) {
