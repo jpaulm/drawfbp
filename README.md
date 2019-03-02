@@ -85,13 +85,13 @@ DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10,
 
 DrawFBP has been compiled to run on Java 1.8.
 
-The `math.geom2d` jar file can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Releases starting with v2.15.10 in drawfbp/Releases.  After downloading:
+The `math.geom2d` jar file can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the project's `lib` folder.  After downloading:
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
-The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` folder, so you can just do as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself (it is also included in the assets for the latest release) - DrawFBP will then remember its location.
+The `math.geom2d` file and the latest full (non-pre-release) release of DrawFBP are all in the `lib` folder, so you can just run DrawFBP as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself (DrawFBP has a function to do this) - DrawFBP will then remember its location.
 
-- if you wish to run DrawFBP from the command line, using the latest release of DrawFBP, position to the folder containing the DrawFBP jar file, then type
+- if you wish to run DrawFBP from the command line using the latest full release of DrawFBP, position to the folder containing the DrawFBP jar file, then type
 
         java -cp "lib/*" com.jpaulmorrison.graphics.DrawFBP
         
@@ -101,7 +101,7 @@ The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` fo
 
 - to run under Linux, replace the semi-colon(s) with colons(s).   
 
-- Note: this technique will pick up the latest Release.  If you want to use a different release, use something like
+- Note: this technique will pick up the latest full Release.  If you want to use a different release, use something like
 
         java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-x.y.z.jar" com.jpaulmorrison.graphics.DrawFBP
     
