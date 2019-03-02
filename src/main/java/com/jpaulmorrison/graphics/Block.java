@@ -2046,7 +2046,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		// diag.changeCompLang();
 		CodeManager cm = new CodeManager(diag);
-		cm.display(new File(t), diag.diagLang);
+		cm.displayDoc(new File(t), diag.diagLang, null);
 
 	}
 }

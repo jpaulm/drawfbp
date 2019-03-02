@@ -693,6 +693,7 @@ public class MyFileChooser extends JFrame
 		//list.setSelectedIndex(0);
 		list.setFocusable(true);
 		
+		list.setFixedCellHeight(20);
 		
 		list.setVisible(true);
 		// list.requestFocusInWindow();
@@ -960,6 +961,7 @@ public class MyFileChooser extends JFrame
 		while (true) {
 			try {
 				String low = ll.getFirst();
+				
 				int i = 0;
 				int low_i = 0;
 				for (String s : ll) {
@@ -982,6 +984,7 @@ public class MyFileChooser extends JFrame
 
 			}
 		}
+		
 	}
 
 	class ListRenderer extends JLabel implements ListCellRenderer<String>  {
@@ -1079,8 +1082,8 @@ public class MyFileChooser extends JFrame
 			setPreferredSize(prefSize); 
 			setMaximumSize(maxSize);
 			setMinimumSize(minSize);
-			if (s.equals("a.drw"))
-				return this;
+			//if (s.equals("a.drw"))
+			//	return this;
 			return this;
 		}
 	}
@@ -1186,65 +1189,7 @@ public class MyFileChooser extends JFrame
 			// shouldn't happen  -- force a divide by zero!
 			int div_by_0 = 0;
 			div_by_0 /= div_by_0; 
-			/*
-
-			selComp = list;
-			int rowNo = list.locationToIndex(e.getPoint());
-			if (rowNo == -1)
-				return;
-
-			list.setRequestFocusEnabled(true);
-
-			list.setSelectedIndex(rowNo);
-			t_dirName.setBackground(Color.WHITE);
-			// text2.setBackground(textBackground);
-
-			// http://stackoverflow.com/questions/16392212/unable-to-type-or-delete-text-in-jtextfield
-			// http://stackoverflow.com/questions/13415150/java-swing-form-and-cannot-type-text-in-newly-added-jtextfield
-			// (this says don't use keylistener!)
-			// http://stackoverflow.com/questions/22642401/jtextfield-and-keylistener-java-swing?rq=1
-			// textField.getDocument().addDocumentListener(...);
-			// new code
-
-			// text2.requestFocusInWindow();
-			// text2.setBackground(vLightBlue);
-			// text2.getCaret().setVisible(true);
-
-			// String fn = listHead + File.separator + nodeNames[rowNo];
-
-			// if (e.getClickCount() == 1) {
-			// clickPoint = e.getLocationOnScreen();
-
-			if (nodeNames[rowNo].equals("(empty folder"))
-				return;
-
-			list.setSelectedIndex(rowNo);
-			list.repaint();
-
-			String t = (String) list.getSelectedValue();
-			if (!t.equals("")) {
-				File f = new File(t_dirName.getText() + File.separator + t);
-				if (f.exists() && !f.isDirectory()) {
-					t_fileName.setText(t);
-					t_fileName.repaint();
-				}
-			}
-			// xxxx
-
-			// } else
-			if (e.getClickCount() == 2) {
-
-				// Point p = e.getLocationOnScreen();
-
-				// if (clickPoint != null && Math.abs(p.x - clickPoint.x) < 8 //
-				// allow for moved cursor...
-				// && Math.abs(p.y - clickPoint.y) < 8) {
-
-				enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-				// }
-
-			}
-*/
+			
 		}
         
        
@@ -1927,7 +1872,7 @@ public class MyFileChooser extends JFrame
 	    	
 	    	//System.out.println(e.getClickCount());
 	        if (e.getClickCount() > 2) return;
-
+	          
 	        lastEvent = e;
 	        
 	        firstClick( lastEvent );    

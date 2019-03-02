@@ -28,7 +28,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 	Style baseStyle, normalStyle, packageNameStyle, errorStyle,
 			quotedStringStyle, commentStyle;
 	JDialog dialog;
-	StyledDocument doc;
+	//StyledDocument doc;
 	boolean changed = false;
 	boolean generated = false;
 	boolean packageNameChanged = false;
@@ -56,10 +56,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 	GenLang gl = null;
 	String upPort = null;;
 	String dnPort = null;
+	StyledDocument doc = null;
 
 	CodeManager(Diagram d) {
 		diag = d;
 		driver = d.driver;
+		d.cm = this;
 		dialog = new JDialog(driver.frame);
 		driver.depDialog = dialog;
 		
@@ -94,15 +96,15 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// jframe.setVisible(false);
 		dialog.pack();
 
-		StyleContext sc = new StyleContext();
-		doc = new DefaultStyledDocument(sc);
+		StyleContext sc = new StyleContext();	
+		doc = new DefaultStyledDocument(); 
 		textPane = new JTextPane(doc);
-		scrollPane = new JScrollPane(textPane);
+		scrollPane = new JScrollPane(textPane);			
 		setStyles(sc);
 		dialog.setVisible(true);
 		textPane.setVisible(true);
 		scrollPane.setVisible(true);
-		dialog.add(scrollPane);
+		dialog.add(scrollPane);		
 		textPane.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
 		doc.addDocumentListener(this);
@@ -572,50 +574,57 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return "Component(\"" + name + ":\" + i, typeof(" + className
 					+ "))";
 	}
+	
+	
 
-	void display(File file, GenLang gl) {
+	void displayDoc(File file, GenLang gl, String fileString) {
 
 		dialog.setTitle("Displayed Code: " + file.getName());
 		// genLang = gl;
-
-		String fileString = driver.curDiag.readFile(file, false);
+		
 		if (fileString == null) {
-			MyOptionPane.showMessageDialog(driver.frame,
-					"Couldn't read file: " + file.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		// changed = false;
-		//if (file.getName().endsWith(".fbp")) {
+			fileString = driver.curDiag.readFile(file, false);
+			if (fileString == null) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Couldn't read file: " + file.getAbsolutePath(),
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			// changed = false;
+			// if (file.getName().endsWith(".fbp")) {
 			nsLabel.setText("Not changed");
 			fbpMode = true;
 			changed = false;
-		//}
-		String suff = driver.curDiag.getSuffix(file.getName());
+			// }
+			String suff = driver.curDiag.getSuffix(file.getName());
 
-		if (suff != null && suff.toLowerCase().equals("java")) {
-			int i = fileString.indexOf("package ");
-			if (i == -1) {
-				packageName = (String) MyOptionPane.showInputDialog(driver.frame,
-						"Missing package name - please specify package name",
-						null);
+			if (suff != null && suff.toLowerCase().equals("java")) {
+				int i = fileString.indexOf("package ");
+				if (i == -1) {
+					packageName = (String) MyOptionPane.showInputDialog(
+							driver.frame,
+							"Missing package name - please specify package name",
+							null);
 
-				// driver.properties.put("currentPackageName", packageName);
-				// driver.propertiesChanged = true;
-				fileString = "package " + packageName + ";\n" + fileString;
-				changed = true;
-			} else {
-				int k = fileString.indexOf(";", i);
-				packageName = fileString.substring(i + 8, k);
-			}
-			packageName = packageName.trim();
-			String pkg = (String) driver.properties.get("currentPackageName");
-			if (pkg != null && !(pkg.equals(packageName))) {
-				driver.properties.put("currentPackageName", packageName);
-				//driver.propertiesChanged = true;
+					// driver.properties.put("currentPackageName", packageName);
+					// driver.propertiesChanged = true;
+					fileString = "package " + packageName + ";\n" + fileString;
+					changed = true;
+				} else {
+					int k = fileString.indexOf(";", i);
+					packageName = fileString.substring(i + 8, k);
+				}
+				packageName = packageName.trim();
+				String pkg = (String) driver.properties
+						.get("currentPackageName");
+				if (pkg != null && !(pkg.equals(packageName))) {
+					driver.properties.put("currentPackageName", packageName);
+					// driver.propertiesChanged = true;
+				}
 			}
 		}
-
 		try {
+			doc.remove(0, doc.getLength());
 			doc.insertString(0, fileString, normalStyle);
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(driver.frame,
@@ -631,6 +640,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return;
 	}
 
+	 
 	String genMetadata(String lang) {
 		String inData = "";
 		String outData = "";
@@ -934,7 +944,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return "X$" + counterList.indexOf(s);
 	}
 
-	boolean saveCode( /* boolean saveAs */) {
+	boolean saveCode() {
 
 		String fileString = null;
 		try {
@@ -946,12 +956,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		File file = null;
-		
-		file = null;
-
-		
-		file = diag.genSave(file, diag.fCPArr[DrawFBP.GENCODE], fileString);
+		File file = diag.genSave(null, diag.fCPArr[DrawFBP.GENCODE], fileString);
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver.frame, "File not saved");
@@ -974,12 +979,64 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// diag.targetLang = gl.label;
 		nsLabel.setText(changed ? "Not saved" : " ");
 		// diag.genCodeFileName = file.getAbsolutePath();
-		dialog.setTitle("Generated Code: " + file.getName());
+		dialog.setTitle("Generated Code: " + file.getName());		
 		dialog.repaint();
 
 		return true;
 	}
 
+	
+	 
+	String checkPackage(File file, String fileString){
+		int s = fileString.indexOf("package ");
+		boolean res = false;
+		if (s > -1) {
+			int t = fileString.substring(s + 8).indexOf(";");
+			String pkg = fileString.substring(s + 8, s + 8 + t);
+			String fs = file.getAbsolutePath();
+			fs = fs.replace("\\", "/");
+			int v = fs.indexOf("/src/");
+			int w = fs.indexOf(".java");
+			int u = fs.substring(0, w).lastIndexOf("/");
+
+			String pkg2 = "(null)";
+			if (v + 5 < u) {
+				pkg2 = fs.substring(v + 5, u);
+				pkg2 = pkg2.replace('\\', '/');
+				pkg2 = pkg2.replace('/', '.');
+			}
+			if (!(pkg.equals(pkg2))) {
+				int ans = MyOptionPane.showConfirmDialog(
+						driver.frame,
+						"Package name in file: " + pkg + ",\n"
+								+ "   suggested package name from file name is: "
+								+ pkg2
+								+ ", \n   do you want to change old name?",
+						"Change package?",
+						MyOptionPane.YES_NO_CANCEL_OPTION);
+
+				if (ans != MyOptionPane.CANCEL_OPTION) {
+					if (ans == MyOptionPane.YES_OPTION) {
+						pkg = pkg2;
+						MyOptionPane.showMessageDialog(driver.frame,
+								"Package name changed: " + pkg);
+
+					}
+					driver.properties.put("currentPackageName",
+							pkg);
+					// driver.propertiesChanged = true;
+				}
+				fileString = fileString.substring(0, s + 8) + pkg
+						+ fileString.substring(s + 8 + t);
+				changed = true;
+				res = true;
+				displayDoc(file, gl, fileString);
+			}
+		}
+		return fileString;
+	}
+	
+	
 	public JMenuBar createMenuBar() {
 
 		JMenuBar menuBar;

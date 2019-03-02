@@ -1213,8 +1213,8 @@ public class DrawFBP extends JFrame
 			if (!(cFile.exists()))
 				return;
 
-			CodeManager mc = new CodeManager(curDiag);
-			mc.display(cFile, gl);
+			CodeManager cm = new CodeManager(curDiag);
+			cm.displayDoc(cFile, gl, null);
 
 			return;
 		}
@@ -2148,13 +2148,13 @@ public class DrawFBP extends JFrame
 		if (suff.equals("fbp")) {
 			gl = findGLFromLabel("FBP");
 			CodeManager cm = new CodeManager(curDiag);
-			cm.display(file, gl);
+			cm.displayDoc(file, gl, null);
 			return file;
 		}
 		if (!(suff.equals("drw"))) {
 			gl = findGLFromLanguage(suff);
 			CodeManager cm = new CodeManager(curDiag);
-			cm.display(file, gl);
+			cm.displayDoc(file, gl, null);
 			return file;
 		}
 

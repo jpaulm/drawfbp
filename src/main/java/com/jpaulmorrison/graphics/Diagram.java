@@ -76,6 +76,8 @@ public class Diagram {
 	FileChooserParms[] fCPArr = new FileChooserParms[7];
 	String[] filterOptions = {"", "All (*.*)"};
 	
+	//StyledDocument doc;   // for formatted generated code
+	CodeManager cm = null;
 	
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;
@@ -84,6 +86,8 @@ public class Diagram {
 		arrows = new ConcurrentHashMap<Integer, Arrow>();
 		clickToGrid = true;
 		parent = null;
+		//StyleContext sc = new StyleContext();
+		//doc = new DefaultStyledDocument(sc);   
 		driver.grid.setSelected(clickToGrid);
 		//file = null;
 		diagLang = driver.currLang;
@@ -200,6 +204,7 @@ public class Diagram {
 
 	}
 
+	
 	/* General save function */
 
 	public File genSave(File file, DrawFBP.FileChooserParms fCP, Object contents) {
@@ -228,7 +233,7 @@ public class Diagram {
 
 				f = new File(System.getProperty("user.home"));
 			}
-			// } else {
+			
 
 			String fn = "";
 			suggestedFileName = "";
@@ -315,9 +320,14 @@ public class Diagram {
 			
 			//	diagFile = file;
 
-		}	
+		}
+		fileString = (String) contents;
+		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {
+			
+			 	//CodeManager cm = new CodeManager(this);  
+			 	fileString = cm.checkPackage(file, fileString);
+			 }
 		
-
 		// finished choosing file...
 		
 		if (fCP == fCPArr[DrawFBP.IMAGE]) {
@@ -341,7 +351,7 @@ public class Diagram {
 			// if not image
 			if (fCP.fileExt.equals(".drw")) {
 				
-				fileString = readFile(file, saveAs);
+				fileString = readFile(file, saveAs);  // read previous version
 				diagFile = file;
 				
 				if (fileString != null) {
@@ -352,57 +362,9 @@ public class Diagram {
 					file = oldFile;
 				}
 				fileString = buildFile();
-				//file = diagFile;
-			} else {
 				
-				// if not .drw or image
-				fileString = (String) contents;
-				if (driver.currLang.label.equals("Java")) {
-					int s = fileString.indexOf("package ");
-					if (s > -1) {
-						int t = fileString.substring(s + 8).indexOf(";");
-						String pkg = fileString.substring(s + 8, s + 8 + t);
-						String fs = file.getAbsolutePath();
-						fs = fs.replace("\\", "/");
-						int v = fs.indexOf("/src/");
-						int w = fs.indexOf(".java");
-						int u = fs.substring(0, w).lastIndexOf("/");
-
-						String pkg2 = "(null)";
-						if (v + 5 < u) {
-							pkg2 = fs.substring(v + 5, u);
-							pkg2 = pkg2.replace('\\', '/');
-							pkg2 = pkg2.replace('/', '.');
-						}
-						if (!(pkg.equals(pkg2))) {
-							int ans = MyOptionPane.showConfirmDialog(
-									driver.frame,
-									"Package name in file: " + pkg + ",\n"
-											+ "   suggested package name from file name is: "
-											+ pkg2
-											+ ", \n   do you want to change old name?",
-									"Change package?",
-									MyOptionPane.YES_NO_CANCEL_OPTION);
-
-							if (ans != MyOptionPane.CANCEL_OPTION) {
-								if (ans == MyOptionPane.YES_OPTION) {
-									pkg = pkg2;
-									MyOptionPane.showMessageDialog(driver.frame,
-											"Package name changed: " + pkg);
-
-								}
-								driver.properties.put("currentPackageName",
-										pkg);
-								// driver.propertiesChanged = true;
-							}
-							fileString = fileString.substring(0, s + 8) + pkg
-									+ fileString.substring(s + 8 + t);
-							// changed = true;
-						}
-					}
-				}
-			}
-		 //newFile = file;
+			} 
+		 
 				//if (newFile != null){
 					if (file.exists()) {
 					if (file.isDirectory()) {
@@ -496,13 +458,13 @@ public class Diagram {
 		    	driver.properties.remove("currentDiagram");
 		}
 		
-		String t = Integer.toString(driver.frame.getX());
+		String t = Integer.toString(driver.frame.getBounds().x);
 		driver.properties.put("x", t);
-		t = Integer.toString(driver.frame.getY());
+		t = Integer.toString(driver.frame.getBounds().y);
 		driver.properties.put("y", t);
-		t = Integer.toString(driver.frame.getWidth());
+		t = Integer.toString(driver.frame.getSize().width);
 		driver.properties.put("width", t);
-		t = Integer.toString(driver.frame.getHeight());
+		t = Integer.toString(driver.frame.getSize().height);
 		driver.properties.put("height", t);
 		//driver.propertiesChanged = true;
 		
