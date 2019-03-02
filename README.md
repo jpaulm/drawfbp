@@ -45,7 +45,7 @@ Six Youtube videos are currently available showing how to use DrawFBP, for drawi
 
 To get started using DrawFBP once you have it installed, just click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block defaults to "Process", but a number of other block types are available, controlled by by the buttons along the bottom of the screen.
 
-To connect two blocks, click anywhere on the border of the "from" block; then click anywhere on the border of the "to" block - it doesn't matter whether the left mouse button is held down or not. 
+To indicate a connection between two blocks, click anywhere on the border of the "from" block; then click anywhere on the border of the "to" block - it doesn't matter whether the left mouse button is held down or not. 
 
 Other features are described in the Help facility, which you should install (see below).
 
@@ -81,11 +81,11 @@ Features
 Running DrawFBP
 ----
 
-DrawFBP can be executed directly by executing its .jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  You can download DrawFBP from Maven (search for DrawFBP), or from the latest release in the <a href="https://github.com/jpaulm/drawfbp/releases">DrawFBP Releases</a> directory in GitHub. 
+DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  You can download DrawFBP from Maven (search for DrawFBP), but you will also need the 2D geometry jar file to run.  To run DrawFBP's Help facility, you will need the standard javax.help JavaHelp jar file.  All of these jar files will be held in the project's `lib` directory (thanks, Toivo!).
 
 DrawFBP has been compiled to run on Java 1.8.
 
-As of Release v2.15.10, DrawFBP requires the `math.geom2d` jar file.  It can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Releases starting with v2.15.10 in drawfbp/Releases.  After downloading:
+The `math.geom2d` jar file can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Releases starting with v2.15.10 in drawfbp/Releases.  After downloading:
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
