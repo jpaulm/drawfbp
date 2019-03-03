@@ -9,7 +9,7 @@ Latest release is v2.16.2 - it is now available on Maven Central. The next relea
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
 
-The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP assets.
+The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables.
 
 Description
 -----------
