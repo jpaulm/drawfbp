@@ -101,7 +101,7 @@ The `math.geom2d` file and the latest full (non-pre-release) release of DrawFBP 
 
 - to run under Linux, replace the semi-colon(s) with colons(s).   
 
-- Note: this technique will pick up the latest full Release.  If you want to use a different release, use something like
+- Note: this technique will pick up the latest full Release.  If you want to use a different release (or a pre-Release version), use something like
 
         java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-x.y.z.jar" com.jpaulmorrison.graphics.DrawFBP
     
