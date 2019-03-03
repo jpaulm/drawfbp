@@ -693,7 +693,7 @@ public class MyFileChooser extends JFrame
 		//list.setSelectedIndex(0);
 		list.setFocusable(true);
 		
-		list.setFixedCellHeight(20);
+		list.setFixedCellHeight(22);
 		
 		list.setVisible(true);
 		// list.requestFocusInWindow();

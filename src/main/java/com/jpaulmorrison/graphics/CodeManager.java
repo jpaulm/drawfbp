@@ -205,10 +205,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 			if (gl.label.equals("Java")) {
 				contents[0] = "package ";
 				contents[1] = packageName + ";";
-			} else
-				contents[0] = "namespace {";
-
-			contents[2] = " //change package name if desired\n";  
+				contents[2] = " //change package name if desired\n"; 
+			} else {
+				contents[0] = "namespace Xxxxxxxxxx{";
+				contents[2] = " //change namespace name if desired\n";  
+			}
 
 			if (gl.label.equals("Java"))
 				contents[2] += "import com.jpaulmorrison.fbp.core.engine.*; \n";
