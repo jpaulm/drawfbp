@@ -3,13 +3,13 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-Latest release is v2.16.2: a bug was found in the Compile and Save Generated Code functions in v2.16.1, so you are advised to move to v2.16.2.  v2.16.2 is now available on Maven Central.
+Latest release is v2.16.2 - it is now available on Maven Central. The next release, v2.16.3, is in pre-Release status.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
 
-The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP assets.
+The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables.
 
 Description
 -----------
@@ -85,13 +85,13 @@ DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10,
 
 DrawFBP has been compiled to run on Java 1.8.
 
-The `math.geom2d` jar file can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the Release assets for Releases starting with v2.15.10 in drawfbp/Releases.  After downloading:
+The `math.geom2d` jar file can be obtained from Maven Central, by doing a search for artifact `math.geom2d`, or from the project's `lib` folder.  After downloading:
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
-The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` folder, so you can just do as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself (it is also included in the assets for the latest release) - DrawFBP will then remember its location.
+The `math.geom2d` file and the latest full (non-pre-release) release of DrawFBP are all in the `lib` folder, so you can just run DrawFBP as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself (DrawFBP has a function to do this) - DrawFBP will then remember its location.
 
-- if you wish to run DrawFBP from the command line, using the latest release of DrawFBP, position to the folder containing the DrawFBP jar file, then type
+- if you wish to run DrawFBP from the command line using the latest full release of DrawFBP, position to the folder containing the DrawFBP jar file, then type
 
         java -cp "lib/*" com.jpaulmorrison.graphics.DrawFBP
         
@@ -101,7 +101,7 @@ The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` fo
 
 - to run under Linux, replace the semi-colon(s) with colons(s).   
 
-- Note: this technique will pick up the latest Release.  If you want to use a different release, use something like
+- Note: this technique will pick up the latest full Release.  If you want to use a different release (or a pre-Release version), use something like
 
         java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-x.y.z.jar" com.jpaulmorrison.graphics.DrawFBP
     
