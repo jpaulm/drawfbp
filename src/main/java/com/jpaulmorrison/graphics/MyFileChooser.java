@@ -114,19 +114,12 @@ public class MyFileChooser extends JFrame
 
 	ParentAction parentAction;
 	NewFolderAction newFolderAction;
-
-	//MyFileCompare comp;
-	//String[] filterOptions = {"", "All (*.*)"};
-
-	// Color textBackground;
-
-	// String fullNodeName;
 	
-	DrawFBP.FileChooserParms fCParms;
+	DrawFBP.FileChooserParm fCParm;
 	
 	public ClickListener clickListener;
 	
-	public MyFileChooser(File f, DrawFBP.FileChooserParms fCP) {
+	public MyFileChooser(File f, DrawFBP.FileChooserParm fCP) {
 		
 		clickListener = new ClickListener();
 					
@@ -137,7 +130,7 @@ public class MyFileChooser extends JFrame
 		// fullNodeName = f.getAbsolutePath();
 		driver = DrawFBP.driver;
 
-		fCParms = fCP;
+		fCParm = fCP;
 		
 	}
 
@@ -159,7 +152,7 @@ public class MyFileChooser extends JFrame
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());		
 		
-		driver.curDiag.filterOptions[0] = fCParms.title;
+		driver.curDiag.filterOptions[0] = fCParm.title;
 		cBox = new MyComboBox(driver.curDiag.filterOptions);
 		cBox.setMaximumRowCount(2);
 		cBox.addMouseListener(this);
@@ -200,14 +193,14 @@ public class MyFileChooser extends JFrame
 		//comp = new MyFileCompare();
 		renderer = new ListRenderer(driver);
 
-		if (fCParms == driver.curDiag.fCPArr[DrawFBP.DIAGRAM])
+		if (fCParm.index == DrawFBP.DIAGRAM)
 			dialog.setTitle(s);
 		else {
-			if (fCParms == driver.curDiag.fCPArr[DrawFBP.GENCODE])
-				fCParms.prompt = "Specify file name for code - for diagram: " + driver.curDiag.title + ".drw";
+			if (fCParm.index == DrawFBP.NETWORK)
+				fCParm.prompt = "Specify file name for code - for diagram: " + driver.curDiag.title + ".drw";
 			 
-			dialog.setTitle(fCParms.prompt);
-			if (fCParms == driver.curDiag.fCPArr[DrawFBP.CLASS])
+			dialog.setTitle(fCParm.prompt);
+			if (fCParm.index == DrawFBP.CLASS)
 				listShowingJarFile = listHead;
 		}
 
@@ -597,7 +590,7 @@ public class MyFileChooser extends JFrame
 						if (!fx.exists())
 							continue;
 						if (!fx.isDirectory() /* && (!(fn.startsWith("."))) */
-								&& (fCParms.filter.accept(fx) || driver.allFiles))
+								&& (fCParm.filter.accept(fx) || driver.allFiles))
 							ll2.add(fl[j]); // non-directories go into ll2,
 											// which is
 											// then sorted into ll
@@ -926,10 +919,10 @@ public class MyFileChooser extends JFrame
 			if (k.equals("noflo")) {
 				HashMap<String, Object> m = (HashMap<String, Object>) hm.get(k);
 				for (String k2 : m.keySet()) {
-					if (k2.equals("graphs") && fCParms == driver.curDiag.fCPArr[DrawFBP.DIAGRAM]
+					if (k2.equals("graphs") && fCParm.index == DrawFBP.DIAGRAM
 							|| k2.equals("components")
-							&& (fCParms == driver.curDiag.fCPArr[DrawFBP.GENCODE] ||
-									fCParms == driver.curDiag.fCPArr[DrawFBP.PROCESS])) {
+							&& (fCParm.index == DrawFBP.NETWORK ||
+									fCParm.index == DrawFBP.PROCESS)) {
 						HashMap<String, Object> m2 = (HashMap<String, Object>) m
 								.get(k2);
 						for (Object v : m2.values()) {
@@ -1530,8 +1523,8 @@ public class MyFileChooser extends JFrame
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
-				if (fCParms == driver.curDiag.fCPArr[DrawFBP.JARFILE]
-						|| fCParms == driver.curDiag.fCPArr[DrawFBP.JHELP]) {
+				if (fCParm.index == DrawFBP.JARFILE
+						|| fCParm.index == DrawFBP.JHELP) {
 					processOK();
 					return;
 				}
@@ -1891,18 +1884,24 @@ public class MyFileChooser extends JFrame
 	    }
 
 	    
-	    public void firstClick(MouseEvent e) {
-	    	
-	    	selComp = list;
-			int rowNo = list.locationToIndex(e.getPoint());
-			if (rowNo == -1)
-				return;
+		public void firstClick(MouseEvent e) {
 
+			selComp = list;
+			int rowNo = -1;
+			for (int n = list.getFirstVisibleIndex(); n < list
+					.getLastVisibleIndex() + 1; n++) {				
+				Rectangle r = list.getCellBounds(n, n);
+				if (r.contains(e.getPoint())) {
+					rowNo = n;
+					// int rowNo = list.locationToIndex(e.getPoint());
+					if (rowNo > -1)
+						break;
+				}
+			}
 			list.setRequestFocusEnabled(true);
 
 			list.setSelectedIndex(rowNo);
 			t_dirName.setBackground(Color.WHITE);
-			
 
 			if (nodeNames[rowNo].equals("(empty folder"))
 				return;
@@ -1918,10 +1917,10 @@ public class MyFileChooser extends JFrame
 					t_fileName.repaint();
 				}
 			}
-	    }
-	    public void secondClick(MouseEvent e) {
-	    	enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-	    }	
+		}
+		public void secondClick(MouseEvent e) {
+			enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+		}	
 	
 	}
 	

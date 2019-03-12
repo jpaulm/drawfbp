@@ -9,7 +9,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
 
-import com.jpaulmorrison.graphics.DrawFBP.FileChooserParms;
+import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
 
 import java.awt.*;
@@ -51,7 +51,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 	// int type;
 	JLabel nsLabel = null;
 	boolean SAVE_AS = true;
-	FileChooserParms[] saveFCPArr;
+	FileChooserParm[] saveFCPArr;
 	//String langLabel;
 	GenLang gl = null;
 	String upPort = null;;
@@ -124,7 +124,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		// diag.targetLang = langLabel;
 		changed = true;
-		diag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms(
+		diag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParm(DrawFBP.PROCESS,
 				"Process", diag.diagLang.srcDirProp,
 				"Select " + diag.diagLang.showLangs()
 						+ " component from directory",
@@ -132,7 +132,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				"Components: " + diag.diagLang.showLangs() + " "
 						+ diag.diagLang.showSuffixes());
 
-		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+		diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 				"Generated code", diag.diagLang.netDirProp,
 				"Specify file name for generated code",
 				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
@@ -957,7 +957,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		File file = diag.genSave(null, diag.fCPArr[DrawFBP.GENCODE], fileString);
+		File file = diag.genSave(null, diag.fCPArr[DrawFBP.NETWORK], fileString);
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver.frame, "File not saved");
@@ -990,7 +990,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 	 
 	String checkPackage(File file, String fileString){
 		int s = fileString.indexOf("package ");
-		boolean res = false;
+		//boolean res = false;
 		if (s > -1) {
 			int t = fileString.substring(s + 8).indexOf(";");
 			String pkg = fileString.substring(s + 8, s + 8 + t);
@@ -1030,7 +1030,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				fileString = fileString.substring(0, s + 8) + pkg
 						+ fileString.substring(s + 8 + t);
 				changed = true;
-				res = true;
+				//res = true;
 				displayDoc(file, gl, fileString);
 			}
 		}
@@ -1228,7 +1228,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// gl = diag.diagLang;
 		gl = driver.findGLFromLabel("FBP");
 		fbpMode = true;
-		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+		diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 				"Generated code",
 				"currentFBPNetworkDir", "Specify file name for generated code",
 				".fbp", diag.diagLang.filter, "fbp");
@@ -1391,7 +1391,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
-			diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+			diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 					"Generated code",
 					diag.diagLang.netDirProp,
 					"Specify file name for generated code",
@@ -1411,7 +1411,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// jframe.update(jdriver.osg);
 
 		// restore old language parameters
-		diag.fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms(
+		diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 				"Generated code",
 				diag.diagLang.netDirProp,
 				"Specify file name for generated code",

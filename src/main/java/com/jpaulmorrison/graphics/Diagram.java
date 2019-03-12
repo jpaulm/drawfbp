@@ -21,7 +21,7 @@ import javax.imageio.ImageIO;
 
 import javax.swing.JPopupMenu;
 
-import com.jpaulmorrison.graphics.DrawFBP.FileChooserParms;
+import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
 
 public class Diagram {
@@ -73,7 +73,7 @@ public class Diagram {
 	JPopupMenu jpm;
 	//String targetLang;
 	
-	FileChooserParms[] fCPArr = new FileChooserParms[7];
+	FileChooserParm[] fCPArr = new FileChooserParm[9];
 	String[] filterOptions = {"", "All (*.*)"};
 	
 	//StyledDocument doc;   // for formatted generated code
@@ -95,16 +95,16 @@ public class Diagram {
 			fCPArr[i] = driver.fCPArray[i];
 		}
 		
-		fCPArr[DrawFBP.CLASS] = driver.new FileChooserParms("Class", "currentClassDir",
+		fCPArr[DrawFBP.CLASS] = driver.new FileChooserParm(DrawFBP.CLASS, "Class", "currentClassDir",
 				"Select component from class directory", ".class",
 				driver.new JavaClassFilter(), "Class files");
 		
-		fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParms("Process", diagLang.srcDirProp, "Select "
+		fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParm(DrawFBP.PROCESS, "Process", diagLang.srcDirProp, "Select "
 				+ diagLang.showLangs() + " component from directory",
 				diagLang.suggExtn, diagLang.filter, "Components: "
 						+ diagLang.showLangs() + " " + diagLang.showSuffixes());
 		
-		fCPArr[DrawFBP.GENCODE] = driver.new FileChooserParms("Code",
+		fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK, "Code",
 				diagLang.netDirProp,
 				"Specify file name for code",
 				"." + diagLang.suggExtn, diagLang.filter,
@@ -198,6 +198,11 @@ public class Diagram {
 		DiagramBuilder.buildDiag(fileString, driver.frame, this);
 		// driver.jtp.setRequestFocusEnabled(true);
 		// driver.jtp.requestFocusInWindow();
+		driver.arrowEnd = null;  // get rid of black square... 
+		driver.arrowRoot = null;
+		driver.currentArrow = null;
+		driver.foundBlock = null;
+		driver.drawToolTip = false;
 		if (diagLang != null)
 			driver.changeLanguage(diagLang);
 		return file;
@@ -207,7 +212,7 @@ public class Diagram {
 	
 	/* General save function */
 
-	public File genSave(File file, DrawFBP.FileChooserParms fCP, Object contents) {
+	public File genSave(File file, DrawFBP.FileChooserParm fCP, Object contents) {
 
 		boolean saveAs = false;
 		File newFile = null;
