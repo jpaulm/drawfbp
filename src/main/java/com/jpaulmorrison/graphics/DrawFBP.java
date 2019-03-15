@@ -1950,6 +1950,10 @@ public class DrawFBP extends JFrame
 		propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
 		propertyDescriptions.put("Additional Component Jar Files",
 				"additionalJarFiles");
+		propertyDescriptions.put("Current folder for .exe files",
+				"exeDir");
+		propertyDescriptions.put("Current folder for .dll files",
+				"dllDir");
 
 	}
 
@@ -2596,18 +2600,17 @@ public class DrawFBP extends JFrame
 
 			// Start of C# part...
 
-			String ss = properties.get("currentCsharpNetworkDir");
-			File srcDir = null;
-			if (ss == null)
-				srcDir = new File(System.getProperty("user.home"));
-			else
-				srcDir = new File(ss);
+			String srcDir = properties.get("currentCsharpNetworkDir");
+			
+			if (srcDir == null)
+				srcDir = System.getProperty("user.home");	
 
-			MyFileChooser fc = new MyFileChooser(srcDir,
+			MyFileChooser fc = new MyFileChooser(new File(srcDir),
 					curDiag.fCPArr[PROCESS]);
 
 			int returnVal = fc.showOpenDialog();
 
+			String ss = null;
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				ss = getSelFile(fc);
@@ -2654,30 +2657,32 @@ public class DrawFBP extends JFrame
 				t = cFile.getAbsolutePath();
 				t = t.replace("\\", "/");
 				k = t.indexOf(v);
-				srcDir = new File(ss.substring(0, k)); // drop before namespace
+				srcDir = ss.substring(0, k); // drop before namespace
 														// string
 			}
 
-			srcDir.mkdirs();
+			(new File(srcDir)).mkdirs();
 			driver.properties.put("currentCsharpNetworkDir",
-					srcDir.getAbsolutePath());
+					srcDir);
 
+			File target = new File(srcDir + "/" + v + "/bin/Debug");
+			target.mkdirs();
+			
 			MyOptionPane.showMessageDialog(frame,
-					"Starting program - " + srcDir + "/" + v + "/" + progName,
+					"Starting compile - " + srcDir + "/" + v + "/" + "*.cs",
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
 			progName = progName.substring(0, progName.length() - 3); // drop .cs
-			String cSharpDll = "C:/Users/Paul/My Documents/Business/C#Stuff/FBP/csharpengine/Concord/bin/Debug/FBPLib.dll";
-			String cSharpVerbs = "C:/Users/Paul/My Documents/Business/C#Stuff/FBP/csharpengine/Concord/bin/Debug/FBPVerbs.dll";
+			String cSharpDll = "C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPLib/bin/Debug/FBPLib.dll";
+			String cSharpVerbs = "C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPVerbs/bin/Debug/FBPVerbs.dll";
+			
+			ProcessBuilder pb = new ProcessBuilder("csc", "/t:exe", "\"/out:" + srcDir + "/" + v + "/bin/Debug/" + v + ".exe\"", 
+					"\"/r:" + cSharpDll + "\"", "\"/r:" + cSharpVerbs + "\"",
+					"\"" + srcDir + "/" + v + "/" + "*.cs\"");
 
-			// ProcessBuilder pb = new ProcessBuilder("csc", "/t:exe", "\"/r:" +
-			// cSharpDll + "," + cSharpVerbs + "\"", srcDir + "/" + v + "/" +
-			// progName + ".cs");
-			ProcessBuilder pb = new ProcessBuilder("csc", "/t:exe",
-					"\"/r:" + cSharpDll + "," + cSharpVerbs + "\"",
-					srcDir + "/" + v + "/" + "*.cs");
-
+			pb.directory(new File(srcDir));
+			
 			pb.redirectErrorStream(true);
 			int i = 0;
 			try {
@@ -2721,12 +2726,14 @@ public class DrawFBP extends JFrame
 
 			int u = proc.exitValue();
 
-			if (u == 0)
+			if (u == 0) {
 
 				MyOptionPane.showMessageDialog(frame,
-						"Program compiled - " + srcDir + "/" + v + "/"
-								+ "*.cs\n" + "   into - " + progName + ".exe",
+						"Programs compiled and linked - " + srcDir + "/" + v + "/"
+								+ "*.cs\n" + "   into - " +  srcDir + "/" + v + "/bin/Debug/" + v + ".exe",
 						MyOptionPane.INFORMATION_MESSAGE);
+				properties.put("exeDir", srcDir + "/" + v)  ;
+			}
 			else
 				MyOptionPane.showMessageDialog(frame,
 						"Program compile failed, rc: " + u + " - " + progName,
@@ -2871,16 +2878,16 @@ public class DrawFBP extends JFrame
 						"Program error - " + clsDir + "/" + progName,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
-			} else {
-				try {
-					proc.waitFor();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				proc.destroy();
 			}
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			proc.destroy();
+
 			// int u = proc.exitValue();
 			program = clsDir + "/" + progName + ".java";
 		}
@@ -2896,7 +2903,7 @@ public class DrawFBP extends JFrame
 			}
 
 			// ----------------
-			String exeDir = properties.get("currentExeDir");
+			String exeDir = properties.get("exeDir");
 			if (exeDir == null)
 				exeDir = System.getProperty("user.home");
 
@@ -2910,13 +2917,8 @@ public class DrawFBP extends JFrame
 			String exeFile = "";
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				exeFile = getSelFile(fc);
-				// cFile = new File(ss);
 			}
-			// }
-			// if (exeFile == null || !(exeFile.exists()))
-			// return;
 
-			// if (currLang.label.equals("Java")) {
 			if (!(exeFile.endsWith(".exe"))) {
 				MyOptionPane.showMessageDialog(frame,
 						"Executable " + exeFile + " must end in '.exe'",
@@ -2924,9 +2926,18 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
-			properties.put("currentExeDir", exeDir);
+			int k = exeFile.lastIndexOf("bin/Debug/");
+			exeDir = exeFile.substring(0, k + 10);
+			
+			properties.put("exeDir", exeDir);
 
+			exeFile = exeFile.replace("\\",  "/");
+			
+			program = exeFile.substring(exeFile.lastIndexOf("/") + 1);
+			
 			pb = new ProcessBuilder(exeFile);
+			
+			pb.directory(new File(exeDir));
 
 			pb.redirectErrorStream(true);
 			int i = 0;
@@ -2949,6 +2960,19 @@ public class DrawFBP extends JFrame
 			} catch (SecurityException se) {
 				i = 4;
 			}
+			if (proc == null) {
+				MyOptionPane.showMessageDialog(frame, "Run error",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			proc.destroy();
 
 		}
 		// ---------------
@@ -2964,7 +2988,7 @@ public class DrawFBP extends JFrame
 
 	}
 
-	// between just checks that the value val is >= lim1 and <= lim2 - or the
+	// 'between' checks that the value val is >= lim1 and <= lim2 - or the
 	// inverse
 
 	static boolean between(int val, int lim1, int lim2) {
@@ -4075,6 +4099,22 @@ public class DrawFBP extends JFrame
 
 	}
 
+	// Filter for images
+		public class ExeFilter extends FileFilter {
+			@Override
+			public boolean accept(File f) {
+
+				return f.getName().toLowerCase().endsWith(".exe")
+						|| f.isDirectory();
+			}
+
+			@Override
+			public String getDescription() {
+				return ".exe files (*.exe)";
+			}
+
+		}
+
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
@@ -4607,18 +4647,9 @@ public class DrawFBP extends JFrame
 				repaint();
 				return;
 			}
-			/*
-			 * if (curDiag.currentArrow != null) { if
-			 * (between(xa,curDiag.currentArrow.toX - 4,
-			 * curDiag.currentArrow.toX + 4) &&
-			 * between(ya,curDiag.currentArrow.toY - 4, curDiag.currentArrow.toY
-			 * + 4)) { curDiag.currentArrow.toX = xa; curDiag.currentArrow.toY =
-			 * ya; } else { Integer aid = new Integer(curDiag.currentArrow.id);
-			 * curDiag.arrows.remove(aid); curDiag.foundBlock = null;
-			 * curDiag.currentArrow = null; //repaint(); } repaint(); }
-			 */
 
-			// if no currentDiag.currentArrow, start an arrow
+			
+			// if no currentArrow, but there is a found block, start an arrow
 			if (currentArrow == null && foundBlock != null
 					&& arrowEndForDragging == null) {
 
@@ -5475,8 +5506,9 @@ public class DrawFBP extends JFrame
 					if (Math.abs(s) > FORCE_VERTICAL) // force vertical
 						xa = currentArrow.lastX;
 				}
-				Bend bend = new Bend(xa, ya);
-				currentArrow.bends.add(bend);
+				//Bend bend = new Bend(xa, ya);
+				//currentArrow.bends.add(bend);  // was resulting in duplicate bend objects
+				currentArrow.createBend(xa, ya);  
 				currentArrow.lastX = x;
 				currentArrow.lastY = y;
 				currentArrow.toX = x;

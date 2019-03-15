@@ -108,7 +108,13 @@ public class Diagram {
 				diagLang.netDirProp,
 				"Specify file name for code",
 				"." + diagLang.suggExtn, diagLang.filter,
-				diagLang.showLangs());		
+				diagLang.showLangs());	
+		
+		fCPArr[DrawFBP.EXE] = driver.new FileChooserParm(DrawFBP.EXE, "C# Executable",
+				"exeDir",
+				"Specify file name for .exe file",
+				".exe", driver.new ExeFilter(),
+				".exe");	
 				
 	}
 
@@ -1017,8 +1023,7 @@ public class Diagram {
 							arrCopy.fromY = b.y;							
 						}
 						
-						//Bend b2 = new Bend(b.x, b.y);
-						//arrCopy.bends.add(b2);
+						
 					}
 				}
 				arrCopy.upStreamPort = arrow.upStreamPort;

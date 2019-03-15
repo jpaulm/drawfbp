@@ -751,63 +751,64 @@ public class Arrow implements ActionListener {
 		}
 		
 	}
+	
+	// two cases here: 1) bend being created at end of arrow (no red circle) 
+	//                 2) bend is being created/detected in the middle of an arrow
+	//                     2a) new bend is being created
+	//                     2b) existing bend is being detected
 
 	void createBend(int bendx, int bendy) {
+				
+		int index = 0;				
 		Bend bn = null;
-		int index = 0;
-		if (bends == null) {
-			if (DrawFBP.nearpln(bendx, bendy, fromX, fromY, toX, toY)) {
-				bends = new LinkedList<Bend>();
-				bn = new Bend(bendx, bendy);
-				if (fromX == toX) // if line vertical
-					bn.x = fromX;
-				if (fromY == toY) // if line horizontal
-					bn.y = fromY;
-				bends.add(bn);
-				bn.marked = true;
-				driver.bendForDragging = bn;
-				return;
-			}
-		} else {
-			int x = fromX;
-			int y = fromY;
-			Object[] oa = bends.toArray();
-			for (Object o : oa) {
-				Bend b = (Bend) o;
+		
+		if (!endsAtBlock && !endsAtLine) {
+			bends.add(new Bend(bendx, bendy));
+			return;
+		}
+		
+		int x1 = fromX;
+		int y1 = fromY;
+		if (bends != null) {
+			for (Bend b : bends) {
+
 				if (sameBend(bendx, bendy, b)) {
 					bn = b;
 					bn.marked = true;
 					driver.bendForDragging = bn;
 					return;
 				}
-				if (DrawFBP.nearpln(bendx, bendy, x, y, b.x, b.y)) {
+				if (DrawFBP.nearpln(bendx, bendy, x1, y1, b.x, b.y)) {
 					bn = new Bend(bendx, bendy);
-					if (x == b.x) // if line vertical
-						bn.x = x;
-					if (y == b.y) // if line horizontal
-						bn.y = y;
+					if (x1 == b.x) // if line vertical
+						bn.x = x1;
+					if (y1 == b.y) // if line horizontal
+						bn.y = y1;
 					bends.add(index, bn);
 					bn.marked = true;
 					driver.bendForDragging = bn;
 					return;
 				}
-				x = b.x;
-				y = b.y;
+				x1 = b.x;
+				y1 = b.y;
 				index++;
 			}
-
-			if (DrawFBP.nearpln(bendx, bendy, x, y, toX, toY)) {
-				bn = new Bend(bendx, bendy);
-				if (x == toX) // if line vertical
-					bn.x = x;
-				if (y == toY) // if line horizontal
-					bn.y = y;
-				bends.add(bn);
-				bn.marked = true;
-				driver.bendForDragging = bn;
-			}
+		}
+		else
+			bends = new LinkedList<Bend>();
+		
+		if (DrawFBP.nearpln(bendx, bendy, x1, y1, toX, toY)) {
+			bn = new Bend(bendx, bendy);
+			if (x1 == toX) // if line vertical
+				bn.x = x1;
+			if (y1 == toY) // if line horizontal
+				bn.y = y1;
+			bends.add(bn);
+			bn.marked = true;
+			driver.bendForDragging = bn;
 		}
 	}
+	 
 
 	boolean sameBend(int x1, int y1, Bend b) {
 		return ((x1 - b.x) * (x1 - b.x) + (y1 - b.y) * (y1 - b.y)) < 6 * 6;
