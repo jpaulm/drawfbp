@@ -644,6 +644,8 @@ public class MyFileChooser extends JFrame
 
 		nodeNames = new String[oa.length];
 		for (int j = 0; j < oa.length; j++) {
+			if (oa[j] == null)
+				continue;
 			nodeNames[j] = (String) oa[j];
 			if (nodeNames[j].endsWith(".jar"))
 				k = k + 1;  //get rid of spurious "unused" message			

@@ -921,7 +921,7 @@ public class DrawFBP extends JFrame
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
 
-		menuItem2 = new JMenuItem("Add Additional Component Jar File");
+		menuItem2 = new JMenuItem("Add Additional Jar File");
 		menuItem2.setEnabled(currLang != null && currLang.label.equals("Java"));
 		fileMenu.add(menuItem2);
 		menuItem2.addActionListener(this);
@@ -1238,7 +1238,7 @@ public class DrawFBP extends JFrame
 			return;
 		}
 
-		if (s.equals("Add Additional Component Jar File")) {
+		if (s.equals("Add Additional Jar File")) {
 
 			addAdditionalJarFile();
 			return;
@@ -1948,7 +1948,7 @@ public class DrawFBP extends JFrame
 				"defaultCompLang");
 		propertyDescriptions.put("JavaFBP jar file", "javaFBPJarFile");
 		propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
-		propertyDescriptions.put("Additional Component Jar Files",
+		propertyDescriptions.put("Additional Jar Files",
 				"additionalJarFiles");
 		propertyDescriptions.put("Current folder for .exe files",
 				"exeDir");
@@ -2525,9 +2525,15 @@ public class DrawFBP extends JFrame
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
+			
+			String jf = "\"" + javaFBPJarFile; 
+			for (String jfv : jarFiles.values()) {
+				jf += ";" + jfv;
+			}
+			jf += ";.\"";
 
-			ProcessBuilder pb = new ProcessBuilder("javac", "-cp",
-					"\"" + javaFBPJarFile + ";.\"", "-d", "\"" + clsDir + "\"",
+			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", jf,
+					"-d", "\"" + clsDir + "\"",
 					"-sourcepath", "\"" + srcDir + "\"", "-Xlint:unchecked",
 					"\"" + t + progName + "\"");
 
@@ -3055,8 +3061,8 @@ public class DrawFBP extends JFrame
 								if (n == -1)
 									break;
 
-								properties.put("addnl_jf_" + u.substring(0, n),
-										u.substring(n + 1));
+								properties.put("addnl_jf_" + u.substring(0, n),  
+								 		u.substring(n + 1));
 								jarFiles.put(u.substring(0, n),
 										u.substring(n + 1));
 								break;
@@ -3069,7 +3075,7 @@ public class DrawFBP extends JFrame
 									break;
 
 								properties.put("addnl_jf_" + u.substring(0, n),
-										u.substring(n + 1));
+								 		u.substring(n + 1));
 								jarFiles.put(u.substring(0, n),
 										u.substring(n + 1));
 							}
@@ -3099,8 +3105,8 @@ public class DrawFBP extends JFrame
 			out.write("<?xml version=\"1.0\"?> \n");
 			out.write("<properties> \n");
 			for (String k : properties.keySet()) {
-				if (k.startsWith("addnl_jf_")
-						|| k.startsWith("additionalJarFiles"))
+				if (k.startsWith("addnl_jf_") ||
+						 k.startsWith("additionalJarFiles"))
 					continue;
 				String s = "<" + k + "> " + properties.get(k) + "</" + k
 						+ "> \n";
@@ -3174,7 +3180,7 @@ public class DrawFBP extends JFrame
 
 		MyOptionPane.showMessageDialog(frame,
 				"Use File Chooser to locate JavaFBP jar file",
-				MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.WARNING_MESSAGE);
 
 		File f = new File(System.getProperty("user.home"));
 
@@ -3286,7 +3292,7 @@ public class DrawFBP extends JFrame
 
 		MyOptionPane.showMessageDialog(frame,
 				"Use File Chooser to locate JavaHelp jar file",
-				MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.WARNING_MESSAGE);
 
 		File f = new File(System.getProperty("user.home"));
 		// else
