@@ -66,7 +66,7 @@ Features
 - Generate complete networks in Java, C#, JSON, or .fbp notation
 - Pan, zoom in/out
 - Drag portion only of diagram (using Enclosure block)
-- Go to folder from diagram (v2.14.1)
+- Go to folder from diagram (as of v2.14.1)
 - Keyboard-only usage (except positioning of blocks)
 - Choose fonts (fixed size and variable size, indicating support for Russian, Hindi (Devanagari), and Chinese)
 - Change font size 
@@ -77,10 +77,11 @@ Features
 - "Grid" positioning on/off
 - Extra arrowhead (one per arrow)
 - New Functions (as of v2.16.1): 
-- Compile Java program
-- Run Java program
-- Compile C# program
-- Run C# program
+        - Compile Java program
+        - Run Java program
+- New Functions (as of v2.16.5):
+        - Compile C# program
+        - Run C# program
 
 Running DrawFBP
 ----
