@@ -3,7 +3,9 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-Latest release is v2.16.2 - it is now available on Maven Central. The next release, v2.16.5, is in pre-Release status. Releases v2.16.3 and v2.16.4 have been deleted.
+Latest release is v2.16.2 - it is now available on Maven Central. The next release, v2.16.5, is in pre-Release status. 
+
+Releases v2.16.3 and v2.16.4 have now been deleted.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
