@@ -119,8 +119,9 @@ public class MyFileChooser extends JFrame
 	
 	public ClickListener clickListener;
 	
-	public MyFileChooser(File f, DrawFBP.FileChooserParm fCP) {
+	public MyFileChooser(File f, DrawFBP.FileChooserParm fcp) {
 		
+		fCParm = fcp;
 		clickListener = new ClickListener();
 					
 		if (f == null || !f.exists()) 
@@ -130,7 +131,6 @@ public class MyFileChooser extends JFrame
 		// fullNodeName = f.getAbsolutePath();
 		driver = DrawFBP.driver;
 
-		fCParm = fCP;
 		
 	}
 
@@ -644,7 +644,7 @@ public class MyFileChooser extends JFrame
 
 		nodeNames = new String[oa.length];
 		for (int j = 0; j < oa.length; j++) {
-			if (oa[j] == null)
+			if (oa[j] == null)  // not sure where null came from, but it crashed one test!
 				continue;
 			nodeNames[j] = (String) oa[j];
 			if (nodeNames[j].endsWith(".jar"))

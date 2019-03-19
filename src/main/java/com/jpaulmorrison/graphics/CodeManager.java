@@ -124,6 +124,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 		// diag.targetLang = langLabel;
 		changed = true;
+		/*
 		diag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParm(DrawFBP.PROCESS,
 				"Process", diag.diagLang.srcDirProp,
 				"Select " + diag.diagLang.showLangs()
@@ -137,6 +138,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				"Specify file name for generated code",
 				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
 				diag.diagLang.label);
+		*/
 
 		String component = (gl.label.equals("Java"))
 				? "component"
@@ -957,7 +959,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		File file = diag.genSave(null, diag.fCPArr[DrawFBP.NETWORK], fileString);
+		File file = diag.genSave(null, diag.fCParm[DrawFBP.NETWORK], fileString);
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver.frame, "File not saved");
@@ -1224,11 +1226,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 		blocklist = new HashMap<String, Integer>();
 		// portlist = new HashMap<String, Integer>();
 		// diag.targetLang = "FBP";
-		saveFCPArr = diag.fCPArr;
+		saveFCPArr = diag.fCParm;
 		// gl = diag.diagLang;
 		gl = driver.findGLFromLabel("FBP");
 		fbpMode = true;
-		diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
+		diag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 				"Generated code",
 				"currentFBPNetworkDir", "Specify file name for generated code",
 				".fbp", diag.diagLang.filter, "fbp");
@@ -1391,7 +1393,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
-			diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
+			diag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 					"Generated code",
 					diag.diagLang.netDirProp,
 					"Specify file name for generated code",
@@ -1411,7 +1413,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// jframe.update(jdriver.osg);
 
 		// restore old language parameters
-		diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
+		diag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 				"Generated code",
 				diag.diagLang.netDirProp,
 				"Specify file name for generated code",

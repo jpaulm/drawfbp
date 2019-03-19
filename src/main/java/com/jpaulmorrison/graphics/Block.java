@@ -1727,13 +1727,13 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		
 		MyFileChooser fc = new MyFileChooser(new File(t),
-				diag.fCPArr[DrawFBP.DIAGRAM]);
+				diag.fCParm[DrawFBP.DIAGRAM]);
 
 		int returnVal = fc.showOpenDialog();
 		String dFN = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			dFN = driver.getSelFile(fc);
-			String suff = diag.fCPArr[DrawFBP.DIAGRAM].fileExt;
+			String suff = diag.fCParm[DrawFBP.DIAGRAM].fileExt;
 			if (!(dFN.endsWith(suff)))
 				dFN += suff;
 			driver.curDiag.changed = true;	
@@ -1826,7 +1826,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			t = System.getProperty("user.home");
 
 		MyFileChooser fc = new MyFileChooser(new File(t),
-				diag.fCPArr[DrawFBP.CLASS]);
+				diag.fCParm[DrawFBP.CLASS]);
 
 		int returnVal = fc.showOpenDialog();
 
@@ -2004,7 +2004,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				t = System.getProperty("user.home");
 
 			MyFileChooser fc = new MyFileChooser(new File(t),
-					diag.fCPArr[DrawFBP.PROCESS]);
+					diag.fCParm[DrawFBP.PROCESS]);
 
 			int returnVal = fc.showOpenDialog();
 

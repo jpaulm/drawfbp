@@ -73,7 +73,7 @@ public class Diagram {
 	JPopupMenu jpm;
 	//String targetLang;
 	
-	FileChooserParm[] fCPArr = new FileChooserParm[9];
+	FileChooserParm[] fCParm = new FileChooserParm[9];
 	String[] filterOptions = {"", "All (*.*)"};
 	
 	//StyledDocument doc;   // for formatted generated code
@@ -91,10 +91,10 @@ public class Diagram {
 		driver.grid.setSelected(clickToGrid);
 		//file = null;
 		diagLang = driver.currLang;
-		for (int i = 0; i < fCPArr.length; i++){
-			fCPArr[i] = driver.fCPArray[i];
-		}
-		
+		//for (int i = 0; i < fCParm.length; i++){
+		//	fCParm[i] = driver.fCPArray[i];
+		 
+		/*
 		fCPArr[DrawFBP.CLASS] = driver.new FileChooserParm(DrawFBP.CLASS, "Class", "currentClassDir",
 				"Select component from class directory", ".class",
 				driver.new JavaClassFilter(), "Class files");
@@ -110,13 +110,20 @@ public class Diagram {
 				"." + diagLang.suggExtn, diagLang.filter,
 				diagLang.showLangs());	
 		
+		fCPArr[DrawFBP.DLL] = driver.new FileChooserParm(DrawFBP.DLL, "C# .dll file",
+				"dllFileDir",
+				"Specify file name for .dll file",
+				".dll", driver.new DllFilter(),
+				".dll");	
+		
 		fCPArr[DrawFBP.EXE] = driver.new FileChooserParm(DrawFBP.EXE, "C# Executable",
 				"exeDir",
 				"Specify file name for .exe file",
 				".exe", driver.new ExeFilter(),
 				".exe");	
-				
-	}
+		*/
+	}			
+	 
 
 	public File open(File f) {
 		File file = null;  
@@ -137,7 +144,7 @@ public class Diagram {
 				f2 = new File(".");
 			}
 
-			MyFileChooser fc = new MyFileChooser(f2, fCPArr[DrawFBP.DIAGRAM]);
+			MyFileChooser fc = new MyFileChooser(f2, fCParm[DrawFBP.DIAGRAM]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -341,7 +348,7 @@ public class Diagram {
 		
 		// finished choosing file...
 		
-		if (fCP == fCPArr[DrawFBP.IMAGE]) {
+		if (fCP == fCParm[DrawFBP.IMAGE]) {
 			Path path = file.toPath();
 			try {
 				Files.deleteIfExists(path);
@@ -433,7 +440,7 @@ public class Diagram {
 				// User clicked YES.
 				if (diagFile == null) { // choose file
 
-					file = genSave(null, fCPArr[DrawFBP.DIAGRAM], name);
+					file = genSave(null, fCParm[DrawFBP.DIAGRAM], name);
 					if (file == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"File not saved");

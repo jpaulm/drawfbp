@@ -40,6 +40,10 @@ import java.net.*;
 import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
+import com.jpaulmorrison.graphics.DrawFBP.DllFilter;
+import com.jpaulmorrison.graphics.DrawFBP.ExeFilter;
+import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
+import com.jpaulmorrison.graphics.DrawFBP.JavaClassFilter;
 
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
@@ -148,15 +152,16 @@ public class DrawFBP extends JFrame
 
 	FileChooserParm[] fCPArray = new FileChooserParm[9];
 
-	public static int CLASS = 0;
-	public static int DIAGRAM = 1;
-	public static int IMAGE = 2;
-	public static int JARFILE = 3;
-	public static int JHELP = 4;
-	public static int PROCESS = 5;
-	public static int NETWORK = 6;
-	public static int DLL = 7;
-	public static int EXE = 8;
+	
+	public static int DIAGRAM = 0;
+	public static int IMAGE = 1;	
+	public static int JHELP = 2;
+	public static int JARFILE = 3;  // class-dependent
+	public static int CLASS = 4;  // class-dependent
+	public static int PROCESS = 5;  // class-dependent
+	public static int NETWORK = 6;  // class-dependent   
+	public static int DLL = 7; // class-dependent
+	public static int EXE = 8;  // class-dependent
 
 	JCheckBox grid;
 
@@ -208,6 +213,7 @@ public class DrawFBP extends JFrame
 			Block.Types.REPORT_BLOCK};
 
 	HashMap<String, String> jarFiles = new HashMap<String, String>();
+	HashMap<String, String> dllFiles = new HashMap<String, String>();
 
 	// JPopupMenu curPopup = null; // currently active popup menu
 
@@ -223,7 +229,8 @@ public class DrawFBP extends JFrame
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
 	JMenuItem menuItem1 = null;
-	JMenuItem menuItem2 = null;
+	JMenuItem menuItem2j = null;
+	JMenuItem menuItem2c = null;
 	JMenuItem compMenu = null;
 	JMenuItem runMenu = null;
 
@@ -263,6 +270,7 @@ public class DrawFBP extends JFrame
 	Timer ttStartTimer = null;
 	Timer ttEndTimer = null;
 	boolean drawToolTip = false;
+	boolean gotDllReminder = false;
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -270,6 +278,7 @@ public class DrawFBP extends JFrame
 			diagramName = args[0];
 		// frame = new JFrame("DrawFBP");
 		// int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+		try {
 		scalingFactor = 1.0d;
 		driver = this;
 
@@ -300,10 +309,10 @@ public class DrawFBP extends JFrame
 
 		// Following array entries are language-independent - they are copied
 		// over to the array of the same name in the Diagram object during
-		// Diagram initialization; they may change if the current language is changed 
+		// Diagram initialization
 		
 		// The missing array entries are language-dependent, and are set during
-		// diagram building or initialization
+		// diagram building or initialization; they may change if the current language is changed 
 
 		fCPArray[DIAGRAM] = new FileChooserParm(DIAGRAM, "Diagram", "currentDiagramDir",
 				"Specify diagram name in diagram directory", ".drw",
@@ -312,15 +321,15 @@ public class DrawFBP extends JFrame
 		fCPArray[IMAGE] = new FileChooserParm(IMAGE, "Image", "currentImageDir",
 				"Image: ", ".png", driver.new ImageFilter(), "Image files");
 
-		fCPArray[JARFILE] = new FileChooserParm(JARFILE, "Jar file", "javaFBPJarFile",
-				"Choose a jar file for JavaFBP", ".jar",
-				driver.new JarFileFilter(), "Jar files");
-
 		fCPArray[JHELP] = new FileChooserParm(JHELP, "Java Help file", "jhallJarFile",
 				"Choose a directory for the JavaHelp jar file", ".jar",
 				driver.new JarFileFilter(), "Help files");
 
 		createAndShowGUI();
+		} catch (NullPointerException e)
+		{
+			writePropertiesFile();
+		}
 	}
 
 	/**
@@ -412,7 +421,6 @@ public class DrawFBP extends JFrame
 			if (dcl.equals("NoFlo")) // transitional!
 				dcl = "JSON";
 			currLang = findGLFromLabel(dcl);
-
 		}
 
 		Iterator<Entry<String, String>> entries = jarFiles.entrySet()
@@ -422,12 +430,21 @@ public class DrawFBP extends JFrame
 
 		while (entries.hasNext()) {
 			Entry<String, String> thisEntry = entries.next();
-
 			z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
 			cma = ";";
-
 		}
 		properties.put("additionalJarFiles", z);
+		
+		entries = dllFiles.entrySet().iterator();
+		z = "";
+		cma = "";
+
+		while (entries.hasNext()) {
+			Entry<String, String> thisEntry = entries.next();
+			z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+			cma = ";";
+		}
+		properties.put("additionalDllFiles", z);
 
 		startProperties = new HashMap<String, String>();
 		for (String s : properties.keySet()) {
@@ -921,10 +938,15 @@ public class DrawFBP extends JFrame
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
 
-		menuItem2 = new JMenuItem("Add Additional Jar File");
-		menuItem2.setEnabled(currLang != null && currLang.label.equals("Java"));
-		fileMenu.add(menuItem2);
-		menuItem2.addActionListener(this);
+		menuItem2j = new JMenuItem("Add Additional Jar File");
+		menuItem2j.setEnabled(currLang != null && currLang.label.equals("Java"));
+		fileMenu.add(menuItem2j);
+		menuItem2j.addActionListener(this);
+		
+		menuItem2c = new JMenuItem("Add Additional Dll File");
+		menuItem2c.setEnabled(currLang != null && currLang.label.equals("C#"));
+		fileMenu.add(menuItem2c);
+		menuItem2c.addActionListener(this);
 
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
@@ -1047,7 +1069,45 @@ public class DrawFBP extends JFrame
 
 		curDiag = diag;
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
-		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();
+		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
+		
+		diag.fCParm[DIAGRAM] = fCPArray[DIAGRAM];	
+		diag.fCParm[IMAGE] = fCPArray[IMAGE];	
+		diag.fCParm[JHELP] = fCPArray[JHELP];	
+		
+		diag.fCParm[JARFILE] = new FileChooserParm(JARFILE, "Jar file", "javaFBPJarFile",
+				"Choose a jar file for JavaFBP", ".jar",
+				new JarFileFilter(), "Jar files");
+
+				
+		diag.fCParm[CLASS] = driver.new FileChooserParm(CLASS, "Class", "currentClassDir",
+				"Select component from class directory", ".class",
+				new JavaClassFilter(), "Class files");
+		
+		diag.fCParm[PROCESS] = driver.new FileChooserParm(PROCESS, "Process", diag.diagLang.srcDirProp, "Select "
+				+ diag.diagLang.showLangs() + " component from directory",
+				diag.diagLang.suggExtn, diag.diagLang.filter, "Components: "
+						+ diag.diagLang.showLangs() + " " + diag.diagLang.showSuffixes());
+		
+		diag.fCParm[NETWORK] = driver.new FileChooserParm(NETWORK, "Code",
+				diag.diagLang.netDirProp,
+				"Specify file name for code",
+				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
+				diag.diagLang.showLangs());	
+		
+		diag.fCParm[DLL] = driver.new FileChooserParm(DLL, "C# .dll file",
+				"dllFileDir",
+				"Specify file name for .dll file",
+				".dll", new DllFilter(),
+				".dll");	
+		
+		diag.fCParm[EXE] = driver.new FileChooserParm(EXE, "C# Executable",
+				"exeDir",
+				"Specify file name for .exe file",
+				".exe", new ExeFilter(),
+				".exe");	
+				
+				
 		repaint();
 
 		return;
@@ -1188,10 +1248,10 @@ public class DrawFBP extends JFrame
 				ss = System.getProperty("user.home");
 
 			File file = new File(ss);
-			MyFileChooser fc = new MyFileChooser(file, curDiag.fCPArr[NETWORK]);
+			MyFileChooser fc = new MyFileChooser(file, curDiag.fCParm[NETWORK]);
 			int i = name.indexOf(".drw");
 			ss += File.separator + name.substring(0, i)
-					+ curDiag.fCPArr[NETWORK].fileExt;
+					+ curDiag.fCParm[NETWORK].fileExt;
 			fc.setSuggestedName(ss);
 
 			int returnVal = fc.showOpenDialog(true); // force saveAs
@@ -1241,6 +1301,12 @@ public class DrawFBP extends JFrame
 		if (s.equals("Add Additional Jar File")) {
 
 			addAdditionalJarFile();
+			return;
+		}
+		
+		if (s.equals("Add Additional Dll File")) {
+
+			addAdditionalDllFile();
 			return;
 		}
 
@@ -1366,14 +1432,14 @@ public class DrawFBP extends JFrame
 				g.setColor(col);
 			}
 
-			int i = curDiag.fCPArr[IMAGE].prompt.indexOf(":");
+			int i = curDiag.fCParm[IMAGE].prompt.indexOf(":");
 			String fn;
 			if (curDiag.diagFile == null)
 				fn = "(null)";
 			else
 				fn = curDiag.diagFile.getName();
 
-			curDiag.fCPArr[IMAGE].prompt = curDiag.fCPArr[IMAGE].prompt
+			curDiag.fCParm[IMAGE].prompt = curDiag.fCParm[IMAGE].prompt
 					.substring(0, i) + ": " + fn;
 
 			file = curDiag.genSave(null, fCPArray[IMAGE], combined);
@@ -1405,11 +1471,11 @@ public class DrawFBP extends JFrame
 				currentImageDir = new File(ss);
 
 			MyFileChooser fc = new MyFileChooser(currentImageDir,
-					curDiag.fCPArr[IMAGE]);
+					curDiag.fCParm[IMAGE]);
 
 			int i = curDiag.diagFile.getName().indexOf(".drw");
 			ss += File.separator + curDiag.diagFile.getName().substring(0, i)
-					+ curDiag.fCPArr[IMAGE].fileExt;
+					+ curDiag.fCParm[IMAGE].fileExt;
 			fc.setSuggestedName(ss);
 
 			int returnVal = fc.showOpenDialog(true); // set to saveAs
@@ -1804,7 +1870,8 @@ public class DrawFBP extends JFrame
 		jtf.repaint();
 
 		menuItem1.setEnabled(currLang.label.equals("Java"));
-		menuItem2.setEnabled(currLang.label.equals("Java"));
+		menuItem2j.setEnabled(currLang.label.equals("Java"));
+		menuItem2c.setEnabled(currLang.label.equals("C#"));
 		// compMenu.setEnabled(currLang.label.equals("Java"));
 		// runMenu.setEnabled(currLang.label.equals("Java"));
 
@@ -1819,13 +1886,13 @@ public class DrawFBP extends JFrame
 		fileMenu.add(gNMenuItem, 10);
 		curDiag.filterOptions[0] = gl.showLangs();
 
-		curDiag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParm(PROCESS, "Process",
+		curDiag.fCParm[DrawFBP.PROCESS] = driver.new FileChooserParm(PROCESS, "Process",
 				gl.srcDirProp,
 				"Select " + gl.showLangs() + " component from directory",
 				gl.suggExtn, gl.filter,
 				"Components: " + gl.showLangs() + " " + gl.showSuffixes());
 
-		curDiag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(NETWORK, "Code",
+		curDiag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(NETWORK, "Code",
 				gl.netDirProp, "Specify file name for code", "." + gl.suggExtn,
 				gl.filter, gl.showLangs());
 
@@ -2449,7 +2516,7 @@ public class DrawFBP extends JFrame
 				genDir = new File(ss);
 
 			MyFileChooser fc = new MyFileChooser(genDir,
-					curDiag.fCPArr[NETWORK]);
+					curDiag.fCParm[NETWORK]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -2612,7 +2679,7 @@ public class DrawFBP extends JFrame
 				srcDir = System.getProperty("user.home");	
 
 			MyFileChooser fc = new MyFileChooser(new File(srcDir),
-					curDiag.fCPArr[PROCESS]);
+					curDiag.fCParm[PROCESS]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -2666,7 +2733,9 @@ public class DrawFBP extends JFrame
 				srcDir = ss.substring(0, k); // drop before namespace
 														// string
 			}
-
+			if (srcDir.endsWith("/"))
+				srcDir = srcDir.substring(0, srcDir.length() - 1);
+			
 			(new File(srcDir)).mkdirs();
 			driver.properties.put("currentCsharpNetworkDir",
 					srcDir);
@@ -2680,14 +2749,55 @@ public class DrawFBP extends JFrame
 
 			proc = null;
 			progName = progName.substring(0, progName.length() - 3); // drop .cs
-			String cSharpDll = "C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPLib/bin/Debug/FBPLib.dll";
-			String cSharpVerbs = "C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPVerbs/bin/Debug/FBPVerbs.dll";
 			
-			ProcessBuilder pb = new ProcessBuilder("csc", "/t:exe", "\"/out:" + srcDir + "/" + v + "/bin/Debug/" + v + ".exe\"", 
-					"\"/r:" + cSharpDll + "\"", "\"/r:" + cSharpVerbs + "\"",
-					"\"" + srcDir + "/" + v + "/" + "*.cs\"");
+			String z = properties.get("additionalDllFiles");
+			boolean gotDlls = -1 < z.indexOf("FBPLib") && -1 < z.indexOf("FBPVerbs");
+			
+			//z = "";
+			
+			//String w = "csc /t:exe \"/out:" + srcDir + "/" + v + "/bin/Debug/" + v + ".exe\"";
+			List<String> cmdList = new ArrayList<String>();
+            cmdList.add("csc");
+            cmdList.add("/t:exe");
+            //cmdList.add("/out:");
+            cmdList.add("\"/out:" + srcDir + "/" + v + "/bin/Debug/" + v + ".exe\"");
+            			
+			if (!gotDlls  && !gotDllReminder) {
+				MyOptionPane.showMessageDialog(frame,
+						"If you are using FBP, you will need a FBPLib dll and a FBPVerbs dll - use File/Add Additional Dll File",
+						MyOptionPane.WARNING_MESSAGE);
+				gotDllReminder = true;
+			}
+			
+			else {
+				Iterator<Entry<String, String>> entries = dllFiles.entrySet().iterator();
+				//z = "";
+				//String cma = "";
 
-			pb.directory(new File(srcDir));
+				 
+				String w = "";
+				while (entries.hasNext()) {
+					Entry<String, String> thisEntry = entries.next();
+					if (!(new File(thisEntry.getValue()).exists()))
+						MyOptionPane.showMessageDialog(frame,
+								"Dll file does not exist: " + thisEntry.getValue(),
+								MyOptionPane.WARNING_MESSAGE);
+					//z += "\"/r:" + thisEntry.getValue() + "\" ";
+					//cma = ";";
+					w = thisEntry.getValue();
+					w = w.replace("\\", "/");
+					cmdList.add("\"/r:" + w + "\"");
+				}
+				 
+				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPLib/bin/Debug/FBPLib.dll\"");
+				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPVerbs/bin/Debug/FBPVerbs.dll\"");
+			}					
+			
+			cmdList.add("\"" + srcDir + "/" + v + "/" + "*.cs\"");			
+			
+			ProcessBuilder pb = new ProcessBuilder(cmdList);
+
+			pb.directory(new File(srcDir + "/" + v));
 			
 			pb.redirectErrorStream(true);
 			int i = 0;
@@ -2761,7 +2871,7 @@ public class DrawFBP extends JFrame
 			else
 				clsDir = new File(ss);
 
-			MyFileChooser fc = new MyFileChooser(clsDir, curDiag.fCPArr[CLASS]);
+			MyFileChooser fc = new MyFileChooser(clsDir, curDiag.fCParm[CLASS]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -2915,7 +3025,7 @@ public class DrawFBP extends JFrame
 
 			ProcessBuilder pb = null;
 			MyFileChooser fc = new MyFileChooser(new File(exeDir),
-					curDiag.fCPArr[EXE]);
+					curDiag.fCParm[EXE]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -2939,9 +3049,13 @@ public class DrawFBP extends JFrame
 
 			exeFile = exeFile.replace("\\",  "/");
 			
+			List<String> cmdList = new ArrayList<String>();
+			
+			cmdList.add("\"" + exeFile + "\"");
+			
 			program = exeFile.substring(exeFile.lastIndexOf("/") + 1);
 			
-			pb = new ProcessBuilder(exeFile);
+			pb = new ProcessBuilder(cmdList);
 			
 			pb.directory(new File(exeDir));
 
@@ -3041,16 +3155,18 @@ public class DrawFBP extends JFrame
 			int j = s.indexOf(">");
 			if (i > -1 && j > -1 && j > i + 1) {
 				String key = s.substring(i + 1, j);
-				s = s.substring(j + 1);
+				s = s.substring(j + 1);  // value
 				int k = s.indexOf("<");
 				String u = "";
 				if (k > 0) {
-					if (!(key.equals("additionalJarFiles"))) {
+					if (!(key.equals("additionalJarFiles") || key.equals("additionalDllFiles"))) {
 						s = s.substring(0, k).trim();
 						key = key.replace("\\", "/");
-						if (-1 == key.indexOf("/")) // compensate for old bug!
+						if (-1 == key.indexOf("/")) // compensate for old bug (key and value were reversed)!
 							properties.put(key, s);
 					} else {
+						// additionalJar/DllFiles
+						HashMap<String, String> list = key.equals("additionalJarFiles")? jarFiles: dllFiles;
 						s = s.substring(0, k).trim();
 						while (true) {
 							int m = s.indexOf(";");
@@ -3061,9 +3177,9 @@ public class DrawFBP extends JFrame
 								if (n == -1)
 									break;
 
-								properties.put("addnl_jf_" + u.substring(0, n),  
-								 		u.substring(n + 1));
-								jarFiles.put(u.substring(0, n),
+								//properties.put("addnl_jf_" + u.substring(0, n),  
+								// 		u.substring(n + 1));
+								list.put(u.substring(0, n),
 										u.substring(n + 1));
 								break;
 							} else {
@@ -3074,9 +3190,9 @@ public class DrawFBP extends JFrame
 								if (n == -1)
 									break;
 
-								properties.put("addnl_jf_" + u.substring(0, n),
-								 		u.substring(n + 1));
-								jarFiles.put(u.substring(0, n),
+								//properties.put("addnl_jf_" + u.substring(0, n),
+								// 		u.substring(n + 1));
+								list.put(u.substring(0, n),
 										u.substring(n + 1));
 							}
 						}
@@ -3106,12 +3222,14 @@ public class DrawFBP extends JFrame
 			out.write("<properties> \n");
 			for (String k : properties.keySet()) {
 				if (k.startsWith("addnl_jf_") ||
-						 k.startsWith("additionalJarFiles"))
+						 k.startsWith("additionalJarFiles") ||
+						 k.startsWith("additionalDllFiles"))
 					continue;
 				String s = "<" + k + "> " + properties.get(k) + "</" + k
 						+ "> \n";
 				out.write(s);
 			}
+			
 			Iterator<Entry<String, String>> entries = jarFiles.entrySet()
 					.iterator();
 			String z = "";
@@ -3125,6 +3243,22 @@ public class DrawFBP extends JFrame
 
 			}
 			String s = "<additionalJarFiles> " + z + "</additionalJarFiles> \n";
+			out.write(s);
+			
+			entries = dllFiles.entrySet()
+					.iterator();
+			z = "";
+			cma = "";
+
+			while (entries.hasNext()) {
+				Entry<String, String> thisEntry = entries.next();
+
+				z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+				cma = ";";
+
+			}
+			s = "<additionalDllFiles> " + z + "</additionalDllFiles> \n";
+			
 			out.write(s);
 			out.write("</properties> \n");
 			// Close the BufferedWriter
@@ -3274,12 +3408,78 @@ public class DrawFBP extends JFrame
 
 			}
 			properties.put("additionalJarFiles", t);
+			MyOptionPane.showMessageDialog(frame,
+					"Additional jar file added: " + cFile.getName(),
+					MyOptionPane.INFORMATION_MESSAGE);
 
 			// propertiesChanged = true;
 
 		}
 		return true;
 	}
+	
+	boolean addAdditionalDllFile() {
+
+		String ans = (String) MyOptionPane.showInputDialog(frame,
+				"Enter Description of dll file being added",
+				"Enter Description", MyOptionPane.PLAIN_MESSAGE, null, null,
+				null);
+		if (ans == null || ans.equals("")) {
+			MyOptionPane.showMessageDialog(frame, "No description entered",
+					MyOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+
+		String s = properties.get("dllFileDir");
+		File f = null;
+		if (s == null)
+			f = new File(System.getProperty("user.home"));
+		else
+			f = (new File(s)).getParentFile();
+		MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[DLL]);
+
+		int returnVal = fc.showOpenDialog();
+		File cFile = null;
+		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			cFile = new File(getSelFile(fc));
+			if (cFile == null || !(cFile.exists())) {
+				MyOptionPane.showMessageDialog(frame,
+						"Unable to read additional dll file " + cFile.getName(),
+						MyOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+
+			dllFiles.put(ans, cFile.getAbsolutePath());
+
+			@SuppressWarnings("rawtypes")
+			Iterator entries = dllFiles.entrySet().iterator();
+			String t = "";
+			String cma = "";
+
+			while (entries.hasNext()) {
+				@SuppressWarnings("unchecked")
+				Entry<String, String> thisEntry = (Entry<String, String>) entries
+						.next();
+
+				t += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+				cma = ";";
+
+			}
+			
+			properties.put("additionalDllFiles", t);
+			
+			String u = cFile.getParent();
+			properties.put("dllFileDir", u);
+			MyOptionPane.showMessageDialog(frame,
+					"Additional dll file added: " + cFile.getName(),
+					MyOptionPane.INFORMATION_MESSAGE);
+
+			// propertiesChanged = true;
+
+		}
+		return true;
+	}
+
 
 	boolean locateJhallJarFile() {
 
@@ -4104,8 +4304,24 @@ public class DrawFBP extends JFrame
 		}
 
 	}
+	
+	// Filter for .dll files
+			public class DllFilter extends FileFilter {
+				@Override
+				public boolean accept(File f) {
 
-	// Filter for images
+					return f.getName().toLowerCase().endsWith(".dll")
+							|| f.isDirectory();
+				}
+
+				@Override
+				public String getDescription() {
+					return ".dll files (*.dll)";
+				}
+
+			}
+
+	// Filter for .exe files
 		public class ExeFilter extends FileFilter {
 			@Override
 			public boolean accept(File f) {
