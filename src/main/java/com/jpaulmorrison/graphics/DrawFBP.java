@@ -1473,10 +1473,16 @@ public class DrawFBP extends JFrame
 			MyFileChooser fc = new MyFileChooser(currentImageDir,
 					curDiag.fCParm[IMAGE]);
 
-			int i = curDiag.diagFile.getName().indexOf(".drw");
-			ss += File.separator + curDiag.diagFile.getName().substring(0, i)
-					+ curDiag.fCParm[IMAGE].fileExt;
-			fc.setSuggestedName(ss);
+			File f = curDiag.diagFile;
+			if (f != null) {
+				int i = curDiag.diagFile.getName().indexOf(".drw");
+				if (i > -1) {
+					ss += File.separator
+							+ curDiag.diagFile.getName().substring(0, i)
+							+ curDiag.fCParm[IMAGE].fileExt;
+					fc.setSuggestedName(ss);
+				}
+			}
 
 			int returnVal = fc.showOpenDialog(true); // set to saveAs
 
@@ -3308,7 +3314,13 @@ public class DrawFBP extends JFrame
 		String s = properties.get("javaFBPJarFile");
 
 		if (s != null) {
-			javaFBPJarFile = s;
+			javaFBPJarFile = s; 
+			MyOptionPane.showMessageDialog(frame,
+					"JavaFBP jar file location: " + s,
+					MyOptionPane.INFORMATION_MESSAGE);
+			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(frame,
+					"Change JavaFBP jar file location?",
+					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION))			
 			return true;
 		}
 
@@ -3321,7 +3333,7 @@ public class DrawFBP extends JFrame
 		// else
 		// f = (new File(s)).getParentFile();
 
-		MyFileChooser fc = new MyFileChooser(f, fCPArray[JARFILE]);
+		MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[JARFILE]);
 
 		int returnVal = fc.showOpenDialog();
 

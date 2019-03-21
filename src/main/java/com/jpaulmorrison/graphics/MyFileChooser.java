@@ -1858,6 +1858,7 @@ public class MyFileChooser extends JFrame
 		
 
 	    MouseEvent lastEvent;
+	    int rowNo;
 	        	     
 	    
 	    public void mouseClicked (MouseEvent e)
@@ -1889,7 +1890,7 @@ public class MyFileChooser extends JFrame
 		public void firstClick(MouseEvent e) {
 
 			selComp = list;
-			int rowNo = -1;
+			rowNo = -1;
 			for (int n = list.getFirstVisibleIndex(); n < list
 					.getLastVisibleIndex() + 1; n++) {				
 				Rectangle r = list.getCellBounds(n, n);
@@ -1921,7 +1922,21 @@ public class MyFileChooser extends JFrame
 			}
 		}
 		public void secondClick(MouseEvent e) {
-			enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+			selComp = list;
+			//int rowNo = -1;
+			int n;
+			for (n = list.getFirstVisibleIndex(); n < list
+					.getLastVisibleIndex() + 1; n++) {				
+				Rectangle r = list.getCellBounds(n, n);
+				if (r.contains(e.getPoint())) {
+					//rowNo = n;
+					// int rowNo = list.locationToIndex(e.getPoint());
+					if (n > -1)
+						break;
+				}
+			}
+			if (rowNo == n)
+				enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 		}	
 	
 	}
