@@ -508,7 +508,7 @@ public class Block implements ActionListener {
 				return;
 			}
 			//if (driver.tryFindJarFile) {
-				if (!driver.locateJavaFBPJarFile()) {
+				if (!driver.locateJavaFBPJarFile(false)) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"JavaFBP jar file not found", MyOptionPane.ERROR_MESSAGE);
 					return;
@@ -1815,7 +1815,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// fullClassName = null;
 		}
 
-		if (!driver.locateJavaFBPJarFile()) {
+		if (!driver.locateJavaFBPJarFile(false)) {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"JavaFBP jar file not found", MyOptionPane.ERROR_MESSAGE);
 			return;

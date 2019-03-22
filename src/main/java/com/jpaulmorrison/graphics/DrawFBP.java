@@ -1294,7 +1294,7 @@ public class DrawFBP extends JFrame
 		// }
 		if (s.equals("Locate JavaFBP Jar File")) {
 
-			locateJavaFBPJarFile();
+			locateJavaFBPJarFile(true);
 			return;
 		}
 
@@ -2586,7 +2586,7 @@ public class DrawFBP extends JFrame
 			}
 
 			if (javaFBPJarFile == null)
-				locateJavaFBPJarFile();
+				locateJavaFBPJarFile(true);
 
 			// String clsName = progName.replace(".java", ".class");
 
@@ -3309,12 +3309,12 @@ public class DrawFBP extends JFrame
 		return sa[0];
 	}
 
-	boolean locateJavaFBPJarFile() {
+	boolean locateJavaFBPJarFile(boolean checkLocation) {
 
 		String s = properties.get("javaFBPJarFile");
+		javaFBPJarFile = s; 
 
-		if (s != null) {
-			javaFBPJarFile = s; 
+		if (checkLocation) {			
 			MyOptionPane.showMessageDialog(frame,
 					"JavaFBP jar file location: " + s,
 					MyOptionPane.INFORMATION_MESSAGE);
@@ -3322,7 +3322,7 @@ public class DrawFBP extends JFrame
 					"Change JavaFBP jar file location?",
 					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION))			
 			return true;
-		}
+		
 
 		MyOptionPane.showMessageDialog(frame,
 				"Use File Chooser to locate JavaFBP jar file",
@@ -3370,6 +3370,8 @@ public class DrawFBP extends JFrame
 			return true;
 		}
 		return false;
+	}
+		return true;
 	}
 
 	boolean addAdditionalJarFile() {
@@ -3738,7 +3740,7 @@ public class DrawFBP extends JFrame
 		LinkedList<URL> ll = new LinkedList<URL>();
 		URL[] urls = null;
 		if (javaFBPJarFile == null)
-			locateJavaFBPJarFile();
+			locateJavaFBPJarFile(true);
 		try {
 
 			if (f != null)
