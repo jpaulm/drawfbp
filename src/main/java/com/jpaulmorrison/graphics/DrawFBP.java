@@ -40,10 +40,6 @@ import java.net.*;
 import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
-import com.jpaulmorrison.graphics.DrawFBP.DllFilter;
-import com.jpaulmorrison.graphics.DrawFBP.ExeFilter;
-import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
-import com.jpaulmorrison.graphics.DrawFBP.JavaClassFilter;
 
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
@@ -478,6 +474,7 @@ public class DrawFBP extends JFrame
 		jfv.setText("Ver: " + VersionAndTimestamp.getVersion());
 
 		jtp = new JTabbedPaneWithCloseIcons(this);
+		//int i = jtp.getTabCount(); 
 
 		jtp.setForeground(Color.BLACK);
 		jtp.setBackground(Color.WHITE);
@@ -573,7 +570,7 @@ public class DrawFBP extends JFrame
 
 		buildPropDescTable();
 
-		getNewDiag();
+		getNewDiag(true);
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -587,7 +584,7 @@ public class DrawFBP extends JFrame
 				Diagram diag = b.diag;
 
 				if (diag == null) {
-					getNewDiag();
+					getNewDiag(false);
 					// diag = new Diagram(driver);
 					// b.diag = diag;
 				}
@@ -678,7 +675,7 @@ public class DrawFBP extends JFrame
 		box4.add(Box.createRigidArea(new Dimension(50, 0)));
 		// jtp.setBackground(Color.WHITE);
 		// Align the left edges of the components.
-		curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
+		//curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diagDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
 		// label.setLabelFor(area);
 		box1.add(diagDesc);
@@ -1055,19 +1052,20 @@ public class DrawFBP extends JFrame
 		return menuBar;
 	}
 
-	void getNewDiag() {
+	void getNewDiag(boolean first) {
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
 		diag.area = sa;
 		int i = jtp.getTabCount();
 		jtp.add(sa, new JLabel());
+		int j = jtp.getTabCount();  // for debugging
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
 		jtp.setTabComponentAt(i, b);
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
 		diag.tabNum = i;
-
 		curDiag = diag;
+		curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
 		
@@ -1152,9 +1150,9 @@ public class DrawFBP extends JFrame
 		}
 		if (s.equals("New Diagram")) {
 
-			int i = jtp.getTabCount();
-			if (i > 1 || curDiag.diagFile != null || curDiag.changed)
-				getNewDiag();
+			//int i = jtp.getTabCount();
+			//if (i > 1 || curDiag.diagFile != null || curDiag.changed)
+			getNewDiag(false);
 
 			jtp.setSelectedIndex(curDiag.tabNum);
 
@@ -2182,27 +2180,46 @@ public class DrawFBP extends JFrame
 		if (fn != null)
 			file = new File(fn);
 		String fname = fn;
-
-		int i = jtp.getTabCount();
-		// ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-		// curDiag = b.diag;
-
-		if (i > 1 || curDiag.diagFile != null || curDiag.changed)
-			getNewDiag();
-		jtp.setSelectedIndex(curDiag.tabNum);
-
+		
+		/*
 		file = curDiag.open(file);
-		if (file == null) {
-			// CloseTabAction closeTabAction = new CloseTabAction();
-			// closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
-			closeTab();
-			// curDiag = null;
+		if (file == null) {			
+			closeTab();			
 			return null;
 		}
+		
+		fname = file.getName();
+*/
+		if (fn == null) {
+			//System.out.println("tab count: " + jtp.getTabCount());
+			boolean found = false;
+			for (int i = 0; i < jtp.getTabCount(); i++) { // skip first tab
+				ButtonTabComponent b = (ButtonTabComponent) jtp
+						.getTabComponentAt(i);
+				Diagram d = b.diag;
+				
+				if (d.diagFile.equals(file)){	
+					curDiag = d;
+					curDiag.tabNum = i;
+					found = true;
+					break;
+				}
+			}
 
+			if (!found)
+				getNewDiag(false);
+
+		}
+		file = curDiag.open(file);
+		if (file == null) {			
+			closeTab();			
+			return null;
+		}
+		
 		fname = file.getName();
 		curDiag.diagFile = file;
-
+		
+		jtp.setSelectedIndex(curDiag.tabNum);
 		GenLang gl = null;
 
 		String suff = curDiag.getSuffix(fname);
@@ -2586,7 +2603,7 @@ public class DrawFBP extends JFrame
 			}
 
 			if (javaFBPJarFile == null)
-				locateJavaFBPJarFile(true);
+				locateJavaFBPJarFile(false);
 
 			// String clsName = progName.replace(".java", ".class");
 
@@ -3311,66 +3328,75 @@ public class DrawFBP extends JFrame
 
 	boolean locateJavaFBPJarFile(boolean checkLocation) {
 
-		String s = properties.get("javaFBPJarFile");
-		javaFBPJarFile = s; 
-
-		if (checkLocation) {			
-			MyOptionPane.showMessageDialog(frame,
-					"JavaFBP jar file location: " + s,
-					MyOptionPane.INFORMATION_MESSAGE);
-			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(frame,
-					"Change JavaFBP jar file location?",
-					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION))			
-			return true;
+		// setting of checkLocation doesn't matter if javaFBPJarFile is null!
 		
+		String s = properties.get("javaFBPJarFile");
+		javaFBPJarFile = s;
 
-		MyOptionPane.showMessageDialog(frame,
-				"Use File Chooser to locate JavaFBP jar file",
-				MyOptionPane.WARNING_MESSAGE);
-
-		File f = new File(System.getProperty("user.home"));
-
-		// else
-		// f = (new File(s)).getParentFile();
-
-		MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[JARFILE]);
-
-		int returnVal = fc.showOpenDialog();
-
-		File cFile = null;
-		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			cFile = new File(getSelFile(fc));
-			if (cFile == null || !(cFile.exists())) {
+		boolean findJar = false;
+		if (checkLocation || s == null)
+			findJar = true;
+		
+		if (findJar) {
+			if (s != null) {
 				MyOptionPane.showMessageDialog(frame,
-						"Unable to read JavaFBP jar file " + cFile.getName(),
-						MyOptionPane.ERROR_MESSAGE);
-				return false;
-			}
-			// diag.driver.currentDir = new File(cFile.getParent());
-			javaFBPJarFile = cFile.getAbsolutePath();
-			properties.put("javaFBPJarFile", javaFBPJarFile);
+						"JavaFBP jar file location: " + s,
+						MyOptionPane.INFORMATION_MESSAGE);			
 
-			// propertiesChanged = true;
+			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(frame,					
+					"Change JavaFBP jar file location?",
+					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION));			
+				return true;
+			}
+
 			MyOptionPane.showMessageDialog(frame,
-					"JavaFBP jar file location: " + cFile.getAbsolutePath(),
-					MyOptionPane.INFORMATION_MESSAGE);
-			// jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
-			for (int i = 0; i < driver.jtp.getTabCount(); i++) {
-				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
-						.getTabComponentAt(i);
+					"Use File Chooser to locate JavaFBP jar file",
+					MyOptionPane.WARNING_MESSAGE);
 
-				Diagram d = b.diag;
-				if (d == null)
-					continue;
+			File f = new File(System.getProperty("user.home"));
 
-				for (Block bk : d.blocks.values()) {
-					bk.getClassInfo(bk.fullClassName);
+			// else
+			// f = (new File(s)).getParentFile();
+
+			MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[JARFILE]);
+
+			int returnVal = fc.showOpenDialog();
+
+			File cFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+				cFile = new File(getSelFile(fc));
+				if (cFile == null || !(cFile.exists())) {
+					MyOptionPane.showMessageDialog(frame,
+							"Unable to read JavaFBP jar file "
+									+ cFile.getName(),
+							MyOptionPane.ERROR_MESSAGE);
+					return false;
 				}
+				// diag.driver.currentDir = new File(cFile.getParent());
+				javaFBPJarFile = cFile.getAbsolutePath();
+				properties.put("javaFBPJarFile", javaFBPJarFile);
+
+				// propertiesChanged = true;
+				MyOptionPane.showMessageDialog(frame,
+						"JavaFBP jar file location: " + cFile.getAbsolutePath(),
+						MyOptionPane.INFORMATION_MESSAGE);
+				// jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
+				for (int i = 0; i < jtp.getTabCount(); i++) {
+					ButtonTabComponent b = (ButtonTabComponent) jtp
+							.getTabComponentAt(i);
+
+					Diagram d = b.diag;
+					if (d == null)
+						continue;
+
+					for (Block bk : d.blocks.values()) {
+						bk.getClassInfo(bk.fullClassName);
+					}
+				}
+				//return true;
 			}
-			return true;
+			// return false;
 		}
-		return false;
-	}
 		return true;
 	}
 
@@ -3740,7 +3766,7 @@ public class DrawFBP extends JFrame
 		LinkedList<URL> ll = new LinkedList<URL>();
 		URL[] urls = null;
 		if (javaFBPJarFile == null)
-			locateJavaFBPJarFile(true);
+			locateJavaFBPJarFile(false);
 		try {
 
 			if (f != null)
@@ -4099,7 +4125,7 @@ public class DrawFBP extends JFrame
 			if (j == 0) {
 				// make one tab with "(untitled)"
 				// Diagram curDiag = new Diagram(driver);
-				getNewDiag();
+				getNewDiag(false);
 				frame.setTitle("Diagram: (untitled)");
 			} else {
 				jtp.setSelectedIndex(j - 1);

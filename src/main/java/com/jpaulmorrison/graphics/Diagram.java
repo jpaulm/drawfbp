@@ -176,7 +176,7 @@ public class Diagram {
 
 			//return null;
 		//}
-		if (null == (fileString = readFile(file, false))) {
+		if (null == (fileString = readFile(file, false))) {    
 			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file: "
 					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
@@ -187,7 +187,7 @@ public class Diagram {
 				currentDiagramDir.getAbsolutePath());
 		//driver.propertiesChanged = true;
 
-		//if (!(file.getName().toLowerCase().endsWith(".drw"))) {
+		/*
 		int i = diagramIsOpen(file.getAbsolutePath());
 		if (-1 != i) {
 			ButtonTabComponent b = (ButtonTabComponent) driver.jtp
@@ -197,13 +197,13 @@ public class Diagram {
 			diagFile = b.diag.diagFile;
 			return file;
 		}
-
+*/
 		title = file.getName();
 		if (title.toLowerCase().endsWith(".drw"))
 			title = title.substring(0, title.length() - 4);
 		//if (diagramIsOpen(file.getAbsolutePath()))
 		//	return null;
-		diagFile = file;
+		//diagFile = file;
 		blocks.clear();
 		arrows.clear();
 		desc = " ";
@@ -691,7 +691,7 @@ public class Diagram {
 
 		// *this* is the *old* diagram; enc is the Enclosure block within it 
 		
-		driver.getNewDiag();               // creates new Diagram, and puts reference in driver.curDiag
+		driver.getNewDiag(false);               // creates new Diagram, and puts reference in driver.curDiag
 		driver.sbnDiag = driver.curDiag;   // subnet Diagram
 		driver.origDiag = this;
 		

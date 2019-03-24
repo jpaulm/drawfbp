@@ -60,16 +60,16 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		
 		// Iterate through the tabs
 		
-		for (int i = 0; i < driver.jtp.getTabCount(); i++) {
+		for (int i = 0; i </* driver.jtp.*/getTabCount(); i++) {
 			
 			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);	
 			
 			if (i == tabno) {
-				driver.jtp.setBackgroundAt(i, Color.WHITE);
+				/*driver.jtp.*/setBackgroundAt(i, Color.WHITE);
 				b.selected = true;
 			}
 			else {
-				driver.jtp.setBackgroundAt(i, Color.lightGray); 
+				/*driver.jtp.*/setBackgroundAt(i, Color.lightGray); 
 				b.selected = false;
 			}
 		}
