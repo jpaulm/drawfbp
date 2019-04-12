@@ -2580,7 +2580,7 @@ public class DrawFBP extends JFrame
 					t = cFile.getAbsolutePath().substring(k + 5, j) + "/";
 					t = t.replace("\\", "/");
 				}
-				clsDir = srcDir.replace("src", "bin");
+				clsDir = srcDir.replace("/src/", "/bin/");
 				srcDir = srcDir.substring(0, k + 4); // drop after src
 			} else {
 				srcDir = srcDir.substring(0, j);
@@ -2653,7 +2653,7 @@ public class DrawFBP extends JFrame
 			}
 			if (proc == null) {
 				MyOptionPane.showMessageDialog(frame,
-						"Compile error - " + clsDir + "/" + progName,
+						"Compile error - " + "\"" + srcDir + "\\" + t + progName + "\"",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			} else {
@@ -3028,7 +3028,7 @@ public class DrawFBP extends JFrame
 			proc.destroy();
 
 			// int u = proc.exitValue();
-			program = clsDir + "/" + progName + ".java";
+			program = clsDir + "/" + progName + ".class";
 		}
 
 		else {

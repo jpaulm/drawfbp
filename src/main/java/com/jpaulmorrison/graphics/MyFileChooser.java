@@ -1906,7 +1906,7 @@ public class MyFileChooser extends JFrame
 			list.setSelectedIndex(rowNo);
 			t_dirName.setBackground(Color.WHITE);
 
-			if (nodeNames[rowNo].equals("(empty folder"))
+			if (rowNo == -1 || nodeNames[rowNo].equals("(empty folder"))
 				return;
 
 			list.setSelectedIndex(rowNo);
