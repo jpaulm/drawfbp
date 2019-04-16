@@ -314,7 +314,7 @@ public class Diagram {
 						newFile = new File(s + fCP.fileExt);
 					else {
 						// if (!(s.toLowerCase().endsWith(fCP.fileExt))) {
-						if (!((driver.new ImageFilter()).accept(new File(s)))) {
+						if (!((driver.new ImageFilter()).accept(new File(s)))) {    
 							newFile = new File(s.substring(0,
 									s.lastIndexOf(suff))
 									+ fCP.fileExt.substring(1));
@@ -323,6 +323,7 @@ public class Diagram {
 				}
 
 				  newFile.getParentFile().mkdirs();
+				  driver.properties.put(fCP.propertyName, newFile.getParentFile().getAbsolutePath());
 			}
 		 
 
@@ -339,12 +340,12 @@ public class Diagram {
 			//	diagFile = file;
 
 		}
-		//fileString = (String) contents;
-		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {
-			
-			 	//CodeManager cm = new CodeManager(this);  
-			 	fileString = cm.checkPackage(file, fileString);
-			 }
+				    
+		
+		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
+			fileString = (String) contents;			 
+			fileString = cm.checkPackage(file, fileString);
+		}
 		
 		// finished choosing file...
 		
