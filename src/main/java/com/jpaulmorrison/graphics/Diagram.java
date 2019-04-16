@@ -339,7 +339,7 @@ public class Diagram {
 			//	diagFile = file;
 
 		}
-		fileString = (String) contents;
+		//fileString = (String) contents;
 		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {
 			
 			 	//CodeManager cm = new CodeManager(this);  
@@ -365,7 +365,7 @@ public class Diagram {
 			}
 			
 		} else {
-			
+			fileString = (String) contents;
 			// if not image
 			if (fCP.fileExt.equals(".drw")) {
 				

@@ -1448,7 +1448,7 @@ public class Block implements ActionListener {
 
 			codeFileName = null;
 			diagramFileName = null;    
-			description = null;   
+			//description = null;   
 			javaClass = null;
 			fullClassName = null;
 			diag.changed = true;
