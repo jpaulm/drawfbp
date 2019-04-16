@@ -3,9 +3,7 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-Latest release is v2.16.2 - now available on Maven Central. The next two releases, v2.16.5 and v2.16.6, are in Release status, while v2.16.7 is in pre-Release status. 
-
-Releases v2.16.3 and v2.16.4 have been deleted.
+Latest release is v2.16.8 - now available on Maven Central. 
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
@@ -94,9 +92,9 @@ The `math.geom2d` jar file can be obtained from Maven Central, by doing a search
 
 - for Eclipse you can then update your project Properties/Build Path entry to specify its location.
 
-The `math.geom2d` file and the latest full (non-pre-release) release of DrawFBP are all in the `lib` folder, so you can just run DrawFBP as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself (DrawFBP has a function to do this) - DrawFBP will then remember its location.
+The `math.geom2d` file and the latest release of DrawFBP are all in the `lib` folder, so you can just run DrawFBP as shown below.  The standard JavaHelp file is also in this folder, but you have to locate it yourself (DrawFBP has a function to do this) - DrawFBP will then remember its location.
 
-- if you wish to run DrawFBP from the command line using the latest full release of DrawFBP, position to the folder containing the DrawFBP jar file, then type
+- if you wish to run DrawFBP from the command line, position to the folder containing the DrawFBP jar file, then type
 
         java -cp "lib/*" com.jpaulmorrison.graphics.DrawFBP
         
@@ -106,7 +104,7 @@ The `math.geom2d` file and the latest full (non-pre-release) release of DrawFBP 
 
 - to run under Linux, replace the semi-colon(s) with colons(s).   
 
-- Note: this technique will pick up the latest full Release.  If you want to use a different release (or a pre-Release version), use something like
+- Note: this technique will pick up the latest Release.  If you want to use a different release, use something like
 
         java -cp "javaGeom-0.11.1.jar;build/libs/drawfbp-x.y.z.jar" com.jpaulmorrison.graphics.DrawFBP
     
