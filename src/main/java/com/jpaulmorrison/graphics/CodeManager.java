@@ -51,7 +51,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 	// int type;
 	JLabel nsLabel = null;
 	boolean SAVE_AS = true;
-	FileChooserParm[] saveFCPArr;
+	//FileChooserParm[] saveFCPArr;
 	//String langLabel;
 	GenLang gl = null;
 	String upPort = null;;
@@ -121,24 +121,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 		fbpMode = false;
 		//langLabel = diag.diagLang.label;
 		gl = diag.diagLang;
+		if (gl.label.equals("FBP")) {
+			genFbpCode();
+			return true;
+		}		
 
 		// diag.targetLang = langLabel;
 		changed = true;
-		/*
-		diag.fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParm(DrawFBP.PROCESS,
-				"Process", diag.diagLang.srcDirProp,
-				"Select " + diag.diagLang.showLangs()
-						+ " component from directory",
-				diag.diagLang.suggExtn, diag.diagLang.filter,
-				"Components: " + diag.diagLang.showLangs() + " "
-						+ diag.diagLang.showSuffixes());
-
-		diag.fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
-				"Generated code", diag.diagLang.netDirProp,
-				"Specify file name for generated code",
-				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-				diag.diagLang.label);
-		*/
+		
 
 		String component = (gl.label.equals("Java"))
 				? "component"
@@ -536,7 +526,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		// if (diag.compLang != glcompLang)
 		// diag.compLang = compLang;
 		changed = true;
-		colourCode();
+		colourCode(); 
 
 		generated = true;
 
@@ -959,7 +949,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		File file = diag.genSave(null, diag.fCParm[DrawFBP.NETWORK], fileString);
+		File file = diag.genSave(null, diag.fCParm[DrawFBP.NETWORK], fileString);  
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver.frame, "File not saved");
@@ -1226,14 +1216,13 @@ public class CodeManager implements ActionListener, DocumentListener {
 		blocklist = new HashMap<String, Integer>();
 		// portlist = new HashMap<String, Integer>();
 		// diag.targetLang = "FBP";
-		saveFCPArr = diag.fCParm;
+		//FileChooserParm saveFCP = diag.fCParm[DrawFBP.NETWORK];
 		// gl = diag.diagLang;
 		gl = driver.findGLFromLabel("FBP");
 		fbpMode = true;
-		diag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
-				"Generated code",
-				"currentFBPNetworkDir", "Specify file name for generated code",
-				".fbp", diag.diagLang.filter, "fbp");
+		
+		//diag.fCParm[DrawFBP.NETWORK] = diag.fCParm[DrawFBP.FBP];
+		//diag.fCParm[DrawFBP.NETWORK].index = DrawFBP.NETWORK; 
 
 		for (Block block : diag.blocks.values()) {
 			if (block instanceof ExtPortBlock) {
@@ -1384,7 +1373,16 @@ public class CodeManager implements ActionListener, DocumentListener {
 			cma = ", ";
 			code += "\n";
 		}
-
+		// restore old language parameters
+		/*
+				diag.fCParm[DrawFBP.NETWORK] = driver.fCPArray[NETWORK],
+						"Generated code",
+						diag.diagLang.netDirProp,
+						"Specify file name for generated code",
+						"." + diag.diagLang.suggExtn, diag.diagLang.filter,
+						diag.diagLang.label);
+						*/
+		//diag.fCParm[DrawFBP.NETWORK] = saveFCP;
 		// insert string data
 		try {
 			doc.insertString(doc.getLength(), code, baseStyle);
@@ -1393,12 +1391,14 @@ public class CodeManager implements ActionListener, DocumentListener {
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
+			/*
 			diag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
 					"Generated code",
 					diag.diagLang.netDirProp,
 					"Specify file name for generated code",
 					"." + diag.diagLang.suggExtn, diag.diagLang.filter,
 					diag.diagLang.label);
+			*/
 			return false;
 		}
 
@@ -1412,13 +1412,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		dialog.repaint();
 		// jframe.update(jdriver.osg);
 
-		// restore old language parameters
-		diag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
-				"Generated code",
-				diag.diagLang.netDirProp,
-				"Specify file name for generated code",
-				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-				diag.diagLang.label);
+		
 
 		return true;
 

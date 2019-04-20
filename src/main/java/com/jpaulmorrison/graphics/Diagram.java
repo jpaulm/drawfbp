@@ -34,7 +34,7 @@ public class Diagram {
 
 	DrawFBP driver;
 	int tabNum = -1;
-	DrawFBP.SelectionArea area; 
+	DrawFBP.SelectionArea area; 	
 
 	String title;
 
@@ -73,10 +73,10 @@ public class Diagram {
 	JPopupMenu jpm;
 	//String targetLang;
 	
-	FileChooserParm[] fCParm = new FileChooserParm[9];
+	FileChooserParm[] fCParm;
 	String[] filterOptions = {"", "All (*.*)"};
 	
-	//StyledDocument doc;   // for formatted generated code
+	
 	CodeManager cm = null;
 	
 	Diagram(DrawFBP drawFBP) {
@@ -90,38 +90,9 @@ public class Diagram {
 		//doc = new DefaultStyledDocument(sc);   
 		driver.grid.setSelected(clickToGrid);
 		//file = null;
-		diagLang = driver.currLang;
-		//for (int i = 0; i < fCParm.length; i++){
-		//	fCParm[i] = driver.fCPArray[i];
-		 
-		/*
-		fCPArr[DrawFBP.CLASS] = driver.new FileChooserParm(DrawFBP.CLASS, "Class", "currentClassDir",
-				"Select component from class directory", ".class",
-				driver.new JavaClassFilter(), "Class files");
+		diagLang = driver.currLang;	
+		fCParm = new FileChooserParm[driver.fCPArray.length];
 		
-		fCPArr[DrawFBP.PROCESS] = driver.new FileChooserParm(DrawFBP.PROCESS, "Process", diagLang.srcDirProp, "Select "
-				+ diagLang.showLangs() + " component from directory",
-				diagLang.suggExtn, diagLang.filter, "Components: "
-						+ diagLang.showLangs() + " " + diagLang.showSuffixes());
-		
-		fCPArr[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK, "Code",
-				diagLang.netDirProp,
-				"Specify file name for code",
-				"." + diagLang.suggExtn, diagLang.filter,
-				diagLang.showLangs());	
-		
-		fCPArr[DrawFBP.DLL] = driver.new FileChooserParm(DrawFBP.DLL, "C# .dll file",
-				"dllFileDir",
-				"Specify file name for .dll file",
-				".dll", driver.new DllFilter(),
-				".dll");	
-		
-		fCPArr[DrawFBP.EXE] = driver.new FileChooserParm(DrawFBP.EXE, "C# Executable",
-				"exeDir",
-				"Specify file name for .exe file",
-				".exe", driver.new ExeFilter(),
-				".exe");	
-		*/
 	}			
 	 
 
@@ -285,10 +256,10 @@ public class Diagram {
 					return null;
 				}
 
-				if (!s.endsWith(fCP.fileExt)){
-					s += fCP.fileExt;
-					newFile = new File(s);
-				}
+				//if (!s.endsWith(fCP.fileExt)){
+				//	s += fCP.fileExt;
+				//	newFile = new File(s);
+				//}
 				 if (newFile.getParentFile() == null) {
 				 	MyOptionPane.showMessageDialog(driver.frame, "Missing parent file for: "
 				 			+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
@@ -313,11 +284,19 @@ public class Diagram {
 					if (suff == null)
 						newFile = new File(s + fCP.fileExt);
 					else {
-						// if (!(s.toLowerCase().endsWith(fCP.fileExt))) {
-						if (!((driver.new ImageFilter()).accept(new File(s)))) {    
-							newFile = new File(s.substring(0,
-									s.lastIndexOf(suff))
-									+ fCP.fileExt.substring(1));
+						
+						if (!fCP.filter.accept(new File(s))) {    
+							
+							int answer = MyOptionPane.showConfirmDialog(driver.frame, 
+									"\"" + suff + "\" not valid suffix for " +
+								            fCP.title + " files - change suffix?", "Change suffix?",
+									MyOptionPane.YES_NO_CANCEL_OPTION);
+							if (answer == MyOptionPane.CANCEL_OPTION)
+								return null;
+							if (answer == MyOptionPane.YES_OPTION)
+								newFile = new File(s.substring(0,    
+									s.lastIndexOf(suff))                              
+									+ fCP.fileExt.substring(1));                    
 						}
 					}
 				}

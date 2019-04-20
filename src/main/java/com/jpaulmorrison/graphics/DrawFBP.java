@@ -40,6 +40,8 @@ import java.net.*;
 import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
+import com.jpaulmorrison.graphics.DrawFBP.FBPFilter;
+import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
 
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
@@ -146,7 +148,7 @@ public class DrawFBP extends JFrame
 
 	GenLang genLangs[];
 
-	FileChooserParm[] fCPArray = new FileChooserParm[9];
+	FileChooserParm[] fCPArray = new FileChooserParm[10];
 
 	
 	public static int DIAGRAM = 0;
@@ -154,10 +156,11 @@ public class DrawFBP extends JFrame
 	public static int JHELP = 2;
 	public static int JARFILE = 3;  // class-dependent
 	public static int CLASS = 4;  // class-dependent
-	public static int PROCESS = 5;  // class-dependent
-	public static int NETWORK = 6;  // class-dependent   
+	public static int PROCESS = 5;  // (Java or C#) class-dependent
+	public static int NETWORK = 6;  // class-dependent 
 	public static int DLL = 7; // class-dependent
-	public static int EXE = 8;  // class-dependent
+	public static int EXE = 8;  // class-dependent	
+	public static int FBP = 9;   // class-dependent
 
 	JCheckBox grid;
 
@@ -313,10 +316,17 @@ public class DrawFBP extends JFrame
 		fCPArray[DIAGRAM] = new FileChooserParm(DIAGRAM, "Diagram", "currentDiagramDir",
 				"Specify diagram name in diagram directory", ".drw",
 				driver.new DiagramFilter(), "Diagrams (*.drw)");
+		
+		
 
 		fCPArray[IMAGE] = new FileChooserParm(IMAGE, "Image", "currentImageDir",
-				"Image: ", ".png", driver.new ImageFilter(), "Image files");
-
+				"Image: ", ".png", driver.new ImageFilter(), "Image");	
+				
+		//fCPArray[FBP] = driver.new FileChooserParm(DrawFBP.FBP,
+		//				"Generated FBP code",
+		//				"currentFBPNetworkDir", "Specify file name for generated FBP code",
+		//				".fbp", driver.new FBPFilter(), "fbp notation");
+ 
 		fCPArray[JHELP] = new FileChooserParm(JHELP, "Java Help file", "jhallJarFile",
 				"Choose a directory for the JavaHelp jar file", ".jar",
 				driver.new JarFileFilter(), "Help files");
@@ -871,12 +881,12 @@ public class DrawFBP extends JFrame
 
 		int k = 0;
 		for (int i = 0; i < j; i++) {
-			if (!(genLangs[i].label.equals("FBP"))) {
+			//if (!(genLangs[i].label.equals("FBP"))) {
 				gMenu[k] = new JMenuItem(genLangs[i].label);
 				gnMenu.add(gMenu[k]);
 				gMenu[k].addActionListener(this);
 				k++;
-			}
+			//}
 		}
 
 		// menuItem = new JMenuItem("Clear Language Association");
@@ -923,9 +933,9 @@ public class DrawFBP extends JFrame
 		runMenu.addActionListener(this);
 
 		fileMenu.addSeparator();
-		menuItem = new JMenuItem("Generate .fbp code");
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		//menuItem = new JMenuItem("Generate .fbp code");
+		//fileMenu.add(menuItem);
+		//menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
 
@@ -1071,6 +1081,7 @@ public class DrawFBP extends JFrame
 		
 		diag.fCParm[DIAGRAM] = fCPArray[DIAGRAM];	
 		diag.fCParm[IMAGE] = fCPArray[IMAGE];	
+		diag.fCParm[FBP] = fCPArray[FBP];
 		diag.fCParm[JHELP] = fCPArray[JHELP];	
 		
 		diag.fCParm[JARFILE] = new FileChooserParm(JARFILE, "Jar file", "javaFBPJarFile",
@@ -1186,6 +1197,8 @@ public class DrawFBP extends JFrame
 		}
 
 		// }
+		
+		/*
 
 		if (s.equals("Generate .fbp code")) {
 
@@ -1210,6 +1223,8 @@ public class DrawFBP extends JFrame
 
 			return;
 		}
+		
+		*/
 
 		if (s.startsWith("Generate ")) {
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
@@ -1890,13 +1905,13 @@ public class DrawFBP extends JFrame
 		fileMenu.add(gNMenuItem, 10);
 		curDiag.filterOptions[0] = gl.showLangs();
 
-		curDiag.fCParm[DrawFBP.PROCESS] = driver.new FileChooserParm(PROCESS, "Process",
+		curDiag.fCParm[PROCESS] = driver.new FileChooserParm(PROCESS, "Process",
 				gl.srcDirProp,
 				"Select " + gl.showLangs() + " component from directory",
 				gl.suggExtn, gl.filter,
 				"Components: " + gl.showLangs() + " " + gl.showSuffixes());
 
-		curDiag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(NETWORK, "Code",
+		curDiag.fCParm[NETWORK] = driver.new FileChooserParm(NETWORK, "Code",
 				gl.netDirProp, "Specify file name for code", "." + gl.suggExtn,
 				gl.filter, gl.showLangs());
 
