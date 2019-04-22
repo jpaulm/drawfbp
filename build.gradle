@@ -1,11 +1,13 @@
 
+//  https://github.com/rholder/gradle-one-jar
 
 buildscript {  
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"        
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"      
+        classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
     }
 }
 apply plugin: 'io.codearte.nexus-staging'
@@ -35,6 +37,7 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'gradle-one-jar'
 
 
 version = '2.16.11'
@@ -62,10 +65,7 @@ repositories {
 
 dependencies {
           compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
-	//compile files('src/main/resources/DrawFBP-Help.jar') 
-	compile files('javaGeom-0.11.1.jar')
-	//compile group: "math.geom2d", name: "javaGeom", version: "0.11.1" 		
-	//runtime group: "math.geom2d", name: "javaGeom", version: "0.11.1" 
+	compile files('javaGeom-0.11.1.jar')	
 }
 
 jar {
