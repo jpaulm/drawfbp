@@ -122,6 +122,19 @@ signing {
     sign configurations.archives
 }
 
+task fatJar(type: Jar) {
+   // manifest {
+   //     attributes 'DrawFBP': 'com.jpaulmorrison.graphics.DrawFBP'
+   // }
+    manifest {
+        attributes 'Implementation-Title': 'DrawFBP with javaGeom jar',  
+        	'Implementation-Version': version,
+        	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
 
 task writeNewPom << {
     pom {

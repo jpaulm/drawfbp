@@ -8,8 +8,9 @@ hs_err_pid*
 
 # Maven packages/etc
 target
-build
-
+build/*
+build/libs
+!build/libs/**.*
 
 # Eclipse project
 bin
