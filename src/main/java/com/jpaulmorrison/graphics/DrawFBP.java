@@ -1575,9 +1575,9 @@ public class DrawFBP extends JFrame
 					if (jhallJarFile == null) {
 						int response = MyOptionPane.showConfirmDialog(frame,
 								// "Locate it?",
-								"Specify the location of the JavaHelp jar file -\n"
-										+ "do a search on Maven Central for 'javahelp' - \n"
-										+ "Group ID:javax.help Artifact ID:javahelp",
+								"Locate the standard JavaHelp jar file (javax.help) -\n"
+										+ "and specify the folder where you will keep it -\n" 
+								        + " it is in your 'lib' folder",
 								"Locate it?", MyOptionPane.OK_CANCEL_OPTION);
 						if (response == MyOptionPane.OK_OPTION)
 							res = locateJhallJarFile();
