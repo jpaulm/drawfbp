@@ -14,7 +14,7 @@ From Release v2.16.11 onwards, we will be using the "fat jar" technique (thanks,
      
 If you use the old `drawfbp-2.16.10.jar` or older, you must provide access to the `math.geom2d` jar file.     
 
-The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables.
+The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables in the `lib` folder.
 
 Description
 -----------
@@ -42,7 +42,7 @@ Six Youtube videos are currently available showing how to use DrawFBP, for drawi
 
 #### Installing DrawFBP
 
-- Obtain the jar file `drawfbp-[all]-x.y.z.jar`, save it.
+- Create a directory for your DrawFBP clone; download using the GitHub "clone" function. 
 - Run as described below under "Running DrawFBP".
 
 #### Getting Started with your Diagram
