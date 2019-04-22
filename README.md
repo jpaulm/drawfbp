@@ -9,7 +9,7 @@ Latest release is v2.16.10 - v2.16.8 is now available on Maven Central, but has 
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
 
-From Release v2.16.11 onwards, we will be using the `fatjar` technique (thanks, Toivo!).  To run DrawFBP, just position to your DrawFBP folder, and enter
+From Release v2.16.11 onwards, we will be using the "fat jar" technique (thanks, Toivo!).  To run DrawFBP, just position to your DrawFBP folder, and enter
      java -jar build/libs/drawfbp-all-x.y.z.jar   
      
 If you use the old `drawfbp-2.16.10.jar` or older, you must provide access to the `math.geom2d` jar file.     
