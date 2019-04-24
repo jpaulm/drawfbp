@@ -3,11 +3,9 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-Latest release is v2.16.11 - v2.16.8 on Maven Central has a known bug. The jar file for v2.16.11 can be obtained from the latest Release.
+Latest release is v2.16.11 - v2.16.8 on Maven Central has a known bug. The jar file for v2.16.11 can be obtained from the latest release, currently in pre-Release status, pending more testing.
 
-All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
-
-From Release v2.16.11 onwards, we will be using the "fat jar" technique (thanks, Toivo!).  To run DrawFBP, just position to your DrawFBP folder, and enter
+All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The jar file for v2.16.11 now includes this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
 
 <code>java -jar build/libs/drawfbp-all-x.y.z.jar</code>   
      
