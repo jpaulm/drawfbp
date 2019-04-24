@@ -3,9 +3,7 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-Latest release is v2.16.10 - v2.16.8 is now available on Maven Central, but has a known bug. 
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
+Latest release is v2.16.11 - v2.16.8 on Maven Central has a known bug. The jar file for v2.16.11 can be obtained from the latest Release.
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.
 
