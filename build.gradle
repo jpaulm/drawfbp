@@ -1,4 +1,3 @@
-
 //  https://github.com/rholder/gradle-one-jar
 
 buildscript {  
@@ -123,9 +122,9 @@ signing {
 }
 
 task fatJar(type: Jar) {
-   // manifest {
-   //     attributes 'DrawFBP': 'com.jpaulmorrison.graphics.DrawFBP'
-   // }
+    manifest {
+        attributes 'DrawFBP': 'com.jpaulmorrison.graphics.DrawFBP'
+   }
     manifest {
         attributes 'Implementation-Title': 'DrawFBP with javaGeom jar',  
         	'Implementation-Version': version,
@@ -213,5 +212,3 @@ uploadArchives {
   }
 }
 }
-
-    
