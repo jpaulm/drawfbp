@@ -6,11 +6,9 @@ DrawFBP
 Sample DrawFBP network
 ---
 
-Here is a very simple diagram built using DrawFBP, coutesy of Bob Corrick, showing process names, names of component source code and class names (used when checking port connections).
+Here is a very simple diagram built using DrawFBP, courtesy of Bob Corrick, showing process names, names of component source code and class names (used when checking port connections).
 
 ![FilterByFirstValue](https://github.com/jpaulm/drawfbp/blob/master/docs/FilterByFirstValue.png "Simple Network Diagram")
-
-Here is a very simple diagram built using DrawFBP, showing process names, names of component source code and class names (used to generate runnable code, and also for checking port connections).
 
 Release History
 ---
