@@ -3,6 +3,18 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
+Sample DrawFBP network
+---
+
+Here is a very simple diagram built using DrawFBP, coutesy of Bob Corrick, showing process names, names of component source code and class names (used when checking port connections).
+
+![FilterByFirstValue](https://github.com/jpaulm/drawfbp/blob/master/docs/FilterByFirstValue.png "Simple Network Diagram")
+
+Here is a very simple diagram built using DrawFBP, showing process names, names of component source code and class names (used to generate runnable code, and also for checking port connections).
+
+Release History
+---
+
 Latest release is v2.16.11 - v2.16.8 (the latest release on Maven Central) has a known bug. The jar file for v2.16.11, which includes the `math.geom2d` jar file, can be obtained from the Releases folder, and is currently in pre-Release status, pending more testing (https://github.com/jpaulm/drawfbp/releases/tag/v2.16.11 ).
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The jar file for v2.16.11 now includes this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
@@ -101,12 +113,6 @@ Note: if you are displaying a network built using a pre-v2.13.0 version of DrawF
 
 **DrawFBP properties** are held in a file called <code>DrawFBPProperties.xml</code> in the user's home directory.  If this does not exist, it will be created the first time the user runs DrawFBP - it is automatically updated as the user uses various DrawFBP facilities.
 
-Sample DrawFBP network
----
-
-Here is a very simple diagram built using DrawFBP, showing process names, names of component source code and class names (used when checking port connections).
-
-![MergeandSort](https://github.com/jpaulm/drawfbp/blob/master/docs/MergeandSort.png "Simple Network Diagram")
 
 JavaHelp facility
 ---
