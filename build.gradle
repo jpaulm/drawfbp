@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"      
-        classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
+        //classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
     }
 }
 apply plugin: 'io.codearte.nexus-staging'
@@ -36,7 +36,7 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 apply plugin: 'maven'
 apply plugin: 'signing'
-apply plugin: 'gradle-one-jar'
+//apply plugin: 'gradle-one-jar'
 
 
 version = '2.16.11'
@@ -65,6 +65,7 @@ repositories {
 dependencies {
           compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
 	compile files('javaGeom-0.11.1.jar')	
+	//classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
 }
 
 jar {
@@ -114,7 +115,7 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-    archives javadocJar, sourcesJar
+    archives javadocJar,sourcesJar
 }
 
 signing {
@@ -122,9 +123,9 @@ signing {
 }
 
 task fatJar(type: Jar) {
-    manifest {
-        attributes 'DrawFBP': 'com.jpaulmorrison.graphics.DrawFBP'
-   }
+   // manifest {
+  //      attributes 'DrawFBP': 'com.jpaulmorrison.graphics.DrawFBP'
+   //}
     manifest {
         attributes 'Implementation-Title': 'DrawFBP with javaGeom jar',  
         	'Implementation-Version': version,
@@ -134,6 +135,11 @@ task fatJar(type: Jar) {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
+
+//task funJar(type: OneJar) {
+//  mainClass = 'com.jpaulmorrison.graphics.DrawFBP'
+//  classPath = 'javaGeom-0.11.1.jar'
+//}
 
 task writeNewPom << {
     pom {
@@ -150,11 +156,7 @@ task writeNewPom << {
                     name 'GNU Lesser General Public License, Version 3.0'
                     url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
                 }
-            }         
-            
-            // sourceSets.main.resources.srcDirs = [ "src/main/resources" ]
-   // sourceSets.main.resources.includes = [ "**/*.png" ]
-   
+            }          
         }
     }.writeTo("pom.xml")
 }
