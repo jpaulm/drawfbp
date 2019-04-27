@@ -6,14 +6,18 @@ DrawFBP
 Sample DrawFBP network
 ---
 
-Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing process names, actual class names (used for generating runnable code, and also when checking port connections).
+Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing process names, IIPs, and actual class names (used for generating runnable code, and also when checking port connections).
 
 ![FilterByFirstValue](https://github.com/jpaulm/drawfbp/blob/master/docs/FilterByFirstValue.png "Simple Network Diagram")
 
 Release History
 ---
 
-Latest release is v2.16.11 - v2.16.8 (the latest release on Maven Central) has a known bug. The jar file for v2.16.11, which includes the `math.geom2d` jar file, can be obtained from the Releases folder, and is currently in pre-Release status, pending more testing (https://github.com/jpaulm/drawfbp/releases/tag/v2.16.11 ).
+Latest release is v2.16.12: the jar file, which includes the `math.geom2d` jar file, can be obtained from the Releases folder, and is currently in pre-Release status, pending more testing (https://github.com/jpaulm/drawfbp/releases/tag/v2.16.12 ).
+
+It can also be obtained from Maven:
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The jar file for v2.16.11 now includes this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
 
