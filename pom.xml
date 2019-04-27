@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.jpaulmorrison</groupId>
-  <artifactId>drawfbp</artifactId>
-  <version>2.16.11</version>
+  <artifactId>drawfbp-all</artifactId>
+  <version>2.16.12</version>
   <inceptionYear>2016</inceptionYear>
   <licenses>
     <license>

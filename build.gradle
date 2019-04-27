@@ -1,5 +1,10 @@
 //  https://github.com/rholder/gradle-one-jar
 
+// the following is based on my understanding of https://stackoverflow.com/questions/35654812/publish-custom-jar-output-with-gradle# ,
+//  which I may have totally misunderstood!
+
+// same for https://stackoverflow.com/questions/30087427/add-classpath-in-manifest-file-of-jar-in-gradle
+
 buildscript {  
     repositories {
         mavenCentral()
@@ -35,11 +40,12 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'signing'
 //apply plugin: 'gradle-one-jar'
 
 
-version = '2.16.11'
+version = '2.16.12'
 
 group = 'com.jpaulmorrison'
 
@@ -71,6 +77,7 @@ dependencies {
 jar {
     manifest {
         attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': version,
+        "Class-Path": configurations.compile.collect { it.getName() }.join(' '),
         'Main-Class' : mainClassName
     }
 }
@@ -129,6 +136,7 @@ task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Title': 'DrawFBP with javaGeom jar',  
         	'Implementation-Version': version,
+        	"Class-Path": configurations.compile.collect { it.getName() }.join(' '),
         	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
     }
     baseName = project.name + '-all'
@@ -145,9 +153,9 @@ task writeNewPom << {
     pom {
         project {
             groupId 'com.jpaulmorrison'
-            artifactId 'drawfbp'
+            artifactId 'drawfbp-all'
 
-            version '2.16.11'
+            version '2.16.12'
 
         
             inceptionYear '2016'
@@ -161,7 +169,20 @@ task writeNewPom << {
     }.writeTo("pom.xml")
 }
 
+publishing {
+  publications {
+     maven(MavenPublication) {
+
+       //groupId 'org.something'
+       groupId 'com.jpaulmorrison'
+        
+       //artifact fatJar 
+           artifact 'drawfbp-all'
+    }
+ }
+ 
 uploadArchives {
+
   repositories {
     mavenDeployer {
       beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
@@ -182,7 +203,7 @@ uploadArchives {
         // optionally artifactId can be defined here         
         url 'https://github.com/jpaulm/drawfbp'
 
-        version '2.16.11'
+        version '2.16.12'
         
         scm {
           connection 'scm:git:https://github.com/jpaulm.git'
@@ -212,5 +233,6 @@ uploadArchives {
       }
     }
   }
+}
 }
 }
