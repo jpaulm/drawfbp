@@ -435,9 +435,11 @@ public class DiagramBuilder {
 				break;
 			}
 			Block toBlock = diag.blocks.get(new Integer(a2.toId));
+
 			if (toBlock != null && (
 			 toBlock.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
 					|| toBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)))
+
 				a2.downStreamPort = "IN";
 		}
 		

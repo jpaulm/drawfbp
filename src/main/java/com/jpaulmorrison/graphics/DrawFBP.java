@@ -14,13 +14,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+
 import java.awt.Image;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.*;
+
 import java.awt.geom.RoundRectangle2D;
+
 
 import math.geom2d.line.DegeneratedLine2DException;
 import math.geom2d.line.Line2D;
@@ -1411,6 +1415,7 @@ public class DrawFBP extends JFrame
 			max_w = Math.min(max_w, w - min_x);
 			max_h = Math.min(max_h, h - min_y) + 20;
 
+
 			//BufferedImage buffer2 = buffer.getSubimage(min_x, min_y , max_w,
 			//		max_h);	
 			
@@ -1421,6 +1426,7 @@ public class DrawFBP extends JFrame
 
 			
 			BufferedImage combined = new BufferedImage(buffer2.getWidth(), buffer2.getHeight()  + bottom_border_height,
+
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
 
@@ -1431,6 +1437,7 @@ public class DrawFBP extends JFrame
 			g.drawImage(buffer2, 0, 0, null);
 			// g.drawImage(buffer, 0, 0, null);
 			// g.setColor(Color.RED);
+
 			//g.fillRect(0, max_h, max_w, 80);
 			g.fillRect(0, buffer2.getHeight(), buffer2.getWidth(), bottom_border_height);
 
@@ -1439,6 +1446,7 @@ public class DrawFBP extends JFrame
 				g.setColor(Color.BLUE);
 				//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
 				Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+
 				g.setFont(f);
 				int x = combined.getWidth() / 2;
 				// int x = buffer2.getWidth() / 2;
@@ -1447,7 +1455,9 @@ public class DrawFBP extends JFrame
 				byte[] str = t.getBytes();
 				int width = metrics.bytesWidth(str, 0, t.length());
 
+
 				g.drawString(t, x - width / 2, buffer2.getHeight() + 10);    
+
 				g.setColor(col);
 			}
 
@@ -1516,6 +1526,7 @@ public class DrawFBP extends JFrame
 			if (!(fFile.exists()))
 				return;
 			// }
+
 			
 			Image image = null;
 			try {
@@ -1527,6 +1538,7 @@ public class DrawFBP extends JFrame
  
 			}
 			BufferedImage img = (BufferedImage) image;
+
 			currentImageDir = new File(fFile.getParent());
 			properties.put("currentImageDir", fFile.getParent());
 			// propertiesChanged = true;
@@ -1535,6 +1547,7 @@ public class DrawFBP extends JFrame
 
 			JDialog popup = new JDialog();
 			popup.setTitle(fFile.getName());
+
 			//popup.setUndecorated(true);
 			JLabel jLabel = new JLabel(new ImageIcon(image));
 			jLabel.addComponentListener(this);
@@ -1556,6 +1569,7 @@ public class DrawFBP extends JFrame
 			//popup.add(jsp, BorderLayout.CENTER);
 			popup.setLocation(new Point(200, 200));
 			//popup.setBackground(Color.WHITE);
+
 			// popup.addComponentListener(this);
 			// popup.setPreferredSize(dim);
 			popup.pack();
@@ -2225,7 +2239,9 @@ public class DrawFBP extends JFrame
 						.getTabComponentAt(i);
 				Diagram d = b.diag;
 				
+
 				if (d != null && d.diagFile != null && d.diagFile.equals(file)){	
+
 					curDiag = d;
 					curDiag.tabNum = i;
 					found = true;
