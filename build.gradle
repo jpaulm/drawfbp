@@ -1,0 +1,238 @@
+//  https://github.com/rholder/gradle-one-jar
+
+// the following is based on my understanding of https://stackoverflow.com/questions/35654812/publish-custom-jar-output-with-gradle# ,
+//  which I may have totally misunderstood!
+
+// same for https://stackoverflow.com/questions/30087427/add-classpath-in-manifest-file-of-jar-in-gradle
+
+buildscript {  
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"      
+        //classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
+    }
+}
+apply plugin: 'io.codearte.nexus-staging'
+
+subprojects {
+       
+
+        task javadocJar(type: Jar) {
+            classifier = 'javadoc'
+            from javadoc
+        }
+
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives javadocJar, sourcesJar
+        }
+    }
+
+
+allprojects {
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+//apply plugin: 'gradle-one-jar'
+
+
+version = '2.16.13'
+
+group = 'com.jpaulmorrison'
+
+description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and will generate JavaFBP or C#FBP networks.'
+
+compileJava.options.encoding = 'UTF-8'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
+
+nexusStaging {  
+    username = ossrhUser
+    password = ossrhPassword       
+    
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+          compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
+	compile files('javaGeom-0.11.1.jar')	
+	//classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': version,
+        "Class-Path": configurations.compile.collect { it.getName() }.join(' '),
+        'Main-Class' : mainClassName
+    }
+}
+
+if (JavaVersion.current().isJava8Compatible()) {   
+        tasks.withType(Javadoc) {
+            options.addBooleanOption('Xdoclint:none', true)
+        }  
+}
+
+ext {
+    snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
+    releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+
+
+mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
+ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
+osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
+
+}
+
+// Used to generate initial maven-dir layout
+task "create-dirs" { description = "Create default maven directory structure" } << {
+    sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+//jar {
+ //   manifest {
+//        attributes 'Implementation-Title': 'JavaFBP', 'Implementation-Version': version
+//    }
+//}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar,sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+task fatJar(type: Jar) {
+   // manifest {
+  //      attributes 'DrawFBP': 'com.jpaulmorrison.graphics.DrawFBP'
+   //}
+    manifest {
+        attributes 'Implementation-Title': 'DrawFBP with javaGeom jar',  
+        	'Implementation-Version': version,
+        	"Class-Path": configurations.compile.collect { it.getName() }.join(' '),
+        	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+//task funJar(type: OneJar) {
+//  mainClass = 'com.jpaulmorrison.graphics.DrawFBP'
+//  classPath = 'javaGeom-0.11.1.jar'
+//}
+
+task writeNewPom << {
+    pom {
+        project {
+            groupId 'com.jpaulmorrison'
+            artifactId 'drawfbp-all'
+
+            version '2.16.13'
+
+        
+            inceptionYear '2016'
+            licenses {
+                license {
+                    name 'GNU Lesser General Public License, Version 3.0'
+                    url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                }
+            }          
+        }
+    }.writeTo("pom.xml")
+}
+
+publishing {
+  publications {
+     maven(MavenPublication) {
+
+       //groupId 'org.something'
+       groupId 'com.jpaulmorrison'
+        
+       //artifact fatJar 
+           artifact 'drawfbp-all'
+    }
+ }
+ 
+uploadArchives {
+
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: releasePublicationRepository) {
+        authentication(userName: ossrhUser, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: snapshotPublicationRepository) {
+       authentication(userName: ossrhUser, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'DrawFBP'
+        description 'Diagramming Tool for Flow-Based Programming'
+        groupId 'com.jpaulmorrison'
+        packaging 'jar'
+        // optionally artifactId can be defined here         
+        url 'https://github.com/jpaulm/drawfbp'
+
+        version '2.16.13'
+        
+        scm {
+          connection 'scm:git:https://github.com/jpaulm.git'
+          developerConnection 'scm:git:https://github.com/jpaulm.git'
+          url 'https://github.com/jpaulm.git'
+        }
+
+        licenses {
+          license {
+            name 'GNU Lesser General Public License, Version 3.0'
+            url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'jpaulmorr'
+            name 'John Paul Rodker Morrison (Software architect/developer)'
+            email 'jpaulmorr@gmail.com'
+          }
+          developer {
+            id 'bobcorrick'
+            name 'Bob Corrick (Software architect/developer)'
+            email 'bobcorrick@outlook.com'
+          }
+        }
+      }
+    }
+  }
+}
+}
+}
