@@ -4,10 +4,6 @@ DrawFBP
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
 
-
-**Apologies!  Bug in v2.16.12 - get drawfbp-all-2.16.13.jar from Releases - Maven will take longer to update!**
-
-
 Sample DrawFBP network
 ---
 
