@@ -20,7 +20,7 @@ Release History
 
 Latest release is v2.16.13: the jar file, which includes the `math.geom2d` jar file, can be obtained from the Releases folder.  The release on Maven unfortunately has a bug - it should be updated shortly.
 
-All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The jar file for v2.16.11 now includes this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
+All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
 
 <code>java -jar build/libs/drawfbp-all-x.y.z.jar</code>   
      
