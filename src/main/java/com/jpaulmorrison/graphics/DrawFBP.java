@@ -23,7 +23,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.*;
 
-import java.awt.geom.RoundRectangle2D;
+//import java.awt.geom.RoundRectangle2D;
 
 
 import math.geom2d.line.DegeneratedLine2DException;
@@ -46,8 +46,6 @@ import java.net.*;
 import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
-import com.jpaulmorrison.graphics.DrawFBP.FBPFilter;
-import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
 
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
@@ -1074,7 +1072,7 @@ public class DrawFBP extends JFrame
 		diag.area = sa;
 		int i = jtp.getTabCount();
 		jtp.add(sa, new JLabel());
-		int j = jtp.getTabCount();  // for debugging
+		//int j = jtp.getTabCount();  // for debugging
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
 		jtp.setTabComponentAt(i, b);
 		jtp.setSelectedIndex(i);
@@ -3386,15 +3384,16 @@ public class DrawFBP extends JFrame
 						"JavaFBP jar file location: " + s,
 						MyOptionPane.INFORMATION_MESSAGE);			
 
-			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(frame,					
+			int res = MyOptionPane.showConfirmDialog(frame,					
 					"Change JavaFBP jar file location?",
-					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION));			
+					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION);	
+			if (res != MyOptionPane.YES_OPTION)
 				return true;
 			}
 
-			MyOptionPane.showMessageDialog(frame,
-					"Use File Chooser to locate JavaFBP jar file",
-					MyOptionPane.WARNING_MESSAGE);
+			//MyOptionPane.showMessageDialog(frame,
+			//		"Use File Chooser to locate JavaFBP jar file",
+			//		MyOptionPane.WARNING_MESSAGE);
 
 			File f = new File(System.getProperty("user.home"));
 
@@ -3610,19 +3609,7 @@ public class DrawFBP extends JFrame
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 	}
 
-	public static final void copyInputStream(InputStream in, OutputStream out)
-			throws IOException {
-		byte[] buffer = new byte[1024];
-		int len;
-
-		while ((len = in.read(buffer)) >= 0) {
-			// System.out.println(new String(buffer));
-			out.write(buffer, 0, len);
-		}
-		out.flush();
-		in.close();
-		out.close();
-	}
+	
 	void displayRow(GridBagConstraints gbc, GridBagLayout gbl, JTextField[] tf,
 			JPanel panel, Color col) {
 		gbc.gridx = 0;

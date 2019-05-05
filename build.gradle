@@ -46,7 +46,7 @@ apply plugin: 'signing'
 
 
 
-version = '2.16.13'
+version = '2.16.14'
 
 
 group = 'com.jpaulmorrison'
@@ -158,7 +158,7 @@ task writeNewPom << {
             artifactId 'drawfbp-all'
 
  
-            version '2.16.13'
+            version '2.16.14'
         
             inceptionYear '2016'
             licenses {
@@ -206,7 +206,7 @@ uploadArchives {
         url 'https://github.com/jpaulm/drawfbp'
 
 
-        version '2.16.13'
+        version '2.16.14'
 
         
         scm {

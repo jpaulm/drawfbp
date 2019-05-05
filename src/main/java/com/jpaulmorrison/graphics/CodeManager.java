@@ -356,6 +356,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 			for (Arrow arrow : diag.arrows.values()) {
 				// generate a connection or initialize
+				if (arrow.toX == -1)                          // if toX == -1, do not generate
+					continue;
 				Block from = diag.blocks.get(new Integer(arrow.fromId));
 				Arrow a2 = arrow.findLastArrowInChain();
 				if (a2 == null)
