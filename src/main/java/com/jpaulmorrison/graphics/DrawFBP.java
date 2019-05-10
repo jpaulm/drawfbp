@@ -2671,6 +2671,8 @@ public class DrawFBP extends JFrame
 			pb.directory(new File(srcDir));
 
 			pb.redirectErrorStream(true);
+			
+			String errors = "";
 
 			// int i = 0;
 			try {
@@ -2680,7 +2682,8 @@ public class DrawFBP extends JFrame
 						new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					System.out.println(line);
+					//System.out.println(line);
+					errors += "<br>" + line;
 					// System.out.flush();
 				}
 			} catch (NullPointerException npe) {
@@ -2719,8 +2722,9 @@ public class DrawFBP extends JFrame
 							MyOptionPane.INFORMATION_MESSAGE);
 				else
 					MyOptionPane.showMessageDialog(frame,
-							"Program compile failed, rc: " + u + " - " + srcDir
-									+ "/" + t + progName,
+							"<html>Program compile failed, rc: " + u + " - " + srcDir
+									+ "/" + t + progName + "<br>" +
+									errors + "</html>",
 							MyOptionPane.WARNING_MESSAGE);
 			}
 		}

@@ -796,7 +796,7 @@ public class Block implements ActionListener {
 					for (int j = 0; j < i; j++) {
 						AInPort ipt2 = new AInPort();
 						ipt2.value = s.substring(0, s.length() - 1) + j;
-						ipt2.arrayPort = ipt2.arrayPort;
+						ipt2.arrayPort = ipt.arrayPort;
 						ipt2.fixedSize = ipt.fixedSize;
 						ipt2.description = ipt.description;
 						ipt2.optional = ipt.optional;
@@ -806,7 +806,7 @@ public class Block implements ActionListener {
 				} else {
 					AInPort ipt2 = new AInPort();
 					ipt2.value = s;
-					ipt2.arrayPort = ipt2.arrayPort;
+					ipt2.arrayPort = ipt.arrayPort;
 					ipt2.fixedSize = ipt.fixedSize;
 					ipt2.description = ipt.description;
 					ipt2.optional = ipt.optional;
@@ -857,7 +857,7 @@ public class Block implements ActionListener {
 					for (int j = 0; j < i; j++) {
 						AOutPort opt2 = new AOutPort();
 						opt2.value = s.substring(0, s.length() - 1) + j;
-						opt2.arrayPort = opt2.arrayPort;
+						opt2.arrayPort = opt.arrayPort;
 						opt2.fixedSize = opt.fixedSize;
 						opt2.optional = opt.optional;
 						opt2.description = opt.description;
@@ -867,7 +867,7 @@ public class Block implements ActionListener {
 				} else {
 					AOutPort opt2 = new AOutPort();
 					opt2.value = s;
-					opt2.arrayPort = opt2.arrayPort;
+					opt2.arrayPort = opt.arrayPort;
 					opt2.fixedSize = opt.fixedSize;
 					opt2.optional = opt.optional;
 					opt2.description = opt.description;
