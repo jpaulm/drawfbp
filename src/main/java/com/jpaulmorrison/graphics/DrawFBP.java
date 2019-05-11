@@ -2662,7 +2662,10 @@ public class DrawFBP extends JFrame
 				jf += ";" + jfv;
 			}
 			jf += ";.\"";
-
+			
+			//srcDir = "xxx";   inserted for testing!
+			srcDir = srcDir.replace("\\",  "/");
+			clsDir = clsDir.replace("\\",  "/");
 			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", jf,
 					"-d", "\"" + clsDir + "\"",
 					"-sourcepath", "\"" + srcDir + "\"", "-Xlint:unchecked",
@@ -2675,6 +2678,7 @@ public class DrawFBP extends JFrame
 			String errors = "";
 
 			// int i = 0;
+			String err = "";
 			try {
 				proc = pb.start();
 
@@ -2687,17 +2691,31 @@ public class DrawFBP extends JFrame
 					// System.out.flush();
 				}
 			} catch (NullPointerException npe) {
-				// i = 1;
+				err = "Null Pointer Exception"; 
+				proc = null;
+				//return;
 			} catch (IOException ioe) {
-				// i = 2;
+				err = "I/O Exception"; 
+				proc = null;
+				//return;
 			} catch (IndexOutOfBoundsException iobe) {
-				// i = 3;
+				err = "Index Out Of Bounds Exception"; 
+				proc = null;
+				//return;
 			} catch (SecurityException se) {
-				// i = 4;
+				err = "Security Exception"; 
+				proc = null;
+				//return;
 			}
 			if (proc == null) {
+				 
 				MyOptionPane.showMessageDialog(frame,
-						"Compile error - " + "\"" + srcDir + "\\" + t + progName + "\"",
+						"<html>Compile error - " + "\"" + srcDir + "\\" + t + progName + "\"<br>" +
+				err + "<br>" + errors + "<br>" +
+				"Jar files:" + jf + "<br>" +
+				"Source dir: " + srcDir + "<br>" +
+				"Class dir: " + clsDir + "<br>" +
+				"File name: " + t + progName + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			} else {
@@ -2868,7 +2886,9 @@ public class DrawFBP extends JFrame
 			pb.directory(new File(srcDir + "/" + v));
 			
 			pb.redirectErrorStream(true);
-			int i = 0;
+			 
+			String err = "";
+			String errors = "";
 			try {
 				proc = pb.start();
 
@@ -2876,25 +2896,33 @@ public class DrawFBP extends JFrame
 						new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					System.out.println(line);
-					// System.out.flush();
+					errors += line + "<br>";
 				}
 			} catch (NullPointerException npe) {
-				i = 1;
+				err = "Null Pointer Exception"; 
+				proc = null;
+				//return;
 			} catch (IOException ioe) {
-				i = 2;
+				err = "I/O Exception"; 
+				proc = null;
+				//return;
 			} catch (IndexOutOfBoundsException iobe) {
-				i = 3;
+				err = "Index Out Of Bounds Exception"; 
+				proc = null;
+				//return;
 			} catch (SecurityException se) {
-				i = 4;
+				err = "Security Exception"; 
+				proc = null;
+				//return;
 			}
 
 			//program = v + "/" + progName + ".cs";
 			if (proc == null) {
 				MyOptionPane
 						.showMessageDialog(frame,
-								"Program compile and run error - " + srcDir
-										+ "/" + v + "/" + "*.cs",
+								"<html>Program compile and run error - " + srcDir
+										+ "/" + v + "/" + "*.cs <br>" +
+										err + "<br>" + errors + "</html>",
 								MyOptionPane.ERROR_MESSAGE);
 				return;
 			} else {
@@ -2920,7 +2948,8 @@ public class DrawFBP extends JFrame
 			}
 			else
 				MyOptionPane.showMessageDialog(frame,
-						"Program compile failed, rc: " + u + " - " + progName,
+						"<html>Program compile failed, rc: " + u + " - " + progName + "<br>" +
+				         errors + "</html>" ,
 						MyOptionPane.WARNING_MESSAGE);
 		}
 	}
@@ -2976,7 +3005,9 @@ public class DrawFBP extends JFrame
 					t = t.replace("\\", "/");
 				}
 
-				clsDir = new File(ss.substring(0, k + 4)); // drop after bin
+				String u = ss.substring(0, k + 4);
+				u = u.replace("\\",  "/");
+				clsDir = new File(u); // drop after bin
 			}
 
 			clsDir.mkdirs();
@@ -3033,11 +3064,14 @@ public class DrawFBP extends JFrame
 			ProcessBuilder pb = new ProcessBuilder("java", "-cp",
 					"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\"");
 
+			
 			pb.directory(clsDir);
 
 			pb.redirectErrorStream(true);
 
 			// int i = 0;
+			String err = ""; 
+			String errors = "";
 			try {
 				proc = pb.start();
 
@@ -3045,21 +3079,29 @@ public class DrawFBP extends JFrame
 						new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					System.out.println(line);
-					// System.out.flush();
+					errors += line + "<br>";
 				}
 			} catch (NullPointerException npe) {
-				// i = 1;
+				err = "Null Pointer Exception"; 
+				proc = null;
+				//return;
 			} catch (IOException ioe) {
-				// i = 2;
+				err = "I/O Exception"; 
+				proc = null;
+				//return;
 			} catch (IndexOutOfBoundsException iobe) {
-				// i = 3;
+				err = "Index Out Of Bounds Exception"; 
+				proc = null;
+				//return;
 			} catch (SecurityException se) {
-				// i = 4;
+				err = "Security Exception"; 
+				proc = null;
+				//return;
 			}
 			if (proc == null) {
 				MyOptionPane.showMessageDialog(frame,
-						"Program error - " + clsDir + "/" + progName,
+						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
+						err + "<br>" + errors + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -3128,7 +3170,8 @@ public class DrawFBP extends JFrame
 			pb.directory(new File(exeDir));
 
 			pb.redirectErrorStream(true);
-			int i = 0;
+			String errors = "";
+			String err = "";
 			try {
 				proc = pb.start();
 
@@ -3136,20 +3179,27 @@ public class DrawFBP extends JFrame
 						new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					System.out.println(line);
-					// System.out.flush();
+					errors += line + "<br>";
 				}
 			} catch (NullPointerException npe) {
-				i = 1;
+				err = "Null Pointer Exception"; 
+				proc = null;
+				//return;
 			} catch (IOException ioe) {
-				i = 2;
+				err = "I/O Exception"; 
+				proc = null;
+				//return;
 			} catch (IndexOutOfBoundsException iobe) {
-				i = 3;
+				err = "Index Out Of Bounds Exception"; 
+				proc = null;
+				//return;
 			} catch (SecurityException se) {
-				i = 4;
+				err = "Security Exception"; 
+				proc = null;
+				//return;
 			}
 			if (proc == null) {
-				MyOptionPane.showMessageDialog(frame, "Run error",
+				MyOptionPane.showMessageDialog(frame, "<html>Run error<br>" + err + "<br>" + errors + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
