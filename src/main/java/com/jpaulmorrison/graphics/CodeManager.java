@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.text.*;
 import javax.swing.event.*;
 
-import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
 
 import java.awt.*;

@@ -2668,7 +2668,7 @@ public class DrawFBP extends JFrame
 			clsDir = clsDir.replace("\\",  "/");
 			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", jf,
 					"-d", "\"" + clsDir + "\"",
-					"-sourcepath", "\"" + srcDir + "\"", "-Xlint:unchecked",
+					"-sourcepath", "\"" + srcDir + "\"", //  "-Xlint:unchecked",
 					"\"" + t + progName + "\"");
 
 			pb.directory(new File(srcDir));
@@ -2710,7 +2710,7 @@ public class DrawFBP extends JFrame
 			if (proc == null) {
 				 
 				MyOptionPane.showMessageDialog(frame,
-						"<html>Compile error - " + "\"" + srcDir + "\\" + t + progName + "\"<br>" +
+						"<html>Compile error - " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
 				err + "<br>" + errors + "<br>" +
 				"Jar files:" + jf + "<br>" +
 				"Source dir: " + srcDir + "<br>" +
