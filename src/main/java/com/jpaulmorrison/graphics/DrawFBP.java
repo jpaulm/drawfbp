@@ -47,6 +47,7 @@ import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
@@ -2642,6 +2643,9 @@ public class DrawFBP extends JFrame
 						"'bin' directory created - " + clsDir,
 						MyOptionPane.INFORMATION_MESSAGE);
 			}
+			
+			fd = new File(clsDir + "/" + t);
+			fd.mkdirs();
 
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
@@ -2663,7 +2667,7 @@ public class DrawFBP extends JFrame
 			}
 			jf += ";.\"";
 			
-			//srcDir = "xxx";   inserted for testing!
+			//srcDir = "xxx";  // inserted for testing!
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = clsDir.replace("\\",  "/");
 			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", jf,
@@ -2673,7 +2677,7 @@ public class DrawFBP extends JFrame
 
 			pb.directory(new File(srcDir));
 
-			pb.redirectErrorStream(true);
+			pb.redirectErrorStream(true);			
 			
 			String errors = "";
 
@@ -2707,8 +2711,7 @@ public class DrawFBP extends JFrame
 				proc = null;
 				//return;
 			}
-			if (proc == null) {
-				 
+			if (!errors.equals("") || !err.equals("")) {
 				MyOptionPane.showMessageDialog(frame,
 						"<html>Compile error - " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
 				err + "<br>" + errors + "<br>" +
@@ -2718,7 +2721,7 @@ public class DrawFBP extends JFrame
 				"File name: " + t + progName + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
-			} else {
+			}  
 				try {
 					proc.waitFor();
 				} catch (InterruptedException e1) {
@@ -2744,7 +2747,7 @@ public class DrawFBP extends JFrame
 									+ "/" + t + progName + "<br>" +
 									errors + "</html>",
 							MyOptionPane.WARNING_MESSAGE);
-			}
+			 
 		}
 
 		else {
@@ -3067,14 +3070,14 @@ public class DrawFBP extends JFrame
 			
 			pb.directory(clsDir);
 
-			pb.redirectErrorStream(true);
-
-			// int i = 0;
-			String err = ""; 
 			String errors = "";
+			pb.redirectErrorStream(true);
+			
+			String err = ""; 
+			
 			try {
 				proc = pb.start();
-
+				
 				BufferedReader br = new BufferedReader(
 						new InputStreamReader(proc.getInputStream()));
 				String line;
@@ -3096,9 +3099,9 @@ public class DrawFBP extends JFrame
 			} catch (SecurityException se) {
 				err = "Security Exception"; 
 				proc = null;
-				//return;
-			}
-			if (proc == null) {
+				//return;			 
+			} 
+			if (!errors.equals("") || !err.equals("")) {
 				MyOptionPane.showMessageDialog(frame,
 						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
 						err + "<br>" + errors + "</html>",
