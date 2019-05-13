@@ -3,7 +3,6 @@ package com.jpaulmorrison.graphics;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.HashMap;
 
 /**
  * A JTabbedPane which has a close ('X') icon on each tab.

@@ -47,7 +47,6 @@ import javax.imageio.ImageIO;
 
 import com.jpaulmorrison.graphics.Arrow.Status;
 
-import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
@@ -2643,9 +2642,10 @@ public class DrawFBP extends JFrame
 						"'bin' directory created - " + clsDir,
 						MyOptionPane.INFORMATION_MESSAGE);
 			}
-			
-			fd = new File(clsDir + "/" + t);
-			fd.mkdirs();
+			if (!(t.equals(""))) {
+				fd = new File(clsDir + "/" + t);
+				fd.mkdirs();
+			}
 
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
@@ -2666,7 +2666,7 @@ public class DrawFBP extends JFrame
 				jf += ";" + jfv;
 			}
 			jf += ";.\"";
-			
+			//xxxxxxxxxx
 			//srcDir = "xxx";  // inserted for testing!
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = clsDir.replace("\\",  "/");
@@ -2679,7 +2679,7 @@ public class DrawFBP extends JFrame
 
 			pb.redirectErrorStream(true);			
 			
-			String errors = "";
+			String output = "";
 
 			// int i = 0;
 			String err = "";
@@ -2691,7 +2691,7 @@ public class DrawFBP extends JFrame
 				String line;
 				while ((line = br.readLine()) != null) {
 					//System.out.println(line);
-					errors += "<br>" + line;
+					output += "<br>" + line;
 					// System.out.flush();
 				}
 			} catch (NullPointerException npe) {
@@ -2711,17 +2711,21 @@ public class DrawFBP extends JFrame
 				proc = null;
 				//return;
 			}
-			if (!errors.equals("") || !err.equals("")) {
+			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane.showMessageDialog(frame,
 						"<html>Compile error - " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
-				err + "<br>" + errors + "<br>" +
+				err + "<br>" + output + "<br>" +
 				"Jar files:" + jf + "<br>" +
 				"Source dir: " + srcDir + "<br>" +
 				"Class dir: " + clsDir + "<br>" +
 				"File name: " + t + progName + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
+				//return;
+			} 
+			
+			if (proc == null) 
 				return;
-			}  
+			int u = 0;
 				try {
 					proc.waitFor();
 				} catch (InterruptedException e1) {
@@ -2730,8 +2734,8 @@ public class DrawFBP extends JFrame
 				}
 
 				proc.destroy();
-				int u = proc.exitValue();
-
+				u = proc.exitValue();
+			 
 				if (u == 0)
 					MyOptionPane.showMessageDialog(frame,
 							"Program compiled - " + srcDir + "/" + t + progName
@@ -2745,7 +2749,7 @@ public class DrawFBP extends JFrame
 					MyOptionPane.showMessageDialog(frame,
 							"<html>Program compile failed, rc: " + u + " - " + srcDir
 									+ "/" + t + progName + "<br>" +
-									errors + "</html>",
+									output + "</html>",
 							MyOptionPane.WARNING_MESSAGE);
 			 
 		}
@@ -2792,7 +2796,7 @@ public class DrawFBP extends JFrame
 			ss = ss.replace('\\', '/');
 			int j = ss.lastIndexOf("/");
 
-			String progName = ss.substring(j + 1);
+			//String progName = ss.substring(j + 1);
 
 			// ss = ss.substring(0, ss.length() - 3); // drop .cs suffix
 
@@ -2806,12 +2810,11 @@ public class DrawFBP extends JFrame
 			int k = progString.indexOf("namespace ");
 
 			j = progString.substring(k + 10).indexOf(" ");
-			int j2 = progString.substring(k + 10).indexOf("\n");
-			int j3 = progString.substring(k + 10).indexOf("\r");
+			int j2 = progString.substring(k + 10).indexOf("{");			
 			j = Math.min(j, j2);
-			j = Math.min(j, j3);
 			String t = "";
 			String v = "";
+			//srcDir = ss;
 			if (k > -1) {
 				v = progString.substring(k + 10, j + k + 10); // get name of
 																// namespace
@@ -2819,37 +2822,39 @@ public class DrawFBP extends JFrame
 				t = cFile.getAbsolutePath();
 				t = t.replace("\\", "/");
 				k = t.indexOf(v);
-				srcDir = ss.substring(0, k); // drop before namespace
+				if (k > -1)
+					srcDir = ss.substring(0, k); // drop before namespace
 														// string
 			}
-			if (srcDir.endsWith("/"))
-				srcDir = srcDir.substring(0, srcDir.length() - 1);
+			//if (srcDir.endsWith("/"))
+			//	srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
-			(new File(srcDir)).mkdirs();
+			String trunc = ss.substring(0, ss.lastIndexOf("/"));
+			
+			(new File(trunc)).mkdirs();
+			
 			driver.properties.put("currentCsharpNetworkDir",
-					srcDir);
-
-			File target = new File(srcDir + "/" + v + "/bin/Debug");
+					trunc);
+			
+			File target = new File(trunc + "/bin/Debug");
+			
 			target.mkdirs();
 			
 			MyOptionPane.showMessageDialog(frame,
-					"Starting compile - " + srcDir + "/" + v + "/" + "*.cs",
+					"Starting compile - " + trunc + "/" + "*.cs",
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
-			progName = progName.substring(0, progName.length() - 3); // drop .cs
+			//progName = progName.substring(0, progName.length() - 3); // drop .cs
 			
 			String z = properties.get("additionalDllFiles");
 			boolean gotDlls = -1 < z.indexOf("FBPLib") && -1 < z.indexOf("FBPVerbs");
-			
-			//z = "";
-			
-			//String w = "csc /t:exe \"/out:" + srcDir + "/" + v + "/bin/Debug/" + v + ".exe\"";
+					
 			List<String> cmdList = new ArrayList<String>();
             cmdList.add("csc");
             cmdList.add("/t:exe");
             //cmdList.add("/out:");
-            cmdList.add("\"/out:" + srcDir + "/" + v + "/bin/Debug/" + v + ".exe\"");
+            cmdList.add("\"/out:" + trunc + "/bin/Debug/" + v + ".exe\"");
             			
 			if (!gotDlls  && !gotDllReminder) {
 				MyOptionPane.showMessageDialog(frame,
@@ -2881,17 +2886,18 @@ public class DrawFBP extends JFrame
 				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPLib/bin/Debug/FBPLib.dll\"");
 				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPVerbs/bin/Debug/FBPVerbs.dll\"");
 			}					
-			
-			cmdList.add("\"" + srcDir + "/" + v + "/" + "*.cs\"");			
+			String w = "\"" + trunc + "/" + "*.cs\"";
+			w = w.replace("\\",  "/");
+			cmdList.add(w);			
 			
 			ProcessBuilder pb = new ProcessBuilder(cmdList);
 
-			pb.directory(new File(srcDir + "/" + v));
+			pb.directory(new File(trunc + "/" + v));
 			
 			pb.redirectErrorStream(true);
 			 
 			String err = "";
-			String errors = "";
+			String output = "";
 			try {
 				proc = pb.start();
 
@@ -2899,7 +2905,7 @@ public class DrawFBP extends JFrame
 						new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					errors += line + "<br>";
+					output += line + "<br>";
 				}
 			} catch (NullPointerException npe) {
 				err = "Null Pointer Exception"; 
@@ -2920,15 +2926,18 @@ public class DrawFBP extends JFrame
 			}
 
 			//program = v + "/" + progName + ".cs";
-			if (proc == null) {
+			int u = 0;
+			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane
 						.showMessageDialog(frame,
-								"<html>Program compile and run error - " + srcDir
-										+ "/" + v + "/" + "*.cs <br>" +
-										err + "<br>" + errors + "</html>",
+								"<html>Program compile and run error - " + trunc + "/" + "*.cs <br>" +
+										err + "<br>" + output + "</html>",
 								MyOptionPane.ERROR_MESSAGE);
+				//return;
+			} 
+			if (proc == null)
 				return;
-			} else {
+				
 				try {
 					proc.waitFor();
 				} catch (InterruptedException e1) {
@@ -2937,22 +2946,23 @@ public class DrawFBP extends JFrame
 				}
 
 				proc.destroy();
-			}
+			 
 
-			int u = proc.exitValue();
+			u = proc.exitValue();
+			 
 
 			if (u == 0) {
 
 				MyOptionPane.showMessageDialog(frame,
-						"Programs compiled and linked - " + srcDir + "/" + v + "/"
-								+ "*.cs\n" + "   into - " +  srcDir + "/" + v + "/bin/Debug/" + v + ".exe",
+						"Programs compiled and linked - " + trunc + "/"
+								+ "*.cs\n" + "   into - " +  trunc + "/bin/Debug/" + v + ".exe",
 						MyOptionPane.INFORMATION_MESSAGE);
-				properties.put("exeDir", srcDir + "/" + v)  ;
+				properties.put("exeDir", trunc)  ;
 			}
 			else
 				MyOptionPane.showMessageDialog(frame,
-						"<html>Program compile failed, rc: " + u + " - " + progName + "<br>" +
-				         errors + "</html>" ,
+						"<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
+				         output + "</html>" ,
 						MyOptionPane.WARNING_MESSAGE);
 		}
 	}
@@ -3070,7 +3080,7 @@ public class DrawFBP extends JFrame
 			
 			pb.directory(clsDir);
 
-			String errors = "";
+			String output = "";
 			pb.redirectErrorStream(true);
 			
 			String err = ""; 
@@ -3082,7 +3092,7 @@ public class DrawFBP extends JFrame
 						new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					errors += line + "<br>";
+					output += line + "<br>";
 				}
 			} catch (NullPointerException npe) {
 				err = "Null Pointer Exception"; 
@@ -3101,23 +3111,27 @@ public class DrawFBP extends JFrame
 				proc = null;
 				//return;			 
 			} 
-			if (!errors.equals("") || !err.equals("")) {
+			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane.showMessageDialog(frame,
 						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
-						err + "<br>" + errors + "</html>",
+						err + "<br>" + output + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
+				//return;
+			}
+			if (proc == null) 
 				return;
-			}
-			try {
-				proc.waitFor();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
+				try {
 
-			proc.destroy();
+					proc.waitFor();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
-			// int u = proc.exitValue();
+				proc.destroy();
+			 
+			
 			program = clsDir + "/" + progName + ".class";
 		}
 
@@ -3131,7 +3145,8 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
-			// ----------------
+				
+			
 			String exeDir = properties.get("exeDir");
 			if (exeDir == null)
 				exeDir = System.getProperty("user.home");
@@ -3173,7 +3188,8 @@ public class DrawFBP extends JFrame
 			pb.directory(new File(exeDir));
 
 			pb.redirectErrorStream(true);
-			String errors = "";
+			
+			String output = "";
 			String err = "";
 			try {
 				proc = pb.start();
@@ -3182,7 +3198,7 @@ public class DrawFBP extends JFrame
 						new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					errors += line + "<br>";
+					output += line + "<br>";
 				}
 			} catch (NullPointerException npe) {
 				err = "Null Pointer Exception"; 
@@ -3201,22 +3217,24 @@ public class DrawFBP extends JFrame
 				proc = null;
 				//return;
 			}
-			if (proc == null) {
-				MyOptionPane.showMessageDialog(frame, "<html>Run error<br>" + err + "<br>" + errors + "</html>",
+			if (!(err.equals("")) || !(output.equals(""))) {
+				MyOptionPane.showMessageDialog(frame, "<html>Run error<br>" + err + "<br>" + output + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
-				return;
+				//return;
 			}
-			try {
-				proc.waitFor();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if (proc != null) {
+				try {
+					proc.waitFor();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				proc.destroy();
 			}
-
-			proc.destroy();
-
 		}
-		// ---------------
+		if (proc == null)
+			return;
 		int u = proc.exitValue();
 		if (u == 0)
 			MyOptionPane.showMessageDialog(frame,
