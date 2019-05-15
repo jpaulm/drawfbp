@@ -2666,11 +2666,19 @@ public class DrawFBP extends JFrame
 				jf += ";" + jfv;
 			}
 			jf += ";.\"";
-			//xxxxxxxxxx
+			 
 			//srcDir = "xxx";  // inserted for testing!
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = clsDir.replace("\\",  "/");
-			ProcessBuilder pb = new ProcessBuilder("javac", "-cp", jf,
+			String jh = System.getenv("JAVA_HOME");
+			if (jh == null) {
+				MyOptionPane.showMessageDialog(frame,
+						"Missing JAVA_HOME environment variable",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			String javac = jh + "/bin/javac";
+			ProcessBuilder pb = new ProcessBuilder(javac, "-cp", jf,
 					"-d", "\"" + clsDir + "\"",
 					"-sourcepath", "\"" + srcDir + "\"", //  "-Xlint:unchecked",
 					"\"" + t + progName + "\"");
@@ -2892,7 +2900,7 @@ public class DrawFBP extends JFrame
 			
 			ProcessBuilder pb = new ProcessBuilder(cmdList);
 
-			pb.directory(new File(trunc + "/" + v));
+			pb.directory(new File(trunc));
 			
 			pb.redirectErrorStream(true);
 			 
@@ -3074,7 +3082,15 @@ public class DrawFBP extends JFrame
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
-			ProcessBuilder pb = new ProcessBuilder("java", "-cp",
+			String jh = System.getenv("JAVA_HOME");
+			if (jh == null) {
+				MyOptionPane.showMessageDialog(frame,
+						"Missing JAVA_HOME environment variable",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			String java = jh + "/bin/java";
+			ProcessBuilder pb = new ProcessBuilder(java, "-cp",
 					"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\"");
 
 			

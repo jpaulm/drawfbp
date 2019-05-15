@@ -198,7 +198,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				contents[1] = packageName + ";";
 				contents[2] = " //change package name if desired\n"; 
 			} else {
-				contents[0] = "namespace Xxxxxxxxxx{";
+				contents[0] = "using FBPLIB;\nusingComponents;\nusing System.io;\nusingSystem;\nnamespace Xxxxxxxxxx{";
 				contents[2] = " //change namespace name if desired\n";  
 			}
 
@@ -547,14 +547,20 @@ public class CodeManager implements ActionListener, DocumentListener {
 				className += ".class";
 			return "component(\"" + name + "\"," + className + ")";
 		}
-		else
+		else {
+			className.replace("\\",  "/");
+			int i = className.lastIndexOf("/");
+			int j = className.lastIndexOf("."); 
+			i = Math.max(i, j);
+			className = className.substring(i + 1);
 			return "Component(\"" + name + "\", typeof(" + className + "))";
+		}
 	}
 
 	String genConnect(Arrow arrow) {
 		String connect = (gl.label.equals("Java")) ? "connect" : "Connect";
 		if (arrow.dropOldest) {
-			connect = "Connection c" + arrow.id + " = " + connect;
+			connect = "Connection c" + arrow.id + " = " + connect;  
 		}
 		return connect;
 	}
