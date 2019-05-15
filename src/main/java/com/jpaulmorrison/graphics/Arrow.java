@@ -385,7 +385,7 @@ public class Arrow implements ActionListener {
 			s += "<downstreamport>" + downStreamPort + "</downstreamport>";
 		}
 		if (dropOldest) {
-			s += "<dropoldest>" + (dropOldest?"true":"false") + "</dropOldest>";
+			s += "<dropoldest>" + (dropOldest?"true":"false") + "</dropoldest>";
 		}
 		
 		if (capacity > 0)

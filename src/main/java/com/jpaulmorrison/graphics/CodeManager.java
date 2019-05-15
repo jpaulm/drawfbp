@@ -198,7 +198,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				contents[1] = packageName + ";";
 				contents[2] = " //change package name if desired\n"; 
 			} else {
-				contents[0] = "using FBPLIB;\nusingComponents;\nusing System.io;\nusingSystem;\nnamespace Xxxxxxxxxx{";
+				contents[0] = "using FBPLIB;\nusingComponents;\nusing System.io;\nusing System;\nnamespace Xxxxxxxxxx{";
 				contents[2] = " //change namespace name if desired\n";  
 			}
 

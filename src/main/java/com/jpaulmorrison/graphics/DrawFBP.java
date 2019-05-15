@@ -2670,10 +2670,17 @@ public class DrawFBP extends JFrame
 			//srcDir = "xxx";  // inserted for testing!
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = clsDir.replace("\\",  "/");
+			
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
 				MyOptionPane.showMessageDialog(frame,
 						"Missing JAVA_HOME environment variable",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if (-1 == jh.indexOf("jdk")){
+				MyOptionPane.showMessageDialog(frame,
+						"To do Java compiles, JAVA_HOME environment variable must point at JDK",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -3086,6 +3093,12 @@ public class DrawFBP extends JFrame
 			if (jh == null) {
 				MyOptionPane.showMessageDialog(frame,
 						"Missing JAVA_HOME environment variable",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")){
+				MyOptionPane.showMessageDialog(frame,
+						"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
