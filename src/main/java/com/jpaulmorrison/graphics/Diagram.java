@@ -506,8 +506,11 @@ public class Diagram {
 		fileString += "</blocks> <connections>\n";
 
 		for (Arrow arrow : arrows.values()) {
-			if (!arrow.deleteOnSave) // exclude deleteOnSave arrows
-				fileString += arrow.serialize();
+			if (!arrow.deleteOnSave) {// exclude deleteOnSave arrows
+				String s = arrow.serialize();
+				if (s != null)
+					fileString += s;
+			}
 		}
 		fileString += "</connections> ";
 

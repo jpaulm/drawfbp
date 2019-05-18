@@ -2728,7 +2728,7 @@ public class DrawFBP extends JFrame
 			}
 			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane.showMessageDialog(frame,
-						"<html>Compile error - " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
+						"<html>Compile output - " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
 				err + "<br>" + output + "<br>" +
 				"Jar files:" + jf + "<br>" +
 				"Source dir: " + srcDir + "<br>" +
@@ -2809,7 +2809,7 @@ public class DrawFBP extends JFrame
 			}
 
 			ss = ss.replace('\\', '/');
-			int j = ss.lastIndexOf("/");
+			//int j = ss.lastIndexOf("/");
 
 			//String progName = ss.substring(j + 1);
 
@@ -2821,61 +2821,89 @@ public class DrawFBP extends JFrame
 						"Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
-			int k = progString.indexOf("namespace ");
-
-			j = progString.substring(k + 10).indexOf(" ");
-			int j2 = progString.substring(k + 10).indexOf("{");			
-			j = Math.min(j, j2);
 			String t = "";
 			String v = "";
-			//srcDir = ss;
-			if (k > -1) {
-				v = progString.substring(k + 10, j + k + 10); // get name of
+			srcDir = ss;
+			int k = progString.indexOf("namespace ");
+			if (k > -1) {				
+				k += 10; // skip over "namespace"
+				int ks = k;
+
+				while (true) {
+					if (progString.substring(k, k + 1).equals(" ")
+							|| progString.substring(k, k + 1).equals("{")
+							|| progString.substring(k, k + 1).equals("\r")
+							|| progString.substring(k, k + 1).equals("\n"))
+						break;
+					k++;
+				}
+
+				v = progString.substring(ks, k); // get name of
 																// namespace
 				v = v.replace(".", "/");
-				t = cFile.getAbsolutePath();
-				t = t.replace("\\", "/");
-				k = t.indexOf(v);
-				if (k > -1)
-					srcDir = ss.substring(0, k); // drop before namespace
-														// string
+				//t = cFile.getAbsolutePath();
+				//t = t.replace("\\", "/");
+				//k = t.indexOf(v);
+				
+				//srcDir = ss.substring(0, k); // drop before namespace
+													// string
 			}
+			 
 			//if (srcDir.endsWith("/"))
 			//	srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
 			String trunc = ss.substring(0, ss.lastIndexOf("/"));
+			String progName = ss.substring(ss.lastIndexOf("/") + 1);
 			
 			(new File(trunc)).mkdirs();
 			
 			driver.properties.put("currentCsharpNetworkDir",
 					trunc);
 			
-			File target = new File(trunc + "/bin/Debug");
+								
+			ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "cd '" + trunc + "' && dir");
+			try {
+				proc = pb.start();			
+				proc.waitFor();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			target.mkdirs();
+			String target = /*trunc + "/" + */ "bin/Debug";  //  we've done a cd, so we don't need trunc
+			(new File(target)).mkdirs();
 			
 			MyOptionPane.showMessageDialog(frame,
-					"Starting compile - " + trunc + "/" + "*.cs",
+					"Starting compile - " + ss,
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
-			//progName = progName.substring(0, progName.length() - 3); // drop .cs
+			progName = progName.substring(0, progName.length() - 3); // drop .cs
 			
 			String z = properties.get("additionalDllFiles");
 			boolean gotDlls = -1 < z.indexOf("FBPLib") && -1 < z.indexOf("FBPVerbs");
 					
 			List<String> cmdList = new ArrayList<String>();
             cmdList.add("csc");
-            cmdList.add("/t:exe");
-            //cmdList.add("/out:");
-            cmdList.add("\"/out:" + trunc + "/bin/Debug/" + v + ".exe\"");
+            cmdList.add("-t:exe");
+            t = t.replace("\\", "/");
+            t = t.replace("/", ".");
+            //if (v.equals(""))
+            //cmdList.add("-main:" + progName);
+            //else
+            //cmdList.add("-main:" + v + "." + progName);
+            //progName = progName.substring(0, progName.length() - 3);  // drop the .cs
+            cmdList.add("-out:" + target + "/" + v + ".exe");
             			
 			if (!gotDlls  && !gotDllReminder) {
 				MyOptionPane.showMessageDialog(frame,
-						"If you are using FBP, you will need a FBPLib dll and a FBPVerbs dll - use File/Add Additional Dll File",
+						"If you are using FBP, you will need a FBPLib dll and a FBPVerbs dll - use File/Add Additional Dll File for each one",
 						MyOptionPane.WARNING_MESSAGE);
 				gotDllReminder = true;
+				return;
 			}
 			
 			else {
@@ -2894,18 +2922,19 @@ public class DrawFBP extends JFrame
 					//z += "\"/r:" + thisEntry.getValue() + "\" ";
 					//cma = ";";
 					w = thisEntry.getValue();
-					w = w.replace("\\", "/");
-					cmdList.add("\"/r:" + w + "\"");
+					//w = w.replace("\\", "/");
+					cmdList.add("-r:" + w );
+					//cmdList.add("-lib:" + w);
 				}
 				 
 				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPLib/bin/Debug/FBPLib.dll\"");
 				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPVerbs/bin/Debug/FBPVerbs.dll\"");
 			}					
-			String w = "\"" + trunc + "/" + "*.cs\"";
-			w = w.replace("\\",  "/");
-			cmdList.add(w);			
+			//String w = "\"" + trunc + "/" + "*.cs\"";
+			ss = ss.replace("\\",  "/");
+			cmdList.add(/*trunc + "/" +   */ "*.cs");			
 			
-			ProcessBuilder pb = new ProcessBuilder(cmdList);
+			/* ProcessBuilder*/ pb = new ProcessBuilder(cmdList);
 
 			pb.directory(new File(trunc));
 			
@@ -2945,7 +2974,7 @@ public class DrawFBP extends JFrame
 			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane
 						.showMessageDialog(frame,
-								"<html>Program compile and run error - " + trunc + "/" + "*.cs <br>" +
+								"<html>Compile output for " + ss + "<br>" +
 										err + "<br>" + output + "</html>",
 								MyOptionPane.ERROR_MESSAGE);
 				//return;
@@ -3206,10 +3235,11 @@ public class DrawFBP extends JFrame
 
 			exeFile = exeFile.replace("\\",  "/");
 			
-			List<String> cmdList = new ArrayList<String>();
+			List<String> cmdList = new ArrayList<String>();			
 			
-			cmdList.add("\"" + exeFile + "\"");
-			
+			//cmdList.add("\"" + exeFile + "\"");
+			cmdList.add(exeFile);
+						
 			program = exeFile.substring(exeFile.lastIndexOf("/") + 1);
 			
 			pb = new ProcessBuilder(cmdList);

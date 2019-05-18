@@ -372,6 +372,8 @@ public class Arrow implements ActionListener {
 
 	String serialize() {
 
+		if (toX == -1 || toId == -1)
+			return null;
 		String s = "<connection> <fromx>" + fromX + "</fromx> " + "<fromy>"
 				+ fromY + "</fromy> " + "<tox>" + toX + "</tox> " + "<toy>"
 				+ toY + "</toy> " + "<fromid>" + fromId + "</fromid> "

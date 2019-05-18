@@ -198,7 +198,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				contents[1] = packageName + ";";
 				contents[2] = " //change package name if desired\n"; 
 			} else {
-				contents[0] = "using FBPLIB;\nusingComponents;\nusing System.io;\nusing System;\nnamespace Xxxxxxxxxx{";
+				contents[0] = "using System;\nusing System.IO;\nusing FBPLIB;\nusing Components;\nnamespace Xxxxxxxxxx{";
 				contents[2] = " //change namespace name if desired\n";  
 			}
 
@@ -355,7 +355,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 			for (Arrow arrow : diag.arrows.values()) {
 				// generate a connection or initialize
-				if (arrow.toX == -1)                          // if toX == -1, do not generate
+				if (arrow.toX == -1  || arrow.toId == -1)               // if toX or toId = -1, do not generate
 					continue;
 				Block from = diag.blocks.get(new Integer(arrow.fromId));
 				Arrow a2 = arrow.findLastArrowInChain();
