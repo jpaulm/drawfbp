@@ -958,6 +958,10 @@ public class DrawFBP extends JFrame
 		menuItem2c.setEnabled(currLang != null && currLang.label.equals("C#"));
 		fileMenu.add(menuItem2c);
 		menuItem2c.addActionListener(this);
+		
+		menuItem = new JMenuItem("Remove Additional Jar and Dll Files");
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Locate DrawFBP Help File");
@@ -1326,7 +1330,17 @@ public class DrawFBP extends JFrame
 			addAdditionalDllFile();
 			return;
 		}
-
+		
+		if (s.equals("Remove Additional Jar and Dll Files")) {
+			jarFiles.clear();
+			dllFiles.clear();
+			properties.remove("additionalJarFiles");
+			properties.remove("additionalDllFiles");
+			MyOptionPane.showMessageDialog(null,
+					"References to additional jar and dll files removed (not deleted)",
+					MyOptionPane.INFORMATION_MESSAGE);
+		}
+		
 		if (s.equals("Locate DrawFBP Help File")) {
 
 			locateJhallJarFile();
@@ -2884,7 +2898,7 @@ public class DrawFBP extends JFrame
 			progName = progName.substring(0, progName.length() - 3); // drop .cs
 			
 			String z = properties.get("additionalDllFiles");
-			boolean gotDlls = -1 < z.indexOf("FBPLib") && -1 < z.indexOf("FBPVerbs");
+			boolean gotDlls = -1 < z.indexOf("FBPLib.dll") && -1 < z.indexOf("FBPVerbs.dll");
 					
 			List<String> cmdList = new ArrayList<String>();
             cmdList.add("csc");
@@ -2974,7 +2988,7 @@ public class DrawFBP extends JFrame
 			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane
 						.showMessageDialog(frame,
-								"<html>Compile output for " + ss + "<br>" +
+								"<html>Compile output for " + target + "/" + v + ".exe <br>" +
 										err + "<br>" + output + "</html>",
 								MyOptionPane.ERROR_MESSAGE);
 				//return;
@@ -3277,7 +3291,7 @@ public class DrawFBP extends JFrame
 				//return;
 			}
 			if (!(err.equals("")) || !(output.equals(""))) {
-				MyOptionPane.showMessageDialog(frame, "<html>Run error<br>" + err + "<br>" + output + "</html>",
+				MyOptionPane.showMessageDialog(frame, "<html>Run output<br>" + err + "<br>" + output + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				//return;
 			}
@@ -3596,6 +3610,7 @@ public class DrawFBP extends JFrame
 			f = (new File(s)).getParentFile();
 		MyFileChooser fc = new MyFileChooser(f, fCPArray[JARFILE]);
 
+		fCPArray[JARFILE].prompt = "Specify file name for " + ans + " jar file";
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -3654,6 +3669,7 @@ public class DrawFBP extends JFrame
 			f = (new File(s)).getParentFile();
 		MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[DLL]);
 
+		curDiag.fCParm[DLL].prompt = "Specify file name for " + ans + " dll";
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
