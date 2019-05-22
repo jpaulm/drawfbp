@@ -2926,19 +2926,35 @@ public class DrawFBP extends JFrame
 				//String cma = "";
 
 				 
-				String w = "";
+				//String w = "";
+				String libs = "";
+				String cma = "";
 				while (entries.hasNext()) {
 					Entry<String, String> thisEntry = entries.next();
-					if (!(new File(thisEntry.getValue()).exists()))
+					if (!(new File(thisEntry.getValue()).exists())) {
 						MyOptionPane.showMessageDialog(frame,
 								"Dll file does not exist: " + thisEntry.getValue(),
 								MyOptionPane.WARNING_MESSAGE);
+						return;
+					}
 					//z += "\"/r:" + thisEntry.getValue() + "\" ";
 					//cma = ";";
-					w = thisEntry.getValue();
-					//w = w.replace("\\", "/");
-					cmdList.add("-r:" + w );
-					//cmdList.add("-lib:" + w);
+					String w = thisEntry.getValue();
+					w = w.replace("\\", "/");
+					int j = w.indexOf("bin/Debug");
+					libs += cma + w.substring(0, j);
+					cma = ",";
+					cmdList.add("-lib:" + libs);
+					
+					
+				}
+				entries = dllFiles.entrySet().iterator();
+				while (entries.hasNext()) {
+					Entry<String, String> thisEntry = entries.next();
+					String w = thisEntry.getValue();
+					w = w.replace("\\", "/");
+					int j = w.indexOf("bin/Debug");
+					cmdList.add("-r:" + w.substring(j));
 				}
 				 
 				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPLib/bin/Debug/FBPLib.dll\"");
