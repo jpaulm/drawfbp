@@ -1760,7 +1760,7 @@ public class DrawFBP extends JFrame
 					+ "*    Authors: J.Paul Rodker Morrison,              *\n"
 					+ "*             Bob Corrick                          *\n"
 					+ "*                                                  *\n"
-					+ "*    Copyright 2009, ..., 2017                     *\n"
+					+ "*    Copyright 2009, ..., 2019                     *\n"
 					+ "*                                                  *\n"
 					+ "*    FBP web site: www.jpaulmorrison.com/fbp       *\n"
 					+ "*                                                  *\n"
