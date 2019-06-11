@@ -563,7 +563,11 @@ public class DrawFBP extends JFrame
 		// wDiff = frame.getWidth() - curDiag.area.getWidth();
 		// hDiff = frame.getHeight() - curDiag.area.getHeight();
 
-		diagramName = properties.get("currentDiagram");
+				
+		if (diagramName == null) {          // See if a parameter was passed to the jar file....
+			diagramName = properties.get("currentDiagram");
+			System.out.println(diagramName);
+		}
 
 		boolean small = (diagramName) == null ? false : true;
 
