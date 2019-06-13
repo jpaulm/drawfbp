@@ -277,10 +277,22 @@ public class DrawFBP extends JFrame
 
 	// constructor
 	DrawFBP(String[] args) {
-		if (args.length == 1)
+		if (args.length == 1) {
 			diagramName = args[0];
-		// frame = new JFrame("DrawFBP");
-		// int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+			diagramName = diagramName.replace("\\", "/");
+			if (diagramName.indexOf("/") == -1){
+				final String dir = System.getProperty("user.dir");				
+				diagramName = dir + File.separator + diagramName;
+			}
+			//System.out.println("Diagram: " + diagramName );
+			File f = new File(diagramName);
+			if (!f.exists())
+				System.out.println("Diagram: " + diagramName + "can't be found" );
+		}
+		else {
+			diagramName = properties.get("currentDiagram");
+		}
+		
 		try {
 		scalingFactor = 1.0d;
 		driver = this;
@@ -564,10 +576,10 @@ public class DrawFBP extends JFrame
 		// hDiff = frame.getHeight() - curDiag.area.getHeight();
 
 				
-		if (diagramName == null) {          // See if a parameter was passed to the jar file....
-			diagramName = properties.get("currentDiagram");
-			System.out.println(diagramName);
-		}
+		//if (diagramName == null) {          // See if a parameter was passed to the jar file....
+		//	diagramName = properties.get("currentDiagram");
+		//	System.out.println(diagramName);
+		//}
 
 		boolean small = (diagramName) == null ? false : true;
 
@@ -1087,6 +1099,7 @@ public class DrawFBP extends JFrame
 		b.diag = diag;
 		diag.tabNum = i;
 		curDiag = diag;
+		diag.suggFile = null;
 		curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
@@ -1347,7 +1360,7 @@ public class DrawFBP extends JFrame
 		
 		if (s.equals("Locate DrawFBP Help File")) {
 
-			locateJhallJarFile();
+			locateJhallJarFile(true);
 			return;
 		}
 
@@ -1622,7 +1635,7 @@ public class DrawFBP extends JFrame
 								        + " it is in your 'lib' folder",
 								"Locate it?", MyOptionPane.OK_CANCEL_OPTION);
 						if (response == MyOptionPane.OK_OPTION)
-							res = locateJhallJarFile();
+							res = locateJhallJarFile(false);
 						else {
 							MyOptionPane.showMessageDialog(frame,
 									"No DrawFBP Help jar file located",
@@ -3732,6 +3745,7 @@ public class DrawFBP extends JFrame
 		return true;
 	}
 
+	/*
 
 	boolean locateJhallJarFile() {
 
@@ -3774,6 +3788,74 @@ public class DrawFBP extends JFrame
 		} else
 			return false;
 	}
+	
+	*/
+	
+		
+	boolean locateJhallJarFile(boolean checkLocation) {
+
+		// setting of checkLocation doesn't matter if javaFBPJarFile is null!
+		
+		String s = properties.get("jhallJarFile");
+		javaFBPJarFile = s;
+
+		boolean findJar = false;
+		if (checkLocation || s == null)
+			findJar = true;
+		
+		if (findJar) {
+			if (s != null) {
+				MyOptionPane.showMessageDialog(frame,
+						"JavaHelp jar file location: " + s,
+						MyOptionPane.INFORMATION_MESSAGE);			
+
+			int res = MyOptionPane.showConfirmDialog(frame,					
+					"Change JavaHelp jar file location?",
+					"Change JavaHelp jar file", MyOptionPane.YES_NO_OPTION);	
+			if (res != MyOptionPane.YES_OPTION)
+				return true;
+			}
+
+			//MyOptionPane.showMessageDialog(frame,
+			//		"Use File Chooser to locate JavaFBP jar file",
+			//		MyOptionPane.WARNING_MESSAGE);
+
+			File f = new File(System.getProperty("user.home"));
+
+			// else
+			// f = (new File(s)).getParentFile();
+
+			MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[JHELP]);
+
+			int returnVal = fc.showOpenDialog();
+
+			File cFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+				cFile = new File(getSelFile(fc));
+				if (cFile == null || !(cFile.exists())) {
+					MyOptionPane.showMessageDialog(frame,
+							"Unable to read JavaHelp jar file "
+									+ cFile.getName(),
+							MyOptionPane.ERROR_MESSAGE);
+					return false;
+				}
+				// diag.driver.currentDir = new File(cFile.getParent());
+				jhallJarFile = cFile.getAbsolutePath();
+				properties.put("jhallJarFile", jhallJarFile);
+
+				// propertiesChanged = true;
+				MyOptionPane.showMessageDialog(frame,
+						"JavaHelp jar file location: " + cFile.getAbsolutePath(),
+						MyOptionPane.INFORMATION_MESSAGE);
+				// jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
+				
+				//return true;
+			}
+			// return false;
+		}
+		return true;
+	}
+
 
 	void closeTab() {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
@@ -4179,7 +4261,11 @@ public class DrawFBP extends JFrame
 
 		JFrame.setDefaultLookAndFeelDecorated(true);
 
+		try {
 		new DrawFBP(args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 

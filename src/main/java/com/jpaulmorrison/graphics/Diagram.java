@@ -31,6 +31,7 @@ public class Diagram {
 	ConcurrentHashMap<Integer, Arrow> arrows;
 
 	File diagFile;
+	String suggFile = null;
 
 	DrawFBP driver;
 	int tabNum = -1;
@@ -209,6 +210,9 @@ public class Diagram {
 		if (saveAs) {
 
 			String suggestedFileName = "";
+			String fn = "";
+			if (suggFile != null)
+				fn = suggFile;
 			// if (f == null) {
 
 			String s = driver.properties.get(fCP.propertyName);
@@ -224,12 +228,15 @@ public class Diagram {
 			}
 			
 
-			String fn = "";
+			
 			suggestedFileName = "";
 			File g = diagFile; 
 			MyFileChooser fc = null;
-			if (g != null) {
-				fn = g.getName();
+			if (fn.equals("") && g != null) {
+					fn = g.getName();
+			}
+			if (fn != null) {
+				//fn = g.getName();
 				suggestedFileName = s + File.separator + fn;
 				int i = suggestedFileName.lastIndexOf(".");
 				suggestedFileName = suggestedFileName.substring(0, i)
@@ -390,7 +397,7 @@ public class Diagram {
 			//return diagFile;
 		}
 
-		
+		suggFile = null;
 		MyOptionPane.showMessageDialog(driver.frame, fCP.name + " saved: " + file.getName());
 		return file;
 	}
@@ -445,8 +452,9 @@ public class Diagram {
 		
 		if (diagFile != null) {
 		    currentDiagramDir = diagFile.getParentFile();
-		    driver.properties.put("currentDiagramDir",
-				currentDiagramDir.getAbsolutePath());
+		    if (currentDiagramDir != null)
+		    	driver.properties.put("currentDiagramDir",
+		    			currentDiagramDir.getAbsolutePath());
 		    if (res) {
 		    	String s = diagFile.getAbsolutePath();
 		    	if (s.endsWith(".drw"))
@@ -677,6 +685,7 @@ public class Diagram {
 		driver.getNewDiag(false);               // creates new Diagram, and puts reference in driver.curDiag
 		driver.sbnDiag = driver.curDiag;   // subnet Diagram
 		driver.origDiag = this;
+		driver.sbnDiag.suggFile = subnetName; 
 		
 		// *driver.sbnDiag* will contain new subnet diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
