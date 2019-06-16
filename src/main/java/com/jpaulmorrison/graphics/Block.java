@@ -1370,8 +1370,8 @@ public class Block implements ActionListener {
 
 		if (s.startsWith("Assign Subnet Diagram")) {			
  			assignSubnetDiagram(); 			
-			if (isSubnet)
-				codeFileName = null;
+			//if (isSubnet)
+			//	codeFileName = null;
 			
 			//isSubnet = true;
 			return;
@@ -1582,9 +1582,7 @@ public class Block implements ActionListener {
 					"Enter subnet diagram relative file name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, null);
 			if (ans != null/* && ans.length() > 0*/) {
-				ans = ans.trim();
-				if (!(ans.toLowerCase().endsWith(".drw")))
-					ans += ".drw";
+				
 			}
 			else
 				return;			
@@ -1616,7 +1614,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			//driver.curDiag.delBlock(this, NOCHOOSE);  //delete enclosure block 
 			//foundBlock = null;
 			driver.curDiag.desc = ans; 
-			driver.curDiag.title = ans;
+			//driver.curDiag.title = ans;
 			
 			driver.curDiag.changed = true;
 			driver.frame.repaint();
@@ -1708,7 +1706,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 	}
 
 	void assignSubnetDiagram() {
-		int xa, ya;
+		//int xa, ya;
 		if (diagramFileName != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame,
@@ -1719,13 +1717,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			}
 			diagramFileName = null;
 		}
-		
 
 		String t = driver.properties.get("currentDiagramDir");
 		if (t == null)
 			t = System.getProperty("user.home");
 
-		
 		MyFileChooser fc = new MyFileChooser(new File(t),
 				diag.fCParm[DrawFBP.DIAGRAM]);
 
@@ -1736,67 +1732,80 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			String suff = diag.fCParm[DrawFBP.DIAGRAM].fileExt;
 			if (!(dFN.endsWith(suff)))
 				dFN += suff;
-			driver.curDiag.changed = true;	
-			
-		File	df = driver.openAction(dFN);
-		if (df == null)
-			return;
+			driver.curDiag.changed = true;
+			//driver.curDiag = driver.getNewDiag(false);
+
 			/*
-			int i = diag.diagramIsOpen(df.getAbsolutePath());
-			if (i > -1 ){
+			int i = diag.diagramIsOpen(dFN);
+			if (i > -1) {
 				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
 						.getTabComponentAt(i);
 				driver.curDiag = b.diag;
-				//curDiag.tabNum = i;
-				driver.jtp.setSelectedIndex(i);					 
+				// curDiag.tabNum = i;
+				driver.jtp.setSelectedIndex(i);
 				driver.frame.repaint();
 				return;
 			}
-			*/
-			//driver.getNewDiag();
+*/
 			diagramFileName = dFN;
-			diag = driver.curDiag;
-			isSubnet = true;
+			dFN = dFN.replace("\\",  "/");
 			
-			if (df.exists()) {
-				//int res = MyOptionPane.showConfirmDialog(driver.frame,
-				//		"File already exists - erase contents?",
-				//		"Erase contents?", MyOptionPane.YES_NO_OPTION);
-				//if (res != MyOptionPane.YES_OPTION)
-					return;
+			//diag = driver.curDiag;
+			isSubnet = true;
+			//File df = driver.openAction(dFN);
+			//if (df == null)
+			//	return;
 
-				//Set<Integer> set = diag.arrows.keySet();
-				//for (Integer i : set) {
-				//	diag.arrows.remove(i);
-				//}
-				//set = diag.blocks.keySet();
-				//for (Integer i : set) {
-				//	diag.blocks.remove(i);
-				//}
-			}
-			diag.diagFile = df;
-			//diag.desc = df.getName(); 
-			//diag.title = df.getName();
-			driver.jtp.setSelectedIndex(diag.tabNum);
+			int i = dFN.lastIndexOf("/");
+			dFN = dFN.substring(i + 1);
+			
+			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+					   "Enter or change text", "Edit block description",
+					MyOptionPane.PLAIN_MESSAGE, null, null, description);
+			
+			if (ans != null)				
+				description = ans;
+			
+			fullClassName = null;
+			javaClass = null;
+			
+			//if (df.exists()) {
+				// int res = MyOptionPane.showConfirmDialog(driver.frame,
+				// "File already exists - erase contents?",
+				// "Erase contents?", MyOptionPane.YES_NO_OPTION);
+				// if (res != MyOptionPane.YES_OPTION)
+			//	return;
+
+				// Set<Integer> set = diag.arrows.keySet();
+				// for (Integer i : set) {
+				// diag.arrows.remove(i);
+				// }
+				// set = diag.blocks.keySet();
+				// for (Integer i : set) {
+				// diag.blocks.remove(i);
+				// }
+			//}
+			//diag.diagFile = df;
+			// diag.desc = df.getName();
+			// diag.title = df.getName();
+			//driver.jtp.setSelectedIndex(diag.tabNum);
 			MyOptionPane.showMessageDialog(driver.frame,
-					"New subnet: fill in names for Ext Ports In and Out",
+					"Subnet " + dFN + " associated with " + description + " block",
 					MyOptionPane.INFORMATION_MESSAGE);
+			/*
 			xa = driver.frame.getWidth() / 2 - 300;
 			ya = driver.frame.getHeight() / 2;
 			driver.createBlock(Block.Types.EXTPORT_IN_BLOCK, xa, ya);
 			xa = driver.frame.getWidth() / 2 + 100;
 			ya = driver.frame.getHeight() / 2;
 			driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK, xa, ya);
-		 
-			
-		
-			 
+			*/
 		}
 
-		diag.parent = this;
-		diag.changed = true;
+		//diag.parent = this;   
+		//diag.changed = true;
 
-		//driver.frame.repaint();
+		driver.frame.repaint();
 	}
 
 	void selectJavaClass() throws MalformedURLException {

@@ -66,7 +66,7 @@ public class MyFileChooser extends JFrame
 	JPanel panel = null;
 	int result = CANCEL_OPTION;
 
-	DrawFBP driver;
+	DrawFBP driver = DrawFBP.driver;
 	MyButton butParent = new MyButton();
 	MyButton butOK = new MyButton();
 	MyButton butCancel = new MyButton();
@@ -84,7 +84,7 @@ public class MyFileChooser extends JFrame
 	MyTraversalPolicy mtp;
 	DefaultMutableTreeNode jarTree;
 	DefaultMutableTreeNode currentNode;
-	String folder;
+	String folder;	
 
 	String[] nodeNames = null;
 	String suggestedName = null;

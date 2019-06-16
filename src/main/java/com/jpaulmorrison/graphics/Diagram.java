@@ -33,7 +33,7 @@ public class Diagram {
 	File diagFile;
 	String suggFile = null;
 
-	DrawFBP driver;
+	DrawFBP driver = DrawFBP.driver;
 	int tabNum = -1;
 	DrawFBP.SelectionArea area; 	
 
@@ -209,12 +209,11 @@ public class Diagram {
 
 		if (saveAs) {
 
-			String suggestedFileName = "";
+			// String suggestedFileName = "";
 			String fn = "";
 			if (suggFile != null)
 				fn = suggFile;
-			// if (f == null) {
-
+			
 			String s = driver.properties.get(fCP.propertyName);
 			if (s == null)
 				s = System.getProperty("user.home");
@@ -229,7 +228,7 @@ public class Diagram {
 			
 
 			
-			suggestedFileName = "";
+			String suggestedFileName = "";
 			File g = diagFile; 
 			MyFileChooser fc = null;
 			if (fn.equals("") && g != null) {
@@ -237,10 +236,17 @@ public class Diagram {
 			}
 			if (fn != null) {
 				//fn = g.getName();
-				suggestedFileName = s + File.separator + fn;
-				int i = suggestedFileName.lastIndexOf(".");
-				suggestedFileName = suggestedFileName.substring(0, i)
-						+ fCP.fileExt;
+				fn = fn.replace("\\", "/");
+				
+				if (fn.indexOf("/") == -1)
+					suggestedFileName = s + File.separator + fn;
+				else
+					suggestedFileName = fn;
+				if (!suggestedFileName.endsWith(fCP.fileExt))
+					suggestedFileName += fCP.fileExt;
+				//int i = suggestedFileName.lastIndexOf(".");
+				//suggestedFileName = suggestedFileName.substring(0, i)
+				//		+ fCP.fileExt;
 			
 
 				fc = new MyFileChooser(f, fCP);
@@ -252,8 +258,18 @@ public class Diagram {
 
 			int returnVal = fc.showOpenDialog(saveAs);
 
-			// String s;
-			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			if (returnVal == MyFileChooser.CANCEL_OPTION)
+				return null;
+			if (returnVal != MyFileChooser.APPROVE_OPTION) {
+				if (parent.isSubnet) {   
+					int answer = MyOptionPane.showConfirmDialog(driver.frame, 
+						 "Subnet will be deleted - are you sure you want to this?", "Save changes",
+							MyOptionPane.YES_NO_CANCEL_OPTION);
+					
+					if (answer != MyOptionPane.YES_OPTION)  
+						return f;
+				}
+			} else {
 				newFile = new File(driver.getSelFile(fc));
 				s = newFile.getAbsolutePath();
 				
@@ -678,14 +694,20 @@ public class Diagram {
 		driver.frame.repaint();
 	}
 
-	void excise(Enclosure enc, String subnetName) {
-
-		// *this* is the *old* diagram; enc is the Enclosure block within it 
+	void excise(Enclosure enc, String subnetName) {	
 		
-		driver.getNewDiag(false);               // creates new Diagram, and puts reference in driver.curDiag
-		driver.sbnDiag = driver.curDiag;   // subnet Diagram
-		driver.origDiag = this;
-		driver.sbnDiag.suggFile = subnetName; 
+		// *this* is the *old* diagram; enc is the Enclosure block within it 
+		String fn = subnetName;
+		fn = fn.trim();
+		if (!(fn.toLowerCase().endsWith(".drw")))
+			fn += ".drw";
+		fn = driver.properties.get("currentDiagramDir") + File.separator + fn;
+		
+		Diagram sbnDiag = driver.getNewDiag(false);  
+		Diagram origDiag = this;
+		
+		sbnDiag.suggFile = fn; 
+		sbnDiag.title = fn;
 		
 		// *driver.sbnDiag* will contain new subnet diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
@@ -693,7 +715,7 @@ public class Diagram {
 
 		//LinkedList<Arrow> clla = new LinkedList<Arrow>(); // crossing arrows
 
-		driver.sbnDiag.maxBlockNo = driver.origDiag.maxBlockNo + 2; // will be used for
+		sbnDiag.maxBlockNo = origDiag.maxBlockNo + 2; // will be used for
 															// new double-lined
 															// block
 
@@ -708,24 +730,24 @@ public class Diagram {
 			changed = true;
 			Integer bid = new Integer(blk.id);
 			blocks.remove(bid);
-			driver.sbnDiag.maxBlockNo = Math.max(blk.id, driver.sbnDiag.maxBlockNo);
-			blk.diag = driver.sbnDiag;
-			//blk.id = driver.sbnDiag.maxBlockNo++;
-			driver.sbnDiag.blocks.put(new Integer(blk.id), blk);
+			sbnDiag.maxBlockNo = Math.max(blk.id, sbnDiag.maxBlockNo);
+			blk.diag = sbnDiag;
+			//blk.id = sbnDiag.maxBlockNo++;
+			sbnDiag.blocks.put(new Integer(blk.id), blk);
 		}
 			
-		ProcessBlock subnetBlock = buildSubnetBlock(driver.origDiag, enc, enc.cx, enc.cy);
+		ProcessBlock subnetBlock = buildSubnetBlock(sbnDiag, origDiag, enc, enc.cx, enc.cy);
 		
-		driver.origDiag.copyArrows(enc, subnetBlock);   // categorize arrows in (old) Diagram, making copies of "crossers"
+		copyArrows(sbnDiag, enc, subnetBlock);   // categorize arrows in (old) Diagram, making copies of "crossers"
 		
 		// get arrows that were totally enclosed, delete from old diagram and add to new diagram
 		
 		for (Arrow arrow : enc.lla) {
 			Integer aid = new Integer(arrow.id);
 			arrows.remove(aid);
-			driver.sbnDiag.arrows.put(aid, arrow); // add arrow to new
+			sbnDiag.arrows.put(aid, arrow); // add arrow to new
 													// diagram
-			arrow.diag = driver.sbnDiag;
+			arrow.diag = sbnDiag;
 			driver.selArrow = arrow;
 			changed = true;
 		}
@@ -733,23 +755,23 @@ public class Diagram {
 		// now go through remaining arrows, creating appropriate ExtPortBlock's
 		
 		
-		for (Arrow arrow : driver.origDiag.arrows.values()) {
+		for (Arrow arrow : origDiag.arrows.values()) {
 						
 			if (arrow.type.equals("I")) {
-				driver.sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
+				sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
 				
-				ExtPortBlock eb = new ExtPortBlock(driver.sbnDiag);
+				ExtPortBlock eb = new ExtPortBlock(sbnDiag);
 				
 				eb.cx = arrow.copy.fromX - eb.width / 2;
 				eb.cy = arrow.copy.fromY;
 				eb.type = Block.Types.EXTPORT_IN_BLOCK;					
-				driver.sbnDiag.maxBlockNo++;
-				eb.id = driver.sbnDiag.maxBlockNo;
+				sbnDiag.maxBlockNo++;
+				eb.id = sbnDiag.maxBlockNo;
 				arrow.copy.fromId = eb.id;
 				//arrow.toId = subnetBlock.id;
 				arrow.copy.upStreamPort = "OUT";
 				//arrow.type = "I";
-				driver.sbnDiag.blocks.put(new Integer(eb.id), eb);
+				sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
 				driver.repaint();
 				
@@ -785,18 +807,18 @@ public class Diagram {
 			
 			
 			if (arrow.type.equals("O")) {		
-				driver.sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
-				ExtPortBlock eb = new ExtPortBlock(driver.sbnDiag);
+				sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
+				ExtPortBlock eb = new ExtPortBlock(sbnDiag);
 				eb.cx = arrow.copy.toX + eb.width / 2;
 				eb.cy = arrow.copy.toY;
 				eb.type = Block.Types.EXTPORT_OUT_BLOCK;				
-				driver.sbnDiag.maxBlockNo++;
-				eb.id = driver.sbnDiag.maxBlockNo;
+				sbnDiag.maxBlockNo++;
+				eb.id = sbnDiag.maxBlockNo;
 				arrow.copy.toId = eb.id;
 				//arrow.fromId = subnetBlock.id;
 				arrow.copy.downStreamPort = "IN";
 				//arrow.type = "O";
-				driver.sbnDiag.blocks.put(new Integer(eb.id), eb);
+				sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
 				driver.repaint();
 				
@@ -835,9 +857,22 @@ public class Diagram {
 				
 		driver.repaint();		
  
-		subnetBlock.description = subnetName;
-		subnetBlock.diagramFileName = subnetName;
+		subnetBlock.description = subnetName;  
+		 
+		//MyOptionPane.showMessageDialog(null,
+		//		"Subnet diagram created - save to assign proper file name",
+		//		MyOptionPane.INFORMATION_MESSAGE);
+		// force saveAs
+		//File file = driver.sbnDiag.genSave(null, fCParm[DrawFBP.DIAGRAM], null);
+		//if (file != null)
+		//	subnetBlock.diagramFileName = file.getAbsolutePath();
 		//block.diag.diagFile = new File(block.diagramFileName);
+		subnetBlock.diagramFileName = fn;
+		
+		driver.curDiag.changed = true;
+		sbnDiag.changed = true;
+		
+		driver.curDiag = sbnDiag;      
 		
 		return;
 	}
@@ -965,7 +1000,7 @@ public class Diagram {
 	
 	
 	
-	void copyArrows(Enclosure enc, Block snBlock) {
+	void copyArrows(Diagram sbnDiag, Enclosure enc, Block snBlock) {
 		
 		for (Arrow arrow : arrows.values()) {
 					 
@@ -983,7 +1018,7 @@ public class Diagram {
 				
 				// copy arrow
 				
-				Arrow arrCopy = new Arrow(driver.sbnDiag);
+				Arrow arrCopy = new Arrow(sbnDiag);
 				//arrCopy.orig = arrow;
 				arrow.copy = arrCopy;
 				arrCopy.orig = arrow;
@@ -1001,8 +1036,8 @@ public class Diagram {
 				
 				arrCopy.fromId = arrow.fromId;
 				arrCopy.toId = arrow.toId;
-				driver.sbnDiag.maxArrowNo = Math.max(driver.sbnDiag.maxArrowNo, arrow.id);
-				arrCopy.id = driver.sbnDiag.maxArrowNo++;
+				sbnDiag.maxArrowNo = Math.max(sbnDiag.maxArrowNo, arrow.id);
+				arrCopy.id = sbnDiag.maxArrowNo++;
 				arrCopy.capacity = arrow.capacity;
 				arrCopy.segNo = arrow.segNo;
 				arrCopy.endsAtBlock = arrow.endsAtBlock;
@@ -1031,14 +1066,15 @@ public class Diagram {
 				//arr.fromSide = arrow.fromSide;
 				//arr.toSide = arrow.toSide;
 				//Diagram d = diag;
-				arrCopy.diag = driver.sbnDiag;	
+				arrCopy.diag = sbnDiag;	
 				if (arrow.type.equals("I"))
 					arrow.toId = snBlock.id;
 				else
 					arrow.fromId = snBlock.id;
-				arrow.diag = driver.origDiag;
+				//arrow.diag = diag.origDiag;
+				arrow.diag = this;
 				Integer aid = new Integer(arrCopy.id);
-				driver.sbnDiag.arrows.put(aid, arrCopy);
+				sbnDiag.arrows.put(aid, arrCopy);
 				//arrCopy.orig = arrow;
 				//cl.add(arrCopy); 
 				// keep old arrow
@@ -1051,20 +1087,20 @@ public class Diagram {
 	/*
 	 * build double-lined block in old diagram
 	 */
-	ProcessBlock buildSubnetBlock(Diagram diag, Enclosure enc, int x, int y) {
-		ProcessBlock subnetBlock = new ProcessBlock(diag);
+	ProcessBlock buildSubnetBlock(Diagram sbnDiag, Diagram origDiag, Enclosure enc, int x, int y) {
+		ProcessBlock subnetBlock = new ProcessBlock(origDiag);
 
 		subnetBlock.cx = x;
 		subnetBlock.cy = y;
 		subnetBlock.calcEdges();
-		diag.maxBlockNo++;
-		subnetBlock.id = diag.maxBlockNo;
-		diag.blocks.put(new Integer(subnetBlock.id), subnetBlock);
+		origDiag.maxBlockNo++;
+		subnetBlock.id = origDiag.maxBlockNo;
+		origDiag.blocks.put(new Integer(subnetBlock.id), subnetBlock);
 		changed = true;
 		driver.selBlock = subnetBlock;
 		subnetBlock.diagramFileName = enc.diag.desc;
 		subnetBlock.isSubnet = true;
-		diag.parent = subnetBlock;
+		sbnDiag.parent = subnetBlock;
 		// block.diagramFileName = "newname";
 
 		// block.description = enc.description;
@@ -1076,13 +1112,13 @@ public class Diagram {
 		 * their own blocks list and arrows list attached....
 		 */
 
-		diag.desc = subnetBlock.description;
-		if (diag.desc != null)
-			diag.desc = diag.desc.replace('\n', ' ');
+		sbnDiag.desc = subnetBlock.description;
+		if (sbnDiag.desc != null)
+			sbnDiag.desc = sbnDiag.desc.replace('\n', ' ');
 
 		subnetBlock.cx = enc.cx;
 		subnetBlock.cy = enc.cy;
-		subnetBlock.diag = driver.origDiag;
+		subnetBlock.diag = sbnDiag;   
 		subnetBlock.calcEdges();
 		return subnetBlock;
 	}

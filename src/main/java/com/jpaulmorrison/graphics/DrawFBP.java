@@ -69,8 +69,8 @@ public class DrawFBP extends JFrame
 	JLabel scaleLab;
 
 	Diagram curDiag = null;
-	Diagram sbnDiag = null; // used for Enclosure excise
-	Diagram origDiag = null; // do.
+	//Diagram sbnDiag = null; // used for Enclosure excise
+	//Diagram origDiag = null; // do.
 
 	File currentImageDir = null;
 
@@ -277,6 +277,10 @@ public class DrawFBP extends JFrame
 
 	// constructor
 	DrawFBP(String[] args) {
+		
+		properties = new HashMap<String, String>();
+		startProperties = new HashMap<String, String>();
+		readPropertiesFile();
 		if (args.length == 1) {
 			diagramName = args[0];
 			diagramName = diagramName.replace("\\", "/");
@@ -300,7 +304,7 @@ public class DrawFBP extends JFrame
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
 
-		properties = new HashMap<String, String>();
+		
 
 		genLangs = new GenLang[]{
 				new GenLang("Java", "java", new JavaFileFilter()),
@@ -331,21 +335,21 @@ public class DrawFBP extends JFrame
 
 		fCPArray[DIAGRAM] = new FileChooserParm(DIAGRAM, "Diagram", "currentDiagramDir",
 				"Specify diagram name in diagram directory", ".drw",
-				driver.new DiagramFilter(), "Diagrams (*.drw)");
+				new DiagramFilter(), "Diagrams (*.drw)");
 		
 		
 
 		fCPArray[IMAGE] = new FileChooserParm(IMAGE, "Image", "currentImageDir",
-				"Image: ", ".png", driver.new ImageFilter(), "Image");	
+				"Image: ", ".png", new ImageFilter(), "Image");	
 				
-		//fCPArray[FBP] = driver.new FileChooserParm(DrawFBP.FBP,
+		//fCPArray[FBP] = new FileChooserParm(DrawFBP.FBP,
 		//				"Generated FBP code",
 		//				"currentFBPNetworkDir", "Specify file name for generated FBP code",
-		//				".fbp", driver.new FBPFilter(), "fbp notation");
+		//				".fbp", new FBPFilter(), "fbp notation");
  
 		fCPArray[JHELP] = new FileChooserParm(JHELP, "Java Help file", "jhallJarFile",
 				"Choose a directory for the JavaHelp jar file", ".jar",
-				driver.new JarFileFilter(), "Help files");
+				new JarFileFilter(), "Help files");
 
 		createAndShowGUI();
 		} catch (NullPointerException e)
@@ -414,7 +418,7 @@ public class DrawFBP extends JFrame
 				RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
 		osg.setRenderingHints(rh);
 
-		readPropertiesFile();
+		//readPropertiesFile();
 
 		properties.put("versionNo", "v" + VersionAndTimestamp.getVersion());
 		properties.put("date", VersionAndTimestamp.getDate());
@@ -600,7 +604,7 @@ public class DrawFBP extends JFrame
 
 		buildPropDescTable();
 
-		getNewDiag(true);
+		curDiag = getNewDiag(true);
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -609,7 +613,7 @@ public class DrawFBP extends JFrame
 				int i = jtp.indexAtLocation(e.getX(), e.getY());
 				if (i == -1)
 					return;
-				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
+				ButtonTabComponent b = (ButtonTabComponent) jtp
 						.getTabComponentAt(i);
 				Diagram diag = b.diag;
 
@@ -1086,7 +1090,7 @@ public class DrawFBP extends JFrame
 		return menuBar;
 	}
 
-	void getNewDiag(boolean first) {
+	Diagram getNewDiag(boolean first) {
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
 		diag.area = sa;
@@ -1098,9 +1102,9 @@ public class DrawFBP extends JFrame
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
 		diag.tabNum = i;
-		curDiag = diag;
+		//curDiag = diag;
 		diag.suggFile = null;
-		curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
+		diag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
 		
@@ -1114,28 +1118,28 @@ public class DrawFBP extends JFrame
 				new JarFileFilter(), "Jar files");
 
 				
-		diag.fCParm[CLASS] = driver.new FileChooserParm(CLASS, "Class", "currentClassDir",
+		diag.fCParm[CLASS] = new FileChooserParm(CLASS, "Class", "currentClassDir",
 				"Select component from class directory", ".class",
 				new JavaClassFilter(), "Class files");
 		
-		diag.fCParm[PROCESS] = driver.new FileChooserParm(PROCESS, "Process", diag.diagLang.srcDirProp, "Select "
+		diag.fCParm[PROCESS] = new FileChooserParm(PROCESS, "Process", diag.diagLang.srcDirProp, "Select "
 				+ diag.diagLang.showLangs() + " component from directory",
 				diag.diagLang.suggExtn, diag.diagLang.filter, "Components: "
 						+ diag.diagLang.showLangs() + " " + diag.diagLang.showSuffixes());
 		
-		diag.fCParm[NETWORK] = driver.new FileChooserParm(NETWORK, "Code",
+		diag.fCParm[NETWORK] = new FileChooserParm(NETWORK, "Code",
 				diag.diagLang.netDirProp,
 				"Specify file name for code",
 				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
 				diag.diagLang.showLangs());	
 		
-		diag.fCParm[DLL] = driver.new FileChooserParm(DLL, "C# .dll file",
+		diag.fCParm[DLL] = new FileChooserParm(DLL, "C# .dll file",
 				"dllFileDir",
 				"Specify file name for .dll file",
 				".dll", new DllFilter(),
 				".dll");	
 		
-		diag.fCParm[EXE] = driver.new FileChooserParm(EXE, "C# Executable",
+		diag.fCParm[EXE] = new FileChooserParm(EXE, "C# Executable",
 				"exeDir",
 				"Specify file name for .exe file",
 				".exe", new ExeFilter(),
@@ -1144,7 +1148,7 @@ public class DrawFBP extends JFrame
 				
 		repaint();
 
-		return;
+		return diag;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -1188,7 +1192,7 @@ public class DrawFBP extends JFrame
 
 			//int i = jtp.getTabCount();
 			//if (i > 1 || curDiag.diagFile != null || curDiag.changed)
-			getNewDiag(false);
+			curDiag = getNewDiag(false);
 
 			jtp.setSelectedIndex(curDiag.tabNum);
 
@@ -1960,13 +1964,13 @@ public class DrawFBP extends JFrame
 		fileMenu.add(gNMenuItem, 10);
 		curDiag.filterOptions[0] = gl.showLangs();
 
-		curDiag.fCParm[PROCESS] = driver.new FileChooserParm(PROCESS, "Process",
+		curDiag.fCParm[PROCESS] = new FileChooserParm(PROCESS, "Process",
 				gl.srcDirProp,
 				"Select " + gl.showLangs() + " component from directory",
 				gl.suggExtn, gl.filter,
 				"Components: " + gl.showLangs() + " " + gl.showSuffixes());
 
-		curDiag.fCParm[NETWORK] = driver.new FileChooserParm(NETWORK, "Code",
+		curDiag.fCParm[NETWORK] = new FileChooserParm(NETWORK, "Code",
 				gl.netDirProp, "Specify file name for code", "." + gl.suggExtn,
 				gl.filter, gl.showLangs());
 
@@ -2027,7 +2031,7 @@ public class DrawFBP extends JFrame
 		if (oneLine) {
 			if (blkType != Block.Types.ENCL_BLOCK) {
 				String d = "Enter description";
-				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+				String ans = (String) MyOptionPane.showInputDialog(frame,
 						"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null, null,
 						block.description);
 
@@ -2279,10 +2283,10 @@ public class DrawFBP extends JFrame
 			}
 
 			if (!found)
-				getNewDiag(false);
+				curDiag = getNewDiag(false);
 
 		}
-		file = curDiag.open(file);
+		file = curDiag.open(file);    
 		if (file == null) {			
 			closeTab();			
 			return null;
@@ -2387,7 +2391,11 @@ public class DrawFBP extends JFrame
 			return current;
 
 		String cur = current.replace('\\', '/');
-		String par = parent.replace('\\', '/');
+		
+		if (parent == null)
+			return current;
+		
+		parent = parent.replace('\\', '/');
 
 		int k = 0;
 		int m = 0;
@@ -2410,12 +2418,12 @@ public class DrawFBP extends JFrame
 		// par = par.substring(0, j);
 
 		for (int n = 0; n < m; n++) {
-			int j = par.lastIndexOf("/");
+			int j = parent.lastIndexOf("/");
 			if (j == -1)
 				return current;
-			par = par.substring(0, j);
+			parent = parent.substring(0, j);
 		}
-		return par + "/" + cur.substring(k);
+		return parent + "/" + cur.substring(k);
 	}
 	public static BufferedImage readImageFromFile(File file)
 			throws IOException {
@@ -2668,7 +2676,7 @@ public class DrawFBP extends JFrame
 
 			if (fd == null || !fd.exists()) {
 				fd.mkdirs();
-				// driver.properties.put("currentClassDir", clsDir);
+				// properties.put("currentClassDir", clsDir);
 				MyOptionPane.showMessageDialog(frame,
 						"'bin' directory created - " + clsDir,
 						MyOptionPane.INFORMATION_MESSAGE);
@@ -2888,7 +2896,7 @@ public class DrawFBP extends JFrame
 			
 			(new File(trunc)).mkdirs();
 			
-			driver.properties.put("currentCsharpNetworkDir",
+			properties.put("currentCsharpNetworkDir",
 					trunc);
 			
 								
@@ -3115,7 +3123,7 @@ public class DrawFBP extends JFrame
 			}
 
 			clsDir.mkdirs();
-			driver.properties.put("currentClassDir", clsDir.getAbsolutePath());
+			properties.put("currentClassDir", clsDir.getAbsolutePath());
 
 			progName = progName.substring(0, progName.length() - 6);
 			if (!(t.equals("")))
@@ -3595,7 +3603,7 @@ public class DrawFBP extends JFrame
 							MyOptionPane.ERROR_MESSAGE);
 					return false;
 				}
-				// diag.driver.currentDir = new File(cFile.getParent());
+				// diag.currentDir = new File(cFile.getParent());
 				javaFBPJarFile = cFile.getAbsolutePath();
 				properties.put("javaFBPJarFile", javaFBPJarFile);
 
@@ -3777,7 +3785,7 @@ public class DrawFBP extends JFrame
 								+ cFile.getName());
 				return false;
 			}
-			// diag.driver.currentDir = new File(cFile.getParent());
+			// diag.currentDir = new File(cFile.getParent());
 			jhallJarFile = cFile.getAbsolutePath();
 			properties.put("jhallJarFile", jhallJarFile);
 			// propertiesChanged = true;
@@ -3839,7 +3847,7 @@ public class DrawFBP extends JFrame
 							MyOptionPane.ERROR_MESSAGE);
 					return false;
 				}
-				// diag.driver.currentDir = new File(cFile.getParent());
+				// diag.currentDir = new File(cFile.getParent());
 				jhallJarFile = cFile.getAbsolutePath();
 				properties.put("jhallJarFile", jhallJarFile);
 
@@ -4073,7 +4081,7 @@ public class DrawFBP extends JFrame
 			urls = ll.toArray(new URL[ll.size()]);
 
 		} catch (MalformedURLException e) {
-			MyOptionPane.showMessageDialog(driver.frame, "Malformed URL: " + f,
+			MyOptionPane.showMessageDialog(frame, "Malformed URL: " + f,
 					MyOptionPane.ERROR_MESSAGE);
 			// e.printStackTrace();
 			// javaClass = null;
@@ -4169,7 +4177,7 @@ public class DrawFBP extends JFrame
 				s = "Hold button down to connect arrow to another block";
 			else
 				s = "Arrow not complete - click on block or line, or hit ESC";
-			FontMetrics metrics = g.getFontMetrics(driver.fontg);
+			FontMetrics metrics = g.getFontMetrics(fontg);
 			byte[] str = s.getBytes();
 			int w = metrics.bytesWidth(str, 0, s.length());
 			g.setColor(Color.black);
@@ -4178,7 +4186,7 @@ public class DrawFBP extends JFrame
 			g.fillRect(x + 13, y + 11, w + 11, 21);
 			Font font = g.getFont();
 			g.setColor(Color.black);
-			g.setFont(driver.fontg);
+			g.setFont(fontg);
 			g.drawString(s, x + 15, y + 28);
 			g.setColor(col);
 			g.setFont(font);
@@ -4411,7 +4419,7 @@ public class DrawFBP extends JFrame
 			if (j == 0) {
 				// make one tab with "(untitled)"
 				// Diagram curDiag = new Diagram(driver);
-				getNewDiag(false);
+				curDiag = getNewDiag(false);
 				frame.setTitle("Diagram: (untitled)");
 			} else {
 				jtp.setSelectedIndex(j - 1);
@@ -5527,11 +5535,69 @@ public class DrawFBP extends JFrame
 										"No subnet diagram assigned",
 										MyOptionPane.INFORMATION_MESSAGE);
 							} else {
-								File f = new File(
-										blockSelForDragging.diagramFileName);
+								
+								String name = blockSelForDragging.diagramFileName;
+								//String dir = properties.get("currentDiagramDir");
+								//MyOptionPane.showMessageDialog(null,
+								//		"Subnet OK - subnet diagram assigned",
+								//		MyOptionPane.INFORMATION_MESSAGE);
+								Diagram sbnDiag = getNewDiag(false);   
+								File df = openAction(name);
+								if (df == null)
+									return;
+
+								if (df.exists()) {
+									// int res = MyOptionPane.showConfirmDialog(frame,
+									// "File already exists - erase contents?",
+									// "Erase contents?", MyOptionPane.YES_NO_OPTION);
+									// if (res != MyOptionPane.YES_OPTION)
+									
+
+									// Set<Integer> set = diag.arrows.keySet();
+									// for (Integer i : set) {
+									// diag.arrows.remove(i);
+									// }
+									// set = diag.blocks.keySet();
+									// for (Integer i : set) {
+									// diag.blocks.remove(i);
+									// }
+								}
+								//curDiag.diagFile = df;
+								sbnDiag.diagFile = df;
+								// diag.desc = df.getName();
+								// diag.title = df.getName();
+								//jtp.setSelectedIndex(curDiag.tabNum);
+								jtp.setSelectedIndex(sbnDiag.tabNum);
+								curDiag = sbnDiag;
+								
+								/*
+								no - diagramFileName should be canonical!
+								File file = new File(dir + File.separator + name);
+								MyFileChooser fc = new MyFileChooser(file, curDiag.fCParm[NETWORK]);
+								int k = name.indexOf(".drw");
+								name += File.separator + name.substring(0, k)
+										+ curDiag.fCParm[NETWORK].fileExt;
+								fc.setSuggestedName(name);
+
+								int returnVal = fc.showOpenDialog(true); // force saveAs
+
+								File cFile = null;
+								if (returnVal == MyFileChooser.APPROVE_OPTION) {
+									cFile = new File(getSelFile(fc));
+								}
+								// }
+								if (cFile == null)
+									return;
+
+								blockSelForDragging.diagramFileName = cFile.getAbsolutePath();
+								
+								//if (!(cFile.exists()))
+								//	return;
+								//File f = new File(
+								//		blockSelForDragging.diagramFileName);
 								Diagram saveCurDiag = curDiag;
 								int tabno2 = curDiag
-										.diagramIsOpen(f.getAbsolutePath());
+										.diagramIsOpen(cFile.getAbsolutePath());
 								if (tabno2 > -1) {
 									ButtonTabComponent b2 = (ButtonTabComponent) jtp
 											.getTabComponentAt(tabno2);
@@ -5542,9 +5608,11 @@ public class DrawFBP extends JFrame
 									repaint();
 									return;
 								}
-								if (null == openAction(f.getAbsolutePath()))
-									curDiag = saveCurDiag;
-								curDiag.parent = blockSelForDragging;
+								//if (null == openAction(f.getAbsolutePath()))
+								//	curDiag = saveCurDiag;
+								//curDiag.parent = blockSelForDragging;
+								 */
+								  
 							}
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
