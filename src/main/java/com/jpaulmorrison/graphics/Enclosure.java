@@ -79,6 +79,8 @@ public class Enclosure extends Block {
 		g.drawLine(x, y + height, x + width, y + height);
 		g.drawLine(x, y, x, y + height);
 		((Graphics2D)g).setStroke(str);		
+		//int xs = x;
+		//int ys = y;
 		
 		int hh = driver.gFontHeight;
 		if (draggingContents) {
@@ -190,11 +192,11 @@ public class Enclosure extends Block {
 		}
 		*/
 		//showZones(g);
-		//calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
-		//		cy - height / 2, cy + height / 2);
+		calcDiagMaxAndMin(x - width / 2, x + width / 2,
+				y - height / 2, y + height / 2);
 		
-		calcDiagMaxAndMin(x, x + width,   // enclosure may have been stretched...
-				y, y + height);
+		//calcDiagMaxAndMin(xs, xs + width,   // enclosure may have been stretched...
+		//		ys, ys + height);
 	}
 	static GeneralPath drawSemicircle(int sx, int sy, int multiplier) {
 		GeneralPath gp = new GeneralPath();

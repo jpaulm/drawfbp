@@ -1437,28 +1437,29 @@ public class DrawFBP extends JFrame
 			// curDiag.imageFile = null;
 
 			// crop
-			int min_x, max_w, min_y, max_h;
+			int min_x, w, min_y, h;
 			min_x = Math.max(1, curDiag.minX);
-			max_w = curDiag.maxX - min_x;
+			min_x = Math.min(min_x, curDiag.minX);
+			w = curDiag.maxX - min_x;
 			min_y = Math.max(1, curDiag.minY);
-			max_h = curDiag.maxY - min_y;
+			min_y = Math.min(min_y, curDiag.minY);
+			h = curDiag.maxY - min_y;  // ok so far!
 
-			int w = curDiag.area.getWidth();
-			int h = curDiag.area.getHeight();
-			max_w = Math.min(max_w, w - min_x);
-			max_h = Math.min(max_h, h - min_y) + 20;
+			int aw = curDiag.area.getWidth();
+			int ah = curDiag.area.getHeight();
+			w = Math.min(aw, w);
+			h = Math.min(ah, h) + 60;
 
 
 			//BufferedImage buffer2 = buffer.getSubimage(min_x, min_y , max_w,
 			//		max_h);	
 			
-			int y = Math.max(0, min_y - 50);
+			int y = Math.max(0, min_y - 40);
 			int bottom_border_height = 60;
-			BufferedImage buffer2 = buffer.getSubimage(min_x, y , max_w,
-					max_h);	
+			BufferedImage buffer2 = buffer.getSubimage(min_x, y , w, h);	
 
 			
-			BufferedImage combined = new BufferedImage(buffer2.getWidth(), buffer2.getHeight()  + bottom_border_height,
+			BufferedImage combined = new BufferedImage(buffer2.getWidth(), buffer2.getHeight() + bottom_border_height,
 
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = combined.getGraphics();
@@ -1500,10 +1501,11 @@ public class DrawFBP extends JFrame
 				fn = "(null)";
 			else
 				fn = curDiag.diagFile.getName();
+			
 
 			curDiag.fCParm[IMAGE].prompt = curDiag.fCParm[IMAGE].prompt
-					.substring(0, i) + ": " + fn;
-
+					.substring(0, i) + ": " + fn;					
+			
 			file = curDiag.genSave(null, fCPArray[IMAGE], combined);
 			// file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
 			if (file == null) {
@@ -2328,8 +2330,8 @@ public class DrawFBP extends JFrame
 	void saveAction(boolean saveAs) {
 
 		File file = null;
-		if (curDiag.diagFile == null)
-			saveAs = true;
+		//if (curDiag.diagFile == null)
+		//	saveAs = true;
 		if (!saveAs)
 			file = curDiag.diagFile;
 
@@ -5327,11 +5329,12 @@ public class DrawFBP extends JFrame
 			if (blockSelForDragging != null
 					&& blockSelForDragging instanceof Enclosure) {
 				Enclosure enc = (Enclosure) blockSelForDragging;
+				
 				if (enc.corner == Corner.TOPLEFT) {
-					enc.width = ox + ow / 2 - xa;
-					enc.height = oy + oh / 2 - ya;
-					enc.cx = xa + enc.width / 2;
-					enc.cy = ya + enc.height / 2;
+					enc.width = ox + ow / 2 - xa;  // ox is value of cx when dragging started
+					enc.height = oy + oh / 2 - ya;  // oy is value of cy when dragging started
+					enc.cx = xa + enc.width / 2;   // ow is value of width when dragging started
+					enc.cy = ya + enc.height / 2;  // oh is value of height when dragging started
 					enc.calcEdges();
 					curDiag.changed = true;
 					repaint();

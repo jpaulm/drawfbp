@@ -206,11 +206,21 @@ public class Diagram {
 		if (file == null)
 			saveAs = true;
 		
+		if (diagFile == null)    
+			saveAs = true;
 
 		if (saveAs) {
-
-			// String suggestedFileName = "";
+			
 			String fn = "";
+			
+			int i; 
+			if (!diagFile.getAbsolutePath().endsWith(fCP.fileExt)) {
+				suggFile = diagFile.getAbsolutePath();
+				i = diagFile.getAbsolutePath().lastIndexOf(".");
+				if (i == -1)   
+					suggFile += fCP.fileExt;
+			}
+				
 			if (suggFile != null)
 				fn = suggFile;
 			
@@ -868,11 +878,11 @@ public class Diagram {
 		//	subnetBlock.diagramFileName = file.getAbsolutePath();
 		//block.diag.diagFile = new File(block.diagramFileName);
 		subnetBlock.diagramFileName = fn;
-		
 		driver.curDiag.changed = true;
 		sbnDiag.changed = true;
 		
 		driver.curDiag = sbnDiag;      
+		driver.repaint();	
 		
 		return;
 	}
@@ -952,47 +962,7 @@ public class Diagram {
 			
 			if (enc.llb.contains(from)  && enc.llb.contains(to)) 
 				enc.lla.add(arrow);
-			/*
-			boolean included = true;
-			int x1 = arrow.fromX;
-			int y1 = arrow.fromY;
-			int x2 = arrow.toX;
-			int y2 = arrow.toY;
-			if (arrow.bends != null) {
-				//int i = 0;
-				for (Bend bend : arrow.bends) {
-					x2 = bend.x;
-					y2 = bend.y;
-					if (!(x1 > enc.cx - enc.width / 2
-							&& x1 < enc.cx + enc.width / 2
-							&& x2 > enc.cx - enc.width / 2
-							&& x2 < enc.cx + enc.width / 2
-							&& y1 > enc.cy - enc.height / 2
-							&& y1 < enc.cy + enc.height / 2
-							&& y2 > enc.cy - enc.height / 2
-							&& y2 < enc.cy + enc.height / 2)) {
-						included = false;
-						break;
-					}
-					x1 = x2;
-					y1 = y2;
-				}
-				x2 = arrow.toX;
-				y2 = arrow.toY;
-			}
-			if (!(x1 > enc.cx - enc.width / 2 
-					&& x1 < enc.cx + enc.width / 2
-					&& x2 > enc.cx - enc.width / 2
-					&& x2 < enc.cx + enc.width / 2
-					&& y1 > enc.cy - enc.height / 2
-					&& y1 < enc.cy + enc.height / 2
-					&& y2 > enc.cy - enc.height / 2
-					&& y2 < enc.cy + enc.height / 2))
-				included = false;
-
-			if (included)
-				enc.lla.add(arrow);
-			*/
+			
 		}
 		
 		 
