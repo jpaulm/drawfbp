@@ -1103,7 +1103,7 @@ public class DrawFBP extends JFrame
 		b.diag = diag;
 		diag.tabNum = i;
 		//curDiag = diag;
-		diag.suggFile = null;
+		//diag.suggFile = null;
 		diag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	

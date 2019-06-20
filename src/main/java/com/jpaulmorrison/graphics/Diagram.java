@@ -31,7 +31,7 @@ public class Diagram {
 	ConcurrentHashMap<Integer, Arrow> arrows;
 
 	File diagFile;
-	String suggFile = null;
+	//String suggFile = null;
 
 	DrawFBP driver = DrawFBP.driver;
 	int tabNum = -1;
@@ -211,20 +211,20 @@ public class Diagram {
 
 		if (saveAs) {
 			
-			String fn = "";
+			//String fn = "";
 			
 			int i; 
-			if (!diagFile.getAbsolutePath().endsWith(fCP.fileExt)) {
-				suggFile = diagFile.getAbsolutePath();
-				i = diagFile.getAbsolutePath().lastIndexOf(".");
-				if (i == -1)   
-					suggFile += fCP.fileExt;
-			}
+			//if (!diagFile.getAbsolutePath().endsWith(fCP.fileExt)) {
+			//	suggFile = diagFile.getAbsolutePath();
+			//	i = diagFile.getAbsolutePath().lastIndexOf(".");
+			//	if (i == -1)   
+			//		suggFile += fCP.fileExt;
+			//}
 				
-			if (suggFile != null)
-				fn = suggFile;
+			//if (suggFile != null)
+			//	fn = suggFile;
 			
-			String s = driver.properties.get(fCP.propertyName);
+			String s = driver.properties.get(fCP.propertyName);  
 			if (s == null)
 				s = System.getProperty("user.home");
 
@@ -235,25 +235,27 @@ public class Diagram {
 
 				f = new File(System.getProperty("user.home"));
 			}
+						
+			String suggestedFileName = null;
 			
-
+			if (saveAs)			
+				suggestedFileName = s + File.separator + title + fCP.fileExt;
 			
-			String suggestedFileName = "";
-			File g = diagFile; 
+			//File g = diagFile; 
 			MyFileChooser fc = null;
-			if (fn.equals("") && g != null) {
-					fn = g.getName();
-			}
-			if (fn != null) {
+			//if (fn.equals("") && g != null) {
+			//		fn = g.getName();
+			//}
+			//if (fn != null) {
 				//fn = g.getName();
-				fn = fn.replace("\\", "/");
+			//	fn = fn.replace("\\", "/");
 				
-				if (fn.indexOf("/") == -1)
-					suggestedFileName = s + File.separator + fn;
-				else
-					suggestedFileName = fn;
-				if (!suggestedFileName.endsWith(fCP.fileExt))
-					suggestedFileName += fCP.fileExt;
+			//	if (fn.indexOf("/") == -1)
+			//		suggestedFileName = s + File.separator + fn;
+			//	else
+			//		suggestedFileName = fn;
+			//	if (!suggestedFileName.endsWith(fCP.fileExt))
+			//		suggestedFileName += fCP.fileExt;
 				//int i = suggestedFileName.lastIndexOf(".");
 				//suggestedFileName = suggestedFileName.substring(0, i)
 				//		+ fCP.fileExt;
@@ -262,9 +264,9 @@ public class Diagram {
 				fc = new MyFileChooser(f, fCP);
 
 				fc.setSuggestedName(suggestedFileName);
-			}
-			else
-				fc = new MyFileChooser(f, fCP);
+			//}
+			//else
+			//	fc = new MyFileChooser(f, fCP);
 
 			int returnVal = fc.showOpenDialog(saveAs);
 
@@ -423,7 +425,7 @@ public class Diagram {
 			//return diagFile;
 		}
 
-		suggFile = null;
+		//suggFile = null;
 		MyOptionPane.showMessageDialog(driver.frame, fCP.name + " saved: " + file.getName());
 		return file;
 	}
@@ -709,15 +711,17 @@ public class Diagram {
 		// *this* is the *old* diagram; enc is the Enclosure block within it 
 		String fn = subnetName;
 		fn = fn.trim();
-		if (!(fn.toLowerCase().endsWith(".drw")))
-			fn += ".drw";
-		fn = driver.properties.get("currentDiagramDir") + File.separator + fn;
+		
 		
 		Diagram sbnDiag = driver.getNewDiag(false);  
 		Diagram origDiag = this;
 		
-		sbnDiag.suggFile = fn; 
+		//sbnDiag.suggFile = fn; 
 		sbnDiag.title = fn;
+		
+		if (!(fn.toLowerCase().endsWith(".drw")))
+			fn += ".drw";
+		fn = driver.properties.get("currentDiagramDir") + File.separator + fn;
 		
 		// *driver.sbnDiag* will contain new subnet diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
@@ -873,11 +877,11 @@ public class Diagram {
 		//		"Subnet diagram created - save to assign proper file name",
 		//		MyOptionPane.INFORMATION_MESSAGE);
 		// force saveAs
-		//File file = driver.sbnDiag.genSave(null, fCParm[DrawFBP.DIAGRAM], null);
-		//if (file != null)
-		//	subnetBlock.diagramFileName = file.getAbsolutePath();
-		//block.diag.diagFile = new File(block.diagramFileName);
-		subnetBlock.diagramFileName = fn;
+		
+		File file = sbnDiag.genSave(null, fCParm[DrawFBP.DIAGRAM], null);
+		if (file != null)
+			subnetBlock.diagramFileName = file.getAbsolutePath();
+		subnetBlock.diag.diagFile = new File(subnetBlock.diagramFileName);
 		driver.curDiag.changed = true;
 		sbnDiag.changed = true;
 		

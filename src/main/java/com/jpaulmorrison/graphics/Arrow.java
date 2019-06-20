@@ -244,7 +244,7 @@ public class Arrow implements ActionListener {
 
 		if (toX != -1 && (endsAtBlock || endsAtLine)) {
 			if (upStreamPort != null
-					&& (from instanceof ProcessBlock || from instanceof Enclosure || from instanceof ExtPortBlock)) {
+					&& (from instanceof ProcessBlock || from instanceof Enclosure /* || from instanceof ExtPortBlock */)) {
 				if (upStreamPort.equals("*")) {
 					drawCircleFrom(g, fromX, fromY, toX, toY, Color.BLUE, 8);
 					
@@ -261,7 +261,7 @@ public class Arrow implements ActionListener {
 			if (downStreamPort != null
 					&& !endsAtLine
 					&& to != null
-					&& (to instanceof ProcessBlock || to instanceof Enclosure || to instanceof ExtPortBlock)) {
+					&& (to instanceof ProcessBlock || to instanceof Enclosure /* || to instanceof ExtPortBlock */)) {
 				if (downStreamPort.equals("*")) {
 					drawCircleTo(g, fx, fy, toX, toY, Color.BLUE, 8);
 					

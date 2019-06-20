@@ -1548,7 +1548,7 @@ public class Block implements ActionListener {
 		if (s.equals("Edit Subnet Port Name")) {
 			// Block must be an Enclosure
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Deprecated - do excise first, then use subnet");
+					"Deprecated - do excise first, then edt subnet");
 			
 			return;
 
@@ -1556,7 +1556,7 @@ public class Block implements ActionListener {
 		if (s.equals("Toggle Substream Sensitivity")) {
 			// Block must be an Enclosure
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Deprecated - do excise first, then use subnet");
+					"Deprecated - do excise first, then edit subnet");
 			
 			return;
 
@@ -1578,23 +1578,23 @@ public class Block implements ActionListener {
 			// remember no file names need to have been filled in at this point
 			
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-					"Enter or change name",
+					"Enter subnet name",
 					"Enter subnet diagram relative file name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, null);
-			if (ans != null/* && ans.length() > 0*/) {
-				
-			}
-			else
-				return;			
+			if (ans == null/* && ans.length() > 0*/)  			 
+				return;		
+            int i = ans.lastIndexOf(".");
+            if (i > -1)
+            	ans = ans.substring(0, i);
+            
 			/**
 			 *  Excise will 
 "excise" those blocks and arrows which are completely enclosed by the Enclosure block, and create a new 
 subnet including those blocks and arrows.  Arrows that cross the Enclosure boundary will have External Ports
-attached to them, which can be edited to specify the external port names, or to toggle the substream sensitivity 
-indicator.
+attached to them, which are edited to specify the external port names.
 
 The "source" network will be shown with a new
-"subnet" block labelled ?.drw - the description 
+"subnet" block - the description 
 of the enclosure also becomes the title of the subnet diagram (shown in bold underneath the editing area). 
 Arrows crossing the Enclosure boundary in the "source" diagram 
 will be attached roughly to the new subnet block - if
@@ -1606,6 +1606,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			
 			//--------------------
 			diag.excise((Enclosure) this, ans);  
+			
 			// diag is the diagram being modified, this is the "enclosure" block within it
 			// ans is the name chosen for the (new) subnet
 			//--------------------
