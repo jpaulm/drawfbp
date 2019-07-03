@@ -318,13 +318,15 @@ public class DiagramBuilder {
 							
 						} else if (endtag.equals("connection")) {
 							if (!arrowBuilt) {
-								Integer aid = new Integer(item.get("id"));
-								diag.arrows.put(aid, thisArrow);
 								thisArrow.buildArrow(item);
-							}
-													
+								if (thisArrow.fromId > -1 && thisArrow.toId > -1 && thisArrow.toX > -1)  { 
+									Integer aid = new Integer(item.get("id"));
+									diag.arrows.put(aid, thisArrow);
+								}								
+							}													
 														
 							thisArrow = null;
+							
 						} else if (endtag.equals("bend")) {
 							if (thisArrow.bends == null)
 								thisArrow.bends = new LinkedList<Bend>();

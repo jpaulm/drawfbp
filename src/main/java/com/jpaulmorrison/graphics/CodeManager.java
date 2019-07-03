@@ -268,8 +268,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 
 					} else {
 						c = cleanComp(block);
-						if (c.toLowerCase().endsWith(".class"))
-							c = c.substring(0, c.length() - 6);
+						//if (c.toLowerCase().endsWith(".class"))
+						//	c = c.substring(0, c.length() - 6);
 					}
 					
 					 
@@ -337,10 +337,10 @@ public class CodeManager implements ActionListener, DocumentListener {
 					}
 					s = makeUniqueDesc(s); // and make it unique
 					//s = makeUniqueDesc(s); // and make it unique
-					// if (!(t.toLowerCase().endsWith(".class")))
-					// t += ".class";
-					if (t.toLowerCase().endsWith(".class"))
-						t = t.substring(0, t.length() - 6);
+					if (!(t.toLowerCase().endsWith(".class")))
+					    t += ".class";
+					//if (t.toLowerCase().endsWith(".class"))
+					//	t = t.substring(0, t.length() - 6);
 
 					code += "  " + genComp(s, t, gl.label) + "; \n";
 					code += "  " + initialize + "(\"" + eb.description + "\", " + component + "(\""
@@ -543,8 +543,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 		if (className == null)
 			className = "????";
 		if (lang.equals("Java")) {
-			if (!(className.equals("\"Invalid class\"")))
-				className += ".class";
+			//if (!(className.equals("\"Invalid class\"")))
+			className += ".class";
 			return "component(\"" + name + "\"," + className + ")";
 		}
 		else {
@@ -1115,8 +1115,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 				}
 				s = makeUniqueDesc(s); // and make it unique
 				
-				if (t.toLowerCase().endsWith(".class"))
-					t = t.substring(0, t.length() - 6);
+				//if (t.toLowerCase().endsWith(".class"))
+				//	t = t.substring(0, t.length() - 6);
 
 				data += comma + q(s) + ":{ \"component\" :" + q(t)
 				+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
@@ -1459,8 +1459,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 			if (i > -1 && i < c.length() - 1) {				
 					c = c.substring(i + 1);				
 			}
-			if (c.toLowerCase().endsWith(".class"))
-				c = c.substring(0, c.length() - 6);
+			//if (c.toLowerCase().endsWith(".class"))
+			//	c = c.substring(0, c.length() - 6);
 		}
 
 		return c;

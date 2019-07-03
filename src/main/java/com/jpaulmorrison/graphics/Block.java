@@ -387,8 +387,8 @@ public class Block implements ActionListener {
 		}
 		if (fullClassName != null) {
 			String t = fullClassName;
-			if (t.toLowerCase().endsWith(".class"))
-				t = t.substring(0, t.length() - 6);
+			//if (t.toLowerCase().endsWith(".class"))  // change to keep .class
+			//	t = t.substring(0, t.length() - 6);
 			s += "<blockclassname>" + t + "</blockclassname> ";
 		}
 		if (this instanceof ExtPortBlock) {
@@ -457,7 +457,14 @@ public class Block implements ActionListener {
 			isSubnet = s.equals("true");
 
 		fullClassName = item.get("blockclassname");
-		getClassInfo(fullClassName); 
+		String w = fullClassName; 
+		if (diag.diagLang.label.equals("Java") && w != null){
+			if (!fullClassName.endsWith(".class"))  
+				fullClassName += ".class";
+			else
+				w = w.substring(0, w.length() - 6);
+			getClassInfo(w); 
+		}
 		
 		s = item.get("x").trim();
 		cx = Integer.parseInt(s);
@@ -496,6 +503,7 @@ public class Block implements ActionListener {
 	
 	void getClassInfo(String fcn){  
 		fullClassName = fcn;
+		
 		//fullClassName = item.get("blockclassname");
 		if (fullClassName != null) {
 			if (fullClassName.indexOf("!") == -1) {// if no "!", language is not
@@ -1480,7 +1488,7 @@ public class Block implements ActionListener {
 			}
 
 			if (javaClass != null || fullClassName != null) {
-				MyOptionPane.showMessageDialog(driver.frame, fullClassName);
+				MyOptionPane.showMessageDialog(driver.frame, fullClassName + ".class");
 			}
 			return;
 		}
@@ -1548,7 +1556,7 @@ public class Block implements ActionListener {
 		if (s.equals("Edit Subnet Port Name")) {
 			// Block must be an Enclosure
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Deprecated - do excise first, then edt subnet");
+					"Deprecated - do excise first, then edit subnet");
 			
 			return;
 
@@ -1641,6 +1649,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			diag.delBlock(this, CHOOSE);
 			//foundBlock = null;
 			diag.changed = true;
+			driver.selBlock = null;
 			// diag.changeCompLang();
 			driver.frame.repaint();
 		}

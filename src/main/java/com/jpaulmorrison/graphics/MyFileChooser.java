@@ -98,9 +98,10 @@ public class MyFileChooser extends JFrame
 	Color lightBlue = new Color(160, 220, 250);
 	//String title;
 
-	MyComboBox cBox = null;
+	MyComboBox cBox = null;	
 	
 	boolean saveAs;
+	boolean saving;
 	Vector<Component> order = null;
 
 	//Point mLoc = null;
@@ -134,12 +135,13 @@ public class MyFileChooser extends JFrame
 		
 	}
 
-	int showOpenDialog(final boolean saveas) {
+	int showOpenDialog(final boolean saveas, final boolean saving) {
 
 		dialog = new JDialog(driver.frame, JDialog.ModalityType.APPLICATION_MODAL);
 		// dialog.setUndecorated(false);
 
-		saveAs = saveas;
+		this.saveAs = saveas;
+		this.saving = saving;
 
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -179,8 +181,7 @@ public class MyFileChooser extends JFrame
 		t_fileName.setEditable(true);
 		t_fileName.setEnabled(true);
 		t_fileName.setRequestFocusEnabled(true);
-		//text2.addKeyListener(this);
-		//text2.getDocument().addDocumentListener(this);
+		
 		t_fileName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
 			
 		t_suggName.setEditable(false);
@@ -453,23 +454,11 @@ public class MyFileChooser extends JFrame
 				listHead = h.getParent();
 				t_dirName.setText(listHead);
 				//t_fileName.setText(h.getName());
-				t_suggName.setText(h.getName());
-
-				/*
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						text2.requestFocusInWindow();
-						selComp = text2;
-						text2.setBackground(vLightBlue);
-					}
-				});
-				
-				*/
+				t_suggName.setText(h.getName());				
 				
 				t_fileName.addAncestorListener( new RequestFocusListener(false) );
 				//selComp = t_fileName;
-				//text2.setBackground(vLightBlue);
-				//text2.setEditable(true); 
+				 
 			}
 
 			if (driver.curDiag.title != null && driver.curDiag.diagFile != null) {
@@ -513,7 +502,7 @@ public class MyFileChooser extends JFrame
 		return result;
 	}
 	int showOpenDialog() {
-		return showOpenDialog(false);
+		return showOpenDialog(false, false);
 	}
 
 	void getSelectedFile(String[] s) {
@@ -1458,8 +1447,10 @@ public class MyFileChooser extends JFrame
 				String u = t_dirName.getText();
 				File h = new File(u);
 				if (!h.exists() || !h.isDirectory()) {
-					MyOptionPane.showMessageDialog(driver.frame, "File " + u
-							+ " either doesn't exist or is not a directory", MyOptionPane.ERROR_MESSAGE);
+					MyOptionPane.showMessageDialog(driver.frame,
+							"File " + u
+									+ " either doesn't exist or is not a directory",
+							MyOptionPane.ERROR_MESSAGE);
 
 					return;
 				}
@@ -1469,13 +1460,7 @@ public class MyFileChooser extends JFrame
 				showList();
 				return;
 			}
-			// if (selComp == text2) {
-			// fullNodeName = text.getText() + File.separator
-			// + text2.getText();
-			// if (!saveAs)
-			// processOK();
-			// }
-
+			
 			butNF.setEnabled(!inJarTree && saveAs);
 			butDel.setEnabled(!inJarTree);
 
@@ -1484,33 +1469,35 @@ public class MyFileChooser extends JFrame
 
 			String s = t_fileName.getText();
 
-			//if (s == null || s.equals("")) {
+			// if (s == null || s.equals("")) {
 
-				if (selComp instanceof JList) {
+			if (selComp instanceof JList) {
 
-					int rowNo = list.getSelectedIndex();
-					if (nodeNames.length == 0 || rowNo == -1) {
+				int rowNo = list.getSelectedIndex();
+				if (nodeNames.length == 0 || rowNo == -1) {
+					if (!saving) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"Empty directory or no entry selected",
 								MyOptionPane.ERROR_MESSAGE);
-						return;
 					}
+					return;
+				}
 
-					s = nodeNames[rowNo];
+				s = nodeNames[rowNo];
 
-					if (!s.equals("")) {
-						//String v = t_dirName.getText();
-						//File f = new File(v + File.separator + s);
-						//if (f.exists() && !f.isDirectory()) {                         
-						if (s.endsWith(".class")) {
-							t_fileName.setText(s);
-							t_fileName.repaint();
-						}
+				if (!s.equals("")) {
+					String v = t_dirName.getText();
+					File f = new File(v + File.separator + s);
+					if (f.exists() && !f.isDirectory()) {
+					//if (s.endsWith(".class")) {
+						t_fileName.setText(s);
+						t_fileName.repaint();
 					}
-					// t_fileName.setText(s);
-				} else
-					s = t_fileName.getText();
-			//}
+				}
+				// t_fileName.setText(s);
+			} else
+				s = t_fileName.getText();
+			// }
 
 			if (s == null || s.equals("")) {
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -1564,13 +1551,12 @@ public class MyFileChooser extends JFrame
 
 					if (!saveAs)
 						processOK();
-					else 
-						if (selComp != t_fileName) { 
-							MyOptionPane.showMessageDialog(driver.frame,
-								"Folder does not exist: "
-										+ f.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
-							return;
-						}
+					else if (selComp != t_fileName) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"Folder does not exist: " + f.getAbsolutePath(),
+								MyOptionPane.ERROR_MESSAGE);
+						return;
+					}
 				}
 				if (f.isDirectory()
 						|| f.getName().toLowerCase().endsWith("package.json")) {
@@ -1605,7 +1591,7 @@ public class MyFileChooser extends JFrame
 			// }
 			panel.validate();
 			dialog.repaint();
-			//frame.repaint();
+			// frame.repaint();
 		}
 
 	}
@@ -1891,16 +1877,16 @@ public class MyFileChooser extends JFrame
 
 			selComp = list;
 			rowNo = -1;
-			for (int n = list.getFirstVisibleIndex(); n < list
-					.getLastVisibleIndex() + 1; n++) {				
-				Rectangle r = list.getCellBounds(n, n);
-				if (r.contains(e.getPoint())) {
-					rowNo = n;
-					// int rowNo = list.locationToIndex(e.getPoint());
-					if (rowNo > -1)
-						break;
-				}
-			}
+			//for (int n = list.getFirstVisibleIndex(); n < list
+			//		.getLastVisibleIndex() + 1; n++) {				
+			//	Rectangle r = list.getCellBounds(n, n);
+			//	if (r.contains(e.getPoint())) {
+			//		rowNo = n;
+					rowNo = list.locationToIndex(e.getPoint());
+			//		if (rowNo > -1)
+			//			break;
+			//	}
+			//}
 			list.setRequestFocusEnabled(true);
 
 			list.setSelectedIndex(rowNo);

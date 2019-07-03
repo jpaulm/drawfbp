@@ -44,6 +44,7 @@ public class Diagram {
 	GenLang diagLang;
 
 	boolean changed = false;
+	//boolean saving;
 
 	// Arrow currentArrow = null;
 
@@ -213,7 +214,7 @@ public class Diagram {
 			
 			//String fn = "";
 			
-			int i; 
+			//int i; 
 			//if (!diagFile.getAbsolutePath().endsWith(fCP.fileExt)) {
 			//	suggFile = diagFile.getAbsolutePath();
 			//	i = diagFile.getAbsolutePath().lastIndexOf(".");
@@ -238,8 +239,8 @@ public class Diagram {
 						
 			String suggestedFileName = null;
 			
-			if (saveAs)			
-				suggestedFileName = s + File.separator + title + fCP.fileExt;
+			if (saveAs && title != null)
+				    suggestedFileName = s + File.separator + title + fCP.fileExt;
 			
 			//File g = diagFile; 
 			MyFileChooser fc = null;
@@ -268,7 +269,7 @@ public class Diagram {
 			//else
 			//	fc = new MyFileChooser(f, fCP);
 
-			int returnVal = fc.showOpenDialog(saveAs);
+			int returnVal = fc.showOpenDialog(saveAs, true);
 
 			if (returnVal == MyFileChooser.CANCEL_OPTION)
 				return null;
@@ -363,6 +364,27 @@ public class Diagram {
 		
 		// finished choosing file...
 		
+		if (file.exists()) {
+			if (file.isDirectory()) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						file.getName() + " is a directory",
+						MyOptionPane.WARNING_MESSAGE);
+				return null;
+			}
+			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+					driver.frame,
+					"Overwrite existing file: " + file.getAbsolutePath()
+							+ "?",
+					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
+				return null;
+		} else {
+			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+					driver.frame,
+					"Create new file: " + file.getAbsolutePath() + "?",
+					"Confirm create", MyOptionPane.YES_NO_OPTION)))
+				return null;
+		}
+		
 		if (fCP == fCParm[DrawFBP.IMAGE]) {
 			Path path = file.toPath();
 			try {
@@ -378,15 +400,15 @@ public class Diagram {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		} else {
 			fileString = (String) contents;
 			// if not image
 			if (fCP.fileExt.equals(".drw")) {
-				
-				fileString = readFile(file, saveAs);  // read previous version
+
+				fileString = readFile(file, saveAs); // read previous version
 				diagFile = file;
-				
+
 				if (fileString != null) {
 					String s = file.getAbsolutePath();
 					File oldFile = file;
@@ -395,34 +417,38 @@ public class Diagram {
 					file = oldFile;
 				}
 				fileString = buildFile();
-				
-			} 
-		 
-				//if (newFile != null){
-					if (file.exists()) {
-					if (file.isDirectory()) {
-						MyOptionPane.showMessageDialog(driver.frame, file.getName()
-								+ " is a directory", MyOptionPane.WARNING_MESSAGE);
-						return null;
-					}
-					if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-							driver.frame, "Overwrite existing file: " + file.getAbsolutePath()
-								+ "?", "Confirm overwrite",
-							 MyOptionPane.YES_NO_OPTION)))  
-				    	 return null;
-				} else {
-					if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-							driver.frame, "Create new file: " + file.getAbsolutePath()
-							+ "?", "Confirm create",
-							 MyOptionPane.YES_NO_OPTION))) 
-						return null;
-				}
-			//}
 
-				//}
+			}
+
+			// if (newFile != null){
+			/*
+			if (file.exists()) {
+				if (file.isDirectory()) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							file.getName() + " is a directory",
+							MyOptionPane.WARNING_MESSAGE);
+					return null;
+				}
+				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+						driver.frame,
+						"Overwrite existing file: " + file.getAbsolutePath()
+								+ "?",
+						"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
+					return null;
+			} else {
+				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+						driver.frame,
+						"Create new file: " + file.getAbsolutePath() + "?",
+						"Confirm create", MyOptionPane.YES_NO_OPTION)))
+					return null;
+			}
+			*/
+			// }
+
+			// }
 			writeFile(file, fileString);
-			
-			//return diagFile;
+
+			// return diagFile;
 		}
 
 		//suggFile = null;

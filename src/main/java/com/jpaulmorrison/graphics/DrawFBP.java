@@ -291,7 +291,8 @@ public class DrawFBP extends JFrame
 			//System.out.println("Diagram: " + diagramName );
 			File f = new File(diagramName);
 			if (!f.exists())
-				System.out.println("Diagram: " + diagramName + "can't be found" );
+			//	System.out.println("Diagram: " + diagramName + "can't be found" );
+				diagramName = null;
 		}
 		else {
 			diagramName = properties.get("currentDiagram");
@@ -1104,6 +1105,7 @@ public class DrawFBP extends JFrame
 		diag.tabNum = i;
 		//curDiag = diag;
 		//diag.suggFile = null;
+		diag.title = "(untitled)";
 		diag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
@@ -1218,7 +1220,7 @@ public class DrawFBP extends JFrame
 				changeLanguage(gl);
 
 				MyOptionPane.showMessageDialog(frame,
-						"Language group changed to " + currLang.showLangs());
+						"Language group changed to " + currLang.showLangs()+ "\nNote: some File and Block-related options will have changed");
 				frame.repaint();
 
 				return;
@@ -1296,7 +1298,7 @@ public class DrawFBP extends JFrame
 					+ curDiag.fCParm[NETWORK].fileExt;
 			fc.setSuggestedName(ss);
 
-			int returnVal = fc.showOpenDialog(true); // force saveAs
+			int returnVal = fc.showOpenDialog(true, true); // force saveAs
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -1548,7 +1550,7 @@ public class DrawFBP extends JFrame
 				}
 			}
 
-			int returnVal = fc.showOpenDialog(true); // set to saveAs
+			int returnVal = fc.showOpenDialog(true, true); // set to saveAs
 
 			// fFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -2691,7 +2693,7 @@ public class DrawFBP extends JFrame
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
 
-			// String clsName = progName.replace(".java", ".class");
+			//String clsName = progName.replace(".java", ".class");
 
 			// (new File(clsDir + "/" + t + clsName)).delete(); // make sure old
 			// class has been deleted
@@ -2798,8 +2800,8 @@ public class DrawFBP extends JFrame
 									+ "\n" + "   into - " + clsDir + "/" + pkg
 									+ "/"
 									+ progName.substring(0,
-											progName.length() - 5)
-									+ ".class",
+											progName.length() - 5),
+									// + ".class",
 							MyOptionPane.INFORMATION_MESSAGE);
 				else
 					MyOptionPane.showMessageDialog(frame,
@@ -3247,7 +3249,8 @@ public class DrawFBP extends JFrame
 				proc.destroy();
 			 
 			
-			program = clsDir + "/" + progName + ".class";
+			program = clsDir + "/" + progName; 
+					//+ ".class";
 		}
 
 		else {

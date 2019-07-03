@@ -81,14 +81,12 @@ public class Arrow implements ActionListener {
 		//int endX, endY;
 		Block from = null;
 		Block to = null;
-		if (fromId > -1) {
-			from = diag.blocks.get(new Integer(fromId));
-			
-		}
+		//if (fromId == -1 || toId == -1 || toX == -1) 
+		//	return;
 		
-		if (toId > -1) {
-			to = diag.blocks.get(new Integer(toId));			
-		}
+		from = diag.blocks.get(new Integer(fromId));		
+		to = diag.blocks.get(new Integer(toId));			
+		 
 		Arrow a = findLastArrowInChain();
 		if (a != null)
 			to = diag.blocks.get(new Integer(a.toId));
@@ -562,7 +560,7 @@ public class Arrow implements ActionListener {
 				for (Arrow a : diag.arrows.values()) {
 					if (a.fromId == fromId && a.upStreamPort != null
 							&& a.upStreamPort.equals(ans)
-							&& !(upStreamPort.equals(ans)) || 
+							/*&& !(upStreamPort.equals(ans) */ || 
 						a.toId == fromId
 							&& a.downStreamPort != null
 							&& a.downStreamPort.equals(ans))
@@ -744,6 +742,7 @@ public class Arrow implements ActionListener {
 				diag.delArrow(this);
 
 				diag.changed = true;
+				driver.selArrow = null;
 				driver.currentArrow = null;
 				driver.frame.repaint();
 				
