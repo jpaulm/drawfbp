@@ -156,7 +156,7 @@ public class Diagram {
 		}
 		 
 		File currentDiagramDir = file.getParentFile();
-		driver.properties.put("currentDiagramDir",
+		driver.saveProp("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
 		//driver.propertiesChanged = true;
 
@@ -338,7 +338,7 @@ public class Diagram {
 				}
 
 				  newFile.getParentFile().mkdirs();
-				  driver.properties.put(fCP.propertyName, newFile.getParentFile().getAbsolutePath());
+				  driver.saveProp(fCP.propertyName, newFile.getParentFile().getAbsolutePath());
 			}
 		 
 
@@ -507,25 +507,25 @@ public class Diagram {
 		if (diagFile != null) {
 		    currentDiagramDir = diagFile.getParentFile();
 		    if (currentDiagramDir != null)
-		    	driver.properties.put("currentDiagramDir",
+		    	driver.saveProp("currentDiagramDir",
 		    			currentDiagramDir.getAbsolutePath());
 		    if (res) {
 		    	String s = diagFile.getAbsolutePath();
 		    	if (s.endsWith(".drw"))
-		    		driver.properties.put("currentDiagram", s);
+		    		driver.saveProp("currentDiagram", s);
 		    }
 		    else
 		    	driver.properties.remove("currentDiagram");
 		}
 		
 		String t = Integer.toString(driver.frame.getBounds().x);
-		driver.properties.put("x", t);
+		driver.saveProp("x", t);
 		t = Integer.toString(driver.frame.getBounds().y);
-		driver.properties.put("y", t);
+		driver.saveProp("y", t);
 		t = Integer.toString(driver.frame.getSize().width);
-		driver.properties.put("width", t);
+		driver.saveProp("width", t);
 		t = Integer.toString(driver.frame.getSize().height);
-		driver.properties.put("height", t);
+		driver.saveProp("height", t);
 		//driver.propertiesChanged = true;
 		
 		return res;

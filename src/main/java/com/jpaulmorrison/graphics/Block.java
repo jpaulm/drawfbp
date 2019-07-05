@@ -1955,7 +1955,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 				else {
 
-					driver.properties.put("currentClassDir",
+					driver.saveProp("currentClassDir",
 							fp.getAbsolutePath());
 					//driver.propertiesChanged = true;
 					fullClassName = fp.getAbsolutePath() + "!"
@@ -2041,7 +2041,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					codeFileName = driver.getSelFile(fc);
 				} else {
 					codeFileName = cFile.getAbsolutePath();
-					driver.properties.put(gl.srcDirProp,
+					driver.saveProp(gl.srcDirProp,
 							cFile.getParentFile().getAbsolutePath());
 					//driver.propertiesChanged = true;
 				}

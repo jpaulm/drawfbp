@@ -421,8 +421,8 @@ public class DrawFBP extends JFrame
 
 		//readPropertiesFile();
 
-		properties.put("versionNo", "v" + VersionAndTimestamp.getVersion());
-		properties.put("date", VersionAndTimestamp.getDate());
+		saveProp("versionNo", "v" + VersionAndTimestamp.getVersion());
+		saveProp("date", VersionAndTimestamp.getDate());
 
 		if (null == (generalFont = properties.get("generalFont")))
 			generalFont = "Arial";
@@ -436,7 +436,7 @@ public class DrawFBP extends JFrame
 		} else
 			defaultFontSize = Float.parseFloat(dfs);
 
-		properties.put("defaultFontSize", dfs);
+		saveProp("defaultFontSize", dfs);
 
 		String dcl = properties.get("defaultCompLang");
 		// if (dcl.equals("NoFlo")) // transitional!
@@ -460,7 +460,7 @@ public class DrawFBP extends JFrame
 			z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
 			cma = ";";
 		}
-		properties.put("additionalJarFiles", z);
+		saveProp("additionalJarFiles", z);
 		
 		entries = dllFiles.entrySet().iterator();
 		z = "";
@@ -471,7 +471,7 @@ public class DrawFBP extends JFrame
 			z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
 			cma = ";";
 		}
-		properties.put("additionalDllFiles", z);
+		saveProp("additionalDllFiles", z);
 
 		startProperties = new HashMap<String, String>();
 		for (String s : properties.keySet()) {
@@ -1211,7 +1211,7 @@ public class DrawFBP extends JFrame
 
 				currLang = gl;
 
-				properties.put("defaultCompLang", currLang.label);
+				saveProp("defaultCompLang", currLang.label);
 				// propertiesChanged = true;
 				if (curDiag != null && curDiag.diagLang != currLang) {
 					curDiag.diagLang = currLang;
@@ -1577,7 +1577,7 @@ public class DrawFBP extends JFrame
 			BufferedImage img = (BufferedImage) image;
 
 			currentImageDir = new File(fFile.getParent());
-			properties.put("currentImageDir", fFile.getParent());
+			saveProp("currentImageDir", fFile.getParent());
 			// propertiesChanged = true;
 
 			// curDiag.imageFile = fFile;
@@ -1945,7 +1945,7 @@ public class DrawFBP extends JFrame
 	void changeLanguage(GenLang gl) {
 
 		curDiag.diagLang = gl;
-		properties.put("defaultCompLang", gl.label);
+		saveProp("defaultCompLang", gl.label);
 		currLang = gl;
 		jtf.setText("Diagram Language: " + gl.showLangs());
 
@@ -2356,7 +2356,7 @@ public class DrawFBP extends JFrame
 
 		File currentDiagramDir = file.getParentFile();
 		frame.setTitle("Diagram: " + curDiag.title);
-		properties.put("currentDiagramDir",
+		saveProp("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
 		// propertiesChanged = true;
 
@@ -2445,7 +2445,7 @@ public class DrawFBP extends JFrame
 		chooseFonts(fontChooser);
 
 		if (gFontChanged) {
-			properties.put("generalFont", generalFont);
+			saveProp("generalFont", generalFont);
 			// propertiesChanged = true;
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: "
@@ -2457,7 +2457,7 @@ public class DrawFBP extends JFrame
 		}
 
 		if (fFontChanged) {
-			properties.put("fixedFont", fixedFont);
+			saveProp("fixedFont", fixedFont);
 			// propertiesChanged = true;
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: "
@@ -2511,7 +2511,7 @@ public class DrawFBP extends JFrame
 		jfs.setText("Font Size: " + defaultFontSize);
 		adjustFonts();
 		// frame.repaint();
-		properties.put("defaultFontSize", Float.toString(defaultFontSize));
+		saveProp("defaultFontSize", Float.toString(defaultFontSize));
 		// propertiesChanged = true;
 		MyOptionPane.showMessageDialog(frame, "Font size changed");
 		frame.repaint();
@@ -2643,7 +2643,7 @@ public class DrawFBP extends JFrame
 				pkg = source.substring(m + 8, n + m + 8);
 				pkg = pkg.trim();
 			}
-			properties.put("currentPackageName", pkg);
+			saveProp("currentPackageName", pkg);
 
 			String srcDir = cFile.getAbsolutePath();
 			srcDir = srcDir.replace('\\', '/');
@@ -2652,7 +2652,7 @@ public class DrawFBP extends JFrame
 			String progName = srcDir.substring(j + 1);
 			srcDir = srcDir.substring(0, j);
 			(new File(srcDir)).mkdirs();
-			properties.put(gl.netDirProp, srcDir);
+			saveProp(gl.netDirProp, srcDir);
 
 			String clsDir;
 			String t;
@@ -2666,13 +2666,14 @@ public class DrawFBP extends JFrame
 				}
 				clsDir = srcDir.replace("/src/", "/bin/");
 				srcDir = srcDir.substring(0, k + 4); // drop after src
+				clsDir = clsDir.substring(0, k + 4); // drop after bin
 			} else {
 				srcDir = srcDir.substring(0, j);
 				clsDir = srcDir;
 				t = "";
 			}
-			properties.put("currentClassDir", clsDir);
-			clsDir = clsDir.substring(0, k + 4); // drop after bin
+			saveProp("currentClassDir", clsDir);
+			//clsDir = clsDir.substring(0, k + 4); // drop after bin
 
 			File fd = new File(clsDir);
 
@@ -2680,7 +2681,7 @@ public class DrawFBP extends JFrame
 
 			if (fd == null || !fd.exists()) {
 				fd.mkdirs();
-				// properties.put("currentClassDir", clsDir);
+				// saveProp("currentClassDir", clsDir);
 				MyOptionPane.showMessageDialog(frame,
 						"'bin' directory created - " + clsDir,
 						MyOptionPane.INFORMATION_MESSAGE);
@@ -2900,7 +2901,7 @@ public class DrawFBP extends JFrame
 			
 			(new File(trunc)).mkdirs();
 			
-			properties.put("currentCsharpNetworkDir",
+			saveProp("currentCsharpNetworkDir",
 					trunc);
 			
 								
@@ -3060,7 +3061,7 @@ public class DrawFBP extends JFrame
 						"Programs compiled and linked - " + trunc + "/"
 								+ "*.cs\n" + "   into - " +  trunc + "/bin/Debug/" + v + ".exe",
 						MyOptionPane.INFORMATION_MESSAGE);
-				properties.put("exeDir", trunc)  ;
+				saveProp("exeDir", trunc)  ;
 			}
 			else
 				MyOptionPane.showMessageDialog(frame,
@@ -3127,7 +3128,7 @@ public class DrawFBP extends JFrame
 			}
 
 			clsDir.mkdirs();
-			properties.put("currentClassDir", clsDir.getAbsolutePath());
+			saveProp("currentClassDir", clsDir.getAbsolutePath());
 
 			progName = progName.substring(0, progName.length() - 6);
 			if (!(t.equals("")))
@@ -3291,7 +3292,7 @@ public class DrawFBP extends JFrame
 			int k = exeFile.lastIndexOf("bin/Debug/");
 			exeDir = exeFile.substring(0, k + 10);
 			
-			properties.put("exeDir", exeDir);
+			saveProp("exeDir", exeDir);
 
 			exeFile = exeFile.replace("\\",  "/");
 			
@@ -3421,7 +3422,7 @@ public class DrawFBP extends JFrame
 						s = s.substring(0, k).trim();
 						key = key.replace("\\", "/");
 						if (-1 == key.indexOf("/")) // compensate for old bug (key and value were reversed)!
-							properties.put(key, s);
+							saveProp(key, s);
 					} else {
 						// additionalJar/DllFiles
 						HashMap<String, String> list = key.equals("additionalJarFiles")? jarFiles: dllFiles;
@@ -3435,7 +3436,7 @@ public class DrawFBP extends JFrame
 								if (n == -1)
 									break;
 
-								//properties.put("addnl_jf_" + u.substring(0, n),  
+								//saveProp("addnl_jf_" + u.substring(0, n),  
 								// 		u.substring(n + 1));
 								list.put(u.substring(0, n),
 										u.substring(n + 1));
@@ -3448,7 +3449,7 @@ public class DrawFBP extends JFrame
 								if (n == -1)
 									break;
 
-								//properties.put("addnl_jf_" + u.substring(0, n),
+								//saveProp("addnl_jf_" + u.substring(0, n),
 								// 		u.substring(n + 1));
 								list.put(u.substring(0, n),
 										u.substring(n + 1));
@@ -3610,7 +3611,7 @@ public class DrawFBP extends JFrame
 				}
 				// diag.currentDir = new File(cFile.getParent());
 				javaFBPJarFile = cFile.getAbsolutePath();
-				properties.put("javaFBPJarFile", javaFBPJarFile);
+				saveProp("javaFBPJarFile", javaFBPJarFile);
 
 				// propertiesChanged = true;
 				MyOptionPane.showMessageDialog(frame,
@@ -3684,7 +3685,7 @@ public class DrawFBP extends JFrame
 				cma = ";";
 
 			}
-			properties.put("additionalJarFiles", t);
+			saveProp("additionalJarFiles", t);
 			MyOptionPane.showMessageDialog(frame,
 					"Additional jar file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
@@ -3744,10 +3745,10 @@ public class DrawFBP extends JFrame
 
 			}
 			
-			properties.put("additionalDllFiles", t);
+			saveProp("additionalDllFiles", t);
 			
 			String u = cFile.getParent();
-			properties.put("dllFileDir", u);
+			saveProp("dllFileDir", u);
 			MyOptionPane.showMessageDialog(frame,
 					"Additional dll file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
@@ -3792,7 +3793,7 @@ public class DrawFBP extends JFrame
 			}
 			// diag.currentDir = new File(cFile.getParent());
 			jhallJarFile = cFile.getAbsolutePath();
-			properties.put("jhallJarFile", jhallJarFile);
+			saveProp("jhallJarFile", jhallJarFile);
 			// propertiesChanged = true;
 			MyOptionPane.showMessageDialog(frame,
 					"DrawFBP Help jar file location: "
@@ -3854,7 +3855,7 @@ public class DrawFBP extends JFrame
 				}
 				// diag.currentDir = new File(cFile.getParent());
 				jhallJarFile = cFile.getAbsolutePath();
-				properties.put("jhallJarFile", jhallJarFile);
+				saveProp("jhallJarFile", jhallJarFile);
 
 				// propertiesChanged = true;
 				MyOptionPane.showMessageDialog(frame,
@@ -3869,6 +3870,10 @@ public class DrawFBP extends JFrame
 		return true;
 	}
 
+	void saveProp(String s, String t){
+		properties.put(s, t); 
+		writePropertiesFile();
+	}
 
 	void closeTab() {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));

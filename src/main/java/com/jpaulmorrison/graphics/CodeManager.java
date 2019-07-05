@@ -180,7 +180,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				packageName = (String) MyOptionPane.showInputDialog(dialog,
 						"Please fill in a package/namespace name", null);
 				packageName = packageName.trim();				
-				driver.properties.put("currentPackageName", packageName);
+				driver.saveProp("currentPackageName", packageName);
 				//driver.propertiesChanged = true;
 			}
 		}
@@ -606,7 +606,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 							"Missing package name - please specify package name",
 							null);
 
-					// driver.properties.put("currentPackageName", packageName);
+					// driver.saveProp("currentPackageName", packageName);
 					// driver.propertiesChanged = true;
 					fileString = "package " + packageName + ";\n" + fileString;
 					changed = true;
@@ -618,7 +618,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 				String pkg = (String) driver.properties
 						.get("currentPackageName");
 				if (pkg != null && !(pkg.equals(packageName))) {
-					driver.properties.put("currentPackageName", packageName);
+					driver.saveProp("currentPackageName", packageName);
 					// driver.propertiesChanged = true;
 				}
 			}
@@ -967,12 +967,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 		//MyOptionPane.showMessageDialog(driver.frame, "File " + file.getName() + " saved");
 		
 		// genCodeFileName = file.getAbsolutePath();
-		driver.properties.put(diag.diagLang.netDirProp, file.getParent());
+		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
 		//driver.propertiesChanged = true;
 		changed = false;
 
 		if (packageNameChanged) {
-			driver.properties.put("currentPackageName", packageName);
+			driver.saveProp("currentPackageName", packageName);
 			//driver.propertiesChanged = true;
 		}
 
@@ -1022,7 +1022,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 								"Package name changed: " + pkg);
 
 					}
-					driver.properties.put("currentPackageName",
+					driver.saveProp("currentPackageName",
 							pkg);
 					// driver.propertiesChanged = true;
 				}
