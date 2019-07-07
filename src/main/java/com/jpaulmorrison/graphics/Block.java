@@ -187,7 +187,11 @@ public class Block implements ActionListener {
 		String name = null;
 		if (diag.diagLang != null
 				&& (diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#"))) {
+			
+			loadClass();                // uses fullClassName to load javaClass
+			
 			if (javaClass != null) {
+				// driver.locateJavaFBPJarFile(false);
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				g.setColor(Color.BLUE);
@@ -200,6 +204,7 @@ public class Block implements ActionListener {
 			}
 
 			else if (fullClassName != null) {
+				// driver.locateJavaFBPJarFile(false);
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				name = "Class not found or out of date - rechoose comp/subnet";   
@@ -528,7 +533,7 @@ public class Block implements ActionListener {
 		}
 	
 
-	
+	// takes fullClassName and derives javaClass
 	
 	void loadClass(){
 		int i = fullClassName.indexOf("!");
@@ -536,6 +541,9 @@ public class Block implements ActionListener {
 			return;
 		String fn = fullClassName.substring(0, i);  // jar file name or class folder
 		String cn = fullClassName.substring(i + 1);  // class name
+		
+		if (cn.endsWith(".class"))
+			cn = cn.substring(0,  cn.length() - 6);
 	
 		//LinkedList<URL> ll = new LinkedList<URL>();
 		
@@ -552,9 +560,9 @@ public class Block implements ActionListener {
 				 
 		try {
 			
-			classLoader = new URLClassLoader(urls, this.getClass()
+			classLoader = new URLClassLoader(urls, driver.getClass()
 					.getClassLoader());
-		
+					
 			javaClass = classLoader.loadClass(cn);
 			
 			} catch (ClassNotFoundException e) {
@@ -576,7 +584,9 @@ public class Block implements ActionListener {
 	}
 
 	
-	Class<?> getSelectedClass(String jar, String jf, boolean injar) {
+	Class<?> isValidClass(String jar, String jf, boolean injar) {
+		
+		// returns actual class if valid; otherwise null
 
 		if (jf.trim().equals("")) {
 			return null;
@@ -614,32 +624,15 @@ public class Block implements ActionListener {
 			Class<?> subnetClass = classLoader
 					.loadClass("com." + owner + ".fbp." + seg + "SubNet");	
 			
-			Object obj = new Object();
-
 			int i = jf.lastIndexOf(".class"); 			
 			if (i != -1)
 				jf = jf.substring(0, i);
+			jf = jf.replace("\\",  "/");
 			jf = jf.replace('/', '.');
 			cls = classLoader.loadClass(jf);
-
-			if (cls.getCanonicalName().equals(compClass.getCanonicalName()) || 
-					cls.getCanonicalName().equals(networkClass.getCanonicalName())
-					|| cls.getCanonicalName().equals(subnetClass.getCanonicalName())){
-					return null;
-			}
-
-			//MethodHandle h2 = MethodHandles.lookup().findSpecial(Object.class, "toString",
-			//        MethodType.methodType(String.class),
-			//        Test.class);
-			Class<?> cs = (Class<?>) cls.getSuperclass();
-			URLClassLoader ucl = (URLClassLoader) cls.getClassLoader();
-			//URLClassLoader ucl2 = new URLClassLoader(ucl.getURLs(), ucl);
-			try {
-			cs = ucl.loadClass(cs.getName()); 
-			}  catch (ClassNotFoundException e) {
-				
-			}
 			
+			Class<?> cs = (Class<?>) cls.getSuperclass();
+			Object obj = new Object();
 			/*
 			System.out.println("Classloader of class:"
 			        + cls.getClassLoader());
@@ -653,7 +646,33 @@ public class Block implements ActionListener {
 			        + subnetClass.getClassLoader());
 			System.out.println("Classloader of obj class:"
 			        + obj.getClass().getClassLoader());
+					
 			*/
+			
+			if (cls.getCanonicalName().equals(compClass.getCanonicalName()) || 
+					cls.getCanonicalName().equals(networkClass.getCanonicalName())
+					|| cls.getCanonicalName().equals(subnetClass.getCanonicalName())){
+					return null;
+			}
+
+			//MethodHandle h2 = MethodHandles.lookup().findSpecial(Object.class, "toString",
+			//        MethodType.methodType(String.class),
+			//        Test.class);
+			
+			 
+			//  What does this do???!!!
+			 
+			
+			URLClassLoader ucl = (URLClassLoader) cls.getClassLoader();
+			//URLClassLoader ucl2 = new URLClassLoader(ucl.getURLs(), ucl);
+			try {
+			cs = ucl.loadClass(cs.getName()); 
+			}  catch (ClassNotFoundException e) {
+				
+			}
+			
+			//
+			
 			if (cs != null && cs == obj.getClass()){
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Class superclass is Object", MyOptionPane.ERROR_MESSAGE);				
@@ -1854,10 +1873,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			String res = driver.getSelFile(fc);
 
-			int i = res.indexOf("!");
-			if (i > -1) { // looking in a jar file (?)
+			int i = res.indexOf("!");  // res only has ! if from jar file
+			if (i > -1) { 
 				String res2 = res.substring(i + 2); // ! will be followed by
 													// slash
+				res2 = res2.replace("\\",  "/");
 				res2 = res2.replace('/', '.');
 
 				File f = new File(res.substring(0, i));
@@ -1870,7 +1890,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					javaClass = null;
 				else {
 					// Create a new class loader with the directory
-					classLoader = new URLClassLoader(urls, this.getClass()
+					classLoader = new URLClassLoader(urls, driver.getClass()
 							.getClassLoader());
 					try {
 						javaClass = classLoader.loadClass(res2);
@@ -1879,7 +1899,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					} catch (NoClassDefFoundError e2) {
 						javaClass = null;
 					}
-					javaClass = getSelectedClass(res.substring(0, i), res2,
+					javaClass = isValidClass(res.substring(0, i), res2,
 							injar);
 					fullClassName = res;
 				}
@@ -1923,7 +1943,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 						else {
 
 							// Create a new class loader with the directory
-							classLoader = new URLClassLoader(urls, this.getClass()
+							classLoader = new URLClassLoader(urls, driver.getClass()
 									.getClassLoader());
 
 							try {
@@ -1961,7 +1981,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					fullClassName = fp.getAbsolutePath() + "!"
 							+ javaClass.getName();
 
-					javaClass = getSelectedClass(fp.getAbsolutePath(),
+					javaClass = isValidClass(fp.getAbsolutePath(),
 							javaClass.getName(), !injar);
 				}
 			}

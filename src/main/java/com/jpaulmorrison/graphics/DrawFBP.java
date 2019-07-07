@@ -3463,11 +3463,13 @@ public class DrawFBP extends JFrame
 		}
 
 		try {
+			
 			in.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		return true;
 
 	}
@@ -3531,31 +3533,7 @@ public class DrawFBP extends JFrame
 		}
 	}
 
-	/*
-	 * 
-	 * boolean getJavaFBPJarFile() { if (javaFBPJarFile == null) {
-	 * javaFBPJarFile = properties.get("javaFBPJarFile"); }
-	 * 
-	 * File jf = null; boolean res = true; if (javaFBPJarFile != null) { jf =
-	 * new File(javaFBPJarFile); } if (jf != null && jf.exists()) {
-	 * //jarFiles.put("JavaFBP Jar File", jf.getAbsolutePath()); return res; }
-	 * 
-	 * String msg = null; if (jf != null) { if (!jf.exists()) msg =
-	 * "Unable to read JavaFBP jar file: " + javaFBPJarFile; } else msg =
-	 * "JavaFBP jar file missing";
-	 * 
-	 * if (msg != null) MyOptionPane.showMessageDialog(frame, msg,
-	 * MyOptionPane.ERROR_MESSAGE);
-	 * 
-	 * int response = MyOptionPane.showConfirmDialog(frame,
-	 * "Specify a JavaFBP jar file", "Locate JavaFBP jar file",
-	 * MyOptionPane.OK_CANCEL_OPTION ); if (response == MyOptionPane.OK_OPTION)
-	 * res = locateJavaFBPJarFile(); else {
-	 * MyOptionPane.showMessageDialog(frame, "No JavaFBP jar file located",
-	 * MyOptionPane.ERROR_MESSAGE); res = false; }
-	 * 
-	 * return res; }
-	 */
+	
 	String getSelFile(MyFileChooser fc) {
 		String[] sa = new String[1];
 		fc.getSelectedFile(sa); // getSelectedFile puts result in sa[0]
@@ -3630,13 +3608,73 @@ public class DrawFBP extends JFrame
 						bk.getClassInfo(bk.fullClassName);
 					}
 				}
-				//return true;
+				
 			}
-			// return false;
+			
 		}
+		//addJarFileToPath(javaFBPJarFile);
 		return true;
 	}
 
+	/*
+	void addJarFileToPath(String jarFile) {
+		ProcessBuilder pb = new ProcessBuilder("CMD /C SET PATH=%PATH%;\"" + jarFile + "\"");	
+		
+		String output = "";
+		pb.redirectErrorStream(true);
+		
+		String err = ""; 
+		Process proc = null;
+		
+		try {
+			proc = pb.start();
+			
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(proc.getInputStream()));
+			String line;
+			while ((line = br.readLine()) != null) {
+				output += line + "<br>";
+			}
+		} catch (NullPointerException npe) {
+			err = "Null Pointer Exception"; 
+			proc = null;
+			//return;
+		} catch (IOException ioe) {
+			err = "I/O Exception"; 
+			proc = null;
+			//return;
+		} catch (IndexOutOfBoundsException iobe) {
+			err = "Index Out Of Bounds Exception"; 
+			proc = null;
+			//return;
+		} catch (SecurityException se) {
+			err = "Security Exception"; 
+			proc = null;
+			//return;			 
+		} 
+		if (!(output.equals("")) || !(err.equals(""))) {
+			MyOptionPane.showMessageDialog(frame,
+					"Error setting PATH with" + jarFile,
+					MyOptionPane.ERROR_MESSAGE);
+			//return;
+		}
+		if (proc == null) 
+			return;
+		
+			try {
+
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			proc.destroy();		 
+		
+	}
+	
+	*/
+	
 	boolean addAdditionalJarFile() {
 
 		String ans = (String) MyOptionPane.showInputDialog(frame,

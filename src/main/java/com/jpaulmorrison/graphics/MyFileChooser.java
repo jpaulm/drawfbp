@@ -1488,11 +1488,11 @@ public class MyFileChooser extends JFrame
 				if (!s.equals("")) {
 					String v = t_dirName.getText();
 					File f = new File(v + File.separator + s);
-					if (f.exists() && !f.isDirectory()) {
+					//if (f.exists() && !(f.isDirectory())) {
 					//if (s.endsWith(".class")) {
 						t_fileName.setText(s);
-						t_fileName.repaint();
-					}
+						//t_fileName.repaint();
+					//}
 				}
 				// t_fileName.setText(s);
 			} else
@@ -1575,13 +1575,10 @@ public class MyFileChooser extends JFrame
 				currentNode = findChild(currentNode, s);
 				if (currentNode == null)
 					return;
-				if (currentNode.getChildCount() > 0)
-					listHead = listHead + File.separator + s;
-				if (0 < currentNode.getChildCount()) {
-
+				if (currentNode.getChildCount() > 0) {
+					listHead = listHead + File.separator + s;	
 					// panel.remove(listView);
 					showList();
-
 				} else
 					// if (!saveAs)
 					processOK();
