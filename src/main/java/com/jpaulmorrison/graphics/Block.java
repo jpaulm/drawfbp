@@ -551,7 +551,14 @@ public class Block implements ActionListener {
 				fn += File.separator;
 		
 		File f = new File(fn);	
-		
+		fn = fn.replace("\\", "/");
+		driver.locateJavaFBPJarFile(false);
+		driver.javaFBPJarFile = driver.javaFBPJarFile.replace("\\",  "/");
+		if (!(driver.jarFiles.containsValue(fn)) && 
+				!(fn.equals(driver.javaFBPJarFile))
+				&& fn.endsWith(".jar"))
+			driver.jarFiles.put("x" + driver.jarFiles.size(), fn);
+				
 		URL[] urls = driver.buildUrls(f);
 		
 		if (urls == null)
@@ -1752,13 +1759,13 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			t = System.getProperty("user.home");
 
 		MyFileChooser fc = new MyFileChooser(new File(t),
-				diag.fCParm[DrawFBP.DIAGRAM]);
+				diag.fCParm[Diagram.DIAGRAM]);
 
 		int returnVal = fc.showOpenDialog();
 		String dFN = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			dFN = driver.getSelFile(fc);
-			String suff = diag.fCParm[DrawFBP.DIAGRAM].fileExt;
+			String suff = diag.fCParm[Diagram.DIAGRAM].fileExt;
 			if (!(dFN.endsWith(suff)))
 				dFN += suff;
 			driver.curDiag.changed = true;
@@ -1864,7 +1871,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			t = System.getProperty("user.home");
 
 		MyFileChooser fc = new MyFileChooser(new File(t),
-				diag.fCParm[DrawFBP.CLASS]);
+				diag.fCParm[Diagram.CLASS]);
 
 		int returnVal = fc.showOpenDialog();
 
@@ -2043,7 +2050,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				t = System.getProperty("user.home");
 
 			MyFileChooser fc = new MyFileChooser(new File(t),
-					diag.fCParm[DrawFBP.PROCESS]);
+					diag.fCParm[Diagram.PROCESS]);
 
 			int returnVal = fc.showOpenDialog();
 

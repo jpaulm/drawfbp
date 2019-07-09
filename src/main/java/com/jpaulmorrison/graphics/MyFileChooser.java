@@ -116,13 +116,13 @@ public class MyFileChooser extends JFrame
 	ParentAction parentAction;
 	NewFolderAction newFolderAction;
 	
-	DrawFBP.FileChooserParm fCParm;
+	Diagram.FileChooserParm fCP;
 	
 	public ClickListener clickListener;
 	
-	public MyFileChooser(File f, DrawFBP.FileChooserParm fcp) {
+	public MyFileChooser(File f, Diagram.FileChooserParm fcp) {
 		
-		fCParm = fcp;
+		fCP = fcp;
 		clickListener = new ClickListener();
 					
 		if (f == null || !f.exists()) 
@@ -154,7 +154,7 @@ public class MyFileChooser extends JFrame
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());		
 		
-		driver.curDiag.filterOptions[0] = fCParm.title;
+		driver.curDiag.filterOptions[0] = fCP.title;
 		cBox = new MyComboBox(driver.curDiag.filterOptions);
 		cBox.setMaximumRowCount(2);
 		cBox.addMouseListener(this);
@@ -194,14 +194,14 @@ public class MyFileChooser extends JFrame
 		//comp = new MyFileCompare();
 		renderer = new ListRenderer(driver);
 
-		if (fCParm.index == DrawFBP.DIAGRAM)
+		if (fCP == driver.curDiag.fCParm[Diagram.DIAGRAM]) 
 			dialog.setTitle(s);
 		else {
-			if (fCParm.index == DrawFBP.NETWORK)
-				fCParm.prompt = "Specify file name for code - for diagram: " + driver.curDiag.title + ".drw";
+			if (fCP == driver.curDiag.fCParm[Diagram.NETWORK])
+				fCP.prompt = "Specify file name for code - for diagram: " + driver.curDiag.title + ".drw";
 			 
-			dialog.setTitle(fCParm.prompt);
-			if (fCParm.index == DrawFBP.CLASS)
+			dialog.setTitle(fCP.prompt);
+			if (fCP == driver.curDiag.fCParm[Diagram.CLASS])
 				listShowingJarFile = listHead;
 		}
 
@@ -579,7 +579,7 @@ public class MyFileChooser extends JFrame
 						if (!fx.exists())
 							continue;
 						if (!fx.isDirectory() /* && (!(fn.startsWith("."))) */
-								&& (fCParm.filter.accept(fx) || driver.allFiles))
+								&& (fCP.filter.accept(fx) || driver.allFiles))
 							ll2.add(fl[j]); // non-directories go into ll2,
 											// which is
 											// then sorted into ll
@@ -910,10 +910,9 @@ public class MyFileChooser extends JFrame
 			if (k.equals("noflo")) {
 				HashMap<String, Object> m = (HashMap<String, Object>) hm.get(k);
 				for (String k2 : m.keySet()) {
-					if (k2.equals("graphs") && fCParm.index == DrawFBP.DIAGRAM
-							|| k2.equals("components")
-							&& (fCParm.index == DrawFBP.NETWORK ||
-									fCParm.index == DrawFBP.PROCESS)) {
+					if (k2.equals("graphs") && fCP == driver.curDiag.fCParm[Diagram.DIAGRAM] ||		
+							 k2.equals("components") && fCP == driver.curDiag.fCParm[Diagram.NETWORK] ||
+						      fCP == driver.curDiag.fCParm[Diagram.PROCESS]) {
 						HashMap<String, Object> m2 = (HashMap<String, Object>) m
 								.get(k2);
 						for (Object v : m2.values()) {
@@ -1486,8 +1485,8 @@ public class MyFileChooser extends JFrame
 				s = nodeNames[rowNo];
 
 				if (!s.equals("")) {
-					String v = t_dirName.getText();
-					File f = new File(v + File.separator + s);
+					//String v = t_dirName.getText();
+					//File f = new File(v + File.separator + s);
 					//if (f.exists() && !(f.isDirectory())) {
 					//if (s.endsWith(".class")) {
 						t_fileName.setText(s);
@@ -1512,8 +1511,8 @@ public class MyFileChooser extends JFrame
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
-				if (fCParm.index == DrawFBP.JARFILE
-						|| fCParm.index == DrawFBP.JHELP) {
+				if (fCP == driver.curDiag.fCParm[Diagram.JARFILE]
+						|| fCP == driver.curDiag.fCParm[Diagram.JHELP]) {
 					processOK();
 					return;
 				}

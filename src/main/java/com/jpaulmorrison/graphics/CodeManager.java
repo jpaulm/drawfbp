@@ -956,7 +956,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 			return false;
 		}
 
-		File file = diag.genSave(null, diag.fCParm[DrawFBP.NETWORK], fileString);  
+		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString);  
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver.frame, "File not saved");

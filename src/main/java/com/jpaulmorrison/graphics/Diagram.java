@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
 
 import javax.swing.JPopupMenu;
+import javax.swing.filechooser.FileFilter;
 
-import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
 
 public class Diagram {
@@ -74,6 +74,16 @@ public class Diagram {
 	
 	JPopupMenu jpm;
 	//String targetLang;
+	public static int DIAGRAM = 0;
+	public static int IMAGE = 1;	
+	public static int JHELP = 2;
+	public static int JARFILE = 3;   
+	public static int CLASS = 4;   
+	public static int PROCESS = 5;   
+	public static int NETWORK = 6;   
+	public static int DLL = 7; 
+	public static int EXE = 8;   
+	public static int FBP = 9;    
 	
 	FileChooserParm[] fCParm;
 	String[] filterOptions = {"", "All (*.*)"};
@@ -93,7 +103,8 @@ public class Diagram {
 		driver.grid.setSelected(clickToGrid);
 		//file = null;
 		diagLang = driver.currLang;	
-		fCParm = new FileChooserParm[driver.fCPArray.length];
+		
+		fCParm = new FileChooserParm[10];
 		
 	}			
 	 
@@ -117,7 +128,7 @@ public class Diagram {
 				f2 = new File(".");
 			}
 
-			MyFileChooser fc = new MyFileChooser(f2, fCParm[DrawFBP.DIAGRAM]);
+			MyFileChooser fc = new MyFileChooser(f2, fCParm[DIAGRAM]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -198,7 +209,7 @@ public class Diagram {
 	
 	/* General save function */
 
-	public File genSave(File file, DrawFBP.FileChooserParm fCP, Object contents) {
+	public File genSave(File file, Diagram.FileChooserParm fCP, Object contents) {
 
 		boolean saveAs = false;
 		File newFile = null;
@@ -385,7 +396,7 @@ public class Diagram {
 				return null;
 		}
 		
-		if (fCP == fCParm[DrawFBP.IMAGE]) {
+		if (fCP == fCParm[IMAGE]) {
 			Path path = file.toPath();
 			try {
 				Files.deleteIfExists(path);
@@ -481,7 +492,7 @@ public class Diagram {
 				// User clicked YES.
 				if (diagFile == null) { // choose file
 
-					file = genSave(null, fCParm[DrawFBP.DIAGRAM], name);
+					file = genSave(null, fCParm[DIAGRAM], name);
 					if (file == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"File not saved");
@@ -904,7 +915,7 @@ public class Diagram {
 		//		MyOptionPane.INFORMATION_MESSAGE);
 		// force saveAs
 		
-		File file = sbnDiag.genSave(null, fCParm[DrawFBP.DIAGRAM], null);
+		File file = sbnDiag.genSave(null, fCParm[DIAGRAM], null);
 		if (file != null)
 			subnetBlock.diagramFileName = file.getAbsolutePath();
 		subnetBlock.diag.diagFile = new File(subnetBlock.diagramFileName);
@@ -1122,5 +1133,24 @@ public class Diagram {
 		subnetBlock.calcEdges();
 		return subnetBlock;
 	}
+	public class FileChooserParm {
+		//int index;
+		String name;
+		String propertyName;
+		String prompt;
+		String fileExt;
+		FileFilter filter;
+		String title;
 
+		FileChooserParm(/* int n,*/ String x, String a, String b, String c, FileFilter d,
+				String e) {
+			//index = n;
+			name = x;
+			propertyName = a;
+			prompt = b;
+			fileExt = c;
+			filter = d;
+			title = e;
+		}
+	}
 }

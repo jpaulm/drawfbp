@@ -152,19 +152,7 @@ public class DrawFBP extends JFrame
 
 	GenLang genLangs[];
 
-	FileChooserParm[] fCPArray = new FileChooserParm[10];
-
-	
-	public static int DIAGRAM = 0;
-	public static int IMAGE = 1;	
-	public static int JHELP = 2;
-	public static int JARFILE = 3;  // class-dependent
-	public static int CLASS = 4;  // class-dependent
-	public static int PROCESS = 5;  // (Java or C#) class-dependent
-	public static int NETWORK = 6;  // class-dependent 
-	public static int DLL = 7; // class-dependent
-	public static int EXE = 8;  // class-dependent	
-	public static int FBP = 9;   // class-dependent
+	//FileChooserParm[] fCPArray = new FileChooserParm[10];
 
 	JCheckBox grid;
 
@@ -327,30 +315,8 @@ public class DrawFBP extends JFrame
 		Lang lang3[] = new Lang[]{new Lang("FBP", "fbp")};
 		genLangs[3].langs = lang3;
 
-		// Following array entries are language-independent - they are copied
-		// over to the array of the same name in the Diagram object during
-		// Diagram initialization
-		
-		// The missing array entries are language-dependent, and are set during
-		// diagram building or initialization; they may change if the current language is changed 
-
-		fCPArray[DIAGRAM] = new FileChooserParm(DIAGRAM, "Diagram", "currentDiagramDir",
-				"Specify diagram name in diagram directory", ".drw",
-				new DiagramFilter(), "Diagrams (*.drw)");
 		
 		
-
-		fCPArray[IMAGE] = new FileChooserParm(IMAGE, "Image", "currentImageDir",
-				"Image: ", ".png", new ImageFilter(), "Image");	
-				
-		//fCPArray[FBP] = new FileChooserParm(DrawFBP.FBP,
-		//				"Generated FBP code",
-		//				"currentFBPNetworkDir", "Specify file name for generated FBP code",
-		//				".fbp", new FBPFilter(), "fbp notation");
- 
-		fCPArray[JHELP] = new FileChooserParm(JHELP, "Java Help file", "jhallJarFile",
-				"Choose a directory for the JavaHelp jar file", ".jar",
-				new JarFileFilter(), "Help files");
 
 		createAndShowGUI();
 		} catch (NullPointerException e)
@@ -1110,43 +1076,56 @@ public class DrawFBP extends JFrame
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
 		
-		diag.fCParm[DIAGRAM] = fCPArray[DIAGRAM];	
-		diag.fCParm[IMAGE] = fCPArray[IMAGE];	
-		diag.fCParm[FBP] = fCPArray[FBP];
-		diag.fCParm[JHELP] = fCPArray[JHELP];	
+		 
 		
-		diag.fCParm[JARFILE] = new FileChooserParm(JARFILE, "Jar file", "javaFBPJarFile",
+		diag.fCParm[Diagram.DIAGRAM] = diag.new FileChooserParm("Diagram", "currentDiagramDir",
+				"Specify diagram name in diagram directory", ".drw",
+				new DiagramFilter(), "Diagrams (*.drw)");		
+
+		diag.fCParm[Diagram.IMAGE] = diag.new FileChooserParm("Image", "currentImageDir",
+				"Image: ", ".png", new ImageFilter(), "Image");	
+				
+		diag.fCParm[Diagram.FBP] = diag.new  FileChooserParm("Generated FBP code",
+						"currentFBPNetworkDir", "Specify file name for generated FBP code",
+						".fbp", new FBPFilter(), "fbp notation");
+ 
+		diag.fCParm[Diagram.JHELP] = diag.new  FileChooserParm("Java Help file", "jhallJarFile",
+				"Choose a directory for the JavaHelp jar file", ".jar",
+				new JarFileFilter(), "Help files");
+				
+			
+		diag.fCParm[Diagram.JARFILE] = diag.new  FileChooserParm("Jar file", "javaFBPJarFile",
 				"Choose a jar file for JavaFBP", ".jar",
 				new JarFileFilter(), "Jar files");
 
 				
-		diag.fCParm[CLASS] = new FileChooserParm(CLASS, "Class", "currentClassDir",
+		diag.fCParm[Diagram.CLASS] = diag.new  FileChooserParm("Class", "currentClassDir",
 				"Select component from class directory", ".class",
 				new JavaClassFilter(), "Class files");
 		
-		diag.fCParm[PROCESS] = new FileChooserParm(PROCESS, "Process", diag.diagLang.srcDirProp, "Select "
+		diag.fCParm[Diagram.PROCESS] = diag.new  FileChooserParm("Process", diag.diagLang.srcDirProp, "Select "
 				+ diag.diagLang.showLangs() + " component from directory",
 				diag.diagLang.suggExtn, diag.diagLang.filter, "Components: "
 						+ diag.diagLang.showLangs() + " " + diag.diagLang.showSuffixes());
 		
-		diag.fCParm[NETWORK] = new FileChooserParm(NETWORK, "Code",
+		diag.fCParm[Diagram.NETWORK] = diag.new  FileChooserParm("Code",
 				diag.diagLang.netDirProp,
 				"Specify file name for code",
 				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
 				diag.diagLang.showLangs());	
 		
-		diag.fCParm[DLL] = new FileChooserParm(DLL, "C# .dll file",
+		diag.fCParm[Diagram.DLL] = diag.new  FileChooserParm("C# .dll file",
 				"dllFileDir",
 				"Specify file name for .dll file",
 				".dll", new DllFilter(),
 				".dll");	
 		
-		diag.fCParm[EXE] = new FileChooserParm(EXE, "C# Executable",
+		diag.fCParm[Diagram.EXE] = diag.new FileChooserParm("C# Executable",
 				"exeDir",
 				"Specify file name for .exe file",
 				".exe", new ExeFilter(),
 				".exe");	
-				
+		 	
 				
 		repaint();
 
@@ -1292,10 +1271,10 @@ public class DrawFBP extends JFrame
 				ss = System.getProperty("user.home");
 
 			File file = new File(ss);
-			MyFileChooser fc = new MyFileChooser(file, curDiag.fCParm[NETWORK]);
+			MyFileChooser fc = new MyFileChooser(file, curDiag.fCParm[Diagram.NETWORK]);
 			int i = name.indexOf(".drw");
 			ss += File.separator + name.substring(0, i)
-					+ curDiag.fCParm[NETWORK].fileExt;
+					+ curDiag.fCParm[Diagram.NETWORK].fileExt;
 			fc.setSuggestedName(ss);
 
 			int returnVal = fc.showOpenDialog(true, true); // force saveAs
@@ -1497,18 +1476,17 @@ public class DrawFBP extends JFrame
 				g.setColor(col);
 			}
 
-			int i = curDiag.fCParm[IMAGE].prompt.indexOf(":");
-			String fn;
-			if (curDiag.diagFile == null)
-				fn = "(null)";
-			else
-				fn = curDiag.diagFile.getName();
+			//int i = curDiag.fCParm[Diagram.IMAGE].prompt.indexOf(":");
+			//String fn;
+			//if (curDiag.diagFile == null)
+			//	fn = "(null)";
+			//else
+			//	fn = curDiag.diagFile.getName();
 			
 
-			curDiag.fCParm[IMAGE].prompt = curDiag.fCParm[IMAGE].prompt
-					.substring(0, i) + ": " + fn;					
+			//curDiag.fCParm[Diagram.IMAGE].prompt = curDiag.fCParm[Diagram.IMAGE].prompt.substring(0, i) + ": " + fn;					
 			
-			file = curDiag.genSave(null, fCPArray[IMAGE], combined);
+			file = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], combined);
 			// file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
 			if (file == null) {
 				MyOptionPane.showMessageDialog(frame, "File not saved");
@@ -1537,7 +1515,7 @@ public class DrawFBP extends JFrame
 				currentImageDir = new File(ss);
 
 			MyFileChooser fc = new MyFileChooser(currentImageDir,
-					curDiag.fCParm[IMAGE]);
+					curDiag.fCParm[Diagram.IMAGE]);
 
 			File f = curDiag.diagFile;
 			if (f != null) {
@@ -1545,7 +1523,7 @@ public class DrawFBP extends JFrame
 				if (i > -1) {
 					ss += File.separator
 							+ curDiag.diagFile.getName().substring(0, i)
-							+ curDiag.fCParm[IMAGE].fileExt;
+							+ curDiag.fCParm[Diagram.IMAGE].fileExt;
 					fc.setSuggestedName(ss);
 				}
 			}
@@ -1968,13 +1946,13 @@ public class DrawFBP extends JFrame
 		fileMenu.add(gNMenuItem, 10);
 		curDiag.filterOptions[0] = gl.showLangs();
 
-		curDiag.fCParm[PROCESS] = new FileChooserParm(PROCESS, "Process",
+		curDiag.fCParm[Diagram.PROCESS] = curDiag.new  FileChooserParm("Process",
 				gl.srcDirProp,
 				"Select " + gl.showLangs() + " component from directory",
 				gl.suggExtn, gl.filter,
 				"Components: " + gl.showLangs() + " " + gl.showSuffixes());
 
-		curDiag.fCParm[NETWORK] = new FileChooserParm(NETWORK, "Code",
+		curDiag.fCParm[Diagram.NETWORK] = curDiag.new  FileChooserParm("Code",
 				gl.netDirProp, "Specify file name for code", "." + gl.suggExtn,
 				gl.filter, gl.showLangs());
 
@@ -2337,7 +2315,7 @@ public class DrawFBP extends JFrame
 		if (!saveAs)
 			file = curDiag.diagFile;
 
-		file = curDiag.genSave(file, fCPArray[DIAGRAM], null);
+		file = curDiag.genSave(file, curDiag.fCParm[Diagram.DIAGRAM], null);
 
 		int i = jtp.getSelectedIndex();
 		if (file == null) {
@@ -2623,7 +2601,7 @@ public class DrawFBP extends JFrame
 				genDir = new File(ss);
 
 			MyFileChooser fc = new MyFileChooser(genDir,
-					curDiag.fCParm[NETWORK]);
+					curDiag.fCParm[Diagram.NETWORK]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -2831,7 +2809,7 @@ public class DrawFBP extends JFrame
 				srcDir = System.getProperty("user.home");	
 
 			MyFileChooser fc = new MyFileChooser(new File(srcDir),
-					curDiag.fCParm[PROCESS]);
+					curDiag.fCParm[Diagram.PROCESS]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -3085,9 +3063,12 @@ public class DrawFBP extends JFrame
 			else
 				clsDir = new File(ss);
 
-			MyFileChooser fc = new MyFileChooser(clsDir, curDiag.fCParm[CLASS]);
+			String savePrompt = curDiag.fCParm[Diagram.CLASS].prompt;
+			curDiag.fCParm[Diagram.CLASS].prompt = "Select program to be run from class directory";
+			MyFileChooser fc = new MyFileChooser(clsDir, curDiag.fCParm[Diagram.CLASS]);
 
 			int returnVal = fc.showOpenDialog();
+			curDiag.fCParm[Diagram.CLASS].prompt = savePrompt;
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -3272,7 +3253,7 @@ public class DrawFBP extends JFrame
 
 			ProcessBuilder pb = null;
 			MyFileChooser fc = new MyFileChooser(new File(exeDir),
-					curDiag.fCParm[EXE]);
+					curDiag.fCParm[Diagram.EXE]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -3573,7 +3554,7 @@ public class DrawFBP extends JFrame
 			// else
 			// f = (new File(s)).getParentFile();
 
-			MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[JARFILE]);
+			MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[Diagram.JARFILE]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -3693,9 +3674,9 @@ public class DrawFBP extends JFrame
 			f = new File(System.getProperty("user.home"));
 		else
 			f = (new File(s)).getParentFile();
-		MyFileChooser fc = new MyFileChooser(f, fCPArray[JARFILE]);
-
-		fCPArray[JARFILE].prompt = "Specify file name for " + ans + " jar file";
+				
+		curDiag.fCParm[Diagram.JARFILE].prompt = "Specify file name for " + ans + " jar file";
+		MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[Diagram.JARFILE]);	
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -3752,9 +3733,9 @@ public class DrawFBP extends JFrame
 			f = new File(System.getProperty("user.home"));
 		else
 			f = (new File(s)).getParentFile();
-		MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[DLL]);
+		MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[Diagram.DLL]);
 
-		curDiag.fCParm[DLL].prompt = "Specify file name for " + ans + " dll";
+		curDiag.fCParm[Diagram.DLL].prompt = "Specify file name for " + ans + " dll";
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -3797,51 +3778,6 @@ public class DrawFBP extends JFrame
 		return true;
 	}
 
-	/*
-
-	boolean locateJhallJarFile() {
-
-		String s = properties.get("jhallJarFile");
-		// File f = null;
-		if (s != null) {
-			jhallJarFile = s;
-			return true;
-		}
-
-		MyOptionPane.showMessageDialog(frame,
-				"Use File Chooser to locate JavaHelp jar file",
-				MyOptionPane.WARNING_MESSAGE);
-
-		File f = new File(System.getProperty("user.home"));
-		// else
-		// f = (new File(s)).getParentFile();
-
-		MyFileChooser fc = new MyFileChooser(f, fCPArray[JHELP]);
-
-		int returnVal = fc.showOpenDialog();
-
-		File cFile = null;
-		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			cFile = new File(getSelFile(fc));
-			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(frame,
-						"Unable to read DrawFBP Help jar file "
-								+ cFile.getName());
-				return false;
-			}
-			// diag.currentDir = new File(cFile.getParent());
-			jhallJarFile = cFile.getAbsolutePath();
-			saveProp("jhallJarFile", jhallJarFile);
-			// propertiesChanged = true;
-			MyOptionPane.showMessageDialog(frame,
-					"DrawFBP Help jar file location: "
-							+ cFile.getAbsolutePath());
-			return true;
-		} else
-			return false;
-	}
-	
-	*/
 	
 		
 	boolean locateJhallJarFile(boolean checkLocation) {
@@ -3877,7 +3813,7 @@ public class DrawFBP extends JFrame
 			// else
 			// f = (new File(s)).getParentFile();
 
-			MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[JHELP]);
+			MyFileChooser fc = new MyFileChooser(f, curDiag.fCParm[Diagram.JHELP]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -4103,11 +4039,13 @@ public class DrawFBP extends JFrame
 	URL[] buildUrls(File f) {
 		LinkedList<URL> ll = new LinkedList<URL>();
 		URL[] urls = null;
+		
 		if (javaFBPJarFile == null)
 			locateJavaFBPJarFile(false);
+		
 		try {
 
-			if (f != null)
+			if (f != null && !(f.equals(new File(javaFBPJarFile))))
 				ll.add(f.toURI().toURL());
 
 			File f2 = new File(javaFBPJarFile);
@@ -4390,26 +4328,7 @@ public class DrawFBP extends JFrame
 		}
 	}
 
-	public class FileChooserParm {
-		int index;
-		String name;
-		String propertyName;
-		String prompt;
-		String fileExt;
-		FileFilter filter;
-		String title;
-
-		FileChooserParm(int n, String x, String a, String b, String c, FileFilter d,
-				String e) {
-			index = n;
-			name = x;
-			propertyName = a;
-			prompt = b;
-			fileExt = c;
-			filter = d;
-			title = e;
-		}
-	}
+	
 
 	public class CloseAppAction extends AbstractAction {
 
