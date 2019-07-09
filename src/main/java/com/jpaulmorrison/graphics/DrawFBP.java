@@ -3064,7 +3064,7 @@ public class DrawFBP extends JFrame
 				clsDir = new File(ss);
 
 			String savePrompt = curDiag.fCParm[Diagram.CLASS].prompt;
-			curDiag.fCParm[Diagram.CLASS].prompt = "Select program to be run from class directory";
+			curDiag.fCParm[Diagram.CLASS].prompt = "Select program to be run from class directory or jar file";
 			MyFileChooser fc = new MyFileChooser(clsDir, curDiag.fCParm[Diagram.CLASS]);
 
 			int returnVal = fc.showOpenDialog();
@@ -3210,10 +3210,10 @@ public class DrawFBP extends JFrame
 				proc = null;
 				//return;			 
 			} 
-			if (!(output.equals("")) || !(err.equals(""))) {
+			if (!(err.equals(""))) {
 				MyOptionPane.showMessageDialog(frame,
 						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
-						err + "<br>" + output + "</html>",
+						err + /* "<br>" + output + */ "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				//return;
 			}
