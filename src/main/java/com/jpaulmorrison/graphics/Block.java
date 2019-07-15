@@ -185,6 +185,7 @@ public class Block implements ActionListener {
 		}
 
 		String name = null;
+		
 		if (diag.diagLang != null
 				&& (diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#"))) {
 			
@@ -536,6 +537,8 @@ public class Block implements ActionListener {
 	// takes fullClassName and derives javaClass
 	
 	void loadClass(){
+		if (fullClassName == null || fullClassName.equals("")) 
+			return;
 		int i = fullClassName.indexOf("!");
 		if (i == -1)
 			return;

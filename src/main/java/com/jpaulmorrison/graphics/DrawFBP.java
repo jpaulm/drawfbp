@@ -1438,52 +1438,51 @@ public class DrawFBP extends JFrame
 			int y = Math.max(0, min_y - 40);
 			int bottom_border_height = 60;
 			BufferedImage buffer2 = buffer.getSubimage(min_x, y , w, h);	
-
 			
-			BufferedImage combined = new BufferedImage(buffer2.getWidth(), buffer2.getHeight() + bottom_border_height,
-
+			//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
+			Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+			
+			FontMetrics metrics = frame.getFontMetrics(f);
+			String t = curDiag.desc;
+			byte[] str = t.getBytes();
+			int width = metrics.bytesWidth(str, 0, t.length());
+			width = Math.max(width + 40, buffer2.getWidth());
+			
+			BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
 					BufferedImage.TYPE_INT_ARGB);
+			
 			Graphics g = combined.getGraphics();
-
-			// Graphics g = buffer2.getGraphics();
+			
 			g.setColor(Color.WHITE);
 
-			// g.fillRect(0, 0, w1, h1 + 100);
-			g.drawImage(buffer2, 0, 0, null);
+			g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
+			int x = (combined.getWidth() - buffer2.getWidth()) / 2;
+			g.drawImage(buffer2, x, 0, null);
 			// g.drawImage(buffer, 0, 0, null);
 			// g.setColor(Color.RED);
 
 			//g.fillRect(0, max_h, max_w, 80);
-			g.fillRect(0, buffer2.getHeight(), buffer2.getWidth(), bottom_border_height);
+			g.fillRect(0, combined.getHeight(), combined.getWidth(), bottom_border_height);
 
 			if (!(curDiag.desc == null || curDiag.desc.trim().equals(""))) {
 				Color col = g.getColor();
 				g.setColor(Color.BLUE);
-				//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
-				Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+				
+				//Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 
 				g.setFont(f);
-				int x = combined.getWidth() / 2;
-				// int x = buffer2.getWidth() / 2;
-				FontMetrics metrics = g.getFontMetrics(f);
-				String t = curDiag.desc;
-				byte[] str = t.getBytes();
-				int width = metrics.bytesWidth(str, 0, t.length());
-
+				x = combined.getWidth() / 2;
+				// x = buffer2.getWidth() / 2;
+				metrics = g.getFontMetrics(f);
+				t = curDiag.desc;
+				str = t.getBytes();
+				width = metrics.bytesWidth(str, 0, t.length());
 
 				g.drawString(t, x - width / 2, buffer2.getHeight() + 10);    
 
 				g.setColor(col);
 			}
-
-			//int i = curDiag.fCParm[Diagram.IMAGE].prompt.indexOf(":");
-			//String fn;
-			//if (curDiag.diagFile == null)
-			//	fn = "(null)";
-			//else
-			//	fn = curDiag.diagFile.getName();
-			
-
+		
 			//curDiag.fCParm[Diagram.IMAGE].prompt = curDiag.fCParm[Diagram.IMAGE].prompt.substring(0, i) + ": " + fn;					
 			
 			file = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], combined);
