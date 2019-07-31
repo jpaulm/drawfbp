@@ -57,7 +57,7 @@ public class Block implements ActionListener {
 	/* next three fields are not stored in .drw files */	
 	
 	URLClassLoader classLoader = null;
-	Class<?> javaClass; // selected Java class for block (fullClassName is equivalent in String format)
+	Class<?> javaComp; // selected Java class for block (fullClassName is equivalent in String format)
 	String compDescr;  // used for annotations only
 	
 	//JMenuItem[] sMenu;
@@ -189,14 +189,13 @@ public class Block implements ActionListener {
 		if (diag.diagLang != null
 				&& (diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#"))) {
 			
-			loadClass();                // uses fullClassName to load javaClass
-			
-			if (javaClass != null) {
+						
+			if (javaComp != null) {
 				// driver.locateJavaFBPJarFile(false);
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				g.setColor(Color.BLUE);
-				name = javaClass.getSimpleName()  + ".class";
+				name = javaComp.getSimpleName()  + ".class";
 				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
@@ -472,6 +471,8 @@ public class Block implements ActionListener {
 			getClassInfo(w); 
 		}
 		
+		loadJavaClass();                // uses fullClassName to load javaComp
+		
 		s = item.get("x").trim();
 		cx = Integer.parseInt(s);
 		s = item.get("y").trim();
@@ -501,7 +502,7 @@ public class Block implements ActionListener {
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
 
 		// driver.frame.setSize(driver.maxX, driver.maxY);
-		if (this instanceof ProcessBlock && javaClass != null) {
+		if (this instanceof ProcessBlock && javaComp != null) {
 			buildMetadata();
 		}
 
@@ -527,7 +528,7 @@ public class Block implements ActionListener {
 							"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
 					return;
 				} 
-				loadClass();
+				loadJavaClass();
 			//}
 			// diag.compLang = driver.findGLFromLabel("Java");
 		}
@@ -536,7 +537,7 @@ public class Block implements ActionListener {
 
 	// takes fullClassName and derives javaClass
 	
-	void loadClass(){
+	void loadJavaClass(){
 		if (fullClassName == null || fullClassName.equals("")) 
 			return;
 		int i = fullClassName.indexOf("!");
@@ -565,7 +566,7 @@ public class Block implements ActionListener {
 		URL[] urls = driver.buildUrls(f);
 		
 		if (urls == null)
-			javaClass = null;
+			javaComp = null;
 		else 
 				 
 		try {
@@ -573,26 +574,27 @@ public class Block implements ActionListener {
 			classLoader = new URLClassLoader(urls, driver.getClass()
 					.getClassLoader());
 					
-			javaClass = classLoader.loadClass(cn);
+			javaComp = classLoader.loadClass(cn);
 			
 			} catch (ClassNotFoundException e) {
 				//System.out.println("Missing class name in " + fullClassName);
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
-				javaClass = null;
+				javaComp = null;
 			} catch (NoClassDefFoundError e) {
 				//System.out.println("Missing internal class name in "
 				//		+ fullClassName);
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Internal class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
-				javaClass = null;
+				javaComp = null;
 			} 
 		
 		
 	}
 
+	// check validity of class - returns null if not
 	
 	Class<?> isValidClass(String jar, String jf, boolean injar) {
 		
@@ -669,9 +671,7 @@ public class Block implements ActionListener {
 			//        MethodType.methodType(String.class),
 			//        Test.class);
 			
-			 
-			//  What does this do???!!!
-			 
+				 
 			
 			URLClassLoader ucl = (URLClassLoader) cls.getClassLoader();
 			//URLClassLoader ucl2 = new URLClassLoader(ucl.getURLs(), ucl);
@@ -690,9 +690,10 @@ public class Block implements ActionListener {
 			}
 			if (cs == null)
 				return null;
-			String superCls = cs.getCanonicalName();
-			if (!(superCls.equals(compClass.getCanonicalName())  ||
-					superCls.equals(subnetClass.getCanonicalName()))) {
+			//String superCls = cs.getCanonicalName();
+			//if (!(superCls.equals(compClass.getCanonicalName())  ||
+			//		superCls.equals(subnetClass.getCanonicalName()))) {
+			if (cs != compClass && cs != subnetClass) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Class file not a valid FBP component or subnet", MyOptionPane.ERROR_MESSAGE);				
 				return null;
@@ -766,7 +767,7 @@ public class Block implements ActionListener {
 			Class<?> outportsCls = classLoader
 					.loadClass("com." + owner + ".fbp." + seg + "OutPorts");
 
-			Annotation[] annos = javaClass.getAnnotations();
+			Annotation[] annos = javaComp.getAnnotations();
 			for (Annotation a : annos) {
 				if (compdescCls.isInstance(a)) {
 					Method meth = compdescCls.getMethod("value");
@@ -1486,7 +1487,7 @@ public class Block implements ActionListener {
 			codeFileName = null;
 			diagramFileName = null;    
 			//description = null;   
-			javaClass = null;
+			javaComp = null;
 			fullClassName = null;
 			diag.changed = true;
 			
@@ -1502,21 +1503,21 @@ public class Block implements ActionListener {
 
 		if (s.equals("Display Full Class Name")) {
 
-			if (javaClass == null && fullClassName == null) {
+			if (javaComp == null && fullClassName == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"No component code assigned", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-			if ((javaClass == null) != (fullClassName == null)) {
+			if ((javaComp == null) != (fullClassName == null)) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"One of class name and full class name is null, but the other isn't:\n"
-						+ "class name - " + javaClass + "\n"
+						+ "class name - " + javaComp + "\n"
 						+ "full class name - " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-			if (javaClass != null || fullClassName != null) {
+			if (javaComp != null || fullClassName != null) {
 				MyOptionPane.showMessageDialog(driver.frame, fullClassName + ".class");
 			}
 			return;
@@ -1548,7 +1549,7 @@ public class Block implements ActionListener {
 
 		}
 		if (s.equals("Display Description and Port Info")) {
-			if (javaClass == null) {
+			if (javaComp == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"No class information associated with block", MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -1806,7 +1807,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				description = ans;
 			
 			fullClassName = null;
-			javaClass = null;
+			javaComp = null;
 			
 			//if (df.exists()) {
 				// int res = MyOptionPane.showConfirmDialog(driver.frame,
@@ -1851,11 +1852,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		String oldFullClassName = fullClassName;
 
-		if (javaClass != null) {
+		if (javaComp != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame,
 					"Block already associated with class ("
-							+ javaClass.getName() + ") - change it?",
+							+ javaComp.getName() + ") - change it?",
 					"Change class", MyOptionPane.YES_NO_OPTION)) {
 				return;
 			}
@@ -1897,21 +1898,24 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				URL[] urls = driver.buildUrls(f);
 
 				if (urls == null)
-					javaClass = null;
+					javaComp = null;
 				else {
 					// Create a new class loader with the directory
 					classLoader = new URLClassLoader(urls, driver.getClass()
 							.getClassLoader());
 					try {
-						javaClass = classLoader.loadClass(res2);
+						javaComp = classLoader.loadClass(res2);
 					} catch (ClassNotFoundException e2) {
-						javaClass = null;
+						javaComp = null;
 					} catch (NoClassDefFoundError e2) {
-						javaClass = null;
+						javaComp = null;
 					}
-					javaClass = isValidClass(res.substring(0, i), res2,
+					javaComp = isValidClass(res.substring(0, i), res2,
 							injar);
-					fullClassName = res;
+					if (javaComp != null)
+						fullClassName = res;
+					else
+						fullClassName = null;
 				}
 			} else {
 				// we are looking in local class hierarchy (not a jar file)
@@ -1949,7 +1953,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 						URL[] urls = driver.buildUrls(fp);
 
 						if (urls == null)
-							javaClass = null;
+							javaComp = null;
 						else {
 
 							// Create a new class loader with the directory
@@ -1957,7 +1961,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 									.getClassLoader());
 
 							try {
-								javaClass = classLoader.loadClass(u);
+								javaComp = classLoader.loadClass(u);
 							} catch (ClassNotFoundException e2) {
 								classFound = false;
 								error = "ClassNotFoundException";
@@ -1977,7 +1981,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					//}
 				}
 				
-				if (javaClass == null) {
+				if (javaComp == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Class '" + driver.getSelFile(fc) + "' not found ("
 									+ error + ")", MyOptionPane.ERROR_MESSAGE);
@@ -1988,23 +1992,29 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					driver.saveProp("currentClassDir",
 							fp.getAbsolutePath());
 					//driver.propertiesChanged = true;
-					fullClassName = fp.getAbsolutePath() + "!"
-							+ javaClass.getName();
-
-					javaClass = isValidClass(fp.getAbsolutePath(),
-							javaClass.getName(), !injar);
+					
+					javaComp = isValidClass(fp.getAbsolutePath(),
+							javaComp.getName(), !injar);
+					
+					if (javaComp != null)
+						fullClassName = fp.getAbsolutePath() + "!"
+							+ javaComp.getName();
+					else
+						fullClassName = null;
 				}
 			}
 		}
 
-		if (javaClass == null) {
+		if (javaComp == null) {
 			MyOptionPane.showMessageDialog(driver.frame, "No class selected", MyOptionPane.ERROR_MESSAGE);
 		} else {
 			if (!fullClassName.equals(oldFullClassName))
 				displayPortInfo();
-			diag.changed = true;
-			// diag.changeCompLang();
+			
 		}
+		
+		diag.changed = true;
+		// diag.changeCompLang();		
 
 		return;
 	}
@@ -2023,13 +2033,13 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			}
 		 
 
-		if (!(gl.label.equals("Java")) && javaClass != null) {
+		if (!(gl.label.equals("Java")) && javaComp != null) {
 			if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 					driver.frame,
 					"You have selected a non-Java language and there is a Java class associated with this block - go ahead?",
 					"Java previously used", MyOptionPane.YES_NO_OPTION)) {
 
-				javaClass = null;
+				javaComp = null;
 				codeFileName = null;
 				return;
 			}

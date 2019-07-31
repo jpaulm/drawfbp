@@ -260,7 +260,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					String c = "\"Invalid class\""; 
 					error = true;
 					 
-					if (block.javaClass == null) {
+					if (block.javaComp == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"Class name missing for '" + s + "' - diagram needs to be updated",
 								MyOptionPane.WARNING_MESSAGE);

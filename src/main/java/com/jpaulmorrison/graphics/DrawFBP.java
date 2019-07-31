@@ -2749,7 +2749,7 @@ public class DrawFBP extends JFrame
 			}
 			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane.showMessageDialog(frame,
-						"<html>Compile output - " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
+						"<html>Compile output for " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
 				err + "<br>" + output + "<br>" +
 				"Jar files:" + jf + "<br>" +
 				"Source dir: " + srcDir + "<br>" +
@@ -3136,6 +3136,12 @@ public class DrawFBP extends JFrame
 			// Class<?> cls = null;
 			// cls = loader.loaderClass(thisCls);
 
+			if (cls == null) {
+				MyOptionPane.showMessageDialog(frame,
+						"Class not generated for program " + progName ,
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			Method meth = null;
 			try {
 				meth = cls.getMethod("main", String[].class);
@@ -3209,13 +3215,18 @@ public class DrawFBP extends JFrame
 				proc = null;
 				//return;			 
 			} 
-			if (!(err.equals(""))) {
+			if (!(err.equals("")))  
 				MyOptionPane.showMessageDialog(frame,
 						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
 						err + /* "<br>" + output + */ "</html>",
 						MyOptionPane.ERROR_MESSAGE);
-				//return;
-			}
+				 
+			if (!(output.equals("")))
+			MyOptionPane.showMessageDialog(frame,
+					"<html>Program output - " + clsDir + "/" + progName + "<br>" +
+					output +  "</html>",
+					MyOptionPane.INFORMATION_MESSAGE);
+			
 			if (proc == null) 
 				return;
 			

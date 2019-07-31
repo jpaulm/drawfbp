@@ -1346,20 +1346,19 @@ public class MyFileChooser extends JFrame
 
 		public void actionPerformed(ActionEvent e) {
 			result = CANCEL_OPTION;
-			
 
-			if (!(selComp instanceof JList) && selComp != t_fileName){
-				
+			if (!(selComp instanceof JList) && selComp != t_fileName) {
+
 				return;
 			}
 			String s = null;
 			if (selComp instanceof JList) {
-				//String s = t_dirName.getText();
-				//String t = t_fileName.getText();
-				//if (!(t.equals("")))
-				//	s += File.separator + t;
-				//File f = new File(s);
-				
+				// String s = t_dirName.getText();
+				// String t = t_fileName.getText();
+				// if (!(t.equals("")))
+				// s += File.separator + t;
+				// File f = new File(s);
+
 				int rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
 					MyOptionPane.showMessageDialog(driver.frame,
@@ -1372,60 +1371,73 @@ public class MyFileChooser extends JFrame
 			} else {
 				s = t_fileName.getText();
 			}
-				File f = new File(t_dirName.getText() + File.separator + s);
-				if (f.isDirectory()) {
-					if (f.list().length > 0) {
-						MyOptionPane.showMessageDialog(driver.frame,
-								"Folder '" + f.getName()
-										+ "' not empty - cannot be deleted",
-								MyOptionPane.ERROR_MESSAGE);
+			if (s.endsWith(".jar")) {
+				if (s.equals(driver.javaFBPJarFile)) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"JavaFBP jar file cannot be deleted",
+							MyOptionPane.ERROR_MESSAGE);
+					return;
+			  }	
+			}
+			else
+				s = t_dirName.getText() + File.separator + s;
+			
+			File f = new File(s);
+			if (f.isDirectory()) {
+				if (f.list().length > 0) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"Folder '" + f.getName()
+									+ "' not empty - cannot be deleted",
+							MyOptionPane.ERROR_MESSAGE);
 
-						return;
-					}
-				} else {
-					if (-1 != driver.curDiag.diagramIsOpen(s)) {
-						MyOptionPane.showMessageDialog(driver.frame,
-								"File '" + f.getName()
-										+ "' cannot be deleted while open",
-								MyOptionPane.ERROR_MESSAGE);
-
-						return;
-					}
+					return;
 				}
+			} else {
+				if (-1 != driver.curDiag.diagramIsOpen(s)) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"File '" + f.getName()
+									+ "' cannot be deleted while open",
+							MyOptionPane.ERROR_MESSAGE);
 
-				String u = f.isDirectory() ? "folder" : "file";
-				String v = "F" + u.substring(1);
-
-				if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-						dialog,
-						"Do you want to delete this " + u + ": "
-								+ f.getAbsolutePath() + "?",
-						"File/folder delete", MyOptionPane.YES_NO_OPTION)) {
-
-					listHead = f.getParent();
-
-					if (!f.exists()) {
-						MyOptionPane.showMessageDialog(driver.frame,
-								v + " " + f.getName() + " doesn't exist",
-								MyOptionPane.ERROR_MESSAGE);
-						// return;
-					} else {
-						f.delete();
-						MyOptionPane.showMessageDialog(driver.frame,
-								v + " " + f.getName() + " deleted",
-								MyOptionPane.INFORMATION_MESSAGE);
-					}
-
-					// fullNodeName = listHead.getAbsolutePath();
-					// showFileNames();
-					t_dirName.setText(listHead);
-					panel.validate();
-					// panel.remove(listView);
-					showList();
-
+					return;
 				}
 			}
-		 
+
+			String u = f.isDirectory() ? "folder" : "file";
+			String v = "F" + u.substring(1);
+
+			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+					dialog,
+					"Do you want to delete this " + u + ": "
+							+ f.getAbsolutePath() + "?",
+					"File/folder delete", MyOptionPane.YES_NO_OPTION)) {
+
+				listHead = f.getParent();
+
+				if (!f.exists()) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							v + " " + f.getName() + " doesn't exist",
+							MyOptionPane.ERROR_MESSAGE);
+					// return;
+				} else {
+					f.delete();
+					MyOptionPane.showMessageDialog(driver.frame,
+							v + " " + f.getName() + " deleted",
+							MyOptionPane.INFORMATION_MESSAGE);
+					if (s.endsWith(".jar"))
+						driver.jarFiles.remove(s);
+				}
+
+				// fullNodeName = listHead.getAbsolutePath();
+				// showFileNames();
+				t_dirName.setText(listHead);
+				panel.validate();
+				// panel.remove(listView);
+				showList();
+
+			}
+		}
+
 	}
 
 	class EnterAction extends AbstractAction {
