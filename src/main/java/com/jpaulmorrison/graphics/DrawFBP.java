@@ -2710,7 +2710,7 @@ public class DrawFBP extends JFrame
 			String javac = jh + "/bin/javac.exe";
 			
 			srcDir += "/" + fNPkg;
-			clsDir += "/" + fNPkg;
+			//clsDir += "/" + fNPkg;
 			
 			
 			String w = srcDir + "/" + progName;
@@ -2771,6 +2771,7 @@ public class DrawFBP extends JFrame
 				proc.destroy();
 				u = proc.exitValue();
 			 
+				clsDir += "/" + fNPkg;
 				if (u == 0)
 					MyOptionPane.showMessageDialog(frame,
 							"Program compiled - " + srcDir + "/" + progName
@@ -2986,23 +2987,11 @@ public class DrawFBP extends JFrame
 				while ((line = br.readLine()) != null) {
 					output += line + "<br>";
 				}
-			} catch (NullPointerException npe) {
-				err = "Null Pointer Exception"; 
-				proc = null;
-				//return;
-			} catch (IOException ioe) {
-				err = "I/O Exception"; 
-				proc = null;
-				//return;
-			} catch (IndexOutOfBoundsException iobe) {
-				err = "Index Out Of Bounds Exception"; 
-				proc = null;
-				//return;
-			} catch (SecurityException se) {
-				err = "Security Exception"; 
-				proc = null;
-				//return;
-			}
+			} catch (Exception e) {
+				err = analyzeCatch(e);
+				if (!err.equals(""))
+					proc = null;
+			} 
 
 			//program = v + "/" + progName + ".cs";
 			int u = 0;
@@ -3620,68 +3609,11 @@ public class DrawFBP extends JFrame
 			}
 			
 		}
-		//addJarFileToPath(javaFBPJarFile);
+		
 		return true;
 	}
 
-	/*
-	void addJarFileToPath(String jarFile) {
-		ProcessBuilder pb = new ProcessBuilder("CMD /C SET PATH=%PATH%;\"" + jarFile + "\"");	
-		
-		String output = "";
-		pb.redirectErrorStream(true);
-		
-		String err = ""; 
-		Process proc = null;
-		
-		try {
-			proc = pb.start();
-			
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(proc.getInputStream()));
-			String line;
-			while ((line = br.readLine()) != null) {
-				output += line + "<br>";
-			}
-		} catch (NullPointerException npe) {
-			err = "Null Pointer Exception"; 
-			proc = null;
-			//return;
-		} catch (IOException ioe) {
-			err = "I/O Exception"; 
-			proc = null;
-			//return;
-		} catch (IndexOutOfBoundsException iobe) {
-			err = "Index Out Of Bounds Exception"; 
-			proc = null;
-			//return;
-		} catch (SecurityException se) {
-			err = "Security Exception"; 
-			proc = null;
-			//return;			 
-		} 
-		if (!(output.equals("")) || !(err.equals(""))) {
-			MyOptionPane.showMessageDialog(frame,
-					"Error setting PATH with" + jarFile,
-					MyOptionPane.ERROR_MESSAGE);
-			//return;
-		}
-		if (proc == null) 
-			return;
-		
-			try {
-
-				proc.waitFor();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			proc.destroy();		 
-		
-	}
 	
-	*/
 	
 	boolean addAdditionalJarFile() {
 
