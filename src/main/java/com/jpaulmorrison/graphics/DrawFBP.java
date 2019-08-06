@@ -2624,33 +2624,33 @@ public class DrawFBP extends JFrame
 
 			String srcDir = cFile.getAbsolutePath();
 			srcDir = srcDir.replace('\\', '/');
+			
 			int j = srcDir.lastIndexOf("/");
-
 			String progName = srcDir.substring(j + 1);
 			srcDir = srcDir.substring(0, j);
+			String clsDir = srcDir;
 			(new File(srcDir)).mkdirs();
 			saveProp(gl.netDirProp, srcDir);
-
-			String clsDir;
-			String t;
+			
+			String fNPkg = "";
 			int k = srcDir.indexOf("/src");
-			if (k > -1) {
-				if (j < k + 5)
-					t = "";
-				else {
-					t = cFile.getAbsolutePath().substring(k + 5, j) + "/";
-					t = t.replace("\\", "/");
-				}
-				clsDir = srcDir.replace("/src/", "/bin/");
-				srcDir = srcDir.substring(0, k + 4); // drop after src
-				clsDir = clsDir.substring(0, k + 4); // drop after bin
-			} else {
-				srcDir = srcDir.substring(0, j);
-				clsDir = srcDir;
-				t = "";
+			if (k == -1) {
+				MyOptionPane.showMessageDialog(frame,
+						"File name \"" + srcDir + "\" missing 'src' directory - cannot compile",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			
+			if (j >= k + 5){
+				fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
+				fNPkg = fNPkg.replace("\\", "/");
+			}
+			clsDir = srcDir.replace("/src/", "/bin/");
+			srcDir = srcDir.substring(0, k + 4); // drop after src
+			clsDir = clsDir.substring(0, k + 4); // drop after bin
+			
 			saveProp("currentClassDir", clsDir);
-			//clsDir = clsDir.substring(0, k + 4); // drop after bin
+			clsDir = clsDir.substring(0, k + 4); 
 
 			File fd = new File(clsDir);
 
@@ -2663,8 +2663,8 @@ public class DrawFBP extends JFrame
 						"'bin' directory created - " + clsDir,
 						MyOptionPane.INFORMATION_MESSAGE);
 			}
-			if (!(t.equals(""))) {
-				fd = new File(clsDir + "/" + t);
+			if (!(fNPkg.equals(""))) {
+				fd = new File(clsDir + "/" + fNPkg);
 				fd.mkdirs();
 			}
 
@@ -2676,8 +2676,11 @@ public class DrawFBP extends JFrame
 			// (new File(clsDir + "/" + t + clsName)).delete(); // make sure old
 			// class has been deleted
 
+			String v = "";
+			if (!fNPkg.equals(""))
+				v = fNPkg + "/";
 			MyOptionPane.showMessageDialog(frame,
-					"Compiling program - " + srcDir + "/" + t + progName,
+					"Compiling program - " + srcDir + "/" + v + progName,
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
@@ -2686,9 +2689,8 @@ public class DrawFBP extends JFrame
 			for (String jfv : jarFiles.values()) {
 				jf += ";" + jfv;
 			}
-			jf += ";.\"";
-			 
-			//srcDir = "xxx";  // inserted for testing!
+			jf += ";.\"";			 
+			
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = clsDir.replace("\\",  "/");
 			
@@ -2705,13 +2707,21 @@ public class DrawFBP extends JFrame
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			String javac = jh + "/bin/javac";
-			ProcessBuilder pb = new ProcessBuilder(javac, "-cp", jf,
-					"-d", "\"" + clsDir + "\"",
-					"-sourcepath", "\"" + srcDir + "\"", //  "-Xlint:unchecked",
-					"\"" + t + progName + "\"");
-
-			pb.directory(new File(srcDir));
+			String javac = jh + "/bin/javac.exe";
+			
+			srcDir += "/" + fNPkg;
+			clsDir += "/" + fNPkg;
+			
+			
+			String w = srcDir + "/" + progName;
+			List<String> params = Arrays.asList("\"" + javac + "\"", 					 
+					"-cp", jf, 
+					"-d", "\"" + clsDir + "\"",					 
+					"\"" + w + "\""); 
+			
+			ProcessBuilder pb = new ProcessBuilder(params);
+						
+			pb.directory(new File(clsDir));
 
 			pb.redirectErrorStream(true);			
 			
@@ -2719,6 +2729,7 @@ public class DrawFBP extends JFrame
 
 			// int i = 0;
 			String err = "";
+			
 			try {
 				proc = pb.start();
 
@@ -2730,31 +2741,19 @@ public class DrawFBP extends JFrame
 					output += "<br>" + line;
 					// System.out.flush();
 				}
-			} catch (NullPointerException npe) {
-				err = "Null Pointer Exception"; 
-				proc = null;
-				//return;
-			} catch (IOException ioe) {
-				err = "I/O Exception"; 
-				proc = null;
-				//return;
-			} catch (IndexOutOfBoundsException iobe) {
-				err = "Index Out Of Bounds Exception"; 
-				proc = null;
-				//return;
-			} catch (SecurityException se) {
-				err = "Security Exception"; 
-				proc = null;
-				//return;
-			}
+			} catch (Exception e) {
+				err = analyzeCatch(e);
+				if (!err.equals(""))
+					proc = null;
+			} 
 			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane.showMessageDialog(frame,
-						"<html>Compile output for " + "\"" + srcDir + "/" + t + progName + "\"<br>" +
+						"<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
 				err + "<br>" + output + "<br>" +
 				"Jar files:" + jf + "<br>" +
 				"Source dir: " + srcDir + "<br>" +
 				"Class dir: " + clsDir + "<br>" +
-				"File name: " + t + progName + "</html>",
+				"File name: " + progName + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				//return;
 			} 
@@ -2774,17 +2773,16 @@ public class DrawFBP extends JFrame
 			 
 				if (u == 0)
 					MyOptionPane.showMessageDialog(frame,
-							"Program compiled - " + srcDir + "/" + t + progName
-									+ "\n" + "   into - " + clsDir + "/" + pkg
-									+ "/"
+							"Program compiled - " + srcDir + "/" + progName
+									+ "\n" + "   into - " + clsDir + "/"  
 									+ progName.substring(0,
-											progName.length() - 5),
-									// + ".class",
+											progName.length() - 5)
+									+ ".class",
 							MyOptionPane.INFORMATION_MESSAGE);
 				else
 					MyOptionPane.showMessageDialog(frame,
 							"<html>Program compile failed, rc: " + u + " - " + srcDir
-									+ "/" + t + progName + "<br>" +
+									+ "/" + progName + "<br>" +
 									output + "</html>",
 							MyOptionPane.WARNING_MESSAGE);
 			 
@@ -3356,6 +3354,25 @@ public class DrawFBP extends JFrame
 					"Program test failed, rc: " + u + " - " + program,
 					MyOptionPane.WARNING_MESSAGE);
 
+	}
+	
+	String analyzeCatch(Exception e) {
+		String err = "";
+		
+		 if (e instanceof NullPointerException) 
+			err = "Null Pointer Exception"; 
+		
+		 if (e instanceof IOException) 
+			err = "I/O Exception"; 				
+				
+		if (e instanceof IndexOutOfBoundsException) 
+			err = "Index Out Of Bounds Exception"; 				
+				
+		if (e instanceof SecurityException) 
+			err = "Security Exception";
+		
+		err += ": " + e.getMessage();
+		return err;
 	}
 
 	// 'between' checks that the value val is >= lim1 and <= lim2 - or the
