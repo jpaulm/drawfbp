@@ -321,7 +321,7 @@ public class DrawFBP extends JFrame
 		createAndShowGUI();
 		} catch (NullPointerException e)
 		{
-			writePropertiesFile();
+			saveProperties();
 		}
 	}
 
@@ -409,7 +409,7 @@ public class DrawFBP extends JFrame
 		// dcl = "JSON";
 		if (dcl == null) {
 			currLang = findGLFromLabel("Java");
-			// propertiesChanged = true;
+			saveProperties();
 		} else {
 			if (dcl.equals("NoFlo")) // transitional!
 				dcl = "JSON";
@@ -1191,7 +1191,7 @@ public class DrawFBP extends JFrame
 				currLang = gl;
 
 				saveProp("defaultCompLang", currLang.label);
-				// propertiesChanged = true;
+				saveProperties();
 				if (curDiag != null && curDiag.diagLang != currLang) {
 					curDiag.diagLang = currLang;
 					curDiag.changed = true;
@@ -1555,7 +1555,7 @@ public class DrawFBP extends JFrame
 
 			currentImageDir = new File(fFile.getParent());
 			saveProp("currentImageDir", fFile.getParent());
-			// propertiesChanged = true;
+			saveProperties();
 
 			// curDiag.imageFile = fFile;
 
@@ -2335,7 +2335,7 @@ public class DrawFBP extends JFrame
 		frame.setTitle("Diagram: " + curDiag.title);
 		saveProp("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
-		// propertiesChanged = true;
+		saveProperties();
 
 		curDiag.changed = false;
 		frame.repaint();
@@ -2423,7 +2423,7 @@ public class DrawFBP extends JFrame
 
 		if (gFontChanged) {
 			saveProp("generalFont", generalFont);
-			// propertiesChanged = true;
+			saveProperties();
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: "
 					+ generalFont);
@@ -2435,7 +2435,7 @@ public class DrawFBP extends JFrame
 
 		if (fFontChanged) {
 			saveProp("fixedFont", fixedFont);
-			// propertiesChanged = true;
+			saveProperties();
 
 			jfl.setText("Fixed font: " + fixedFont + "; general font: "
 					+ generalFont);
@@ -2489,7 +2489,7 @@ public class DrawFBP extends JFrame
 		adjustFonts();
 		// frame.repaint();
 		saveProp("defaultFontSize", Float.toString(defaultFontSize));
-		// propertiesChanged = true;
+		saveProperties();
 		MyOptionPane.showMessageDialog(frame, "Font size changed");
 		frame.repaint();
 		// repaint();
@@ -3588,7 +3588,7 @@ public class DrawFBP extends JFrame
 				javaFBPJarFile = cFile.getAbsolutePath();
 				saveProp("javaFBPJarFile", javaFBPJarFile);
 
-				// propertiesChanged = true;
+				saveProperties();
 				MyOptionPane.showMessageDialog(frame,
 						"JavaFBP jar file location: " + cFile.getAbsolutePath(),
 						MyOptionPane.INFORMATION_MESSAGE);
@@ -3668,7 +3668,7 @@ public class DrawFBP extends JFrame
 					"Additional jar file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
 
-			// propertiesChanged = true;
+			saveProperties();
 
 		}
 		return true;
@@ -3731,7 +3731,7 @@ public class DrawFBP extends JFrame
 					"Additional dll file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
 
-			// propertiesChanged = true;
+			saveProperties();
 
 		}
 		return true;
@@ -3790,7 +3790,7 @@ public class DrawFBP extends JFrame
 				jhallJarFile = cFile.getAbsolutePath();
 				saveProp("jhallJarFile", jhallJarFile);
 
-				// propertiesChanged = true;
+				saveProperties();
 				MyOptionPane.showMessageDialog(frame,
 						"JavaHelp jar file location: " + cFile.getAbsolutePath(),
 						MyOptionPane.INFORMATION_MESSAGE);
@@ -3805,9 +3805,13 @@ public class DrawFBP extends JFrame
 
 	void saveProp(String s, String t){
 		properties.put(s, t); 
+		saveProperties();
+	}
+	
+	void saveProperties() {		
 		writePropertiesFile();
 	}
-
+	
 	void closeTab() {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 	}
@@ -4310,7 +4314,8 @@ public class DrawFBP extends JFrame
 				}
 			}
 			// if (propertiesChanged) {
-			writePropertiesFile();
+			//writePropertiesFile();
+			saveProperties();
 			// }
 
 			if (close) {

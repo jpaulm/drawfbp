@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Stack;
 import java.util.Vector;
@@ -549,7 +550,8 @@ public class MyFileChooser extends JFrame
 						t = driver.javaFBPJarFile;
 						ll.add(t);
 						for (String u : driver.jarFiles.values()) {
-							ll.add(u);
+							if (new File(u).exists())
+								ll.add(u);
 						}
 					}
 				}
@@ -1116,7 +1118,7 @@ public class MyFileChooser extends JFrame
 			// fullNodeName = (new File(fullNodeName)).getParent();
 			// driver.properties
 			// .put("allFiles", Boolean.toString(driver.allFiles));
-			// driver.propertiesChanged = true;
+			// saveProperties();
 			// panel.remove(listView);
 			showList();
 			// selComp = cBox;
@@ -1406,36 +1408,50 @@ public class MyFileChooser extends JFrame
 			String u = f.isDirectory() ? "folder" : "file";
 			String v = "F" + u.substring(1);
 
-			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					dialog,
 					"Do you want to delete this " + u + ": "
 							+ f.getAbsolutePath() + "?",
-					"File/folder delete", MyOptionPane.YES_NO_OPTION)) {
+					"File/folder delete", MyOptionPane.YES_NO_OPTION))
+				return;
 
-				listHead = f.getParent();
-
-				if (!f.exists()) {
-					MyOptionPane.showMessageDialog(driver.frame,
-							v + " " + f.getName() + " doesn't exist",
-							MyOptionPane.ERROR_MESSAGE);
-					// return;
-				} else {
-					f.delete();
-					MyOptionPane.showMessageDialog(driver.frame,
-							v + " " + f.getName() + " deleted",
-							MyOptionPane.INFORMATION_MESSAGE);
-					if (s.endsWith(".jar"))
-						driver.jarFiles.remove(s);
+			if (s.endsWith(".jar")) {
+				f = new File(s);
+				String t = null;
+				for (Entry<String, String> entry : driver.jarFiles.entrySet()) {
+					if (entry.getValue().equals(s)) {
+						t = entry.getKey();
+						break;
+					}
 				}
-
-				// fullNodeName = listHead.getAbsolutePath();
-				// showFileNames();
-				t_dirName.setText(listHead);
-				panel.validate();
-				// panel.remove(listView);
-				showList();
-
+				if (t != null)
+					driver.jarFiles.remove(t);
+			} else  
+				listHead = f.getParent();
+			 
+			if (!f.exists()) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						v + " " + f.getName() + " doesn't exist",
+						MyOptionPane.ERROR_MESSAGE);
+				// return;
+			} else {
+				f.delete();
+				MyOptionPane.showMessageDialog(driver.frame,
+						v + " " + f.getName() + " deleted",
+						MyOptionPane.INFORMATION_MESSAGE);
+				if (s.endsWith(".jar"))
+					driver.jarFiles.remove(s);
 			}
+
+			// fullNodeName = listHead.getAbsolutePath();
+			// showFileNames();
+			t_dirName.setText(listHead);
+
+			panel.validate();
+			// panel.remove(listView);
+			showList();
+
+			// }
 		}
 
 	}

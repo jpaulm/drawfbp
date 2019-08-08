@@ -169,7 +169,7 @@ public class Diagram {
 		File currentDiagramDir = file.getParentFile();
 		driver.saveProp("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
-		//driver.propertiesChanged = true;
+		//saveProperties();
 
 		/*
 		int i = diagramIsOpen(file.getAbsolutePath());
@@ -537,7 +537,7 @@ public class Diagram {
 		driver.saveProp("width", t);
 		t = Integer.toString(driver.frame.getSize().height);
 		driver.saveProp("height", t);
-		//driver.propertiesChanged = true;
+		//saveProperties();
 		
 		return res;
 

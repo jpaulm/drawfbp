@@ -181,7 +181,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						"Please fill in a package/namespace name", null);
 				packageName = packageName.trim();				
 				driver.saveProp("currentPackageName", packageName);
-				//driver.propertiesChanged = true;
+				//saveProperties();
 			}
 		}
 		
@@ -607,7 +607,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 							null);
 
 					// driver.saveProp("currentPackageName", packageName);
-					// driver.propertiesChanged = true;
+					// saveProperties();
 					fileString = "package " + packageName + ";\n" + fileString;
 					changed = true;
 				} else {
@@ -619,7 +619,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 						.get("currentPackageName");
 				if (pkg != null && !(pkg.equals(packageName))) {
 					driver.saveProp("currentPackageName", packageName);
-					// driver.propertiesChanged = true;
+					// saveProperties();
 				}
 			}
 		}
@@ -968,12 +968,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
-		//driver.propertiesChanged = true;
+		//saveProperties();
 		changed = false;
 
 		if (packageNameChanged) {
 			driver.saveProp("currentPackageName", packageName);
-			//driver.propertiesChanged = true;
+			//saveProperties();
 		}
 
 		// diag.targetLang = gl.label;
@@ -1024,7 +1024,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 					}
 					driver.saveProp("currentPackageName",
 							pkg);
-					// driver.propertiesChanged = true;
+					// saveProperties();
 				}
 				fileString = fileString.substring(0, s + 8) + pkg
 						+ fileString.substring(s + 8 + t);

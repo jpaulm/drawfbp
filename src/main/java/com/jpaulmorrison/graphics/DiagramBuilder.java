@@ -460,10 +460,10 @@ public class DiagramBuilder {
 			diag.diagLang = driver.currLang;
 			diag.changed = true;
 		} 
-		//else {
-		//	driver.saveProp("defaultCompLang", diag.compLang.label);
-		//	driver.propertiesChanged = true;
-		//}
+		else {
+			driver.saveProp("defaultCompLang", diag.diagLang.label);
+			//driver.saveProperties();
+		}
 		driver.jtf.setText("Diagram Language: " + diag.diagLang.showLangs());
 		frame.repaint();
 	}
