@@ -390,10 +390,14 @@ public class DrawFBP extends JFrame
 		saveProp("versionNo", "v" + VersionAndTimestamp.getVersion());
 		saveProp("date", VersionAndTimestamp.getDate());
 
-		if (null == (generalFont = properties.get("generalFont")))
+		if (null == (generalFont = properties.get("generalFont"))){
 			generalFont = "Arial";
-		if (null == (fixedFont = properties.get("fixedFont")))
+			saveProp("generalFont", generalFont);
+		}
+		if (null == (fixedFont = properties.get("fixedFont"))){
 			fixedFont = "Courier";
+			saveProp("fixedFont", fixedFont); 
+		}
 
 		String dfs = properties.get("defaultFontSize");
 		if (dfs == null) {
@@ -2613,6 +2617,9 @@ public class DrawFBP extends JFrame
 				return;
 
 			String source = curDiag.readFile(cFile, false);
+			
+			/*  (Compile code shouldn't set currentPackageName)
+			 * 
 			int m = source.indexOf("package");
 			String pkg = "(null)";
 			if (m > -1) {
@@ -2621,6 +2628,7 @@ public class DrawFBP extends JFrame
 				pkg = pkg.trim();
 			}
 			saveProp("currentPackageName", pkg);
+			*/
 
 			String srcDir = cFile.getAbsolutePath();
 			srcDir = srcDir.replace('\\', '/');
@@ -2654,7 +2662,7 @@ public class DrawFBP extends JFrame
 
 			File fd = new File(clsDir);
 
-			pkg = pkg.replace(".", "/");
+			// pkg = pkg.replace(".", "/");
 
 			if (fd == null || !fd.exists()) {
 				fd.mkdirs();
@@ -3483,7 +3491,7 @@ public class DrawFBP extends JFrame
 						 k.startsWith("additionalJarFiles") ||
 						 k.startsWith("additionalDllFiles"))
 					continue;
-				String s = "<" + k + "> " + properties.get(k) + "</" + k
+				String s = "<" + k + ">" + properties.get(k) + "</" + k
 						+ "> \n";
 				out.write(s);
 			}
@@ -4016,7 +4024,8 @@ public class DrawFBP extends JFrame
 
 			for (String jfv : jarFiles.values()) {
 				f2 = new File(jfv);
-				ll.add(f2.toURI().toURL());
+				if (!(f2.equals(f)))
+					ll.add(f2.toURI().toURL());
 			}
 
 			String curClsDir = properties.get("currentClassDir")
@@ -4024,7 +4033,8 @@ public class DrawFBP extends JFrame
 
 			if (null != curClsDir) {
 				f2 = new File(curClsDir);
-				ll.add(f2.toURI().toURL());
+				if (!(f2.equals(f)))
+					ll.add(f2.toURI().toURL());
 			}
 
 			urls = ll.toArray(new URL[ll.size()]);

@@ -56,7 +56,7 @@ public class Block implements ActionListener {
 
 	/* next three fields are not stored in .drw files */	
 	
-	URLClassLoader classLoader = null;
+	URLClassLoader myURLClassLoader = null;
 	Class<?> javaComp; // selected Java class for block (fullClassName is equivalent in String format)
 	String compDescr;  // used for annotations only
 	
@@ -571,10 +571,10 @@ public class Block implements ActionListener {
 				 
 		try {
 			
-			classLoader = new URLClassLoader(urls, driver.getClass()
+			myURLClassLoader = new URLClassLoader(urls, driver.getClass()
 					.getClassLoader());
 					
-			javaComp = classLoader.loadClass(cn);
+			javaComp = myURLClassLoader.loadClass(cn);
 			
 			} catch (ClassNotFoundException e) {
 				//System.out.println("Missing class name in " + fullClassName);
@@ -627,21 +627,21 @@ public class Block implements ActionListener {
 		Class<?> cls;	
 			
 		try {
-			Class<?> compClass = classLoader
+			Class<?> compClass = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "Component");
 
-			Class<?> networkClass = classLoader
+			Class<?> networkClass = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "Network");
 
-			Class<?> subnetClass = classLoader
+			Class<?> subnetClass = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "SubNet");	
 			
-			int i = jf.lastIndexOf(".class"); 			
-			if (i != -1)
-				jf = jf.substring(0, i);
+			//int i = jf.lastIndexOf(".class"); 			
+			//if (i != -1)
+			//	jf = jf.substring(0, i);
 			jf = jf.replace("\\",  "/");
 			jf = jf.replace('/', '.');
-			cls = classLoader.loadClass(jf);
+			cls = myURLClassLoader.loadClass(jf);
 			
 			Class<?> cs = (Class<?>) cls.getSuperclass();
 			Object obj = new Object();
@@ -673,10 +673,11 @@ public class Block implements ActionListener {
 			
 				 
 			
-			URLClassLoader ucl = (URLClassLoader) cls.getClassLoader();
+			//URLClassLoader ucl = (URLClassLoader) cls.getClassLoader();
 			//URLClassLoader ucl2 = new URLClassLoader(ucl.getURLs(), ucl);
 			try {
-			cs = ucl.loadClass(cs.getName()); 
+			//cs = ucl.loadClass(cs.getName()); 
+			cs = myURLClassLoader.loadClass(cs.getName()); 
 			}  catch (ClassNotFoundException e) {
 				
 			}
@@ -756,15 +757,15 @@ public class Block implements ActionListener {
 		
 		try {
 
-			Class<?> compdescCls = classLoader
+			Class<?> compdescCls = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "ComponentDescription");
-			Class<?> inportCls = classLoader
+			Class<?> inportCls = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "InPort");
-			Class<?> outportCls = classLoader
+			Class<?> outportCls = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "OutPort");
-			Class<?> inportsCls = classLoader
+			Class<?> inportsCls = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "InPorts");
-			Class<?> outportsCls = classLoader
+			Class<?> outportsCls = myURLClassLoader
 					.loadClass("com." + owner + ".fbp." + seg + "OutPorts");
 
 			Annotation[] annos = javaComp.getAnnotations();
@@ -1438,21 +1439,7 @@ public class Block implements ActionListener {
 
 		if (s.equals("Choose Component/Subnet Class")) {
 			
-			/*
-			if (codeFileName != null) {
-				if (!(codeFileName.toLowerCase().endsWith(".java"))) {
-					if (MyOptionPane.YES_OPTION != MyOptionPane
-							.showConfirmDialog(
-									driver.frame,
-									"Non-Java source is associated with block - if you choose a Java class, you will lose this - go ahead?",
-									"Previous non-Java source",
-									MyOptionPane.YES_NO_OPTION)) {
-						return;
-					}
-					codeFileName = null;
-				}
-			}
-			*/
+			
 			try {
 				selectJavaClass();
 			} catch (MalformedURLException e1) {
@@ -1893,7 +1880,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 				File f = new File(res.substring(0, i));
 
+				if (res2.endsWith(".class"))
+					res2 = res2.substring(0, res2.length() - 6); 
+				
 				res = res.substring(0, i) + "!" + res2;
+				
 
 				URL[] urls = driver.buildUrls(f);
 
@@ -1901,15 +1892,20 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					javaComp = null;
 				else {
 					// Create a new class loader with the directory
-					classLoader = new URLClassLoader(urls, driver.getClass()
+					myURLClassLoader = new URLClassLoader(urls, driver.getClass()
 							.getClassLoader());
 					try {
-						javaComp = classLoader.loadClass(res2);
+						javaComp = myURLClassLoader.loadClass(res2);
 					} catch (ClassNotFoundException e2) {
 						javaComp = null;
 					} catch (NoClassDefFoundError e2) {
 						javaComp = null;
 					}
+					if (javaComp == null) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"Problem with classes in selected file: " + res2, MyOptionPane.ERROR_MESSAGE);
+						return;
+					} 
 					javaComp = isValidClass(res.substring(0, i), res2,
 							injar);
 					if (javaComp != null)
@@ -1920,6 +1916,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			} else {
 				// we are looking in local class hierarchy (not a jar file)
 				String fs = res;
+				injar = false;
 
 				if (fs.endsWith("jar"))
 					cFile = new File(driver.javaFBPJarFile); // ????
@@ -1936,9 +1933,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				File fp = null;
 
 				String u = cFile.getName();
-				i = u.lastIndexOf(".class");
-				if (i > -1)
-					u = u.substring(0, i);
+				if (u.endsWith(".class")) 
+				    u = u.substring(0, u.length() - 6);
 
 				String error = "";
 
@@ -1957,11 +1953,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 						else {
 
 							// Create a new class loader with the directory
-							classLoader = new URLClassLoader(urls, driver.getClass()
+							myURLClassLoader = new URLClassLoader(urls, driver.getClass()
 									.getClassLoader());
 
 							try {
-								javaComp = classLoader.loadClass(u);
+								javaComp = myURLClassLoader.loadClass(u);
 							} catch (ClassNotFoundException e2) {
 								classFound = false;
 								error = "ClassNotFoundException";
@@ -1983,7 +1979,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				
 				if (javaComp == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
-							"Class '" + driver.getSelFile(fc) + "' not found ("
+							"Class '" + driver.getSelFile(fc) + "' invalid class ("
 									+ error + ")", MyOptionPane.ERROR_MESSAGE);
 				}
 

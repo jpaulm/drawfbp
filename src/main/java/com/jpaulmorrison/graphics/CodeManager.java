@@ -18,7 +18,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-public class CodeManager implements ActionListener, DocumentListener {
+public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 	DrawFBP driver;
 	HashSet<String> portNames;
@@ -106,7 +106,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		dialog.add(scrollPane);		
 		textPane.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
-		doc.addDocumentListener(this);
+		// doc.addDocumentListener(this);
 
 	}
 	void genCode() {
@@ -615,12 +615,12 @@ public class CodeManager implements ActionListener, DocumentListener {
 					packageName = fileString.substring(i + 8, k);
 				}
 				packageName = packageName.trim();
-				String pkg = (String) driver.properties
-						.get("currentPackageName");
-				if (pkg != null && !(pkg.equals(packageName))) {
+				//String pkg = (String) driver.properties
+				//		.get("currentPackageName");
+				//if (pkg != null && !(pkg.equals(packageName))) {
 					driver.saveProp("currentPackageName", packageName);
 					// saveProperties();
-				}
+				//}
 			}
 		}
 		try {
@@ -887,6 +887,7 @@ public class CodeManager implements ActionListener, DocumentListener {
 		return b;
 	}
 
+	/*
 	public void changedUpdate(DocumentEvent e) {
 		//Document doc = e.getDocument();
 		//String s = null;
@@ -900,10 +901,11 @@ public class CodeManager implements ActionListener, DocumentListener {
 		//	changed = true;
 
 		if (packageName != null) {
-			if (e.getOffset() >= 8 && e.getOffset() <= 8 + packageName.length()
+			if (e.getOffset() >= 8 && e.getOffset() <= 8 + packageName.length() 
 					&& generated) {
 				packageNameChanged = true;
-				changed = true;
+				changed = true;				
+				driver.saveProp("currentPackageName", packageName);
 			}
 		}
 		nsLabel.setText(changed ? "Not saved" : " ");
@@ -937,7 +939,8 @@ public class CodeManager implements ActionListener, DocumentListener {
 		nsLabel.setText(changed ? "Not saved" : " ");
 		dialog.repaint();
 	}
-
+*/
+	
 	String compress(String s) {
 		if (counterList.indexOf(s) == -1)
 			counterList.add(s);
@@ -999,25 +1002,25 @@ public class CodeManager implements ActionListener, DocumentListener {
 			int w = fs.indexOf(".java");
 			int u = fs.substring(0, w).lastIndexOf("/");
 
-			String pkg2 = "(null)";
+			String fNPkg = "(null)";
 			if (v + 5 < u) {
-				pkg2 = fs.substring(v + 5, u);
-				pkg2 = pkg2.replace('\\', '/');
-				pkg2 = pkg2.replace('/', '.');
+				fNPkg = fs.substring(v + 5, u);
+				fNPkg = fNPkg.replace('\\', '/');
+				fNPkg = fNPkg.replace('/', '.');
 			}
-			if (!(pkg.equals(pkg2))) {
+			if (!(pkg.equals(fNPkg))) {
 				int ans = MyOptionPane.showConfirmDialog(
 						driver.frame,
 						"Package name in file: " + pkg + ",\n"
-								+ "   suggested package name from file name is: "
-								+ pkg2
-								+ ", \n   do you want to change old name?",
+								+ "   suggested package name based on file name is: "
+								+ fNPkg
+								+ ", \n   do you want to change to suggested name?",
 						"Change package?",
 						MyOptionPane.YES_NO_CANCEL_OPTION);
 
 				if (ans != MyOptionPane.CANCEL_OPTION) {
 					if (ans == MyOptionPane.YES_OPTION) {
-						pkg = pkg2;
+						pkg = fNPkg;
 						MyOptionPane.showMessageDialog(driver.frame,
 								"Package name changed: " + pkg);
 

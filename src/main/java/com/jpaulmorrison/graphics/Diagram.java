@@ -413,7 +413,7 @@ public class Diagram {
 			}
 
 		} else {
-			fileString = (String) contents;
+			//fileString = (String) contents;
 			// if not image
 			if (fCP.fileExt.equals(".drw")) {
 
