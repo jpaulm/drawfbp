@@ -12,7 +12,7 @@ FBP is a particular form of dataflow programming based on bounded buffers, infor
 
 One interesting aspect of this implementation is that it supports the scripting language `Lua`, so large parts of your networks can be written in a scripting language if desired.
 
-For some history, including a description of "static" vs. "dynamic", see https://github.com/jpaulm/threadn/blob/master/README.md .
+This implementation is based on an older C implementation called [THREADN](https://github.com/jpaulm/threadn/blob/master/README.md), which used `longjmp` and `setjmp`. THREADN allowed networks to be defined dynamically or statically - this has been preserved in CppFBP.  See the description of "static" vs. "dynamic" in https://github.com/jpaulm/threadn/blob/master/README.md .
 
 Web sites for FBP: 
 * http://www.jpaulmorrison.com/fbp/
