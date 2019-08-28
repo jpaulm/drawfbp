@@ -856,10 +856,7 @@ public class Arrow implements ActionListener {
 			return true;
 		if (!(to instanceof ProcessBlock) && !(to instanceof ExtPortBlock))
 			return true;
-		// if (fromSide == DrawFBP.Side.LEFT || fromSide == DrawFBP.Side.TOP)
-		// return false;
-		// if (toSide == DrawFBP.Side.BOTTOM)
-		// return false;
+		
 		return true;
 
 	}
@@ -875,9 +872,7 @@ public class Arrow implements ActionListener {
 		id = toId;
 		toId = fromId;
 		fromId = id;
-		//DrawFBP.Side s = toSide;
-		//toSide = fromSide;
-		//fromSide = s;
+		
 		String st = upStreamPort;
 		upStreamPort = downStreamPort;
 		downStreamPort = st;

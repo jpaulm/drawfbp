@@ -48,6 +48,7 @@ public class MyFileChooser extends JFrame
 			ListSelectionListener  {
 
 	private static final long serialVersionUID = 1L;
+	//private static final DrawFBP DrawFBP = null;
 	public static int APPROVE_OPTION = 0;
 	public static int CANCEL_OPTION = 1;
 	
@@ -67,7 +68,7 @@ public class MyFileChooser extends JFrame
 	JPanel panel = null;
 	int result = CANCEL_OPTION;
 
-	DrawFBP driver = DrawFBP.driver;
+	DrawFBP driver = null;
 	MyButton butParent = new MyButton();
 	MyButton butOK = new MyButton();
 	MyButton butCancel = new MyButton();
@@ -117,11 +118,11 @@ public class MyFileChooser extends JFrame
 	ParentAction parentAction;
 	NewFolderAction newFolderAction;
 	
-	Diagram.FileChooserParm fCP;
+	DrawFBP.FileChooserParm fCP;
 	
 	public ClickListener clickListener;
 	
-	public MyFileChooser(File f, Diagram.FileChooserParm fcp) {
+	public MyFileChooser(DrawFBP driver,File f, DrawFBP.FileChooserParm fcp) {
 		
 		fCP = fcp;
 		clickListener = new ClickListener();
@@ -131,7 +132,7 @@ public class MyFileChooser extends JFrame
 		else 	
 			listHead = f.getAbsolutePath();	
 		// fullNodeName = f.getAbsolutePath();
-		driver = DrawFBP.driver;
+		this.driver = driver;
 
 		
 	}
@@ -155,8 +156,8 @@ public class MyFileChooser extends JFrame
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());		
 		
-		driver.curDiag.filterOptions[0] = fCP.title;
-		cBox = new MyComboBox(driver.curDiag.filterOptions);
+		driver.filterOptions[0] = fCP.title; 
+		cBox = new MyComboBox(driver.filterOptions);
 		cBox.setMaximumRowCount(2);
 		cBox.addMouseListener(this);
 		cBox.setSelectedIndex(driver.allFiles ? 1 : 0);
@@ -195,11 +196,15 @@ public class MyFileChooser extends JFrame
 		//comp = new MyFileCompare();
 		renderer = new ListRenderer(driver);
 
-		if (fCP == driver.curDiag.fCParm[Diagram.DIAGRAM]) 
+		if (fCP == driver.diagFCParm)
 			dialog.setTitle(s);
 		else {
-			if (fCP == driver.curDiag.fCParm[Diagram.NETWORK])
-				fCP.prompt = "Specify file name for code - for diagram: " + driver.curDiag.title + ".drw";
+			if (fCP == driver.curDiag.fCParm[Diagram.NETWORK]) {
+				String w = driver.curDiag.title;
+				if (!(w.endsWith(".drw")))
+					w += ".drw";
+				fCP.prompt = "Specify file name for code - for diagram: " + w;
+			}
 			 
 			dialog.setTitle(fCP.prompt);
 			if (fCP == driver.curDiag.fCParm[Diagram.CLASS])
@@ -820,7 +825,7 @@ public class MyFileChooser extends JFrame
 		File f = new File(fileName);
 		String fileString;
 		LinkedList<String> ll = new LinkedList<String>();
-		if (null == (fileString = driver.curDiag.readFile(f, false))) {
+		if (null == (fileString = driver.readFile(f, false))) {
 			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file "
 					+ f.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
@@ -1081,7 +1086,7 @@ public class MyFileChooser extends JFrame
 				int index, boolean isSelected, boolean cellHasFocus) {
 			String s = (String) value;
 			if (!s.startsWith("All"))
-			 value = driver.curDiag.filterOptions[0];
+			 value = driver.filterOptions[0];
 
 			JLabel c = (JLabel) super.getListCellRendererComponent(list, value,
 					index, isSelected, cellHasFocus);
@@ -1395,7 +1400,7 @@ public class MyFileChooser extends JFrame
 					return;
 				}
 			} else {
-				if (-1 != driver.curDiag.diagramIsOpen(s)) {
+				if (-1 != driver.diagramIsOpen(s)) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"File '" + f.getName()
 									+ "' cannot be deleted while open",
@@ -1739,7 +1744,7 @@ public class MyFileChooser extends JFrame
 			Color c = (this == selComp) ? vLightBlue : Color.WHITE;
 			
 			int i = driver.allFiles ? 1 : 0;
-			String lt = driver.curDiag.filterOptions[i];
+			String lt = driver.filterOptions[i];
 
 			JLabel l = new JLabel(lt);
 			Rectangle bounds = super.getBounds();

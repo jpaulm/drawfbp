@@ -195,7 +195,9 @@ public class Block implements ActionListener {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				g.setColor(Color.BLUE);
-				name = javaComp.getSimpleName()  + ".class";
+				name = javaComp.getSimpleName();
+				if (!(name.endsWith(".class")))
+					name = name += ".class";
 				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
@@ -410,24 +412,9 @@ public class Block implements ActionListener {
 		if (mpxfactor != null)
 			s += "<mpxfactor>" + mpxfactor + "</mpxfactor> \n";
 		if (this instanceof Enclosure) {
-			//Enclosure ol = (Enclosure) this;
-			// if (ol.description != null)
-			// s += "<description>" + ol.description + "</description> ";
+			
 			s += "\n";
-			/*
-			s += "<subnetports>";
-			for (SubnetPort snp : ol.subnetPorts) {
-				s += "<subnetport> <y>" + snp.y + "</y>";
-				if (snp.name != null)
-					s += " <name>" + snp.name + "</name>";
-				String side = (snp.side == DrawFBP.Side.LEFT) ? "L" : "R";
-				s += " <side>" + side + "</side>";
-				//if (snp.substreamSensitive)
-					s += "<substreamsensitive>" + (snp.substreamSensitive?"true":"false") + "</substreamsensitive>";
-				s += "</subnetport> \n";
-			}
-			s += "</subnetports>";
-			*/
+			
 		}
 		s += "</block> \n";
 		return s;
@@ -1639,7 +1626,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			//final boolean NOCHOOSE = false;
 			//driver.curDiag.delBlock(this, NOCHOOSE);  //delete enclosure block 
 			//foundBlock = null;
-			driver.curDiag.desc = ans; 
+			//driver.curDiag.desc = ans; 
 			//driver.curDiag.title = ans;
 			
 			driver.curDiag.changed = true;
@@ -1749,7 +1736,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (t == null)
 			t = System.getProperty("user.home");
 
-		MyFileChooser fc = new MyFileChooser(new File(t),
+		MyFileChooser fc = new MyFileChooser(driver,new File(t),
 				diag.fCParm[Diagram.DIAGRAM]);
 
 		int returnVal = fc.showOpenDialog();
@@ -1861,7 +1848,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (t == null)
 			t = System.getProperty("user.home");
 
-		MyFileChooser fc = new MyFileChooser(new File(t),
+		MyFileChooser fc = new MyFileChooser(driver,new File(t),
 				diag.fCParm[Diagram.CLASS]);
 
 		int returnVal = fc.showOpenDialog();
@@ -2058,7 +2045,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			if (t == null)
 				t = System.getProperty("user.home");
 
-			MyFileChooser fc = new MyFileChooser(new File(t),
+			MyFileChooser fc = new MyFileChooser(driver,new File(t),
 					diag.fCParm[Diagram.PROCESS]);
 
 			int returnVal = fc.showOpenDialog();

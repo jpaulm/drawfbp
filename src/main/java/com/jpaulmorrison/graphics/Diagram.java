@@ -4,14 +4,8 @@ package com.jpaulmorrison.graphics;
 import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
@@ -20,11 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.imageio.ImageIO;
 
 import javax.swing.JPopupMenu;
-import javax.swing.filechooser.FileFilter;
 
+import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
+import com.jpaulmorrison.graphics.DrawFBP.Side;
 
 public class Diagram {
+	//private static final DrawFBP DrawFBP = null;	
+
 	// LinkedList<Block> blocks;
 	ConcurrentHashMap<Integer, Block> blocks;
 
@@ -33,7 +30,7 @@ public class Diagram {
 	File diagFile;
 	//String suggFile = null;
 
-	DrawFBP driver = DrawFBP.driver;
+	DrawFBP driver = null;
 	int tabNum = -1;
 	DrawFBP.SelectionArea area; 	
 
@@ -86,10 +83,10 @@ public class Diagram {
 	public static int FBP = 9;    
 	
 	FileChooserParm[] fCParm;
-	String[] filterOptions = {"", "All (*.*)"};
 	
 	
 	CodeManager cm = null;
+	Block motherBlock = null;
 	
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;
@@ -105,111 +102,16 @@ public class Diagram {
 		diagLang = driver.currLang;	
 		
 		fCParm = new FileChooserParm[10];
+		//motherBlock = null;
 		
 	}			
 	 
 
-	public File open(File f) {
-		File file = null;  
-		String fileString = null;
-
-		if (f != null) 
-			file = f;
-		
-		if (f == null || f.isDirectory()) {		
-			String s = driver.properties.get("currentDiagramDir");
-			if (s == null)
-				s = System.getProperty("user.home");
-			File f2 = new File(s);
-			if (!f2.exists()) {
-				MyOptionPane.showMessageDialog(driver.frame, "Directory '" + s
-						+ "' does not exist - reselect", MyOptionPane.ERROR_MESSAGE);
-				// return null;
-				f2 = new File(".");
-			}
-
-			MyFileChooser fc = new MyFileChooser(f2, fCParm[DIAGRAM]);
-
-			int returnVal = fc.showOpenDialog();
-
-			if (returnVal == MyFileChooser.APPROVE_OPTION)  
-				file = new File(driver.getSelFile(fc));
-			if (file == null)
-				return null; 
-		}
-		
-		if (file.isDirectory()) {
-			MyOptionPane.showMessageDialog(driver.frame,
-							"File is directory: " + file.getAbsolutePath());
-			return null;
-		}
-		
-		if (!(hasSuffix(file.getName())) && !(file.isDirectory())) {
-			String name = file.getAbsolutePath();
-			name += ".drw";
-			file = new File(name);
-		}
-		if (!(file.exists()))   
-			return file;
-			//if (file.getName().equals("(empty folder)"))
-			//	MyOptionPane.showMessageDialog(driver.frame,
-			//			"Invalid file name: " + file.getAbsolutePath());
-			//else 
-			//	MyOptionPane.showMessageDialog(driver.frame,
-			//			"File does not exist: " + file.getAbsolutePath());
-
-			//return null;
-		//}
-		if (null == (fileString = readFile(file, false))) {    
-			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file: "
-					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
-			return null;
-		}
-		 
-		File currentDiagramDir = file.getParentFile();
-		driver.saveProp("currentDiagramDir",
-				currentDiagramDir.getAbsolutePath());
-		//saveProperties();
-
-		/*
-		int i = diagramIsOpen(file.getAbsolutePath());
-		if (-1 != i) {
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp
-					.getTabComponentAt(i);
-			//driver.curDiag = b.diag;
-			driver.jtp.setSelectedIndex(i);
-			diagFile = b.diag.diagFile;
-			return file;
-		}
-*/
-		title = file.getName();
-		if (title.toLowerCase().endsWith(".drw"))
-			title = title.substring(0, title.length() - 4);
-		//if (diagramIsOpen(file.getAbsolutePath()))
-		//	return null;
-		//diagFile = file;
-		blocks.clear();
-		arrows.clear();
-		desc = " ";
-
-		DiagramBuilder.buildDiag(fileString, driver.frame, this);
-		// driver.jtp.setRequestFocusEnabled(true);
-		// driver.jtp.requestFocusInWindow();
-		driver.arrowEnd = null;  // get rid of black square... 
-		driver.arrowRoot = null;
-		driver.currentArrow = null;
-		driver.foundBlock = null;
-		driver.drawToolTip = false;
-		if (diagLang != null)
-			driver.changeLanguage(diagLang);
-		return file;
-
-	}
-
+	
 	
 	/* General save function */
 
-	public File genSave(File file, Diagram.FileChooserParm fCP, Object contents) {
+	public File genSave(File file, FileChooserParm fCP, Object contents) {
 
 		boolean saveAs = false;
 		File newFile = null;
@@ -273,12 +175,12 @@ public class Diagram {
 				//		+ fCP.fileExt;
 			
 
-				fc = new MyFileChooser(f, fCP);
+				fc = new MyFileChooser(driver,f, fCP);
 
 				fc.setSuggestedName(suggestedFileName);
 			//}
 			//else
-			//	fc = new MyFileChooser(f, fCP);
+			//	fc = new MyFileChooser(driver,f, fCP);
 
 			int returnVal = fc.showOpenDialog(saveAs, true);
 
@@ -357,7 +259,7 @@ public class Diagram {
 				return null;
 
 			if (fCP.fileExt.equals(".drw")
-					&& -1 != diagramIsOpen(newFile.getAbsolutePath()))
+					&& -1 != driver.diagramIsOpen(newFile.getAbsolutePath()))
 				return null;
 
 									
@@ -417,14 +319,14 @@ public class Diagram {
 			// if not image
 			if (fCP.fileExt.equals(".drw")) {
 
-				fileString = readFile(file, saveAs); // read previous version
+				fileString = driver.readFile(file, saveAs); // read previous version
 				diagFile = file;
 
 				if (fileString != null) {
 					String s = file.getAbsolutePath();
 					File oldFile = file;
 					file = new File(s.substring(0, s.length() - 1) + "~");
-					writeFile(file, fileString);
+					driver.writeFile(file, fileString);
 					file = oldFile;
 				}
 				fileString = buildFile();
@@ -457,11 +359,13 @@ public class Diagram {
 			// }
 
 			// }
-			writeFile(file, fileString);
+			driver.writeFile(file, fileString);
 
 			// return diagFile;
 		}
-
+		if (motherBlock!= null)
+			motherBlock.diagramFileName = file.getPath();
+		
 		//suggFile = null;
 		MyOptionPane.showMessageDialog(driver.frame, fCP.name + " saved: " + file.getName());
 		return file;
@@ -490,6 +394,7 @@ public class Diagram {
 			File file = null;
 			if (answer == MyOptionPane.YES_OPTION) {
 				// User clicked YES.
+				diagFile = null;   // force FileChooser - experimental!
 				if (diagFile == null) { // choose file
 
 					file = genSave(null, fCParm[DIAGRAM], name);
@@ -502,9 +407,8 @@ public class Diagram {
 					file = diagFile;
 					fileString = buildFile();
 
-					writeFile(file, fileString);
-
-
+					driver.writeFile(file, fileString);
+					
 				}
 				
 
@@ -595,64 +499,10 @@ public class Diagram {
 	}
 
 
-	public String readFile(File file, boolean saveAs) {
-		StringBuffer fileBuffer;
-		String fileString = null;
-		int i;
-		try {
-			FileInputStream in = new FileInputStream(file);
-			InputStreamReader dis = new InputStreamReader(in, "UTF-8");
-			fileBuffer = new StringBuffer();
-			try {
-				while ((i = dis.read()) != -1) {
-					fileBuffer.append((char) i);
-				}
-
-				in.close();
-
-				fileString = fileBuffer.toString();
-			} catch (IOException e) {
-				MyOptionPane.showMessageDialog(driver.frame, "I/O Exception: "
-						+ file.getName(), MyOptionPane.ERROR_MESSAGE);
-				fileString = "";
-			}
-
-		} catch (FileNotFoundException e) {
-			if (!saveAs)
-				MyOptionPane.showMessageDialog(driver.frame, "File not found: "
-					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
-			return null;
-		} catch (IOException e) {
-			MyOptionPane.showMessageDialog(driver.frame, "I/O Exception 2: "
-					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
-			return null;
-		}
-		return fileString;
-	} // readFile
-
-	/**
-	 * Use a BufferedWriter, which is wrapped around an OutputStreamWriter,
-	 * which in turn is wrapped around a FileOutputStream, to write the string
-	 * data to the given file.
-	 */
-
-	public boolean writeFile(File file, String fileString) {
-		if (file == null)
-			return false;
-		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(file), "UTF-8"));
-			out.write(fileString);
-			out.flush();
-			out.close();
-		} catch (IOException e) {
-			System.err.println("File error writing " + file.getAbsolutePath());
-			return false;
-		}
-
-		return true;
-	} // writeFile
 	
+
+	
+	/*
 	int diagramIsOpen(String s) {
 		int j = driver.jtp.getTabCount();
 		for (int i = 0; i < j; i++) {
@@ -678,6 +528,8 @@ public class Diagram {
 		return -1;
 	}
 	
+	*/
+	
 	String getSuffix(String s) {
 		int i = s.lastIndexOf(File.separator);
 		if (i == -1)
@@ -689,14 +541,6 @@ public class Diagram {
 		else
 			return t.substring(j + 1);
 	}
-
-	boolean hasSuffix(String s) {
-		int i = s.lastIndexOf(File.separator);
-		int j = s.substring(i + 1).lastIndexOf(".");
-		return j > -1;
-	}
-
-	
 	
 	void delArrow(Arrow arrow) {
 		//LinkedList<Arrow> ll = new LinkedList<Arrow>();
@@ -746,19 +590,24 @@ public class Diagram {
 	void excise(Enclosure enc, String subnetName) {	
 		
 		// *this* is the *old* diagram; enc is the Enclosure block within it 
-		String fn = subnetName;
-		fn = fn.trim();
+		//String fn = subnetName;
+		//fn = fn.trim();
 		
 		
 		Diagram sbnDiag = driver.getNewDiag(false);  
 		Diagram origDiag = this;
-		
+		sbnDiag.desc = subnetName; 
+		String w = subnetName;
+		if (!w.endsWith(".drw"))
+			w += ".drw";
+		w = w.substring(0, 1).toUpperCase() + w.substring(1);
+		sbnDiag.title = w;
 		//sbnDiag.suggFile = fn; 
-		sbnDiag.title = fn;
+		//sbnDiag.title = fn;
 		
-		if (!(fn.toLowerCase().endsWith(".drw")))
-			fn += ".drw";
-		fn = driver.properties.get("currentDiagramDir") + File.separator + fn;
+		//if (!(fn.toLowerCase().endsWith(".drw")))
+		//	fn += ".drw";
+		//fn = driver.properties.get("currentDiagramDir") + File.separator + fn;
 		
 		// *driver.sbnDiag* will contain new subnet diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
@@ -788,6 +637,7 @@ public class Diagram {
 		}
 			
 		ProcessBlock subnetBlock = buildSubnetBlock(sbnDiag, origDiag, enc, enc.cx, enc.cy);
+		sbnDiag.motherBlock = subnetBlock;
 		
 		copyArrows(sbnDiag, enc, subnetBlock);   // categorize arrows in (old) Diagram, making copies of "crossers"
 		
@@ -910,15 +760,15 @@ public class Diagram {
  
 		subnetBlock.description = subnetName;  
 		 
-		//MyOptionPane.showMessageDialog(null,
-		//		"Subnet diagram created - save to assign proper file name",
-		//		MyOptionPane.INFORMATION_MESSAGE);
+		MyOptionPane.showMessageDialog(null,
+				"Subnet diagram created for " + sbnDiag.title + " - can change name on Save",
+				MyOptionPane.INFORMATION_MESSAGE);
 		// force saveAs
 		
-		File file = sbnDiag.genSave(null, fCParm[DIAGRAM], null);
-		if (file != null)
-			subnetBlock.diagramFileName = file.getAbsolutePath();
-		subnetBlock.diag.diagFile = new File(subnetBlock.diagramFileName);
+		//File file = sbnDiag.genSave(null, fCParm[DIAGRAM], null);
+		//if (file != null)
+		//	subnetBlock.diagramFileName = file.getAbsolutePath();
+		//subnetBlock.diag.diagFile = new File(subnetBlock.diagramFileName);
 		driver.curDiag.changed = true;
 		sbnDiag.changed = true;
 		
@@ -942,27 +792,27 @@ public class Diagram {
 			double top = subnetBlock.cy - subnetBlock.height / 2;
 			double bottom = subnetBlock.cy + subnetBlock.height / 2;
 			if (line.intersectsLine(left, top, left, bottom)) 
-				s = DrawFBP.Side.LEFT;
+				s = Side.LEFT;
 			else if (line.intersectsLine(right, top, right, bottom))
-				s = DrawFBP.Side.RIGHT;
+				s = Side.RIGHT;
 			else if (line.intersectsLine(left, top, right, top))
-				s = DrawFBP.Side.TOP;
+				s = Side.TOP;
 			else if (line.intersectsLine(left, bottom, right, bottom))
-				s = DrawFBP.Side.BOTTOM;
+				s = Side.BOTTOM;
 			
 			float slope = (float) (subnetBlock.cy - fix.y) / (subnetBlock.cx - fix.x);  
 			
-			if (s == DrawFBP.Side.LEFT) {				
+			if (s == Side.LEFT) {				
 				int yDiff = (int) ((subnetBlock.cx - subnetBlock.width / 2 - fix.x) * slope + .5);    // with rounding 			 
 				var.y = (int) (fix.y + yDiff );
 				var.x = subnetBlock.cx - subnetBlock.width / 2;
 			}
-			else if (s == DrawFBP.Side.RIGHT) {				
+			else if (s == Side.RIGHT) {				
 				int yDiff = (int) ((fix.x - (subnetBlock.cx + subnetBlock.width / 2)) * slope + .5);    // with rounding 				 
 				var.y = (int) (fix.y - yDiff );
 				var.x = subnetBlock.cx + subnetBlock.width / 2;
 			}
-			else if (s == DrawFBP.Side.TOP) {				
+			else if (s == Side.TOP) {				
 				int xDiff = (int) ((subnetBlock.cy - subnetBlock.height / 2 - fix.y) / slope + .5);     // with rounding				
 				var.x = (int) (fix.x + xDiff );				 
 				var.y = subnetBlock.cy - subnetBlock.height / 2;
@@ -1109,13 +959,13 @@ public class Diagram {
 		origDiag.blocks.put(new Integer(subnetBlock.id), subnetBlock);
 		changed = true;
 		driver.selBlock = subnetBlock;
-		subnetBlock.diagramFileName = enc.diag.desc;
+		//subnetBlock.diagramFileName = enc.diag.desc;
 		subnetBlock.isSubnet = true;
 		sbnDiag.parent = subnetBlock;
 		// block.diagramFileName = "newname";
 
 		// block.description = enc.description;
-		subnetBlock.description = enc.diag.desc;
+		//subnetBlock.description = enc.diag.desc;
 		enc.description = "Enclosure can be deleted";
 
 		/*
@@ -1123,9 +973,9 @@ public class Diagram {
 		 * their own blocks list and arrows list attached....
 		 */
 
-		sbnDiag.desc = subnetBlock.description;
-		if (sbnDiag.desc != null)
-			sbnDiag.desc = sbnDiag.desc.replace('\n', ' ');
+		//sbnDiag.desc = subnetBlock.description;
+		//if (sbnDiag.desc != null)
+		//	sbnDiag.desc = sbnDiag.desc.replace('\n', ' ');
 
 		subnetBlock.cx = enc.cx;
 		subnetBlock.cy = enc.cy;
@@ -1133,24 +983,5 @@ public class Diagram {
 		subnetBlock.calcEdges();
 		return subnetBlock;
 	}
-	public class FileChooserParm {
-		//int index;
-		String name;
-		String propertyName;
-		String prompt;
-		String fileExt;
-		FileFilter filter;
-		String title;
-
-		FileChooserParm(/* int n,*/ String x, String a, String b, String c, FileFilter d,
-				String e) {
-			//index = n;
-			name = x;
-			propertyName = a;
-			prompt = b;
-			fileExt = c;
-			filter = d;
-			title = e;
-		}
-	}
+	
 }

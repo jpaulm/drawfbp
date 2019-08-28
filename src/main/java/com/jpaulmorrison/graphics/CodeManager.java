@@ -7,7 +7,6 @@ import java.io.*;
 
 import javax.swing.*;
 import javax.swing.text.*;
-import javax.swing.event.*;
 
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
 
@@ -544,7 +543,8 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			className = "????";
 		if (lang.equals("Java")) {
 			//if (!(className.equals("\"Invalid class\"")))
-			className += ".class";
+			if (!(className.endsWith(".class")))
+				className += ".class";
 			return "component(\"" + name + "\"," + className + ")";
 		}
 		else {
@@ -583,7 +583,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		// genLang = gl;
 		
 		if (fileString == null) {
-			fileString = driver.curDiag.readFile(file, false);
+			fileString = driver.readFile(file, false);
 			if (fileString == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Couldn't read file: " + file.getAbsolutePath(),
