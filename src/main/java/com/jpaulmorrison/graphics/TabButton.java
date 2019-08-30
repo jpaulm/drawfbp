@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JTabbedPane;
 import javax.swing.plaf.basic.BasicButtonUI;
 
+// look after handling 'x' on tabs
 
 	public class TabButton extends JButton implements ActionListener {
 		

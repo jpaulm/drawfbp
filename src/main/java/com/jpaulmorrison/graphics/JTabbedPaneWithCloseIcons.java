@@ -1,7 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import javax.swing.*;
-import java.awt.*;
+
 import java.io.File;
 
 /**
@@ -25,11 +25,20 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 	public void setSelectedIndex(int i) {
 		if (i > -1) {
 			super.setSelectedIndex(i);
-			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);
+			
+			
+			for (int j = 0; j < getTabCount(); j++) {
+				ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(j);					
+				if (b != null && b.diag != null)  
+					b.selected = false;
+			}
+			
+			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);	
 			
 			if (b != null && b.diag != null) {
 				driver.curDiag = b.diag;
 				driver.frame.setTitle("Diagram: " + driver.curDiag.title);  
+				b.selected = true;
 				File f = driver.curDiag.diagFile;
 				if (f != null) {
 				    File currentDiagramDir = f.getParentFile();
@@ -51,26 +60,29 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		}
 	}
 
- 
+ /*
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		
-		int tabno =  getSelectedIndex();
+		//int tabno =  getSelectedIndex();
+		//setBackgroundAt(tabno, Color.WHITE); 
+		 
 		int j = getTabCount();
 		// Iterate through the tabs
 		
-		for (int i = 0; i < /* driver.jtp.*/ j; i++) {
+		for (int i = 0; i <  j; i++) {
 			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);	
 			
 			if (i == tabno) {
-				/*driver.jtp.*/setBackgroundAt(i, Color.WHITE);
+				setBackgroundAt(i, Color.WHITE);
 				b.selected = true;
 			}
 			else {
-				/*driver.jtp.*/setBackgroundAt(i, Color.lightGray); 
+				setBackgroundAt(i, Color.lightGray); 
 				b.selected = false;
 			}
 		}
+		 
 	}
-	 
+	*/ 
 }

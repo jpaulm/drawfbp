@@ -73,28 +73,24 @@ public class ButtonTabComponent extends JPanel {
     }
     
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);        
+        super.paintComponent(g);      
+        setBackground(selected ? Color.WHITE : Color.lightGray); 
         label.setFont(driver.fontf);
         String s = "(untitled)";
         //Diagram d = b.diag;        
         		
 		if (diag != null) {			
 		 
-		if (diag.diagFile == null){
-			if (diag.title == null)
-				s = "(untitled)";
-			else
-				s = diag.title;
-		}
-		else {
-			if (selected) {
-				s = diag.diagFile.getAbsolutePath();
-				
-			} else {
-				s = diag.diagFile.getName();
-			}
-		}
-		 
+			if (diag.diagFile == null)  
+				if (diag.title == null)
+					s = "(untitled)";
+				else
+					s = diag.title;
+			  else  
+				if (selected)  
+					s = diag.diagFile.getAbsolutePath();
+				  else  
+					s = diag.diagFile.getName();	
 
 		if (diag != null && diag.changed)
 			s = "* " + s;
