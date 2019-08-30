@@ -56,11 +56,10 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		super.paintComponent(g);
 		
 		int tabno =  getSelectedIndex();
-		
+		int j = getTabCount();
 		// Iterate through the tabs
 		
-		for (int i = 0; i </* driver.jtp.*/getTabCount(); i++) {
-			
+		for (int i = 0; i < /* driver.jtp.*/ j; i++) {
 			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);	
 			
 			if (i == tabno) {

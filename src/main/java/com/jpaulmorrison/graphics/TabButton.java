@@ -23,7 +23,7 @@ import javax.swing.plaf.basic.BasicButtonUI;
 		
     	static final long serialVersionUID = 111L;
     	JTabbedPaneWithCloseIcons jtp;
-    	Diagram diag;
+    	//Diagram diag;
     	    	
         public TabButton(JTabbedPane jtp) {
             int size = 17;
@@ -44,6 +44,7 @@ import javax.swing.plaf.basic.BasicButtonUI;
             setRolloverEnabled(true);
             //Close the proper tab by clicking the button
             addActionListener(this);
+            //jtp.add(this);
         }
  
         public void actionPerformed(ActionEvent e) {

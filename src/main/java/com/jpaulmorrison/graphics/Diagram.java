@@ -375,7 +375,7 @@ public class Diagram {
 	// returns false if CANCEL option chosen
 	public boolean askAboutSaving() {
 
-		String fileString = null;
+		//String fileString = null;
 		String name;
 		boolean res = true;
 		if (changed) {
@@ -393,8 +393,9 @@ public class Diagram {
 					MyOptionPane.YES_NO_CANCEL_OPTION);
 			File file = null;
 			if (answer == MyOptionPane.YES_OPTION) {
+				  
 				// User clicked YES.
-				diagFile = null;   // force FileChooser - experimental!
+				/*
 				if (diagFile == null) { // choose file
 
 					file = genSave(null, fCParm[DIAGRAM], name);
@@ -404,12 +405,20 @@ public class Diagram {
 						res = false;
 					}
 				} else {
-					file = diagFile;
-					fileString = buildFile();
+					*/
+				 
+					//file = diagFile;
+					//fileString = buildFile();
 
-					driver.writeFile(file, fileString);
+					//driver.writeFile(file, fileString);
+					file = genSave(diagFile, fCParm[DIAGRAM], name);
+					if (file == null) {
+						MyOptionPane.showMessageDialog(driver.frame,
+								"File not saved");
+						res = false;
+					}
 					
-				}
+				//}
 				
 
 			}

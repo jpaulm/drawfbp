@@ -1077,7 +1077,7 @@ public class DrawFBP extends JFrame
 		diag.area = sa;
 		int i = jtp.getTabCount();
 		jtp.add(sa, new JLabel());
-		//int j = jtp.getTabCount();  // for debugging
+		int j = jtp.getTabCount();  // for debugging
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
 		jtp.setTabComponentAt(i, b);
 		jtp.setSelectedIndex(i);
