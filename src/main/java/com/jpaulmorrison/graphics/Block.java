@@ -1589,9 +1589,9 @@ public class Block implements ActionListener {
 			
 			// remember no file names need to have been filled in at this point
 			
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver.frame,					
+					"Enter subnet diagram name - can be changed later",
 					"Enter subnet name",
-					"Enter subnet diagram relative file name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, null);
 			if (ans == null/* && ans.length() > 0*/)  			 
 				return;		

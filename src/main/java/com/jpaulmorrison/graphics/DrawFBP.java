@@ -70,9 +70,7 @@ public class DrawFBP extends JFrame
 	JLabel scaleLab;
 
 	Diagram curDiag = null;
-	//Diagram sbnDiag = null; // used for Enclosure excise
-	//Diagram origDiag = null; // do.
-
+	
 	File currentImageDir = null;
 
 	JFrame frame;
@@ -596,6 +594,8 @@ public class DrawFBP extends JFrame
 					return;
 				ButtonTabComponent b = (ButtonTabComponent) jtp
 						.getTabComponentAt(i);
+				if (b == null || b.diag == null)
+					return;
 				Diagram diag = b.diag;
 
 				if (diag == null) {
@@ -1083,14 +1083,14 @@ public class DrawFBP extends JFrame
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
 		diag.tabNum = i;
-		//curDiag = diag;
-		//diag.suggFile = null;
+		curDiag = diag;
+		
 		diag.title = "(untitled)";
 		diag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
 		
-		 
+		frame.repaint(); 
 		
 		//diag.fCParm[Diagram.DIAGRAM] = diag.new FileChooserParm("Diagram", "currentDiagramDir",
 		//		"Specify diagram name in diagram directory", ".drw",
@@ -2297,7 +2297,7 @@ public class DrawFBP extends JFrame
 			if (!(file.exists()))   
 				return file;
 				
-			if (null == (fileString = readFile(file, false))) {    
+			if (null == (fileString = readFile(file, !SAVEAS))) {    
 				MyOptionPane.showMessageDialog(frame, "Unable to read file: "
 						+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 				return null;
@@ -2308,7 +2308,7 @@ public class DrawFBP extends JFrame
 					currentDiagramDir.getAbsolutePath());
 			//saveProperties();
 
-			int j = jtp.getTabCount();
+			//int j = jtp.getTabCount();
 			
 			ButtonTabComponent b = /*(ButtonTabComponent) jtp
 					.getTabComponentAt(0) */ null;			
@@ -2327,6 +2327,8 @@ public class DrawFBP extends JFrame
 			int i = diagramIsOpen(file.getAbsolutePath());
 			if (-1 != i) {
 				b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+				if (b == null || b.diag == null)
+					return null;
 				curDiag = b.diag;
 				curDiag.tabNum = i;
 				jtp.setSelectedIndex(i);
@@ -2337,6 +2339,8 @@ public class DrawFBP extends JFrame
 			boolean found = false;
 			for (i = 0; i < jtp.getTabCount(); i++) {
 				b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+				if (b == null || b.diag == null)
+					return null;
 				Diagram d = b.diag;
 				if (d != null && d.diagFile != null
 						&& d.diagFile.equals(file)) {
@@ -2449,16 +2453,19 @@ public class DrawFBP extends JFrame
 	} // readFile
 	
 	int diagramIsOpen(String s) {
+		int k = jtp.getSelected();
+		
 		int j = jtp.getTabCount();
 		for (int i = 0; i < j; i++) {
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
-
+			if (b == null || b.diag == null)
+				return -1;
 			Diagram d = b.diag;
 			if (d == null)
 				continue;
-			//if (i == tabNum)
-			//	continue;
+			if (i == k)
+				continue;
 			File f = d.diagFile;
 			if (f != null) {
 
@@ -2680,6 +2687,8 @@ public class DrawFBP extends JFrame
 		for (int i = 0; i < j; i++) {
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
+			if (b == null || b.diag == null)
+				return;
 			b.label.setFont(fontf);
 		}
 		jtp.repaint();
@@ -2760,6 +2769,8 @@ public class DrawFBP extends JFrame
 		frame.repaint();
 	}
 
+	final boolean SAVEAS = true;
+	
 	void compileCode() {
 
 		File cFile = null;
@@ -3014,7 +3025,7 @@ public class DrawFBP extends JFrame
 
 			// ss = ss.substring(0, ss.length() - 3); // drop .cs suffix
 
-			String progString = readFile(new File(ss), false);
+			String progString = readFile(new File(ss), !SAVEAS);
 			if (progString == null) {
 				MyOptionPane.showMessageDialog(frame,
 						"Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);
@@ -3775,6 +3786,8 @@ public class DrawFBP extends JFrame
 				for (int i = 0; i < jtp.getTabCount(); i++) {
 					ButtonTabComponent b = (ButtonTabComponent) jtp
 							.getTabComponentAt(i);
+					if (b == null || b.diag == null)
+						return false;
 
 					Diagram d = b.diag;
 					if (d == null)
@@ -4485,6 +4498,8 @@ public class DrawFBP extends JFrame
 			for (int i = 0; i < jtp.getTabCount(); i++) {
 				ButtonTabComponent b = (ButtonTabComponent) jtp
 						.getTabComponentAt(i);
+				if (b == null || b.diag == null)
+					return;
 				Diagram diag = b.diag;
 
 				if (diag != null) {
@@ -4516,6 +4531,8 @@ public class DrawFBP extends JFrame
 				return;
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
+			if (b == null || b.diag == null)
+				return;
 			Diagram diag = b.diag;
 
 			if (diag != null) {
@@ -4536,10 +4553,14 @@ public class DrawFBP extends JFrame
 			} else {
 				jtp.setSelectedIndex(j - 1);
 				b = (ButtonTabComponent) jtp.getTabComponentAt(j - 1);
+				if (b == null || b.diag == null)
+					return;
 				curDiag = b.diag;
 
 				for (int k = i; k < j; k++) {
 					b = (ButtonTabComponent) jtp.getTabComponentAt(k);
+					if (b == null || b.diag == null)
+						return;
 					diag = b.diag;
 					diag.tabNum = k;
 				}
@@ -4573,6 +4594,8 @@ public class DrawFBP extends JFrame
 				// else {
 				ButtonTabComponent b = (ButtonTabComponent) jtp
 						.getTabComponentAt(0);
+				if (b == null || b.diag == null)
+					return;
 
 				JLabel j = (JLabel) b.getComponent(0);
 				String s = j.getText();
@@ -5055,6 +5078,9 @@ public class DrawFBP extends JFrame
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
+			if (b == null || b.diag == null)
+				return;
+			
 			curDiag = b.diag;
 
 			int x = (int) Math.round(e.getX() / scalingFactor);
@@ -5194,6 +5220,8 @@ public class DrawFBP extends JFrame
 				return;
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
+			if (b == null || b.diag == null)
+				return;
 			curDiag = b.diag;
 
 			Side side = null;
@@ -5385,6 +5413,8 @@ public class DrawFBP extends JFrame
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
+			if (b == null || b.diag == null)
+				return;
 			curDiag = b.diag;
 
 			int x = (int) Math.round(e.getX() / scalingFactor);
@@ -5613,6 +5643,8 @@ public class DrawFBP extends JFrame
 				return;
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
+			if (b == null || b.diag == null)
+				return;
 			curDiag = b.diag;
 
 			int x = (int) e.getX();
@@ -5677,78 +5709,32 @@ public class DrawFBP extends JFrame
 								//MyOptionPane.showMessageDialog(null,
 								//		"Subnet OK - subnet diagram assigned",
 								//		MyOptionPane.INFORMATION_MESSAGE);
-								Diagram sbnDiag = getNewDiag(false);   
+								
+								int k = diagramIsOpen(name);
+								if (k != -1) 
+									return;
+								Diagram	sbnDiag = getNewDiag(false);   
 								File df = openAction(name);
 								if (df == null)
 									return;
 
-								//if (df.exists()) {
-									// int res = MyOptionPane.showConfirmDialog(frame,
-									// "File already exists - erase contents?",
-									// "Erase contents?", MyOptionPane.YES_NO_OPTION);
-									// if (res != MyOptionPane.YES_OPTION)
-									
-
-									// Set<Integer> set = diag.arrows.keySet();
-									// for (Integer i : set) {
-									// diag.arrows.remove(i);
-									// }
-									// set = diag.blocks.keySet();
-									// for (Integer i : set) {
-									// diag.blocks.remove(i);
-									// }
-								//}
-								//curDiag.diagFile = df;
+								
 								sbnDiag.diagFile = df;
-								// diag.desc = df.getName();
-								// diag.title = df.getName();
+								sbnDiag.desc = df.getName();
+								sbnDiag.title = df.getName();
+								String subnet = null;
+								if (null == (subnet = readFile(df, !SAVEAS))) {    
+									MyOptionPane.showMessageDialog(frame, "Unable to read file: "
+											+ df.getName(), MyOptionPane.ERROR_MESSAGE);
+									return;
+								}
+								DiagramBuilder.buildDiag(subnet, frame, sbnDiag);
 								//jtp.setSelectedIndex(curDiag.tabNum);
 								jtp.setSelectedIndex(sbnDiag.tabNum);
 								curDiag = sbnDiag;
 								sbnDiag.changed = false;
 								
-								/*
-								no - diagramFileName should be canonical!
-								File file = new File(dir + File.separator + name);
-								MyFileChooser fc = new MyFileChooser(this,file, curDiag.fCParm[NETWORK]);
-								int k = name.indexOf(".drw");
-								name += File.separator + name.substring(0, k)
-										+ curDiag.fCParm[NETWORK].fileExt;
-								fc.setSuggestedName(name);
-
-								int returnVal = fc.showOpenDialog(true); // force saveAs
-
-								File cFile = null;
-								if (returnVal == MyFileChooser.APPROVE_OPTION) {
-									cFile = new File(getSelFile(fc));
-								}
-								// }
-								if (cFile == null)
-									return;
-
-								blockSelForDragging.diagramFileName = cFile.getAbsolutePath();
 								
-								//if (!(cFile.exists()))
-								//	return;
-								//File f = new File(
-								//		blockSelForDragging.diagramFileName);
-								Diagram saveCurDiag = curDiag;
-								int tabno2 = curDiag
-										.diagramIsOpen(cFile.getAbsolutePath());
-								if (tabno2 > -1) {
-									ButtonTabComponent b2 = (ButtonTabComponent) jtp
-											.getTabComponentAt(tabno2);
-									curDiag = b2.diag;
-									// curDiag.tabNum = i;
-									jtp.setSelectedIndex(tabno2);
-
-									repaint();
-									return;
-								}
-								//if (null == openAction(f.getAbsolutePath()))
-								//	curDiag = saveCurDiag;
-								//curDiag.parent = blockSelForDragging;
-								 */
 								  
 							}
 						} else {

@@ -59,30 +59,18 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 			}
 		}
 	}
-
- /*
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		
-		//int tabno =  getSelectedIndex();
-		//setBackgroundAt(tabno, Color.WHITE); 
-		 
+	
+	int getSelected(){
 		int j = getTabCount();
 		// Iterate through the tabs
 		
 		for (int i = 0; i <  j; i++) {
 			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);	
-			
-			if (i == tabno) {
-				setBackgroundAt(i, Color.WHITE);
-				b.selected = true;
-			}
-			else {
-				setBackgroundAt(i, Color.lightGray); 
-				b.selected = false;
-			}
+			if (b.selected)
+				return i;
 		}
-		 
+		return -1;
 	}
-	*/ 
+
+ 
 }

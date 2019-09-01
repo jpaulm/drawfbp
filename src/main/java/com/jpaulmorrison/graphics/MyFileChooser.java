@@ -819,13 +819,15 @@ public class MyFileChooser extends JFrame
 		repaint();
 	}
 
+	final boolean SAVEAS = true;
+	
 	@SuppressWarnings("unchecked")
 	LinkedList<String> buildListFromJSON(String fileName) {
 		int level = 0;
 		File f = new File(fileName);
 		String fileString;
 		LinkedList<String> ll = new LinkedList<String>();
-		if (null == (fileString = driver.readFile(f, false))) {
+		if (null == (fileString = driver.readFile(f, !SAVEAS))) {
 			MyOptionPane.showMessageDialog(driver.frame, "Unable to read file "
 					+ f.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;

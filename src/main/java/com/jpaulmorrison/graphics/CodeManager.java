@@ -575,7 +575,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 					+ "))";
 	}
 	
-	
+	final boolean SAVEAS = true;
 
 	void displayDoc(File file, GenLang gl, String fileString) {
 
@@ -583,7 +583,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		// genLang = gl;
 		
 		if (fileString == null) {
-			fileString = driver.readFile(file, false);
+			fileString = driver.readFile(file, !SAVEAS);
 			if (fileString == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Couldn't read file: " + file.getAbsolutePath(),

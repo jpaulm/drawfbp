@@ -110,9 +110,15 @@ public class Diagram {
 	
 	
 	/* General save function */
+	
+	public File genSave(File file, FileChooserParm fCP, Object contents) { 
+		return genSave(file, fCP, contents, null);  
+	}
+	 
 
-	public File genSave(File file, FileChooserParm fCP, Object contents) {
+	public File genSave(File file, FileChooserParm fCP, Object contents, File suggFile) {  
 
+	//  contents only used for (generated) java files, and images 
 		boolean saveAs = false;
 		File newFile = null;
 		String fileString = null;
@@ -125,19 +131,7 @@ public class Diagram {
 
 		if (saveAs) {
 			
-			//String fn = "";
-			
-			//int i; 
-			//if (!diagFile.getAbsolutePath().endsWith(fCP.fileExt)) {
-			//	suggFile = diagFile.getAbsolutePath();
-			//	i = diagFile.getAbsolutePath().lastIndexOf(".");
-			//	if (i == -1)   
-			//		suggFile += fCP.fileExt;
-			//}
-				
-			//if (suggFile != null)
-			//	fn = suggFile;
-			
+					
 			String s = driver.properties.get(fCP.propertyName);  
 			if (s == null)
 				s = System.getProperty("user.home");
@@ -151,33 +145,16 @@ public class Diagram {
 			}
 						
 			String suggestedFileName = null;
-			
-			if (saveAs && title != null)
-				    suggestedFileName = s + File.separator + title + fCP.fileExt;
-			
-			//File g = diagFile; 
-			MyFileChooser fc = null;
-			//if (fn.equals("") && g != null) {
-			//		fn = g.getName();
-			//}
-			//if (fn != null) {
-				//fn = g.getName();
-			//	fn = fn.replace("\\", "/");
-				
-			//	if (fn.indexOf("/") == -1)
-			//		suggestedFileName = s + File.separator + fn;
-			//	else
-			//		suggestedFileName = fn;
-			//	if (!suggestedFileName.endsWith(fCP.fileExt))
-			//		suggestedFileName += fCP.fileExt;
-				//int i = suggestedFileName.lastIndexOf(".");
-				//suggestedFileName = suggestedFileName.substring(0, i)
-				//		+ fCP.fileExt;
+			if (suggFile != null)
+				suggestedFileName = suggFile.getAbsolutePath();
+			else
+				if (saveAs && title != null)
+					suggestedFileName = s + File.separator + title + fCP.fileExt;
 			
 
-				fc = new MyFileChooser(driver,f, fCP);
+			MyFileChooser fc = new MyFileChooser(driver,f, fCP);
 
-				fc.setSuggestedName(suggestedFileName);
+			fc.setSuggestedName(suggestedFileName);
 			//}
 			//else
 			//	fc = new MyFileChooser(driver,f, fCP);
@@ -189,7 +166,7 @@ public class Diagram {
 			if (returnVal != MyFileChooser.APPROVE_OPTION) {
 				if (parent.isSubnet) {   
 					int answer = MyOptionPane.showConfirmDialog(driver.frame, 
-						 "Subnet will be deleted - are you sure you want to this?", "Save changes",
+						 "Subnet will be deleted - are you sure you want to do this?", "Save changes",
 							MyOptionPane.YES_NO_CANCEL_OPTION);
 					
 					if (answer != MyOptionPane.YES_OPTION)  
@@ -205,10 +182,7 @@ public class Diagram {
 					return null;
 				}
 
-				//if (!s.endsWith(fCP.fileExt)){
-				//	s += fCP.fileExt;
-				//	newFile = new File(s);
-				//}
+				
 				 if (newFile.getParentFile() == null) {
 				 	MyOptionPane.showMessageDialog(driver.frame, "Missing parent file for: "
 				 			+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
@@ -258,7 +232,7 @@ public class Diagram {
 			if (newFile == null)
 				return null;
 
-			if (fCP.fileExt.equals(".drw")
+			if (fCP.fileExt.equals(".drw")  
 					&& -1 != driver.diagramIsOpen(newFile.getAbsolutePath()))
 				return null;
 
@@ -333,41 +307,19 @@ public class Diagram {
 
 			}
 
-			// if (newFile != null){
-			/*
-			if (file.exists()) {
-				if (file.isDirectory()) {
-					MyOptionPane.showMessageDialog(driver.frame,
-							file.getName() + " is a directory",
-							MyOptionPane.WARNING_MESSAGE);
-					return null;
-				}
-				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-						driver.frame,
-						"Overwrite existing file: " + file.getAbsolutePath()
-								+ "?",
-						"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
-					return null;
-			} else {
-				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-						driver.frame,
-						"Create new file: " + file.getAbsolutePath() + "?",
-						"Confirm create", MyOptionPane.YES_NO_OPTION)))
-					return null;
-			}
-			*/
-			// }
-
-			// }
+			
 			driver.writeFile(file, fileString);
 
 			// return diagFile;
 		}
-		if (motherBlock!= null)
+		String w = fCP.name;
+		if (motherBlock!= null) {
 			motherBlock.diagramFileName = file.getPath();
+			w = "Subnet";
+		}
 		
 		//suggFile = null;
-		MyOptionPane.showMessageDialog(driver.frame, fCP.name + " saved: " + file.getName());
+		MyOptionPane.showMessageDialog(driver.frame, w + " saved: " + file.getName());
 		return file;
 	}
 	
@@ -507,37 +459,6 @@ public class Diagram {
 		return fileString;
 	}
 
-
-	
-
-	
-	/*
-	int diagramIsOpen(String s) {
-		int j = driver.jtp.getTabCount();
-		for (int i = 0; i < j; i++) {
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp
-					.getTabComponentAt(i);
-
-			Diagram d = b.diag;
-			if (d == null)
-				continue;
-			if (i == tabNum)
-				continue;
-			File f = d.diagFile;
-			if (f != null) {
-
-				String t = f.getAbsolutePath();
-				if (t.endsWith(s)) {
-					return i;
-				}
-			}
-			if (d.title != null && s.endsWith(d.title))
-				return i;
-		}
-		return -1;
-	}
-	
-	*/
 	
 	String getSuffix(String s) {
 		int i = s.lastIndexOf(File.separator);
@@ -683,7 +604,7 @@ public class Diagram {
 				//arrow.type = "I";
 				sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
-				driver.repaint();
+				driver.frame.repaint();
 				
 				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 						"Enter or change portname", 
@@ -730,7 +651,7 @@ public class Diagram {
 				//arrow.type = "O";
 				sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
-				driver.repaint();
+				driver.frame.repaint();
 				
 				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 						"Enter or change portname",   
@@ -765,25 +686,57 @@ public class Diagram {
 		}
 		
 				
-		driver.repaint();		
+		//driver.repaint();		
  
-		subnetBlock.description = subnetName;  
-		 
-		MyOptionPane.showMessageDialog(null,
-				"Subnet diagram created for " + sbnDiag.title + " - can change name on Save",
-				MyOptionPane.INFORMATION_MESSAGE);
-		// force saveAs
+		subnetBlock.description = subnetName;
 		
-		//File file = sbnDiag.genSave(null, fCParm[DIAGRAM], null);
-		//if (file != null)
-		//	subnetBlock.diagramFileName = file.getAbsolutePath();
-		//subnetBlock.diag.diagFile = new File(subnetBlock.diagramFileName);
+			
+		driver.frame.repaint();
+
+		
 		driver.curDiag.changed = true;
 		sbnDiag.changed = true;
+
+		driver.curDiag = sbnDiag;
+		sbnDiag.motherBlock.isSubnet = true;
+		driver.frame.repaint();
 		
-		driver.curDiag = sbnDiag;      
-		driver.repaint();	
-		
+		File file = null;
+		//String s = buildFile();  within gensave...
+		if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+				driver.frame, "Subnet created - do you want to save it?",
+				"Save subnet?", MyOptionPane.YES_NO_CANCEL_OPTION)) {
+						
+			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null, new File(diagFile.getParent() + "/" + title + ".drw"));
+			
+			if (file == null) {
+				MyOptionPane.showMessageDialog(driver.frame,
+						"Cannot save file - may already be open: " + title + ".drw",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			sbnDiag.changed = false;
+			sbnDiag.diagFile = file;
+			
+			int i = driver.jtp.getSelected();
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);
+			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
+			driver.frame.repaint();
+			
+			//subnetBlock.diagramFileName = file.getAbsolutePath();
+			//sbnDiag.title = diagFile.getAbsolutePath();
+			
+			//MyOptionPane.showMessageDialog(driver.frame,
+			//		"Subnet saved: " + file.getName(),
+			//		MyOptionPane.INFORMATION_MESSAGE);
+		}  else
+			driver.closeTab();
+
+	    subnetBlock.diag.diagFile = new File(subnetBlock.diagramFileName);  
+
+		driver.frame.repaint();
+
 		return;
 	}
 
