@@ -4521,11 +4521,10 @@ public class DrawFBP extends JFrame
 					return;
 			}
 
-			int m = jtp.getSelectedIndex();
 			jtp.removeTabAt(i);
 
 			properties.remove("currentDiagram");			
-			
+			/*
 			int j = jtp.getTabCount();
 			if (j > 0) {
 				//jtp.setSelectedIndex(j - 1);
@@ -4535,16 +4534,13 @@ public class DrawFBP extends JFrame
 				//curDiag = b.diag;
 				
 
-				for (int k = 0; k < j; k++) {
-					b = (ButtonTabComponent) jtp.getTabComponentAt(k);
-					if (k > i) {
-						jtp.setTabComponentAt(k - 1, b);						
-						if (k == m - 1 && b != null && b.diag != null)  
-						 	curDiag = b.diag;						 
-					}						
-				}
+			for (int k = i + 1; k < j; k++) {
+				b = (ButtonTabComponent) jtp.getTabComponentAt(k);					 
+				jtp.setTabComponentAt(k - 1, b);						
+				if (k == jtp.getSelectedIndex() - 1 && b != null && b.diag != null)  
+				 	curDiag = b.diag;					}
 			}
- 
+			*/
 			frame.repaint();
 		}
 	}

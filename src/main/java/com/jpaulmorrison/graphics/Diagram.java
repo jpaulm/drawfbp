@@ -326,50 +326,36 @@ public class Diagram {
 	public boolean askAboutSaving() {
 
 		//String fileString = null;
-		String name;
+		if (diagFile == null)
+			return false;
+		String name = diagFile.getAbsolutePath();
 		boolean res = true;
 		if (changed) {
 
-			if (title == null)
-				name = "(untitled)";
-			else {
-				name = title;
-				if (!name.toLowerCase().endsWith(".drw"))
-					name += ".drw";
-			}
+			//if (title == null)
+			//	name = "(untitled)";
+			//else {
+			//	name = title;
+			//	if (!name.toLowerCase().endsWith(".drw"))
+			//		name += ".drw";
+			//}
 
 			int answer = MyOptionPane.showConfirmDialog(driver.frame, 
-					 "Save changes to " + name + "?", "Save changes",
+					 "Save changes to " + name + "?", "Save changes",  
 					MyOptionPane.YES_NO_CANCEL_OPTION);
 			File file = null;
 			if (answer == MyOptionPane.YES_OPTION) {
 				  
 				// User clicked YES.
-				/*
-				if (diagFile == null) { // choose file
-
-					file = genSave(null, fCParm[DIAGRAM], name);
-					if (file == null) {
-						MyOptionPane.showMessageDialog(driver.frame,
-								"File not saved");
-						res = false;
-					}
-				} else {
-					*/
-				 
-					//file = diagFile;
-					//fileString = buildFile();
-
-					//driver.writeFile(file, fileString);
-					file = genSave(diagFile, fCParm[DIAGRAM], name);
-					if (file == null) {
-						MyOptionPane.showMessageDialog(driver.frame,
-								"File not saved");
-						res = false;
-					}
+				String fileString = buildFile();
+				file = genSave(diagFile, fCParm[DIAGRAM], fileString);   
+				if (file == null) {
+					MyOptionPane.showMessageDialog(driver.frame,
+							"File not saved");
+					res = false;
+				}
 					
-				//}
-				
+								
 
 			}
 			if (answer == MyOptionPane.CANCEL_OPTION)				
@@ -405,6 +391,8 @@ public class Diagram {
 		return res;
 
 	}
+	
+	// Build data string for filing, from blocks and arrows...
 
 	public String buildFile() {
 		String fileString = "<?xml version=\"1.0\"?> \n ";
