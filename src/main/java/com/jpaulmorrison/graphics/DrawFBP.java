@@ -5647,9 +5647,6 @@ public class DrawFBP extends JFrame
 				return;
 			curDiag = b.diag;
 
-			int x = (int) e.getX();
-			int y = (int) e.getY();
-
 			if (curDiag.jpm != null) {
 				curDiag.jpm.setVisible(false);
 				curDiag.jpm = null;
@@ -5657,6 +5654,9 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
+			
+			int x = (int) e.getX();
+			int y = (int) e.getY();
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
@@ -5711,13 +5711,18 @@ public class DrawFBP extends JFrame
 								//		MyOptionPane.INFORMATION_MESSAGE);
 								
 								int k = diagramIsOpen(name);
-								if (k != -1) 
+								if (k != -1) {
+									jtp.setSelectedIndex(k);
 									return;
+								}
+								
+								
 								Diagram	sbnDiag = getNewDiag(false);   
 								File df = openAction(name);
 								if (df == null)
 									return;
 
+								
 								
 								sbnDiag.diagFile = df;
 								sbnDiag.desc = df.getName();
@@ -5733,9 +5738,7 @@ public class DrawFBP extends JFrame
 								jtp.setSelectedIndex(sbnDiag.tabNum);
 								curDiag = sbnDiag;
 								sbnDiag.changed = false;
-								
-								
-								  
+								return;  
 							}
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
