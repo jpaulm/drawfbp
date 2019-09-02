@@ -599,7 +599,7 @@ public class DrawFBP extends JFrame
 				Diagram diag = b.diag;
 
 				if (diag == null) {
-					getNewDiag(false);
+					getNewDiag();
 					// diag = new Diagram(driver);
 					// b.diag = diag;
 				}
@@ -1071,7 +1071,7 @@ public class DrawFBP extends JFrame
 		return menuBar;
 	}
 
-	Diagram getNewDiag(boolean first) {
+	Diagram getNewDiag() {
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
 		diag.area = sa;
@@ -1082,7 +1082,7 @@ public class DrawFBP extends JFrame
 		jtp.setTabComponentAt(i, b);
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
-		diag.tabNum = i;
+		//diag.tabNum = i;
 		curDiag = diag;
 		
 		diag.title = "(untitled)";
@@ -1189,9 +1189,9 @@ public class DrawFBP extends JFrame
 
 			//int i = jtp.getTabCount();
 			//if (i > 1 || curDiag.diagFile != null || curDiag.changed)
-			curDiag = getNewDiag(false);
+			curDiag = getNewDiag();
 
-			jtp.setSelectedIndex(curDiag.tabNum);
+			//jtp.setSelectedIndex(curDiag.tabNum);
 
 			frame.repaint();
 
@@ -2251,143 +2251,122 @@ public class DrawFBP extends JFrame
 		if (fn != null)
 			file = new File(fn);
 		String fname = fn;
-		
-		//if (fn == null) {
-			
-		//}
-		
-			String fileString = null;
-			
-			
-			if (file == null || file.isDirectory()) {		
-				String s = properties.get("currentDiagramDir");
-				if (s == null)
-					s = System.getProperty("user.home");
-				File f2 = new File(s);
-				if (!f2.exists()) {
-					MyOptionPane.showMessageDialog(frame, "Directory '" + s
-							+ "' does not exist - reselect", MyOptionPane.ERROR_MESSAGE);
-					// return null;
-					f2 = new File(".");
-				}
-				
-												
-				MyFileChooser fc = new MyFileChooser(this,f2, diagFCParm);         
 
-				int returnVal = fc.showOpenDialog();
+		// if (fn == null) {
 
-				if (returnVal == MyFileChooser.APPROVE_OPTION)  
-					file = new File(getSelFile(fc));
-				
-				if (file == null)
-					return file; 
-			}
-			
-			if (file.isDirectory()) {
+		// }
+
+		String fileString = null;
+
+		if (file == null || file.isDirectory()) {
+			String s = properties.get("currentDiagramDir");
+			if (s == null)
+				s = System.getProperty("user.home");
+			File f2 = new File(s);
+			if (!f2.exists()) {
 				MyOptionPane.showMessageDialog(frame,
-								"File is directory: " + file.getAbsolutePath());
-				return null;
+						"Directory '" + s + "' does not exist - reselect",
+						MyOptionPane.ERROR_MESSAGE);
+				// return null;
+				f2 = new File(".");
 			}
-			
-			if (!(hasSuffix(file.getName())) && !(file.isDirectory())) {
-				String name = file.getAbsolutePath();
-				name += ".drw";
-				file = new File(name);
-			}
-			if (!(file.exists()))   
+
+			MyFileChooser fc = new MyFileChooser(this, f2, diagFCParm);
+
+			int returnVal = fc.showOpenDialog();
+
+			if (returnVal == MyFileChooser.APPROVE_OPTION)
+				file = new File(getSelFile(fc));
+
+			if (file == null)
 				return file;
-				
-			if (null == (fileString = readFile(file, !SAVEAS))) {    
-				MyOptionPane.showMessageDialog(frame, "Unable to read file: "
-						+ file.getName(), MyOptionPane.ERROR_MESSAGE);
+		}
+
+		if (file.isDirectory()) {
+			MyOptionPane.showMessageDialog(frame,
+					"File is directory: " + file.getAbsolutePath());
+			return null;
+		}
+
+		if (!(hasSuffix(file.getName())) && !(file.isDirectory())) {
+			String name = file.getAbsolutePath();
+			name += ".drw";
+			file = new File(name);
+		}
+		if (!(file.exists()))
+			return file;
+
+		if (null == (fileString = readFile(file, !SAVEAS))) {
+			MyOptionPane.showMessageDialog(frame,
+					"Unable to read file: " + file.getName(),
+					MyOptionPane.ERROR_MESSAGE);
+			return null;
+		}
+
+		File currentDiagramDir = file.getParentFile();
+		saveProp("currentDiagramDir", currentDiagramDir.getAbsolutePath());
+		// saveProperties();
+
+		// int j = jtp.getTabCount();
+
+		ButtonTabComponent b = null;
+
+		int i = diagramIsOpen(file.getAbsolutePath());
+		if (-1 != i) {
+			b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+			if (b == null || b.diag == null)
 				return null;
-			}
-			 
-			File currentDiagramDir = file.getParentFile();
-			saveProp("currentDiagramDir",
-					currentDiagramDir.getAbsolutePath());
-			//saveProperties();
+			curDiag = b.diag;
+			// curDiag.tabNum = i;
+			jtp.setSelectedIndex(i);
+			// diagFile = b.diag.diagFile;
+			return file;
+		}
 
-			//int j = jtp.getTabCount();
-			
-			ButtonTabComponent b = /*(ButtonTabComponent) jtp
-					.getTabComponentAt(0) */ null;			
-			
-			//j = jtp.getTabCount();			
-			//if (j == 1) {
-			//	if (b.diag.title.equals("(untitled")) {
-			//		curDiag = b.diag;
-			//		curDiag.tabNum = 0;
-			//		jtp.setSelectedIndex(0);
-					// diagFile = b.diag.diagFile;
-			//		return file;
-			//	}
-			//}
-
-			int i = diagramIsOpen(file.getAbsolutePath());
-			if (-1 != i) {
-				b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-				if (b == null || b.diag == null)
-					return null;
-				curDiag = b.diag;
-				curDiag.tabNum = i;
+		boolean found = false;
+		for (i = 0; i < jtp.getTabCount(); i++) {
+			b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+			if (b == null || b.diag == null)
+				return null;
+			Diagram d = b.diag;
+			if (d != null && d.diagFile != null && d.diagFile.equals(file)) {
+				curDiag = d;
+				// curDiag.tabNum = i;
 				jtp.setSelectedIndex(i);
-				// diagFile = b.diag.diagFile;
-				return file;
+				found = true;
+				break;
 			}
+		}
 
-			boolean found = false;
-			for (i = 0; i < jtp.getTabCount(); i++) {
-				b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-				if (b == null || b.diag == null)
-					return null;
-				Diagram d = b.diag;
-				if (d != null && d.diagFile != null
-						&& d.diagFile.equals(file)) {
-					curDiag = d;
-					curDiag.tabNum = i;
-					jtp.setSelectedIndex(i);
-					found = true;
-					break;
-				}
-			}
+		if (!found)
+			curDiag = getNewDiag();
+		curDiag.title = file.getName();
+		if (curDiag.title.toLowerCase().endsWith(".drw"))
+			curDiag.title = curDiag.title.substring(0,
+					curDiag.title.length() - 4);
+		// if (diagramIsOpen(file.getAbsolutePath()))
+		// return null;
+		// diagFile = file;
+		curDiag.blocks.clear();
+		curDiag.arrows.clear();
+		curDiag.desc = " ";
 
-			if (!found)
-				curDiag = getNewDiag(false);
-			curDiag.title = file.getName();
-			if (curDiag.title.toLowerCase().endsWith(".drw"))
-				curDiag.title = curDiag.title.substring(0, curDiag.title.length() - 4);
-			//if (diagramIsOpen(file.getAbsolutePath()))
-			//	return null;
-			//diagFile = file;
-			curDiag.blocks.clear();
-			curDiag.arrows.clear();
-			curDiag.desc = " ";
+		DiagramBuilder.buildDiag(fileString, frame, curDiag);
+		// driver.jtp.setRequestFocusEnabled(true);
+		// driver.jtp.requestFocusInWindow();
+		arrowEnd = null; // get rid of black square...
+		arrowRoot = null;
+		currentArrow = null;
+		foundBlock = null;
+		drawToolTip = false;
+		blockSelForDragging = null;
+		if (curDiag.diagLang != null)
+			changeLanguage(curDiag.diagLang);
 
-			DiagramBuilder.buildDiag(fileString, frame, curDiag);
-			// driver.jtp.setRequestFocusEnabled(true);
-			// driver.jtp.requestFocusInWindow();
-			arrowEnd = null;  // get rid of black square... 
-			arrowRoot = null;
-			currentArrow = null;
-			foundBlock = null;
-			drawToolTip = false;
-			blockSelForDragging = null;
-			if (curDiag.diagLang != null)
-				changeLanguage(curDiag.diagLang);
-			//return file;
-
-		 
-
-		//if (file == null) {			
-			// closeTab();			
-			// return null;
-		//}
-		
 		fname = file.getName();
 		curDiag.diagFile = file;
-		
-		jtp.setSelectedIndex(curDiag.tabNum);
+
+		// jtp.setSelectedIndex(curDiag.tabNum);
 		GenLang gl = null;
 
 		String suff = curDiag.getSuffix(fname);
@@ -2412,7 +2391,7 @@ public class DrawFBP extends JFrame
 
 		frame.setTitle("Diagram: " + curDiag.title);
 		// curDiag.tabNum = i;
-		jtp.setSelectedIndex(curDiag.tabNum);
+		// jtp.setSelectedIndex(curDiag.tabNum);
 		frame.repaint();
 		return file;
 	}
@@ -2452,6 +2431,8 @@ public class DrawFBP extends JFrame
 		return fileString;
 	} // readFile
 	
+	// returns index of found tab; -1 if none
+	
 	int diagramIsOpen(String s) {
 		int k = jtp.getSelected();
 		
@@ -2464,8 +2445,8 @@ public class DrawFBP extends JFrame
 			Diagram d = b.diag;
 			if (d == null)
 				continue;
-			if (i == k)
-				continue;
+			//if (i == k) ??????????
+			//	continue;
 			File f = d.diagFile;
 			if (f != null) {
 
@@ -4540,32 +4521,30 @@ public class DrawFBP extends JFrame
 					return;
 			}
 
+			int m = jtp.getSelectedIndex();
 			jtp.removeTabAt(i);
 
-			properties.remove("currentDiagram");
-
+			properties.remove("currentDiagram");			
+			
 			int j = jtp.getTabCount();
-			if (j == 0) {
-				// make one tab with "(untitled)"
-				// Diagram curDiag = new Diagram(driver);
-				//curDiag = getNewDiag(false);
-				//frame.setTitle("Diagram: (untitled)");
-			} else {
-				jtp.setSelectedIndex(j - 1);
-				b = (ButtonTabComponent) jtp.getTabComponentAt(j - 1);
-				if (b == null || b.diag == null)
-					return;
-				curDiag = b.diag;
+			if (j > 0) {
+				//jtp.setSelectedIndex(j - 1);
+				//b = (ButtonTabComponent) jtp.getTabComponentAt(j - 1);
+				//if (b == null || b.diag == null)
+				//	return;
+				//curDiag = b.diag;
+				
 
-				for (int k = i; k < j; k++) {
+				for (int k = 0; k < j; k++) {
 					b = (ButtonTabComponent) jtp.getTabComponentAt(k);
-					if (b == null || b.diag == null)
-						return;
-					diag = b.diag;
-					diag.tabNum = k;
+					if (k > i) {
+						jtp.setTabComponentAt(k - 1, b);						
+						if (k == m - 1 && b != null && b.diag != null)  
+						 	curDiag = b.diag;						 
+					}						
 				}
 			}
-
+ 
 			frame.repaint();
 		}
 	}
@@ -5717,16 +5696,17 @@ public class DrawFBP extends JFrame
 								}
 								
 								
-								Diagram	sbnDiag = getNewDiag(false);   
-								File df = openAction(name);
+								//Diagram	sbnDiag = getNewDiag();   
+								File df = openAction(name);  
 								if (df == null)
 									return;
 
 								
 								
-								sbnDiag.diagFile = df;
-								sbnDiag.desc = df.getName();
-								sbnDiag.title = df.getName();
+								curDiag.diagFile = df;
+								curDiag.desc = df.getName();
+								curDiag.title = df.getName();
+								/*
 								String subnet = null;
 								if (null == (subnet = readFile(df, !SAVEAS))) {    
 									MyOptionPane.showMessageDialog(frame, "Unable to read file: "
@@ -5734,10 +5714,10 @@ public class DrawFBP extends JFrame
 									return;
 								}
 								DiagramBuilder.buildDiag(subnet, frame, sbnDiag);
-								//jtp.setSelectedIndex(curDiag.tabNum);
-								jtp.setSelectedIndex(sbnDiag.tabNum);
-								curDiag = sbnDiag;
-								sbnDiag.changed = false;
+								//jtp.setSelectedIndex(sbnDiag.tabNum);
+								*/
+								//curDiag = sbnDiag;
+								curDiag.changed = false;
 								return;  
 							}
 						} else {

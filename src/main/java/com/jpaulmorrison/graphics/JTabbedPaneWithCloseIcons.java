@@ -23,43 +23,46 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 
 	
 	public void setSelectedIndex(int i) {
-		if (i > -1) {
-			super.setSelectedIndex(i);
-			
-			
-			for (int j = 0; j < getTabCount(); j++) {
-				ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(j);					
-				if (b != null && b.diag != null)  
-					b.selected = false;
-			}
-			
-			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);	
-			
-			if (b != null && b.diag != null) {
+		if (i == -1 || i >= getTabCount())
+			return;
+
+		super.setSelectedIndex(i);
+
+		for (int j = 0; j < getTabCount(); j++) {
+			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(j);
+			if (b != null /* && b.diag != null */ )
+				b.selected = false;
+		}
+
+		ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);
+
+		if (b != null) {
+			b.selected = true;
+			if (b.diag != null) {
 				driver.curDiag = b.diag;
-				driver.frame.setTitle("Diagram: " + driver.curDiag.title);  
-				b.selected = true;
+				driver.frame.setTitle("Diagram: " + driver.curDiag.title);
+
 				File f = driver.curDiag.diagFile;
 				if (f != null) {
-				    File currentDiagramDir = f.getParentFile();
-				    //if (driver.properties == null)
-				    //	driver.properties = new HashMap <String, String>();
-				    if (currentDiagramDir != null)	
-				    	driver.properties
-							.put("currentDiagramDir", currentDiagramDir.getAbsolutePath());  
-				    //saveProperties();  
+					File currentDiagramDir = f.getParentFile();
+					// if (driver.properties == null)
+					// driver.properties = new HashMap <String, String>();
+					if (currentDiagramDir != null)
+						driver.properties.put("currentDiagramDir",
+								currentDiagramDir.getAbsolutePath());
+					// saveProperties();
 				}
 
-				 
-				if (driver.curDiag != null && driver.curDiag.diagLang != null && 
-						driver.curDiag.diagLang != driver.currLang) {
+				if (driver.curDiag != null && driver.curDiag.diagLang != null
+						&& driver.curDiag.diagLang != driver.currLang) {
 					driver.changeLanguage(driver.curDiag.diagLang);
 				}
-				 
+
 			}
 		}
+
 	}
-	
+
 	int getSelected(){
 		int j = getTabCount();
 		// Iterate through the tabs

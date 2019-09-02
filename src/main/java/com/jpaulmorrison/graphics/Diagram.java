@@ -31,7 +31,7 @@ public class Diagram {
 	//String suggFile = null;
 
 	DrawFBP driver = null;
-	int tabNum = -1;
+	//int tabNum = -1;
 	DrawFBP.SelectionArea area; 	
 
 	String title;
@@ -231,16 +231,9 @@ public class Diagram {
 
 			if (newFile == null)
 				return null;
-
-			if (fCP.fileExt.equals(".drw")  
-					&& -1 != driver.diagramIsOpen(newFile.getAbsolutePath()))
-				return null;
-
-									
+											
 			file = newFile;
 			
-			//	diagFile = file;
-
 		}
 				    
 		
@@ -264,6 +257,11 @@ public class Diagram {
 							+ "?",
 					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
 				return null;
+			int i = driver.diagramIsOpen(file.getAbsolutePath());
+			if (i != -1) {
+				driver.jtp.setSelectedIndex(i); 
+				driver.closeTab();
+			}
 		} else {
 			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					driver.frame,
@@ -524,7 +522,7 @@ public class Diagram {
 		//fn = fn.trim();
 		
 		
-		Diagram sbnDiag = driver.getNewDiag(false);  
+		Diagram sbnDiag = driver.getNewDiag();  
 		Diagram origDiag = this;
 		sbnDiag.desc = subnetName; 
 		String w = subnetName;
@@ -664,16 +662,7 @@ public class Diagram {
 				
 				arrow.upStreamPort = ans;
 				
-				//SubnetPort snp = new SubnetPort();
-				//enc.subnetPorts.add(snp);
-				//snp.name = ans;
-				 
-				//snp.y = from.cx; 
-				//snp.eb = eb;  // cross reference from the external port block to the subnet port object
-				
-				//snp.side = DrawFBP.Side.RIGHT;
-				//side, sssensitive?	
-				
+							
 				eb.calcEdges();
 				//arrow.fromId = subnetBlock.id;
 				Point fixed = new Point(arrow.toX, arrow.toY);				
@@ -711,25 +700,20 @@ public class Diagram {
 			
 			if (file == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Cannot save file - may already be open: " + title + ".drw",
+						"Cannot save file: invalid file",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
+			
 			sbnDiag.changed = false;
 			sbnDiag.diagFile = file;
 			
-			int i = driver.jtp.getSelected();
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);
+			int i = driver.jtp.getSelected(); 
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);          
 			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
 			driver.frame.repaint();
 			
-			//subnetBlock.diagramFileName = file.getAbsolutePath();
-			//sbnDiag.title = diagFile.getAbsolutePath();
-			
-			//MyOptionPane.showMessageDialog(driver.frame,
-			//		"Subnet saved: " + file.getName(),
-			//		MyOptionPane.INFORMATION_MESSAGE);
+		
 		}  else
 			driver.closeTab();
 
