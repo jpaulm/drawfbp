@@ -162,9 +162,9 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		for (Block block : diag.blocks.values()) {
 			if (block instanceof ExtPortBlock) {
 				ext = "SubNet";
-				if (block.description == null || block.description.equals("")) {
-					block.description = "IN/OUT";
-					block.description = makeUniqueDesc(block.description);
+				if (block.desc == null || block.desc.equals("")) {
+					block.desc = "IN/OUT";
+					block.desc = makeUniqueDesc(block.desc);
 				}
 			}
 		}
@@ -247,7 +247,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				String t;
 
 				if (block instanceof ProcessBlock) {
-					if (block.description == null) {
+					if (block.desc == null) {
 						MyOptionPane.showMessageDialog(driver.frame,
 								"One or more missing block descriptions", MyOptionPane.WARNING_MESSAGE);
 						error = true;
@@ -282,7 +282,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 							String d = (String) MyOptionPane.showInputDialog(
 									driver.frame,
 									"Multiplex factor for " + "\""
-											+ block.description + "\"",
+											+ block.desc + "\"",
 									"Please enter number");
 							if (d == null || d.equals("")) {
 								block.mpxfactor = "????";
@@ -342,13 +342,13 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 					//	t = t.substring(0, t.length() - 6);
 
 					code += "  " + genComp(s, t, gl.label) + "; \n";
-					code += "  " + initialize + "(\"" + eb.description + "\", " + component + "(\""
+					code += "  " + initialize + "(\"" + eb.desc + "\", " + component + "(\""
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
 					descArray.put(new Integer(block.id), s);
 				}
 
 				if (block instanceof IIPBlock)
-					descArray.put(new Integer(block.id), block.description);
+					descArray.put(new Integer(block.id), block.desc);
 				
 			}
 
@@ -364,7 +364,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				if (to == null) {
 					String s = "Downstream block not found";
 					if (from != null)
-						s += ": from " + from.description;
+						s += ": from " + from.desc;
 					MyOptionPane.showMessageDialog(driver.frame,
 							s, MyOptionPane.ERROR_MESSAGE);
 					//break;
@@ -402,13 +402,13 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 						&& to instanceof ProcessBlock) {
 
 					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
-						String proc = to.description;
+						String proc = to.desc;
 						MyOptionPane.showMessageDialog(driver.frame,
 								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
 					if (checkDupPort(upPort, from)) {
-						String proc = from.description;
+						String proc = from.desc;
 						MyOptionPane.showMessageDialog(driver.frame,
 								"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
@@ -447,7 +447,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 					if (from instanceof IIPBlock
 							&& to instanceof ProcessBlock) {
 					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
-						String proc = to.description;
+						String proc = to.desc;
 						MyOptionPane.showMessageDialog(driver.frame,
 								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
@@ -659,16 +659,16 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
 					if (lang.equals("Java")) {
 						ins++;
-						inData += ", @InPort(\"" + block.description + "\")";
+						inData += ", @InPort(\"" + block.desc + "\")";
 					} else {
-						inData += "[InPort(\"" + block.description + "\")] \n";
+						inData += "[InPort(\"" + block.desc + "\")] \n";
 					}
 				} else if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					if (lang.equals("Java")) {
 						outs++;
-						outData += ", @OutPort(\"" + block.description + "\")";
+						outData += ", @OutPort(\"" + block.desc + "\")";
 					} else {
-						outData += "[OutPort(\"" + block.description
+						outData += "[OutPort(\"" + block.desc
 								+ "\")] \n";
 					}
 				}
@@ -1089,7 +1089,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		String comma = "";
 		for (Block block : diag.blocks.values()) {
 			// String s = "";
-			if (block instanceof ProcessBlock && block.description == null) {
+			if (block instanceof ProcessBlock && block.desc == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"One or more missing block descriptions", MyOptionPane.WARNING_MESSAGE);
 				// error = true;
@@ -1152,7 +1152,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			}
 			// cdescArray.put(new Integer(block.id), block.description);
 			if (block instanceof IIPBlock) {
-				descArray.put(new Integer(block.id), block.description);
+				descArray.put(new Integer(block.id), block.desc);
 			}
 		}
 		data += "\n},\n \"connections\": [\n";
@@ -1164,7 +1164,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Downstream block not found: from " + from.description, MyOptionPane.ERROR_MESSAGE);
+						"Downstream block not found: from " + from.desc, MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
 			if (from == null || to == null || from instanceof FileBlock
@@ -1199,7 +1199,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			dnPort = a2.dspMod;
 			if (from instanceof IIPBlock) {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
-					String proc = to.description;
+					String proc = to.desc;
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
@@ -1268,7 +1268,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				descArray.put(new Integer(block.id), s);
 			}
 			if (block instanceof ProcessBlock) {
-				if (block.description == null) {
+				if (block.desc == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"One or more missing block descriptions", MyOptionPane.ERROR_MESSAGE);
 					error = true;
@@ -1283,7 +1283,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				// cdescArray.put(new Integer(block.id), s);
 			}
 			if (block instanceof IIPBlock) {
-				descArray.put(new Integer(block.id), block.description);
+				descArray.put(new Integer(block.id), block.desc);
 			}
 			cma  = ",\n";
 		}
@@ -1333,13 +1333,13 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			if (from instanceof ProcessBlock
 					&& to instanceof ProcessBlock) {
 				if (!a2.endsAtLine && checkDupPort(dnPort, to)) {
-					String proc = to.description;
+					String proc = to.desc;
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 				if (checkDupPort(upPort, from)) {
-					String proc = from.description;
+					String proc = from.desc;
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
@@ -1362,7 +1362,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			} else
 				if (from instanceof IIPBlock && to instanceof ProcessBlock) {
 				if (checkDupPort(dnPort, to)) {
-					String proc = to.description;
+					String proc = to.desc;
 					MyOptionPane.showMessageDialog(driver.frame,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
@@ -1373,12 +1373,12 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			if (from instanceof ExtPortBlock) {
 				code += cma + fromDesc + " OUT -> " + dnPort + " " + toDesc;
 				code +=  "\n";
-				code += cma + "'" + from.description + "' -> NAME " + fromDesc; 
+				code += cma + "'" + from.desc + "' -> NAME " + fromDesc; 
 
 			} else if (to instanceof ExtPortBlock) {
 				code += cma + fromDesc + " " + upPort + " -> IN " + toDesc;
 				code +=  "\n";
-				code += cma + "'" + to.description + "' -> NAME " + toDesc;
+				code += cma + "'" + to.desc + "' -> NAME " + toDesc;
 			}
 			cma = ", ";
 			code += "\n";
@@ -1446,7 +1446,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			c = b.codeFileName;
 			if (c == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Missing full class name for: " + b.description, MyOptionPane.ERROR_MESSAGE);
+						"Missing full class name for: " + b.desc, MyOptionPane.ERROR_MESSAGE);
 			 
 				error = true;
 			}
@@ -1471,7 +1471,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 	String cleanDesc(Block b) {
 
-		String t = b.description;
+		String t = b.desc;
 
 		// if (!(b instanceof IIPBlock)) {
 
@@ -1533,7 +1533,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				}
 				
 				upPort = (String) MyOptionPane.showInputDialog(driver.frame,
-						"Output port from " + "\"" + from.description + "\"",
+						"Output port from " + "\"" + from.desc + "\"",
 						"Please enter port name");
 				//if (upPort == null)
 				//	return false;
@@ -1564,7 +1564,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				}
 			}
 			dnPort = (String) MyOptionPane.showInputDialog(driver.frame,
-					"Input port to " + "\"" + to.description + "\"",
+					"Input port to " + "\"" + to.desc + "\"",
 					"Please enter port name");
 			//if (dnPort == null)
 			//	return false;

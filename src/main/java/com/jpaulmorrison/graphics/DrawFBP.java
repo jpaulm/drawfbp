@@ -1830,7 +1830,7 @@ public class DrawFBP extends JFrame
 				curDiag.desc = curDiag.desc.trim();
 				curDiag.changed = true;
 				if (curDiag.parent != null)
-					curDiag.parent.description = ans;
+					curDiag.parent.desc = ans;
 			}
 			frame.repaint();
 			return;
@@ -2030,19 +2030,19 @@ public class DrawFBP extends JFrame
 				String d = "Enter description";
 				String ans = (String) MyOptionPane.showInputDialog(frame,
 						"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null, null,
-						block.description);
+						block.desc);
 
 				if (ans == null)
 					return null;
 				else
-					block.description = ans;
+					block.desc = ans;
 			}
 		} else if (!block.editDescription(REG_CREATE))
 			return null;
 
 		if (blkType == Block.Types.IIP_BLOCK) {
 			IIPBlock ib = (IIPBlock) block;
-			block.description = ib.checkNestedChars(block.description);
+			block.desc = ib.checkNestedChars(block.desc);
 		}
 		// }
 		block.calcEdges();
@@ -2445,8 +2445,8 @@ public class DrawFBP extends JFrame
 			Diagram d = b.diag;
 			if (d == null)
 				continue;
-			//if (i == k) ??????????
-			//	continue;
+			if (i == k) 
+				continue;
 			File f = d.diagFile;
 			if (f != null) {
 
@@ -5673,13 +5673,13 @@ public class DrawFBP extends JFrame
 						// subnet, or display options
 
 						if (leftButton && blockSelForDragging.isSubnet) {
-							if (blockSelForDragging.diagramFileName == null) {
+							if (blockSelForDragging.subnetFileName == null) {
 								MyOptionPane.showMessageDialog(null,
 										"No subnet diagram assigned",
 										MyOptionPane.INFORMATION_MESSAGE);
 							} else {
 								
-								String name = blockSelForDragging.diagramFileName;
+								String name = blockSelForDragging.subnetFileName;
 								//String dir = properties.get("currentDiagramDir");
 								//MyOptionPane.showMessageDialog(null,
 								//		"Subnet OK - subnet diagram assigned",

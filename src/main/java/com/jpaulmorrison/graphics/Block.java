@@ -21,10 +21,10 @@ public class Block implements ActionListener {
 	int leftEdge, rgtEdge, topEdge, botEdge;
 	int width, height;
 
-	String description;
+	String desc;
 	//String descMod;  // modified a lot for .fbp notation; slightly, for other notations (" -> _)
 
-	String diagramFileName;
+	String subnetFileName; // name of subnet diagram file 
 
 	String fullClassName; // (file name plus class name) or NoFlo name (now
 							// shifted to codeFileName)
@@ -89,7 +89,7 @@ public class Block implements ActionListener {
 
 		type = Block.Types.PROCESS_BLOCK;
 
-		diagramFileName = null;
+		subnetFileName = null;
 		fullClassName = null;
 		d.maxBlockNo ++;
 		id = d.maxBlockNo;
@@ -162,7 +162,7 @@ public class Block implements ActionListener {
 
 		// showZones(g);
 
-		if (description != null) {
+		if (desc != null) {
 			centreDesc(g);
 		}
 
@@ -171,11 +171,11 @@ public class Block implements ActionListener {
 
 		int y = cy + height / 2 + driver.gFontHeight + driver.gFontHeight / 2;
 
-		if (diagramFileName != null) {
+		if (subnetFileName != null) {
 			Font fontsave = g.getFont();
 			g.setFont(driver.fontf);
 			g.setColor(Color.GRAY);
-			File gFile = new File(diagramFileName);
+			File gFile = new File(subnetFileName);
 			String name = gFile.getName();
 			int x = cx - name.length() * driver.gFontWidth / 2;
 			g.drawString(name, x, y);
@@ -308,7 +308,7 @@ public class Block implements ActionListener {
 		int minX = Integer.MAX_VALUE;
 		int maxX = 0;
 
-		String str[] = description.split("\n");
+		String str[] = desc.split("\n");
 		boolean nonBlankLineFound = false;
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
 
@@ -370,22 +370,22 @@ public class Block implements ActionListener {
 		String s = "<block> <x> " + cx + " </x> <y> " + cy + " </y> <id> " + id
 				+ " </id> <type>" + type + "</type> ";
 		s += "<width>" + width + "</width> <height>" + height + "</height> ";
-		if (description != null) {
+		if (desc != null) {
 			s += "<description>";
-			for (int i = 0; i < description.length(); i++) {
-				if (description.charAt(i) == '<'
-						|| description.charAt(i) == '>') {
+			for (int i = 0; i < desc.length(); i++) {
+				if (desc.charAt(i) == '<'
+						|| desc.charAt(i) == '>') {
 					s += '\\'; // protect the angle bracket
 				}
-				s += description.charAt(i);
+				s += desc.charAt(i);
 			}
 			s += "</description> ";
 		}
 
-		if (diagramFileName != null) {
+		if (subnetFileName != null) {
 			//String relDiagFileName = DrawFBP.makeRelFileName(diagramFileName,
 			//		diag.diagFile.getAbsolutePath());
-			s += "<diagramfilename>" + diagramFileName + "</diagramfilename> ";			
+			s += "<diagramfilename>" + subnetFileName + "</diagramfilename> ";			
 		}
 		if (codeFileName != null) {
 			//String relCodeFileName = DrawFBP.makeRelFileName(codeFileName,
@@ -426,9 +426,9 @@ public class Block implements ActionListener {
 
 		String s;
 		type = item.get("type");
-		description = item.get("description");
-		if (type.equals("I") && description != null && description.length() > 0 && description.substring(0,1).equals("\""))
-			description = description.substring(1,description.length() - 1);				
+		desc = item.get("description");
+		if (type.equals("I") && desc != null && desc.length() > 0 && desc.substring(0,1).equals("\""))
+			desc = desc.substring(1,desc.length() - 1);				
 		
 		if (type == null)
 			type = Block.Types.PROCESS_BLOCK;
@@ -439,9 +439,9 @@ public class Block implements ActionListener {
 			// diag.changeCompLang();
 		//}
 
-		diagramFileName = item.get("diagramfilename");		
+		subnetFileName = item.get("diagramfilename");		
 
-		if (diagramFileName != null)
+		if (subnetFileName != null)
 			isSubnet = true;
 		
 		s = item.get("issubnet");
@@ -482,7 +482,7 @@ public class Block implements ActionListener {
 			visible = false;
 		if (this instanceof Enclosure) {
 			Enclosure ol = (Enclosure) this;
-			ol.description = item.get("description");
+			ol.desc = item.get("description");
 		}
 		calcEdges();
 
@@ -937,10 +937,10 @@ public class Block implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = ROWSIZE;
-		if (description == null)
-			description = " ";
-		String desc = description.replace('\n',  ' '); 
-		JTextField tfd = new JTextField(" " + desc + " ");
+		if (desc == null)
+			desc = " ";
+		String desc2 = desc.replace('\n',  ' '); 
+		JTextField tfd = new JTextField(" " + desc2 + " ");
 		Font ft = tfd.getFont();
 		ft = ft.deriveFont(Font.BOLD);
 		tfd.setFont(ft);
@@ -1359,16 +1359,16 @@ public class Block implements ActionListener {
 
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Edit Item",
-					MyOptionPane.PLAIN_MESSAGE, null, null, description);
+					MyOptionPane.PLAIN_MESSAGE, null, null, desc);
 			if (ans != null/* && ans.length() > 0*/) {
-				description = ans.trim();
+				desc = ans.trim();
 				diag.changed = true;
 				if (this instanceof IIPBlock) {
 					IIPBlock ib = (IIPBlock) this;
-					description = ib.checkNestedChars(description);					
+					desc = ib.checkNestedChars(desc);					
 					//height = driver.gFontHeight + 6;
 					FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
-					String t = description;
+					String t = desc;
 					if (t.length() == 1)
 						t = " " + t + " ";
 					byte[] str = t.getBytes();
@@ -1382,6 +1382,16 @@ public class Block implements ActionListener {
 					}
 					calcEdges();
 				}
+				else
+					if (isSubnet) {
+						int i = driver.diagramIsOpen(fullClassName); 
+						if (i > -1) {
+							ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getComponentAt(i);
+							if (b != null && b.diag != null)
+								b.diag.desc = desc; 
+						}
+							
+					}
 			}
 			driver.frame.update(driver.osg);
 			diag.changed = true;
@@ -1439,11 +1449,11 @@ public class Block implements ActionListener {
 
 		if (s.equals("Display Subnet")) {
 
-			if (diagramFileName == null) {
+			if (subnetFileName == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
 						"Subnet not selected", MyOptionPane.ERROR_MESSAGE);
 			} else {
-				String t = diagramFileName;
+				String t = subnetFileName;
 				File file = null;
 				// if (t.startsWith("/") || t.substring(1, 2).equals(":"))
 				file = new File(t);
@@ -1459,7 +1469,7 @@ public class Block implements ActionListener {
 		if (s.equals("Clear Associated Diagram and/or Class")) {
 
 			codeFileName = null;
-			diagramFileName = null;    
+			subnetFileName = null;    
 			//description = null;   
 			javaComp = null;
 			fullClassName = null;
@@ -1548,9 +1558,9 @@ public class Block implements ActionListener {
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					"Enter or change text", "Edit enclosure label",
 					MyOptionPane.PLAIN_MESSAGE, null, null,
-					/*diag.cEncl.*/description);
+					/*diag.cEncl.*/desc);
 			if (ans != null/* && ans.length() > 0*/) {
-				/*diag.cEncl.*/description = ans;
+				/*diag.cEncl.*/desc = ans;
 			}
 			driver.frame.repaint();
 			diag.changed = true;
@@ -1589,15 +1599,15 @@ public class Block implements ActionListener {
 			
 			// remember no file names need to have been filled in at this point
 			
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,					
-					"Enter subnet diagram name - can be changed later",
-					"Enter subnet name",
-					MyOptionPane.PLAIN_MESSAGE, null, null, null);
-			if (ans == null/* && ans.length() > 0*/)  			 
-				return;		
-            int i = ans.lastIndexOf(".");
-            if (i > -1)
-            	ans = ans.substring(0, i);
+			//String ans = (String) MyOptionPane.showInputDialog(driver.frame,					
+			//		"Enter subnet diagram name - can be changed later",
+			//		"Enter subnet name",
+			//		MyOptionPane.PLAIN_MESSAGE, null, null, null);
+			//if (ans == null/* && ans.length() > 0*/)  			 
+			//	return;		
+            //int i = ans.lastIndexOf(".");
+            //if (i > -1)
+            //	ans = ans.substring(0, i);
             
 			/**
 			 *  Excise will 
@@ -1617,7 +1627,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 */
 			
 			//--------------------
-			diag.excise((Enclosure) this, ans);  
+			diag.excise((Enclosure) this /*, ans  */);  
 			
 			// diag is the diagram being modified, this is the "enclosure" block within it
 			// ans is the name chosen for the (new) subnet
@@ -1671,7 +1681,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		final JTextArea area = new JTextArea(4, 3);
 		JScrollPane pane = new JScrollPane(area);
 		
-		area.setText(description);
+		area.setText(desc);
 		area.setFont(driver.fontg);
 		//JScrollPane pane = new JScrollPane(area);
 		 
@@ -1710,7 +1720,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				return false;
 		//}
 
-		description = area.getText();
+		desc = area.getText();
 
 		diag.changed = true;
 
@@ -1721,15 +1731,15 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 	void assignSubnetDiagram() {
 		//int xa, ya;
-		if (diagramFileName != null) {
+		if (subnetFileName != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver.frame,
-					"Block already associated with diagram (" + diagramFileName
+					"Block already associated with diagram (" + subnetFileName
 							+ ") - change it?",
 					"Change diagram", MyOptionPane.YES_NO_OPTION)) {
 				return;
 			}
-			diagramFileName = null;
+			subnetFileName = null;
 		}
 
 		String t = driver.properties.get("currentDiagramDir");
@@ -1761,7 +1771,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				return;
 			}
 */
-			diagramFileName = dFN;
+			subnetFileName = dFN;
 			dFN = dFN.replace("\\",  "/");
 			
 			//diag = driver.curDiag;
@@ -1775,10 +1785,10 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			
 			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
 					   "Enter or change text", "Edit block description",
-					MyOptionPane.PLAIN_MESSAGE, null, null, description);
+					MyOptionPane.PLAIN_MESSAGE, null, null, desc);
 			
 			if (ans != null)				
-				description = ans;
+				desc = ans;
 			
 			fullClassName = null;
 			javaComp = null;
@@ -1804,7 +1814,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// diag.title = df.getName();
 			//driver.jtp.setSelectedIndex(diag.tabNum);
 			MyOptionPane.showMessageDialog(driver.frame,
-					"Subnet " + dFN + " associated with " + description + " block",
+					"Subnet " + dFN + " associated with " + desc + " block",
 					MyOptionPane.INFORMATION_MESSAGE);
 			/*
 			xa = driver.frame.getWidth() / 2 - 300;

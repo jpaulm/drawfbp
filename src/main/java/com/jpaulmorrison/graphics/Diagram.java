@@ -36,7 +36,7 @@ public class Diagram {
 
 	String title;
 
-	String desc;
+	String desc;  // description at bottom
 
 	GenLang diagLang;
 
@@ -119,6 +119,7 @@ public class Diagram {
 	public File genSave(File file, FileChooserParm fCP, Object contents, File suggFile) {  
 
 	//  contents only used for (generated) java files, and images 
+		
 		boolean saveAs = false;
 		File newFile = null;
 		String fileString = null;
@@ -312,7 +313,7 @@ public class Diagram {
 		}
 		String w = fCP.name;
 		if (motherBlock!= null) {
-			motherBlock.diagramFileName = file.getPath();
+			motherBlock.subnetFileName = file.getPath();
 			w = "Subnet";
 		}
 		
@@ -347,8 +348,8 @@ public class Diagram {
 			if (answer == MyOptionPane.YES_OPTION) {
 				  
 				// User clicked YES.
-				String fileString = buildFile();
-				file = genSave(diagFile, fCParm[DIAGRAM], fileString);   
+				//String fileString = buildFile();
+				file = genSave(diagFile, fCParm[DIAGRAM], null);   
 				if (file == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"File not saved");
@@ -503,7 +504,7 @@ public class Diagram {
 		driver.frame.repaint();
 	}
 
-	void excise(Enclosure enc, String subnetName) {	
+	void excise(Enclosure enc /*, String subnetName */) {	
 		
 		// *this* is the *old* diagram; enc is the Enclosure block within it 
 		//String fn = subnetName;
@@ -512,24 +513,18 @@ public class Diagram {
 		
 		Diagram sbnDiag = driver.getNewDiag();  
 		Diagram origDiag = this;
-		sbnDiag.desc = subnetName; 
-		String w = subnetName;
-		if (!w.endsWith(".drw"))
-			w += ".drw";
-		w = w.substring(0, 1).toUpperCase() + w.substring(1);
+		 
+		String w = "(subnet)";
+		//if (!w.endsWith(".drw"))
+		//	w += ".drw";
+		//w = w.substring(0, 1).toUpperCase() + w.substring(1);
 		sbnDiag.title = w;
-		//sbnDiag.suggFile = fn; 
-		//sbnDiag.title = fn;
+		sbnDiag.desc = w;
 		
-		//if (!(fn.toLowerCase().endsWith(".drw")))
-		//	fn += ".drw";
-		//fn = driver.properties.get("currentDiagramDir") + File.separator + fn;
 		
 		// *driver.sbnDiag* will contain new subnet diagram, which will eventually contain all enclosed blocks and
 		// arrows, plus external ports
 			
-
-		//LinkedList<Arrow> clla = new LinkedList<Arrow>(); // crossing arrows
 
 		sbnDiag.maxBlockNo = origDiag.maxBlockNo + 2; // will be used for
 															// new double-lined
@@ -599,7 +594,7 @@ public class Diagram {
 				if (ans != null) {
 					ans = ans.trim();					
 				}				
-				eb.description = ans;
+				eb.desc = ans;
 				
 				arrow.downStreamPort = ans;
 				
@@ -646,7 +641,7 @@ public class Diagram {
 				if (ans != null) {
 					ans = ans.trim();					
 				}
-				eb.description = ans;
+				eb.desc = ans;
 				
 				arrow.upStreamPort = ans;
 				
@@ -665,7 +660,7 @@ public class Diagram {
 				
 		//driver.repaint();		
  
-		subnetBlock.description = subnetName;
+		subnetBlock.desc = w;
 		
 			
 		driver.frame.repaint();
@@ -705,7 +700,7 @@ public class Diagram {
 		}  else
 			driver.closeTab();
 
-	    subnetBlock.diag.diagFile = new File(subnetBlock.diagramFileName);  
+	    subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
 
 		driver.frame.repaint();
 
@@ -900,7 +895,7 @@ public class Diagram {
 
 		// block.description = enc.description;
 		//subnetBlock.description = enc.diag.desc;
-		enc.description = "Enclosure can be deleted";
+		enc.desc = "Enclosure can be deleted";
 
 		/*
 		 * In this part of the code, we have two Diagram objects (driver.sbnDiag and driver.origDiag), each with

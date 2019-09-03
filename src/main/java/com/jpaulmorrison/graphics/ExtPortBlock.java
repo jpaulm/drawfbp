@@ -35,9 +35,9 @@ public class ExtPortBlock extends Block {
 			drawIn(g, c, width / 2);			
 		}
 
-		if (description != null) {
+		if (desc != null) {
 			g.setColor(Color.RED);
-			g.drawString(description, cx - description.length()
+			g.drawString(desc, cx - desc.length()
 					* driver.gFontWidth / 2, cy + 24);
 			g.setColor(Color.BLACK);
 		}

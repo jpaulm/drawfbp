@@ -20,7 +20,7 @@ public class LegendBlock extends Block {
 			return;
 		}
 		
-		if (description != null && !(description.trim().equals(""))) {
+		if (desc != null && !(desc.trim().equals(""))) {
 			g.setColor(Color.BLACK);
 			// g.setColor(Color.GRAY);
 			//drawDesc(g);

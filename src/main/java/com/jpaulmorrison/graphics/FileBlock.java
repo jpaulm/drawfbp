@@ -44,7 +44,7 @@ public class FileBlock extends Block {
 		y = cy - height + height / 2 - 8;
 		x = cx - width / 2;
 		g.drawArc(x, y, width, 20, 190, 160);	
-		if (description != null) {
+		if (desc != null) {
 			centreDesc(g);
 		}
 		//showZones(g);

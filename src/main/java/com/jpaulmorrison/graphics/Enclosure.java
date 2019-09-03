@@ -43,7 +43,7 @@ public class Enclosure extends Block {
 		s = item.get("id").trim();
 		id = Integer.parseInt(s);
         type = item.get("type");
-        description = item.get("description");
+        desc = item.get("description");
 		s = item.get("height").trim();
 		height = Integer.parseInt(s);
 		s = item.get("width").trim();
@@ -111,9 +111,9 @@ public class Enclosure extends Block {
 		  g.fillRect(x1 + 1, y - hh + 1, x2 - x1 - 2, (int) (1.5 * hh) - 2);
 		  g.setColor(col);
 		}
-		if (description != null) {
-			x = (x1 + x2 - description.length() * driver.gFontWidth) / 2;
-			g.drawString(description, x, y);
+		if (desc != null) {
+			x = (x1 + x2 - desc.length() * driver.gFontWidth) / 2;
+			g.drawString(desc, x, y);
 		}
 
 		// following logic draws diagonal arrow at selected corner

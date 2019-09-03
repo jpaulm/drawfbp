@@ -28,9 +28,9 @@ public class IIPBlock extends Block {
 		Font fontsave = g.getFont();
 		g.setFont(driver.fontf);
 		g.setColor(Color.GRAY);
-		if (description != null) {
+		if (desc != null) {
 			FontMetrics metrics = g.getFontMetrics(g.getFont());			
-			String t = description;
+			String t = desc;
 			if (t.length() < 2)
 				t = " " + t;
 			byte[] str = t.getBytes();
@@ -44,9 +44,9 @@ public class IIPBlock extends Block {
 		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width + 4 - 1,
 				height - 1, 6, 6);
 		g.setColor(Color.GRAY);
-		if (description != null) {
+		if (desc != null) {
 			g.setColor(Color.GRAY);
-			g.drawString(description, cx - width / 2 + 4, cy + 4);
+			g.drawString(desc, cx - width / 2 + 4, cy + 4);
 		}
 		// showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy + height / 2);

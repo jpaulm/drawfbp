@@ -61,58 +61,55 @@ import javax.swing.plaf.basic.BasicButtonUI;
         //public void updateUI() {
         //}
 
-        //Paint the cross - goes red if moused over
+    //Paint the cross - goes red if moused over
         
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
-            //System.out.println("BTC");
-            //shift the image for pressed buttons
-            //g2 = null; 
-           
-			
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D) g;
+		// System.out.println("BTC");
+		// shift the image for pressed buttons
+		// g2 = null;
 
-			// ButtonTabComponent b *contains* JLabel followed by TabButton, 
-			//   which extends JButton  
-			
-			
-            if (getModel().isPressed()) {
-                g2.translate(1, 1);
-            }
-            
-          
-                g2.setStroke(new BasicStroke(2));
-                g2.setColor(Color.BLACK);
-                if (getModel().isRollover()) {
-                    //g2.setColor(Color.MAGENTA);
-                    g2.setColor(Color.RED);
-                }
-                //int delta = 6;
-                int delta = 4;
-                g2.drawLine(delta, delta, getWidth() - delta - 1, getHeight() - delta - 1);
-                g2.drawLine(getWidth() - delta - 1, delta, delta, getHeight() - delta - 1);
-                 
-                //g2.dispose();
-            }
-             
+		// ButtonTabComponent b *contains* JLabel followed by TabButton,
+		// which extends JButton
+
+		if (getModel().isPressed()) {
+			g2.translate(1, 1);
+		}
+
+		g2.setStroke(new BasicStroke(2));
+		g2.setColor(Color.BLACK);
+		if (getModel().isRollover()) {
+			// g2.setColor(Color.MAGENTA);
+			g2.setColor(Color.RED);
+		}
+		// int delta = 6;
+		int delta = 4;
+		g2.drawLine(delta, delta, getWidth() - delta - 1,
+				getHeight() - delta - 1);
+		g2.drawLine(getWidth() - delta - 1, delta, delta,
+				getHeight() - delta - 1);
+
+		g2.setColor(Color.BLACK);
+	}
             
          
-       // private final static MouseListener buttonMouseListener = new MouseAdapter() {
-            public void mouseEntered(MouseEvent e) {
-                Component component = e.getComponent();
-                if (component instanceof AbstractButton) {
-                    AbstractButton button = (AbstractButton) component;
-                    button.setBorderPainted(true);
-                }
-            }
-     
-            public void mouseExited(MouseEvent e) {
-                Component component = e.getComponent();
-                if (component instanceof AbstractButton) {
-                    AbstractButton button = (AbstractButton) component;
-                    button.setBorderPainted(false);
-                }
-            }
-       // };
+	// private final static MouseListener buttonMouseListener = new MouseAdapter() {
+	public void mouseEntered(MouseEvent e) {
+		Component component = e.getComponent();
+		if (component instanceof AbstractButton) {
+			AbstractButton button = (AbstractButton) component;
+			button.setBorderPainted(true);
+		}
+	}
+
+	public void mouseExited(MouseEvent e) {
+		Component component = e.getComponent();
+		if (component instanceof AbstractButton) {
+			AbstractButton button = (AbstractButton) component;
+			button.setBorderPainted(false);
+		}
+	}
+	// };
     }
  

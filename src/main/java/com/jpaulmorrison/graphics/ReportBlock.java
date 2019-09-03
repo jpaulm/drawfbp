@@ -79,7 +79,7 @@ public class ReportBlock extends Block {
 			pty[i] -= 1;
 		g.fillPolygon(ptx, pty, 11);
 
-		if (description != null) {
+		if (desc != null) {
 			centreDesc(g);
 		}
 

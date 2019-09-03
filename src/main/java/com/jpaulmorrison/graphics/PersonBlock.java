@@ -38,7 +38,7 @@ import java.awt.Graphics;
 			//showZones(g);
 			calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
 					cy - height / 2, cy + height / 2);
-			if (description != null) {
+			if (desc != null) {
 				centreDesc(g);
 			}
 			}
