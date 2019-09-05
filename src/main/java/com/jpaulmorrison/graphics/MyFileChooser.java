@@ -1402,7 +1402,7 @@ public class MyFileChooser extends JFrame
 					return;
 				}
 			} else {
-				if (-1 != driver.diagramIsOpen(s)) {
+				if (-1 != driver.getFileTabNo(s)) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"File '" + f.getName()
 									+ "' cannot be deleted while open",

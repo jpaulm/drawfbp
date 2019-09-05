@@ -83,7 +83,7 @@ public class Diagram {
 	public static int FBP = 9;    
 	
 	FileChooserParm[] fCParm;
-	
+	int tabNum;   // index in driver.jtp
 	
 	CodeManager cm = null;
 	Block motherBlock = null;
@@ -258,7 +258,7 @@ public class Diagram {
 							+ "?",
 					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
 				return null;
-			int i = driver.diagramIsOpen(file.getAbsolutePath());
+			int i = driver.getFileTabNo(file.getAbsolutePath());
 			if (i != -1) {
 				driver.jtp.setSelectedIndex(i); 
 				driver.closeTab();
@@ -319,6 +319,7 @@ public class Diagram {
 		
 		//suggFile = null;
 		MyOptionPane.showMessageDialog(driver.frame, w + " saved: " + file.getName());
+		changed = false;
 		return file;
 	}
 	
@@ -326,10 +327,13 @@ public class Diagram {
 	// returns false if CANCEL option chosen
 	public boolean askAboutSaving() {
 
+		String name = null;
 		//String fileString = null;
-		if (diagFile == null)
-			return false;
-		String name = diagFile.getAbsolutePath();
+		if (diagFile != null)			
+			name = diagFile.getAbsolutePath();
+		else 
+			name = "(untitled)";		 
+			
 		boolean res = true;
 		if (changed) {
 
@@ -348,14 +352,15 @@ public class Diagram {
 			if (answer == MyOptionPane.YES_OPTION) {
 				  
 				// User clicked YES.
-				//String fileString = buildFile();
+				
 				file = genSave(diagFile, fCParm[DIAGRAM], null);   
 				if (file == null) {
 					MyOptionPane.showMessageDialog(driver.frame,
 							"File not saved");
 					res = false;
 				}
-					
+				else
+					changed = false;
 								
 
 			}
@@ -538,7 +543,7 @@ public class Diagram {
 		
 		for (Block blk : enc.llb) {
 			
-			changed = true;
+			//changed = true;
 			Integer bid = new Integer(blk.id);
 			blocks.remove(bid);
 			sbnDiag.maxBlockNo = Math.max(blk.id, sbnDiag.maxBlockNo);
@@ -561,7 +566,7 @@ public class Diagram {
 													// diagram
 			arrow.diag = sbnDiag;
 			driver.selArrow = arrow;
-			changed = true;
+			//changed = true;
 		}
 				
 		// now go through remaining arrows, creating appropriate ExtPortBlock's
@@ -638,9 +643,9 @@ public class Diagram {
 						"Enter or change portname",   
 						"Enter external output port name",
 						MyOptionPane.PLAIN_MESSAGE, null, null, null);
-				if (ans != null) {
+				if (ans != null) 
 					ans = ans.trim();					
-				}
+				 
 				eb.desc = ans;
 				
 				arrow.upStreamPort = ans;
@@ -666,7 +671,7 @@ public class Diagram {
 		driver.frame.repaint();
 
 		
-		driver.curDiag.changed = true;
+		// driver.curDiag.changed = true;
 		sbnDiag.changed = true;
 
 		driver.curDiag = sbnDiag;
@@ -674,33 +679,53 @@ public class Diagram {
 		driver.frame.repaint();
 		
 		File file = null;
+		driver.jtp.setSelectedIndex(sbnDiag.tabNum);
+		
 		//String s = buildFile();  within gensave...
-		if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-				driver.frame, "Subnet created - do you want to save it?",
+		if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(    
+				driver.frame, "Subnet created - please assign a name and save",
 				"Save subnet?", MyOptionPane.YES_NO_CANCEL_OPTION)) {
 						
-			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null, new File(diagFile.getParent() + "/" + title + ".drw"));
+			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null /*, new File(diagFile.getParent() + "/" + title + ".drw") */);
 			
 			if (file == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
-						"Cannot save file: invalid file",
+						"File not saved - exiting excise",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
+			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+					"Give subnet diagram a description",   
+					"Enter subnet description",
+					MyOptionPane.PLAIN_MESSAGE, null, null, null);
+			if (ans != null)  
+				ans = ans.trim();					
+			 
+			sbnDiag.desc = ans; 
+			
 			sbnDiag.changed = false;
 			sbnDiag.diagFile = file;
+			origDiag.changed = true;   
 			
-			int i = driver.jtp.getSelected(); 
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);          
+			//int i = driver.jtp.getSelected(); 
+			
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(sbnDiag.tabNum);          
 			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
 			driver.frame.repaint();
 			
 		
-		}  else
-			driver.closeTab();
-
-	    subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
+		}  else {
+			sbnDiag.changed = false; 
+			driver.closeTab();   // close selected tab
+		}
+		if (sbnDiag.motherBlock!= null)  {
+			sbnDiag.motherBlock.subnetFileName = sbnDiag.diagFile.getAbsolutePath();
+			sbnDiag.motherBlock.desc = sbnDiag.desc;
+		}
+		
+		if (subnetBlock.subnetFileName != null)
+			subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
 
 		driver.frame.repaint();
 
@@ -886,7 +911,7 @@ public class Diagram {
 		origDiag.maxBlockNo++;
 		subnetBlock.id = origDiag.maxBlockNo;
 		origDiag.blocks.put(new Integer(subnetBlock.id), subnetBlock);
-		changed = true;
+		//changed = true;
 		driver.selBlock = subnetBlock;
 		//subnetBlock.diagramFileName = enc.diag.desc;
 		subnetBlock.isSubnet = true;

@@ -1082,7 +1082,7 @@ public class DrawFBP extends JFrame
 		jtp.setTabComponentAt(i, b);
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
-		//diag.tabNum = i;
+		diag.tabNum = i;
 		curDiag = diag;
 		
 		diag.title = "(untitled)";
@@ -2311,7 +2311,7 @@ public class DrawFBP extends JFrame
 
 		ButtonTabComponent b = null;
 
-		int i = diagramIsOpen(file.getAbsolutePath());
+		int i = getFileTabNo(file.getAbsolutePath());
 		if (-1 != i) {
 			b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
@@ -2433,7 +2433,7 @@ public class DrawFBP extends JFrame
 	
 	// returns index of found tab; -1 if none
 	
-	int diagramIsOpen(String s) {
+	int getFileTabNo(String fileName) {
 		int k = jtp.getSelected();
 		
 		int j = jtp.getTabCount();
@@ -2451,11 +2451,11 @@ public class DrawFBP extends JFrame
 			if (f != null) {
 
 				String t = f.getAbsolutePath();
-				if (t.endsWith(s)) {
+				if (t.endsWith(fileName)) {
 					return i;
 				}
 			}
-			if (d.title != null && s.endsWith(d.title))
+			if (d.title != null && fileName.endsWith(d.title))
 				return i;
 		}
 		return -1;
@@ -5685,7 +5685,7 @@ public class DrawFBP extends JFrame
 								//		"Subnet OK - subnet diagram assigned",
 								//		MyOptionPane.INFORMATION_MESSAGE);
 								
-								int k = diagramIsOpen(name);
+								int k = getFileTabNo(name);
 								if (k != -1) {
 									jtp.setSelectedIndex(k);
 									return;

@@ -1384,7 +1384,7 @@ public class Block implements ActionListener {
 				}
 				else
 					if (isSubnet) {
-						int i = driver.diagramIsOpen(fullClassName); 
+						int i = driver.getFileTabNo(fullClassName); 
 						if (i > -1) {
 							ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getComponentAt(i);
 							if (b != null && b.diag != null)
@@ -1639,7 +1639,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			//driver.curDiag.desc = ans; 
 			//driver.curDiag.title = ans;
 			
-			driver.curDiag.changed = true;
+			//driver.curDiag.changed = true;
 			driver.frame.repaint();
 			return;
 
@@ -1759,18 +1759,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			driver.curDiag.changed = true;
 			//driver.curDiag = driver.getNewDiag(false);
 
-			/*
-			int i = diag.diagramIsOpen(dFN);
-			if (i > -1) {
-				ButtonTabComponent b = (ButtonTabComponent) driver.jtp
-						.getTabComponentAt(i);
-				driver.curDiag = b.diag;
-				// curDiag.tabNum = i;
-				driver.jtp.setSelectedIndex(i);
-				driver.frame.repaint();
-				return;
-			}
-*/
+			
 			subnetFileName = dFN;
 			dFN = dFN.replace("\\",  "/");
 			
@@ -1793,41 +1782,14 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			fullClassName = null;
 			javaComp = null;
 			
-			//if (df.exists()) {
-				// int res = MyOptionPane.showConfirmDialog(driver.frame,
-				// "File already exists - erase contents?",
-				// "Erase contents?", MyOptionPane.YES_NO_OPTION);
-				// if (res != MyOptionPane.YES_OPTION)
-			//	return;
-
-				// Set<Integer> set = diag.arrows.keySet();
-				// for (Integer i : set) {
-				// diag.arrows.remove(i);
-				// }
-				// set = diag.blocks.keySet();
-				// for (Integer i : set) {
-				// diag.blocks.remove(i);
-				// }
-			//}
-			//diag.diagFile = df;
-			// diag.desc = df.getName();
-			// diag.title = df.getName();
-			//driver.jtp.setSelectedIndex(diag.tabNum);
+			
 			MyOptionPane.showMessageDialog(driver.frame,
 					"Subnet " + dFN + " associated with " + desc + " block",
 					MyOptionPane.INFORMATION_MESSAGE);
-			/*
-			xa = driver.frame.getWidth() / 2 - 300;
-			ya = driver.frame.getHeight() / 2;
-			driver.createBlock(Block.Types.EXTPORT_IN_BLOCK, xa, ya);
-			xa = driver.frame.getWidth() / 2 + 100;
-			ya = driver.frame.getHeight() / 2;
-			driver.createBlock(Block.Types.EXTPORT_OUT_BLOCK, xa, ya);
-			*/
+			
 		}
 
-		//diag.parent = this;   
-		//diag.changed = true;
+		
 
 		driver.frame.repaint();
 	}
