@@ -324,7 +324,7 @@ public class DrawFBP extends JFrame
 
 		createAndShowGUI();
 		} catch (NullPointerException e)
-		{
+		{   e.printStackTrace();
 			saveProperties();
 		}
 	}
