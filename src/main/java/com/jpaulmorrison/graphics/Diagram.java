@@ -261,6 +261,9 @@ public class Diagram {
 			int i = driver.getFileTabNo(file.getAbsolutePath());
 			if (i != -1) {
 				driver.jtp.setSelectedIndex(i); 
+				ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);
+				Diagram d = b.diag;
+				d.tabNum = i;
 				driver.closeTab();
 			}
 		} else {
@@ -679,14 +682,14 @@ public class Diagram {
 		driver.frame.repaint();
 		
 		File file = null;
-		driver.jtp.setSelectedIndex(sbnDiag.tabNum);
+		driver.jtp.setSelectedIndex(sbnDiag.tabNum);  
 		
 		//String s = buildFile();  within gensave...
 		if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(    
-				driver.frame, "Subnet created - please assign a name and save",
-				"Save subnet?", MyOptionPane.YES_NO_CANCEL_OPTION)) {
+				driver.frame, "Subnet created - please assign .drw file and save",
+				"Name and save subnet?", MyOptionPane.YES_NO_CANCEL_OPTION)) {
 						
-			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null /*, new File(diagFile.getParent() + "/" + title + ".drw") */);
+			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null);
 			
 			if (file == null) {
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -695,14 +698,14 @@ public class Diagram {
 				return;
 			}
 			
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
-					"Give subnet diagram a description",   
-					"Enter subnet description",
-					MyOptionPane.PLAIN_MESSAGE, null, null, null);
-			if (ans != null)  
-				ans = ans.trim();					
-			 
-			sbnDiag.desc = ans; 
+
+			MyOptionPane.showMessageDialog(driver.frame, "Give subnet diagram a description",    
+			 	//"Enter subnet description",
+			 	MyOptionPane.PLAIN_MESSAGE);
+			
+			sbnDiag.motherBlock.editDescription(DrawFBP.MODIFY);
+			
+			sbnDiag.desc = sbnDiag.motherBlock.desc.replace("\n", " "); 			
 			
 			sbnDiag.changed = false;
 			sbnDiag.diagFile = file;
@@ -710,22 +713,23 @@ public class Diagram {
 			
 			//int i = driver.jtp.getSelected(); 
 			
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(sbnDiag.tabNum);          
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(sbnDiag.tabNum);      
 			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
 			driver.frame.repaint();
 			
 		
+		
+			if (sbnDiag.motherBlock!= null)  {
+				sbnDiag.motherBlock.subnetFileName = sbnDiag.diagFile.getAbsolutePath();
+				//sbnDiag.motherBlock.desc = sbnDiag.desc;
+			}
+		
+			if (subnetBlock.subnetFileName != null)
+				subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
 		}  else {
 			sbnDiag.changed = false; 
 			driver.closeTab();   // close selected tab
 		}
-		if (sbnDiag.motherBlock!= null)  {
-			sbnDiag.motherBlock.subnetFileName = sbnDiag.diagFile.getAbsolutePath();
-			sbnDiag.motherBlock.desc = sbnDiag.desc;
-		}
-		
-		if (subnetBlock.subnetFileName != null)
-			subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
 
 		driver.frame.repaint();
 

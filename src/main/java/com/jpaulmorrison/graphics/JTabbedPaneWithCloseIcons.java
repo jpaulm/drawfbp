@@ -28,16 +28,17 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 
 		super.setSelectedIndex(i);
 
+		/*
 		for (int j = 0; j < getTabCount(); j++) {
 			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(j);
-			if (b != null /* && b.diag != null */ )
+			if (b != null  )
 				b.selected = false;
 		}
-
+		*/
 		ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);
 
 		if (b != null) {
-			b.selected = true;
+			//b.selected = true;
 			if (b.diag != null) {
 				driver.curDiag = b.diag;
 				driver.frame.setTitle("Diagram: " + driver.curDiag.title);
@@ -63,6 +64,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 
 	}
 
+	/*
 	int getSelected(){
 		int j = getTabCount();
 		// Iterate through the tabs
@@ -74,6 +76,6 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		}
 		return -1;
 	}
-
+*/
  
 }

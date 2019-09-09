@@ -46,7 +46,7 @@ public class ButtonTabComponent extends JPanel {
     DrawFBP driver;
     Diagram diag;
     JLabel label = null;
-    boolean selected;
+    //boolean selected;
  
     public ButtonTabComponent(final JTabbedPane jtp, DrawFBP driver) {
         //unset default FlowLayout' gaps
@@ -73,7 +73,9 @@ public class ButtonTabComponent extends JPanel {
     }
     
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);      
+        super.paintComponent(g);   
+        Component c = driver.jtp.getSelectedComponent();           component c is area
+        Boolean selected = (c == this);  xxxxxxxxxxxxxxxxx
         setBackground(selected ? Color.WHITE : Color.lightGray); 
         label.setFont(driver.fontf);
         String s = "(untitled)";

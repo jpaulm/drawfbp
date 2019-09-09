@@ -2434,7 +2434,7 @@ public class DrawFBP extends JFrame
 	// returns index of found tab; -1 if none
 	
 	int getFileTabNo(String fileName) {
-		int k = jtp.getSelected();
+		int k = jtp.getSelectedIndex();
 		
 		int j = jtp.getTabCount();
 		for (int i = 0; i < j; i++) {
@@ -4507,8 +4507,12 @@ public class DrawFBP extends JFrame
 
 		public void actionPerformed(ActionEvent e) {
 
+			int j = jtp.getTabCount();
+			if (j < 1)
+				return;
+
 			int i = jtp.getSelectedIndex();
-			if (i == -1)
+			if (i == -1) // don't know which to delete...
 				return;
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
@@ -4521,26 +4525,28 @@ public class DrawFBP extends JFrame
 					return;
 			}
 
-			jtp.removeTabAt(i);
-
-			properties.remove("currentDiagram");			
-			/*
-			int j = jtp.getTabCount();
-			if (j > 0) {
-				//jtp.setSelectedIndex(j - 1);
-				//b = (ButtonTabComponent) jtp.getTabComponentAt(j - 1);
-				//if (b == null || b.diag == null)
-				//	return;
-				//curDiag = b.diag;
-				
-
-			for (int k = i + 1; k < j; k++) {
-				b = (ButtonTabComponent) jtp.getTabComponentAt(k);					 
-				jtp.setTabComponentAt(k - 1, b);						
-				if (k == jtp.getSelectedIndex() - 1 && b != null && b.diag != null)  
-				 	curDiag = b.diag;					}
+			int n = i + 1;
+			while (n < j){
+				b = (ButtonTabComponent) jtp.getTabComponentAt(n);
+				jtp.setTabComponentAt(n - 1, b);
+				jtp.setSelectedIndex(n - 1);
+				if (b != null && b.diag != null) {
+					//curDiag = b.diag;
+					b.diag.tabNum = n - 1;
+				}
+				n++;
 			}
-			*/
+
+			
+			jtp.removeTabAt(i);
+			//b = (ButtonTabComponent) jtp.getTabComponentAt(i - 1);
+			//if (b != null && b.diag != null) {
+			//	curDiag = b.diag;
+				//b.diag.tabNum = n - 1;
+			//}
+			curDiag = null;
+			properties.remove("currentDiagram");
+
 			frame.repaint();
 		}
 	}
@@ -4880,7 +4886,13 @@ public class DrawFBP extends JFrame
 			// Graphics2D g2d = (Graphics2D) g;
 
 			for (Block block : diag.blocks.values()) {
-				block.draw(osg);
+				if (!(block instanceof Enclosure))
+					block.draw(osg);
+			}
+
+			for (Block block : diag.blocks.values()) {
+				if (block instanceof Enclosure)
+					block.draw(osg);
 			}
 
 			for (Arrow arrow : diag.arrows.values()) {

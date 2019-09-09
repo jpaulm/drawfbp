@@ -121,6 +121,7 @@ public class Block implements ActionListener {
 
 		g.setColor(Color.BLACK);
 		g.drawRoundRect(tlx, tly, width, height, 6, 6);
+		
 		if (this == driver.selBlock)
 			g.setColor(DrawFBP.ly); // light yellow
 		else  

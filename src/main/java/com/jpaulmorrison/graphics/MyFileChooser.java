@@ -203,7 +203,7 @@ public class MyFileChooser extends JFrame
 				String w = driver.curDiag.title;
 				if (!(w.endsWith(".drw")))
 					w += ".drw";
-				fCP.prompt = "Specify file name for code - for diagram: " + w;
+ 			fCP.prompt = "Specify file name for code - for diagram: " + w;
 			}
 			 
 			dialog.setTitle(fCP.prompt);
