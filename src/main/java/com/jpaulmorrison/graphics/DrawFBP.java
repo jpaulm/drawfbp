@@ -2436,19 +2436,19 @@ public class DrawFBP extends JFrame
 	// returns index of found tab; -1 if none
 	
 	int getFileTabNo(String fileName) {
-		int k = jtp.getSelectedIndex();
+		//int k = jtp.getSelectedIndex();
 		
 		int j = jtp.getTabCount();
 		for (int i = 0; i < j; i++) {
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
-			if (b == null || b.diag == null)
-				return -1;
+			if (b == null)
+				continue;
 			Diagram d = b.diag;
 			if (d == null)
 				continue;
-			if (i == k) 
-				continue;
+			//if (i == k) 
+			//	continue;
 			File f = d.diagFile;
 			if (f != null) {
 

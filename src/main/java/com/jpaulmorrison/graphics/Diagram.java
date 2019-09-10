@@ -711,6 +711,7 @@ public class Diagram {
 			origDiag.changed = true;   
 			
 			//int i = driver.jtp.getSelected(); 
+		
 			int i = driver.getFileTabNo(sbnDiag.diagFile.getAbsolutePath());
 			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);      
 			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
