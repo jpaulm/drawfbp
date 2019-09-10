@@ -73,9 +73,16 @@ public class ButtonTabComponent extends JPanel {
     }
     
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);  
+        super.paintComponent(g);
+        int k = -1;
+        for (int j = 0; j < driver.jtp.getTabCount(); j++) {
+        	if (this == driver.jtp.getTabComponentAt(j)) {
+        		k = j;
+        		break;
+        	}
+        }
         int i = driver.jtp.getSelectedIndex();        
-        Boolean selected = (i == diag.tabNum);  
+        Boolean selected = (i == k);  
         setBackground(selected ? Color.WHITE : Color.lightGray); 
         label.setFont(driver.fontf);
         String s = "(untitled)";

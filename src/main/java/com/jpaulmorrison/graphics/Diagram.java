@@ -83,7 +83,7 @@ public class Diagram {
 	public static int FBP = 9;    
 	
 	FileChooserParm[] fCParm;
-	int tabNum;   // index in driver.jtp
+	//int tabNum;   // index in driver.jtp
 	
 	CodeManager cm = null;
 	Block motherBlock = null;
@@ -262,14 +262,14 @@ public class Diagram {
 			if (i != -1) {
 				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 						driver.frame,
-						"File is open: " + file.getAbsolutePath() + "overwrite open file?",
+						"File is open: " + file.getAbsolutePath() + " - overwrite open file?",
 						"Confirm overwrite open file", MyOptionPane.YES_NO_OPTION)))
 					return null;
 			 
 				driver.jtp.setSelectedIndex(i); 
 				ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);
 				Diagram d = b.diag;
-				d.tabNum = i;
+				//d.tabNum = i;
 				driver.closeTab();
 			}
 		} else {
@@ -345,14 +345,6 @@ public class Diagram {
 			
 		boolean res = true;
 		if (changed) {
-
-			//if (title == null)
-			//	name = "(untitled)";
-			//else {
-			//	name = title;
-			//	if (!name.toLowerCase().endsWith(".drw"))
-			//		name += ".drw";
-			//}
 
 			int answer = MyOptionPane.showConfirmDialog(driver.frame, 
 					 "Save changes to " + name + "?", "Save changes",  
@@ -688,7 +680,8 @@ public class Diagram {
 		driver.frame.repaint();
 		
 		File file = null;
-		driver.jtp.setSelectedIndex(sbnDiag.tabNum);  
+		
+		driver.jtp.setSelectedIndex(driver.jtp.getTabCount());  
 		
 		//String s = buildFile();  within gensave...
 		if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(    
@@ -718,8 +711,8 @@ public class Diagram {
 			origDiag.changed = true;   
 			
 			//int i = driver.jtp.getSelected(); 
-			
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(sbnDiag.tabNum);      
+			int i = driver.getFileTabNo(sbnDiag.diagFile.getAbsolutePath());
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);      
 			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
 			driver.frame.repaint();
 			

@@ -1084,7 +1084,7 @@ public class DrawFBP extends JFrame
 		jtp.setTabComponentAt(i, b);		
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
-		diag.tabNum = i;
+		//diag.tabNum = i;
 		curDiag = diag;
 		
 		diag.title = "(untitled)";
@@ -4527,10 +4527,24 @@ public class DrawFBP extends JFrame
 					return;
 			}
 
+			/*
 			int n = i + 1;
+			j = jtp.getTabCount();
+			if (j < 1)
+				return;
 			while (n < j){
 				b = (ButtonTabComponent) jtp.getTabComponentAt(n);
-				jtp.setTabComponentAt(n - 1, b);
+				ButtonTabComponent b2 = (ButtonTabComponent) jtp.getTabComponentAt(n - 1);
+				//jtp.setTabComponentAt(n - 1, b);
+				b2.label = b.label;
+				b2.diag = b.diag;
+				
+				Component c = jtp.getComponent(n);
+				jtp.setComponentAt(n - 1,  c); 
+				
+				String s = jtp.getTitleAt(n);
+				jtp.setTitleAt(n - 1,  s);
+				
 				jtp.setSelectedIndex(n - 1);
 				if (b != null && b.diag != null) {
 					//curDiag = b.diag;
@@ -4538,9 +4552,10 @@ public class DrawFBP extends JFrame
 				}
 				n++;
 			}
-
+			 */
 			
-			jtp.removeTabAt(i);
+			//jtp.removeTabAt(i);
+			jtp.remove(i);
 			//b = (ButtonTabComponent) jtp.getTabComponentAt(i - 1);
 			//if (b != null && b.diag != null) {
 			//	curDiag = b.diag;
