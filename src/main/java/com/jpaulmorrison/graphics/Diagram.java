@@ -244,7 +244,22 @@ public class Diagram {
 		}
 		
 		// finished choosing file...
-		
+		/*
+		int i = driver.getFileTabNo(file.getAbsolutePath());  // see if already open
+		if (i != -1) {
+			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+					driver.frame,
+					"File is open: " + file.getAbsolutePath() + " - overwrite open file?",
+					"Confirm overwrite open file", MyOptionPane.YES_NO_OPTION)))
+				return null;
+		 
+			driver.jtp.setSelectedIndex(i); 
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);
+			//Diagram d = b.diag;
+			//d.tabNum = i;
+			driver.closeTab();
+		}
+		*/
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				MyOptionPane.showMessageDialog(driver.frame,
@@ -258,20 +273,8 @@ public class Diagram {
 							+ "?",
 					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
 				return null;
-			int i = driver.getFileTabNo(file.getAbsolutePath());
-			if (i != -1) {
-				if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-						driver.frame,
-						"File is open: " + file.getAbsolutePath() + " - overwrite open file?",
-						"Confirm overwrite open file", MyOptionPane.YES_NO_OPTION)))
-					return null;
 			 
-				driver.jtp.setSelectedIndex(i); 
-				ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);
-				Diagram d = b.diag;
-				//d.tabNum = i;
-				driver.closeTab();
-			}
+			
 		} else {
 			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					driver.frame,
