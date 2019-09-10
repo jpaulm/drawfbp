@@ -82,7 +82,7 @@ public class ButtonTabComponent extends JPanel {
         	}
         }
         int i = driver.jtp.getSelectedIndex();        
-        Boolean selected = (i == k);  
+        boolean selected = (i == k);  
         setBackground(selected ? Color.WHITE : Color.lightGray); 
         label.setFont(driver.fontf);
         String s = "(untitled)";

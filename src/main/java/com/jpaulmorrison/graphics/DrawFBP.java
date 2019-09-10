@@ -6074,7 +6074,7 @@ public class DrawFBP extends JFrame
 				Arrow a2 = a.findLastArrowInChain();
 				to = curDiag.blocks.get(new Integer(a2.toId));
 
-				Boolean error = false;
+				boolean error = false;
 				if (to instanceof IIPBlock && from instanceof ProcessBlock) {
 					a2.reverseDirection();
 					// MyOptionPane

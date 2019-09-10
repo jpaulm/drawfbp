@@ -70,7 +70,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
-				Boolean res = true;
+				boolean res = true;
 				if (changed)
 					res = askAboutSaving();
 				if (res){
@@ -859,7 +859,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			saveCode(/* SAVE_AS */);
 
 		} else if (s.equals("Exit")) {
-			Boolean res = true;
+			boolean res = true;
 			if (changed)
 				res = askAboutSaving();
 			if (res)
