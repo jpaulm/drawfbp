@@ -60,7 +60,7 @@ public class ButtonTabComponent extends JPanel {
         
         label = new JLabel();         
         add(label);
-        
+                
         //add more space between the label and the button
         
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
@@ -73,9 +73,9 @@ public class ButtonTabComponent extends JPanel {
     }
     
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);   
-        Component c = driver.jtp.getSelectedComponent();           component c is area
-        Boolean selected = (c == this);  xxxxxxxxxxxxxxxxx
+        super.paintComponent(g);  
+        int i = driver.jtp.getSelectedIndex();        
+        Boolean selected = (i == diag.tabNum);  
         setBackground(selected ? Color.WHITE : Color.lightGray); 
         label.setFont(driver.fontf);
         String s = "(untitled)";
