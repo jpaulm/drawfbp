@@ -850,10 +850,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
-
-		// if (s.equals("Save")) {
-		// saveCode(/*!SAVE_AS*/);
-		// } else
+		
 		if (s.equals("Save As")) {
 
 			saveCode(/* SAVE_AS */);
@@ -959,7 +956,9 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			return false;
 		}
 
-		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString);  
+		String fn = diag.diagFile.getAbsolutePath();
+		int i = fn.lastIndexOf(".drw");
+		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, new File(fn.substring(0, i) + "." + gl.suggExtn));  
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver.frame, "File not saved");
