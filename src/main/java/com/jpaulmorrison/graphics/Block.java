@@ -938,6 +938,7 @@ public class Block implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = ROWSIZE;
+		/*
 		if (desc == null)
 			desc = " ";
 		String desc2 = desc.replace('\n',  ' '); 
@@ -950,6 +951,7 @@ public class Block implements ActionListener {
 		gbl.setConstraints(tfd, gbc);
 		//tfd.setBackground(lg);
 		panel.add(tfd);
+		*/
 		
 		int i = fullClassName.indexOf("!");
 		String s1 = fullClassName.substring(0, i); 

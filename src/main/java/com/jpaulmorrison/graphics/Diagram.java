@@ -712,6 +712,7 @@ public class Diagram {
 			sbnDiag.changed = false;
 			sbnDiag.diagFile = file;
 			origDiag.changed = true;   
+			sbnDiag.title = sbnDiag.desc;
 			
 			//int i = driver.jtp.getSelected(); 
 		

@@ -169,9 +169,15 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			}
 		}
 
-		String w = diag.title;
-		if (w.endsWith(".drw"))
-			w = w.substring(0, w.length()-4);
+		String w = diag.diagFile.getAbsolutePath();
+		int i = w.lastIndexOf(".");
+		w = w.substring(0, i);  // drop extension
+		i = w.lastIndexOf(".");
+		w = w.replace("\\", "/");
+		int j = w.lastIndexOf("/");
+		j = Math.max(i,  j);
+		w = w.substring(j + 1);
+		
 		
 		if (gl.label.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
@@ -479,7 +485,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 			if (ext.equals("Network")) {
 				String s = diag.title;
-				int i = s.indexOf(".");
+				i = s.indexOf(".");
 				if (i > -1)
 					s = s.substring(0, i);
 				code += "} \n";
@@ -513,7 +519,8 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		}
 		// insert data from arrays
 		try {
-			for (int i = 0; i < contents.length; i++) {
+			
+			for (i = 0; i < contents.length; i++) {
 				if (contents[i] != null)
 					doc.insertString(doc.getLength(), contents[i], styles[i]);
 			}

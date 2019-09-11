@@ -200,9 +200,8 @@ public class MyFileChooser extends JFrame
 			dialog.setTitle(s);
 		else {
 			if (fCP == driver.curDiag.fCParm[Diagram.NETWORK]) {
-				String w = driver.curDiag.title;
-				if (!(w.endsWith(".drw")))
-					w += ".drw";
+				String w = driver.curDiag.diagFile.getAbsolutePath();
+				
  			fCP.prompt = "Specify file name for code - for diagram: " + w;
 			}
 			 
