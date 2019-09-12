@@ -7,8 +7,8 @@ import java.awt.geom.GeneralPath;
 
 public class FileBlock extends Block {
 	
-	FileBlock(Diagram ctlr) {
-		super(ctlr);
+	FileBlock(Diagram diag) {
+		super(diag);
 		type = Block.Types.FILE_BLOCK;
 		width = 64;
 		height = 72;

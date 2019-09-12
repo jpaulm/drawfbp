@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 public class ReportBlock extends Block {
 	
-	ReportBlock(Diagram ctlr) {
-		super(ctlr);
+	ReportBlock(Diagram diag) {
+		super(diag);
 		width = BLOCKWIDTH;
 		height = BLOCKHEIGHT;
 		type = Block.Types.REPORT_BLOCK;

@@ -325,8 +325,8 @@ public class Diagram {
 		}
 		String w = fCP.name;
 		if (motherBlock!= null) {
-			motherBlock.subnetFileName = file.getPath();
-			w = "Subnet";
+			//motherBlock.subnetFileName = file.getPath();
+			w = "Subnet";    
 		}
 		
 		//suggFile = null;
@@ -699,7 +699,12 @@ public class Diagram {
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			int i = driver.jtp.getSelectedIndex(); 
 			
+			//int i = driver.getFileTabNo(sbnDiag.diagFile.getAbsolutePath());
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);      
+			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
+			driver.frame.repaint();
 
 			MyOptionPane.showMessageDialog(driver.frame, "Give subnet diagram a description",    
 			 	//"Enter subnet description",
@@ -709,27 +714,18 @@ public class Diagram {
 			
 			sbnDiag.desc = sbnDiag.motherBlock.desc.replace("\n", " "); 			
 			
-			sbnDiag.changed = false;
+			sbnDiag.changed = true;
 			sbnDiag.diagFile = file;
 			origDiag.changed = true;   
 			sbnDiag.title = sbnDiag.desc;
-			
-			//int i = driver.jtp.getSelected(); 
-		
-			int i = driver.getFileTabNo(sbnDiag.diagFile.getAbsolutePath());
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);      
-			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
-			driver.frame.repaint();
-			
-		
-		
+					
 			if (sbnDiag.motherBlock!= null)  {
 				sbnDiag.motherBlock.subnetFileName = sbnDiag.diagFile.getAbsolutePath();
 				//sbnDiag.motherBlock.desc = sbnDiag.desc;
 			}
 		
-			if (subnetBlock.subnetFileName != null)
-				subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
+			//if (subnetBlock.subnetFileName != null)
+			//	subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
 		}  else {
 			sbnDiag.changed = false; 
 			driver.closeTab();   // close selected tab
@@ -941,7 +937,7 @@ public class Diagram {
 
 		subnetBlock.cx = enc.cx;
 		subnetBlock.cy = enc.cy;
-		subnetBlock.diag = sbnDiag;   
+		//subnetBlock.diag = sbnDiag;   
 		subnetBlock.calcEdges();
 		return subnetBlock;
 	}

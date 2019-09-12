@@ -5,8 +5,8 @@ import java.awt.*;
 public class LegendBlock extends Block {
 	//private int maxw = 0, totht = 0;
 
-	LegendBlock(Diagram ctlr) {
-		super(ctlr);
+	LegendBlock(Diagram diag) {
+		super(diag);
 		type = Block.Types.LEGEND_BLOCK;
 		width = driver.gFontWidth * 12 + 4;
 		height = driver.gFontHeight * 4 + 4;

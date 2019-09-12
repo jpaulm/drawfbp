@@ -10,8 +10,8 @@ import java.util.Stack;
 
 public class IIPBlock extends Block {
 	
-	IIPBlock(Diagram ctlr) {
-		super(ctlr);
+	IIPBlock(Diagram diag) {
+		super(diag);
 		type = Block.Types.IIP_BLOCK;
 		//width = driver.fontWidth * 20 + 4;
 		height = driver.gFontHeight + 4;

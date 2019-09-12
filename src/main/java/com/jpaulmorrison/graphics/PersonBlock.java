@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 	public class PersonBlock extends Block {
 		
-		PersonBlock (Diagram ctlr){
-			super(ctlr);
+		PersonBlock (Diagram diag){
+			super(diag);
 			type = Block.Types.PERSON_BLOCK;
 			width = 40;
 		  	height = 60;

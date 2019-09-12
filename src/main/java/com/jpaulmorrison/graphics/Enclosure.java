@@ -27,8 +27,8 @@ public class Enclosure extends Block {
 	LinkedList<Arrow> lla = null;   // arrows wholly enclosed in enclosure
     boolean draggingContents = false;
 	
-	Enclosure(Diagram ctlr) {
-		super(ctlr);
+	Enclosure(Diagram diag) {
+		super(diag);
 		type = Block.Types.ENCL_BLOCK; 
 		width = 250;
 		height = 100;

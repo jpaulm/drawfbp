@@ -11,7 +11,7 @@ public class ExtPortBlock extends Block {
 
 	ExtPortBlock(Diagram diag) {
 		super(diag);
-		this.diag = diag;
+		//this.diag = diag;
 		width = 36;
 		height = 28;
 		type = Block.Types.EXTPORT_IN_BLOCK;

@@ -84,7 +84,7 @@ public class Block implements ActionListener {
 
 	Block(Diagram d) {
 
-		diag = d;
+		diag = d;   // Diagram containing block
 		driver = d.driver;
 
 		type = Block.Types.PROCESS_BLOCK;
@@ -1115,11 +1115,11 @@ public class Block implements ActionListener {
 	int testMatch(String port, String type) {
 		// this logic is somewhat over-constrained!
 		// this routine returns a value of 0, 1 or 2  (Yes, Missing or Optional)
-		boolean input = (type.indexOf("in") > -1 || type.indexOf("param") > -1);
-		boolean output = (type.indexOf("out") > -1);
+		boolean input = (type.indexOf("input") > -1 || type.indexOf("param") > -1);
+		boolean output = (type.indexOf("output") > -1);
 		if (!input && !output) {
 			MyOptionPane.showMessageDialog(driver.frame, "Port type of \""
-					+ port + "\" must be \"in\" or \"out\"", MyOptionPane.ERROR_MESSAGE);
+					+ port + "\" must be \"input\" or \"output\"", MyOptionPane.ERROR_MESSAGE);
 			return 1;
 		}
 
