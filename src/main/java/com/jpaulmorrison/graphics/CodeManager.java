@@ -281,8 +281,11 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 					
 					descArray.put(new Integer(block.id), s);
 
-					if (!block.multiplex)
-						code += "  " + genComp(s, c, gl.label) + "; \n";  
+					if (!block.multiplex){
+						if (!block.visible)
+							s += "(invisible)";
+						code += "  " + genComp(s, c, gl.label) + "; \n";  						
+					}
 					else {
 						if (block.mpxfactor == null) {
 							String d = (String) MyOptionPane.showInputDialog(
@@ -548,6 +551,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 	String genComp(String name, String className, String lang) {
 		if (className == null)
 			className = "????";
+		
 		if (lang.equals("Java")) {
 			//if (!(className.equals("\"Invalid class\"")))
 			if (!(className.endsWith(".class")))
