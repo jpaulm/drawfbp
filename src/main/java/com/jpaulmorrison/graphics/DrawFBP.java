@@ -156,6 +156,8 @@ public class DrawFBP extends JFrame
 	JCheckBox grid;
 
 	boolean leftButton;
+	
+	boolean sortByDate;  // remember across invocations of MyFileChooser
 
 	static final int gridUnitSize = 4; // can be static - try for now
 
@@ -4357,27 +4359,15 @@ public class DrawFBP extends JFrame
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
-		// System.out.println("Locale: " + Locale.getDefault() + "\n");
-
-		// String osName = System.getProperty("os.name");
-		// System.out.print("OS name: " + osName + "\n");
-
+		 SwingUtilities.invokeLater(new Runnable() {
+		        public void run() {
+		            
+		//        }
+		//    });
 		String laf = UIManager.getSystemLookAndFeelClassName();
-		// String nimbusLaf = null;
-
-		/*
-		 * //if (!(osName.startsWith("Win"))) { for (LookAndFeelInfo info :
-		 * UIManager.getInstalledLookAndFeels()) {
-		 * //System.out.print("Look and feel: " + info.getName() + "\n"); if
-		 * ("Nimbus".equals(info.getName())) nimbusLaf = info.getClassName();
-		 * //else // laf = info.getClassName(); } //}
-		 * 
-		 * if (nimbusLaf != null) { laf = nimbusLaf; //
-		 * System.out.print("Look and feel: Nimbus\n"); } else
-		 */
-		// System.out.print("Look and feel: System \n");
+		
 
 		System.setProperty("apple.laf.useScreenMenuBar", "true");
 
@@ -4395,12 +4385,10 @@ public class DrawFBP extends JFrame
 
 		JFrame.setDefaultLookAndFeelDecorated(true);
 
-		try {
-		new DrawFBP(args);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		DrawFBP _mf= new DrawFBP(args);
+        _mf.setVisible(true);
+		        }
+				   });
 	}
 
 	public class Lang {

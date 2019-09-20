@@ -53,7 +53,7 @@ public class MyFileChooser extends JFrame
 	// private static final DrawFBP DrawFBP = null;
 	public static int APPROVE_OPTION = 0;
 	public static int CANCEL_OPTION = 1;
-	boolean sortByDate = false;   // default is sort by name
+	//boolean sortByDate = false;   // default is sort by name
 
 	// FileFilter filter = null;
 	JDialog dialog = null;
@@ -100,7 +100,7 @@ public class MyFileChooser extends JFrame
 	Color vLightBlue = new Color(220, 235, 255);
 	// Color lightBlue = new Color(135, 206, 250);
 	Color lightBlue = new Color(160, 220, 250);
-	Color paleGreen = new Color(209, 253, 209);
+	//Color paleGreen = new Color(209, 253, 209);
 
 	// String title;
 
@@ -137,6 +137,8 @@ public class MyFileChooser extends JFrame
 			listHead = f.getAbsolutePath();
 		// fullNodeName = f.getAbsolutePath();
 		this.driver = driver;
+		
+		butSortByDate.setSelected(driver.sortByDate);
 
 	}
 
@@ -509,8 +511,7 @@ public class MyFileChooser extends JFrame
 		dialog.setLocation(p.x + x_off, p.y + y_off);
 		// frame.pack();
 
-		dialog.setVisible(true);
-
+		dialog.setVisible(true); 
 		// if (!saveAs)
 		// textBackground = Color.WHITE;
 
@@ -591,7 +592,7 @@ public class MyFileChooser extends JFrame
 						ll2.add(fl[j]); // directories go into ll first
 
 				}
-				ll.addAll(sortByName(ll2)); // add elements of ll2 to ll in sorted
+				ll.addAll(mySort(ll2)); // add elements of ll2 to ll in sorted
 										// order
 
 				ll2.clear();
@@ -609,10 +610,10 @@ public class MyFileChooser extends JFrame
 
 				}
 
-				if (sortByDate)
-					ll.addAll(sortByDate(ll2)); // add elements of ll2 to end of ll  
-				else
-					ll.addAll(sortByName(ll2)); // add elements of ll2 to end of ll  
+				//if (driver.sortByDate)
+				//.addAll(mySort(ll2)); // add elements of ll2 to end of ll  
+				//else
+				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll  
 				//HashMap<String, String> hm = mySortByDate(ll2);						 
 
 			} else {
@@ -626,6 +627,7 @@ public class MyFileChooser extends JFrame
 				ll2 = new LinkedList<String>();
 
 				Enumeration<DefaultMutableTreeNode> e = currentNode.children();
+				/*
 				while (e.hasMoreElements()) {
 					DefaultMutableTreeNode node = (e.nextElement());
 					String t = (String) node.getUserObject();
@@ -637,14 +639,15 @@ public class MyFileChooser extends JFrame
 
 				ll2.clear();
 				e = currentNode.children();
+				*/
 				while (e.hasMoreElements()) {
 					DefaultMutableTreeNode node = (e.nextElement());
 					String t = (String) node.getUserObject();
-					File f = new File(t);
-					if (!(f.isDirectory()))
-						ll2.add((String) t);
+					//File f = new File(t);
+					//if (!(f.isDirectory()))
+					ll2.add((String) t);
 				}
-				ll.addAll(sortByName(ll2)); // add elements of ll2 to end of ll in
+				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll in
 										// sorted order
 			}
 		}
@@ -965,6 +968,7 @@ public class MyFileChooser extends JFrame
 		return ll;
 	}
 
+	/*
 	LinkedList<String> sortByName(LinkedList<String> from) {
 		if (from.isEmpty()) {
 			return new LinkedList<String>(); // return empty list
@@ -989,6 +993,10 @@ public class MyFileChooser extends JFrame
 
 					i++;
 				}
+				File f = new File(listHead + "/" + low); 				
+				Path path = f.toPath();
+				String curDate = Files.getLastModifiedTime(path).toString();
+				low += "!" + curDate;
 				lkl.add(low);
 
 				ll.remove(low_i);
@@ -997,11 +1005,15 @@ public class MyFileChooser extends JFrame
 			catch (NoSuchElementException e) {
 				return lkl;
 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
 	}
-	LinkedList<String> sortByDate(LinkedList<String> from) {
+	*/
+	LinkedList<String> mySort(LinkedList<String> from) {
 		if (from.isEmpty()) {
 			return new LinkedList<String>(); // return empty list
 
@@ -1010,39 +1022,66 @@ public class MyFileChooser extends JFrame
 		LinkedList<String> ll = from;
 		LinkedList<String> lkl = new LinkedList<String>();
 		String current;
+		String curDate = "";
+		String nextDate = "";
+		boolean dateSort = !inJarTree && driver.sortByDate;
 		while (true) {
 			try {
 				//String first = ll.getFirst();
 				current = ll.getFirst();
-				File f = new File(listHead + "/" + current); 				
-				Path path = f.toPath();
-				String curDate = Files.getLastModifiedTime(path).toString();
-				current += "!" + curDate;			
+				if (!inJarTree) {
+					File f = new File(listHead + "/" + current); 				
+					Path path = f.toPath();
+					curDate = Files.getLastModifiedTime(path).toString();				
+					//current += "@" + curDate;	
+				}
 				//String t = ft.toString();
 				int i = 0;
-				int first_i = 0;
+				int found_i = 0;
 				for (String s : ll) {
 					if (i == 0) {
 						i = 1;
 						continue;
 					}
-					f = new File(listHead + "/" + s); 
-					path = f.toPath();
-					String nextDate = Files.getLastModifiedTime(path).toString();
-
-					if (nextDate.compareTo(curDate) > 0) {   // by descending cron order
-
-						curDate = nextDate;
-						current = s + "!" + curDate;
-						first_i = i;
+					
+					if (!inJarTree) {
+						File f = new File(listHead + "/" + s); 
+						Path path = f.toPath();
+						nextDate = Files.getLastModifiedTime(path).toString();
+					}
+					
+					/*
+					if (dateSort)
+						if (nextDate.compareTo(curDate) > 0) {   // by descending cron order
+							curDate = nextDate;						
+							current = s;
+							found_i = i;
+						}
+						else if (s.compareToIgnoreCase(current) < 0) {
+							current = s;
+							found_i = i;
+						}
+					*/
+					boolean found = false;
+					if (dateSort)
+						found = nextDate.compareTo(curDate) > 0;   // by descending cron order
+					else
+						found = s.compareToIgnoreCase(current) < 0;
+					
+					if (found) {
+						curDate = nextDate;						
+						current = s;
+						found_i = i;
 					}
 
 					i++;
 				}
-				lkl.add(current);
-				//lkl.put(curDate, current);
-
-				ll.remove(first_i);
+				if (!inJarTree)
+					lkl.add(current + "@" + curDate);
+				else
+					lkl.add(current);
+				
+				ll.remove(found_i);
 			}
 
 			catch (NoSuchElementException e) {
@@ -1082,23 +1121,40 @@ public class MyFileChooser extends JFrame
 
 			JPanel jp = new JPanel();
 			
-			BoxLayout gb = new BoxLayout(jp, BoxLayout.X_AXIS);
+			BorderLayout gb = new BorderLayout();
 			jp.setLayout(gb);			
 
 			jp.setBackground(Color.WHITE);
 			JLabel name = new JLabel();
 			JLabel date = new JLabel();
-			jp.add(name);
-			if (sortByDate) {
-				jp.add(Box.createHorizontalGlue());
-				jp.add(date);
-				jp.add(Box.createRigidArea(new Dimension(10, 0)));
+			
+			//if (driver.sortByDate) {
+			//	jp.add(Box.createHorizontalGlue());				
+			//}
+			if (!inJarTree) {
+				jp.add(date, BorderLayout.WEST);
+				jp.add(Box.createRigidArea(new Dimension(20, 0)));
+				jp.add(name, BorderLayout.EAST);
 			}
+			else
+				jp.add(name, BorderLayout.CENTER);
+			//jp.add(Box.createHorizontalGlue());
 			
 			if (s == null || s.equals("(empty folder)"))
 				icon = null;
-			else if (s.toLowerCase().endsWith(".jar"))
+			else if (s.toLowerCase().endsWith(".jar")) {
 				icon = driver.jarIcon;
+				File f = new File(s); 				
+				Path path = f.toPath();
+				String curDate = "";
+				try {
+					curDate = Files.getLastModifiedTime(path).toString();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+				s += "@" + curDate;	
+			}
 			else {
 				if (currentNode == null) {
 					File f = new File(listHead + File.separator + s);
@@ -1117,18 +1173,23 @@ public class MyFileChooser extends JFrame
 			name.setOpaque(true);
 			date.setOpaque(true);
 
-			date.setBackground(paleGreen);
+			
+			Color ly2 = new Color(255, 255, 51);  // slightly more intense yellow
+			if (isSelected) 
+				date.setBackground(ly2);
+			else
+				date.setBackground(DrawFBP.ly);				
 			
 			if (s == null)
 				name.setBackground(vLightBlue);
 
-			else if (s.toLowerCase().endsWith(".jar") || inJarTree)
+			else if (s.indexOf(".jar@") > -1 || inJarTree)
 				name.setBackground(goldenRod);
 			else
 				name.setBackground(vLightBlue);
 
 			if (isSelected) {
-				if (s.toLowerCase().endsWith(".jar") || inJarTree)
+				if (s.indexOf(".jar@") > -1 || inJarTree)
 					name.setBackground(bisque);
 				else
 					name.setBackground(lightBlue);
@@ -1136,39 +1197,48 @@ public class MyFileChooser extends JFrame
 			}
 			// }
 
-			minSize = new Dimension(400, 20);
 			
-			if (!sortByDate)
-				maxSize = new Dimension(Short.MAX_VALUE, 20);
-			else {
-				int x = (int) (100 * driver.defaultFontSize);
-				maxSize = new Dimension(x, 20);
-			}
-			prefSize = new Dimension(1000, 20);
 
-			if (s == null || s.charAt(0) == ' ') {
+			String blanks = "";
+			for (int i = 0; i < 19; i++)
+				blanks += " ";
+			name.setText(s);
+			date.setText(blanks);
+			if (s != null && s.charAt(0) != ' ') {
 				//setText(s);
-				name.setText(s);
-			} else {
+				//name.setText(s);
+				//date.setText(blanks);
+			//} else {
 				// lab1 = new JLabel(s, icon, JLabel.LEFT);
 				//setText(s);
-				name.setIcon(icon);
-				int i = s.indexOf("!");
-				if (i == -1) 
-					name.setText(s); 
-				else {
+				date.setIcon(icon);
+				int i = s.indexOf("@");
+				//if (i == -1) { 
+				if (inJarTree) {
+					name.setText(s);
+					date.setText(blanks);
+				}
+				else  if (i > -1){
 					name.setText(s.substring(0, i));	
 					String t = s.substring(i + 1);
-					i = t.indexOf("T");
+					i = t.lastIndexOf(".");
 					t = t.substring(0, i);
+					t = t.replace("T",  " ");
 					date.setText(t);
 				}
 			}
 			name.setFont(driver.fontg);
 			
+			minSize = new Dimension(400, 20);			
+			
+			int x = (int) (60 * driver.defaultFontSize);
+			maxSize = new Dimension(x, 20);
+			
+			prefSize = maxSize;
 			name.setPreferredSize(prefSize);
-			name.setMaximumSize(maxSize);
+			
 			name.setMinimumSize(minSize);
+			
 			
 			return jp;
 		}
@@ -1200,23 +1270,12 @@ public class MyFileChooser extends JFrame
 	public void actionPerformed(ActionEvent e) {
 		t_dirName.setBackground(Color.WHITE);
 
-		// if (e.getSource() == butParent) {
-		// ParentAction parentAction = new ParentAction();
-		// parentAction.actionPerformed(new ActionEvent(e, 0, ""));
-		// return;
-		// }
-
-		// if (e.getSource() == butNF) {
-		// NewFolderAction nfAction = new NewFolderAction();
-		// newFolderAction.actionPerformed(new ActionEvent(e, 0, ""));
-		// return;
-		// }
-		
+				
 		if (e.getSource() == butSortByDate){
 			String s = e.getActionCommand();
 			if (s.equals("Toggle Sort By Date")){
-				sortByDate = !sortByDate;
-				butSortByDate.setSelected(sortByDate);
+				driver.sortByDate = !driver.sortByDate;
+				butSortByDate.setSelected(driver.sortByDate);
 				showList();
 				repaint();
 			}
@@ -1225,12 +1284,7 @@ public class MyFileChooser extends JFrame
 		if (e.getSource() == cBox) {
 
 			int i = cBox.getSelectedIndex();
-			driver.allFiles = (i == 1);
-			// fullNodeName = (new File(fullNodeName)).getParent();
-			// driver.properties
-			// .put("allFiles", Boolean.toString(driver.allFiles));
-			// saveProperties();
-			// panel.remove(listView);
+			driver.allFiles = (i == 1);			
 			showList();
 			// selComp = cBox;
 			cBox.requestFocusInWindow();
@@ -1611,9 +1665,9 @@ public class MyFileChooser extends JFrame
 				}
 
 				s = nodeNames[rowNo];
-				int i = s.indexOf("!");
+				int i = s.indexOf("@");
 				if (i > -1)
-					s = s.substring(0, i);  // drop date if list was sorted by date
+					s = s.substring(0, i);  // drop date
 
 				if (!s.equals("")) {
 					// String v = t_dirName.getText();
