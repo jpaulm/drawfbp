@@ -1222,7 +1222,8 @@ public class MyFileChooser extends JFrame
 					name.setText(s.substring(0, i));	
 					String t = s.substring(i + 1);
 					i = t.lastIndexOf(".");
-					t = t.substring(0, i);
+					if (i > -1)
+						t = t.substring(0, i);
 					t = t.replace("T",  " ");
 					date.setText(t);
 				}
