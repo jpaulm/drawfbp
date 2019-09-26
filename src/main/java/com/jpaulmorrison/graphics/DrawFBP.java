@@ -54,8 +54,9 @@ import javax.swing.plaf.FontUIResource;
 public class DrawFBP extends JFrame
 		implements
 			ActionListener,
-			ChangeListener,
-			ComponentListener {
+			ChangeListener, 
+			ComponentListener
+			{
 
 	static final long serialVersionUID = 111L;
 	//private static final DrawFBP DrawFBP = null;
@@ -585,7 +586,11 @@ public class DrawFBP extends JFrame
 
 		buildPropDescTable();
 
-		//curDiag = getNewDiag(true);
+		String t = properties.get("currentDiagram");
+		if (t == null) {
+			curDiag = getNewDiag();
+			curDiag.desc = "Click anywhere on selection area";
+		}
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -2328,19 +2333,34 @@ public class DrawFBP extends JFrame
 		}
 
 		boolean found = false;
-		for (i = 0; i < jtp.getTabCount(); i++) {
-			b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-			if (b == null || b.diag == null)
-				return null;
-			Diagram d = b.diag;
-			if (d != null && d.diagFile != null && d.diagFile.equals(file)) {
-				curDiag = d;
-				// curDiag.tabNum = i;
-				jtp.setSelectedIndex(i);
-				found = true;
-				break;
+		if (jtp.getTabCount() == 1) {
+			b = (ButtonTabComponent) jtp.getTabComponentAt(0);
+			if (b != null && b.diag != null) {
+				Diagram d = b.diag;
+				if (d.title.equals("(untitled") && !d.changed) {
+					curDiag = d;
+					// curDiag.tabNum = i;
+					jtp.setSelectedIndex(0);
+					found = true;
+				}
 			}
 		}
+		
+		if (!found)
+			for (i = 0; i < jtp.getTabCount(); i++) {
+				b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+				if (b == null || b.diag == null)
+					return null;
+				Diagram d = b.diag;
+				if (d != null && d.diagFile != null
+						&& d.diagFile.equals(file)) {
+					curDiag = d;
+					// curDiag.tabNum = i;
+					jtp.setSelectedIndex(i);
+					found = true;
+					break;
+				}
+			}
 
 		if (!found)
 			curDiag = getNewDiag();
@@ -3991,6 +4011,8 @@ public class DrawFBP extends JFrame
 	
 	void closeTab() {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
+		if (jtp.getTabCount() == 0)
+			getNewDiag();
 	}
 
 	
@@ -4361,34 +4383,36 @@ public class DrawFBP extends JFrame
 
 	public static void main(final String[] args) {
 
-		 SwingUtilities.invokeLater(new Runnable() {
-		        public void run() {
-		            
-		//        }
-		//    });
-		String laf = UIManager.getSystemLookAndFeelClassName();
 		
+			SwingUtilities.invokeLater(new Runnable() {
+			        public void run() {
+			            
+			//        }
+			//    });
+			String laf = UIManager.getSystemLookAndFeelClassName();
+			
 
-		System.setProperty("apple.laf.useScreenMenuBar", "true");
+			System.setProperty("apple.laf.useScreenMenuBar", "true");
 
-		try {
-			UIManager.setLookAndFeel(laf);
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (InstantiationException e1) {
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e1) {
-			e1.printStackTrace();
-		}
+			try {
+				UIManager.setLookAndFeel(laf);
+			} catch (ClassNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (InstantiationException e1) {
+				e1.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				e1.printStackTrace();
+			} catch (UnsupportedLookAndFeelException e1) {
+				e1.printStackTrace();
+			}
 
-		JFrame.setDefaultLookAndFeelDecorated(true);
+			JFrame.setDefaultLookAndFeelDecorated(true);
 
-		DrawFBP _mf= new DrawFBP(args);
-        _mf.setVisible(true);
-		        }
-				   });
+			DrawFBP _mf= new DrawFBP(args);
+			_mf.setVisible(true);
+			        }
+					   });
+		
 	}
 
 	public class Lang {

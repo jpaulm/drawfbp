@@ -260,6 +260,24 @@ public class Diagram {
 			driver.closeTab();
 		}
 		*/
+		 
+		boolean found = false;
+		int i = driver.jtp.getTabCount();
+		/*
+		if (driver.jtp.getTabCount() == 1) {
+			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(0);
+			if (b != null && b.diag != null) {
+				Diagram d = b.diag;
+				if (d.title.equals("(untitled") && !d.changed) {
+					curDiag = d;
+					// curDiag.tabNum = i;
+					driver.jtp.setSelectedIndex(0);
+					found = true;
+				}
+			}
+		}
+		*/
+		 
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				MyOptionPane.showMessageDialog(driver.frame,

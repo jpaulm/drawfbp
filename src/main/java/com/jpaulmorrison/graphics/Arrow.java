@@ -473,7 +473,7 @@ public class Arrow implements ActionListener {
 		Block to = diag.blocks.get(new Integer(toId));
 		Arrow a = this.findLastArrowInChain();
 		if (a == null) {
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"Can't find connecting arrow",
 					MyOptionPane.ERROR_MESSAGE);
 			return;
