@@ -4011,8 +4011,10 @@ public class DrawFBP extends JFrame
 	
 	void closeTab() {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
-		if (jtp.getTabCount() == 0)
+		if (jtp.getTabCount() == 0) {
 			getNewDiag();
+			curDiag.desc = "Click anywhere on selection area";
+		}
 	}
 
 	

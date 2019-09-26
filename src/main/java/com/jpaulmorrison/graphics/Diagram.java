@@ -149,7 +149,7 @@ public class Diagram {
 			if (suggFile != null)
 				suggestedFileName = suggFile.getAbsolutePath();
 			else
-				if (saveAs && title != null)
+				if (saveAs && title != null && !(title.equals("(untitled)")))
 					suggestedFileName = s + File.separator + title + fCP.fileExt;
 			
 

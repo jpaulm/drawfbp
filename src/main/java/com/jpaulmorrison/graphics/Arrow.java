@@ -568,7 +568,7 @@ public class Arrow implements ActionListener {
 				}
 				if (found) {
 					String proc = driver.curDiag.blocks.get(fromId).desc;
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
 					upStreamPort = "";
 					return;
