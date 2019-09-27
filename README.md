@@ -18,6 +18,8 @@ Latest release is v2.18.0: the jar file, which includes the `math.geom2d` jar fi
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
+# Warning: there is currently a bug in this version that requires you to start with a `.drw` file - do a `File/Open` to get started... 
+
 Note that the Maven version doesn't have `all-` in the name.
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
