@@ -1,9 +1,9 @@
 -Xdoclint:none 
 -classpath 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\build\\classes\\main;C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\build\\resources\\main;C:\\Program Files\\Java\\jdk1.8.0_101\\lib\\tools.jar;C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\javaGeom-0.11.1.jar'
 -d 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\build\\docs\\javadoc'
--doctitle 'drawfbp 2.18.0 API'
+-doctitle 'drawfbp 2.18.1 API'
 -quiet 
--windowtitle 'drawfbp 2.18.0 API'
+-windowtitle 'drawfbp 2.18.1 API'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\AInPort.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\AOutPort.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\Arrow.java'
