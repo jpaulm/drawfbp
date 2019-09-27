@@ -1,3 +1,5 @@
+
+
 buildscript {  
     repositories {
         mavenCentral()
@@ -7,6 +9,13 @@ buildscript {
         //classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
     }
 }
+
+
+plugins {
+    id 'maven'
+}
+
+
 apply plugin: 'io.codearte.nexus-staging'
 
 subprojects {
