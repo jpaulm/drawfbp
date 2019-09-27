@@ -20,9 +20,7 @@ Latest release is v2.18.1: the jar file (which includes the `math.geom2d` jar fi
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
 
-<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number
-     
-If you use the old `drawfbp-2.16.10.jar` or older, you must provide access to the `math.geom2d` jar file.     
+<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.    
 
 The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables in the `lib` folder.
 
