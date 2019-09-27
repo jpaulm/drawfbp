@@ -14,11 +14,11 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 Release History
 ---
 
-Latest release is v2.18.0: the jar file, which includes the `math.geom2d` jar file, can be obtained from the Releases folder.   The latest release *on Maven* will shortly be v2.18.0:
+Latest release is v2.18.1: the jar file, which includes the `math.geom2d` jar file, can be obtained from the Releases folder.   The latest release *on Maven* will shortly be v2.18.1:
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-Warning: there is currently a bug in this version that doesn't let you start with a blank screen - go to `build\libs` and run `drawfbp-all-2.18.0.jar`. 
+Warning: there is currently a bug in this version that doesn't let you start with a blank screen - go to `build\libs` and run `drawfbp-all-2.18.1.jar`. 
 ---
 
 Note that the Maven version doesn't have `all-` in the name.
