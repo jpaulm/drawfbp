@@ -25,7 +25,7 @@ Note that the Maven version doesn't have `all-` in the name.
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do is position to your DrawFBP folder, and enter
 
-<code>java -jar build/libs/drawfbp-all-x.y.z.jar</code>   
+<code>java -jar build/libs/drawfbp[-all]-x.y.z.jar</code>   
      
 If you use the old `drawfbp-2.16.10.jar` or older, you must provide access to the `math.geom2d` jar file.     
 
