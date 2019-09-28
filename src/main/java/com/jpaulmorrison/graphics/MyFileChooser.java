@@ -26,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -610,11 +612,9 @@ public class MyFileChooser extends JFrame
 
 				}
 
-				//if (driver.sortByDate)
-				//.addAll(mySort(ll2)); // add elements of ll2 to end of ll  
-				//else
+				
 				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll  
-				//HashMap<String, String> hm = mySortByDate(ll2);						 
+									 
 
 			} else {
 				inJarTree = true;
@@ -1014,6 +1014,53 @@ public class MyFileChooser extends JFrame
 	}
 	*/
 	LinkedList<String> mySort(LinkedList<String> from) {
+		
+		// Collections.sort sorts in place - that's OK in this case!		
+		
+		LinkedList<String> ll = new LinkedList<String>();
+		for (String s : from) {
+			File f = new File(listHead + "/" + s); 				
+			Path path = f.toPath();
+			String t = "";
+			try {
+				t = Files.getLastModifiedTime(path).toString();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+			int i = t.lastIndexOf(".");
+			if (i > -1)
+				t = t.substring(0, i);
+			t = t.replace("T",  " ");
+			
+			if (!inJarTree)
+				ll.add(s + "@" + t);
+			else
+				ll.add(s);			 
+		}
+			
+		Comparator<String> compName = new Comparator<String>() {
+			public int compare(String s1, String s2) {
+				return s1.compareToIgnoreCase(s2);
+				}
+		};
+		
+		Comparator<String> compDate = new Comparator<String>() {
+			public int compare(String s1, String s2) {
+				String s1d = s1.substring(s1.indexOf("@") + 1);
+				String s2d = s2.substring(s2.indexOf("@") + 1);
+				return s2d.compareTo(s1d);   // sort in reverse sequence by date
+				}
+		};
+		
+		if (!inJarTree && driver.sortByDate)
+			Collections.sort(ll, compDate);
+		else
+			Collections.sort(ll, compName);
+		
+		return ll;
+		/*
+		
 		if (from.isEmpty()) {
 			return new LinkedList<String>(); // return empty list
 
@@ -1027,13 +1074,12 @@ public class MyFileChooser extends JFrame
 		boolean dateSort = !inJarTree && driver.sortByDate;
 		while (true) {
 			try {
-				//String first = ll.getFirst();
+				
 				current = ll.getFirst();
 				if (!inJarTree) {
 					File f = new File(listHead + "/" + current); 				
 					Path path = f.toPath();
-					curDate = Files.getLastModifiedTime(path).toString();				
-					//current += "@" + curDate;	
+					curDate = Files.getLastModifiedTime(path).toString();	
 				}
 				//String t = ft.toString();
 				int i = 0;
@@ -1050,18 +1096,7 @@ public class MyFileChooser extends JFrame
 						nextDate = Files.getLastModifiedTime(path).toString();
 					}
 					
-					/*
-					if (dateSort)
-						if (nextDate.compareTo(curDate) > 0) {   // by descending cron order
-							curDate = nextDate;						
-							current = s;
-							found_i = i;
-						}
-						else if (s.compareToIgnoreCase(current) < 0) {
-							current = s;
-							found_i = i;
-						}
-					*/
+					
 					boolean found = false;
 					if (dateSort)
 						found = nextDate.compareTo(curDate) > 0;   // by descending cron order
@@ -1094,10 +1129,10 @@ public class MyFileChooser extends JFrame
 				e.printStackTrace();
 			}
 		}
-
+*/
 	}
 
-	//class ListRenderer extends JLabel implements ListCellRenderer<String> {
+	
 	class ListRenderer extends JPanel implements ListCellRenderer<String> {
 		static final long serialVersionUID = 111L;
 
@@ -1205,15 +1240,10 @@ public class MyFileChooser extends JFrame
 			name.setText(s);
 			date.setText(blanks);
 			if (s != null && s.charAt(0) != ' ') {
-				//setText(s);
-				//name.setText(s);
-				//date.setText(blanks);
-			//} else {
-				// lab1 = new JLabel(s, icon, JLabel.LEFT);
-				//setText(s);
+				
 				date.setIcon(icon);
 				int i = s.indexOf("@");
-				//if (i == -1) { 
+				
 				if (inJarTree) {
 					name.setText(s);
 					date.setText(blanks);
@@ -1221,10 +1251,10 @@ public class MyFileChooser extends JFrame
 				else  if (i > -1){
 					name.setText(s.substring(0, i));	
 					String t = s.substring(i + 1);
-					i = t.lastIndexOf(".");
-					if (i > -1)
-						t = t.substring(0, i);
-					t = t.replace("T",  " ");
+					//i = t.lastIndexOf(".");
+					//if (i > -1)
+					// = t.substring(0, i);
+					//t = t.replace("T",  " ");
 					date.setText(t);
 				}
 			}

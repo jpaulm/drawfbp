@@ -2337,10 +2337,11 @@ public class DrawFBP extends JFrame
 			b = (ButtonTabComponent) jtp.getTabComponentAt(0);
 			if (b != null && b.diag != null) {
 				Diagram d = b.diag;
-				if (d.title.equals("(untitled") && !d.changed) {
-					curDiag = d;
+				if (d.title.equals("(untitled)") && !d.changed) {
+					//curDiag = d;
 					// curDiag.tabNum = i;
 					jtp.setSelectedIndex(0);
+					closeTab();
 					found = true;
 				}
 			}

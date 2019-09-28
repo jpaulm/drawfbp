@@ -261,8 +261,8 @@ public class Diagram {
 		}
 		*/
 		 
-		boolean found = false;
-		int i = driver.jtp.getTabCount();
+		//boolean found = false;
+		//int i = driver.jtp.getTabCount();
 		/*
 		if (driver.jtp.getTabCount() == 1) {
 			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(0);
