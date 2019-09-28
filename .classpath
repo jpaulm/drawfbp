@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
-
 	<classpathentry kind="src" path="test"/>
 	<classpathentry excluding="test/java/|main/java/|main/resources/" kind="src" path="src"/>
-
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="javaGeom-0.11.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Paul/Documents/GitHub/drawfbp/lib/javaGeom-0.11.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

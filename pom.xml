@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.jpaulmorrison</groupId>
-  <artifactId>drawfbp-all</artifactId>
-  <version>2.18.1</version>
+  <artifactId>drawfbp</artifactId>
+  <version>2.18.2</version>
   <inceptionYear>2016</inceptionYear>
   <licenses>
     <license>
@@ -12,4 +12,12 @@
       <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
     </license>
   </licenses>
+  <dependencies>
+    <dependency>
+      <groupId>math.geom2d</groupId>
+      <artifactId>javaGeom</artifactId>
+      <version>0.11.1</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 </project>

@@ -2,11 +2,12 @@
 
 buildscript {  
     repositories {
-        mavenCentral()
+        mavenCentral()       
     }
     dependencies {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"      
-        //classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
+        //classpath 'com.github.rholder:gradle-one-jar:1.0.4'          
+     
     }
 }
 
@@ -74,7 +75,9 @@ repositories {
 
 dependencies {
           compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
-	compile files('javaGeom-0.11.1.jar')	
+            compile group:'math.geom2d', name:'javaGeom', version:'0.11.1'
+
+		
 	//classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
 }
 
@@ -143,7 +146,7 @@ task fatJar(type: Jar) {
         	"Class-Path": configurations.compile.collect { it.getName() }.join(' '),
         	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
     }
-    baseName = project.name + '-all'
+    baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
@@ -157,7 +160,7 @@ task writeNewPom << {
     pom {
         project {
             groupId 'com.jpaulmorrison'
-            artifactId 'drawfbp-all'
+            artifactId 'drawfbp'
 
  
             version '2.18.2'
@@ -181,7 +184,7 @@ publishing {
        groupId 'com.jpaulmorrison'
         
        //artifact fatJar 
-           artifact 'drawfbp-all'
+           artifact 'drawfbp'
     }
  }
  

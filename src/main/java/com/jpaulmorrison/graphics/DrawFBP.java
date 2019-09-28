@@ -3745,7 +3745,11 @@ public class DrawFBP extends JFrame
 			findJar = true;
 		
 		if (findJar) {
-			if (s != null) {
+			if (s == null) {
+				MyOptionPane.showMessageDialog(this,
+						"Your diagram has Java classes - continue to File Chooser to locate Java class jar file",
+						MyOptionPane.WARNING_MESSAGE);	
+			} else {
 				MyOptionPane.showMessageDialog(this,
 						"JavaFBP jar file location: " + s,
 						MyOptionPane.INFORMATION_MESSAGE);			
