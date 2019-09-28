@@ -144,7 +144,7 @@ public class MyFileChooser extends JFrame
 
 	int showOpenDialog(final boolean saveas, final boolean saving) {
 
-		dialog = new JDialog(driver.frame,
+		dialog = new JDialog(driver,
 				JDialog.ModalityType.APPLICATION_MODAL);
 		// dialog.setUndecorated(false);
 
@@ -501,8 +501,8 @@ public class MyFileChooser extends JFrame
 		panel.add(pan2, BorderLayout.SOUTH);
 		dialog.add(panel);
 
-		Point p = driver.frame.getLocation();
-		Dimension dim = driver.frame.getSize();
+		Point p = driver.getLocation();
+		Dimension dim = driver.getSize();
 		int x_off = 100;
 		int y_off = 100;
 		dialog.setPreferredSize(
@@ -852,7 +852,7 @@ public class MyFileChooser extends JFrame
 		String fileString;
 		LinkedList<String> ll = new LinkedList<String>();
 		if (null == (fileString = driver.readFile(f, !SAVEAS))) {
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"Unable to read file " + f.getName(),
 					MyOptionPane.ERROR_MESSAGE);
 			return null;
@@ -959,7 +959,7 @@ public class MyFileChooser extends JFrame
 		}
 
 		if (ll.isEmpty()) {
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"No components or graphs in file: " + f.getName(),
 					MyOptionPane.ERROR_MESSAGE);
 			// return null;
@@ -1519,7 +1519,7 @@ public class MyFileChooser extends JFrame
 
 				int rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Empty directory or no entry selected",
 							MyOptionPane.ERROR_MESSAGE);
 					return;
@@ -1531,7 +1531,7 @@ public class MyFileChooser extends JFrame
 			}
 			if (s.endsWith(".jar")) {
 				if (s.equals(driver.javaFBPJarFile)) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"JavaFBP jar file cannot be deleted",
 							MyOptionPane.ERROR_MESSAGE);
 					return;
@@ -1542,7 +1542,7 @@ public class MyFileChooser extends JFrame
 			File f = new File(s);
 			if (f.isDirectory()) {
 				if (f.list().length > 0) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Folder '" + f.getName()
 									+ "' not empty - cannot be deleted",
 							MyOptionPane.ERROR_MESSAGE);
@@ -1551,7 +1551,7 @@ public class MyFileChooser extends JFrame
 				}
 			} else {
 				if (-1 != driver.getFileTabNo(s)) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"File '" + f.getName()
 									+ "' cannot be deleted while open",
 							MyOptionPane.ERROR_MESSAGE);
@@ -1585,13 +1585,13 @@ public class MyFileChooser extends JFrame
 				listHead = f.getParent();
 
 			if (!f.exists()) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						v + " " + f.getName() + " doesn't exist",
 						MyOptionPane.ERROR_MESSAGE);
 				// return;
 			} else {
 				f.delete();
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						v + " " + f.getName() + " deleted",
 						MyOptionPane.INFORMATION_MESSAGE);
 				if (s.endsWith(".jar"))
@@ -1629,7 +1629,7 @@ public class MyFileChooser extends JFrame
 				String u = t_dirName.getText();
 				File h = new File(u);
 				if (!h.exists() || !h.isDirectory()) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"File " + u
 									+ " either doesn't exist or is not a directory",
 							MyOptionPane.ERROR_MESSAGE);
@@ -1658,7 +1658,7 @@ public class MyFileChooser extends JFrame
 				int rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
 					if (!saving) {
-						MyOptionPane.showMessageDialog(driver.frame,
+						MyOptionPane.showMessageDialog(driver,
 								"Empty directory or no entry selected",
 								MyOptionPane.ERROR_MESSAGE);
 					}
@@ -1685,7 +1685,7 @@ public class MyFileChooser extends JFrame
 			// }
 
 			if (s == null || s.equals("")) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"No file specified", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -1712,7 +1712,7 @@ public class MyFileChooser extends JFrame
 				t_fileName.setText("");
 
 				if (0 >= currentNode.getChildCount()) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Error in jar file", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -1738,7 +1738,7 @@ public class MyFileChooser extends JFrame
 					if (!saveAs)
 						processOK();
 					else if (selComp != t_fileName) {
-						MyOptionPane.showMessageDialog(driver.frame,
+						MyOptionPane.showMessageDialog(driver,
 								"Folder does not exist: " + f.getAbsolutePath(),
 								MyOptionPane.ERROR_MESSAGE);
 						return;
@@ -1871,7 +1871,7 @@ public class MyFileChooser extends JFrame
 
 				boolean b = f.mkdirs();
 				if (!b)
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Folder not created: " + f.getAbsolutePath(),
 							MyOptionPane.ERROR_MESSAGE);
 				// panel.remove(listView);

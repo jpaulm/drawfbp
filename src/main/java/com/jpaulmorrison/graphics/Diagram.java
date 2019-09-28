@@ -139,7 +139,7 @@ public class Diagram {
 
 			File f = new File(s);
 			if (!f.exists()) {
-				MyOptionPane.showMessageDialog(driver.frame, "Directory '" + s
+				MyOptionPane.showMessageDialog(driver, "Directory '" + s
 						+ "' does not exist - reselect", MyOptionPane.ERROR_MESSAGE);
 
 				f = new File(System.getProperty("user.home"));
@@ -166,7 +166,7 @@ public class Diagram {
 				return null;
 			if (returnVal != MyFileChooser.APPROVE_OPTION) {
 				if (parent.isSubnet) {   
-					int answer = MyOptionPane.showConfirmDialog(driver.frame, 
+					int answer = MyOptionPane.showConfirmDialog(driver, 
 						 "Subnet will be deleted - are you sure you want to do this?", "Save changes",
 							MyOptionPane.YES_NO_CANCEL_OPTION);
 					
@@ -178,26 +178,26 @@ public class Diagram {
 				s = newFile.getAbsolutePath();
 				
 				if (s.endsWith("(empty folder)")) {
-					MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
+					MyOptionPane.showMessageDialog(driver, "Invalid file name: "
 							+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 
 				
 				 if (newFile.getParentFile() == null) {
-				 	MyOptionPane.showMessageDialog(driver.frame, "Missing parent file for: "
+				 	MyOptionPane.showMessageDialog(driver, "Missing parent file for: "
 				 			+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
 				 	return null;
 				 }
 				
 				 if (!(newFile.getParentFile().exists())) {
-				 	MyOptionPane.showMessageDialog(driver.frame, "Invalid file name: "
+				 	MyOptionPane.showMessageDialog(driver, "Invalid file name: "
 				 			+ newFile.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
 				 	return null;
 				 }
 
 				if (s.toLowerCase().endsWith("~")) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Cannot save into backup file: " + s, MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
@@ -211,7 +211,7 @@ public class Diagram {
 						
 						if (!fCP.filter.accept(new File(s))) {    
 							
-							int answer = MyOptionPane.showConfirmDialog(driver.frame, 
+							int answer = MyOptionPane.showConfirmDialog(driver, 
 									"\"" + suff + "\" not valid suffix for " +
 								            fCP.title + " files - change suffix?", "Change suffix?",
 									MyOptionPane.YES_NO_CANCEL_OPTION);
@@ -248,7 +248,7 @@ public class Diagram {
 		int i = driver.getFileTabNo(file.getAbsolutePath());  // see if already open
 		if (i != -1) {
 			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-					driver.frame,
+					driver,
 					"File is open: " + file.getAbsolutePath() + " - overwrite open file?",
 					"Confirm overwrite open file", MyOptionPane.YES_NO_OPTION)))
 				return null;
@@ -280,13 +280,13 @@ public class Diagram {
 		 
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						file.getName() + " is a directory",
 						MyOptionPane.WARNING_MESSAGE);
 				return null;
 			}
 			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-					driver.frame,
+					driver,
 					"Overwrite existing file: " + file.getAbsolutePath()
 							+ "?",
 					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
@@ -295,7 +295,7 @@ public class Diagram {
 			
 		} else {
 			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-					driver.frame,
+					driver,
 					"Create new file: " + file.getAbsolutePath() + "?",
 					"Confirm create", MyOptionPane.YES_NO_OPTION)))
 				return null;
@@ -348,7 +348,7 @@ public class Diagram {
 		}
 		
 		//suggFile = null;
-		MyOptionPane.showMessageDialog(driver.frame, w + " saved: " + file.getName());
+		MyOptionPane.showMessageDialog(driver, w + " saved: " + file.getName());
 		changed = false;
 		return file;
 	}
@@ -367,7 +367,7 @@ public class Diagram {
 		boolean res = true;
 		if (changed) {
 
-			int answer = MyOptionPane.showConfirmDialog(driver.frame, 
+			int answer = MyOptionPane.showConfirmDialog(driver, 
 					 "Save changes to " + name + "?", "Save changes",  
 					MyOptionPane.YES_NO_CANCEL_OPTION);
 			File file = null;
@@ -377,7 +377,7 @@ public class Diagram {
 				
 				file = genSave(diagFile, fCParm[DIAGRAM], null);   
 				if (file == null) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"File not saved");
 					res = false;
 				}
@@ -406,13 +406,13 @@ public class Diagram {
 		    	driver.properties.remove("currentDiagram");
 		}
 		
-		String t = Integer.toString(driver.frame.getBounds().x);
+		String t = Integer.toString(driver.getBounds().x);
 		driver.saveProp("x", t);
-		t = Integer.toString(driver.frame.getBounds().y);
+		t = Integer.toString(driver.getBounds().y);
 		driver.saveProp("y", t);
-		t = Integer.toString(driver.frame.getSize().width);
+		t = Integer.toString(driver.getSize().width);
 		driver.saveProp("width", t);
-		t = Integer.toString(driver.frame.getSize().height);
+		t = Integer.toString(driver.getSize().height);
 		driver.saveProp("height", t);
 		//saveProperties();
 		
@@ -507,7 +507,7 @@ public class Diagram {
 			return;
 		if (choose
 				&& MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog( 
-						driver.frame, "Do you want to delete this block?", "Delete block",
+						driver, "Do you want to delete this block?", "Delete block",
 						 MyOptionPane.YES_NO_OPTION))
 			return;
 
@@ -528,7 +528,7 @@ public class Diagram {
 		blocks.remove(aid);
 		// changeCompLang();
 
-		driver.frame.repaint();
+		driver.repaint();
 	}
 
 	void excise(Enclosure enc /*, String subnetName */) {	
@@ -612,9 +612,9 @@ public class Diagram {
 				//arrow.type = "I";
 				sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
-				driver.frame.repaint();
+				driver.repaint();
 				
-				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+				String ans = (String) MyOptionPane.showInputDialog(driver,
 						"Enter or change portname", 
 						"Enter external input port name",
 						MyOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -659,9 +659,9 @@ public class Diagram {
 				//arrow.type = "O";
 				sbnDiag.blocks.put(new Integer(eb.id), eb);
 				driver.selBlock = eb;
-				driver.frame.repaint();
+				driver.repaint();
 				
-				String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+				String ans = (String) MyOptionPane.showInputDialog(driver,
 						"Enter or change portname",   
 						"Enter external output port name",
 						MyOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -690,7 +690,7 @@ public class Diagram {
 		subnetBlock.desc = w;
 		
 			
-		driver.frame.repaint();
+		driver.repaint();
 
 		
 		// driver.curDiag.changed = true;
@@ -698,7 +698,7 @@ public class Diagram {
 
 		driver.curDiag = sbnDiag;
 		sbnDiag.motherBlock.isSubnet = true;
-		driver.frame.repaint();
+		driver.repaint();
 		
 		File file = null;
 		
@@ -706,13 +706,13 @@ public class Diagram {
 		
 		//String s = buildFile();  within gensave...
 		if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(    
-				driver.frame, "Subnet created - please assign .drw file and save",
+				driver, "Subnet created - please assign .drw file and save",
 				"Name and save subnet?", MyOptionPane.YES_NO_CANCEL_OPTION)) {
 						
 			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null);
 			
 			if (file == null) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"File not saved - exiting excise",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -722,9 +722,9 @@ public class Diagram {
 			//int i = driver.getFileTabNo(sbnDiag.diagFile.getAbsolutePath());
 			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);      
 			b.label.setText(sbnDiag.diagFile.getAbsolutePath());
-			driver.frame.repaint();
+			driver.repaint();
 
-			MyOptionPane.showMessageDialog(driver.frame, "Give subnet diagram a description",    
+			MyOptionPane.showMessageDialog(driver, "Give subnet diagram a description",    
 			 	//"Enter subnet description",
 			 	MyOptionPane.PLAIN_MESSAGE);
 			
@@ -749,7 +749,7 @@ public class Diagram {
 			driver.closeTab();   // close selected tab
 		}
 
-		driver.frame.repaint();
+		driver.repaint();
 
 		return;
 	}

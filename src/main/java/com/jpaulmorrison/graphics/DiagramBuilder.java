@@ -431,7 +431,7 @@ public class DiagramBuilder {
 			
 			Arrow a2 = a.findLastArrowInChain();
 			if (a2 == null) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"Can't find connecting arrow",
 						MyOptionPane.ERROR_MESSAGE);
 				break;

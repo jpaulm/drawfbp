@@ -489,7 +489,7 @@ public class Block implements ActionListener {
 
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
 
-		// driver.frame.setSize(driver.maxX, driver.maxY);
+		// driver.setSize(driver.maxX, driver.maxY);
 		if (this instanceof ProcessBlock && javaComp != null) {
 			buildMetadata();
 		}
@@ -512,7 +512,7 @@ public class Block implements ActionListener {
 			}
 			//if (driver.tryFindJarFile) {
 				if (!driver.locateJavaFBPJarFile(false)) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
 					return;
 				} 
@@ -566,14 +566,14 @@ public class Block implements ActionListener {
 			
 			} catch (ClassNotFoundException e) {
 				//System.out.println("Missing class name in " + fullClassName);
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"Class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
 				javaComp = null;
 			} catch (NoClassDefFoundError e) {
 				//System.out.println("Missing internal class name in "
 				//		+ fullClassName);
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"Internal class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
 				javaComp = null;
@@ -673,7 +673,7 @@ public class Block implements ActionListener {
 			//
 			
 			if (cs != null && cs == obj.getClass()){
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"Class superclass is Object", MyOptionPane.ERROR_MESSAGE);				
 				return null;
 			}
@@ -683,7 +683,7 @@ public class Block implements ActionListener {
 			//if (!(superCls.equals(compClass.getCanonicalName())  ||
 			//		superCls.equals(subnetClass.getCanonicalName()))) {
 			if (cs != compClass && cs != subnetClass) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"Class file not a valid FBP component or subnet", MyOptionPane.ERROR_MESSAGE);				
 				return null;
 			}
@@ -700,7 +700,7 @@ public class Block implements ActionListener {
 			}
 
 			if (mainPresent) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"Class file contains a 'main' method", MyOptionPane.ERROR_MESSAGE);
 				return null;
 			} else {
@@ -915,7 +915,7 @@ public class Block implements ActionListener {
 	
 	void displayPortInfo() {
 		buildMetadata();   
-		final JDialog jdialog = new JDialog(driver.frame);
+		final JDialog jdialog = new JDialog(driver);
 		jdialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				jdialog.dispose();
@@ -1063,8 +1063,8 @@ public class Block implements ActionListener {
 		//jdialog.pack();  
 		
 		 
-		Point p = driver.frame.getLocation();
-		Dimension dim = driver.frame.getSize();
+		Point p = driver.getLocation();
+		Dimension dim = driver.getSize();
 		//int x_off = 100;
 		//int y_off = 100;
 		//jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
@@ -1090,7 +1090,7 @@ public class Block implements ActionListener {
 		jdialog.validate();
 		panel.repaint();
 		jdialog.repaint();
-		driver.frame.repaint();
+		driver.repaint();
 	}
 
 	
@@ -1118,7 +1118,7 @@ public class Block implements ActionListener {
 		boolean input = (type.indexOf("input") > -1 || type.indexOf("param") > -1);
 		boolean output = (type.indexOf("output") > -1);
 		if (!input && !output) {
-			MyOptionPane.showMessageDialog(driver.frame, "Port type of \""
+			MyOptionPane.showMessageDialog(driver, "Port type of \""
 					+ port + "\" must be \"input\" or \"output\"", MyOptionPane.ERROR_MESSAGE);
 			return 1;
 		}
@@ -1360,7 +1360,7 @@ public class Block implements ActionListener {
 
 		if (s.equals("Edit Item")) { // one-line descriptions
 
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver,
 					"Enter or change text", "Edit Item",
 					MyOptionPane.PLAIN_MESSAGE, null, null, desc);
 			if (ans != null/* && ans.length() > 0*/) {
@@ -1396,7 +1396,7 @@ public class Block implements ActionListener {
 							
 					}
 			}
-			driver.frame.update(driver.osg);
+			driver.update(driver.osg);
 			diag.changed = true;
 			return;
 		}
@@ -1428,7 +1428,7 @@ public class Block implements ActionListener {
 			if (isSubnet)
 				return;
 			if (codeFileName == null) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"No code associated with block", MyOptionPane.WARNING_MESSAGE);
 				return;
 			}
@@ -1453,7 +1453,7 @@ public class Block implements ActionListener {
 		if (s.equals("Display Subnet")) {
 
 			if (subnetFileName == null) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"Subnet not selected", MyOptionPane.ERROR_MESSAGE);
 			} else {
 				String t = subnetFileName;
@@ -1483,7 +1483,7 @@ public class Block implements ActionListener {
 			isSubnet = false;
 			diag.changed = true;
 			//diag.driver.repaint();
-			driver.frame.repaint();
+			driver.repaint();
 			return;
 
 		}
@@ -1491,13 +1491,13 @@ public class Block implements ActionListener {
 		if (s.equals("Display Full Class Name")) {
 
 			if (javaComp == null && fullClassName == null) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"No component code assigned", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			if ((javaComp == null) != (fullClassName == null)) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"One of class name and full class name is null, but the other isn't:\n"
 						+ "class name - " + javaComp + "\n"
 						+ "full class name - " + fullClassName, MyOptionPane.ERROR_MESSAGE);
@@ -1505,7 +1505,7 @@ public class Block implements ActionListener {
 			}
 
 			if (javaComp != null || fullClassName != null) {
-				MyOptionPane.showMessageDialog(driver.frame, fullClassName + ".class");
+				MyOptionPane.showMessageDialog(driver, fullClassName + ".class");
 			}
 			return;
 		}
@@ -1513,13 +1513,13 @@ public class Block implements ActionListener {
 			multiplex = !multiplex;
 			if (!multiplex)
 				mpxfactor = null;
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 
 		}
 		if (s.equals("Set Multiplexing Factor")) {
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver,
 					"Enter or change text", "Set Multiplexing Factor",
 					MyOptionPane.PLAIN_MESSAGE, null, null, mpxfactor);
 			if ((ans != null) && (ans.length() > 0)) {
@@ -1537,7 +1537,7 @@ public class Block implements ActionListener {
 		}
 		if (s.equals("Display Description and Port Info")) {
 			if (javaComp == null) {
-				MyOptionPane.showMessageDialog(driver.frame,
+				MyOptionPane.showMessageDialog(driver,
 						"No class information associated with block", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -1550,7 +1550,7 @@ public class Block implements ActionListener {
 				&& s.equals("Toggle Substream Sensitive / Normal")) {
 			ExtPortBlock eb = (ExtPortBlock) this;
 			eb.substreamSensitive = !eb.substreamSensitive;
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 
@@ -1558,21 +1558,21 @@ public class Block implements ActionListener {
 		if (s.equals("Edit Enclosure Label")) {
 			// Block must be an Enclosure
 			//diag.cEncl = (Enclosure) this;
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver,
 					"Enter or change text", "Edit enclosure label",
 					MyOptionPane.PLAIN_MESSAGE, null, null,
 					/*diag.cEncl.*/desc);
 			if (ans != null/* && ans.length() > 0*/) {
 				/*diag.cEncl.*/desc = ans;
 			}
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 
 		}
 		if (s.equals("Edit Subnet Port Name")) {
 			// Block must be an Enclosure
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"Deprecated - do excise first, then edit subnet");
 			
 			return;
@@ -1580,7 +1580,7 @@ public class Block implements ActionListener {
 		}
 		if (s.equals("Toggle Substream Sensitivity")) {
 			// Block must be an Enclosure
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"Deprecated - do excise first, then edit subnet");
 			
 			return;
@@ -1592,7 +1592,7 @@ public class Block implements ActionListener {
 			enc.draggingContents = true;
 			driver.blockSelForDragging = this;
 			diag.findEnclosedBlocksAndArrows(enc);
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 		}
@@ -1602,7 +1602,7 @@ public class Block implements ActionListener {
 			
 			// remember no file names need to have been filled in at this point
 			
-			//String ans = (String) MyOptionPane.showInputDialog(driver.frame,					
+			//String ans = (String) MyOptionPane.showInputDialog(driver,					
 			//		"Enter subnet diagram name - can be changed later",
 			//		"Enter subnet name",
 			//		MyOptionPane.PLAIN_MESSAGE, null, null, null);
@@ -1643,21 +1643,21 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			//driver.curDiag.title = ans;
 			
 			//driver.curDiag.changed = true;
-			driver.frame.repaint();
+			driver.repaint();
 			return;
 
 		}
 		if (s.equals("Toggle Visible/Invisible")) {
 			visible = !visible;
 			diag.changed = true;
-			driver.frame.repaint();
+			driver.repaint();
 			return;
 		}
 		if (s.equals("Toggle Colour")) {
 			Enclosure enc = (Enclosure) this;
 			enc.coloured = !enc.coloured;
 			diag.changed = true;
-			driver.frame.repaint();
+			driver.repaint();
 			return;
 		}
 		
@@ -1668,11 +1668,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			diag.changed = true;
 			driver.selBlock = null;
 			// diag.changeCompLang();
-			driver.frame.repaint();
+			driver.repaint();
 		}
 		// if (s.equals("Exit")) {
 		// diag.foundBlock = null;
-		// driver.frame.repaint();
+		// driver.repaint();
 		// }
 
 	}
@@ -1715,7 +1715,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		String init = (option < DrawFBP.MODIFY) ? "Create " : "Modify ";		
 		
 
-		int result = MyOptionPane.showOptionDialog(driver.frame, new Object[]{ 
+		int result = MyOptionPane.showOptionDialog(driver, new Object[]{ 
 				"Enter/change name or description", pane}, init + t);		
 		
 		//if (option > DrawFBP.EDIT_NO_CANCEL) {
@@ -1727,7 +1727,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		diag.changed = true;
 
-		//driver.frame.repaint();
+		//driver.repaint();
 
 		return true;
 	}
@@ -1736,7 +1736,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		//int xa, ya;
 		if (subnetFileName != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
-					driver.frame,
+					driver,
 					"Block already associated with diagram (" + subnetFileName
 							+ ") - change it?",
 					"Change diagram", MyOptionPane.YES_NO_OPTION)) {
@@ -1775,7 +1775,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			int i = dFN.lastIndexOf("/");
 			dFN = dFN.substring(i + 1);
 			
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver,
 					   "Enter or change text", "Edit block description",
 					MyOptionPane.PLAIN_MESSAGE, null, null, desc);
 			
@@ -1786,7 +1786,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			javaComp = null;
 			
 			
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"Subnet " + dFN + " associated with " + desc + " block",
 					MyOptionPane.INFORMATION_MESSAGE);
 			
@@ -1794,7 +1794,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		
 
-		driver.frame.repaint();
+		driver.repaint();
 	}
 
 	void selectJavaClass() throws MalformedURLException {
@@ -1803,7 +1803,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		if (javaComp != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
-					driver.frame,
+					driver,
 					"Block already associated with class ("
 							+ javaComp.getName() + ") - change it?",
 					"Change class", MyOptionPane.YES_NO_OPTION)) {
@@ -1814,7 +1814,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		}
 
 		if (!driver.locateJavaFBPJarFile(false)) {
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -1864,7 +1864,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 						javaComp = null;
 					}
 					if (javaComp == null) {
-						MyOptionPane.showMessageDialog(driver.frame,
+						MyOptionPane.showMessageDialog(driver,
 								"Problem with classes in selected file: " + res2, MyOptionPane.ERROR_MESSAGE);
 						return;
 					} 
@@ -1885,7 +1885,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				else {
 					cFile = new File(fs);
 					if (cFile == null || !(cFile.exists())) {
-						MyOptionPane.showMessageDialog(driver.frame,
+						MyOptionPane.showMessageDialog(driver,
 								"Unable to find file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
 						return;
 					}
@@ -1940,7 +1940,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				}
 				
 				if (javaComp == null) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Class '" + driver.getSelFile(fc) + "' invalid class ("
 									+ error + ")", MyOptionPane.ERROR_MESSAGE);
 				}
@@ -1964,7 +1964,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		}
 
 		if (javaComp == null) {
-			MyOptionPane.showMessageDialog(driver.frame, "No class selected", MyOptionPane.ERROR_MESSAGE);
+			MyOptionPane.showMessageDialog(driver, "No class selected", MyOptionPane.ERROR_MESSAGE);
 		} else {
 			if (!fullClassName.equals(oldFullClassName))
 				displayPortInfo();
@@ -1983,7 +1983,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		GenLang gl = driver.curDiag.diagLang;
 		if (codeFileName != null) {
-			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(driver.frame,
+			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(driver,
 					"Block already associated with source code (" + codeFileName
 							+ ") - change it?",
 					"Change source code", MyOptionPane.YES_NO_OPTION))
@@ -1993,7 +1993,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		if (!(gl.label.equals("Java")) && javaComp != null) {
 			if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-					driver.frame,
+					driver,
 					"You have selected a non-Java language and there is a Java class associated with this block - go ahead?",
 					"Java previously used", MyOptionPane.YES_NO_OPTION)) {
 
@@ -2003,7 +2003,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			}
 		}
 
-		String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+		String ans = (String) MyOptionPane.showInputDialog(driver,
 				"Edit arbitrary string or browse (enter # to browse)",
 				"Enter/change source code name", MyOptionPane.PLAIN_MESSAGE,
 				null, null, codeFileName);
@@ -2031,7 +2031,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				cFile = new File(driver.getSelFile(fc));
 				if (cFile == null || !(cFile.exists())) {
 					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-							driver.frame,
+							driver,
 							"You have entered a file name that does not exist - go ahead?",
 							"File does not exist", MyOptionPane.YES_NO_OPTION)) {
 						return;
@@ -2052,7 +2052,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 	void showCode() {
 
 		if (codeFileName == null) {
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"No code associated with block", MyOptionPane.ERROR_MESSAGE);
 			return;
 		}

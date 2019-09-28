@@ -94,7 +94,7 @@ public class IIPBlock extends Block {
 			}
 		}
 		if (!stk.isEmpty() || inQuotes || warning)
-			MyOptionPane.showMessageDialog(driver.frame,
+			MyOptionPane.showMessageDialog(driver,
 					"Brackets not balanced in IIP string", MyOptionPane.ERROR_MESSAGE);
 		return res;
 	}

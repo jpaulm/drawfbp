@@ -71,7 +71,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 		String prompt = "";
 
-		jDialog = new JDialog(driver.frame, Dialog.ModalityType.APPLICATION_MODAL);
+		jDialog = new JDialog(driver, Dialog.ModalityType.APPLICATION_MODAL);
 		jDialog.setFocusable(true);
 		DrawFBP.applyOrientation(jDialog);
 		jDialog.addWindowListener(new WindowAdapter() {
@@ -80,7 +80,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			}
 			// }
 		});
-		//Dimension dim = driver.frame.getSize();
+		//Dimension dim = driver.getSize();
 		//jDialog.setPreferredSize(dim);
 		jDialog.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent ev) {
@@ -173,7 +173,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	
 	void done() {
 		jDialog.setVisible(false);
-		driver.frame.repaint();
+		driver.repaint();
 	}
 	
 	public void valueChanged(ListSelectionEvent e) {
@@ -190,7 +190,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 					fixedFont = fixedFonts[i];
 					fFChanged = true;
 					MyOptionPane
-					.showMessageDialog(driver.frame, "Font '" + fixedFont 
+					.showMessageDialog(driver, "Font '" + fixedFont 
 							+ "' selected as font for fixed-size characters.");
 					lb1.setText("Fixed Fonts (current: " + fixedFont + ")");
 					lb1.repaint();
@@ -199,7 +199,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 					generalFont = generalFonts[i];
 					gFChanged = true;
 					MyOptionPane
-						.showMessageDialog(driver.frame, "Font '" + generalFont
+						.showMessageDialog(driver, "Font '" + generalFont
 								+ "' selected as font for general characters.");
 					lb2.setText("General Fonts (current: " + generalFont + ")");
 					lb2.repaint();

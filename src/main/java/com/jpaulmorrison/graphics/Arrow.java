@@ -548,7 +548,7 @@ public class Arrow implements ActionListener {
 
 		if (s.equals("Edit Upstream Port Name")) {
 
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver,
 					   "Enter or change text", "Edit upstream port name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, upStreamPort);
 			
@@ -577,16 +577,16 @@ public class Arrow implements ActionListener {
 
 				if (b.type.equals(Block.Types.EXTPORT_IN_BLOCK)
 						|| b instanceof IIPBlock) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Upstream port must be blank", MyOptionPane.ERROR_MESSAGE);
 					upStreamPort = "";
 				}
 			}
-			driver.frame.repaint();
+			driver.repaint();
 			return;
 
 		}  if (s.equals("Edit Downstream Port Name") && endsAtBlock) {
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver,
 					 "Enter or change text", "Edit downstream port name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, downStreamPort);
 			
@@ -609,7 +609,7 @@ public class Arrow implements ActionListener {
 				}
 				if (found) {
 					String proc = driver.curDiag.blocks.get(toId).desc;
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
 					arr.downStreamPort = "";
 					return;
@@ -618,13 +618,13 @@ public class Arrow implements ActionListener {
 				arr.downStreamPort = ans;
 				
 				if (b.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Downstream port must be blank", MyOptionPane.ERROR_MESSAGE);
 					arr.downStreamPort = "";
 				}
 				
 			}
-			driver.frame.repaint();
+			driver.repaint();
 			return;			
 		} 
 		
@@ -636,26 +636,26 @@ public class Arrow implements ActionListener {
 			else
 				capString = Integer.toString(capacity);
 			
-			String ans = (String) MyOptionPane.showInputDialog(driver.frame,
+			String ans = (String) MyOptionPane.showInputDialog(driver,
 					"Enter or change text", "Set Capacity",
 					MyOptionPane.PLAIN_MESSAGE, null, null, capString);
 			if ((ans != null) && (ans.length() > 0)) {
 				try {
 					capacity = Integer.parseInt(ans);
 				} catch (NumberFormatException e2) {
-					MyOptionPane.showMessageDialog(driver.frame,
+					MyOptionPane.showMessageDialog(driver,
 							"Capacity must be numeric", MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				
 			}
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 			
 		}  if (s.equals("Remove Capacity")) {			
 			capacity = -1;			
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 
@@ -664,7 +664,7 @@ public class Arrow implements ActionListener {
 				upStreamPort = "*";
 			else
 				upStreamPort = null;
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 		}  if (s.equals("Toggle Downstream Port Automatic / Normal")) {
@@ -672,34 +672,34 @@ public class Arrow implements ActionListener {
 				downStreamPort = "*";
 			else
 				downStreamPort = null;
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 
 		}  if (s.equals("Toggle DropOldest")) {
 			dropOldest = !dropOldest;	
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 			
 		}  if (s.equals("Drag Tail")) {
 			tailMarked = true;
 			driver.arrowEndForDragging = this;
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 
 		}  if (s.equals("Drag Head")) {
 			headMarked = true;
 			driver.arrowEndForDragging = this;
-			driver.frame.repaint();
+			driver.repaint();
 			diag.changed = true;
 			return;
 
 		}  if (s.equals("Drag New or Existing Bend")) {
 			createBend(driver.curx, driver.cury);
 			diag.changed = true;
-			driver.frame.repaint();			
+			driver.repaint();			
 			return;
 			
 		} else if (s.equals("Add Extra Arrowhead")) {
@@ -725,26 +725,26 @@ public class Arrow implements ActionListener {
 			if (driver.pointInLine(p, fx, fy, tx, ty)) 
 				extraArrowhead = new Arrowhead(fx, fy, driver.curx, driver.cury);	
 			diag.changed = true;
-			driver.frame.repaint();
+			driver.repaint();
 			return;
 			
 		}  if (s.equals("Remove Extra Arrowhead")) {
 			extraArrowhead = null;
 			diag.changed = true;
-			driver.frame.repaint();
+			driver.repaint();
 			return;
 			 
 		} else if (s.equals("Delete")) {
 
 			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-					driver.frame, "Do you want to delete this arrow?", "Delete arrow",
+					driver, "Do you want to delete this arrow?", "Delete arrow",
 					 MyOptionPane.YES_NO_OPTION)) {
 				diag.delArrow(this);
 
 				diag.changed = true;
 				driver.selArrow = null;
 				driver.currentArrow = null;
-				driver.frame.repaint();
+				driver.repaint();
 				
 			}
 			

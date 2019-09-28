@@ -60,7 +60,7 @@ public class DrawFBP extends JFrame
 
 	static final long serialVersionUID = 111L;
 	//private static final DrawFBP DrawFBP = null;
-	//static DrawFBP driver = DrawFBP;
+	DrawFBP driver = this;
 
 	JLabel diagDesc;
 
@@ -74,7 +74,7 @@ public class DrawFBP extends JFrame
 	
 	File currentImageDir = null;
 
-	JFrame frame;
+	//JFrame this;
 
 	Block blockSelForDragging = null;
 
@@ -295,7 +295,7 @@ public class DrawFBP extends JFrame
 		
 		try {
 		scalingFactor = 1.0d;
-		//driver = this;
+		driver = this;
 
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
@@ -343,16 +343,16 @@ public class DrawFBP extends JFrame
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
 
-		frame = this;
-		frame.setTitle("DrawFBP Diagram Generator");
-		// SwingUtilities.updateComponentTreeUI(frame);
-		// frame = new JFrame("DrawFBP Diagram Generator");
-		frame.setUndecorated(false); // can't change size of JFrame title,
+		//this = this;
+		setTitle("DrawFBP Diagram Generator");
+		// SwingUtilities.updateComponentTreeUI(this);
+		// this = new JFrame("DrawFBP Diagram Generator");
+		setUndecorated(false); // can't change size of JFrame title,
 										// though!
 		defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
-		frame.setCursor(defaultCursor);
+		setCursor(defaultCursor);
 
-		applyOrientation(frame);
+		applyOrientation(this);
 
 		int w = (int) dim.getWidth();
 		int h = (int) dim.getHeight();
@@ -495,23 +495,23 @@ public class DrawFBP extends JFrame
 
 		if (image != null) {
 			favicon = new ImageIcon(image);
-			frame.setIconImage(image);
+			setIconImage(image);
 
 		} else {
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Couldn't find file: DrawFBP-logo-small.png",
 					MyOptionPane.ERROR_MESSAGE);
 			// return null;
 		}
 
-		// frame.repaint();
-		// frame.update(frame.getGraphics());
-		frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		// repaint();
+		// update(getGraphics());
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		closeTabAction = new CloseTabAction();
 		closeAppAction = new CloseAppAction();
 		escapeAction = new EscapeAction();
 
-		frame.addWindowListener(new WindowAdapter() {
+		addWindowListener(new WindowAdapter() {
 
 			@Override
 			public void windowClosing(WindowEvent ev) {
@@ -525,10 +525,10 @@ public class DrawFBP extends JFrame
 
 		jtp.getActionMap().put("CLOSE", escapeAction);
 
-		Container cont = frame.getContentPane();
+		Container cont = getContentPane();
 		buildUI(cont);
 
-		frame.add(Box.createRigidArea(new Dimension(0, 10)));
+		add(Box.createRigidArea(new Dimension(0, 10)));
 
 		String t = properties.get("x");
 		int x = 0, y = 0, w2 = 1200, h2 = 800;
@@ -538,7 +538,7 @@ public class DrawFBP extends JFrame
 		if (t != null)
 			y = Integer.parseInt(t);
 		Point p = new Point(x, y);
-		frame.setLocation(p);
+		setLocation(p);
 
 		t = properties.get("width");
 		if (t != null)
@@ -548,18 +548,18 @@ public class DrawFBP extends JFrame
 			h2 = Integer.parseInt(t);
 
 		Dimension dim2 = new Dimension(w2, h2);
-		frame.setPreferredSize(dim2);
-		// frame.repaint();
+		setPreferredSize(dim2);
+		// repaint();
 		// Display the window.
-		frame.pack();
+		pack();
 
-		frame.setVisible(true);
-		frame.addComponentListener(this);
+		setVisible(true);
+		addComponentListener(this);
 
-		frame.repaint();
+		repaint();
 
-		// wDiff = frame.getWidth() - curDiag.area.getWidth();
-		// hDiff = frame.getHeight() - curDiag.area.getHeight();
+		// wDiff = getWidth() - curDiag.area.getWidth();
+		// hDiff = getHeight() - curDiag.area.getHeight();
 
 				
 		//if (diagramName == null) {          // See if a parameter was passed to the jar file....
@@ -570,7 +570,7 @@ public class DrawFBP extends JFrame
 		boolean small = (diagramName) == null ? false : true;
 
 		if (!small) // try suppressing this...
-			new SplashWindow(frame, 3000, this, small); // display
+			new SplashWindow(this, 3000, this, small); // display
 		// for 3.0 secs, or until mouse is moved
 
 		if (diagramName != null) {
@@ -578,7 +578,7 @@ public class DrawFBP extends JFrame
 					"Open " + diagramName));
 		}
 
-		// frame.repaint();
+		// repaint();
 
 	}
 
@@ -612,7 +612,7 @@ public class DrawFBP extends JFrame
 				}
 				// curDiag = diag;
 
-				frame.repaint();
+				repaint();
 
 			}
 		};
@@ -738,7 +738,7 @@ public class DrawFBP extends JFrame
 		box2.add(Box.createRigidArea(new Dimension(10, 0)));
 		box2.add(up);
 		// box2.add(Box.createHorizontalStrut(0));
-		frame.pack();
+		pack();
 
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
@@ -769,7 +769,7 @@ public class DrawFBP extends JFrame
 
 		BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
 		// loadImage("javaIcon.jpg");
-		frame.setIconImage(image);
+		setIconImage(image);
 		leafIcon = new ImageIcon(image);
 
 		image = loadImage("javaIcon.jpg");
@@ -832,7 +832,7 @@ public class DrawFBP extends JFrame
 
 		BufferedImage image = null;
 		if (is == null) {
-			MyOptionPane.showMessageDialog(frame, "Missing icon: " + s,
+			MyOptionPane.showMessageDialog(this, "Missing icon: " + s,
 					MyOptionPane.ERROR_MESSAGE);
 		} else {
 			try {
@@ -1099,7 +1099,7 @@ public class DrawFBP extends JFrame
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
 		
-		frame.repaint(); 
+		repaint(); 
 		
 		//diag.fCParm[Diagram.DIAGRAM] = diag.new FileChooserParm("Diagram", "currentDiagramDir",
 		//		"Specify diagram name in diagram directory", ".drw",
@@ -1202,7 +1202,7 @@ public class DrawFBP extends JFrame
 
 			//jtp.setSelectedIndex(curDiag.tabNum);
 
-			frame.repaint();
+			repaint();
 
 			return;
 
@@ -1223,9 +1223,9 @@ public class DrawFBP extends JFrame
 				}
 				changeLanguage(gl);
 
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Language group changed to " + currLang.showLangs()+ "\nNote: some File and Block-related options will have changed");
-				frame.repaint();
+				repaint();
 
 				return;
 			}
@@ -1238,14 +1238,14 @@ public class DrawFBP extends JFrame
 		if (s.equals("Generate .fbp code")) {
 
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(frame, "No components specified",
+				MyOptionPane.showMessageDialog(this, "No components specified",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			if (curDiag.title == null || curDiag.title.equals("(untitled)")) {
 
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Untitled diagram - please do Save first",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -1253,7 +1253,7 @@ public class DrawFBP extends JFrame
 
 			CodeManager mc = new CodeManager(curDiag);
 			if (!mc.genFbpCode())
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Error in code generation", MyOptionPane.ERROR_MESSAGE);
 
 			return;
@@ -1263,14 +1263,14 @@ public class DrawFBP extends JFrame
 
 		if (s.startsWith("Generate ")) {
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(frame, "No components specified",
+				MyOptionPane.showMessageDialog(this, "No components specified",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			if (curDiag.title == null || curDiag.title.equals("(untitled)")) {
 
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Untitled diagram - please do Save first",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -1390,10 +1390,10 @@ public class DrawFBP extends JFrame
 			w1 = curDiag.area.getWidth();
 			h1 = curDiag.area.getHeight();
 			Rectangle rect = new Rectangle(x1, y1, w1, h1);
-			PrintableDocument pd = new PrintableDocument(frame.getContentPane(),
+			PrintableDocument pd = new PrintableDocument(getContentPane(),
 					this);
 
-			// PrintableDocument.printComponent(frame.getContentPane());
+			// PrintableDocument.printComponent(getContentPane());
 			pd.setRectangle(rect); // doesn't seem to make a difference!
 			pd.print();
 			return;
@@ -1411,9 +1411,9 @@ public class DrawFBP extends JFrame
 		if (s.equals("Toggle Pan Switch")) {
 			panSwitch = !panSwitch;
 			// if (panSwitch)
-			// frame.setCursor(openPawCursor);
+			// setCursor(openPawCursor);
 			// else
-			// frame.setCursor(defaultCursor);
+			// setCursor(defaultCursor);
 			return;
 		}
 
@@ -1467,7 +1467,7 @@ public class DrawFBP extends JFrame
 			//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
 			Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 			
-			FontMetrics metrics = frame.getFontMetrics(f);
+			FontMetrics metrics = getFontMetrics(f);
 			String t = curDiag.desc;
 			byte[] str = t.getBytes();
 			int width = metrics.bytesWidth(str, 0, t.length());
@@ -1513,7 +1513,7 @@ public class DrawFBP extends JFrame
 			file = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], combined);
 			// file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
 			if (file == null) {
-				MyOptionPane.showMessageDialog(frame, "File not saved");
+				MyOptionPane.showMessageDialog(this, "File not saved");
 				// curDiag.imageFile = null;
 				g.dispose();
 				return;
@@ -1571,7 +1571,7 @@ public class DrawFBP extends JFrame
 			try {
 				image = ImageIO.read(fFile);
 			} catch (IOException e1) {
-				MyOptionPane.showMessageDialog(frame, "Could not get image: " + fFile.getAbsolutePath(),
+				MyOptionPane.showMessageDialog(this, "Could not get image: " + fFile.getAbsolutePath(),
 						MyOptionPane.ERROR_MESSAGE);
 				return;
  
@@ -1592,7 +1592,7 @@ public class DrawFBP extends JFrame
 			jLabel.addComponentListener(this);
 			//jLabel.setOpaque(false);
 			popup.add(jLabel);
-			popup.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			popup.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		    popup.setPreferredSize(new Dimension(img.getWidth(), img.getHeight()));
 		    popup.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
 		            .getScreenSize().getWidth() / 2 - img.getWidth() / 2),
@@ -1615,7 +1615,7 @@ public class DrawFBP extends JFrame
 			popup.setVisible(true);
 			popup.setAlwaysOnTop(true);
 			popup.repaint();
-			frame.repaint();
+			repaint();
 			return;
 		}
 
@@ -1638,7 +1638,7 @@ public class DrawFBP extends JFrame
 					boolean res = true;
 
 					if (jhallJarFile == null) {
-						int response = MyOptionPane.showConfirmDialog(frame,
+						int response = MyOptionPane.showConfirmDialog(this,
 								// "Locate it?",
 								"Locate the standard JavaHelp jar file (javax.help) -\n"
 										+ "and specify the folder where you will keep it -\n" 
@@ -1647,7 +1647,7 @@ public class DrawFBP extends JFrame
 						if (response == MyOptionPane.OK_OPTION)
 							res = locateJhallJarFile(false);
 						else {
-							MyOptionPane.showMessageDialog(frame,
+							MyOptionPane.showMessageDialog(this,
 									"No DrawFBP Help jar file located",
 									MyOptionPane.ERROR_MESSAGE);
 							res = false;
@@ -1662,7 +1662,7 @@ public class DrawFBP extends JFrame
 
 				File jFile = new File(jhallJarFile);
 				if (!(jFile.exists())) {
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"DrawFBP Help jar file shown in properties does not exist\n"
 									+ "Use File/Locate DrawFBP Help File, and try Help again",
 							MyOptionPane.ERROR_MESSAGE);
@@ -1683,7 +1683,7 @@ public class DrawFBP extends JFrame
 				}
 
 				if (helpSetClass == null) {
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"HelpSet class not found in jar file or invalid",
 							MyOptionPane.ERROR_MESSAGE);
 					return;
@@ -1703,7 +1703,7 @@ public class DrawFBP extends JFrame
 
 					jHelpClass = cl.loadClass("javax.help.JHelp");
 					if (jHelpClass == null) {
-						MyOptionPane.showMessageDialog(frame,
+						MyOptionPane.showMessageDialog(this,
 								"JHelp class not found in jar file",
 								MyOptionPane.ERROR_MESSAGE);
 						return;
@@ -1712,14 +1712,14 @@ public class DrawFBP extends JFrame
 					jHelpViewer = (JComponent) conjh.newInstance(hs);
 
 				} catch (Exception e2) {
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"HelpSet could not be processed: " + e2,
 							MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
-			// Create a new frame.
-			popup2 = new JDialog(frame);
+			// Create a new 
+			popup2 = new JDialog(this);
 			popup2.setTitle("Help DrawFBP");
 			popup2.setIconImage(favicon.getImage());
 			applyOrientation(popup2);
@@ -1742,16 +1742,16 @@ public class DrawFBP extends JFrame
 
 			jHelpViewer.getActionMap().put("CLOSE", escapeAction);
 
-			// frame2.setPreferredSize(frame.getPreferredSize());
+			// frame2.setPreferredSize(getPreferredSize());
 			// Add the created helpViewer to it.
 			popup2.getContentPane().add(jHelpViewer);
 			// Set a default close operation.
-			popup2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			// Make the frame visible.
+			popup2.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			// Make the this visible.
 			popup2.setVisible(true);
 			popup2.pack();
-			Dimension dim = frame.getSize();
-			Point p = frame.getLocation();
+			Dimension dim = getSize();
+			Point p = getLocation();
 			int x_off = 100;
 			int y_off = 100;
 			popup2.setPreferredSize(
@@ -1797,9 +1797,9 @@ public class DrawFBP extends JFrame
 					+ "****************************************************\n");
 
 			ta.setFont(f);
-			final JDialog popup = new JDialog(frame);
+			final JDialog popup = new JDialog(this);
 			popup.add(ta, BorderLayout.CENTER);
-			Point p = frame.getLocation();
+			Point p = getLocation();
 			// popup.setPreferredSize(new Dimension(60,20));
 			popup.pack();
 			popup.setLocation(p.x + 200, p.y + 100);
@@ -1821,7 +1821,7 @@ public class DrawFBP extends JFrame
 			popup.requestFocusInWindow();
 
 			popup.repaint();
-			frame.repaint();
+			repaint();
 			return;
 
 		}
@@ -1829,7 +1829,7 @@ public class DrawFBP extends JFrame
 		if (s.equals("Edit Diagram Description")) { // Title of diagram
 			// as a whole
 
-			String ans = (String) MyOptionPane.showInputDialog(frame,
+			String ans = (String) MyOptionPane.showInputDialog(this,
 					"Enter or change text", "Modify diagram description",
 					MyOptionPane.PLAIN_MESSAGE, null, null, curDiag.desc);
 
@@ -1841,7 +1841,7 @@ public class DrawFBP extends JFrame
 				if (curDiag.parent != null)
 					curDiag.parent.desc = ans;
 			}
-			frame.repaint();
+			repaint();
 			return;
 
 		}
@@ -1859,7 +1859,7 @@ public class DrawFBP extends JFrame
 
 			if (null != createBlock(blockType, x, y))
 				curDiag.changed = true;
-			frame.repaint();
+			repaint();
 			return;
 
 		}
@@ -1867,35 +1867,35 @@ public class DrawFBP extends JFrame
 			Block b = selBlock;
 
 			if (b == null) {
-				MyOptionPane.showMessageDialog(frame, "Block not selected",
+				MyOptionPane.showMessageDialog(this, "Block not selected",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			curDiag = b.diag;
 			b.buildBlockPopupMenu();
 			use_drag_icon = false;
-			curDiag.jpm.show(frame, x + 100, y + 100);
-			frame.repaint();
+			curDiag.jpm.show(this, x + 100, y + 100);
+			repaint();
 			return;
 
 		}
 		if (s.equals("Arrow-related Actions")) {
 			Arrow a = selArrow;
 			if (a == null) {
-				MyOptionPane.showMessageDialog(frame, "Arrow not selected",
+				MyOptionPane.showMessageDialog(this, "Arrow not selected",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			a.buildArrowPopupMenu();
 			curDiag = a.diag;
-			curDiag.jpm.show(frame, a.toX + 100, a.toY + 100);
-			frame.repaint();
+			curDiag.jpm.show(this, a.toX + 100, a.toY + 100);
+			repaint();
 			return;
 		}
 
 		setBlkType(s);
 
-		frame.repaint();
+		repaint();
 	}
 
 	void setBlkType(String s) {
@@ -1980,7 +1980,7 @@ public class DrawFBP extends JFrame
 				gl.netDirProp, "Specify file name for code", "." + gl.suggExtn,
 				gl.filter, gl.showLangs());
 
-		frame.repaint();
+		repaint();
 
 	}
 
@@ -2037,7 +2037,7 @@ public class DrawFBP extends JFrame
 		if (oneLine) {
 			if (blkType != Block.Types.ENCL_BLOCK) {
 				String d = "Enter description";
-				String ans = (String) MyOptionPane.showInputDialog(frame,
+				String ans = (String) MyOptionPane.showInputDialog(this,
 						"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null, null,
 						block.desc);
 
@@ -2133,7 +2133,7 @@ public class DrawFBP extends JFrame
 		});
 
 		panel.setBackground(Color.GRAY);
-		panel.setLocation(frame.getX() + 50, frame.getY() + 50);
+		panel.setLocation(getX() + 50, getY() + 50);
 		panel.setSize(1200, 800);
 
 		GridBagLayout gbl = new GridBagLayout();
@@ -2226,7 +2226,7 @@ public class DrawFBP extends JFrame
 		// jsp.add(panel);
 		jf.add(jsp);
 		jf.pack();
-		Point p = frame.getLocation();
+		Point p = getLocation();
 		jf.setLocation(p.x + 150, p.y + 50);
 		// int height = 200 + properties.size() * 40;
 		jf.setSize(1200, 800);
@@ -2238,7 +2238,7 @@ public class DrawFBP extends JFrame
 		jsp.repaint();
 		panel.repaint();
 		jf.repaint();
-		frame.repaint();
+		repaint();
 	}
 
 	SelectionArea getNewArea() {
@@ -2273,7 +2273,7 @@ public class DrawFBP extends JFrame
 				s = System.getProperty("user.home");
 			File f2 = new File(s);
 			if (!f2.exists()) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Directory '" + s + "' does not exist - reselect",
 						MyOptionPane.ERROR_MESSAGE);
 				// return null;
@@ -2292,7 +2292,7 @@ public class DrawFBP extends JFrame
 		}
 
 		if (file.isDirectory()) {
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"File is directory: " + file.getAbsolutePath());
 			return null;
 		}
@@ -2306,7 +2306,7 @@ public class DrawFBP extends JFrame
 			return file;
 
 		if (null == (fileString = readFile(file, !SAVEAS))) {
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Unable to read file: " + file.getName(),
 					MyOptionPane.ERROR_MESSAGE);
 			return null;
@@ -2375,7 +2375,7 @@ public class DrawFBP extends JFrame
 		curDiag.arrows.clear();
 		curDiag.desc = " ";
 
-		DiagramBuilder.buildDiag(fileString, frame, curDiag);
+		DiagramBuilder.buildDiag(fileString, this, curDiag);
 		// driver.jtp.setRequestFocusEnabled(true);
 		// driver.jtp.requestFocusInWindow();
 		arrowEnd = null; // get rid of black square...
@@ -2413,10 +2413,10 @@ public class DrawFBP extends JFrame
 			curDiag.title = curDiag.title.substring(0,
 					curDiag.title.length() - 4);
 
-		frame.setTitle("Diagram: " + curDiag.title);
+		setTitle("Diagram: " + curDiag.title);
 		// curDiag.tabNum = i;
 		// jtp.setSelectedIndex(curDiag.tabNum);
-		frame.repaint();
+		repaint();
 		return file;
 	}
 	
@@ -2437,18 +2437,18 @@ public class DrawFBP extends JFrame
 
 				fileString = fileBuffer.toString();
 			} catch (IOException e) {
-				MyOptionPane.showMessageDialog(frame, "I/O Exception: "
+				MyOptionPane.showMessageDialog(this, "I/O Exception: "
 						+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 				fileString = "";
 			}
 
 		} catch (FileNotFoundException e) {
 			if (!saveAs)
-				MyOptionPane.showMessageDialog(frame, "File not found: "
+				MyOptionPane.showMessageDialog(this, "File not found: "
 					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		} catch (IOException e) {
-			MyOptionPane.showMessageDialog(frame, "I/O Exception 2: "
+			MyOptionPane.showMessageDialog(this, "I/O Exception 2: "
 					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
@@ -2517,13 +2517,13 @@ public class DrawFBP extends JFrame
 					curDiag.title.length() - 4);
 
 		File currentDiagramDir = file.getParentFile();
-		frame.setTitle("Diagram: " + curDiag.title);
+		setTitle("Diagram: " + curDiag.title);
 		saveProp("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
 		saveProperties();
 
 		curDiag.changed = false;
-		frame.repaint();
+		repaint();
 	}
 
 	/**
@@ -2605,7 +2605,7 @@ public class DrawFBP extends JFrame
 	}
 
 	void changeFonts() {
-		fontChooser = new MyFontChooser(frame, this);
+		fontChooser = new MyFontChooser(this, this);
 		chooseFonts(fontChooser);
 
 		if (gFontChanged) {
@@ -2616,7 +2616,7 @@ public class DrawFBP extends JFrame
 					+ generalFont);
 			fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);
 			adjustFonts();
-			frame.repaint();
+			repaint();
 			// repaint();
 		}
 
@@ -2628,7 +2628,7 @@ public class DrawFBP extends JFrame
 					+ generalFont);
 			fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
 			adjustFonts();
-			frame.repaint();
+			repaint();
 			// repaint();
 
 		}
@@ -2662,7 +2662,7 @@ public class DrawFBP extends JFrame
 					defaultFontSize) == 0)
 				j = i;
 		}
-		Float fs = (Float) MyOptionPane.showInputDialog(frame,
+		Float fs = (Float) MyOptionPane.showInputDialog(this,
 				"Font size dialog", "Select a font size",
 				MyOptionPane.PLAIN_MESSAGE, null, selectionValues,
 				selectionValues[j]);
@@ -2674,11 +2674,11 @@ public class DrawFBP extends JFrame
 		fontf = fontf.deriveFont(fs);
 		jfs.setText("Font Size: " + defaultFontSize);
 		adjustFonts();
-		// frame.repaint();
+		// repaint();
 		saveProp("defaultFontSize", Float.toString(defaultFontSize));
 		saveProperties();
-		MyOptionPane.showMessageDialog(frame, "Font size changed");
-		frame.repaint();
+		MyOptionPane.showMessageDialog(this, "Font size changed");
+		repaint();
 		// repaint();
 	}
 
@@ -2769,9 +2769,9 @@ public class DrawFBP extends JFrame
 
 		menuBar = createMenuBar();
 
-		frame.setJMenuBar(menuBar);
+		setJMenuBar(menuBar);
 
-		frame.repaint();
+		repaint();
 	}
 
 	final boolean SAVEAS = true;
@@ -2830,7 +2830,7 @@ public class DrawFBP extends JFrame
 			String fNPkg = "";
 			int k = srcDir.indexOf("/src");
 			if (k == -1) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"File name \"" + srcDir + "\" missing 'src' directory - cannot compile",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -2854,7 +2854,7 @@ public class DrawFBP extends JFrame
 			if (fd == null || !fd.exists()) {
 				fd.mkdirs();
 				// saveProp("currentClassDir", clsDir);
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"'bin' directory created - " + clsDir,
 						MyOptionPane.INFORMATION_MESSAGE);
 			}
@@ -2874,7 +2874,7 @@ public class DrawFBP extends JFrame
 			String v = "";
 			if (!fNPkg.equals(""))
 				v = fNPkg + "/";
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Compiling program - " + srcDir + "/" + v + progName,
 					MyOptionPane.INFORMATION_MESSAGE);
 
@@ -2891,13 +2891,13 @@ public class DrawFBP extends JFrame
 			
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Missing JAVA_HOME environment variable",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			if (-1 == jh.indexOf("jdk")){
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"To do Java compiles, JAVA_HOME environment variable must point at JDK",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -2942,7 +2942,7 @@ public class DrawFBP extends JFrame
 					proc = null;
 			} 
 			if (!(output.equals("")) || !(err.equals(""))) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
 				err + "<br>" + output + "<br>" +
 				"Jar files:" + jf + "<br>" +
@@ -2968,7 +2968,7 @@ public class DrawFBP extends JFrame
 			 
 				clsDir += "/" + fNPkg;
 				if (u == 0)
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"Program compiled - " + srcDir + "/" + progName
 									+ "\n" + "   into - " + clsDir + "/"  
 									+ progName.substring(0,
@@ -2976,7 +2976,7 @@ public class DrawFBP extends JFrame
 									+ ".class",
 							MyOptionPane.INFORMATION_MESSAGE);
 				else
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"<html>Program compile failed, rc: " + u + " - " + srcDir
 									+ "/" + progName + "<br>" +
 									output + "</html>",
@@ -2988,7 +2988,7 @@ public class DrawFBP extends JFrame
 
 			if (!(currLang.label.equals("C#"))) {
 
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Language not supported: " + currLang.label,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3017,7 +3017,7 @@ public class DrawFBP extends JFrame
 				return;
 
 			if (!(ss.endsWith(".cs"))) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"C# program " + ss + " must end in '.cs'",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3032,7 +3032,7 @@ public class DrawFBP extends JFrame
 
 			String progString = readFile(new File(ss), !SAVEAS);
 			if (progString == null) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -3091,7 +3091,7 @@ public class DrawFBP extends JFrame
 			String target = /*trunc + "/" + */ "bin/Debug";  //  we've done a cd, so we don't need trunc
 			(new File(target)).mkdirs();
 			
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Starting compile - " + ss,
 					MyOptionPane.INFORMATION_MESSAGE);
 
@@ -3114,7 +3114,7 @@ public class DrawFBP extends JFrame
             cmdList.add("-out:" + target + "/" + v + ".exe");
             			
 			if (!gotDlls  && !gotDllReminder) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"If you are using FBP, you will need a FBPLib dll and a FBPVerbs dll - use File/Add Additional Dll File for each one",
 						MyOptionPane.WARNING_MESSAGE);
 				gotDllReminder = true;
@@ -3133,7 +3133,7 @@ public class DrawFBP extends JFrame
 				while (entries.hasNext()) {
 					Entry<String, String> thisEntry = entries.next();
 					if (!(new File(thisEntry.getValue()).exists())) {
-						MyOptionPane.showMessageDialog(frame,
+						MyOptionPane.showMessageDialog(this,
 								"Dll file does not exist: " + thisEntry.getValue(),
 								MyOptionPane.WARNING_MESSAGE);
 						return;
@@ -3192,7 +3192,7 @@ public class DrawFBP extends JFrame
 			int u = 0;
 			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane
-						.showMessageDialog(frame,
+						.showMessageDialog(this,
 								"<html>Compile output for " + target + "/" + v + ".exe <br>" +
 										err + "<br>" + output + "</html>",
 								MyOptionPane.ERROR_MESSAGE);
@@ -3216,14 +3216,14 @@ public class DrawFBP extends JFrame
 
 			if (u == 0) {
 
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Programs compiled and linked - " + trunc + "/"
 								+ "*.cs\n" + "   into - " +  trunc + "/bin/Debug/" + v + ".exe",
 						MyOptionPane.INFORMATION_MESSAGE);
 				saveProp("exeDir", trunc)  ;
 			}
 			else
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
 				         output + "</html>" ,
 						MyOptionPane.WARNING_MESSAGE);
@@ -3262,7 +3262,7 @@ public class DrawFBP extends JFrame
 
 			// if (currLang.label.equals("Java")) {
 			if (!(ss.endsWith(".class"))) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Executable " + ss + " must end in '.class'",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3319,7 +3319,7 @@ public class DrawFBP extends JFrame
 			// cls = loader.loaderClass(thisCls);
 
 			if (cls == null) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Class not generated for program " + progName ,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3329,7 +3329,7 @@ public class DrawFBP extends JFrame
 				meth = cls.getMethod("main", String[].class);
 			} catch (NoSuchMethodException | SecurityException e2) {
 				meth = null;
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Program " + progName + " has no 'main' method",
 						MyOptionPane.ERROR_MESSAGE);
 			}
@@ -3341,20 +3341,20 @@ public class DrawFBP extends JFrame
 			// if(javaFBPJarFile == null)
 			// locateJavaFBPJarFile();
 
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Starting program - " + clsDir + "/" + progName,
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Missing JAVA_HOME environment variable",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")){
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3398,13 +3398,13 @@ public class DrawFBP extends JFrame
 				//return;			 
 			} 
 			if (!(err.equals("")))  
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
 						err + /* "<br>" + output + */ "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				 
 			if (!(output.equals("")))
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"<html>Program output - " + clsDir + "/" + progName + "<br>" +
 					output +  "</html>",
 					MyOptionPane.INFORMATION_MESSAGE);
@@ -3431,7 +3431,7 @@ public class DrawFBP extends JFrame
 
 			if (!(currLang.label.equals("C#"))) {
 
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Language not supported: " + currLang.label,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3456,7 +3456,7 @@ public class DrawFBP extends JFrame
 			}
 
 			if (!(exeFile.endsWith(".exe"))) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Executable " + exeFile + " must end in '.exe'",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3511,7 +3511,7 @@ public class DrawFBP extends JFrame
 				//return;
 			}
 			if (!(err.equals("")) || !(output.equals(""))) {
-				MyOptionPane.showMessageDialog(frame, "<html>Run output<br>" + err + "<br>" + output + "</html>",
+				MyOptionPane.showMessageDialog(this, "<html>Run output<br>" + err + "<br>" + output + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				//return;
 			}
@@ -3530,11 +3530,11 @@ public class DrawFBP extends JFrame
 			return;
 		int u = proc.exitValue();
 		if (u == 0)
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Program completed - " + program,
 					MyOptionPane.INFORMATION_MESSAGE);
 		else
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Program test failed, rc: " + u + " - " + program,
 					MyOptionPane.WARNING_MESSAGE);
 
@@ -3745,18 +3745,18 @@ public class DrawFBP extends JFrame
 		
 		if (findJar) {
 			if (s != null) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"JavaFBP jar file location: " + s,
 						MyOptionPane.INFORMATION_MESSAGE);			
 
-			int res = MyOptionPane.showConfirmDialog(frame,					
+			int res = MyOptionPane.showConfirmDialog(this,					
 					"Change JavaFBP jar file location?",
 					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION);	
 			if (res != MyOptionPane.YES_OPTION)
 				return true;
 			}
 
-			//MyOptionPane.showMessageDialog(frame,
+			//MyOptionPane.showMessageDialog(this,
 			//		"Use File Chooser to locate JavaFBP jar file",
 			//		MyOptionPane.WARNING_MESSAGE);
 
@@ -3773,7 +3773,7 @@ public class DrawFBP extends JFrame
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				cFile = new File(getSelFile(fc));
 				if (cFile == null || !(cFile.exists())) {
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"Unable to read JavaFBP jar file "
 									+ cFile.getName(),
 							MyOptionPane.ERROR_MESSAGE);
@@ -3784,7 +3784,7 @@ public class DrawFBP extends JFrame
 				saveProp("javaFBPJarFile", javaFBPJarFile);
 
 				saveProperties();
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"JavaFBP jar file location: " + cFile.getAbsolutePath(),
 						MyOptionPane.INFORMATION_MESSAGE);
 				// jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
@@ -3814,12 +3814,12 @@ public class DrawFBP extends JFrame
 	
 	boolean addAdditionalJarFile() {
 
-		String ans = (String) MyOptionPane.showInputDialog(frame,
+		String ans = (String) MyOptionPane.showInputDialog(this,
 				"Enter Description of jar file being added",
 				"Enter Description", MyOptionPane.PLAIN_MESSAGE, null, null,
 				null);
 		if (ans == null || ans.equals("")) {
-			MyOptionPane.showMessageDialog(frame, "No description entered",
+			MyOptionPane.showMessageDialog(this, "No description entered",
 					MyOptionPane.ERROR_MESSAGE);
 			return false;
 		}
@@ -3838,7 +3838,7 @@ public class DrawFBP extends JFrame
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Unable to read additional jar file " + cFile.getName(),
 						MyOptionPane.ERROR_MESSAGE);
 				return false;
@@ -3861,7 +3861,7 @@ public class DrawFBP extends JFrame
 
 			}
 			saveProp("additionalJarFiles", t);
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Additional jar file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
 
@@ -3873,12 +3873,12 @@ public class DrawFBP extends JFrame
 	
 	boolean addAdditionalDllFile() {
 
-		String ans = (String) MyOptionPane.showInputDialog(frame,
+		String ans = (String) MyOptionPane.showInputDialog(this,
 				"Enter Description of dll file being added",
 				"Enter Description", MyOptionPane.PLAIN_MESSAGE, null, null,
 				null);
 		if (ans == null || ans.equals("")) {
-			MyOptionPane.showMessageDialog(frame, "No description entered",
+			MyOptionPane.showMessageDialog(this, "No description entered",
 					MyOptionPane.ERROR_MESSAGE);
 			return false;
 		}
@@ -3897,7 +3897,7 @@ public class DrawFBP extends JFrame
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"Unable to read additional dll file " + cFile.getName(),
 						MyOptionPane.ERROR_MESSAGE);
 				return false;
@@ -3924,7 +3924,7 @@ public class DrawFBP extends JFrame
 			
 			String u = cFile.getParent();
 			saveProp("dllFileDir", u);
-			MyOptionPane.showMessageDialog(frame,
+			MyOptionPane.showMessageDialog(this,
 					"Additional dll file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
 
@@ -3949,18 +3949,18 @@ public class DrawFBP extends JFrame
 		
 		if (findJar) {
 			if (s != null) {
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"JavaHelp jar file location: " + s,
 						MyOptionPane.INFORMATION_MESSAGE);			
 
-			int res = MyOptionPane.showConfirmDialog(frame,					
+			int res = MyOptionPane.showConfirmDialog(this,					
 					"Change JavaHelp jar file location?",
 					"Change JavaHelp jar file", MyOptionPane.YES_NO_OPTION);	
 			if (res != MyOptionPane.YES_OPTION)
 				return true;
 			}
 
-			//MyOptionPane.showMessageDialog(frame,
+			//MyOptionPane.showMessageDialog(this,
 			//		"Use File Chooser to locate JavaFBP jar file",
 			//		MyOptionPane.WARNING_MESSAGE);
 
@@ -3977,7 +3977,7 @@ public class DrawFBP extends JFrame
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				cFile = new File(getSelFile(fc));
 				if (cFile == null || !(cFile.exists())) {
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"Unable to read JavaHelp jar file "
 									+ cFile.getName(),
 							MyOptionPane.ERROR_MESSAGE);
@@ -3988,7 +3988,7 @@ public class DrawFBP extends JFrame
 				saveProp("jhallJarFile", jhallJarFile);
 
 				saveProperties();
-				MyOptionPane.showMessageDialog(frame,
+				MyOptionPane.showMessageDialog(this,
 						"JavaHelp jar file location: " + cFile.getAbsolutePath(),
 						MyOptionPane.INFORMATION_MESSAGE);
 				// jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
@@ -4039,7 +4039,7 @@ public class DrawFBP extends JFrame
 	/*
 	 * 
 	 * public final void getSamples() { Enumeration<?> entries; ZipFile zipFile;
-	 * MyOptionPane.showMessageDialog(frame,
+	 * MyOptionPane.showMessageDialog(this,
 	 * "Select new project for sample networks");
 	 * 
 	 * // zip file must have "src", "test" and "diagrams" directories // and
@@ -4233,7 +4233,7 @@ public class DrawFBP extends JFrame
 			urls = ll.toArray(new URL[ll.size()]);
 
 		} catch (MalformedURLException e) {
-			MyOptionPane.showMessageDialog(frame, "Malformed URL: " + f,
+			MyOptionPane.showMessageDialog(this, "Malformed URL: " + f,
 					MyOptionPane.ERROR_MESSAGE);
 			// e.printStackTrace();
 			// javaClass = null;
@@ -4306,9 +4306,9 @@ public class DrawFBP extends JFrame
 				scalingFactor = ((int) js.getValue()) / 100.0;
 				String scale = (int) js.getValue() + "%";
 				scaleLab.setText(scale);
-				// frame.pack();
-				// frame.setPreferredSize(new Dimension(1200, 800));
-				// frame.repaint();
+				// pack();
+				// setPreferredSize(new Dimension(1200, 800));
+				// repaint();
 			}
 		}
 	}
@@ -4408,7 +4408,7 @@ public class DrawFBP extends JFrame
 				e1.printStackTrace();
 			}
 
-			JFrame.setDefaultLookAndFeelDecorated(true);
+			setDefaultLookAndFeelDecorated(true);
 
 			DrawFBP _mf= new DrawFBP(args);
 			_mf.setVisible(true);
@@ -4512,7 +4512,7 @@ public class DrawFBP extends JFrame
 			// }
 
 			if (close) {
-				frame.dispose();
+				dispose();
 				System.exit(0);
 			}
 		}
@@ -4578,7 +4578,7 @@ public class DrawFBP extends JFrame
 			curDiag = null;
 			properties.remove("currentDiagram");
 
-			frame.repaint();
+			repaint();
 		}
 	}
 
@@ -4615,7 +4615,7 @@ public class DrawFBP extends JFrame
 				if (1 == jtp.getTabCount()
 						&& (s.equals("(untitled)") || s.equals(""))
 						&& MyOptionPane.YES_OPTION == MyOptionPane
-								.showConfirmDialog(frame, "Choose one option",
+								.showConfirmDialog(driver, "Choose one option",
 										"Leave DrawFBP?",
 										MyOptionPane.YES_NO_OPTION)) {
 					closeAppAction
@@ -5109,9 +5109,9 @@ public class DrawFBP extends JFrame
 				Rectangle r = curDiag.area.getBounds();
 				r = new Rectangle(r.x, r.y, r.width - 20, r.height - 40);
 				if (r.contains(x, y))
-					frame.setCursor(openPawCursor);
+					setCursor(openPawCursor);
 				else
-					frame.setCursor(defaultCursor);
+					setCursor(defaultCursor);
 			}
 
 			Point2D p = new Point2D(x, y);
@@ -5183,7 +5183,7 @@ public class DrawFBP extends JFrame
 					selBlockM = block; // mousing select
 					if (!use_drag_icon) {
 						if (curDiag.jpm == null && !panSwitch)
-							frame.setCursor(drag_icon);
+							setCursor(drag_icon);
 						use_drag_icon = true;
 					}
 
@@ -5196,7 +5196,7 @@ public class DrawFBP extends JFrame
 					use_drag_icon = false;
 
 				if (!panSwitch)
-					frame.setCursor(defaultCursor);
+					setCursor(defaultCursor);
 			}
 			// curDiag.foundBlock = null;
 
@@ -5259,7 +5259,7 @@ public class DrawFBP extends JFrame
 			if (curDiag.jpm != null) {
 				curDiag.jpm.setVisible(false);
 				curDiag.jpm = null;
-				frame.repaint();
+				repaint();
 				return;
 			}
 
@@ -5271,12 +5271,12 @@ public class DrawFBP extends JFrame
 						&& x <= curDiag.area.getX() + d.width
 						&& y >= curDiag.area.getY()
 						&& y <= curDiag.area.getY() + d.height) {
-					frame.setCursor(closedPawCursor);
+					setCursor(closedPawCursor);
 					panX = xa;
 					panY = ya;
 					return;
 				} else
-					frame.setCursor(defaultCursor);
+					setCursor(defaultCursor);
 			}
 
 			// if (e.getClickCount() == 2)
@@ -5290,7 +5290,7 @@ public class DrawFBP extends JFrame
 			// arrowEndForDragging = null;
 			// bendForDragging = null;
 
-			frame.repaint();
+			repaint();
 
 			// look for side or corner of an enclosure
 			for (Block block : curDiag.blocks.values()) {
@@ -5470,7 +5470,7 @@ public class DrawFBP extends JFrame
 						}
 					}
 				}
-				// frame.repaint();
+				// repaint();
 				curDiag.changed = true;
 				panX = xa;
 				panY = ya;
@@ -5668,7 +5668,7 @@ public class DrawFBP extends JFrame
 			if (curDiag.jpm != null) {
 				curDiag.jpm.setVisible(false);
 				curDiag.jpm = null;
-				frame.repaint();
+				repaint();
 				return;
 			}
 
@@ -5686,7 +5686,7 @@ public class DrawFBP extends JFrame
 			ya = (int) p2.y();
 
 			if (curDiag.area.contains(x, y) && panSwitch) {
-				frame.setCursor(openPawCursor);
+				setCursor(openPawCursor);
 				repaint();
 				return;
 			}
@@ -5748,11 +5748,11 @@ public class DrawFBP extends JFrame
 								/*
 								String subnet = null;
 								if (null == (subnet = readFile(df, !SAVEAS))) {    
-									MyOptionPane.showMessageDialog(frame, "Unable to read file: "
+									MyOptionPane.showMessageDialog(this, "Unable to read file: "
 											+ df.getName(), MyOptionPane.ERROR_MESSAGE);
 									return;
 								}
-								DiagramBuilder.buildDiag(subnet, frame, sbnDiag);
+								DiagramBuilder.buildDiag(subnet, this, sbnDiag);
 								//jtp.setSelectedIndex(sbnDiag.tabNum);
 								*/
 								//curDiag = sbnDiag;
@@ -5761,12 +5761,12 @@ public class DrawFBP extends JFrame
 							}
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
-							// if (frame == null)
+							// if (this == null)
 							// curDiag = new Diagram(driver);
 
 							curDiag = blockSelForDragging.diag;
 
-							curDiag.jpm.show(frame, xa + 100, ya + 100);
+							curDiag.jpm.show(this, xa + 100, ya + 100);
 
 						}
 						// blockSelForDragging = null;
@@ -5927,7 +5927,7 @@ public class DrawFBP extends JFrame
 				}
 				// else
 				// if (curDiag.findArrowCrossing)
-				// MyOptionPane.showMessageDialog(frame,
+				// MyOptionPane.showMessageDialog(this,
 				// "No arrow detected");
 				// curDiag.findArrowCrossing = false;
 
@@ -5978,7 +5978,7 @@ public class DrawFBP extends JFrame
 				if (!(blockType.equals(""))
 						&& null != createBlock(blockType, xa, ya))
 					curDiag.changed = true;
-				frame.repaint();
+				repaint();
 				// repaint();
 
 				// repaint();
@@ -6009,7 +6009,7 @@ public class DrawFBP extends JFrame
 				 * if (foundBlock.id == currentArrow.fromId) {
 				 * 
 				 * if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-				 * frame,
+				 * this,
 				 * "Connecting arrow to originating block is deadlock-prone - do anyway?"
 				 * , "Allow?", MyOptionPane.YES_NO_OPTION)) { Integer aid = new
 				 * Integer(currentArrow.id); curDiag.arrows.remove(aid);
@@ -6024,7 +6024,7 @@ public class DrawFBP extends JFrame
 						|| foundBlock instanceof ExtPortBlock)
 						&& !(from instanceof IIPBlock)) {
 					if (side == Side.BOTTOM) {
-						int answer = MyOptionPane.showConfirmDialog(frame,
+						int answer = MyOptionPane.showConfirmDialog(this,
 								"Connect arrow to bottom of block?",
 								"Please choose one",
 								MyOptionPane.YES_NO_OPTION);
@@ -6032,7 +6032,7 @@ public class DrawFBP extends JFrame
 							OK = false;
 					}
 					if (side == Side.RIGHT) {
-						int answer = MyOptionPane.showConfirmDialog(frame,
+						int answer = MyOptionPane.showConfirmDialog(this,
 								"Connect arrow to righthand side?",
 								"Please choose one",
 								MyOptionPane.YES_NO_OPTION);
@@ -6041,7 +6041,7 @@ public class DrawFBP extends JFrame
 					}
 				}
 				if (!OK) {
-					// MyOptionPane.showMessageDialog(frame,
+					// MyOptionPane.showMessageDialog(this,
 					// "Cannot end an arrow here");
 					Integer aid = new Integer(currentArrow.id);
 					curDiag.arrows.remove(aid);
@@ -6092,7 +6092,7 @@ public class DrawFBP extends JFrame
 				if (to instanceof IIPBlock && from instanceof ProcessBlock) {
 					a2.reverseDirection();
 					// MyOptionPane
-					// .showMessageDialog(frame,
+					// .showMessageDialog(this,
 					// "Direction of arrow has been reversed");
 				}
 				if (from instanceof ExtPortBlock && (from.type
@@ -6110,7 +6110,7 @@ public class DrawFBP extends JFrame
 					error = true;
 
 				if (error) {
-					MyOptionPane.showMessageDialog(frame,
+					MyOptionPane.showMessageDialog(this,
 							"Arrow attached to one or both wrong side(s) of blocks",
 							MyOptionPane.WARNING_MESSAGE);
 					Integer aid = new Integer(a2.id);
@@ -6172,7 +6172,7 @@ public class DrawFBP extends JFrame
 
 					if (to == from) {
 						if (MyOptionPane.NO_OPTION == MyOptionPane
-								.showConfirmDialog(frame,
+								.showConfirmDialog(this,
 										"Connecting arrow to originating block is deadlock-prone - do anyway?",
 										"Allow?", MyOptionPane.YES_NO_OPTION)) {
 							Integer aid = new Integer(currentArrow.id);
@@ -6189,12 +6189,12 @@ public class DrawFBP extends JFrame
 					boolean error = true;
 					if (from instanceof ExtPortBlock
 							&& from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))
-						MyOptionPane.showMessageDialog(frame,
+						MyOptionPane.showMessageDialog(this,
 								"Arrow in wrong direction",
 								MyOptionPane.ERROR_MESSAGE);
 					else if (to instanceof ExtPortBlock
 							&& to.type.equals(Block.Types.EXTPORT_IN_BLOCK))
-						MyOptionPane.showMessageDialog(frame,
+						MyOptionPane.showMessageDialog(this,
 								"Arrow in wrong direction",
 								MyOptionPane.ERROR_MESSAGE);
 					else
