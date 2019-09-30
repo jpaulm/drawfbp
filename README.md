@@ -98,7 +98,7 @@ Features
 Running DrawFBP
 ----
 
-DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  As of v2.16.11, you can run using the "fat jar" (`drawfbp-all-x.y.z.jar`) in `build/libs`, as described above.  You can download DrawFBP from Maven (search for DrawFBP), but you will need the 2D geometry jar file to run (from v2.16.11, it will be included in the "fat jar").  
+DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  The combination is called a "fat jar" file - before v2.18.1, the jar name contained `all-`; from v2.18.1 on, the `all-` has been dropped.  You can download DrawFBP from Maven (search for DrawFBP).  
 
 To run DrawFBP's Help facility, you will need the standard `javax.help` JavaHelp jar file (provided in the `lib` directory).  The first time you launch Help, you will be prompted to specify a folder to hold the `javax.help` jar file.  DrawFBP will remember this location from now on.
 
@@ -106,7 +106,9 @@ DrawFBP has been compiled to run on Java 1.8.
 
 If you want access to the Java annotations of your components, add the jar file(s) containing them (at least JavaFBP and possibly others) to the project Properties/Build Path (for Eclipse), or e.g. type on the command line  
 
-        java -cp "build/libs/drawfbp-all-2.16.10.jar;..\javafbp\build\libs\javafbp-4.1.0.jar" com.jpaulmorrison.graphics.DrawFBP
+        java -cp "build/libs/drawfbp-x.y.z.jar;..\javafbp\build\libs\javafbp-4.1.0.jar" com.jpaulmorrison.graphics.DrawFBP
+        
+where `x.y.z` is the DrawFBP version number.
 
 - to run under Linux, replace the semi-colon(s) with colons(s).   
     
