@@ -244,39 +244,7 @@ public class Diagram {
 		}
 		
 		// finished choosing file...
-		/*
-		int i = driver.getFileTabNo(file.getAbsolutePath());  // see if already open
-		if (i != -1) {
-			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-					driver,
-					"File is open: " + file.getAbsolutePath() + " - overwrite open file?",
-					"Confirm overwrite open file", MyOptionPane.YES_NO_OPTION)))
-				return null;
-		 
-			driver.jtp.setSelectedIndex(i); 
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(i);
-			//Diagram d = b.diag;
-			//d.tabNum = i;
-			driver.closeTab();
-		}
-		*/
-		 
-		//boolean found = false;
-		//int i = driver.jtp.getTabCount();
-		/*
-		if (driver.jtp.getTabCount() == 1) {
-			ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(0);
-			if (b != null && b.diag != null) {
-				Diagram d = b.diag;
-				if (d.title.equals("(untitled") && !d.changed) {
-					curDiag = d;
-					// curDiag.tabNum = i;
-					driver.jtp.setSelectedIndex(0);
-					found = true;
-				}
-			}
-		}
-		*/
+		
 		 
 		if (file.exists()) {
 			if (file.isDirectory()) {

@@ -330,6 +330,8 @@ public class DrawFBP extends JFrame
 		{   e.printStackTrace();
 			saveProperties();
 		}
+		
+		
 	}
 
 	/**
@@ -573,12 +575,20 @@ public class DrawFBP extends JFrame
 			new SplashWindow(this, 3000, this, small); // display
 		// for 3.0 secs, or until mouse is moved
 
-		if (diagramName != null) {
-			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-					"Open " + diagramName));
-		}
+		//if (diagramName != null) {
+		//	actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+		//			"Open " + diagramName));
+		//}
+		//if (diagramName == null) {
+			curDiag = getNewDiag();
+			curDiag.desc = "Click anywhere on selection area";
+		// }
+		//else  
+			if (diagramName != null)  
+				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+						"Open " + diagramName));
 
-		// repaint();
+		repaint();
 
 	}
 
@@ -586,11 +596,8 @@ public class DrawFBP extends JFrame
 
 		buildPropDescTable();
 
-		String t = properties.get("currentDiagram");
-		if (t == null) {
-			curDiag = getNewDiag();
-			curDiag.desc = "Click anywhere on selection area";
-		}
+		diagramName = properties.get("currentDiagram");
+			 
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -799,6 +806,8 @@ public class DrawFBP extends JFrame
 
 		image = loadImage("drag_icon.gif");
 		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag");
+		
+		
 
 		ttStartTimer = new Timer(0, new ActionListener() {
 
@@ -1073,6 +1082,9 @@ public class DrawFBP extends JFrame
 
 		menuBar.getActionMap().put("CLOSE", escapeAction);
 		menuBar.setVisible(true);
+		
+		
+			 	
 		repaint();
 
 		return menuBar;
@@ -1085,7 +1097,7 @@ public class DrawFBP extends JFrame
 		int i = jtp.getTabCount(); // get count *before* adding new sa & label
 		jtp.add(sa, new JLabel());
 		
-		//int j = jtp.getTabCount();  // for debugging
+		int j = jtp.getTabCount();  // for debugging
 		// System.out.println("new tab");
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
 		jtp.setTabComponentAt(i, b);		
@@ -1233,33 +1245,7 @@ public class DrawFBP extends JFrame
 
 		// }
 		
-		/*
-
-		if (s.equals("Generate .fbp code")) {
-
-			if (curDiag == null || curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(this, "No components specified",
-						MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			if (curDiag.title == null || curDiag.title.equals("(untitled)")) {
-
-				MyOptionPane.showMessageDialog(this,
-						"Untitled diagram - please do Save first",
-						MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			CodeManager mc = new CodeManager(curDiag);
-			if (!mc.genFbpCode())
-				MyOptionPane.showMessageDialog(this,
-						"Error in code generation", MyOptionPane.ERROR_MESSAGE);
-
-			return;
-		}
 		
-		*/
 
 		if (s.startsWith("Generate ")) {
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
@@ -2332,21 +2318,31 @@ public class DrawFBP extends JFrame
 			return file;
 		}
 
-		boolean found = false;
-		if (jtp.getTabCount() == 1) {
-			b = (ButtonTabComponent) jtp.getTabComponentAt(0);
+		// if last slot has title == (untitled) and is not changed, reuse it
+		
+		boolean found = false;   
+		int j = jtp.getTabCount() - 1;
+		if (j > -1) {
+			b = (ButtonTabComponent) jtp.getTabComponentAt(j);
 			if (b != null && b.diag != null) {
 				Diagram d = b.diag;
 				if (d.title.equals("(untitled)") && !d.changed) {
-					//curDiag = d;
+					curDiag = d;
 					// curDiag.tabNum = i;
-					jtp.setSelectedIndex(0);
-					closeTab();
+					jtp.setSelectedIndex(j);
+					//closeTab();
 					found = true;
+					//b = (ButtonTabComponent) jtp.getTabComponentAt(0);
+					//if (b != null && b.diag != null) {
+					//	d = b.diag;
+					//	curDiag = d;
+						// curDiag.tabNum = i;
+					//	jtp.setSelectedIndex(0);
+					//}
 				}
 			}
 		}
-		
+		/*
 		if (!found)
 			for (i = 0; i < jtp.getTabCount(); i++) {
 				b = (ButtonTabComponent) jtp.getTabComponentAt(i);
@@ -2355,14 +2351,14 @@ public class DrawFBP extends JFrame
 				Diagram d = b.diag;
 				if (d != null && d.diagFile != null
 						&& d.diagFile.equals(file)) {
-					curDiag = d;
+					curDiag = d; 
 					// curDiag.tabNum = i;
 					jtp.setSelectedIndex(i);
 					found = true;
 					break;
 				}
 			}
-
+*/
 		if (!found)
 			curDiag = getNewDiag();
 		curDiag.title = file.getName();
@@ -3747,7 +3743,7 @@ public class DrawFBP extends JFrame
 		if (findJar) {
 			if (s == null) {
 				MyOptionPane.showMessageDialog(this,
-						"Your diagram has Java classes - continue to File Chooser to locate Java class jar file",
+						"To access Java classes - continue to File Chooser to locate Java class jar file",
 						MyOptionPane.WARNING_MESSAGE);	
 			} else {
 				MyOptionPane.showMessageDialog(this,
@@ -4546,40 +4542,9 @@ public class DrawFBP extends JFrame
 					return;
 			}
 
-			/*
-			int n = i + 1;
-			j = jtp.getTabCount();
-			if (j < 1)
-				return;
-			while (n < j){
-				b = (ButtonTabComponent) jtp.getTabComponentAt(n);
-				ButtonTabComponent b2 = (ButtonTabComponent) jtp.getTabComponentAt(n - 1);
-				//jtp.setTabComponentAt(n - 1, b);
-				b2.label = b.label;
-				b2.diag = b.diag;
-				
-				Component c = jtp.getComponent(n);
-				jtp.setComponentAt(n - 1,  c); 
-				
-				String s = jtp.getTitleAt(n);
-				jtp.setTitleAt(n - 1,  s);
-				
-				jtp.setSelectedIndex(n - 1);
-				if (b != null && b.diag != null) {
-					//curDiag = b.diag;
-					b.diag.tabNum = n - 1;
-				}
-				n++;
-			}
-			 */
 			
-			//jtp.removeTabAt(i);
 			jtp.remove(i);
-			//b = (ButtonTabComponent) jtp.getTabComponentAt(i - 1);
-			//if (b != null && b.diag != null) {
-			//	curDiag = b.diag;
-				//b.diag.tabNum = n - 1;
-			//}
+			
 			curDiag = null;
 			properties.remove("currentDiagram");
 
@@ -4606,29 +4571,42 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
-			if (-1 < jtp.getSelectedIndex()) {
-				closeTab();
+			
+			//if (-1 < jtp.getSelectedIndex()) {
+			//	closeTab();
 				// else {
-				ButtonTabComponent b = (ButtonTabComponent) jtp
-						.getTabComponentAt(0);
-				if (b == null || b.diag == null)
-					return;
+			//	ButtonTabComponent b = (ButtonTabComponent) jtp
+			//			.getTabComponentAt(0);
+			//	if (b == null || b.diag == null)
+			//		return;
 
-				JLabel j = (JLabel) b.getComponent(0);
-				String s = j.getText();
+							
 
-				if (1 == jtp.getTabCount()
-						&& (s.equals("(untitled)") || s.equals(""))
-						&& MyOptionPane.YES_OPTION == MyOptionPane
-								.showConfirmDialog(driver, "Choose one option",
-										"Leave DrawFBP?",
-										MyOptionPane.YES_NO_OPTION)) {
+			//	if (1 >= jtp.getTabCount()) {
+					//JLabel jl = (JLabel) b.getComponent(0);	
+			//		b = (ButtonTabComponent) jtp.getTabComponentAt(0);
+			//		if (b != null && b.diag != null) {
+			//			Diagram d = b.diag;
+			//			if (d.changed) {
+					//Diagram d = null;   
+			//for (int i = 0; i < jtp.getTabCount(); i++){
+			//	ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(0);
+			//	 		if (b != null && b.diag != null) {
+			//	 			Diagram d = b.diag;
+			//	 			if (d.changed) {
+			//}
+				//	if (MyOptionPane.YES_OPTION == MyOptionPane
+				//				.showConfirmDialog(driver, "Choose one option",
+				//						"Leave DrawFBP?",
+				//						MyOptionPane.YES_NO_OPTION))  
 					closeAppAction
 							.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 				}
 			}
-		}
-	}
+				//	}
+			//	}
+		//}
+	//}
 
 	public class JavaFileFilter extends FileFilter {
 		@Override

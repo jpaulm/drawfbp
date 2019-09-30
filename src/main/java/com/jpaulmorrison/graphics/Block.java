@@ -1760,8 +1760,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			if (!(dFN.endsWith(suff)))
 				dFN += suff;
 			driver.curDiag.changed = true;
-			//driver.curDiag = driver.getNewDiag(false);
-
+			
 			
 			subnetFileName = dFN;
 			dFN = dFN.replace("\\",  "/");
