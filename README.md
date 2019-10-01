@@ -95,9 +95,22 @@ Features
         - Compile C# program
         - Run C# program
 
-Running DrawFBP
+
+
+Videos on DrawFBP features
 ----
 
+In addition, there are six Youtube videos about DrawFBP, illustrating a number of basic ("classical") FBP concepts (what we are now calling "FBP-inspired" or "FBP-like" systems do not necessarily contain all of these, although DrawFBP should be able to support most of these systems):
+- [DrawFBP video #1](https://www.youtube.com/watch?v=OrKenPOV4Js)
+- [DrawFBP video #2](https://www.youtube.com/watch?v=9NXYNxDjFWY)
+- [DrawFBP video #3](https://www.youtube.com/watch?v=-AmzfhV2hIU)
+- [DrawFBP video #4](https://www.youtube.com/watch?v=F0lKQpIjfVE)
+- [DrawFBP video #5](https://www.youtube.com/watch?v=5brTDk8cpNo) - concept of "subnets", both at design and implementation time
+- [DrawFBP video #6](https://youtu.be/IvTAexROKSA) - simple interactive systems using WebSockets, with demo of JavaFBP-WebSockets (JavaFBP and HTML5)
+                    
+              
+Running DrawFBP
+----
 DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  The combination is called a "fat jar" file - before v2.18.1, the jar name contained `all-`; from v2.18.1 on, the `all-` has been dropped.  You can download DrawFBP from Maven (search for DrawFBP).  
 
 To run DrawFBP's Help facility, you will need the standard `javax.help` JavaHelp jar file (provided in the `lib` directory).  The first time you launch Help, you will be prompted to specify a folder to hold the `javax.help` jar file.  DrawFBP will remember this location from now on.
