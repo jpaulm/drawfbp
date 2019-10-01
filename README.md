@@ -101,7 +101,7 @@ In addition, there are six Youtube videos about DrawFBP, illustrating a number o
 - [DrawFBP video #5](https://www.youtube.com/watch?v=5brTDk8cpNo) - concept of "subnets", both at design and implementation time
 - [DrawFBP video #6](https://youtu.be/IvTAexROKSA) - simple interactive systems using WebSockets, with demo of JavaFBP-WebSockets (JavaFBP and HTML5)
 
-Note: File Chooser now displays date and time on non-jar items, and entries can be sorted by name or by date/time (descending).
+**Note:** File Chooser now displays date and time on non-jar items, and entries can be sorted by name or by date/time (descending).
 
 In addition, the Excise function has changed a little, so the interaction will not be exactly as shown in the video (video #5)
               
