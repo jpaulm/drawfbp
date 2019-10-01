@@ -87,7 +87,7 @@ Features
 - New Functions (as of v2.16.5):
         - Compile C# program
         - Run C# program
-
+- As of v2.18.1, File Chooser now displays date and time on non-jar items, and entries can be sorted by name (ascending) or by date/time (descending)         
 
 
 Videos on DrawFBP features
