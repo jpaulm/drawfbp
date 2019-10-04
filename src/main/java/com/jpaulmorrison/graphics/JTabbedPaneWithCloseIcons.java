@@ -42,6 +42,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 			if (b.diag != null) {
 				driver.curDiag = b.diag;
 				driver.setTitle("Diagram: " + driver.curDiag.title);
+				if (driver.curDiag.title.toLowerCase().endsWith(".drw"))
+					driver.curDiag.title = driver.curDiag.title.substring(0,
+							driver.curDiag.title.length() - 4);
 
 				File f = driver.curDiag.diagFile;
 				if (f != null) {

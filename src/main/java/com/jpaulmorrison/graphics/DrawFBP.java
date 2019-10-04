@@ -341,6 +341,8 @@ public class DrawFBP extends JFrame
 	private void createAndShowGUI() {
 
 		// Create and set up the window.
+		
+		
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
@@ -1262,6 +1264,8 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
+			//properties.get(gl.netDirProp);
+			
 			CodeManager mc = new CodeManager(curDiag);
 			mc.genCode();
 
@@ -1271,22 +1275,28 @@ public class DrawFBP extends JFrame
 
 		if (s.equals("Display Generated Code")) {
 
-			File cFile = null;
+			File cFile = null;			
 			GenLang gl = curDiag.diagLang;
 
-			// String ss = properties.get("currentImageDir");
+			
 			String ss = properties.get(gl.netDirProp);
-			String name = curDiag.diagFile.getName();
+			//File f = curDiag.diagFile;
+			
+			//String name = f.getName();
 
 			if (ss == null)
 				ss = System.getProperty("user.home");
 
 			File file = new File(ss);
-			MyFileChooser fc = new MyFileChooser(this,file, curDiag.fCParm[Diagram.NETWORK]);
-			int i = name.indexOf(".drw");
-			ss += File.separator + name.substring(0, i)
+			MyFileChooser fc = new MyFileChooser(this, file, curDiag.fCParm[Diagram.NETWORK]);
+			File f = curDiag.diagFile;	
+			if (f != null) {
+				String name = f.getName();
+				int i = name.indexOf(".drw");
+				ss += File.separator + name.substring(0, i)
 					+ curDiag.fCParm[Diagram.NETWORK].fileExt;
-			fc.setSuggestedName(ss);
+				fc.setSuggestedName(ss);
+			}
 
 			int returnVal = fc.showOpenDialog(true, true); // force saveAs
 
@@ -2102,10 +2112,11 @@ public class DrawFBP extends JFrame
 			}
 		});
 
+		jf.setTitle("List of DrawFBP Properties");
 		JPanel panel = new JPanel(new GridBagLayout());
-		JScrollPane jsp = new JScrollPane(panel,
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		JScrollPane jsp = new JScrollPane(panel,				
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		jf.setFocusable(true);
 		jf.requestFocusInWindow();
@@ -2118,9 +2129,12 @@ public class DrawFBP extends JFrame
 			}
 		});
 
+		//jf.setLocation(50, 50);
 		panel.setBackground(Color.GRAY);
-		panel.setLocation(getX() + 50, getY() + 50);
+		//panel.setLocation(getX() + 50, getY() + 50);
+		//panel.setLocation(50, 50);
 		panel.setSize(1200, 800);
+		//jsp.setLocation(50, 50);
 
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -2213,7 +2227,8 @@ public class DrawFBP extends JFrame
 		jf.add(jsp);
 		jf.pack();
 		Point p = getLocation();
-		jf.setLocation(p.x + 150, p.y + 50);
+		jf.setLocation(p.x + 50, p.y + 50);
+		//jf.setLocation(100, 100);
 		// int height = 200 + properties.size() * 40;
 		jf.setSize(1200, 800);
 		// jsp.setVisible(true);
@@ -2406,11 +2421,12 @@ public class DrawFBP extends JFrame
 		}
 
 		curDiag.title = fname;
+		
+
+		setTitle("Diagram: " + curDiag.title);
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
 			curDiag.title = curDiag.title.substring(0,
 					curDiag.title.length() - 4);
-
-		setTitle("Diagram: " + curDiag.title);
 		// curDiag.tabNum = i;
 		// jtp.setSelectedIndex(curDiag.tabNum);
 		repaint();
@@ -2509,12 +2525,13 @@ public class DrawFBP extends JFrame
 
 		curDiag.title = file.getName();
 		curDiag.diagFile = file;
-		if (curDiag.title.toLowerCase().endsWith(".drw"))
-			curDiag.title = curDiag.title.substring(0,
-					curDiag.title.length() - 4);
+		
 
 		File currentDiagramDir = file.getParentFile();
 		setTitle("Diagram: " + curDiag.title);
+		if (curDiag.title.toLowerCase().endsWith(".drw"))
+			curDiag.title = curDiag.title.substring(0,
+					curDiag.title.length() - 4);
 		saveProp("currentDiagramDir",
 				currentDiagramDir.getAbsolutePath());
 		saveProperties();

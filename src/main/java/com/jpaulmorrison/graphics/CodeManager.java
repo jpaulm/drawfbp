@@ -127,6 +127,8 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		// diag.targetLang = langLabel;
 		changed = true;
 		
+		String curDir = diag.diagFile.getParentFile().getAbsolutePath();
+		driver.properties.put("currentDiagramDirectory", curDir);
 
 		String component = (gl.label.equals("Java"))
 				? "component"
@@ -969,7 +971,40 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 		String fn = diag.diagFile.getAbsolutePath();
 		int i = fn.lastIndexOf(".drw");
-		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, new File(fn.substring(0, i) + "." + gl.suggExtn));  
+		String pkg = driver.properties.get("currentPackageName");
+		if (pkg == null)
+			pkg = "";
+		String cDD = driver.properties.get("currentDiagramDirectory");
+		if (cDD != null) {
+			int j = cDD.lastIndexOf("diagrams");
+			if (j == -1)
+				cDD += "/networks";
+			else
+				cDD = cDD.replace("diagrams", "networks");
+		}
+		fn = fn.replace("\\",  "/");
+		int k = fn.substring(0, i).lastIndexOf("/");
+		String suggName = ""; 
+		if (i > k)
+			suggName = fn.substring(k, i);
+		cDD = cDD.replace("\\",  "/");		
+		suggName = cDD + "/" + pkg + suggName +  "." + gl.suggExtn;		
+		
+		// back up through directories until we find a good one!
+		
+		String t = suggName;
+		while (true){
+			
+			File f = new File(t);
+			if (f.exists() && f.isDirectory())
+				break;
+			t = t.substring(0, t.lastIndexOf("/"));
+		}
+		suggName = t;
+		
+		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, 
+		//		new File(fn.substring(0, i) + "." + gl.suggExtn)); 
+		        new File(suggName));
 
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver, "File not saved");
@@ -983,6 +1018,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
 		//saveProperties();
 		changed = false;
+		dialog.repaint();
 
 		if (packageNameChanged) {
 			driver.saveProp("currentPackageName", packageName);
