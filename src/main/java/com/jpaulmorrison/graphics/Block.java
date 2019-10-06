@@ -1722,9 +1722,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			if (result != MyOptionPane.OK_OPTION)
 				return false;
 		//}
-
+        
 		desc = area.getText();
-
+		
 		diag.changed = true;
 
 		//driver.repaint();

@@ -134,13 +134,13 @@ public class Diagram {
 			
 					
 			String s = driver.properties.get(fCP.propertyName);  
-			if (s == null)
-				s = System.getProperty("user.home");
+			if (s == null) 
+				s = System.getProperty("user.home");			 
 
 			File f = new File(s);
 			if (!f.exists()) {
 				MyOptionPane.showMessageDialog(driver, "Directory '" + s
-						+ "' does not exist - reselect", MyOptionPane.ERROR_MESSAGE);
+						+ "' does not exist - create it or reselect", MyOptionPane.ERROR_MESSAGE);
 
 				f = new File(System.getProperty("user.home"));
 			}
@@ -190,11 +190,11 @@ public class Diagram {
 				 	return null;
 				 }
 				
-				 if (!(newFile.getParentFile().exists())) {
-				 	MyOptionPane.showMessageDialog(driver, "Invalid file name: "
-				 			+ newFile.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
-				 	return null;
-				 }
+				 //if (!(newFile.getParentFile().exists())) {
+				 //	MyOptionPane.showMessageDialog(driver, "Invalid file name: "
+				 //			+ newFile.getAbsolutePath(), MyOptionPane.ERROR_MESSAGE);
+				 //	return null;
+				// }
 
 				if (s.toLowerCase().endsWith("~")) {
 					MyOptionPane.showMessageDialog(driver,
@@ -241,6 +241,8 @@ public class Diagram {
 		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
 			fileString = (String) contents;			 
 			fileString = cm.checkPackage(file, fileString);
+			if (fileString == null)
+				return new File(fileString);
 		}
 		
 		// finished choosing file...

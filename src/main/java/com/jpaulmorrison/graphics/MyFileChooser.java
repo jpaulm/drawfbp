@@ -39,8 +39,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class MyFileChooser extends JFrame
@@ -469,7 +467,7 @@ public class MyFileChooser extends JFrame
 		setFocusTraversalPolicy(mtp);
 		setFocusCycleRoot(false);
 
-		showList();
+		//showList();
 		if (saveAs) {
 
 			if (suggestedName != null && !(suggestedName.equals(""))) {
@@ -489,8 +487,10 @@ public class MyFileChooser extends JFrame
 				s += " (current file: "
 						+ driver.curDiag.diagFile.getAbsolutePath() + ")";
 			}
+			showList();
 		} else {
 			t_dirName.setText(listHead);
+			showList();
 			/*
 			 * SwingUtilities.invokeLater(new Runnable() { public void run() {
 			 * list.requestFocusInWindow(); selComp = list; //
@@ -546,9 +546,12 @@ public class MyFileChooser extends JFrame
 		LinkedList<String> ll2 = null;
 		//inJarTree = false;
 		//String s = listHead;
+		t_dirName.setText(listHead);
+		//String x = t_dirName.getText();
+		t_dirName.setVisible(true);
 		 
 		String t = null;
-		File f = null;
+		File f = new File(listHead);
 		if (listHead.toLowerCase().endsWith("package.json")) {
 			ll2 = buildListFromJSON(listHead);
 
@@ -561,17 +564,16 @@ public class MyFileChooser extends JFrame
 
 				if (listHead == null)
 					return;
-				f = new File(listHead);
 				t = f.getAbsolutePath();
 				if (t.endsWith("My Documents"))
 					f = new File(t.replace("My Documents", "Documents"));
 				t = t.replace("\\",  "/");
-				if (!f.exists() || !f.isDirectory()) {					
-					MyOptionPane.showMessageDialog(driver,
-							t + " does not exist or is not a directory!",
-							MyOptionPane.WARNING_MESSAGE);
-					return;					
-				}
+				//if (!f.exists() || !f.isDirectory()) {					
+				//	MyOptionPane.showMessageDialog(driver,
+				//			t + " does not exist or is not a directory!",
+				//			MyOptionPane.WARNING_MESSAGE);
+				//	return;					
+				//}
 				
 			}
 				//else {
@@ -595,7 +597,7 @@ public class MyFileChooser extends JFrame
 						for (String u : driver.jarFiles.values()) {
 							if (new File(u).exists()) {
 								try {
-									File f2 = new File(t);
+									File f2 = new File(u);
 									v = Files.getLastModifiedTime(f2.toPath()).toString();
 								} catch (IOException e) {
 									// TODO Auto-generated catch block
@@ -612,7 +614,11 @@ public class MyFileChooser extends JFrame
 				//}
 
 				//String[] fl = f.list();
-				
+				if (!f.exists()) {
+					ll.add("Folder does not exist");
+				}
+				else {
+					
 				Path p = f.toPath();
 				DirectoryStream<Path> ds = null;
 				try {
@@ -625,8 +631,9 @@ public class MyFileChooser extends JFrame
 				ll2 = new LinkedList<String>();
 				
 				for (Path entry : ds) {	
-					//String fn = listHead + File.separator + entry;
-					File fx = entry.toFile();
+					String fs = entry.toString();
+										 
+					File fx = new File(fs);
 					if (!fx.exists())
 						continue;
 					if (fx.isDirectory())
@@ -645,7 +652,9 @@ public class MyFileChooser extends JFrame
 				}
 				
 				for (Path entry : ds) {
-					File fx = entry.toFile();					
+					String fs = entry.toString();					
+					 
+					File fx = new File(fs);					
 					if (!fx.exists())
 						continue;
 					if (!fx.isDirectory() 
@@ -659,7 +668,7 @@ public class MyFileChooser extends JFrame
 				
 				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll
 				 
-									 
+				}					 
 
 			} else {
 				//inJarTree = true;
@@ -682,7 +691,7 @@ public class MyFileChooser extends JFrame
 				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll in
 										// sorted order
 			}
-		 
+				 
 		// if (ll == null)
 		// return;
 		}
@@ -742,34 +751,9 @@ public class MyFileChooser extends JFrame
 
 		list.setVisible(true);
 		list.requestFocusInWindow();
-		//paintList();
-		//if (selComp instanceof JList) {
-			//String s = list.getSelectedValue();
-			//if (s == null || s.equals("(empty folder)"))
-			//	s = "";
+		
 
-		t_dirName.setText(listHead);
-		/*
-		DefaultMutableTreeNode ch = null;
-		if (currentNode != null) {				
-			//	t_dirName.setText(listHead);				
-
-			// else {
-				
-				ch = currentNode; // findChild(currentNode,
-															// t);
-				if (ch.getChildCount() == 0) 	{				
-					//t_dirName.setText(listHead);					
-
-				 //else {
-					t_fileName.setText(list.getSelectedValue());
-					//t_dirName.setText(listHead);
-					selComp = t_fileName;
-				}
-			 }
-		*/
-
-		 
+		//t_fileName.setText(list.getSelectedValue());  //??? 
 
 		panel.validate();
 		repaint();
@@ -1421,6 +1405,7 @@ public class MyFileChooser extends JFrame
 		// selComp = (Component) e.getSource();
 	}
 
+	/*
 	public void valueChanged(ListSelectionEvent e) {
 		//paintList();
 		if (selComp instanceof JList) {
@@ -1429,7 +1414,7 @@ public class MyFileChooser extends JFrame
 				s = "";
 			s = s.substring(0, s.indexOf("@"));
 
-			String fn = DrawFBP.makeAbsFileName(s, listHead);
+			//String fn = DrawFBP.makeAbsFileName(s, listHead);
 			
 			if (currentNode == null) {
 
@@ -1461,7 +1446,7 @@ public class MyFileChooser extends JFrame
 			repaint();
 		}
 	}
-
+*/
 	public void keyTyped(KeyEvent e) {
 
 	}
@@ -1507,6 +1492,9 @@ public class MyFileChooser extends JFrame
 			} else {
 				s = t_fileName.getText();
 			}
+			int i = -1;
+			if (-1 < (i = s.indexOf("@")))
+				s = s.substring(0, i);
 			if (s.endsWith(".jar")) {
 				if (s.equals(driver.javaFBPJarFile)) {
 					MyOptionPane.showMessageDialog(driver,
@@ -1552,7 +1540,7 @@ public class MyFileChooser extends JFrame
 				f = new File(s);
 				String t = null;
 				for (Entry<String, String> entry : driver.jarFiles.entrySet()) {
-					if (entry.getValue().equals(s)) {
+					if (entry.getValue().startsWith(s)) {
 						t = entry.getKey();
 						break;
 					}
@@ -1653,7 +1641,7 @@ public class MyFileChooser extends JFrame
 					// File f = new File(v + File.separator + s);
 					// if (f.exists() && !(f.isDirectory())) {
 					// if (s.endsWith(".class")) {
-					t_fileName.setText(s);
+					//t_fileName.setText(s);
 					// t_fileName.repaint();
 					// }
 				}
@@ -1788,6 +1776,7 @@ public class MyFileChooser extends JFrame
 					listHead = System.getProperty("user.home");
 
 				t_dirName.setText(listHead);
+				t_fileName.setText(new File(listHead).getName());
 				// text2.setText("");
 				// fullNodeName = listHead;
 
@@ -2054,12 +2043,17 @@ public class MyFileChooser extends JFrame
 			list.repaint();
 
 			String t = (String) list.getSelectedValue();
+			int i = -1;
+			if (-1 < (i = t.indexOf("@")))
+				t = t.substring(0, i);
 			if (!t.equals("")) {
 				File f = new File(t_dirName.getText() + File.separator + t);
-				if (f.exists() && !f.isDirectory()) {
+				if (!f.exists())
+					return;
+				//if (!f.isDirectory() ) 
 					t_fileName.setText(t);
-					t_fileName.repaint();
-				}
+				t_fileName.repaint();
+				 
 			}
 		}
 		public void secondClick(MouseEvent e) {

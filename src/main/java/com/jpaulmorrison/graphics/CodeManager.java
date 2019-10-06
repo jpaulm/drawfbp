@@ -980,7 +980,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			if (j == -1)
 				cDD += "/networks";
 			else
-				cDD = cDD.replace("diagrams", "networks");
+				cDD = cDD.replace("diagrams", "src");
 		}
 		fn = fn.replace("\\",  "/");
 		int k = fn.substring(0, i).lastIndexOf("/");
@@ -988,24 +988,15 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		if (i > k)
 			suggName = fn.substring(k, i);
 		cDD = cDD.replace("\\",  "/");		
-		suggName = cDD + "/" + pkg + suggName +  "." + gl.suggExtn;		
-		
-		// back up through directories until we find a good one!
-		
-		String t = suggName;
-		while (true){
-			
-			File f = new File(t);
-			if (f.exists() && f.isDirectory())
-				break;
-			t = t.substring(0, t.lastIndexOf("/"));
-		}
-		suggName = t;
+		suggName = cDD + "/" + pkg + suggName +  "." + gl.suggExtn;			
 		
 		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, 
 		//		new File(fn.substring(0, i) + "." + gl.suggExtn)); 
 		        new File(suggName));
+		
+		// note: suggName does not have to be a real file!
 
+		// did save work?
 		if (file == null) {
 			// MyOptionPane.showMessageDialog(driver, "File not saved");
 			// diag.changeCompLang();
@@ -1045,6 +1036,12 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			String fs = file.getAbsolutePath();
 			fs = fs.replace("\\", "/");
 			int v = fs.indexOf("/src/");
+			if (v == -1){
+				MyOptionPane.showMessageDialog(driver,
+			 			fs + " does not reference a 'src' directory!",
+			 			MyOptionPane.WARNING_MESSAGE);
+				return null;
+			}
 			int w = fs.indexOf(".java");
 			int u = fs.substring(0, w).lastIndexOf("/");
 
@@ -1071,8 +1068,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 								"Package name changed: " + pkg);
 
 					}
-					driver.saveProp("currentPackageName",
-							pkg);
+					driver.saveProp("currentPackageName", pkg);
 					// saveProperties();
 				}
 				fileString = fileString.substring(0, s + 8) + pkg
@@ -1429,16 +1425,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			cma = ", ";
 			code += "\n";
 		}
-		// restore old language parameters
-		/*
-				diag.fCParm[DrawFBP.NETWORK] = driver.fCPArray[NETWORK],
-						"Generated code",
-						diag.diagLang.netDirProp,
-						"Specify file name for generated code",
-						"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-						diag.diagLang.label);
-						*/
-		//diag.fCParm[DrawFBP.NETWORK] = saveFCP;
+		
 		// insert string data
 		try {
 			doc.insertString(doc.getLength(), code, baseStyle);
@@ -1447,14 +1434,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			MyOptionPane.showMessageDialog(driver,
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
-			/*
-			diag.fCParm[DrawFBP.NETWORK] = driver.new FileChooserParm(DrawFBP.NETWORK,
-					"Generated code",
-					diag.diagLang.netDirProp,
-					"Specify file name for generated code",
-					"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-					diag.diagLang.label);
-			*/
+			
 			return false;
 		}
 
@@ -1480,12 +1460,6 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 	String cleanComp(Block b) {
 
-		// String[] sa = new String[2]; // process name and component name,
-		// resp.
-
-		// if (gl.label.equals("FBP"))
-		// s = cleanDesc(s); // clean up name
-
 		error = false;
 		String c = b.fullClassName;
 		if (c == null) {
@@ -1498,18 +1472,12 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			}
 		}
 		if (!error) {
-			/*
-			 * if (gl.label.equals("JSON")) { // bit of a hack... int i =
-			 * c.lastIndexOf(File.separator); if (i == -1) i =
-			 * c.lastIndexOf("/"); c = c.substring(i + 1); int j =
-			 * c.lastIndexOf("."); if (j > -1) c = c.substring(0, j); }
-			 */
+			
 			int i = c.indexOf("!");
 			if (i > -1 && i < c.length() - 1) {				
 					c = c.substring(i + 1);				
 			}
-			//if (c.toLowerCase().endsWith(".class"))
-			//	c = c.substring(0, c.length() - 6);
+			
 		}
 
 		return c;

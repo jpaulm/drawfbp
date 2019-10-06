@@ -1099,7 +1099,7 @@ public class DrawFBP extends JFrame
 		int i = jtp.getTabCount(); // get count *before* adding new sa & label
 		jtp.add(sa, new JLabel());
 		
-		int j = jtp.getTabCount();  // for debugging
+		//int j = jtp.getTabCount();  // for debugging
 		// System.out.println("new tab");
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
 		jtp.setTabComponentAt(i, b);		
@@ -2816,6 +2816,8 @@ public class DrawFBP extends JFrame
 			// }
 			if (cFile == null || !(cFile.exists()))
 				return;
+			
+			//setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 			//String source = curDiag.readFile(cFile, false);
 			
@@ -3227,6 +3229,7 @@ public class DrawFBP extends JFrame
 
 			u = proc.exitValue();
 			 
+			//setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 
 			if (u == 0) {
 
