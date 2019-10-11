@@ -683,7 +683,7 @@ public class Diagram {
 			
 			if (file == null) {
 				MyOptionPane.showMessageDialog(driver,
-						"File not saved - exiting excise",
+						"File not saved - exiting Excise function",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}

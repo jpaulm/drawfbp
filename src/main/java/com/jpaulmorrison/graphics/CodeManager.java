@@ -978,9 +978,9 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		if (cDD != null) {
 			int j = cDD.lastIndexOf("diagrams");
 			if (j == -1)
-				cDD += "/networks";
+				cDD += "/src/networks";
 			else
-				cDD = cDD.replace("diagrams", "src");
+				cDD = cDD.replace("diagrams", "src/networks");
 		}
 		fn = fn.replace("\\",  "/");
 		int k = fn.substring(0, i).lastIndexOf("/");
@@ -1035,6 +1035,9 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			String pkg = fileString.substring(s + 8, s + 8 + t);
 			String fs = file.getAbsolutePath();
 			fs = fs.replace("\\", "/");
+			
+			// look for src in name; if found, look for networks...; if found do comparison starting beyond that...
+			
 			int v = fs.indexOf("/src/");
 			if (v == -1){
 				MyOptionPane.showMessageDialog(driver,
@@ -1042,11 +1045,15 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			 			MyOptionPane.WARNING_MESSAGE);
 				return null;
 			}
+			v += 5;
+			int v2 = fs.substring(v).indexOf("networks/");
+			if (v2 > -1)
+				v = v2 + 9;
 			int w = fs.indexOf(".java");
 			int u = fs.substring(0, w).lastIndexOf("/");
 
 			String fNPkg = "(null)";
-			if (v + 5 < u) {
+			if (v < u) {
 				fNPkg = fs.substring(v + 5, u);
 				fNPkg = fNPkg.replace('\\', '/');
 				fNPkg = fNPkg.replace('/', '.');

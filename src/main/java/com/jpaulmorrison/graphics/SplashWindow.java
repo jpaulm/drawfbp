@@ -12,9 +12,9 @@ class SplashWindow extends JWindow {
 	static final long serialVersionUID = 111L;
 	static boolean READFILE = true;
 	
-	public SplashWindow(JFrame f, int waitTime,
+	public SplashWindow(/* JFrame f,*/ int waitTime,
 			final DrawFBP driver, boolean small) {
-		super(f);
+		super(driver);
 		
 		Image i = null;
 		String fn = "DrawFBP-logo.jpg";					
@@ -31,11 +31,11 @@ class SplashWindow extends JWindow {
 		JLabel l = new JLabel(icon);
 		c.add(l, BorderLayout.CENTER);
 		pack();
-		f.repaint();
+		driver.repaint();
 
-		Point p = f.getLocation();
+		Point p = driver.getLocation();
 		Dimension labelSize = l.getPreferredSize();
-		Dimension screenSize = f.getSize();
+		Dimension screenSize = driver.getSize();
 		if (small) {
 			//labelSize = new Dimension((int) (labelSize.width * .6), (int) (labelSize.height * .6));
 			p = new Point(p.x + 80, p.y + 120);
@@ -55,7 +55,7 @@ class SplashWindow extends JWindow {
 				dispose();
 			}
 		};
-		Runnable waitRunner = new Runnable() {
+		Runnable waitRunner  = new Runnable() {
 			public void run() {
 				try {
 					Thread.sleep(1000);

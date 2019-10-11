@@ -1856,6 +1856,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					myURLClassLoader = new URLClassLoader(urls, driver.getClass()
 							.getClassLoader());
 					try {
+						
 						javaComp = myURLClassLoader.loadClass(res2);
 					} catch (ClassNotFoundException e2) {
 						javaComp = null;

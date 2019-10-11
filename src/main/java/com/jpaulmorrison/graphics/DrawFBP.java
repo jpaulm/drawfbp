@@ -8,6 +8,7 @@ import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -16,7 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import java.awt.Image;
-
+import java.awt.Panel;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -35,6 +36,7 @@ import java.awt.image.*;
 
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 import javax.swing.event.*;
 
 import java.util.*;
@@ -269,6 +271,7 @@ public class DrawFBP extends JFrame
 	
 	FileChooserParm diagFCParm = null;
 	String[] filterOptions = {"", "All (*.*)"};
+	volatile boolean interrupt = false;
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -574,7 +577,7 @@ public class DrawFBP extends JFrame
 		boolean small = (diagramName) == null ? false : true;
 
 		if (!small) // try suppressing this...
-			new SplashWindow(this, 3000, this, small); // display
+			new SplashWindow(3000, this, small); // display
 		// for 3.0 secs, or until mouse is moved
 
 		//if (diagramName != null) {
@@ -1780,8 +1783,8 @@ public class DrawFBP extends JFrame
 					+ "*             DrawFBP v" + v + "      " + sp1
 					+ "               *\n"
 					+ "*                                                  *\n"
-					+ "*    Authors: J.Paul Rodker Morrison,              *\n"
-					+ "*             Bob Corrick                          *\n"
+					+ "*    Authors: J.Paul Rodker Morrison, Canada,      *\n"
+					+ "*             Bob Corrick, UK                      *\n"
 					+ "*                                                  *\n"
 					+ "*    Copyright 2009, ..., 2019                     *\n"
 					+ "*                                                  *\n"
@@ -2796,6 +2799,8 @@ public class DrawFBP extends JFrame
 		GenLang gl = curDiag.diagLang;
 		Process proc = null;
 		//String program = "";
+		interrupt = false;
+		
 		if (currLang.label.equals("Java")) {
 			String ss = properties.get(gl.netDirProp);
 			File genDir = null;
@@ -2817,21 +2822,7 @@ public class DrawFBP extends JFrame
 			if (cFile == null || !(cFile.exists()))
 				return;
 			
-			//setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-			//String source = curDiag.readFile(cFile, false);
 			
-			/*  (Compile code shouldn't set currentPackageName)
-			 * 
-			int m = source.indexOf("package");
-			String pkg = "(null)";
-			if (m > -1) {
-				int n = source.substring(m + 8).indexOf(";");
-				pkg = source.substring(m + 8, n + m + 8);
-				pkg = pkg.trim();
-			}
-			saveProp("currentPackageName", pkg);
-			*/
 
 			String srcDir = cFile.getAbsolutePath();
 			srcDir = srcDir.replace('\\', '/');
@@ -2893,6 +2884,8 @@ public class DrawFBP extends JFrame
 			MyOptionPane.showMessageDialog(this,
 					"Compiling program - " + srcDir + "/" + v + progName,
 					MyOptionPane.INFORMATION_MESSAGE);
+			
+			//new WaitWindow(this); // display hourglass (?)
 
 			proc = null;
 			
@@ -2983,6 +2976,8 @@ public class DrawFBP extends JFrame
 				u = proc.exitValue();
 			 
 				clsDir += "/" + fNPkg;
+				interrupt = true;
+				  
 				if (u == 0)
 					MyOptionPane.showMessageDialog(this,
 							"Program compiled - " + srcDir + "/" + progName
@@ -2997,7 +2992,7 @@ public class DrawFBP extends JFrame
 									+ "/" + progName + "<br>" +
 									output + "</html>",
 							MyOptionPane.WARNING_MESSAGE);
-			 
+			  
 		}
 
 		else {
@@ -3186,6 +3181,11 @@ public class DrawFBP extends JFrame
 			pb.directory(new File(trunc));
 			
 			pb.redirectErrorStream(true);
+			//MyOptionPane.showMessageDialog(this,
+			//		"Compiling program - " + srcDir + "/" + v + progName,
+			//		MyOptionPane.INFORMATION_MESSAGE);
+			
+			new WaitWindow(this); // display hourglass (?)
 			 
 			String err = "";
 			String output = "";
@@ -3228,9 +3228,10 @@ public class DrawFBP extends JFrame
 			 
 
 			u = proc.exitValue();
+			interrupt = true;
 			 
 			//setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-
+			 
 			if (u == 0) {
 
 				MyOptionPane.showMessageDialog(this,
@@ -3244,7 +3245,10 @@ public class DrawFBP extends JFrame
 						"<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
 				         output + "</html>" ,
 						MyOptionPane.WARNING_MESSAGE);
+			
+			 
 		}
+		
 	}
 
 	void runCode() {
@@ -4433,9 +4437,10 @@ public class DrawFBP extends JFrame
 
 			DrawFBP _mf= new DrawFBP(args);
 			_mf.setVisible(true);
+			
 			        }
 					   });
-		
+			
 	}
 
 	public class Lang {
@@ -4841,6 +4846,137 @@ public class DrawFBP extends JFrame
 				title = e;
 			}
 		}	
+		
+	class WaitWindow extends JWindow {
+		private static final long serialVersionUID = 1L;
+		
+
+		public WaitWindow(final DrawFBP driver) {
+			super();
+			JTextArea ta = new JTextArea();
+			ta.setText(
+					"****************************************************\n"
+							+ "*                                                  *\n"
+							+ "*    Compiling...  + srcFile +                                *\n"
+							+ "*                                                  *\n"
+							+ "****************************************************\n");
+
+			ta.setFont(driver.fontg);
+			driver.add(ta, BorderLayout.CENTER);
+			setAlwaysOnTop(true);
+			
+			addMouseMotionListener(new MouseMotionListener() {
+
+				public void mouseMoved(MouseEvent e) {	
+					setVisible(false);
+					dispose();
+				}
+
+				public void mouseDragged(MouseEvent e) {
+					setVisible(false);
+					dispose();
+				}
+			});
+			
+			final Runnable closerRunner = new Runnable() {
+				public void run() {
+					/*
+					String srcFile = "  ";
+					String binFile = "  ";
+					String output = "  ";
+					if (binFile != null) {
+
+						MyOptionPane.showMessageDialog(driver,
+								"Programs compiled and linked - " + srcFile
+										+ "   into - " + binFile,
+								MyOptionPane.INFORMATION_MESSAGE);
+						saveProp("exeDir", binFile);
+					} else
+						MyOptionPane.showMessageDialog(driver,
+								"<html>Program compile failed, rc: "
+										+ srcFile + "<br>" + output
+										+ "</html>",
+								MyOptionPane.WARNING_MESSAGE);
+					*/
+					setVisible(false);
+					dispose();
+				}
+			};
+
+			Runnable waitRunner = new Runnable() {
+				public void run() {
+						
+						setBackground(Color.WHITE);						
+						Point p = getLocation();						
+						setLocation(p.x + 500, p.y + 500);
+						setMinimumSize(400, 400);						
+						setVisible(true);												 
+				       	getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, DrawFBP.lb));				 
+						pack();												
+						repaint();						
+						driver.repaint();
+
+						try {
+							Thread.sleep(2000);              // 2 secs.
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}   
+						
+						while (!interrupt) {
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} // 1/2 sec.
+						}
+						
+						  
+						String srcFile = "  ";
+						String binFile = "  ";
+						String output = "  ";
+						if (binFile != null) {
+
+							MyOptionPane.showMessageDialog(getContentPane(),
+									"Programs compiled and linked - " + srcFile
+											+ "   into - " + binFile,
+									MyOptionPane.INFORMATION_MESSAGE);
+							saveProp("exeDir", binFile);
+						} else
+							MyOptionPane.showMessageDialog(getContentPane(),
+									"<html>Program compile failed, rc: "
+											+ srcFile + "<br>" + output
+											+ "</html>",
+									MyOptionPane.WARNING_MESSAGE);
+						//setVisible(false);
+						//dispose();
+						 
+						
+						try {
+							SwingUtilities.invokeAndWait(closerRunner);
+						} catch (InvocationTargetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					
+				}
+
+				private void setMinimumSize(int i, int j) {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			
+			setVisible(true);
+			Thread wr = new Thread(waitRunner, "WaitThread");
+			wr.start();
+
+		}
+	}
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
