@@ -808,11 +808,11 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 				}
 
 				if (doc.getText(i, 1).equals("\"")
-						&& !(doc.getText(i - 1, 1).equals(File.separator))) {
+						&& !(doc.getText(i - 1, 1).equals("/"))) {
 					int j = i + 1;
 					for (; j < doc.getLength(); j++) {
 						if (doc.getText(j, 1).equals("\"") && !(doc
-								.getText(j - 1, 1).equals(File.separator)))
+								.getText(j - 1, 1).equals("/")))
 							break;
 					}
 					doc.setCharacterAttributes(i, j - i + 1, quotedStringStyle,

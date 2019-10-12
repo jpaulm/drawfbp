@@ -150,7 +150,7 @@ public class Diagram {
 				suggestedFileName = suggFile.getAbsolutePath();
 			else
 				if (saveAs && title != null && !(title.equals("(untitled)")))
-					suggestedFileName = s + File.separator + title + fCP.fileExt;
+					suggestedFileName = s + "/" + title + fCP.fileExt;
 			
 
 			MyFileChooser fc = new MyFileChooser(driver,f, fCP);
@@ -445,7 +445,7 @@ public class Diagram {
 
 	
 	String getSuffix(String s) {
-		int i = s.lastIndexOf(File.separator);
+		int i = s.lastIndexOf("/");
 		if (i == -1)
 			i = s.lastIndexOf("/");
 		String t = s.substring(i + 1);

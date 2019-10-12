@@ -229,7 +229,7 @@ public class Block implements ActionListener {
 			Font fontsave = g.getFont();
 			g.setFont(driver.fontf);
 			name = codeFileName;
-			int i = name.lastIndexOf(File.separator);
+			int i = name.lastIndexOf("/");
 			if (i == -1)
 				i = name.lastIndexOf("/");
 			name = name.substring(i + 1);
@@ -540,7 +540,7 @@ public class Block implements ActionListener {
 		//LinkedList<URL> ll = new LinkedList<URL>();
 		
 		if (!(fn.endsWith("jar")))
-				fn += File.separator;
+				fn += "/";
 		
 		File f = new File(fn);	
 		fn = fn.replace("\\", "/");
@@ -1798,7 +1798,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 	void selectJavaClass() throws MalformedURLException {
 
-		String oldFullClassName = fullClassName;
+		//String oldFullClassName = fullClassName;
 
 		if (javaComp != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
@@ -1966,7 +1966,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (javaComp == null) {
 			MyOptionPane.showMessageDialog(driver, "No class selected", MyOptionPane.ERROR_MESSAGE);
 		} else {
-			if (!fullClassName.equals(oldFullClassName))
+			//if (!fullClassName.equals(oldFullClassName))
 				displayPortInfo();
 			
 		}

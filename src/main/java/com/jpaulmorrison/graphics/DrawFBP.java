@@ -264,9 +264,9 @@ public class DrawFBP extends JFrame
 	JRadioButton[] but = new JRadioButton[11];
 	Box box21 = null;
 
-	Timer ttStartTimer = null;
-	Timer ttEndTimer = null;
-	boolean drawToolTip = false;
+	//Timer ttStartTimer = null;
+	//Timer ttEndTimer = null;
+	//boolean drawToolTip = false;
 	boolean gotDllReminder = false;
 	
 	FileChooserParm diagFCParm = null;
@@ -284,7 +284,7 @@ public class DrawFBP extends JFrame
 			diagramName = diagramName.replace("\\", "/");
 			if (diagramName.indexOf("/") == -1){
 				final String dir = System.getProperty("user.dir");				
-				diagramName = dir + File.separator + diagramName;
+				diagramName = dir + "/" + diagramName;
 			}
 			//System.out.println("Diagram: " + diagramName );
 			File f = new File(diagramName);
@@ -813,7 +813,7 @@ public class DrawFBP extends JFrame
 		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag");
 		
 		
-
+        /*
 		ttStartTimer = new Timer(0, new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -837,6 +837,7 @@ public class DrawFBP extends JFrame
 		ttEndTimer.setInitialDelay(10000); // 10 secs
 		ttEndTimer.setDelay(600000);
 		ttStartTimer.start();
+		*/
 
 	}
 
@@ -1296,7 +1297,7 @@ public class DrawFBP extends JFrame
 			if (f != null) {
 				String name = f.getName();
 				int i = name.indexOf(".drw");
-				ss += File.separator + name.substring(0, i)
+				ss += "/" + name.substring(0, i)
 					+ curDiag.fCParm[Diagram.NETWORK].fileExt;
 				fc.setSuggestedName(ss);
 			}
@@ -1544,7 +1545,7 @@ public class DrawFBP extends JFrame
 			if (f != null) {
 				int i = curDiag.diagFile.getName().indexOf(".drw");
 				if (i > -1) {
-					ss += File.separator
+					ss += "/"
 							+ curDiag.diagFile.getName().substring(0, i)
 							+ curDiag.fCParm[Diagram.IMAGE].fileExt;
 					fc.setSuggestedName(ss);
@@ -2397,7 +2398,7 @@ public class DrawFBP extends JFrame
 		arrowRoot = null;
 		currentArrow = null;
 		foundBlock = null;
-		drawToolTip = false;
+		//drawToolTip = false;
 		blockSelForDragging = null;
 		if (curDiag.diagLang != null)
 			changeLanguage(curDiag.diagLang);
@@ -2502,7 +2503,7 @@ public class DrawFBP extends JFrame
 	}
 	
 	static boolean hasSuffix(String s) {
-		int i = s.lastIndexOf(File.separator);
+		int i = s.lastIndexOf("/");
 		int j = s.substring(i + 1).lastIndexOf(".");
 		return j > -1;
 	}
@@ -3599,7 +3600,7 @@ public class DrawFBP extends JFrame
 		if (propertiesFile == null) {
 			String uh = System.getProperty("user.home");
 			propertiesFile = new File(
-					uh + File.separator + "DrawFBPProperties.xml");
+					uh + "/" + "DrawFBPProperties.xml");
 
 		}
 		BufferedReader in = null;
@@ -4073,7 +4074,7 @@ public class DrawFBP extends JFrame
 	 * String zipname = "FBPSamples.zip"; InputStream is =
 	 * this.getClass().getClassLoader() .getResourceAsStream(zipname);
 	 * 
-	 * String zfn = System.getProperty("user.home") + File.separator + zipname;
+	 * String zfn = System.getProperty("user.home") + "/" + zipname;
 	 * File f = new File(zfn); String s = f.getParent(); if (f.exists())
 	 * f.delete(); if (s != null) (new File(s)).mkdirs(); try {
 	 * copyInputStream(is, new FileOutputStream(f)); } catch (IOException e) {
@@ -4247,7 +4248,7 @@ public class DrawFBP extends JFrame
 			}
 
 			String curClsDir = properties.get("currentClassDir")
-					+ File.separator;
+					+ "/";
 
 			if (null != curClsDir) {
 				f2 = new File(curClsDir);
@@ -4344,6 +4345,7 @@ public class DrawFBP extends JFrame
 		g.setColor(Color.BLUE);
 		g.drawOval(x - 3, y - 3, 6, 6);
 
+		/*
 		if (drawToolTip) {
 
 			String s;
@@ -4369,6 +4371,7 @@ public class DrawFBP extends JFrame
 			g.setFont(font);
 
 		}
+		*/
 	}
 
 	void drawBlackSquare(Graphics g, int x, int y) {
@@ -5224,14 +5227,15 @@ public class DrawFBP extends JFrame
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
-			drawToolTip = false;
+			//drawToolTip = false;
 			arrowRoot = null;
 			arrowEnd = null;
+			/*
 			if (!ttEndTimer.isRunning())
 				ttStartTimer.restart();
 			else
 				ttEndTimer.stop();
-
+			*/
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
@@ -5562,10 +5566,10 @@ public class DrawFBP extends JFrame
 			if (i == -1)
 				return;
 			// arrowRoot = null;
-			if (!ttEndTimer.isRunning()) {
-				drawToolTip = false;
-				ttStartTimer.restart();
-			}
+			//if (!ttEndTimer.isRunning()) {
+			//	drawToolTip = false;
+			//	ttStartTimer.restart();
+			//}
 
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
