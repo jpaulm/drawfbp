@@ -18,7 +18,7 @@ Latest release is v2.18.1: the jar file (which includes the `math.geom2d` jar fi
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-The next Release - v2.18.2 - is available in Releases, with a much speeded up sort function (by name or by date, optionally).  The jar file - `drawfbp-2.18.2.jar` - will be promoted after further testing.
+The next Release - v2.18.2 - is available in Releases, with a much speeded up sort function (by name or by date, optionally).  The pre-Release next version - `drawfbp-2.18.3.jar` - has a few bugs, so the next release - v2.18.4 - currently under development - will be released shortly.
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do to run one of the recent releases is to position to your DrawFBP folder, and enter
 
