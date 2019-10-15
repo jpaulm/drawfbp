@@ -4865,6 +4865,7 @@ public class DrawFBP extends JFrame
 
 		public WaitWindow(final DrawFBP driver) {
 			super();
+			/*
 			JTextArea ta = new JTextArea();
 			ta.setText(
 					  "**********************\n"
@@ -4890,8 +4891,27 @@ public class DrawFBP extends JFrame
 			pack();												
 			repaint();						
 			driver.repaint();
-			//System.out.println("waitwindow");
-			 
+			*/
+			String fn = "DrawFBP-logo.jpg";
+			BufferedImage image = driver.loadImage(fn);
+			int x = image.getWidth();
+			int y = image.getHeight();
+			
+			int m = 220;
+			Image i = image.getScaledInstance(m, m * y / x, Image.SCALE_SMOOTH);
+			
+			Container c = getContentPane();
+			ImageIcon icon = new ImageIcon(i);
+			JLabel l = new JLabel(icon);
+			c.add(l, BorderLayout.CENTER);
+			//Point p = curDiag.area.getLocation();		
+			Point p = driver.getLocation();
+			//setLocation(p.x + 200, p.y + 200);
+			setLocation(p.x + 20, p.y + 20);
+
+			setAlwaysOnTop(true);
+			pack();
+			driver.repaint(); 
 			addMouseMotionListener(new MouseMotionListener() {
 
 				public void mouseMoved(MouseEvent e) {	

@@ -485,7 +485,7 @@ public class MyFileChooser extends JFrame
 				File h = new File(suggestedName);
 				listHead = h.getParent();
 				t_dirName.setText(listHead);
-				t_fileName.setText(h.getName());
+				//t_fileName.setText(h.getName());
 				t_suggName.setText(h.getName());
 
 				t_fileName.addAncestorListener(new RequestFocusListener(false));
