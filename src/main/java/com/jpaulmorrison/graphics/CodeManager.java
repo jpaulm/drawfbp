@@ -974,6 +974,8 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		String pkg = driver.properties.get("currentPackageName");
 		if (pkg == null)
 			pkg = "";
+		else 
+			pkg = pkg.replace(".", "/");
 		String cDD = driver.properties.get("currentDiagramDirectory");
 		if (cDD != null) {
 			int j = cDD.lastIndexOf("diagrams");
@@ -1017,7 +1019,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		}
 
 		// diag.targetLang = gl.label;
-		nsLabel.setText(changed ? "Not saved" : " ");
+		nsLabel.setText(changed ? "Not saved" : "Saved");
 		// diag.genCodeFileName = file.getAbsolutePath();
 		dialog.setTitle("Generated Code: " + file.getName());		
 		dialog.repaint();
@@ -1045,16 +1047,18 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			 			MyOptionPane.WARNING_MESSAGE);
 				return null;
 			}
-			v += 5;
+			//v += 5;
 			int v2 = fs.substring(v).indexOf("networks/");
 			if (v2 > -1)
-				v = v2 + 9;
+				v += v2 + 9;
+			else
+				v += 5;
 			int w = fs.indexOf(".java");
 			int u = fs.substring(0, w).lastIndexOf("/");
 
 			String fNPkg = "(null)";
 			if (v < u) {
-				fNPkg = fs.substring(v + 5, u);
+				fNPkg = fs.substring(v, u);
 				fNPkg = fNPkg.replace('\\', '/');
 				fNPkg = fNPkg.replace('/', '.');
 			}

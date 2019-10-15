@@ -41,6 +41,7 @@ import java.util.jar.JarFile;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+
 public class MyFileChooser extends JFrame
 		implements
 			MouseListener,
@@ -575,6 +576,8 @@ public class MyFileChooser extends JFrame
 										// within a jar file ...
 
 				if (listHead == null)
+					return;
+				if (!(f.exists()))
 					return;
 				//File f = new File(listHead);
 				t = f.getAbsolutePath();
@@ -1753,8 +1756,30 @@ final boolean SAVEAS = true;
 					// }
 				}
 				// t_fileName.setText(s);
-				} else
+				} else {
 					s = t_fileName.getText();
+					File f = new File(t_dirName.getText() + "/" + s);  
+					if (!f.exists() && !inJarTree){
+						if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
+								getParent(),
+								"Do you want to create new file: " + 
+								f.getAbsolutePath() + "?",
+								"File/folder create", MyOptionPane.YES_NO_OPTION)) 
+							return;
+						selComp = t_fileName;
+						driver.curDiag.changed = true;
+						try {
+							f.createNewFile();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						//driver.saveAs = true;
+						repaint();
+
+						return;
+					}
+				}
 			// }
 
 			if (s == null || s.equals("")) {
@@ -1877,7 +1902,7 @@ final boolean SAVEAS = true;
 			selComp = t_fileName;
 			// text2.setBackground(vLightBlue);
 			panel.validate();
-			list.repaint();
+			repaint();
 
 		}
 	}
@@ -1932,7 +1957,7 @@ final boolean SAVEAS = true;
 				t_fileName.setText(listHead.substring(k + 1)); 
 			}
 			
-			listView.repaint();
+			//listView.repaint();
 			dialog.repaint();
 			panel.validate();
 			panel.repaint();

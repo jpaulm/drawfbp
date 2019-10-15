@@ -8,7 +8,6 @@ import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -16,8 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import java.awt.Image;
-import java.awt.Panel;
+import java.awt.Image; 
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -35,8 +33,6 @@ import math.geom2d.line.StraightLine2D;
 import java.awt.image.*;
 
 import javax.swing.*;
-import javax.swing.Timer;
-import javax.swing.border.Border;
 import javax.swing.event.*;
 
 import java.util.*;
@@ -271,7 +267,7 @@ public class DrawFBP extends JFrame
 	
 	FileChooserParm diagFCParm = null;
 	String[] filterOptions = {"", "All (*.*)"};
-	volatile boolean interrupt = false;
+	/*volatile*/ boolean interrupt = false;
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -2460,9 +2456,9 @@ public class DrawFBP extends JFrame
 			}
 
 		} catch (FileNotFoundException e) {
-			if (!saveAs)
-				MyOptionPane.showMessageDialog(this, "File not found: "
-					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
+			//if (!saveAs)
+			//	MyOptionPane.showMessageDialog(this, "File not found: "  
+			//		+ file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		} catch (IOException e) {
 			MyOptionPane.showMessageDialog(this, "I/O Exception 2: "
@@ -2879,14 +2875,12 @@ public class DrawFBP extends JFrame
 			// (new File(clsDir + "/" + t + clsName)).delete(); // make sure old
 			// class has been deleted
 
-			String v = "";
-			if (!fNPkg.equals(""))
-				v = fNPkg + "/";
-			MyOptionPane.showMessageDialog(this,
-					"Compiling program - " + srcDir + "/" + v + progName,
-					MyOptionPane.INFORMATION_MESSAGE);
-			
-			//new WaitWindow(this); // display hourglass (?)
+			//String v = "";
+			//if (!fNPkg.equals(""))
+			//	v = fNPkg + "/";
+			//MyOptionPane.showMessageDialog(this,
+			//		"Compiling program - " + srcDir + "/" + v + progName,
+			//		MyOptionPane.INFORMATION_MESSAGE);	
 
 			proc = null;
 			
@@ -2931,6 +2925,8 @@ public class DrawFBP extends JFrame
 			pb.redirectErrorStream(true);			
 			
 			String output = "";
+			
+			new WaitWindow(this); // display "Processing..." message
 
 			// int i = 0;
 			String err = "";
@@ -2973,11 +2969,15 @@ public class DrawFBP extends JFrame
 					e1.printStackTrace();
 				}
 
+				interrupt = true;
+				
+				
+				
 				proc.destroy();
 				u = proc.exitValue();
 			 
 				clsDir += "/" + fNPkg;
-				interrupt = true;
+				
 				  
 				if (u == 0)
 					MyOptionPane.showMessageDialog(this,
@@ -3186,7 +3186,7 @@ public class DrawFBP extends JFrame
 			//		"Compiling program - " + srcDir + "/" + v + progName,
 			//		MyOptionPane.INFORMATION_MESSAGE);
 			
-			new WaitWindow(this); // display hourglass (?)
+			new WaitWindow(this); // display "Processing..." message
 			 
 			String err = "";
 			String output = "";
@@ -3205,6 +3205,7 @@ public class DrawFBP extends JFrame
 					proc = null;
 			} 
 
+			interrupt = true;
 			//program = v + "/" + progName + ".cs";
 			int u = 0;
 			if (!(output.equals("")) || !(err.equals(""))) {
@@ -3229,7 +3230,7 @@ public class DrawFBP extends JFrame
 			 
 
 			u = proc.exitValue();
-			interrupt = true;
+			//interrupt = true;
 			 
 			//setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			 
@@ -3257,6 +3258,8 @@ public class DrawFBP extends JFrame
 		File cFile = null;
 		String program = "";
 		Process proc = null;
+		interrupt = false;
+		
 		if (currLang.label.equals("Java")) {
 
 			String ss = properties.get("currentClassDir");
@@ -3363,9 +3366,7 @@ public class DrawFBP extends JFrame
 			// if(javaFBPJarFile == null)
 			// locateJavaFBPJarFile();
 
-			MyOptionPane.showMessageDialog(this,
-					"Starting program - " + clsDir + "/" + progName,
-					MyOptionPane.INFORMATION_MESSAGE);
+			new WaitWindow(this); // display "Processing..." message
 
 			proc = null;
 			String jh = System.getenv("JAVA_HOME");
@@ -3392,6 +3393,8 @@ public class DrawFBP extends JFrame
 			pb.redirectErrorStream(true);
 			
 			String err = ""; 
+			
+			
 			
 			try {
 				proc = pb.start();
@@ -3443,7 +3446,7 @@ public class DrawFBP extends JFrame
 				}
 
 				proc.destroy();
-			 
+			 interrupt = true;
 			
 			program = clsDir + "/" + progName; 
 					//+ ".class";
@@ -3504,6 +3507,7 @@ public class DrawFBP extends JFrame
 
 			pb.redirectErrorStream(true);
 			
+			new WaitWindow(this); // display "Processing..." message
 			String output = "";
 			String err = "";
 			try {
@@ -3545,9 +3549,13 @@ public class DrawFBP extends JFrame
 					e1.printStackTrace();
 				}
 
+				
 				proc.destroy();
 			}
 		}
+		interrupt = true;
+		
+		
 		if (proc == null)
 			return;
 		int u = proc.exitValue();
@@ -4372,6 +4380,7 @@ public class DrawFBP extends JFrame
 
 		}
 		*/
+		g.setColor(col);
 	}
 
 	void drawBlackSquare(Graphics g, int x, int y) {
@@ -4858,16 +4867,31 @@ public class DrawFBP extends JFrame
 			super();
 			JTextArea ta = new JTextArea();
 			ta.setText(
-					"****************************************************\n"
-							+ "*                                                  *\n"
-							+ "*    Compiling...  + srcFile +                                *\n"
-							+ "*                                                  *\n"
-							+ "****************************************************\n");
+					  "**********************\n"
+					+ "*                    *\n"
+					+ "*    Processing...   *\n"
+					+ "*                    *\n"
+					+ "**********************\n");
 
-			ta.setFont(driver.fontg);
-			driver.add(ta, BorderLayout.CENTER);
+			ta.setFont(driver.fontf);
+			add(ta, BorderLayout.CENTER);
+			//driver.add(this);
 			setAlwaysOnTop(true);
+			setBackground(Color.WHITE);						
+			Point p = driver.getLocation();						
+			//setLocation(p.x + 200, p.y + 200);
+			setLocation(p.x + 20, p.y + 20);
+			Dimension dim = ta.getPreferredSize();
+			Dimension dim2 = new Dimension(dim.width, dim.height); 
+			setMinimumSize(dim2);	
 			
+			setVisible(true);												 
+	       	getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, DrawFBP.lb));				 
+			pack();												
+			repaint();						
+			driver.repaint();
+			//System.out.println("waitwindow");
+			 
 			addMouseMotionListener(new MouseMotionListener() {
 
 				public void mouseMoved(MouseEvent e) {	
@@ -4880,6 +4904,7 @@ public class DrawFBP extends JFrame
 					dispose();
 				}
 			});
+			 
 			
 			final Runnable closerRunner = new Runnable() {
 				public void run() {
@@ -4909,15 +4934,7 @@ public class DrawFBP extends JFrame
 			Runnable waitRunner = new Runnable() {
 				public void run() {
 						
-						setBackground(Color.WHITE);						
-						Point p = getLocation();						
-						setLocation(p.x + 500, p.y + 500);
-						setMinimumSize(400, 400);						
-						setVisible(true);												 
-				       	getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, DrawFBP.lb));				 
-						pack();												
-						repaint();						
-						driver.repaint();
+						
 
 						try {
 							Thread.sleep(2000);              // 2 secs.
@@ -4935,7 +4952,7 @@ public class DrawFBP extends JFrame
 							} // 1/2 sec.
 						}
 						
-						  
+						/*  
 						String srcFile = "  ";
 						String binFile = "  ";
 						String output = "  ";
@@ -4952,6 +4969,7 @@ public class DrawFBP extends JFrame
 											+ srcFile + "<br>" + output
 											+ "</html>",
 									MyOptionPane.WARNING_MESSAGE);
+						*/
 						//setVisible(false);
 						//dispose();
 						 
@@ -4968,10 +4986,7 @@ public class DrawFBP extends JFrame
 					
 				}
 
-				private void setMinimumSize(int i, int j) {
-					// TODO Auto-generated method stub
-					
-				}
+				
 			};
 			
 			setVisible(true);
@@ -4979,6 +4994,9 @@ public class DrawFBP extends JFrame
 			wr.start();
 
 		}
+
+
+		
 	}
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
