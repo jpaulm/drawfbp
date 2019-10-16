@@ -1767,14 +1767,16 @@ final boolean SAVEAS = true;
 								"File/folder create", MyOptionPane.YES_NO_OPTION)) 
 							return;
 						selComp = t_fileName;
-						driver.curDiag.changed = true;
+						driver.curDiag = driver.getNewDiag();
+						driver.curDiag.changed = true; 
 						try {
 							f.createNewFile();
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						//driver.saveAs = true;
+						//driver.saveAs = true;   
+						enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 						repaint();
 
 						return;
