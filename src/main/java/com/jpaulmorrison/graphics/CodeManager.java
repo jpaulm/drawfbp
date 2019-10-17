@@ -980,9 +980,9 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		if (cDD != null) {
 			int j = cDD.lastIndexOf("diagrams");
 			if (j == -1)
-				cDD += "/src/networks";
+				cDD += "/src";
 			else
-				cDD = cDD.replace("diagrams", "src/networks");
+				cDD = cDD.replace("diagrams", "src");
 		}
 		fn = fn.replace("\\",  "/");
 		int k = fn.substring(0, i).lastIndexOf("/");
