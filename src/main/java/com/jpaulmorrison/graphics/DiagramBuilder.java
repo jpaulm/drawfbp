@@ -69,6 +69,9 @@ public class DiagramBuilder {
 			    break;
 		}
 
+		if (bp.finished())
+			return;
+		
 		if (!bp.tc('<', 'o')) {
 			MyOptionPane.showMessageDialog(frame, "1st non-blank char not '<'", MyOptionPane.ERROR_MESSAGE);
 			// terminate();

@@ -977,6 +977,8 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		else 
 			pkg = pkg.replace(".", "/");
 		String cDD = driver.properties.get("currentDiagramDirectory");
+		
+		// construct new file name
 		if (cDD != null) {
 			int j = cDD.lastIndexOf("diagrams");
 			if (j == -1)

@@ -225,7 +225,7 @@ public class Diagram {
 					}
 				}
 
-				  newFile.getParentFile().mkdirs();
+				  //newFile.getParentFile().mkdirs();
 				  driver.saveProp(fCP.propertyName, newFile.getParentFile().getAbsolutePath());
 			}
 		 

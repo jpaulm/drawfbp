@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -39,6 +40,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
@@ -80,9 +83,9 @@ public class MyFileChooser extends JFrame
 
 	MyButton butCopy = new MyButton();
 
-	MyTextField t_dirName = new MyTextField(100);
-	MyTextField t_fileName = new MyTextField(100);
-	MyTextField t_suggName = new MyTextField(100);
+	MyTextField t_dirName = new MyTextField(100, "dir");
+	MyTextField t_fileName = new MyTextField(100, "file");
+	MyTextField t_suggName = new MyTextField(100, "sugg");
 
 	JComponent selComp = null;
 	// Component changedField = null;
@@ -129,7 +132,7 @@ public class MyFileChooser extends JFrame
 
 	public MyFileChooser(DrawFBP driver, File f, DrawFBP.FileChooserParm fcp) {
 
-		fCP = fcp;
+		this.fCP = fcp;
 		clickListener = new ClickListener();
 
 		if (f == null || !f.exists())
@@ -140,7 +143,10 @@ public class MyFileChooser extends JFrame
 		this.driver = driver;
 		
 		butSortByDate.setSelected(driver.sortByDate);
-
+		
+		Point p = driver.getLocation();
+		setLocation(p.x + 50, p.y + 30);
+		
 	}
 
 	int showOpenDialog(final boolean saveas, final boolean saving) {
@@ -148,6 +154,9 @@ public class MyFileChooser extends JFrame
 		dialog = new JDialog(driver,
 				JDialog.ModalityType.APPLICATION_MODAL);
 		// dialog.setUndecorated(false);
+		
+		//Dimension dim = driver.getSize();
+		//dialog.setMaximumSize(new Dimension(dim.width - 100, dim.height - 60));
 
 		this.saveAs = saveas;
 		this.saving = saving;
@@ -185,9 +194,13 @@ public class MyFileChooser extends JFrame
 		order.add(butDel);
 		order.add(butCancel);
 
-		t_dirName.setBackground(Color.WHITE);
-		t_dirName.setEditable(false);
-		t_dirName.setEnabled(false);
+		//t_dirName.setBackground(vLightBlue);
+		t_dirName.setEditable(true);
+		t_dirName.setEnabled(true);
+		t_dirName.getCaret().setVisible(true);
+		t_dirName.setRequestFocusEnabled(true);
+		t_dirName.addActionListener(this);
+		t_dirName.addMouseListener(this);
 
 		// text.getDocument().addDocumentListener(this);
 
@@ -197,6 +210,7 @@ public class MyFileChooser extends JFrame
 		t_fileName.setBackground(vLightBlue);
 		t_fileName.getCaret().setVisible(true);
 		t_fileName.addActionListener(this);
+		t_fileName.addMouseListener(this);
 
 		t_fileName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
 
@@ -255,11 +269,11 @@ public class MyFileChooser extends JFrame
 		butDel.setAction(deleteAction);
 
 		butParent.setRequestFocusEnabled(true);
-		if (saveAs)
+		//if (saveAs)
 			butNF.setRequestFocusEnabled(true);
 		butCopy.setRequestFocusEnabled(true);
 
-		//t_dirName.addMouseListener(this);
+		t_dirName.addMouseListener(this);
 		t_fileName.addMouseListener(this);
 
 		panel.setPreferredSize(new Dimension(600, 600));
@@ -267,7 +281,7 @@ public class MyFileChooser extends JFrame
 		t_dirName.setFocusTraversalKeysEnabled(false);
 		butParent.setFocusTraversalKeysEnabled(false);
 		butSortByDate.setFocusTraversalKeysEnabled(false);
-		if (saveAs)
+		//if (saveAs)
 			butNF.setFocusTraversalKeysEnabled(false);
 		t_fileName.setFocusTraversalKeysEnabled(false);
 		butOK.setFocusTraversalKeysEnabled(false);
@@ -322,7 +336,7 @@ public class MyFileChooser extends JFrame
 		t_dirName.setFont(label.getFont());
 		//t_dirName.addActionListener(this);
 		//t_fileName.addActionListener(this);
-		//t_fileName.addKeyListener(this);
+		//t_dirName.addKeyListener(this);
 
 		GridBagLayout gridbag = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
@@ -465,6 +479,7 @@ public class MyFileChooser extends JFrame
 		
 		t_dirName.addKeyListener(this);  // needed to service tab keys
 		t_fileName.addKeyListener(this);  // needed to service tab keys
+		t_suggName.addKeyListener(this);  // needed to service tab keys
 		butSortByDate.addKeyListener(this); // needed to service tab keys
 		butParent.addKeyListener(this); // needed to service tab keys
 		butNF.addKeyListener(this); // needed to service tab keys
@@ -502,20 +517,26 @@ public class MyFileChooser extends JFrame
 		} else {
 			t_dirName.setText(listHead);
 			showList();
-			
-			SwingUtilities.invokeLater(new Runnable() { 
-				public void run() {
-					list.requestFocusInWindow(); 
-					selComp = list;
-					//list.setBackground(vLightBlue); 
-					list.setBackground(Color.WHITE);
-					} });
-			 
-			list.addAncestorListener( new RequestFocusListener() );
-			selComp = list;
+			if (list != null) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						list.requestFocusInWindow();
+						//selComp = list;
+						// list.setBackground(vLightBlue);
+						list.setBackground(Color.WHITE);
+					}
+				});
+
+				list.addAncestorListener(new RequestFocusListener());
+				selComp = list;
+			}
 		}
 
 		panel.add(pan2, BorderLayout.SOUTH);
+		JLabel vertStrip = new JLabel();
+		vertStrip.setMinimumSize(new Dimension(20,600));
+		panel.add(vertStrip, BorderLayout.WEST);
+		panel.add(vertStrip, BorderLayout.EAST);
 		dialog.add(panel);
 
 		Point p = driver.getLocation();
@@ -523,7 +544,7 @@ public class MyFileChooser extends JFrame
 		int x_off = 100;
 		int y_off = 100;
 		dialog.setPreferredSize(
-				new Dimension(dim.width - x_off, dim.height - y_off));
+				new Dimension(dim.width - x_off - 50, dim.height - y_off - 50));
 		dialog.pack();
 		dialog.setLocation(p.x + x_off, p.y + y_off);
 		// frame.pack();
@@ -561,7 +582,7 @@ public class MyFileChooser extends JFrame
 		String s = listHead;
 		
 		//String x = t_dirName.getText();
-		t_dirName.setVisible(true);
+		//t_dirName.setVisible(true);
 		 
 		String t = null;
 		File f = new File(listHead);
@@ -776,7 +797,7 @@ public class MyFileChooser extends JFrame
 			panel.remove(listView);
 		listView = new JScrollPane(list);
 		panel.add(listView, BorderLayout.CENTER);
-
+		
 		selComp = list;
 		// list.setSelectedIndex(0);
 		list.setFocusable(true);
@@ -784,17 +805,11 @@ public class MyFileChooser extends JFrame
 		list.setFixedCellHeight(22);
 
 		list.setVisible(true);
-		list.requestFocusInWindow();
+		list.requestFocusInWindow();		
 		
-		//t_fileName.setEditable(true);
-		//t_fileName.setEnabled(true);
-		//t_fileName.setRequestFocusEnabled(true);
-		if (list.getSelectedIndex() > -1)
-			t_fileName.setText(list.getSelectedValue());  
-		//paintList();
-		selComp = t_fileName;  // ???
 		}
 
+		//dialog.pack();
 		panel.validate();
 		repaint();
 
@@ -1100,35 +1115,34 @@ final boolean SAVEAS = true;
 	*/
 	LinkedList<String> mySort(LinkedList<String> from) {
 		
-		// Collections.sort sorts in place - that's OK in this case!		
-		int lhl = listHead.length();
+		// Collections.sort sorts in place - that's OK!		
+		//int lhl = listHead.length();
 		LinkedList<String> ll = new LinkedList<String>();
 		for (String s : from) {
 			//File f = new File(listHead + "/" + s); 
 			
-			if (!inJarTree) {		
-				String s2 = s.substring(lhl + 1);
-			
-			File f = new File(s);
-			 
-			Path path = f.toPath();
-			String t = "";
-			try {
-				t = Files.getLastModifiedTime(path).toString();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-			int i = t.lastIndexOf(".");
-			if (i > -1)
-				t = t.substring(0, i);
-			t = t.replace("T",  " ");
-			
-			//if (!inJarTree)
+			if (!inJarTree) {
+				String s2 = (new File(s)).getName();
+
+				File f = new File(s);
+
+				Path path = f.toPath();
+				String t = "";
+				try {
+					t = Files.getLastModifiedTime(path).toString();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				int i = t.lastIndexOf(".");
+				if (i > -1)
+					t = t.substring(0, i);
+				t = t.replace("T", " ");
+
+				// if (!inJarTree)
 				ll.add(s2 + "@" + t);
-			}
-			else
-				ll.add(s);			 
+			} else
+				ll.add(s);		 
 		}
 			
 				
@@ -1323,12 +1337,16 @@ final boolean SAVEAS = true;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		t_dirName.setBackground(Color.WHITE);
+		//t_dirName.setBackground(Color.WHITE);
 
 		if (e.getSource() == t_fileName){
 			selComp = t_fileName;  
 		}
-				
+			
+		if (e.getSource() == t_dirName){
+			selComp = t_dirName;  
+		}
+		
 		if (e.getSource() == butSortByDate){
 			String s = e.getActionCommand();
 			if (s.equals("Toggle Sort By Date")){
@@ -1371,7 +1389,7 @@ final boolean SAVEAS = true;
 
 		}
         */
-		t_fileName.setBackground(Color.WHITE);
+		//t_fileName.setBackground(Color.WHITE);
 		cBox.repaint();
 
 		if (selComp instanceof MyButton) {  // if previous selComp referred to button...
@@ -1383,23 +1401,25 @@ final boolean SAVEAS = true;
 		selComp = (JComponent) e.getSource();
 		repaint();
 
-		if (/*selComp == t_dirName ||*/ selComp == t_fileName) {
+		if (selComp == t_dirName || selComp == t_fileName) {
 
-			((JTextField) selComp).setRequestFocusEnabled(true);
-
-			selComp.setBackground(vLightBlue);
+			//selComp.setBackground(vLightBlue);
 			((MyTextField) selComp).getCaret().setVisible(true);
 			((MyTextField) selComp).setEditable(true);
 			((MyTextField) selComp).requestFocusInWindow();
 
-		} else {
-			t_fileName.setRequestFocusEnabled(true);
+		} 
+		//else {
+		//	selComp.setRequestFocusEnabled(true);
 
-			t_fileName.setBackground(Color.WHITE);
-			t_fileName.getCaret().setVisible(false);
-			t_fileName.setEditable(false);
+			//((MyTextField) selComp).setBackground(Color.WHITE);
+			//((MyTextField) selComp).getCaret().setVisible(false);
+			//((MyTextField) selComp).setEditable(false);
 			//t_fileName.requestFocusInWindow();
-		}
+		//
+		//}
+	
+		selComp.setRequestFocusEnabled(true);
 		
 		if (e.getSource() instanceof JList) {
 
@@ -1420,9 +1440,12 @@ final boolean SAVEAS = true;
 			((MyButton) selComp).setSelected(false);
 		}
 		//paintList();
-		selComp = t_fileName;
-		showList();
-		list.repaint();
+		//selComp = t_fileName;
+		if (selComp == t_dirName) {
+			showList();
+			//list.repaint();
+		}
+		repaint();
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -1488,9 +1511,9 @@ final boolean SAVEAS = true;
 
 			//}
 
-			if (selComp == null) {
-				selComp = list;
-			}
+			//if (selComp == null) {
+			//	selComp = list;
+			//}
 
 			else if (selComp instanceof MyButton)
 				((MyButton) selComp).setSelected(true);
@@ -1502,31 +1525,39 @@ final boolean SAVEAS = true;
 
 			selComp.setFocusable(true);
 			selComp.requestFocusInWindow();
+			return;
 
-		} else if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+		} 
+		if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
 			shift = true;
-		} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			return;
+		} 
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			if (selComp instanceof JList /*|| selComp == t_dirName */
 					|| selComp == t_fileName) {
 
 				enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 			}
-		} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			return;
+		} 
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			// if (selComp instanceof JList) {
 
 			cancelAction.actionPerformed(new ActionEvent(e, 0, ""));
 			// }
+			return;
 		}
 
-		// else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
-		// if (selComp instanceof JList) {
+		if (e.getKeyCode() == KeyEvent.VK_DELETE) {
+		 if (selComp instanceof JList) {
 		// if (selComp == t_fileName) {
 
-		// deleteAction.actionPerformed(new ActionEvent(e, 0, ""));
-		// }
-		// }
+		 deleteAction.actionPerformed(new ActionEvent(e, 0, ""));
+		 }
+		 return;		 
+		 }
 
-		else if (selComp == cBox && ((e.getKeyCode() == KeyEvent.VK_UP)
+		if (selComp == cBox && ((e.getKeyCode() == KeyEvent.VK_UP)
 				&& driver.allFiles
 				|| (e.getKeyCode() == KeyEvent.VK_DOWN) && !driver.allFiles)) {
 
@@ -1535,11 +1566,18 @@ final boolean SAVEAS = true;
 
 			return;
 		}
-
+		/*
+		try {
+			JTextComponent jtc = (JTextComponent) selComp;
+		      jtc.getDocument().insertString(jtc.getCaretPosition(), "" + e.getKeyChar(), null);
+		      e.consume();
+		    } catch (BadLocationException e2) {
+		    }
+		*/
 		//paintList();
-		selComp = t_fileName;
-		showList();
-		list.repaint();
+		//selComp = t_fileName;
+		//showList();
+		//list.repaint();
 		repaint();
 	}
 
@@ -1555,7 +1593,7 @@ final boolean SAVEAS = true;
 	//}
 
 	public void keyTyped(KeyEvent e) {
-
+		int i = 0;
 	}
 
 	class CancelAction extends AbstractAction {
@@ -1677,6 +1715,7 @@ final boolean SAVEAS = true;
 			// fullNodeName = listHead.getAbsolutePath();
 			// showFileNames();
 			t_dirName.setText(listHead);
+			t_fileName.setText("");
 
 			panel.validate();
 			// panel.remove(listView);
@@ -1714,12 +1753,12 @@ final boolean SAVEAS = true;
 				}
 				listHead = u;
 				// panel.remove(listView);
-				t_dirName.setBackground(vLightBlue);
+				//t_dirName.setBackground(vLightBlue);
 				showList();
 				return;
 			}
 
-			butNF.setEnabled(!inJarTree && saveAs);
+			butNF.setEnabled(!inJarTree /*&& saveAs */);
 			butDel.setEnabled(!inJarTree);
 
 			if (!((selComp instanceof JList) || selComp == t_fileName))
@@ -1744,43 +1783,87 @@ final boolean SAVEAS = true;
 				s = nodeNames[rowNo];
 				int i = s.indexOf("@");
 				if (i > -1)
-					s = s.substring(0, i);  // drop date
+					s = s.substring(0, i);  // drop date, if any
 
-				if (!s.equals("")) {
-					// String v = t_dirName.getText();
-					// File f = new File(v + "/" + s);
-					// if (f.exists() && !(f.isDirectory())) {
-					// if (s.endsWith(".class")) {
-					t_fileName.setText(s);
-					// t_fileName.repaint();
-					// }
-				}
-				// t_fileName.setText(s);
+				if (!s.equals(""))  					
+					t_fileName.setText(s);					
+				 
 				} else {
 					s = t_fileName.getText();
 					File f = new File(t_dirName.getText() + "/" + s);  
-					if (!f.exists() && !inJarTree){
-						if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
-								getParent(),
-								"Do you want to create new file: " + 
-								f.getAbsolutePath() + "?",
-								"File/folder create", MyOptionPane.YES_NO_OPTION)) 
+				if (!f.exists() && !inJarTree) {
+					if (-1 == s.indexOf(".")) { 
+						// must be a directory
+						/*
+						String w = t_dirName.getText();
+						w = w.replace("\\", "/");
+						w = w.substring(0, w.lastIndexOf("/"));
+						t_dirName.setText(w);
+						f = new File(w + "/" + s);
+						if (!f.exists() && !inJarTree) {
+							
+						}
+						*/
+							MyOptionPane.showMessageDialog(driver,
+									"Folder " + f.getAbsolutePath()
+											+ " doesn't exist",
+									MyOptionPane.ERROR_MESSAGE);
 							return;
+						//}
+						//t_fileName.setText(s);
+						//enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+						//repaint();
+					} else {
+						// must be a file
+						t_fileName.setText(f.getName());
 						selComp = t_fileName;
-						driver.curDiag = driver.getNewDiag();
-						driver.curDiag.changed = true; 
+						if (MyOptionPane.YES_OPTION != MyOptionPane
+								.showConfirmDialog(driver,
+										"Do you want to create a new file "  
+												+ ": " + f.getAbsolutePath()
+												+ "?",
+										"File create",
+										MyOptionPane.YES_NO_OPTION))
+							return;
+						 
+						boolean found = false;   
+						int j = driver.jtp.getTabCount() - 1;
+						if (j > -1) {
+							ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(j);
+							if (b != null && b.diag != null) {
+								Diagram d = b.diag;
+								if (d.title.equals("(untitled)") && !d.changed) {
+									driver.curDiag = d;					
+									driver.jtp.setSelectedIndex(j);					
+									found = true;					
+								}
+							}
+						}
+						 
+						if (!found)
+							driver.curDiag = driver.getNewDiag();
+						//driver.curDiag.changed = true;
 						try {
 							f.createNewFile();
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-						//driver.saveAs = true;   
-						enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+						driver.curDiag.title = f.getAbsolutePath();
+						// driver.saveAs = true;
+						//enterAction.actionPerformed(new ActionEvent(e, 0, ""));  // don't recurse!
+						
+						//showList();   // want to show new file, not list...
+						//listView.getParent().remove(listView);
+						//listView.setVisible(false); 
+						dialog.dispose();
+						
 						repaint();
 
 						return;
+
 					}
+				}
 				}
 			// }
 
@@ -1795,7 +1878,7 @@ final boolean SAVEAS = true;
 
 			if (/* s.startsWith("JavaFBP") && */ s.toLowerCase()
 					.endsWith(".jar")) {
-				butNF.setEnabled(false);
+				//butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
 				if (fCP == driver.curDiag.fCParm[Diagram.JARFILE]
@@ -1806,7 +1889,7 @@ final boolean SAVEAS = true;
 
 				jarTree = buildJarFileTree(s);
 				inJarTree = true;
-				butNF.setEnabled(!inJarTree && saveAs);
+				butNF.setEnabled(!inJarTree /*&& saveAs */);
 				butDel.setEnabled(!inJarTree);
 				currentNode = jarTree;
 				t_fileName.setText("");
@@ -1830,7 +1913,8 @@ final boolean SAVEAS = true;
 					// int i = listHead.lastIndexOf("package.json");
 					// if (i > -1)
 					// listHead = listHead.substring(0, i - 1);
-					f = new File(DrawFBP.makeAbsFileName(s, listHead));
+					//f = new File(DrawFBP.makeAbsFileName(s, listHead));
+					f = new File(listHead + "/" + s);
 				}
 
 				if (!f.exists()) {
@@ -1850,13 +1934,10 @@ final boolean SAVEAS = true;
 
 					listHead = f.getAbsolutePath();
 					t_dirName.setText(listHead);
-					// showFileNames();
-
-					// panel.remove(listView);
+					
 					showList();
 
 				} else
-					// if (!saveAs)
 					processOK();
 				
 			} else { // inJarTree
@@ -1922,7 +2003,7 @@ final boolean SAVEAS = true;
 
 				t_dirName.setText(listHead);
 				String h = new File(listHead).getName();
-				t_fileName.setText(h);
+				//t_fileName.setText(h);
 				// text2.setText("");
 				// fullNodeName = listHead;
 
@@ -1954,10 +2035,10 @@ final boolean SAVEAS = true;
 			butParent.setSelected(false);
 			
 			showList();
-			if (inJarTree) {
-				int k = listHead.lastIndexOf("/");
-				t_fileName.setText(listHead.substring(k + 1)); 
-			}
+			//if (inJarTree) {
+			//	int k = listHead.lastIndexOf("/");
+			//	t_fileName.setText(listHead.substring(k + 1)); 
+			//}
 			
 			//listView.repaint();
 			dialog.repaint();
@@ -1982,7 +2063,7 @@ final boolean SAVEAS = true;
 				s += "/" + fileName;
 				File f = new File(s);
 
-				boolean b = f.mkdirs();
+				boolean b = f.mkdir();
 				if (!b)
 					MyOptionPane.showMessageDialog(driver,
 							"Folder not created: " + f.getAbsolutePath(),
@@ -2085,9 +2166,11 @@ l.setFont(driver.fontg);
 	class MyTextField extends JTextField {
 
 		private static final long serialVersionUID = 1L;
+		String name = null;
 
-		public MyTextField(int i) {
+		public MyTextField(int i, String fldName) {
 			super(i);
+			name = fldName;
 		}
 
 		public void paintComponent(Graphics g) {
@@ -2134,6 +2217,8 @@ l.setFont(driver.fontg);
 
 		}
 	}
+	
+	// For list only!
 
 	public class ClickListener extends MouseAdapter /*implements ActionListener */
 
@@ -2169,34 +2254,25 @@ l.setFont(driver.fontg);
 
 			selComp = list;
 			rowNo = -1;
-			// for (int n = list.getFirstVisibleIndex(); n < list
-			// .getLastVisibleIndex() + 1; n++) {
-			// Rectangle r = list.getCellBounds(n, n);
-			// if (r.contains(e.getPoint())) {
-			// rowNo = n;
+			
 			rowNo = list.locationToIndex(e.getPoint());
-			// if (rowNo > -1)
-			// break;
-			// }
-			// }
+			
 			list.setRequestFocusEnabled(true);
 
 			list.setSelectedIndex(rowNo);
-			t_dirName.setBackground(Color.WHITE);
-
+			
 			if (rowNo == -1 || nodeNames[rowNo].equals("(empty folder"))
 				return;
 
 			list.setSelectedIndex(rowNo);
 			list.repaint();
 
-			//selComp = t_fileName;
+			selComp = t_fileName;
 			String t = (String) list.getSelectedValue();
 			int i = t.indexOf("@");
 			if (i > -1)
 				t = t.substring(0, i);
-			//int lhl = t_dirName.getText().length();
-			//t = t.substring(lhl + 1);
+			
 			t_fileName.setText(t);
 			if (!inJarTree) {
 				String t2 = t;
@@ -2204,33 +2280,45 @@ l.setFont(driver.fontg);
 					if (!t.endsWith(".jar"))
 						t2 = t_dirName.getText() + "/" + t;
 					File f = new File(t2);
-					if (!f.exists())  
-						   return;
-						// if (!f.isDirectory())
-					 
-					//t_fileName.setText(t);
-					selComp = t_fileName;
-					t_fileName.repaint();
+					if (!f.exists()){  
+						MyOptionPane.showMessageDialog(driver,
+								"File does not exist: " + f.getAbsolutePath(),
+								MyOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					
 				}
 			}
+			repaint();
 		}
+		
 		public void secondClick(MouseEvent e) {
-			//selComp = list;
-			// int rowNo = -1;
+			
 			int n;
-			for (n = list.getFirstVisibleIndex(); n < list.getLastVisibleIndex()
-					+ 1; n++) {
+			for (n = list.getFirstVisibleIndex(); n <= list.getLastVisibleIndex(); n++) {
 				Rectangle r = list.getCellBounds(n, n);
 				if (r.contains(e.getPoint())) {
-					// rowNo = n;
-					// int rowNo = list.locationToIndex(e.getPoint());
 					if (n > -1)
 						break;
 				}
 			}
 			if (rowNo == n){
-				selComp = t_fileName;				
-				enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+				selComp = t_fileName;	
+				String w = t_dirName.getText();
+				 
+				String v = list.getSelectedValue();
+				int j = v.indexOf("@");
+				if (j > -1)
+					v = v.substring(0, j);				
+				
+				if (-1 < v.indexOf("."))
+					t_fileName.setText(v);
+				else {					 
+					w += "/" + v;				
+					t_dirName.setText(w);
+				}
+				repaint();
+				
 			}
 		}
 

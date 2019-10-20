@@ -90,16 +90,18 @@ public class ButtonTabComponent extends JPanel {
         		
 		if (diag != null) {			
 		 
-			if (diag.diagFile == null)  
-				if (diag.title == null)
+			if (diag.diagFile == null) { 
+				if (diag.title == null)  
 					s = "(untitled)";
 				else
 					s = diag.title;
-			  else  
+			}
+			else { 
 				if (selected)  
 					s = diag.diagFile.getAbsolutePath();
 				  else  
-					s = diag.diagFile.getName();	
+					s = diag.diagFile.getName();
+			}
 
 		if (diag != null && diag.changed)
 			s = "* " + s;

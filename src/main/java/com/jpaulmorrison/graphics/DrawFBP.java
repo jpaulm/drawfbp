@@ -2332,7 +2332,8 @@ public class DrawFBP extends JFrame
 			// diagFile = b.diag.diagFile;
 			return file;
 		}
-
+ 
+		 
 		// if last slot has title == (untitled) and is not changed, reuse it
 		
 		boolean found = false;   
@@ -2342,47 +2343,20 @@ public class DrawFBP extends JFrame
 			if (b != null && b.diag != null) {
 				Diagram d = b.diag;
 				if (d.title.equals("(untitled)") && !d.changed) {
-					curDiag = d;
-					// curDiag.tabNum = i;
-					jtp.setSelectedIndex(j);
-					//closeTab();
-					found = true;
-					//b = (ButtonTabComponent) jtp.getTabComponentAt(0);
-					//if (b != null && b.diag != null) {
-					//	d = b.diag;
-					//	curDiag = d;
-						// curDiag.tabNum = i;
-					//	jtp.setSelectedIndex(0);
-					//}
+					curDiag = d;					
+					jtp.setSelectedIndex(j);					
+					found = true;					
 				}
 			}
 		}
-		/*
-		if (!found)
-			for (i = 0; i < jtp.getTabCount(); i++) {
-				b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-				if (b == null || b.diag == null)
-					return null;
-				Diagram d = b.diag;
-				if (d != null && d.diagFile != null
-						&& d.diagFile.equals(file)) {
-					curDiag = d; 
-					// curDiag.tabNum = i;
-					jtp.setSelectedIndex(i);
-					found = true;
-					break;
-				}
-			}
-*/
+		 
 		if (!found)
 			curDiag = getNewDiag();
 		curDiag.title = file.getName();
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
 			curDiag.title = curDiag.title.substring(0,
 					curDiag.title.length() - 4);
-		// if (diagramIsOpen(file.getAbsolutePath()))
-		// return null;
-		// diagFile = file;
+		
 		curDiag.blocks.clear();
 		curDiag.arrows.clear();
 		curDiag.desc = " ";
@@ -2827,15 +2801,15 @@ public class DrawFBP extends JFrame
 			int j = srcDir.lastIndexOf("/");
 			String progName = srcDir.substring(j + 1);
 			srcDir = srcDir.substring(0, j);
-			String clsDir = srcDir;
-			(new File(srcDir)).mkdirs();
+			//String clsDir = srcDir;
+			//(new File(srcDir)).mkdirs();
 			saveProp(gl.netDirProp, srcDir);
 			
 			String fNPkg = "";
 			int k = srcDir.indexOf("/src");
 			if (k == -1) {
 				MyOptionPane.showMessageDialog(this,
-						"File name \"" + srcDir + "\" missing 'src' directory - cannot compile",
+						"File name '" + srcDir + "' - file name should contain 'src' - cannot compile",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -2844,7 +2818,7 @@ public class DrawFBP extends JFrame
 				fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
 				fNPkg = fNPkg.replace("\\", "/");
 			}
-			clsDir = srcDir.replace("/src/", "/bin/");
+			String clsDir = srcDir.replace("/src/", "/bin/");
 			srcDir = srcDir.substring(0, k + 4); // drop after src
 			clsDir = clsDir.substring(0, k + 4); // drop after bin
 			
@@ -2856,15 +2830,22 @@ public class DrawFBP extends JFrame
 			// pkg = pkg.replace(".", "/");
 
 			if (fd == null || !fd.exists()) {
-				fd.mkdirs();
+				//if (fd.mkdirs())
 				// saveProp("currentClassDir", clsDir);
-				MyOptionPane.showMessageDialog(this,
-						"'bin' directory created - " + clsDir,
-						MyOptionPane.INFORMATION_MESSAGE);
+					MyOptionPane.showMessageDialog(this,
+							"'bin' directory does not exist - " + clsDir,
+							MyOptionPane.ERROR_MESSAGE);
+					return;
 			}
 			if (!(fNPkg.equals(""))) {
 				fd = new File(clsDir + "/" + fNPkg);
-				fd.mkdirs();
+				if (fd == null || !fd.exists()) {
+				MyOptionPane.showMessageDialog(this,
+						"Directory '" + clsDir + "/" + fNPkg + "' does not exist",
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+				//fd.mkdirs();
+			}
 			}
 
 			if (javaFBPJarFile == null)
@@ -3082,7 +3063,14 @@ public class DrawFBP extends JFrame
 			String trunc = ss.substring(0, ss.lastIndexOf("/"));
 			String progName = ss.substring(ss.lastIndexOf("/") + 1);
 			
-			(new File(trunc)).mkdirs();
+			//(new File(trunc)).mkdirs();
+			File f = new File(trunc);
+			if (f == null || !f.exists()) {				
+				MyOptionPane.showMessageDialog(this,
+						"'bin' directory does not exist - " + f.getAbsolutePath(),
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+		}
 			
 			saveProp("currentCsharpNetworkDir",
 					trunc);
@@ -3101,7 +3089,14 @@ public class DrawFBP extends JFrame
 			}
 			
 			String target = /*trunc + "/" + */ "bin/Debug";  //  we've done a cd, so we don't need trunc
-			(new File(target)).mkdirs();
+			//(new File(target)).mkdirs();
+			File f2 = new File(target);
+			if (f2 == null || !f2.exists()) {				
+				MyOptionPane.showMessageDialog(this,
+						"'bin' directory does not exist - " + f2.getAbsolutePath(),
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+		}
 			
 			MyOptionPane.showMessageDialog(this,
 					"Starting compile - " + ss,
@@ -3314,7 +3309,13 @@ public class DrawFBP extends JFrame
 				clsDir = new File(u); // drop after bin
 			}
 
-			clsDir.mkdirs();
+			//clsDir.mkdirs(); 
+			if (clsDir == null || !clsDir.exists()) {				
+					MyOptionPane.showMessageDialog(this,
+							"'bin' directory does not exist - " + clsDir,
+							MyOptionPane.ERROR_MESSAGE);
+					return;
+			}
 			saveProp("currentClassDir", clsDir.getAbsolutePath());
 
 			progName = progName.substring(0, progName.length() - 6);
