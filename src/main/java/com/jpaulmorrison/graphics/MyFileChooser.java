@@ -1769,6 +1769,7 @@ final boolean SAVEAS = true;
 			// if (s == null || s.equals("")) {
 
 			if (selComp instanceof JList) {
+				t_fileName.setText("");	
 
 				int rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
@@ -1785,8 +1786,8 @@ final boolean SAVEAS = true;
 				if (i > -1)
 					s = s.substring(0, i);  // drop date, if any
 
-				if (!s.equals(""))  					
-					t_fileName.setText(s);					
+				//if (!s.equals(""))  					
+				//	t_fileName.setText(s);					
 				 
 				} else {
 					s = t_fileName.getText();
@@ -1994,7 +1995,7 @@ final boolean SAVEAS = true;
 
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
-			// t_fileName.setText("");
+			t_fileName.setText("");
 
 			if (!inJarTree) {
 				listHead = (new File(listHead)).getParent();
@@ -2273,13 +2274,15 @@ l.setFont(driver.fontg);
 			if (i > -1)
 				t = t.substring(0, i);
 			
-			t_fileName.setText(t);
+			//t_fileName.setText(t);
 			if (!inJarTree) {
 				String t2 = t;
 				if (!t.equals("")) {
 					if (!t.endsWith(".jar"))
 						t2 = t_dirName.getText() + "/" + t;
 					File f = new File(t2);
+					if (!f.isDirectory())
+						t_fileName.setText(f.getName());  
 					if (!f.exists()){  
 						MyOptionPane.showMessageDialog(driver,
 								"File does not exist: " + f.getAbsolutePath(),
@@ -2311,11 +2314,15 @@ l.setFont(driver.fontg);
 				if (j > -1)
 					v = v.substring(0, j);				
 				
-				if (-1 < v.indexOf("."))
+				if (-1 < v.indexOf(".")) {
 					t_fileName.setText(v);
+					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+				}
 				else {					 
 					w += "/" + v;				
 					t_dirName.setText(w);
+					listHead = w;
+					showList();
 				}
 				repaint();
 				
