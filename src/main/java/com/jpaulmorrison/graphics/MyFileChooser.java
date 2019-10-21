@@ -1593,7 +1593,7 @@ final boolean SAVEAS = true;
 	//}
 
 	public void keyTyped(KeyEvent e) {
-		int i = 0;
+		
 	}
 
 	class CancelAction extends AbstractAction {
@@ -1791,7 +1791,10 @@ final boolean SAVEAS = true;
 				 
 				} else {
 					s = t_fileName.getText();
-					File f = new File(t_dirName.getText() + "/" + s);  
+					if (!s.endsWith(".jar"))
+						s = t_dirName.getText() + "/" + s;  
+					File f = new File(s); 
+					
 				if (!f.exists() && !inJarTree) {
 					if (-1 == s.indexOf(".")) { 
 						// must be a directory
@@ -1879,7 +1882,7 @@ final boolean SAVEAS = true;
 
 			if (/* s.startsWith("JavaFBP") && */ s.toLowerCase()
 					.endsWith(".jar")) {
-				//butNF.setEnabled(false);
+				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
 				if (fCP == driver.curDiag.fCParm[Diagram.JARFILE]
@@ -1944,18 +1947,23 @@ final boolean SAVEAS = true;
 			} else { // inJarTree
 				
 				String w = list.getSelectedValue();
-				if (w != null) {
-					int i = w.indexOf("@");
-					if (i> -1)
-						w = w.substring(0, w.indexOf("@"));
-				}
-				t_fileName.setText(w);
+				//if (w != null) {
+				//	int i = w.indexOf("@");
+				//	if (i> -1)
+				//		w = w.substring(0, w.indexOf("@"));
+				//}
+				//t_fileName.setText(w);
 				
-				currentNode = findChild(currentNode, s);
+				//int k = s.indexOf("!");
+				//s = s.substring(k + 1);
+				//if (s.startsWith("/"))
+				//	s = s.substring(1);
+				currentNode = findChild(currentNode, w);
 				if (currentNode == null)
 					return;
 				if (currentNode.getChildCount() > 0) {
-					listHead = listHead + "/" + s;
+					//listHead = listHead + "/" + s;
+					listHead = s;
 					t_dirName.setText(listHead);
 					// panel.remove(listView);
 					showList();
@@ -2003,7 +2011,7 @@ final boolean SAVEAS = true;
 					listHead = System.getProperty("user.home");
 
 				t_dirName.setText(listHead);
-				String h = new File(listHead).getName();
+				//String h = new File(listHead).getName();
 				//t_fileName.setText(h);
 				// text2.setText("");
 				// fullNodeName = listHead;
@@ -2305,27 +2313,34 @@ l.setFont(driver.fontg);
 						break;
 				}
 			}
-			if (rowNo == n){
-				selComp = t_fileName;	
+			if (rowNo == n) {
+				selComp = t_fileName;
 				String w = t_dirName.getText();
-				 
+
 				String v = list.getSelectedValue();
-				int j = v.indexOf("@");
-				if (j > -1)
-					v = v.substring(0, j);				
-				
-				if (-1 < v.indexOf(".")) {
+				if (!inJarTree) {
+					int j = v.indexOf("@");
+					if (j > -1)
+						v = v.substring(0, j);
+
+				}
+				if (-1 < v.indexOf(".") || inJarTree) {
 					t_fileName.setText(v);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+				} else {
+					//if (inJarTree)
+					//	enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+					//else {
+						w += "/" + v;
+						t_dirName.setText(w);
+						listHead = w;
+						showList();
+					//}
 				}
-				else {					 
-					w += "/" + v;				
-					t_dirName.setText(w);
-					listHead = w;
-					showList();
-				}
+				//} else
+				//	showList();
 				repaint();
-				
+
 			}
 		}
 
