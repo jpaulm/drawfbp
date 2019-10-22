@@ -2306,7 +2306,7 @@ public class DrawFBP extends JFrame
 		if (!(file.exists()))
 			return file;
 
-		if (null == (fileString = readFile(file, !SAVEAS))) {
+		if (null == (fileString = readFile(file /*, !SAVEAS */))) {
 			MyOptionPane.showMessageDialog(this,
 					"Unable to read file: " + file.getName(),
 					MyOptionPane.ERROR_MESSAGE);
@@ -2407,7 +2407,7 @@ public class DrawFBP extends JFrame
 		return file;
 	}
 	
-	public String readFile(File file, boolean saveAs) {
+	public String readFile(File file /*, boolean saveAs */) {
 		StringBuffer fileBuffer;
 		String fileString = null;
 		int i;
@@ -3023,7 +3023,7 @@ public class DrawFBP extends JFrame
 
 			// ss = ss.substring(0, ss.length() - 3); // drop .cs suffix
 
-			String progString = readFile(new File(ss), !SAVEAS);
+			String progString = readFile(new File(ss) /*, !SAVEAS */);
 			if (progString == null) {
 				MyOptionPane.showMessageDialog(this,
 						"Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);

@@ -1812,6 +1812,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// fullClassName = null;
 		}
 
+		javaComp = null;
 		if (!driver.locateJavaFBPJarFile(false)) {
 			MyOptionPane.showMessageDialog(driver,
 					"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
@@ -1881,7 +1882,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				injar = false;
 
 				if (fs.endsWith("jar"))
-					cFile = new File(driver.javaFBPJarFile); // ????
+					cFile = new File(driver.javaFBPJarFile); 
 				else {
 					cFile = new File(fs);
 					if (cFile == null || !(cFile.exists())) {
@@ -1895,14 +1896,18 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				File fp = null;
 
 				String u = cFile.getName();
-				if (u.endsWith(".class")) 
+				
+				String error = "";
+
+				
+				if (u.endsWith(".class")) {
 				    u = u.substring(0, u.length() - 6);
 
-				String error = "";
+				//String error = "";
 
 				while (true) {
 
-					fp = cFile.getParentFile();
+					fp = cFile.getParentFile();    
 					if (fp == null)
 						break;
 					//try {
@@ -1938,7 +1943,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 					//}
 				}
-				
+			}
 				if (javaComp == null) {
 					MyOptionPane.showMessageDialog(driver,
 							"Class '" + driver.getSelFile(fc) + "' invalid class ("

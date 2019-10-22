@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import java.io.*;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
@@ -17,7 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-public class CodeManager implements ActionListener /*, DocumentListener */ {
+public class CodeManager implements ActionListener , DocumentListener  {
 
 	DrawFBP driver;
 	HashSet<String> portNames;
@@ -55,6 +57,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 	String upPort = null;;
 	String dnPort = null;
 	StyledDocument doc = null;
+	//boolean saveType;
 
 	CodeManager(Diagram d) {
 		diag = d;
@@ -80,6 +83,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			}
 
 		});
+		
 		dialog.setJMenuBar(createMenuBar());
 		dialog.repaint();
 
@@ -105,7 +109,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		dialog.add(scrollPane);		
 		textPane.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
-		// doc.addDocumentListener(this);
+		//doc.addDocumentListener(this);
 
 	}
 	void genCode() {
@@ -596,7 +600,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		// genLang = gl;
 		
 		if (fileString == null) {
-			fileString = driver.readFile(file, !SAVEAS);
+			fileString = driver.readFile(file /*, !saveType */);
 			if (fileString == null) {
 				MyOptionPane.showMessageDialog(driver,
 						"Couldn't read file: " + file.getAbsolutePath(),
@@ -866,7 +870,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		
 		if (s.equals("Save As")) {
 
-			saveCode(/* SAVE_AS */);
+			saveCode(SAVE_AS);
 
 		} else if (s.equals("Exit")) {
 			boolean res = true;
@@ -887,7 +891,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		boolean b;
 		if (answer == MyOptionPane.YES_OPTION) {
 			// User clicked YES.
-			b = saveCode(/* SAVE_AS */);
+			b = saveCode(!SAVE_AS);
 			// diag.diagLang = gl;
 			return b;
 		}
@@ -957,7 +961,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		return "X$" + counterList.indexOf(s);
 	}
 
-	boolean saveCode() {
+	boolean saveCode(boolean saveType) {
 
 		String fileString = null;
 		try {
@@ -1006,6 +1010,26 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			// diag.changeCompLang();
 			return false;
 		}
+		
+		String r = "public class ";
+		int m = fileString.indexOf(r);
+		int n = fileString.indexOf(" extends ");
+		
+		String oldFN = fileString.substring(m + r.length(), n);	
+		
+		String p = file.getName();
+		//int q = diag.fCParm[Diagram.NETWORK].fileExt.length();
+		//p = p.substring(0, p.length() - q);
+		int q = file.getName().indexOf(".");
+		p = p.substring(0, q);
+		
+		//doc.addDocumentListener(this);  // to allow late changes!
+		
+		if (!(p.equals(oldFN)))		
+			MyOptionPane.showMessageDialog(driver,
+				"File name in generated code doesn't match actual file name - " + p, MyOptionPane.WARNING_MESSAGE);
+		
+		//fileString = fileString.substring(0, m + r.length()) + p + fileString.substring(n);
 
 		//MyOptionPane.showMessageDialog(driver, "File " + file.getName() + " saved");
 		
@@ -1021,11 +1045,13 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		}
 
 		// diag.targetLang = gl.label;
-		nsLabel.setText(changed ? "Not saved" : "Saved");
+		nsLabel.setText("Saved");
 		// diag.genCodeFileName = file.getAbsolutePath();
 		dialog.setTitle("Generated Code: " + file.getName());		
 		dialog.repaint();
 
+		if (saveType != SAVE_AS)
+			dialog.dispose();
 		return true;
 	}
 
@@ -1106,13 +1132,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 		// Box box = new Box(BoxLayout.X_AXIS);
 		// box.setLayout(new FlowLayout(FlowLayout.LEFT));
-		JMenuItem menuItem =
-		/*
-		 * new JMenuItem("Save"); menuBar.add(menuItem);
-		 * menuItem.addActionListener(this); menuItem.setBorderPainted(true);
-		 * menuItem =
-		 */
-		new JMenuItem("Save As");
+		JMenuItem menuItem = new JMenuItem("Save As");
 		menuBar.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem.setBorderPainted(true);
@@ -1624,5 +1644,20 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 			return null;
 		else
 			return s;
+	}
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		int i = 0;
+		
+	}
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		int i = 0;
+		
+	}
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		int i = 0;
+		
 	}
 }

@@ -292,7 +292,7 @@ public class Diagram {
 			// if not image
 			if (fCP.fileExt.equals(".drw")) {
 
-				fileString = driver.readFile(file, saveAs); // read previous version
+				fileString = driver.readFile(file /*, saveAs*/); // read previous version
 				diagFile = file;
 
 				if (fileString != null) {
@@ -677,16 +677,12 @@ public class Diagram {
 		//String s = buildFile();  within gensave...
 		if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(    
 				driver, "Subnet created - please assign .drw file and save",
-				"Name and save subnet?", MyOptionPane.YES_NO_CANCEL_OPTION)) {
+				"Name and save subnet", MyOptionPane.YES_NO_CANCEL_OPTION)) {
 						
 			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null);
 			
-			if (file == null) {
-				MyOptionPane.showMessageDialog(driver,
-						"File not saved - exiting Excise function",
-						MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
+			if (file != null) {
+				
 			int i = driver.jtp.getSelectedIndex(); 
 			
 			//int i = driver.getFileTabNo(sbnDiag.diagFile.getAbsolutePath());
@@ -712,16 +708,18 @@ public class Diagram {
 				//sbnDiag.motherBlock.desc = sbnDiag.desc;
 			}
 		
+			driver.repaint();
+			return;
+			}
 			//if (subnetBlock.subnetFileName != null)
 			//	subnetBlock.diag.diagFile = new File(subnetBlock.subnetFileName);  
-		}  else {
+			MyOptionPane.showMessageDialog(driver,
+					"File not modified - exiting Excise function",
+					MyOptionPane.ERROR_MESSAGE);
+		   
 			sbnDiag.changed = false; 
 			driver.closeTab();   // close selected tab
 		}
-
-		driver.repaint();
-
-		return;
 	}
 
 	Point computeArrowVar (Point fix, Block subnetBlock){

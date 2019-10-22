@@ -323,7 +323,7 @@ public class MyFileChooser extends JFrame
 		// butParent.addActionListener(this);
 		box1.add(Box.createRigidArea(new Dimension(6, 0)));
 
-		// butNF.addActionListener(this);
+		butNF.addActionListener(this);
 		box1.add(butNF);
 		// box1.add(butOK);
 
@@ -951,7 +951,7 @@ final boolean SAVEAS = true;
 		File f = new File(fileName);
 		String fileString;
 		LinkedList<String> ll = new LinkedList<String>();
-		if (null == (fileString = driver.readFile(f, !SAVEAS))) {
+		if (null == (fileString = driver.readFile(f  /*, !SAVEAS */))) {
 			MyOptionPane.showMessageDialog(driver,
 					"Unable to read file " + f.getName(),
 					MyOptionPane.ERROR_MESSAGE);
@@ -1791,26 +1791,18 @@ final boolean SAVEAS = true;
 				 
 				} else {
 					s = t_fileName.getText();
+					String s2 = s;
 					if (!s.endsWith(".jar"))
-						s = t_dirName.getText() + "/" + s;  
-					File f = new File(s); 
+						s2 = t_dirName.getText() + "/" + s;  
+					File f = new File(s2); 
 					
 				if (!f.exists() && !inJarTree) {
 					if (-1 == s.indexOf(".")) { 
 						// must be a directory
-						/*
-						String w = t_dirName.getText();
-						w = w.replace("\\", "/");
-						w = w.substring(0, w.lastIndexOf("/"));
-						t_dirName.setText(w);
-						f = new File(w + "/" + s);
-						if (!f.exists() && !inJarTree) {
-							
-						}
-						*/
+						
 							MyOptionPane.showMessageDialog(driver,
 									"Folder " + f.getAbsolutePath()
-											+ " doesn't exist",
+											+ " doesn't exist - create using New Folder",
 									MyOptionPane.ERROR_MESSAGE);
 							return;
 						//}
@@ -1819,6 +1811,7 @@ final boolean SAVEAS = true;
 						//repaint();
 					} else {
 						// must be a file
+						/*
 						t_fileName.setText(f.getName());
 						selComp = t_fileName;
 						if (MyOptionPane.YES_OPTION != MyOptionPane
@@ -1830,30 +1823,48 @@ final boolean SAVEAS = true;
 										MyOptionPane.YES_NO_OPTION))
 							return;
 						 
-						boolean found = false;   
-						int j = driver.jtp.getTabCount() - 1;
-						if (j > -1) {
-							ButtonTabComponent b = (ButtonTabComponent) driver.jtp.getTabComponentAt(j);
-							if (b != null && b.diag != null) {
-								Diagram d = b.diag;
-								if (d.title.equals("(untitled)") && !d.changed) {
-									driver.curDiag = d;					
-									driver.jtp.setSelectedIndex(j);					
-									found = true;					
+						//if (!(fCP.filter.accept(f) || driver.allFiles)){  
+						//	MyOptionPane.showMessageDialog(driver,
+						//			"File " + f.getAbsolutePath()
+						//					+ " has wrong file type for display",
+						//			MyOptionPane.ERROR_MESSAGE);
+						//	return;
+						//}
+						 
+						
+						if (fCP == driver.curDiag.fCParm[Diagram.DIAGRAM]) {
+							boolean found = false;
+							int j = driver.jtp.getTabCount() - 1;
+							if (j > -1) {
+								ButtonTabComponent b = (ButtonTabComponent) driver.jtp
+										.getTabComponentAt(j);
+								if (b != null && b.diag != null) {
+									Diagram d = b.diag;
+									if (d.title.equals("(untitled)")
+											&& !d.changed) {
+										driver.curDiag = d;
+										driver.jtp.setSelectedIndex(j);
+										found = true;
+									}
 								}
 							}
-						}
-						 
-						if (!found)
-							driver.curDiag = driver.getNewDiag();
-						//driver.curDiag.changed = true;
-						try {
-							f.createNewFile();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						driver.curDiag.title = f.getAbsolutePath();
+
+							if (!found)
+								driver.curDiag = driver.getNewDiag();
+
+							driver.curDiag.title = f.getAbsolutePath();
+						} 
+						//else {
+							// driver.curDiag.changed = true;
+							//try {
+							//	f.createNewFile();
+							//} catch (IOException e1) {
+							//	// TODO Auto-generated catch block
+							//	e1.printStackTrace();
+							//}
+							//genSave
+						//}
+
 						// driver.saveAs = true;
 						//enterAction.actionPerformed(new ActionEvent(e, 0, ""));  // don't recurse!
 						
@@ -1861,10 +1872,11 @@ final boolean SAVEAS = true;
 						//listView.getParent().remove(listView);
 						//listView.setVisible(false); 
 						dialog.dispose();
+						*/
 						
 						repaint();
 
-						return;
+						//return;
 
 					}
 				}
@@ -1880,8 +1892,7 @@ final boolean SAVEAS = true;
 			
 			File f = null;
 
-			if (/* s.startsWith("JavaFBP") && */ s.toLowerCase()
-					.endsWith(".jar")) {
+			if (s.toLowerCase().endsWith(".jar")) {
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
@@ -1962,8 +1973,8 @@ final boolean SAVEAS = true;
 				if (currentNode == null)
 					return;
 				if (currentNode.getChildCount() > 0) {
-					//listHead = listHead + "/" + s;
-					listHead = s;
+					listHead = listHead + "/" + s;
+					//listHead = s;
 					t_dirName.setText(listHead);
 					// panel.remove(listView);
 					showList();
@@ -2038,7 +2049,7 @@ final boolean SAVEAS = true;
 
 				}
 			}
-			butNF.setEnabled(!inJarTree && saveAs);
+			butNF.setEnabled(!inJarTree /* && saveAs */);
 			butDel.setEnabled(!inJarTree);
 			// if (selComp instanceof MyButton) {
 			butParent.setSelected(false);
@@ -2071,6 +2082,12 @@ final boolean SAVEAS = true;
 				// String t = s;
 				s += "/" + fileName;
 				File f = new File(s);
+				if (f.exists()) {
+					MyOptionPane.showMessageDialog(driver,
+							"Folder already exists: " + f.getAbsolutePath(),
+							MyOptionPane.WARNING_MESSAGE);
+					return;
+				}
 
 				boolean b = f.mkdir();
 				if (!b)
@@ -2282,22 +2299,26 @@ l.setFont(driver.fontg);
 			if (i > -1)
 				t = t.substring(0, i);
 			
-			//t_fileName.setText(t);
+			t_fileName.setText(t);
 			if (!inJarTree) {
 				String t2 = t;
 				if (!t.equals("")) {
-					if (!t.endsWith(".jar"))
+					if (!t.endsWith(".jar")) {
 						t2 = t_dirName.getText() + "/" + t;
-					File f = new File(t2);
-					if (!f.isDirectory())
-						t_fileName.setText(f.getName());  
-					if (!f.exists()){  
-						MyOptionPane.showMessageDialog(driver,
-								"File does not exist: " + f.getAbsolutePath(),
-								MyOptionPane.ERROR_MESSAGE);
-						return;
+						File f = new File(t2);
+						// if (!f.isDirectory())
+						// t_fileName.setText(f.getName());
+						if (!f.exists()) {
+							if (-1 < t.lastIndexOf(".")) // if file
+								MyOptionPane.showMessageDialog(driver,
+										"File does not exist: "
+												+ f.getAbsolutePath(),
+										MyOptionPane.ERROR_MESSAGE);
+							else // if folder, OK to mkdir
+								f.mkdir();
+							// return;
+						}
 					}
-					
 				}
 			}
 			repaint();
@@ -2327,7 +2348,7 @@ l.setFont(driver.fontg);
 				if (-1 < v.indexOf(".") || inJarTree) {
 					t_fileName.setText(v);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-				} else {
+				} else {  // folder name AND not injartree
 					//if (inJarTree)
 					//	enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 					//else {
