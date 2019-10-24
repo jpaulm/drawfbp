@@ -2821,6 +2821,7 @@ public class DrawFBP extends JFrame
 			String clsDir = srcDir.replace("/src/", "/bin/");
 			srcDir = srcDir.substring(0, k + 4); // drop after src
 			clsDir = clsDir.substring(0, k + 4); // drop after bin
+			//(new File(clsDir)).mkdir();
 			
 			saveProp("currentClassDir", clsDir);
 			clsDir = clsDir.substring(0, k + 4); 
@@ -2829,22 +2830,23 @@ public class DrawFBP extends JFrame
 
 			// pkg = pkg.replace(".", "/");
 
-			if (fd == null || !fd.exists()) {
-				//if (fd.mkdirs())
-				// saveProp("currentClassDir", clsDir);
-					MyOptionPane.showMessageDialog(this,
-							"'bin' directory does not exist - " + clsDir,
-							MyOptionPane.ERROR_MESSAGE);
-					return;
+			fd.mkdirs();
+			if (fd == null || !fd.exists()) {				    
+				MyOptionPane.showMessageDialog(this,
+					"'bin' directory does not exist - " + clsDir,
+					MyOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			saveProp("currentClassDir", clsDir);
 			if (!(fNPkg.equals(""))) {
 				fd = new File(clsDir + "/" + fNPkg);
+				fd.mkdirs();
 				if (fd == null || !fd.exists()) {
 				MyOptionPane.showMessageDialog(this,
 						"Directory '" + clsDir + "/" + fNPkg + "' does not exist",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
-				//fd.mkdirs();
+				
 			}
 			}
 
@@ -3063,8 +3065,9 @@ public class DrawFBP extends JFrame
 			String trunc = ss.substring(0, ss.lastIndexOf("/"));
 			String progName = ss.substring(ss.lastIndexOf("/") + 1);
 			
-			//(new File(trunc)).mkdirs();
+			
 			File f = new File(trunc);
+			f.mkdirs();
 			if (f == null || !f.exists()) {				
 				MyOptionPane.showMessageDialog(this,
 						"'bin' directory does not exist - " + f.getAbsolutePath(),
@@ -3089,8 +3092,9 @@ public class DrawFBP extends JFrame
 			}
 			
 			String target = /*trunc + "/" + */ "bin/Debug";  //  we've done a cd, so we don't need trunc
-			//(new File(target)).mkdirs();
+			
 			File f2 = new File(target);
+			f2.mkdirs();
 			if (f2 == null || !f2.exists()) {				
 				MyOptionPane.showMessageDialog(this,
 						"'bin' directory does not exist - " + f2.getAbsolutePath(),

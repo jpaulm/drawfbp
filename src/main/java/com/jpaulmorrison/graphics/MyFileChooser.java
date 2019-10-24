@@ -533,10 +533,11 @@ public class MyFileChooser extends JFrame
 		}
 
 		panel.add(pan2, BorderLayout.SOUTH);
-		JLabel vertStrip = new JLabel();
-		vertStrip.setMinimumSize(new Dimension(20,600));
+		Component vertStrip = Box.createRigidArea(new Dimension(20, 0));
+		Component vertStrip2 = Box.createRigidArea(new Dimension(20, 0));
+		//vertStrip.setMinimumSize(new Dimension(20,600));
 		panel.add(vertStrip, BorderLayout.WEST);
-		panel.add(vertStrip, BorderLayout.EAST);
+		panel.add(vertStrip2, BorderLayout.EAST);
 		dialog.add(panel);
 
 		Point p = driver.getLocation();
@@ -797,6 +798,7 @@ public class MyFileChooser extends JFrame
 			panel.remove(listView);
 		listView = new JScrollPane(list);
 		panel.add(listView, BorderLayout.CENTER);
+		
 		
 		selComp = list;
 		// list.setSelectedIndex(0);
