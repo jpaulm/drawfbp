@@ -799,8 +799,8 @@ public class MyFileChooser extends JFrame
 		listView = new JScrollPane(list);
 		panel.add(listView, BorderLayout.CENTER);
 		
-		
-		selComp = list;
+		if (selComp != t_dirName)
+			selComp = list;
 		// list.setSelectedIndex(0);
 		list.setFocusable(true);
 
@@ -1406,13 +1406,14 @@ final boolean SAVEAS = true;
 		if (selComp == t_dirName || selComp == t_fileName) {
 
 			//selComp.setBackground(vLightBlue);
+			selComp.setRequestFocusEnabled(true);
 			((MyTextField) selComp).getCaret().setVisible(true);
 			((MyTextField) selComp).setEditable(true);
 			((MyTextField) selComp).requestFocusInWindow();
 
 		} 
 		//else {
-		//	selComp.setRequestFocusEnabled(true);
+			//selComp.setRequestFocusEnabled(true);
 
 			//((MyTextField) selComp).setBackground(Color.WHITE);
 			//((MyTextField) selComp).getCaret().setVisible(false);
@@ -1443,10 +1444,10 @@ final boolean SAVEAS = true;
 		}
 		//paintList();
 		//selComp = t_fileName;
-		if (selComp == t_dirName) {
-			showList();
+		//if (selComp == t_dirName) {
+		//	showList();
 			//list.repaint();
-		}
+		//}
 		repaint();
 	}
 
@@ -1792,6 +1793,7 @@ final boolean SAVEAS = true;
 				//	t_fileName.setText(s);					
 				 
 				} else {
+					if (selComp == t_fileName){
 					s = t_fileName.getText();
 					String s2 = s;
 					if (!s.endsWith(".jar"))
@@ -1807,82 +1809,19 @@ final boolean SAVEAS = true;
 											+ " doesn't exist - create using New Folder",
 									MyOptionPane.ERROR_MESSAGE);
 							return;
-						//}
-						//t_fileName.setText(s);
-						//enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-						//repaint();
+						
 					} else {
 						// must be a file
-						/*
-						t_fileName.setText(f.getName());
-						selComp = t_fileName;
-						if (MyOptionPane.YES_OPTION != MyOptionPane
-								.showConfirmDialog(driver,
-										"Do you want to create a new file "  
-												+ ": " + f.getAbsolutePath()
-												+ "?",
-										"File create",
-										MyOptionPane.YES_NO_OPTION))
-							return;
-						 
-						//if (!(fCP.filter.accept(f) || driver.allFiles)){  
-						//	MyOptionPane.showMessageDialog(driver,
-						//			"File " + f.getAbsolutePath()
-						//					+ " has wrong file type for display",
-						//			MyOptionPane.ERROR_MESSAGE);
-						//	return;
-						//}
-						 
 						
-						if (fCP == driver.curDiag.fCParm[Diagram.DIAGRAM]) {
-							boolean found = false;
-							int j = driver.jtp.getTabCount() - 1;
-							if (j > -1) {
-								ButtonTabComponent b = (ButtonTabComponent) driver.jtp
-										.getTabComponentAt(j);
-								if (b != null && b.diag != null) {
-									Diagram d = b.diag;
-									if (d.title.equals("(untitled)")
-											&& !d.changed) {
-										driver.curDiag = d;
-										driver.jtp.setSelectedIndex(j);
-										found = true;
-									}
-								}
-							}
-
-							if (!found)
-								driver.curDiag = driver.getNewDiag();
-
-							driver.curDiag.title = f.getAbsolutePath();
-						} 
-						//else {
-							// driver.curDiag.changed = true;
-							//try {
-							//	f.createNewFile();
-							//} catch (IOException e1) {
-							//	// TODO Auto-generated catch block
-							//	e1.printStackTrace();
-							//}
-							//genSave
-						//}
-
-						// driver.saveAs = true;
-						//enterAction.actionPerformed(new ActionEvent(e, 0, ""));  // don't recurse!
-						
-						//showList();   // want to show new file, not list...
-						//listView.getParent().remove(listView);
-						//listView.setVisible(false); 
-						dialog.dispose();
-						*/
-						
-						repaint();
-
-						//return;
-
+					}
+					} else if (selComp == t_dirName){
+						listHead = t_dirName.getText();
+						showList();
+					}
 					}
 				}
-				}
+				 
+			repaint();
 			// }
 
 			if (s == null || s.equals("")) {
