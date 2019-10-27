@@ -1812,6 +1812,16 @@ final boolean SAVEAS = true;
 						
 					} else {
 						// must be a file
+						if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+								driver,
+								"Create new file: " + f.getAbsolutePath() + "?",
+								"Confirm create", MyOptionPane.YES_NO_OPTION))
+							try {
+								f.createNewFile();
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 						
 					}
 					} else if (selComp == t_dirName){
