@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Rectangle;
-import java.awt.Window;
 import java.awt.FocusTraversalPolicy;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -40,8 +39,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.JTextComponent;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
@@ -1382,15 +1379,14 @@ final boolean SAVEAS = true;
 		list.setSelectedIndex(-1);
 		list.setRequestFocusEnabled(false);
 		// changedField = null;
-
-		/*
+		 
 		if (selComp == t_dirName || selComp == t_fileName) {
 			selComp.setBackground(Color.WHITE);
 			((JTextField) selComp).setEditable(false);
 			((JTextField) selComp).getCaret().setVisible(false);
 
 		}
-        */
+         
 		//t_fileName.setBackground(Color.WHITE);
 		cBox.repaint();
 
@@ -1422,6 +1418,9 @@ final boolean SAVEAS = true;
 		//
 		//}
 	
+		if (selComp == t_dirName)
+			t_fileName.setText("");
+		
 		selComp.setRequestFocusEnabled(true);
 		
 		if (e.getSource() instanceof JList) {
@@ -2197,9 +2196,7 @@ l.setFont(driver.fontg);
 	
 	// For list only!
 
-	public class ClickListener extends MouseAdapter /*implements ActionListener */
-
-	{
+	public class ClickListener extends MouseAdapter	{
 
 		MouseEvent lastEvent;
 		int rowNo;
