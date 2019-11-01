@@ -22,10 +22,10 @@ apply plugin: 'io.codearte.nexus-staging'
 subprojects {
        
 
-        //task javadocJar(type: Jar) {
-       //     classifier = 'javadoc'
-       //     from javadoc
-       // }
+        task javadocJar(type: Jar) {
+            classifier = 'javadoc'
+            from javadoc
+        }
 
         task sourcesJar(type: Jar) {
             classifier = 'sources'
@@ -33,8 +33,7 @@ subprojects {
         }
 
         artifacts {
-            //archives javadocJar, sourcesJar
-            archives sourcesJar
+            archives javadocJar, sourcesJar
         }
     }
 
@@ -79,7 +78,7 @@ repositories {
 //}
 
 dependencies {
-          compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
+          //compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
           //compile group:'math.geom2d', name:'javaGeom', version:'0.11.1'
            
 	compile ('math.geom2d:javaGeom:0.11.1')
@@ -97,11 +96,11 @@ jar {
     }
 }
 
-//if (JavaVersion.current().isJava8Compatible()) {   
- //       tasks.withType(Javadoc) {
-//            options.addBooleanOption('Xdoclint:none', true)
- //       }  
-//}
+if (JavaVersion.current().isJava8Compatible()) {   
+        tasks.withType(Javadoc) {
+            options.addBooleanOption('Xdoclint:none', true)
+        }  
+}
 
 ext {
     snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -126,10 +125,10 @@ task "create-dirs" { description = "Create default maven directory structure" } 
 //    }
 //}
 
-//task javadocJar(type: Jar) {
-//    classifier = 'javadoc'
-//    from javadoc
-//}
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
@@ -137,8 +136,7 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-    //archives javadocJar,sourcesJar
-    archives sourcesJar
+    archives javadocJar,sourcesJar
 }
 
 signing {
@@ -156,7 +154,18 @@ task fatJar(type: Jar) {
         	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
     }
     baseName = project.name
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from sourceSets.main.output
+
+   
+    dependsOn configurations.compile
+    from {       
+       configurations.compile.findAll { 
+         it.name.endsWith('jar') 
+       }.collect { 
+       //println it.name
+       zipTree(it)
+       }
+    }
     with jar
 }
 
