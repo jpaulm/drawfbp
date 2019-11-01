@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
 Implementation-Title: DrawFBP
-Implementation-Version: 2.10.1
+Implementation-Version: 2.18.4
+Class-Path: tools.jar javaGeom-0.11.1.jar
 
