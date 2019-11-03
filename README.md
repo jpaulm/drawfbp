@@ -20,11 +20,11 @@ Latest release is v2.18.4: the jar file (which includes the `math.geom2d` jar fi
 
 Releases from v2.18.2 onwards have a much speeded up sort function (by name or by date, optionally).  The current version - `drawfbp-2.18.4.jar` - is now available for evaluation.
 
-All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do to run one of the recent releases is to position to your home folder, and enter
+All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. 
 
-<code>java -jar downloads/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.  
+Now, all you have to do to run one of the recent releases is to position to your DrawFBP folder, and enter:
 
-Note: this does not work with downloaded file names of the form `java -jar build/libs/drawfbp-x.y.z.jar(nn)`.
+<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.  
 
 The jar file size should be approx. 1.3+ Mb.
 
