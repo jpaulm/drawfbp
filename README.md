@@ -24,6 +24,10 @@ All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  T
 
 <code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.  
 
+Note: this does not work with downloaded file names of the form `java -jar build/libs/drawfbp-x.y.z.jar(nn)`.
+
+The jar file size should be approx. 1.3+ Mb.
+
 The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables in the `lib` folder.
 
 Description
