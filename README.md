@@ -22,9 +22,7 @@ Releases from v2.18.2 onwards have a much speeded up sort function (by name or b
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do to run one of the recent releases is to position to your DrawFBP folder, and enter
 
-<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.   
-
-**Minor mystery: when I execute this release from `build/libs`, it seems to be missing the necessary `math.geom2d` classes - executing from Releases or Maven works fine! Will investigate!**
+<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.  
 
 The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables in the `lib` folder.
 
