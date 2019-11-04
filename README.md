@@ -26,8 +26,6 @@ Now, all you have to do to run one of the recent releases is to position to your
 
 <code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.  
 
-The jar file size should be approx. 1.3+ Mb.
-
 The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables in the `lib` folder.
 
 Description
