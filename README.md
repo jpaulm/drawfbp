@@ -22,7 +22,7 @@ Releases from v2.18.2 onwards have a much speeded up sort function (by name or b
 
 All Releases from v2.15.10 on require the `math.geom2d` jar file from Maven.
 
-If you click on the Maven shield above, you will need to have Maven installed to run the jar file (it will be less than 500Kb).  If you download the jar file from Releases (1.3+ Mb), this jar file is already included.
+At this point in time (Nov. 2019), the Maven download may result in a NoClassDefFoundError (DegeneratedLine2DException).   In this case, download the jar file in Releases, or in `build\libs`.
 
 Now, all you have to do to run one of the recent releases is to position to your DrawFBP folder, and enter:
 
