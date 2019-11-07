@@ -14,15 +14,19 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 Release History
 ---
 
-Latest release is v2.18.1: the jar file (which includes the `math.geom2d` jar file) - `drawfbp-2.18.1.jar` - can be obtained from Maven, the Releases folder, or from `build/libs`.  All these copies are identical.
+Latest release is v2.18.4: the jar file (which includes the `math.geom2d` jar file) - `drawfbp-2.18.4.jar` - can be obtained from Maven, the Releases folder, or from `build/libs`.  All these copies are identical.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-The next Release - v2.18.2 - is available in Releases, with a much speeded up sort function (by name or by date, optionally).  The next version - `drawfbp-2.18.3.jar` - had a few bugs, so has been withdrawn in favour of v2.18.4 - which is now available for evaluation.
+Releases from v2.18.2 onwards have a much speeded up sort function (by name or by date, optionally).  The current version - `drawfbp-2.18.4.jar` - is now available for evaluation.
 
-All Releases from v2.15.10 on require the `math.geom2d` jar file - see below.  The release jar files from v2.16.11 onward now include this jar file. Now, all you have to do to run one of the recent releases is to position to your DrawFBP folder, and enter
+All Releases from v2.15.10 on require the `math.geom2d` jar file from Maven.
 
-<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.    
+At this point in time (Nov. 2019), the Maven download may result in a NoClassDefFoundError (DegeneratedLine2DException).   In this case, use the jar file in Releases, or in `build\libs`, instead.
+
+Now, all you have to do to run one of the recent releases is to position to your DrawFBP folder, and enter:
+
+<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.  
 
 The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables in the `lib` folder.
 
