@@ -12,6 +12,7 @@ buildscript {
 }
 
 
+
 plugins {
     id 'maven'
 }
@@ -45,11 +46,13 @@ apply plugin: 'application'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-//apply plugin: 'gradle-one-jar'
+apply plugin: 'java-library'
 
-
+   
+}
 
 version = '2.18.4'
+
 
 
 group = 'com.jpaulmorrison'
@@ -73,18 +76,11 @@ repositories {
     mavenCentral()
 }
 
-//packagingOptions {
-//exclude  'seisw/util/*'
-//}
 
-dependencies {
-          //compile files('C:/Program Files/Java/jdk1.8.0_101/lib/tools.jar') 
-          //compile group:'math.geom2d', name:'javaGeom', version:'0.11.1'
-           
+dependencies { 
 	compile ('math.geom2d:javaGeom:0.11.1')
-	
-	//classpath 'com.github.rholder:gradle-one-jar:1.0.4'  
 }
+
 
 
 
@@ -111,19 +107,21 @@ mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
 osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
 
+
+
 }
 
 // Used to generate initial maven-dir layout
-task "create-dirs" { description = "Create default maven directory structure" } << {
-    sourceSets*.java.srcDirs*.each { it.mkdirs() }
+task "create-dirs" { 
+doLast {
+description = "Create default maven directory structure" 
+//} 
+// {
+   sourceSets*.java.srcDirs*.each { it.mkdirs() }
     sourceSets*.resources.srcDirs*.each { it.mkdirs() }
 }
+}
 
-//jar {
- //   manifest {
-//        attributes 'Implementation-Title': 'JavaFBP', 'Implementation-Version': version
-//    }
-//}
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
@@ -144,15 +142,14 @@ signing {
 }
 
 task fatJar(type: Jar) {
-   // manifest {
-  //      attributes 'DrawFBP': 'com.jpaulmorrison.graphics.DrawFBP'
-   //}
+   
     manifest {
         attributes 'Implementation-Title': 'DrawFBP with javaGeom jar',  
         	'Implementation-Version': version,
         	"Class-Path": configurations.compile.collect { it.getName() }.join(' '),
         	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
     }
+    //baseName = project.name + '-all'
     baseName = project.name
     from sourceSets.main.output
 
@@ -162,19 +159,17 @@ task fatJar(type: Jar) {
        configurations.compile.findAll { 
          it.name.endsWith('jar') 
        }.collect { 
-       //println it.name
+       println it.name
        zipTree(it)
        }
     }
     with jar
 }
 
-//task funJar(type: OneJar) {
-//  mainClass = 'com.jpaulmorrison.graphics.DrawFBP'
-//  classPath = 'javaGeom-0.11.1.jar'
-//}
 
-task writeNewPom << {
+
+task writeNewPom {
+doLast {
     pom {
         project {
             groupId 'com.jpaulmorrison'
@@ -192,24 +187,34 @@ task writeNewPom << {
             }          
         }
     }.writeTo("pom.xml")
+    }
 }
 
 publishing {
   publications {
-     maven(MavenPublication) {
+     mavenJava(MavenPublication) {
 
-       //groupId 'org.something'
-       groupId 'com.jpaulmorrison'
-        
-       //artifact fatJar 
-           artifact 'drawfbp'
+       
+       groupId 'com.jpaulmorrison'        
+      
+       artifact 'drawfbp'
+      // from components.java
+     //  artifact sourcesJar
+     //  artifact javadocJar
     }
  }
  
+
+ 
 uploadArchives {
+
+
 
   repositories {
     mavenDeployer {
+    
+ 
+  
       beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
       repository(url: releasePublicationRepository) {
@@ -231,7 +236,9 @@ uploadArchives {
 
         version '2.18.4'
 
-        
+       // dependencies { 
+	//compile ('math.geom2d:javaGeom:0.11.1')
+      //  }
         scm {
           connection 'scm:git:https://github.com/jpaulm.git'
           developerConnection 'scm:git:https://github.com/jpaulm.git'
@@ -257,9 +264,12 @@ uploadArchives {
             email 'bobcorrick@outlook.com'
           }
         }
+   
+                                                                         
+         }                                                                             
+ 
+
       }
     }
   }
-}
-}
 }

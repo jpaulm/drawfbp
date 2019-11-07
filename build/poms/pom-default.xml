@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.jpaulmorrison</groupId>
   <artifactId>drawfbp</artifactId>
-  <version>2.18.1</version>
+  <version>2.18.4</version>
   <name>DrawFBP</name>
   <description>Diagramming Tool for Flow-Based Programming</description>
   <url>https://github.com/jpaulm/drawfbp</url>
@@ -31,4 +31,12 @@
     <developerConnection>scm:git:https://github.com/jpaulm.git</developerConnection>
     <url>https://github.com/jpaulm.git</url>
   </scm>
+  <dependencies>
+    <dependency>
+      <groupId>math.geom2d</groupId>
+      <artifactId>javaGeom</artifactId>
+      <version>0.11.1</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 </project>
