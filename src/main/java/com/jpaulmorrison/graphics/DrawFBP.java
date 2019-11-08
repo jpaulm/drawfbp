@@ -4538,14 +4538,15 @@ public class DrawFBP extends JFrame
 			for (int i = 0; i < jtp.getTabCount(); i++) {
 				ButtonTabComponent b = (ButtonTabComponent) jtp
 						.getTabComponentAt(i);
+				jtp.setSelectedIndex(i);
 				if (b == null || b.diag == null)
 					return;
 				Diagram diag = b.diag;
 
 				if (diag != null) {
-					if (!diag.askAboutSaving()) {
+					if (diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION) {
 						close = false;
-						break;
+						//break;
 					}
 				}
 			}
@@ -4580,7 +4581,7 @@ public class DrawFBP extends JFrame
 			Diagram diag = b.diag;
 
 			if (diag != null) {
-				if (!diag.askAboutSaving())
+				if (diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION)
 					return;
 			}
 

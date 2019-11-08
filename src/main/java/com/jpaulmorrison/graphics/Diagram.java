@@ -324,8 +324,9 @@ public class Diagram {
 	}
 	
 	
-	// returns false if CANCEL option chosen
-	public boolean askAboutSaving() {
+	// returns option chosen in MyOptionPane
+	
+	public int askAboutSaving() {
 
 		String name = null;
 		//String fileString = null;
@@ -334,32 +335,35 @@ public class Diagram {
 		else 
 			name = "(untitled)";		 
 			
-		boolean res = true;
-		if (changed) {
+		//int res;
+		
+		if (!changed) 			
+			return MyOptionPane.YES_OPTION;
 
-			int answer = MyOptionPane.showConfirmDialog(driver, 
-					 "Save changes to " + name + "?", "Save changes",  
-					MyOptionPane.YES_NO_CANCEL_OPTION);
-			File file = null;
-			if (answer == MyOptionPane.YES_OPTION) {
-				  
-				// User clicked YES.
-				
-				file = genSave(diagFile, fCParm[DIAGRAM], null);   
-				if (file == null) {
-					MyOptionPane.showMessageDialog(driver,
-							"File not saved");
-					res = false;
-				}
-				else
-					changed = false;
-								
+		int answer = MyOptionPane.showConfirmDialog(driver,
+				"Save changes to " + name + "?", "Save changes",
+				MyOptionPane.YES_NO_CANCEL_OPTION);
+		File file = null;
+		if (answer == MyOptionPane.YES_OPTION) {
 
-			}
-			if (answer == MyOptionPane.CANCEL_OPTION)				
-				res = false;
+			// User clicked YES.
+
+			file = genSave(diagFile, fCParm[DIAGRAM], null);
+			if (file == null) {
+				MyOptionPane.showMessageDialog(driver, "File not saved");
+				answer = MyOptionPane.CANCEL_OPTION;
+			} else
+				changed = false;
 
 		}
+		if (answer == -1) 
+			answer = MyOptionPane.CANCEL_OPTION;
+		
+		if (answer != MyOptionPane.CANCEL_OPTION) {
+			int i = driver.jtp.getSelectedIndex();
+			driver.jtp.remove(i);
+		}
+
 		File currentDiagramDir = null;
 		
 		if (diagFile != null) {
@@ -367,7 +371,7 @@ public class Diagram {
 		    if (currentDiagramDir != null)
 		    	driver.saveProp("currentDiagramDir",
 		    			currentDiagramDir.getAbsolutePath());
-		    if (res) {
+		    if (answer == MyOptionPane.YES_OPTION) {
 		    	String s = diagFile.getAbsolutePath();
 		    	if (s.endsWith(".drw"))
 		    		driver.saveProp("currentDiagram", s);
@@ -385,10 +389,9 @@ public class Diagram {
 		t = Integer.toString(driver.getSize().height);
 		driver.saveProp("height", t);
 		//saveProperties();
-		
-		return res;
-
+		return answer;
 	}
+		
 	
 	// Build data string for filing, from blocks and arrows...
 
