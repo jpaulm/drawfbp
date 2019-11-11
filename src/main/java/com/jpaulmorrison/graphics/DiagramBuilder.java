@@ -192,6 +192,7 @@ public class DiagramBuilder {
 								starttag.equals("multiplex") ||
 								starttag.equals("invisible") ||
 								starttag.equals("clicktogrid") ||
+								starttag.equals("sortbydate") ||
 								starttag.equals("dropoldest"))
 								    item.put(starttag, "true");
 
@@ -225,9 +226,11 @@ public class DiagramBuilder {
 							}
 
 						else if (endtag.equals("clicktogrid")) {
-								diag.clickToGrid = saveData.equals("true");
-							}
-
+							diag.clickToGrid = saveData.equals("true");
+						}
+						else if (endtag.equals("sortbydate")) {
+							driver.sortByDate = saveData.equals("true");
+						}
 						else
 							item.put(endtag, saveData);
 
@@ -421,11 +424,7 @@ public class DiagramBuilder {
 
 		} // end of loop
 		
-		//if (sym.equals("clicktogrid")) {
-		//	diag.clickToGrid = true;
-		//	//driver.grid.setSelected(diag.clickToGrid);
-		//	item.put(sym, "true");
-		//}
+		
 		for (Arrow a : diag.arrows.values()) {
 			Block fromBlock = diag.blocks.get(new Integer(a.fromId));
 			if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
@@ -481,6 +480,7 @@ public class DiagramBuilder {
 		fl1.put("desc", "*");
 		fl1.put("complang", "*");
 		fl1.put("clicktogrid", "*");
+		fl1.put("sortbydate", "*");
 		fl1.put("genCodeFileName", "*"); //deprecated
 		// fl1.put("scalingFactor", "*");
 		fl1.put("generatedCodeFileName", "*"); // deprecated

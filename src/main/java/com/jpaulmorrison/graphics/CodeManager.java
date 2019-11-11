@@ -19,7 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-public class CodeManager implements ActionListener , DocumentListener  {
+public class CodeManager implements ActionListener /*, DocumentListener */ {
 
 	DrawFBP driver;
 	HashSet<String> portNames;
@@ -1645,17 +1645,17 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		else
 			return s;
 	}
-	@Override
+	//@Override
 	public void insertUpdate(DocumentEvent e) {
 		int i = 0;
 		
 	}
-	@Override
+	//@Override
 	public void removeUpdate(DocumentEvent e) {
 		int i = 0;
 		
 	}
-	@Override
+	//@Override
 	public void changedUpdate(DocumentEvent e) {
 		int i = 0;
 		

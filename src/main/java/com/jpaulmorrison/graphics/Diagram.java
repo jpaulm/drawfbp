@@ -417,6 +417,8 @@ public class Diagram {
 
 				
 		fileString += "<clicktogrid>" + (clickToGrid?"true":"false") + "</clicktogrid> \n" ;
+		
+		fileString += "<sortbydate>" + (driver.sortByDate?"true":"false") + "</sortbydate> \n" ;
 
 		fileString += "<blocks>";
 

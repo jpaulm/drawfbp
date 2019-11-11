@@ -1401,6 +1401,7 @@ public class DrawFBP extends JFrame
 		if (s.equals("Toggle Click to Grid")) {
 			curDiag.clickToGrid = !curDiag.clickToGrid;
 			grid.setSelected(curDiag.clickToGrid);
+			driver.saveProp("clicktogrid",(new Boolean(curDiag.clickToGrid)).toString());
 			return;
 
 		}
@@ -2065,6 +2066,8 @@ public class DrawFBP extends JFrame
 
 		propertyDescriptions.put("Version #", "versionNo");
 		propertyDescriptions.put("Date", "date");
+		propertyDescriptions.put("Click To Grid", "clicktogrid");
+		propertyDescriptions.put("Sort By Date", "sortbydate");
 		propertyDescriptions.put("Current C# source code directory",
 				"currentCsharpSourceDir");
 		propertyDescriptions.put("Current C# network code directory",
