@@ -132,7 +132,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		changed = true;
 		
 		String curDir = diag.diagFile.getParentFile().getAbsolutePath();
-		driver.properties.put("currentDiagramDirectory", curDir);
+		driver.saveProp("currentDiagramDirectory", curDir);
 
 		String component = (gl.label.equals("Java"))
 				? "component"

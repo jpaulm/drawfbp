@@ -139,8 +139,8 @@ public class MyFileChooser extends JFrame
 		else
 			listHead = f.getAbsolutePath();
 		// fullNodeName = f.getAbsolutePath();
-		this.driver = driver;
-		
+		this.driver = driver;		
+				
 		butSortByDate.setSelected(driver.sortByDate);
 		
 		Point p = driver.getLocation();

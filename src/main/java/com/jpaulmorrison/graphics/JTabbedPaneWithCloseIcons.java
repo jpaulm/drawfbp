@@ -52,7 +52,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 					// if (driver.properties == null)
 					// driver.properties = new HashMap <String, String>();
 					if (currentDiagramDir != null)
-						driver.properties.put("currentDiagramDir",
+						driver.saveProp("currentDiagramDir",
 								currentDiagramDir.getAbsolutePath());
 					// saveProperties();
 				}

@@ -40,6 +40,10 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.*;
 import java.net.*;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 
 import javax.imageio.ImageIO;
 
@@ -402,7 +406,14 @@ public class DrawFBP extends JFrame
 		//readPropertiesFile();
 
 		saveProp("versionNo", "v" + VersionAndTimestamp.getVersion());
-		saveProp("date", VersionAndTimestamp.getDate());
+		//saveProp("date", VersionAndTimestamp.getDate());
+		
+		//LocalDateTime date = LocalDateTime.now();
+		//DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+
+		//String formattedDate = formatter.format(date); 
+		LocalDateTime a = LocalDateTime.from(ZonedDateTime.now());
+		saveProp("date", a.toString());
 
 		if (null == (generalFont = properties.get("generalFont"))){
 			generalFont = "Arial";
@@ -433,6 +444,13 @@ public class DrawFBP extends JFrame
 				dcl = "JSON";
 			currLang = findGLFromLabel(dcl);
 		}
+		
+		String sBD = properties.get("sortbydate");
+		if (sBD == null) {
+			sortByDate = false;
+			saveProp("sortbydate", "false");
+		} else 
+			sortByDate = (new Boolean(sBD)).booleanValue();
 
 		Iterator<Entry<String, String>> entries = jarFiles.entrySet()
 				.iterator();
@@ -1519,6 +1537,7 @@ public class DrawFBP extends JFrame
 			// ImageIcon image = new ImageIcon(combined);
 			// curDiag.imageFile = file;
 			Date date = new Date();
+			//Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 			file.setLastModified(date.getTime());
 			return;
 		}

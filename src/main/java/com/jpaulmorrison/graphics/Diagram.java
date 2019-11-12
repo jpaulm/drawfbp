@@ -97,18 +97,22 @@ public class Diagram {
 		parent = null;
 		//StyleContext sc = new StyleContext();
 		//doc = new DefaultStyledDocument(sc);   
-		driver.grid.setSelected(clickToGrid);
+		
 		//file = null;
 		diagLang = driver.currLang;	
 		
 		fCParm = new FileChooserParm[10];
 		//motherBlock = null;
+		String cTG = driver.properties.get("clicktogrid");
+		if (cTG == null) {
+			clickToGrid = true;
+			driver.saveProp("clicktogrid", "true");
+		} else 
+			clickToGrid = (new Boolean(cTG)).booleanValue();
 		
+		driver.grid.setSelected(clickToGrid);
 	}			
-	 
-
-	
-	
+		
 	/* General save function */
 	
 	public File genSave(File file, FileChooserParm fCP, Object contents) { 
