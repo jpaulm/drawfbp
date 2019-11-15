@@ -598,15 +598,15 @@ public class MyFileChooser extends JFrame
 
 				if (listHead == null)
 					return;
-				if (!(f.exists()))
-					return;
+				//if (!(f.exists()))
+				//	return;
 				//File f = new File(listHead);
 				t = f.getAbsolutePath();
 				if (t.endsWith("My Documents"))
 					f = new File(t.replace("My Documents", "Documents"));
 				t = t.replace("\\",  "/");
 				if (!f.exists() || !f.isDirectory())
-					ll.add("Folder does not exist");
+					ll.add("Folder does not exist or is not directory");
 					//return;					
 				}
 			else 
@@ -737,8 +737,8 @@ public class MyFileChooser extends JFrame
 				}
 			}
 		//}
-		if (ll.size() == 0)
-		    return;
+		//if (ll.size() == 0)
+		//    return;
 
 		Object[] oa = ll.toArray();
 
@@ -762,7 +762,7 @@ public class MyFileChooser extends JFrame
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		list.addKeyListener(this);
-		ClickListener cL = new ClickListener();
+		//ClickListener cL = new ClickListener();
 		list.addMouseListener(clickListener);
 		//ListSelectionListener lsl = new ListSelectionListener();  
 		//list.addListSelectionListener(this);
@@ -1696,7 +1696,7 @@ final boolean SAVEAS = true;
 
 					return;
 				}
-				listHead = u;
+				listHead = u; 
 				// panel.remove(listView);
 				//t_dirName.setBackground(vLightBlue);
 				showList();
@@ -2246,9 +2246,9 @@ l.setFont(driver.fontg);
 				
 			}
 		}
-
 	}
 	
+	/*
 	//public class SharedListSelectionHandler() implements ListSelectionListener { 
 	public void valueChanged(ListSelectionEvent e) {
 		int row=e.getFirstIndex();
@@ -2292,5 +2292,6 @@ l.setFont(driver.fontg);
 			//previousRow = row;
         }
 	}
+	*/
 	//}
   }

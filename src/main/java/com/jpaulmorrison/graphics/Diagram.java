@@ -332,6 +332,15 @@ public class Diagram {
 	
 	public int askAboutSaving() {
 
+		String t = Integer.toString(driver.getBounds().x);
+		driver.saveProp("x", t);
+		t = Integer.toString(driver.getBounds().y);
+		driver.saveProp("y", t);
+		t = Integer.toString(driver.getSize().width);
+		driver.saveProp("width", t);
+		t = Integer.toString(driver.getSize().height);
+		driver.saveProp("height", t);
+		
 		String name = null;
 		//String fileString = null;
 		if (diagFile != null)			
@@ -341,8 +350,12 @@ public class Diagram {
 			
 		//int res;
 		
-		if (!changed) 			
+		if (!changed && diagFile != null) {	
+			String s = diagFile.getAbsolutePath();
+	    	if (s.endsWith(".drw"))
+	    		driver.saveProp("currentDiagram", s);
 			return MyOptionPane.YES_OPTION;
+		}
 
 		int answer = MyOptionPane.showConfirmDialog(driver,
 				"Save changes to " + name + "?", "Save changes",
@@ -383,7 +396,7 @@ public class Diagram {
 		    else
 		    	driver.properties.remove("currentDiagram");
 		}
-		
+		/*
 		String t = Integer.toString(driver.getBounds().x);
 		driver.saveProp("x", t);
 		t = Integer.toString(driver.getBounds().y);
@@ -392,6 +405,7 @@ public class Diagram {
 		driver.saveProp("width", t);
 		t = Integer.toString(driver.getSize().height);
 		driver.saveProp("height", t);
+		*/
 		//saveProperties();
 		return answer;
 	}
