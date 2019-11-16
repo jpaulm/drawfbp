@@ -2914,11 +2914,12 @@ public class DrawFBP extends JFrame
 			String javac = jh + "/bin/javac.exe";
 			
 			srcDir += "/" + fNPkg;
-			//clsDir += "/" + fNPkg;
+			clsDir += "/" + fNPkg; 
 			
 			
 			String w = srcDir + "/" + progName;
-			List<String> params = Arrays.asList("\"" + javac + "\"", 					 
+			List<String> params = Arrays.asList("\"" + javac + "\"", 
+					// "-verbose",
 					"-cp", jf, 
 					"-d", "\"" + clsDir + "\"",					 
 					"\"" + w + "\""); 
