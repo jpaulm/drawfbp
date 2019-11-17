@@ -2896,7 +2896,7 @@ public class DrawFBP extends JFrame
 			jf += ";.\"";			 
 			
 			srcDir = srcDir.replace("\\",  "/");
-			clsDir = clsDir.replace("\\",  "/");
+			// clsDir = clsDir.replace("\\",  "/");
 			
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
@@ -2914,10 +2914,14 @@ public class DrawFBP extends JFrame
 			String javac = jh + "/bin/javac.exe";
 			
 			srcDir += "/" + fNPkg;
-			clsDir += "/" + fNPkg; 
+			//clsDir += "/" + fNPkg;
+			
+			srcDir = srcDir.replace("\\",  "/");
+			clsDir = srcDir.replace("/src/", "/bin/");
+			clsDir = clsDir.substring(0, clsDir.indexOf("/bin/") + 4);
 			
 			
-			String w = srcDir + "/" + progName;
+			String w = srcDir + File.separator + progName;
 			List<String> params = Arrays.asList("\"" + javac + "\"", 
 					// "-verbose",
 					"-cp", jf, 

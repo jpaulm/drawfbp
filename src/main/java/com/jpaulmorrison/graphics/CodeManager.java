@@ -19,7 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-public class CodeManager implements ActionListener /*, DocumentListener */ {
+public class CodeManager implements ActionListener , DocumentListener  {
 
 	DrawFBP driver;
 	HashSet<String> portNames;
@@ -109,7 +109,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		dialog.add(scrollPane);		
 		textPane.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
-		//doc.addDocumentListener(this);
+		doc.addDocumentListener(this);
 
 	}
 	void genCode() {
@@ -187,7 +187,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		
 		if (gl.label.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
-			if (packageName == null) {
+			if (packageName == null || packageName.equals("(null)")) {
 				packageName = (String) MyOptionPane.showInputDialog(dialog,
 						"Please fill in a package/namespace name", null);
 				packageName = packageName.trim();				
@@ -976,7 +976,7 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		String fn = diag.diagFile.getAbsolutePath();
 		int i = fn.lastIndexOf(".drw");
 		String pkg = driver.properties.get("currentPackageName");
-		if (pkg == null)
+		if (pkg == null || pkg.equals("(null)"))
 			pkg = "";
 		else 
 			pkg = pkg.replace(".", "/");
@@ -1025,14 +1025,32 @@ public class CodeManager implements ActionListener /*, DocumentListener */ {
 		
 		//doc.addDocumentListener(this);  // to allow late changes!
 		
-		if (!(p.equals(oldFN)))		
+		if (!(p.equals(oldFN)))	{	
 			MyOptionPane.showMessageDialog(driver,
 				"File name in generated code doesn't match actual file name - " + p, MyOptionPane.WARNING_MESSAGE);
 		
-		//fileString = fileString.substring(0, m + r.length()) + p + fileString.substring(n);
-
-		//MyOptionPane.showMessageDialog(driver, "File " + file.getName() + " saved");
+		fileString = fileString.substring(0, m + r.length()) + p + fileString.substring(n);
 		
+		int j2 = fileString.indexOf("().go()");
+		int j = fileString.substring(0, j2).lastIndexOf(" ");
+		fileString = fileString.substring(0, j) + " " + p + fileString.substring(j2);
+		try {
+			doc.remove(0, doc.getLength());
+			doc.insertString(0,  fileString,  null);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		colourCode();  
+		if (!(driver.writeFile(file, fileString))) {			
+			MyOptionPane.showMessageDialog(driver, "File not saved");
+			// diag.changeCompLang();
+			return false;
+			}
+		
+		MyOptionPane.showMessageDialog(driver, "File name references changed in " + file.getName() + ", and file saved");
+		}
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
 		//saveProperties();

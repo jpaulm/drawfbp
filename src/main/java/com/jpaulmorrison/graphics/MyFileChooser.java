@@ -228,7 +228,7 @@ public class MyFileChooser extends JFrame
 		else {
 			if (fCP == driver.curDiag.fCParm[Diagram.NETWORK]) {
 				String w = driver.curDiag.diagFile.getAbsolutePath();
-				fCP.prompt = "Specify file name for code (diagram name is: " + w + ")";
+				fCP.prompt = "Specify file name";
 			}
 
 			dialog.setTitle(fCP.prompt);
@@ -658,6 +658,14 @@ public class MyFileChooser extends JFrame
 				//else {
 					
 				Path p = f.toPath();
+				if (!f.exists()){
+					MyOptionPane.showMessageDialog(driver,	"File does not exist: " + f.getAbsolutePath(),
+							MyOptionPane.ERROR_MESSAGE);
+					
+				}
+
+				else {
+					
 				DirectoryStream<Path> ds = null;
 				try {
 					ds = Files.newDirectoryStream(p);
@@ -665,6 +673,7 @@ public class MyFileChooser extends JFrame
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 
 				ll2 = new LinkedList<String>();
 
@@ -706,7 +715,7 @@ public class MyFileChooser extends JFrame
 				
 				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll  
 									 
-				//}					 
+				}					 
 
 			} else {
 				//inJarTree = true;
@@ -737,8 +746,8 @@ public class MyFileChooser extends JFrame
 				}
 			}
 		//}
-		//if (ll.size() == 0)
-		//    return;
+		if (ll.size() == 0)
+		    ll.add("No files match criteria");
 
 		Object[] oa = ll.toArray();
 
@@ -907,8 +916,7 @@ final boolean SAVEAS = true;
 		String fileString;
 		LinkedList<String> ll = new LinkedList<String>();
 		if (null == (fileString = driver.readFile(f  /*, !SAVEAS */))) {
-			MyOptionPane.showMessageDialog(driver,
-					"Unable to read file " + f.getName(),
+			MyOptionPane.showMessageDialog(driver,	"Unable to read file " + f.getName(),
 					MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
