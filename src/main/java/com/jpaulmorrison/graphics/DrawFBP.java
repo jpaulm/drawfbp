@@ -2919,7 +2919,7 @@ public class DrawFBP extends JFrame
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = srcDir.replace("/src/", "/bin/");
 			clsDir = clsDir.substring(0, clsDir.indexOf("/bin/") + 4);
-			
+			(new File(clsDir)).mkdirs(); 
 			
 			String w = srcDir + File.separator + progName;
 			List<String> params = Arrays.asList("\"" + javac + "\"", 
@@ -3342,7 +3342,7 @@ public class DrawFBP extends JFrame
 
 			//clsDir.mkdirs(); 
 			if (clsDir == null || !clsDir.exists()) {				
-					MyOptionPane.showMessageDialog(this,
+			MyOptionPane.showMessageDialog(this,
 							"'bin' directory does not exist - " + clsDir,
 							MyOptionPane.ERROR_MESSAGE);
 					return;

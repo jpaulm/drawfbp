@@ -29,7 +29,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			quotedStringStyle, commentStyle;
 	JDialog dialog;
 	//StyledDocument doc;
-	boolean changed = false;
+	//boolean changed = false;
 	boolean generated = false;
 	boolean packageNameChanged = false;
 	// String targetLang;
@@ -49,22 +49,25 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	HashMap<Integer, String> descArray = new HashMap<Integer, String>();
 	// HashMap<Integer, String> cdescArray = new HashMap<Integer, String>();
 	// int type;
-	JLabel nsLabel = null;
+	JLabel nsLabel = new JLabel();
 	boolean SAVE_AS = true;
 	//FileChooserParm[] saveFCPArr;
 	//String langLabel;
 	GenLang gl = null;
 	String upPort = null;;
 	String dnPort = null;
-	StyledDocument doc = null;
+	//StyledDocument doc = null;
+	MyDocument doc = null;
 	//boolean saveType;
 
 	CodeManager(Diagram d) {
 		diag = d;
+		gl = diag.diagLang;
 		driver = d.driver;
 		d.cm = this;
 		dialog = new JDialog(driver);
 		driver.depDialog = dialog;
+		nsLabel.setFont(driver.fontg);
 		
 		DrawFBP.applyOrientation(dialog);
 
@@ -74,7 +77,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				boolean res = true;
-				if (changed)
+				if (doc.changed)
 					res = askAboutSaving();
 				if (res){
 					driver.depDialog = null;
@@ -99,7 +102,8 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		dialog.pack();
 
 		StyleContext sc = new StyleContext();	
-		doc = new DefaultStyledDocument(); 
+		//doc = new DefaultStyledDocument(); 
+		doc = new MyDocument(); 
 		textPane = new JTextPane(doc);
 		scrollPane = new JScrollPane(textPane);			
 		setStyles(sc);
@@ -122,14 +126,14 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		fbpMode = false;
 		//langLabel = diag.diagLang.label;
-		gl = diag.diagLang;
+		//gl = diag.diagLang;
 		if (gl.label.equals("FBP")) {
 			genFbpCode();
 			return true;
 		}		
 
 		// diag.targetLang = langLabel;
-		changed = true;
+		doc.changed = true;
 		
 		String curDir = diag.diagFile.getParentFile().getAbsolutePath();
 		driver.saveProp("currentDiagramDirectory", curDir);
@@ -541,7 +545,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		// if (diag.compLang != glcompLang)
 		// diag.compLang = compLang;
-		changed = true;
+		doc.changed = true;
 		colourCode(); 
 
 		generated = true;
@@ -594,7 +598,9 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	
 	final boolean SAVEAS = true;
 
-	void displayDoc(File file, GenLang gl, String fileString) {
+	String displayDoc(File file, GenLang gl, String fileString) {
+		
+		
 
 		dialog.setTitle("Displayed Code: " + file.getName());
 		// genLang = gl;
@@ -605,13 +611,13 @@ public class CodeManager implements ActionListener , DocumentListener  {
 				MyOptionPane.showMessageDialog(driver,
 						"Couldn't read file: " + file.getAbsolutePath(),
 						MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
+				return fileString;
+ 			}
 			// changed = false;
 			// if (file.getName().endsWith(".fbp")) {
 			nsLabel.setText("Not changed");
 			fbpMode = true;
-			changed = false;
+			doc.changed = false;
 			// }
 			String suff = driver.curDiag.getSuffix(file.getName());
 
@@ -623,10 +629,10 @@ public class CodeManager implements ActionListener , DocumentListener  {
 							"Missing package name - please specify package name",
 							null);
 
-					// driver.saveProp("currentPackageName", packageName);
-					// saveProperties();
+					//driver.saveProp("currentPackageName", packageName);
+					//driver.saveProperties();
 					fileString = "package " + packageName + ";\n" + fileString;
-					changed = true;
+					doc.changed = true;
 				} else {
 					int k = fileString.indexOf(";", i);
 					packageName = fileString.substring(i + 8, k);
@@ -646,15 +652,29 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(driver,
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
-			return;
+			return fileString;
+
 		}
 
 		colourCode();
+		
+		
 		// if (file.getName().endsWith(".fbp"))
 		// type = DrawFBP.DIAGRAM;
 		dialog.repaint();
+		
+		Segment seg = new Segment();
+		seg.setPartialReturn(false);
+		try {
+			doc.getText(0,  doc.getLength(), seg);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		fileString = seg.toString();
 		// frame.repaint();
-		return;
+		return fileString;
+
 	}
 
 	 
@@ -874,7 +894,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		} else if (s.equals("Exit")) {
 			boolean res = true;
-			if (changed)
+			if (doc.changed)
 				res = askAboutSaving();
 			if (res)
 				dialog.dispose();
@@ -994,9 +1014,9 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		int k = fn.substring(0, i).lastIndexOf("/");
 		String suggName = ""; 
 		if (i > k)
-			suggName = fn.substring(k, i);
+			suggName = fn.substring(k + 1, i);
 		cDD = cDD.replace("\\",  "/");		
-		suggName = cDD + "/" + pkg + suggName +  "." + gl.suggExtn;			
+		suggName = cDD + "/" + pkg + "/" + suggName +  "." + gl.suggExtn;			
 		
 		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, 
 		//		new File(fn.substring(0, i) + "." + gl.suggExtn)); 
@@ -1036,7 +1056,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		fileString = fileString.substring(0, j) + " " + p + fileString.substring(j2);
 		try {
 			doc.remove(0, doc.getLength());
-			doc.insertString(0,  fileString,  null);
+			doc.insertString(0,  fileString,  normalStyle);
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1054,7 +1074,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
 		//saveProperties();
-		changed = false;
+		doc.changed = false;
 		dialog.repaint();
 
 		if (packageNameChanged) {
@@ -1130,7 +1150,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 				}
 				fileString = fileString.substring(0, s + 8) + pkg
 						+ fileString.substring(s + 8 + t);
-				changed = true;
+				doc.changed = true;
 				//res = true;
 				displayDoc(file, gl, fileString);
 			}
@@ -1162,7 +1182,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		// int w = frame.getWidth();
 		menuBar.add(Box.createHorizontalStrut(200));
 		JPanel p = new JPanel();
-		nsLabel = new JLabel("Not changed");
+		nsLabel.setText("Not changed");
 		p.add(nsLabel, BorderLayout.LINE_END);
 		menuBar.add(p, BorderLayout.LINE_END);
 		nsLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -1489,12 +1509,12 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			return false;
 		}
 
-		changed = true;
+		doc.changed = true;
 		// colourCode();
 
 		generated = true;
 
-		nsLabel.setText(changed ? "Not saved" : " ");
+		nsLabel.setText(doc.changed ? "Changed" : " ");
 
 		dialog.repaint();
 		// jframe.update(jdriver.osg);
@@ -1665,17 +1685,19 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	}
 	//@Override
 	public void insertUpdate(DocumentEvent e) {
-		int i = 0;
+		doc.changed = true;
 		
 	}
 	//@Override
 	public void removeUpdate(DocumentEvent e) {
-		int i = 0;
+		doc.changed = true;
+
 		
 	}
 	//@Override
 	public void changedUpdate(DocumentEvent e) {
-		int i = 0;
+		doc.changed = true;
+
 		
 	}
 }
