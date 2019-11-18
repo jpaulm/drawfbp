@@ -1329,7 +1329,9 @@ public class DrawFBP extends JFrame
 			if (!(cFile.exists()))
 				return;
 
+			
 			CodeManager cm = new CodeManager(curDiag);
+			cm.doc.changed = false;
 			cm.displayDoc(cFile, gl, null);
 
 			return;

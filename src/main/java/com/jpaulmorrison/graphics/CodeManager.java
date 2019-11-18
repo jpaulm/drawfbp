@@ -114,6 +114,8 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		textPane.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
 		doc.addDocumentListener(this);
+		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+
 
 	}
 	void genCode() {
@@ -194,6 +196,8 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			if (packageName == null || packageName.equals("(null)")) {
 				packageName = (String) MyOptionPane.showInputDialog(dialog,
 						"Please fill in a package/namespace name", null);
+				if (packageName == null)
+					packageName = "(null)";
 				packageName = packageName.trim();				
 				driver.saveProp("currentPackageName", packageName);
 				//saveProperties();
@@ -550,7 +554,9 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		generated = true;
 
-		nsLabel.setText("Not saved");
+		//nsLabel.setText("Not saved");
+		nsLabel.setText(doc.changed ? "Changed" : " ");
+
 
 		dialog.repaint();
 		// jframe.update(jdriver.osg);
@@ -615,9 +621,9 @@ public class CodeManager implements ActionListener , DocumentListener  {
  			}
 			// changed = false;
 			// if (file.getName().endsWith(".fbp")) {
-			nsLabel.setText("Not changed");
+			//nsLabel.setText("Not changed");
 			fbpMode = true;
-			doc.changed = false;
+			//doc.changed = false;
 			// }
 			String suff = driver.curDiag.getSuffix(file.getName());
 
@@ -658,11 +664,14 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		colourCode();
 		
+		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 		
+		//doc.changed = true;
 		// if (file.getName().endsWith(".fbp"))
 		// type = DrawFBP.DIAGRAM;
 		dialog.repaint();
 		
+		/*
 		Segment seg = new Segment();
 		seg.setPartialReturn(false);
 		try {
@@ -672,6 +681,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			e.printStackTrace();
 		}
 		fileString = seg.toString();
+		*/
 		// frame.repaint();
 		return fileString;
 
@@ -894,7 +904,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		} else if (s.equals("Exit")) {
 			boolean res = true;
-			if (doc.changed)
+			//if (doc.changed)
 				res = askAboutSaving();
 			if (res)
 				dialog.dispose();
@@ -903,7 +913,11 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		return;
 	}
 
+	// askAboutSaving returns true if Code Manager window can be deleted
+	
 	public boolean askAboutSaving() {
+		if (!doc.changed)
+			return true;
 		int answer = MyOptionPane.showConfirmDialog(driver,
 				"Save generated or modified code?", "Save code",
 				MyOptionPane.YES_NO_CANCEL_OPTION);
@@ -1083,7 +1097,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		}
 
 		// diag.targetLang = gl.label;
-		nsLabel.setText("Saved");
+		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 		// diag.genCodeFileName = file.getAbsolutePath();
 		dialog.setTitle("Generated Code: " + file.getName());		
 		dialog.repaint();
@@ -1182,7 +1196,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		// int w = frame.getWidth();
 		menuBar.add(Box.createHorizontalStrut(200));
 		JPanel p = new JPanel();
-		nsLabel.setText("Not changed");
+		
 		p.add(nsLabel, BorderLayout.LINE_END);
 		menuBar.add(p, BorderLayout.LINE_END);
 		nsLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -1514,7 +1528,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		generated = true;
 
-		nsLabel.setText(doc.changed ? "Changed" : " ");
+		//nsLabel.setText(doc.changed ? "Changed" : " ");
 
 		dialog.repaint();
 		// jframe.update(jdriver.osg);
@@ -1685,18 +1699,18 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	}
 	//@Override
 	public void insertUpdate(DocumentEvent e) {
-		doc.changed = true;
+	//	doc.changed = true;
 		
 	}
 	//@Override
 	public void removeUpdate(DocumentEvent e) {
-		doc.changed = true;
+	//  doc.changed = true;
 
 		
 	}
 	//@Override
 	public void changedUpdate(DocumentEvent e) {
-		doc.changed = true;
+	//	doc.changed = true;
 
 		
 	}

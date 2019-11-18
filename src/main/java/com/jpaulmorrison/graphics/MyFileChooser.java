@@ -2197,8 +2197,10 @@ l.setFont(driver.fontg);
 							//	f.mkdir();
 							// return;
 						} else {
-							if (!f.isDirectory())
+							if (!f.isDirectory()) {
 								  t_fileName.setText(f.getName());
+								  selComp = t_fileName;
+							}
 						}
 					}
 				}
