@@ -73,6 +73,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 
 		// type = DrawFBP.GENCODE;
 
+		
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {

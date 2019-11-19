@@ -42,8 +42,6 @@ import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 
 import javax.imageio.ImageIO;
 
@@ -358,7 +356,7 @@ public class DrawFBP extends JFrame
 										// though!
 		defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 		setCursor(defaultCursor);
-
+		
 		applyOrientation(this);
 
 		int w = (int) dim.getWidth();
@@ -4991,12 +4989,12 @@ public class DrawFBP extends JFrame
 						
 						
 
-						try {
-							Thread.sleep(2000);              // 2 secs.
-						} catch (InterruptedException e1) {
+						//try {
+						//	Thread.sleep(2000);              // 2 secs.
+						//} catch (InterruptedException e1) {
 							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}   
+						//	e1.printStackTrace();
+						//}   
 						
 						while (!interrupt) {
 							try {

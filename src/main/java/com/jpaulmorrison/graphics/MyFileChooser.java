@@ -39,8 +39,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
@@ -227,7 +225,7 @@ public class MyFileChooser extends JFrame
 			dialog.setTitle(s);
 		else {
 			if (fCP == driver.curDiag.fCParm[Diagram.NETWORK]) {
-				String w = driver.curDiag.diagFile.getAbsolutePath();
+				//String w = driver.curDiag.diagFile.getAbsolutePath();
 				fCP.prompt = "Specify file name";
 			}
 
