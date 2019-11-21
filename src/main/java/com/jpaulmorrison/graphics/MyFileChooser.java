@@ -1740,42 +1740,47 @@ final boolean SAVEAS = true;
 				
 				 
 				} else {
-					if (selComp == t_fileName){
+				if (selComp == t_fileName) {
 					s = t_fileName.getText();
 					String s2 = s;
 					if (!s.endsWith(".jar"))
-						s2 = t_dirName.getText() + "/" + s;  
-					File f = new File(s2); 
-					
-				if (!f.exists() && !inJarTree) {
-					if (-1 == s.indexOf(".")) { 
-						// must be a directory
-						
+						s2 = t_dirName.getText() + "/" + s;
+					File f = new File(s2);
+
+					if (!f.exists() && !inJarTree) {
+						if (-1 == s.indexOf(".")) {
+							// must be a directory
+
 							MyOptionPane.showMessageDialog(driver,
 									"Folder " + f.getAbsolutePath()
 											+ " doesn't exist - create using New Folder",
 									MyOptionPane.ERROR_MESSAGE);
 							return;
-						
-					} else {
-						// must be a file
-						if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-								driver,
-								"Create new file: " + f.getAbsolutePath() + "?",
-								"Confirm create", MyOptionPane.YES_NO_OPTION))
-							try {
-								f.createNewFile();
-							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						
-					}
-					} else if (selComp == t_dirName){
+
+						} 
+						/*
+						else {
+							// must be a file
+							if (MyOptionPane.YES_OPTION == MyOptionPane
+									.showConfirmDialog(driver,
+											"Create new file: "
+													+ f.getAbsolutePath() + "?",
+											"Confirm create",
+											MyOptionPane.YES_NO_OPTION))
+								try {
+									f.createNewFile();
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+
+						}
+						*/
+					} else if (selComp == t_dirName) {
 						listHead = t_dirName.getText();
 						showList();
 					}
-					}
+				}
 				}
 				 
 			repaint();

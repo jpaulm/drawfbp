@@ -2502,11 +2502,11 @@ public class DrawFBP extends JFrame
 	
 	void saveAction(boolean saveAs) {
 
-		File file = null;
+		//File file = null;
 		//if (curDiag.diagFile == null)
 		//	saveAs = true;
-		if (!saveAs)
-			file = curDiag.diagFile;
+		//if (!saveAs)
+		File file = (!saveAs) ? curDiag.diagFile : null;
 
 		file = curDiag.genSave(file, curDiag.fCParm[Diagram.DIAGRAM], null);
 

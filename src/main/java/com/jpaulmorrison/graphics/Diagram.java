@@ -264,6 +264,7 @@ public class Diagram {
 					"Overwrite existing file: " + file.getAbsolutePath()
 							+ "?",
 					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
+				
 				return null;
 			 
 			
@@ -271,8 +272,10 @@ public class Diagram {
 			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					driver,
 					"Create new file: " + file.getAbsolutePath() + "?",
-					"Confirm create", MyOptionPane.YES_NO_OPTION)))
+					"Confirm create", MyOptionPane.YES_NO_OPTION))) {
+				MyOptionPane.showMessageDialog(driver, file.getAbsolutePath() + " not saved");
 				return null;
+			}
 		}
 		
 		if (fCP == fCParm[IMAGE]) {
@@ -299,7 +302,7 @@ public class Diagram {
 				fileString = driver.readFile(file /*, saveAs*/); // read previous version
 				diagFile = file;
 
-				if (fileString != null) {
+				if (fileString!= null) {
 					String s = file.getAbsolutePath();
 					File oldFile = file;
 					file = new File(s.substring(0, s.length() - 1) + "~");
