@@ -139,7 +139,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		doc.changed = true;
 		
 		String curDir = diag.diagFile.getParentFile().getAbsolutePath();
-		driver.saveProp("currentDiagramDirectory", curDir);
+		driver.saveProp("currentDiagramDir", curDir);
 
 		String component = (gl.label.equals("Java"))
 				? "component"
@@ -1015,7 +1015,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			pkg = "";
 		else 
 			pkg = pkg.replace(".", "/");
-		String cDD = driver.properties.get("currentDiagramDirectory");
+		String cDD = driver.properties.get("currentDiagramDir");
 		
 		// construct new file name
 		if (cDD != null) {

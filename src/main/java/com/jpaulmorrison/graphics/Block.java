@@ -1746,9 +1746,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		}
 
 		String t = driver.properties.get("currentDiagramDir");
-		if (t == null)
-			t = System.getProperty("user.home");
-
+		if (t == null) {
+			t = driver.properties.get("currentDiagramDirectory");		
+			if (t == null)
+				t = System.getProperty("user.home");
+		}
 		MyFileChooser fc = new MyFileChooser(driver,new File(t),
 				diag.fCParm[Diagram.DIAGRAM]);
 

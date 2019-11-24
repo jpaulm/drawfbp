@@ -1,5 +1,5 @@
 /*
- * Copyright (C) J.P. Morrison, Enterprises, Ltd. 2009,..., 2016 All Rights Reserved. 
+ * Copyright (C) J.P. Morrison, Enterprises, Ltd. 2009,..., 2019 All Rights Reserved. 
  */
 package com.jpaulmorrison.graphics;
 
@@ -10,7 +10,7 @@ public final class VersionAndTimestamp {
 	static String version = "2.18.6";
 
 
-	static String date = "Nov. 20, 2019"; 
+	static String date = "Nov. 24, 2019"; 
 
 
 	static String getVersion() {

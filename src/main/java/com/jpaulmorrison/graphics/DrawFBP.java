@@ -54,8 +54,8 @@ import javax.swing.plaf.FontUIResource;
 public class DrawFBP extends JFrame
 		implements
 			ActionListener,
-			ChangeListener, 
-			ComponentListener
+			ComponentListener,
+			ChangeListener 
 			{
 
 	static final long serialVersionUID = 111L;
@@ -269,7 +269,13 @@ public class DrawFBP extends JFrame
 	
 	FileChooserParm diagFCParm = null;
 	String[] filterOptions = {"", "All (*.*)"};
-	/*volatile*/ boolean interrupt = false;
+	//volatile boolean finished = false;
+	String clsDir = null;
+	String progName = null;
+	String output = "";
+	String error = "";
+	
+	String[] pBCmdArray = null;
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -363,9 +369,10 @@ public class DrawFBP extends JFrame
 		int h = (int) dim.getHeight();
 		// maxX = (int) (w * .8);
 		// maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);  // xxxxxxxxxxxx
 		// osg = buffer.createGraphics();
 		osg = (Graphics2D) buffer.getGraphics();
+		//osg = (Graphics2D) getGraphics();
 		// setVisible(true);
 
 		// osg = (Graphics2D) getGraphics();
@@ -574,7 +581,7 @@ public class DrawFBP extends JFrame
 
 		setVisible(true);
 		addComponentListener(this);
-
+		
 		repaint();
 
 		// wDiff = getWidth() - curDiag.area.getWidth();
@@ -1478,6 +1485,7 @@ public class DrawFBP extends JFrame
 			int y = Math.max(0, min_y - 40);
 			int bottom_border_height = 60;
 			BufferedImage buffer2 = buffer.getSubimage(min_x, y , w, h);	
+			//BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 			
 			//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
 			Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
@@ -1605,7 +1613,7 @@ public class DrawFBP extends JFrame
 
 			//popup.setUndecorated(true);
 			JLabel jLabel = new JLabel(new ImageIcon(image));
-			jLabel.addComponentListener(this);
+			//jLabel.addComponentListener(this);
 			//jLabel.setOpaque(false);
 			popup.add(jLabel);
 			popup.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -2792,7 +2800,7 @@ public class DrawFBP extends JFrame
 		GenLang gl = curDiag.diagLang;
 		Process proc = null;
 		//String program = "";
-		interrupt = false;
+		//interrupt = false;
 		
 		if (currLang.label.equals("Java")) {
 			String ss = properties.get(gl.netDirProp);
@@ -2821,7 +2829,7 @@ public class DrawFBP extends JFrame
 			srcDir = srcDir.replace('\\', '/');
 			
 			int j = srcDir.lastIndexOf("/");
-			String progName = srcDir.substring(j + 1);
+			progName = srcDir.substring(j + 1);
 			srcDir = srcDir.substring(0, j);
 			//String clsDir = srcDir;
 			//(new File(srcDir)).mkdirs();
@@ -2840,13 +2848,13 @@ public class DrawFBP extends JFrame
 				fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
 				fNPkg = fNPkg.replace("\\", "/");
 			}
-			String clsDir = srcDir.replace("/src/", "/bin/");
+			/*String*/ clsDir = srcDir.replace("/src/", "/bin/");
 			srcDir = srcDir.substring(0, k + 4); // drop after src
 			clsDir = clsDir.substring(0, k + 4); // drop after bin
 			//(new File(clsDir)).mkdir();
 			
 			saveProp("currentClassDir", clsDir);
-			clsDir = clsDir.substring(0, k + 4); 
+			//clsDir = clsDir.substring(0, k + 4); 
 
 			File fd = new File(clsDir);
 
@@ -2934,9 +2942,9 @@ public class DrawFBP extends JFrame
 
 			pb.redirectErrorStream(true);			
 			
-			String output = "";
+			output = "";
 			
-			new WaitWindow(this); // display "Processing..." message
+			//new WaitWindow(this); // display "Processing..." message
 
 			// int i = 0;
 			String err = "";
@@ -2979,7 +2987,7 @@ public class DrawFBP extends JFrame
 					e1.printStackTrace();
 				}
 
-				interrupt = true;
+				//interrupt = true;
 				
 				
 				
@@ -3090,7 +3098,7 @@ public class DrawFBP extends JFrame
 			//	srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
 			String trunc = ss.substring(0, ss.lastIndexOf("/"));
-			String progName = ss.substring(ss.lastIndexOf("/") + 1);
+			progName = ss.substring(ss.lastIndexOf("/") + 1);
 			
 			
 			File f = new File(trunc);
@@ -3212,10 +3220,10 @@ public class DrawFBP extends JFrame
 			//		"Compiling program - " + srcDir + "/" + v + progName,
 			//		MyOptionPane.INFORMATION_MESSAGE);
 			
-			new WaitWindow(this); // display "Processing..." message
+			//new WaitWindow(this); // display "Processing..." message
 			 
 			String err = "";
-			String output = "";
+			output = "";
 			try {
 				proc = pb.start();
 
@@ -3231,7 +3239,7 @@ public class DrawFBP extends JFrame
 					proc = null;
 			} 
 
-			interrupt = true;
+			//interrupt = true;
 			//program = v + "/" + progName + ".cs";
 			int u = 0;
 			if (!(output.equals("")) || !(err.equals(""))) {
@@ -3284,20 +3292,20 @@ public class DrawFBP extends JFrame
 		File cFile = null;
 		String program = "";
 		Process proc = null;
-		interrupt = false;
+		//interrupt = false;
 		
 		if (currLang.label.equals("Java")) {
 
 			String ss = properties.get("currentClassDir");
-			File clsDir = null;
+			clsDir = null;
 			if (ss == null)
-				clsDir = new File(System.getProperty("user.home"));
+				clsDir = System.getProperty("user.home");
 			else
-				clsDir = new File(ss);
+				clsDir = ss;
 
 			String savePrompt = curDiag.fCParm[Diagram.CLASS].prompt;
 			curDiag.fCParm[Diagram.CLASS].prompt = "Select program to be run from class directory or jar file";
-			MyFileChooser fc = new MyFileChooser(this,clsDir, curDiag.fCParm[Diagram.CLASS]);
+			MyFileChooser fc = new MyFileChooser(this, new File(clsDir), curDiag.fCParm[Diagram.CLASS]);
 
 			int returnVal = fc.showOpenDialog();
 			curDiag.fCParm[Diagram.CLASS].prompt = savePrompt;
@@ -3321,8 +3329,10 @@ public class DrawFBP extends JFrame
 
 			ss = ss.replace('\\', '/');
 			int j = ss.lastIndexOf("/");
+			
+			saveProp("currentClassDir", ss.substring(0, j));
 
-			String progName = ss.substring(j + 1);
+			progName = ss.substring(j + 1);
 
 			// if (currLang.label.equals("Java"))
 			ss = ss.substring(0, ss.length() - 6); // drop .class suffix
@@ -3337,17 +3347,17 @@ public class DrawFBP extends JFrame
 
 				String u = ss.substring(0, k + 4);
 				u = u.replace("\\",  "/");
-				clsDir = new File(u); // drop after bin
+				clsDir = u; // drop after bin
 			}
 
 			//clsDir.mkdirs(); 
-			if (clsDir == null || !clsDir.exists()) {				
+			if (clsDir == null || !(new File(clsDir)).exists()) {				
 			MyOptionPane.showMessageDialog(this,
 							"'bin' directory does not exist - " + clsDir,
 							MyOptionPane.ERROR_MESSAGE);
 					return;
 			}
-			saveProp("currentClassDir", clsDir.getAbsolutePath());
+			//saveProp("currentClassDir", clsDir);
 
 			progName = progName.substring(0, progName.length() - 6);
 			if (!(t.equals("")))
@@ -3387,7 +3397,7 @@ public class DrawFBP extends JFrame
 			} catch (NoSuchMethodException | SecurityException e2) {
 				meth = null;
 				MyOptionPane.showMessageDialog(this,
-						"Program " + progName + " has no 'main' method",
+						"Program \"" + progName + "\" has no 'main' method",
 						MyOptionPane.ERROR_MESSAGE);
 			}
 			if (meth == null) {
@@ -3397,88 +3407,43 @@ public class DrawFBP extends JFrame
 
 			// if(javaFBPJarFile == null)
 			// locateJavaFBPJarFile();
-
-			new WaitWindow(this); // display "Processing..." message
-
-			proc = null;
+			
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
-				MyOptionPane.showMessageDialog(this,
+				MyOptionPane.showMessageDialog(/*this */ driver,
 						"Missing JAVA_HOME environment variable",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")){
-				MyOptionPane.showMessageDialog(this,
+				MyOptionPane.showMessageDialog(/*this */ driver,
 						"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			String java = jh + "/bin/java";
-			ProcessBuilder pb = new ProcessBuilder(java, "-cp",
-					"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\"");
+			
+			pBCmdArray = new String[] {
+					java, "-cp",
+					"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\""	
+			};
 
+			Thread runthr = new Thread(new RunTask());
+			runthr.start();
 			
-			pb.directory(clsDir);
-
-			String output = "";
-			pb.redirectErrorStream(true);
-			
-			String err = ""; 
-			
-			
-			
-			try {
-				proc = pb.start();
-				
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(proc.getInputStream()));
-				String line;
-				while ((line = br.readLine()) != null) {
-					output += line + "<br>";
-				}
-			} catch (NullPointerException npe) {
-				err = "Null Pointer Exception"; 
-				proc = null;
-				//return;
-			} catch (IOException ioe) {
-				err = "I/O Exception"; 
-				proc = null;
-				//return;
-			} catch (IndexOutOfBoundsException iobe) {
-				err = "Index Out Of Bounds Exception"; 
-				proc = null;
-				//return;
-			} catch (SecurityException se) {
-				err = "Security Exception"; 
-				proc = null;
-				//return;			 
-			} 
-			if (!(err.equals("")))  
-				MyOptionPane.showMessageDialog(this,
+			/*
+			if (!(error.equals("")))  
+				MyOptionPane.showMessageDialog(driver,
 						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
-						err + /* "<br>" + output + */ "</html>",
+						error + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				 
 			if (!(output.equals("")))
-			MyOptionPane.showMessageDialog(this,
+			MyOptionPane.showMessageDialog(driver,
 					"<html>Program output - " + clsDir + "/" + progName + "<br>" +
 					output +  "</html>",
 					MyOptionPane.INFORMATION_MESSAGE);
-			
-			if (proc == null) 
-				return;
-			
-				try {
-
-					proc.waitFor();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				proc.destroy();
-			 interrupt = true;
+			*/
 			
 			program = clsDir + "/" + progName; 
 					//+ ".class";
@@ -3539,8 +3504,8 @@ public class DrawFBP extends JFrame
 
 			pb.redirectErrorStream(true);
 			
-			new WaitWindow(this); // display "Processing..." message
-			String output = "";
+			//new WaitWindow(this); // display "Processing..." message
+			output = "";
 			String err = "";
 			try {
 				proc = pb.start();
@@ -3585,7 +3550,7 @@ public class DrawFBP extends JFrame
 				proc.destroy();
 			}
 		}
-		interrupt = true;
+		//interrupt = true;
 		
 		
 		if (proc == null)
@@ -4272,7 +4237,7 @@ public class DrawFBP extends JFrame
 		
 		if (javaFBPJarFile == null)
 			locateJavaFBPJarFile(false);
-		
+		String sh = null;
 		try {
 
 			if (f != null && !(f.equals(new File(javaFBPJarFile))))
@@ -4287,14 +4252,16 @@ public class DrawFBP extends JFrame
 					ll.add(f2.toURI().toURL());
 			}
 
-			String curClsDir = properties.get("currentClassDir")
+			clsDir = properties.get("currentClassDir")
 					+ "/";
-
-			if (null != curClsDir) {
-				f2 = new File(curClsDir);
+			int m = clsDir.indexOf("bin/"); 
+			sh = clsDir.substring(0, m + 4);
+			
+			//if (null != sh) {				 
+				f2 = new File(sh);
 				if (!(f2.equals(f)))
 					ll.add(f2.toURI().toURL());
-			}
+			//}
 
 			urls = ll.toArray(new URL[ll.size()]);
 
@@ -4385,33 +4352,6 @@ public class DrawFBP extends JFrame
 		g.setColor(Color.BLUE);
 		g.drawOval(x - 3, y - 3, 6, 6);
 
-		/*
-		if (drawToolTip) {
-
-			String s;
-
-			if (opt == 1)
-				s = "Click here to start an arrow";
-			else if (opt == 2)
-				s = "Hold button down to connect arrow to another block";
-			else
-				s = "Arrow not complete - click on block or line, or hit ESC";
-			FontMetrics metrics = g.getFontMetrics(fontg);
-			byte[] str = s.getBytes();
-			int w = metrics.bytesWidth(str, 0, s.length());
-			g.setColor(Color.black);
-			g.drawRect(x + 12, y + 10, w + 13, 23);
-			g.setColor(ly);
-			g.fillRect(x + 13, y + 11, w + 11, 21);
-			Font font = g.getFont();
-			g.setColor(Color.black);
-			g.setFont(fontg);
-			g.drawString(s, x + 15, y + 28);
-			g.setColor(col);
-			g.setFont(font);
-
-		}
-		*/
 		g.setColor(col);
 	}
 
@@ -4434,6 +4374,7 @@ public class DrawFBP extends JFrame
 	}
 
 	public void componentResized(ComponentEvent e) {
+		 
 		Dimension dim = this.getSize();
 		Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
 		int no = but.length;
@@ -4442,15 +4383,17 @@ public class DrawFBP extends JFrame
 			but[j].setMaximumSize(dim2);
 			box21.add(but[j]);
 		}
-		// dim2.width = 50;
-		// but[4].setMinimumSize(dim2);
-		box21.repaint();
+		//(getGraphics()).drawImage(buffer, 0, 0, null); 
+		//System.out.println("Resized");
+			 
 	}
 
 	public void componentShown(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
+	
+	
 
 	public static void main(final String[] args) {
 
@@ -4871,186 +4814,120 @@ public class DrawFBP extends JFrame
 
 		}
 
-		public class FileChooserParm {
-			//int index;
-			String name;
-			String propertyName;
-			String prompt;
-			String fileExt;
-			FileFilter filter;
-			String title;
+	public class FileChooserParm {
+		// int index;
+		String name;
+		String propertyName;
+		String prompt;
+		String fileExt;
+		FileFilter filter;
+		String title;
 
-			FileChooserParm(/* int n,*/ String x, String a, String b, String c, FileFilter d,
-					String e) {
-				//index = n;
-				name = x;
-				propertyName = a;
-				prompt = b;
-				fileExt = c;
-				filter = d;
-				title = e;
-			}
-		}	
-		
-	class WaitWindow extends JWindow {
-		private static final long serialVersionUID = 1L;
-		
-
-		public WaitWindow(final DrawFBP driver) {
-			super();
-			/*
-			JTextArea ta = new JTextArea();
-			ta.setText(
-					  "**********************\n"
-					+ "*                    *\n"
-					+ "*    Processing...   *\n"
-					+ "*                    *\n"
-					+ "**********************\n");
-
-			ta.setFont(driver.fontf);
-			add(ta, BorderLayout.CENTER);
-			//driver.add(this);
-			setAlwaysOnTop(true);
-			setBackground(Color.WHITE);						
-			Point p = driver.getLocation();						
-			//setLocation(p.x + 200, p.y + 200);
-			setLocation(p.x + 20, p.y + 20);
-			Dimension dim = ta.getPreferredSize();
-			Dimension dim2 = new Dimension(dim.width, dim.height); 
-			setMinimumSize(dim2);	
-			
-			setVisible(true);												 
-	       	getRootPane().setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, DrawFBP.lb));				 
-			pack();												
-			repaint();						
-			driver.repaint();
-			*/
-			String fn = "DrawFBP-logo.jpg";
-			BufferedImage image = driver.loadImage(fn);
-			int x = image.getWidth();
-			int y = image.getHeight();
-			
-			int m = 220;
-			Image i = image.getScaledInstance(m, m * y / x, Image.SCALE_SMOOTH);
-			
-			Container c = getContentPane();
-			ImageIcon icon = new ImageIcon(i);
-			JLabel l = new JLabel(icon);
-			c.add(l, BorderLayout.CENTER);
-			//Point p = curDiag.area.getLocation();		
-			Point p = driver.getLocation();
-			//setLocation(p.x + 200, p.y + 200);
-			setLocation(p.x + 20, p.y + 20);
-
-			setAlwaysOnTop(true);
-			pack();
-			driver.repaint(); 
-			addMouseMotionListener(new MouseMotionListener() {
-
-				public void mouseMoved(MouseEvent e) {	
-					setVisible(false);
-					dispose();
-				}
-
-				public void mouseDragged(MouseEvent e) {
-					setVisible(false);
-					dispose();
-				}
-			});
-			 
-			
-			final Runnable closerRunner = new Runnable() {
-				public void run() {
-					/*
-					String srcFile = "  ";
-					String binFile = "  ";
-					String output = "  ";
-					if (binFile != null) {
-
-						MyOptionPane.showMessageDialog(driver,
-								"Programs compiled and linked - " + srcFile
-										+ "   into - " + binFile,
-								MyOptionPane.INFORMATION_MESSAGE);
-						saveProp("exeDir", binFile);
-					} else
-						MyOptionPane.showMessageDialog(driver,
-								"<html>Program compile failed, rc: "
-										+ srcFile + "<br>" + output
-										+ "</html>",
-								MyOptionPane.WARNING_MESSAGE);
-					*/
-					setVisible(false);
-					dispose();
-				}
-			};
-
-			Runnable waitRunner = new Runnable() {
-				public void run() {
-						
-						
-
-						//try {
-						//	Thread.sleep(2000);              // 2 secs.
-						//} catch (InterruptedException e1) {
-							// TODO Auto-generated catch block
-						//	e1.printStackTrace();
-						//}   
-						
-						while (!interrupt) {
-							try {
-								Thread.sleep(500);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} // 1/2 sec.
-						}
-						
-						/*  
-						String srcFile = "  ";
-						String binFile = "  ";
-						String output = "  ";
-						if (binFile != null) {
-
-							MyOptionPane.showMessageDialog(getContentPane(),
-									"Programs compiled and linked - " + srcFile
-											+ "   into - " + binFile,
-									MyOptionPane.INFORMATION_MESSAGE);
-							saveProp("exeDir", binFile);
-						} else
-							MyOptionPane.showMessageDialog(getContentPane(),
-									"<html>Program compile failed, rc: "
-											+ srcFile + "<br>" + output
-											+ "</html>",
-									MyOptionPane.WARNING_MESSAGE);
-						*/
-						//setVisible(false);
-						//dispose();
-						 
-						
-						try {
-							SwingUtilities.invokeAndWait(closerRunner);
-						} catch (InvocationTargetException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					
-				}
-
-				
-			};
-			
-			setVisible(true);
-			Thread wr = new Thread(waitRunner, "WaitThread");
-			wr.start();
-
+		FileChooserParm(/* int n, */ String x, String a, String b, String c,
+				FileFilter d, String e) {
+			// index = n;
+			name = x;
+			propertyName = a;
+			prompt = b;
+			fileExt = c;
+			filter = d;
+			title = e;
 		}
-
-
-		
 	}
+
+	public class RunTask extends Thread {
+		public void run() {
+			
+			/*
+				String jh = System.getenv("JAVA_HOME");
+				if (jh == null) {
+					MyOptionPane.showMessageDialog( driver,
+							"Missing JAVA_HOME environment variable",
+							MyOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")){
+					MyOptionPane.showMessageDialog( driver,
+							"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
+							MyOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				String java = jh + "/bin/java";
+				
+				String[] pBCmdArray = new String[] {
+						java, "-cp",
+						"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\""	
+				};
+				
+				*/
+				ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
+
+				int m = clsDir.indexOf("bin/");
+				String sh = clsDir.substring(0, m + 4);
+				pb.directory(new File(sh));
+
+				output = "";
+				pb.redirectErrorStream(true);
+				
+				error = ""; 
+				
+				Process proc = null;
+				
+				try {
+					proc = pb.start();
+					
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(proc.getInputStream()));
+					String line;
+					while ((line = br.readLine()) != null) {
+						output += line + "<br>";
+					}
+				} catch (NullPointerException npe) {
+					error = "Null Pointer Exception"; 
+					proc = null;
+					//return;
+				} catch (IOException ioe) {
+					error = "I/O Exception"; 
+					proc = null;
+					//return;
+				} catch (IndexOutOfBoundsException iobe) {
+					error = "Index Out Of Bounds Exception"; 
+					proc = null;
+					//return;
+				} catch (SecurityException se) {
+					error = "Security Exception"; 
+					proc = null;
+					//return;			 
+				} 
+				
+				
+				if (proc == null) 
+					return;
+				
+				try {
+					proc.waitFor();
+				} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				proc.destroy();
+				
+				if (!(error.equals("")))  
+					MyOptionPane.showMessageDialog(driver,
+							"<html>Program error - " + sh + progName + "<br>" +
+							error + "</html>",
+							MyOptionPane.ERROR_MESSAGE);
+					 
+				if (!(output.equals("")))
+				MyOptionPane.showMessageDialog(driver,
+						"<html>Program output - " + sh + progName + "<br>" +
+						output +  "</html>",
+						MyOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
@@ -5097,7 +4974,7 @@ public class DrawFBP extends JFrame
 			}
 
 		}
-
+ 
 		public void paintComponent(Graphics g) {
 
 			// Paint background if we're opaque.
@@ -5107,8 +4984,10 @@ public class DrawFBP extends JFrame
 				// g.setColor(getBackground());
 				osg.setColor(Color.WHITE);
 
-				osg.fillRect(0, 0, (int) (getWidth() / scalingFactor),
-						(int) (getHeight() / scalingFactor - 0));
+				int w = getWidth();
+				int h = getHeight();
+				osg.fillRect(0, 0, (int) (w / scalingFactor),
+						(int) (h / scalingFactor - 0));
 			}
 
 			int i = jtp.getSelectedIndex();
@@ -5152,19 +5031,20 @@ public class DrawFBP extends JFrame
 			// else
 			// s = "(no description)";
 
-			diagDesc.setText(s);
+			diagDesc.setText(s);    
 
 			Graphics2D g2d = (Graphics2D) g;
 
-			g2d.scale(scalingFactor, scalingFactor);
+			//g2d.scale(scalingFactor, scalingFactor);
+			osg.scale(scalingFactor, scalingFactor);
 
 			// g2d.translate(xTranslate, yTranslate);
 
 			// Now copy that off-screen image onto the screen
-			g2d.drawImage(buffer, 0, 0, null);
+			g2d.drawImage(buffer, 0, 0, null);   // xxxxxxxxxxxxxxxxx
 
 		}
-
+ 
 		FoundPoint findBlockEdge(int xa, int ya) {
 
 			FoundPoint fp = null;
