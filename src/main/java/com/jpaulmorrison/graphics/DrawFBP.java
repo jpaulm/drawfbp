@@ -270,12 +270,13 @@ public class DrawFBP extends JFrame
 	FileChooserParm diagFCParm = null;
 	String[] filterOptions = {"", "All (*.*)"};
 	//volatile boolean finished = false;
-	String clsDir = null;
+	//String clsDir = null;
 	String progName = null;
 	String output = "";
 	String error = "";
 	
 	String[] pBCmdArray = null;
+	String pBDir = null;
 
 	// constructor
 	DrawFBP(String[] args) {
@@ -2848,7 +2849,7 @@ public class DrawFBP extends JFrame
 				fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
 				fNPkg = fNPkg.replace("\\", "/");
 			}
-			/*String*/ clsDir = srcDir.replace("/src/", "/bin/");
+			String clsDir = srcDir.replace("/src/", "/bin/");
 			srcDir = srcDir.substring(0, k + 4); // drop after src
 			clsDir = clsDir.substring(0, k + 4); // drop after bin
 			//(new File(clsDir)).mkdir();
@@ -3098,7 +3099,7 @@ public class DrawFBP extends JFrame
 			//	srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
 			String trunc = ss.substring(0, ss.lastIndexOf("/"));
-			progName = ss.substring(ss.lastIndexOf("/") + 1);
+			String progName = ss.substring(ss.lastIndexOf("/") + 1);
 			
 			
 			File f = new File(trunc);
@@ -3290,14 +3291,14 @@ public class DrawFBP extends JFrame
 	void runCode() {
 
 		File cFile = null;
-		String program = "";
-		Process proc = null;
+		//program = "";
+		//Process proc = null;
 		//interrupt = false;
 		
 		if (currLang.label.equals("Java")) {
 
 			String ss = properties.get("currentClassDir");
-			clsDir = null;
+			String clsDir = null;
 			if (ss == null)
 				clsDir = System.getProperty("user.home");
 			else
@@ -3427,25 +3428,15 @@ public class DrawFBP extends JFrame
 					java, "-cp",
 					"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\""	
 			};
+			
+			int m = clsDir.indexOf("/bin");
+			pBDir = clsDir.substring(0, m + 4) + "/";
 
 			Thread runthr = new Thread(new RunTask());
 			runthr.start();
 			
-			/*
-			if (!(error.equals("")))  
-				MyOptionPane.showMessageDialog(driver,
-						"<html>Program error - " + clsDir + "/" + progName + "<br>" +
-						error + "</html>",
-						MyOptionPane.ERROR_MESSAGE);
-				 
-			if (!(output.equals("")))
-			MyOptionPane.showMessageDialog(driver,
-					"<html>Program output - " + clsDir + "/" + progName + "<br>" +
-					output +  "</html>",
-					MyOptionPane.INFORMATION_MESSAGE);
-			*/
-			
-			program = clsDir + "/" + progName; 
+					
+			// program = clsDir + "/" + progName;  
 					//+ ".class";
 		}
 
@@ -3465,7 +3456,7 @@ public class DrawFBP extends JFrame
 			if (exeDir == null)
 				exeDir = System.getProperty("user.home");
 
-			ProcessBuilder pb = null;
+			//ProcessBuilder pb = null;
 			MyFileChooser fc = new MyFileChooser(this,new File(exeDir),
 					curDiag.fCParm[Diagram.EXE]);
 
@@ -3484,23 +3475,35 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
+			exeFile = exeFile.replace("\\",  "/");
 			int k = exeFile.lastIndexOf("bin/Debug/");
 			exeDir = exeFile.substring(0, k + 10);
 			
 			saveProp("exeDir", exeDir);
 
-			exeFile = exeFile.replace("\\",  "/");
+			//exeFile = exeFile.replace("\\",  "/");
 			
-			List<String> cmdList = new ArrayList<String>();			
+			//List<String> cmdList = new ArrayList<String>();			
 			
 			//cmdList.add("\"" + exeFile + "\"");
-			cmdList.add(exeFile);
+			//cmdList.add(exeFile);
 						
-			program = exeFile.substring(exeFile.lastIndexOf("/") + 1);
+			progName = exeFile.substring(exeFile.lastIndexOf("/") + 1);
 			
-			pb = new ProcessBuilder(cmdList);
+			///ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
+
+			///pb.directory(new File(pBDir));
 			
-			pb.directory(new File(exeDir));
+			pBCmdArray = new String[1];
+			pBCmdArray[0] = exeFile;
+			
+			pBDir = exeDir;
+			
+			/*
+			
+			pb = new ProcessBuilder(pBCmdArray);
+			
+			pb.directory(new File(pBDir));
 
 			pb.redirectErrorStream(true);
 			
@@ -3551,20 +3554,23 @@ public class DrawFBP extends JFrame
 			}
 		}
 		//interrupt = true;
-		
+		 
 		
 		if (proc == null)
 			return;
-		int u = proc.exitValue();
+		int u = proc.exitValue(); 
 		if (u == 0)
 			MyOptionPane.showMessageDialog(this,
-					"Program completed - " + program,
+					"Program completed - " + progName,
 					MyOptionPane.INFORMATION_MESSAGE);
 		else
 			MyOptionPane.showMessageDialog(this,
-					"Program test failed, rc: " + u + " - " + program,
+					"Program test failed, rc: " + u + " - " + progName,
 					MyOptionPane.WARNING_MESSAGE);
-
+		*/
+			Thread runthr = new Thread(new RunTask());
+			runthr.start();
+		}
 	}
 	
 	String analyzeCatch(Exception e) {
@@ -4252,7 +4258,7 @@ public class DrawFBP extends JFrame
 					ll.add(f2.toURI().toURL());
 			}
 
-			clsDir = properties.get("currentClassDir")
+			String clsDir = properties.get("currentClassDir")
 					+ "/";
 			int m = clsDir.indexOf("bin/"); 
 			sh = clsDir.substring(0, m + 4);
@@ -4584,42 +4590,10 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
-			
-			//if (-1 < jtp.getSelectedIndex()) {
-			//	closeTab();
-				// else {
-			//	ButtonTabComponent b = (ButtonTabComponent) jtp
-			//			.getTabComponentAt(0);
-			//	if (b == null || b.diag == null)
-			//		return;
-
-							
-
-			//	if (1 >= jtp.getTabCount()) {
-					//JLabel jl = (JLabel) b.getComponent(0);	
-			//		b = (ButtonTabComponent) jtp.getTabComponentAt(0);
-			//		if (b != null && b.diag != null) {
-			//			Diagram d = b.diag;
-			//			if (d.changed) {
-					//Diagram d = null;   
-			//for (int i = 0; i < jtp.getTabCount(); i++){
-			//	ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(0);
-			//	 		if (b != null && b.diag != null) {
-			//	 			Diagram d = b.diag;
-			//	 			if (d.changed) {
-			//}
-				//	if (MyOptionPane.YES_OPTION == MyOptionPane
-				//				.showConfirmDialog(driver, "Choose one option",
-				//						"Leave DrawFBP?",
-				//						MyOptionPane.YES_NO_OPTION))  
-					closeAppAction
-							.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
+			closeAppAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 				}
 			}
-				//	}
-			//	}
-		//}
-	//}
+				
 
 	public class JavaFileFilter extends FileFilter {
 		@Override
@@ -4838,33 +4812,9 @@ public class DrawFBP extends JFrame
 	public class RunTask extends Thread {
 		public void run() {
 			
-			/*
-				String jh = System.getenv("JAVA_HOME");
-				if (jh == null) {
-					MyOptionPane.showMessageDialog( driver,
-							"Missing JAVA_HOME environment variable",
-							MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")){
-					MyOptionPane.showMessageDialog( driver,
-							"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
-							MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				String java = jh + "/bin/java";
-				
-				String[] pBCmdArray = new String[] {
-						java, "-cp",
-						"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\""	
-				};
-				
-				*/
 				ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
 
-				int m = clsDir.indexOf("bin/");
-				String sh = clsDir.substring(0, m + 4);
-				pb.directory(new File(sh));
+				pb.directory(new File(pBDir));
 
 				output = "";
 				pb.redirectErrorStream(true);
@@ -4911,17 +4861,31 @@ public class DrawFBP extends JFrame
 					e1.printStackTrace();
 				}
 
+				int u = proc.exitValue(); 
 				proc.destroy();
 				
+				//if (proc == null)
+				//	return;
+				
+				//int u = proc.exitValue(); 
+				if (u == 0)
+					MyOptionPane.showMessageDialog(driver,
+							"Program completed - " + progName,
+							MyOptionPane.INFORMATION_MESSAGE);
+				else
+					MyOptionPane.showMessageDialog(driver,
+							"Program test failed, rc: " + u + " - " + progName,
+							MyOptionPane.WARNING_MESSAGE);
+
 				if (!(error.equals("")))  
 					MyOptionPane.showMessageDialog(driver,
-							"<html>Program error - " + sh + progName + "<br>" +
+							"<html>Program error - " + pBDir + progName + "<br>" +
 							error + "</html>",
 							MyOptionPane.ERROR_MESSAGE);
 					 
 				if (!(output.equals("")))
 				MyOptionPane.showMessageDialog(driver,
-						"<html>Program output - " + sh + progName + "<br>" +
+						"<html>Program output - " + pBDir + progName + "<br>" +
 						output +  "</html>",
 						MyOptionPane.INFORMATION_MESSAGE);
 		}

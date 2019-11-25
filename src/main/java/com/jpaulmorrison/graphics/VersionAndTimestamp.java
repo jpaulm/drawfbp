@@ -10,7 +10,7 @@ public final class VersionAndTimestamp {
 	static String version = "2.18.6";
 
 
-	static String date = "Nov. 24, 2019"; 
+	static String date = "Nov. 25, 2019"; 
 
 
 	static String getVersion() {
