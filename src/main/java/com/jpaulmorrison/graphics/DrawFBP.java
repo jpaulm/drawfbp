@@ -3138,9 +3138,9 @@ public class DrawFBP extends JFrame
 				return;
 		}
 			
-			MyOptionPane.showMessageDialog(this,
-					"Starting compile - " + ss,
-					MyOptionPane.INFORMATION_MESSAGE);
+			//MyOptionPane.showMessageDialog(this,
+			//		"Starting compile - " + ss,
+			//      MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
 			progName = progName.substring(0, progName.length() - 3); // drop .cs
@@ -3243,14 +3243,14 @@ public class DrawFBP extends JFrame
 			//interrupt = true;
 			//program = v + "/" + progName + ".cs";
 			int u = 0;
-			if (!(output.equals("")) || !(err.equals(""))) {
-				MyOptionPane
-						.showMessageDialog(this,
-								"<html>Compile output for " + target + "/" + v + ".exe <br>" +
-										err + "<br>" + output + "</html>",
-								MyOptionPane.ERROR_MESSAGE);
+			//if (!(output.equals("")) || !(err.equals(""))) {
+			//	MyOptionPane
+			//			.showMessageDialog(this,
+			//					"<html>Compile output for " + target + "/" + v + ".exe <br>" +
+			//							err + "<br>" + output + "</html>",
+			//					MyOptionPane.ERROR_MESSAGE);
 				//return;
-			} 
+			//} 
 			if (proc == null)
 				return;
 				
@@ -3280,6 +3280,7 @@ public class DrawFBP extends JFrame
 			else
 				MyOptionPane.showMessageDialog(this,
 						"<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
+						"errcode: " + err + "<br>"	+	
 				         output + "</html>" ,
 						MyOptionPane.WARNING_MESSAGE);
 			

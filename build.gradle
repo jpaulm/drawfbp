@@ -159,7 +159,7 @@ task fatJar(type: Jar) {
        configurations.compile.findAll { 
          it.name.endsWith('jar') 
        }.collect { 
-       println it.name
+       //println it.name
        zipTree(it)
        }
     }
