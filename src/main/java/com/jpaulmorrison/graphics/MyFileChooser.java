@@ -15,6 +15,7 @@ import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -71,14 +72,14 @@ public class MyFileChooser extends JFrame
 	int result = CANCEL_OPTION;
 
 	DrawFBP driver = null;
-	MyButton butParent = new MyButton();
-	MyButton butOK = new MyButton();
-	MyButton butCancel = new MyButton();
-	MyButton butDel = new MyButton();
-	MyButton butNF = new MyButton();
+	MyButton butParent = new MyButton(null, "parent");
+	MyButton butOK = new MyButton(null, "OK");
+	MyButton butCancel = new MyButton(null, "cancel");
+	MyButton butDel = new MyButton(null, "delete");
+	MyButton butNF = new MyButton(null, "new folder");
 	JCheckBox butSortByDate = new JCheckBox("Sort ByDate");
 
-	MyButton butCopy = new MyButton();
+	MyButton butCopy = new MyButton(null, "copy");
 
 	MyTextField t_dirName = new MyTextField(100, "dir");
 	MyTextField t_fileName = new MyTextField(100, "file");
@@ -96,7 +97,7 @@ public class MyFileChooser extends JFrame
 
 	boolean clickState = true;
 	// String fileExt = null;
-	boolean shift = false;
+	//boolean shift = false;
 	Color slateGray1 = new Color(198, 226, 255);
 	Color vLightBlue = new Color(220, 235, 255);
 	// Color lightBlue = new Color(135, 206, 250);
@@ -490,7 +491,6 @@ public class MyFileChooser extends JFrame
 		setFocusTraversalPolicy(mtp);
 		setFocusCycleRoot(false);
 
-		//showList();
 		if (saveAs) {
 
 			if (suggestedName != null && !(suggestedName.equals(""))) {
@@ -505,6 +505,8 @@ public class MyFileChooser extends JFrame
 
 			}
 
+			t_dirName.setText(listHead);
+			
 			if (driver.curDiag.title != null
 					&& driver.curDiag.diagFile != null) {
 				s += " (current file: "
@@ -782,7 +784,7 @@ public class MyFileChooser extends JFrame
 
 		//order.remove(3);
 		//order.add(3, list);
-		order.remove(4);   // check!
+		order.remove(4);   
 		order.add(4, list);
 		// list.setFixedCellHeight(driver.fontg.getSize() + 2);
 
@@ -1342,22 +1344,23 @@ final boolean SAVEAS = true;
 		list.setSelectedIndex(-1);
 		list.setRequestFocusEnabled(false);
 		// changedField = null;
-		 
-		if (selComp == t_dirName || selComp == t_fileName) {
-			selComp.setBackground(Color.WHITE);
-			((JTextField) selComp).setEditable(false);
-			((JTextField) selComp).getCaret().setVisible(false);
+		// if previous value of selComp was a text field, make non-editable
+		
+		//if (selComp == t_dirName || selComp == t_fileName) {
+		//	selComp.setBackground(Color.WHITE);
+		//	((MyTextField) selComp).setEditable(false);
+		//	((MyTextField) selComp).getCaret().setVisible(false);
 
-		}
+		//}
          
 		//t_fileName.setBackground(Color.WHITE);
 		cBox.repaint();
 
-		if (selComp instanceof MyButton) {  // if previous selComp referred to button...
-			((MyButton) selComp).setSelected(false);
-			((MyButton) selComp).setFocusable(false);
+		//if (selComp instanceof MyButton) {  // if previous selComp referred to button...
+		//	((MyButton) selComp).setSelected(false);
+		//	((MyButton) selComp).setFocusable(false);
 
-		}
+		//}
 
 		selComp = (JComponent) e.getSource();
 		repaint();
@@ -1433,6 +1436,11 @@ final boolean SAVEAS = true;
 
 	public void keyPressed(KeyEvent e) {
 
+		//if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+		//	shift = true;
+		//	return;
+		//} 
+		
 		if (e.getKeyCode() == KeyEvent.VK_TAB) {
 		//	if (selComp == t_dirName || selComp == t_fileName) {
 		//		selComp.setBackground(Color.WHITE);
@@ -1448,33 +1456,35 @@ final boolean SAVEAS = true;
 
 			if (selComp == cBox)
 				cBox.setRequestFocusEnabled(false);
-			if (selComp instanceof MyButton) {
+			
+			if (selComp instanceof MyButton) 
 				((MyButton) selComp).setSelected(false);
-			}
+			 
 			// selComp.setRequestFocusEnabled(false);
 			selComp.setFocusable(false);
 
 			// list.setSelectedIndex(-1);
+			
+			int onmask = InputEvent.SHIFT_DOWN_MASK;
 
-			if (!shift)
-				selComp = (JComponent) mtp.getComponentAfter(dialog, selComp);
-			else
+			if ((e.getModifiersEx() & onmask) == onmask)
 				selComp = (JComponent) mtp.getComponentBefore(dialog, selComp);
+			else
+				selComp = (JComponent) mtp.getComponentAfter(dialog, selComp);
 
-			if (selComp == butCopy && !saveAs)
-				if (!shift)
-					selComp = (JComponent) mtp.getComponentAfter(dialog,
-							selComp);
-				else
+			if (selComp == butCopy && !saveAs)  // skip butCopy if not saveAs
+				if ((e.getModifiersEx() & onmask) == onmask)
 					selComp = (JComponent) mtp.getComponentBefore(dialog,
 							selComp);
+				else
+					selComp = (JComponent) mtp.getComponentAfter(dialog,
+							selComp);
 
-			//if (selComp == t_dirName || selComp == t_fileName) {
-			//	selComp.setBackground(vLightBlue);
-			//	((JTextField) selComp).getCaret().setVisible(true);
-			//	((JTextField) selComp).setEditable(true);
-
-			//}
+			if (selComp == t_dirName || selComp == t_fileName) {
+				selComp.setBackground(vLightBlue);
+				((MyTextField) selComp).getCaret().setVisible(true);
+				((MyTextField) selComp).setEditable(true);
+			}
 
 			//if (selComp == null) {
 			//	selComp = list;
@@ -1490,19 +1500,17 @@ final boolean SAVEAS = true;
 
 			selComp.setFocusable(true);
 			selComp.requestFocusInWindow();
+			repaint();
 			return;
 
 		} 
-		if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-			shift = true;
-			return;
-		} 
+		
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			if (selComp instanceof JList /*|| selComp == t_dirName */
-					|| selComp == t_fileName) {
+			//if (selComp instanceof JList /*|| selComp == t_dirName */
+			//		|| selComp == t_fileName) {
 
 				enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-			}
+			//}
 			return;
 		} 
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -1536,9 +1544,9 @@ final boolean SAVEAS = true;
 	}
 
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-			shift = false;
-		}
+		// (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+		//	shift = false;
+		//}
 		
 	}
 
@@ -1690,7 +1698,15 @@ final boolean SAVEAS = true;
 				((MyButton) selComp).doClick();
 				return;
 			}
-
+			if (selComp == butSortByDate) {
+				driver.sortByDate = !driver.sortByDate;
+				butSortByDate.setSelected(driver.sortByDate);
+				driver.saveProp("sortbydate",(new Boolean(driver.sortByDate)).toString());
+				showList();
+				repaint();
+				return;
+			}
+			
 			if (selComp == t_dirName) {
 				String u = t_dirName.getText();
 				File h = new File(u);
@@ -1758,6 +1774,7 @@ final boolean SAVEAS = true;
 							return;
 
 						} 
+						 
 						/*
 						else {
 							// must be a file
@@ -1775,7 +1792,7 @@ final boolean SAVEAS = true;
 								}
 
 						}
-						*/
+					*/	 
 					} else if (selComp == t_dirName) {
 						listHead = t_dirName.getText();
 						showList();
@@ -2011,7 +2028,7 @@ l.setFont(driver.fontg);
 			g.fillRect(0, 0, bounds.width, bounds.height);
 			l.setBounds(bounds);
 			// setOpaque(true);
-			l.paint(g);
+			l.paint(g); 
 
 		}
 
@@ -2040,10 +2057,10 @@ l.setFont(driver.fontg);
 
 		public Component getComponentAfter(Container focusCycleRoot,
 				Component aComponent) {
-
+			
 			int idx;
 			if (aComponent == null || aComponent instanceof JList)
-				idx = 3;
+				idx = 4;
 			else
 				idx = order.indexOf(aComponent);
 
@@ -2057,7 +2074,7 @@ l.setFont(driver.fontg);
 
 			int idx;
 			if (aComponent == null || aComponent instanceof JList)
-				idx = 3;
+				idx = 4;
 			else
 				idx = order.indexOf(aComponent);
 
@@ -2086,27 +2103,33 @@ l.setFont(driver.fontg);
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
-			// System.out.println("MTF");
+			//JComponent c = selComp;
+			//if (c instanceof MyTextField)
+			//	System.out.println(selComp == c);
+			
 			if (this == selComp) {
 				setBackground(vLightBlue);
 				setEditable(true);
+				setFocusable(true);
 				setRequestFocusEnabled(true);
-
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						setFocusable(true);
-						requestFocusInWindow();
-						setEnabled(true);
-						getCaret().setVisible(true);
-					}
-				});
+				getCaret().setVisible(true);
+				requestFocusInWindow();
+				
+				//SwingUtilities.invokeLater(new Runnable() {
+				//	public void run() {
+				//		setFocusable(true);
+				//		requestFocusInWindow();
+				//		setEnabled(true);
+				//		getCaret().setVisible(true);
+				//	}
+				//});
 
 			} else {
 				setBackground(Color.WHITE);
 				setEditable(false);
 				getCaret().setVisible(false);
 			}
-
+			//repaint();
 		}
 
 	}
@@ -2114,6 +2137,13 @@ l.setFont(driver.fontg);
 	class MyButton extends JButton {
 
 		private static final long serialVersionUID = 1L;
+		
+		String name = null;
+		
+		public MyButton(String text, String name) {
+			super(text);
+			this.name = name;
+		}
 
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
@@ -2147,10 +2177,12 @@ l.setFont(driver.fontg);
 
 			//firstClick(lastEvent);
 
-			if (e.getClickCount() == 2) {
+			if (e.getClickCount() == 2) 
 				secondClick(lastEvent);
-			}
-			else firstClick(lastEvent);
+			 
+			else 
+				firstClick(lastEvent);
+			
 			dispose();
 		}
 

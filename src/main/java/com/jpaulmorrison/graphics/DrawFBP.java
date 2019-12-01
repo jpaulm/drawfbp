@@ -54,7 +54,7 @@ import javax.swing.plaf.FontUIResource;
 public class DrawFBP extends JFrame
 		implements
 			ActionListener,
-			ComponentListener,
+			ComponentListener, 
 			ChangeListener 
 			{
 
@@ -833,33 +833,7 @@ public class DrawFBP extends JFrame
 		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag");
 		
 		
-        /*
-		ttStartTimer = new Timer(0, new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				drawToolTip = true;
-				ttEndTimer.restart();
-				repaint();
-			}
-		});
-		ttEndTimer = new Timer(0, new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				drawToolTip = false;
-				ttStartTimer.stop();
-				ttEndTimer.stop();
-				repaint();
-			}
-		});
-		// }
-
-		ttStartTimer.setInitialDelay(2000); // 2 sec
-		ttStartTimer.setDelay(600000);
-		ttEndTimer.setInitialDelay(10000); // 10 secs
-		ttEndTimer.setDelay(600000);
-		ttStartTimer.start();
-		*/
-
-	}
+        }
 
 	BufferedImage loadImage(String s) {
 
@@ -1111,7 +1085,7 @@ public class DrawFBP extends JFrame
 		
 		
 			 	
-		repaint();
+		//repaint();
 
 		return menuBar;
 	}
@@ -1137,7 +1111,7 @@ public class DrawFBP extends JFrame
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
 		
-		repaint(); 
+		//repaint(); 
 		
 		//diag.fCParm[Diagram.DIAGRAM] = diag.new FileChooserParm("Diagram", "currentDiagramDir",
 		//		"Specify diagram name in diagram directory", ".drw",
@@ -2517,7 +2491,7 @@ public class DrawFBP extends JFrame
 		//if (!saveAs)
 		File file = (!saveAs) ? curDiag.diagFile : null;
 
-		file = curDiag.genSave(file, curDiag.fCParm[Diagram.DIAGRAM], null);
+		file = curDiag.genSave(file, curDiag.fCParm[Diagram.DIAGRAM], null);  
 
 		int i = jtp.getSelectedIndex();
 		if (file == null) {
@@ -4400,7 +4374,10 @@ public class DrawFBP extends JFrame
 
 	}
 	
-	
+	//public void repaint() {
+	//	super.repaint();
+	//	System.out.println("repaint");
+	//}
 
 	public static void main(final String[] args) {
 
@@ -4562,11 +4539,20 @@ public class DrawFBP extends JFrame
 					return;
 			}
 
+			if (i < jtp.getTabCount())
+				jtp.remove(i);
 			
-			jtp.remove(i);
-			
-			curDiag = null;
-			properties.remove("currentDiagram");
+			//curDiag = null;  
+			if (jtp.getTabCount() > 0) {
+			b = (ButtonTabComponent) jtp
+					.getTabComponentAt(0);
+			if (b == null || b.diag == null)
+				return;
+			diag = b.diag;
+			curDiag = diag;
+			saveProp("currentDiagram", diag.diagFile.getAbsolutePath());
+			//properties.remove("currentDiagram");
+			}
 
 			repaint();
 		}
@@ -5001,13 +4987,15 @@ public class DrawFBP extends JFrame
 			Graphics2D g2d = (Graphics2D) g;
 
 			//g2d.scale(scalingFactor, scalingFactor);
-			osg.scale(scalingFactor, scalingFactor);
+			//osg.scale(scalingFactor, scalingFactor);
 
 			// g2d.translate(xTranslate, yTranslate);
 
 			// Now copy that off-screen image onto the screen
-			g2d.drawImage(buffer, 0, 0, null);   // xxxxxxxxxxxxxxxxx
-
+			//g2d.drawImage(buffer, 0, 0, null);   
+			g2d.scale(scalingFactor, scalingFactor);
+			g.drawImage(buffer, 0, 0, null);   
+			
 		}
  
 		FoundPoint findBlockEdge(int xa, int ya) {

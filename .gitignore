@@ -12,6 +12,7 @@ build/classes
 build/dependency-cache
 build/reports
 build/docs/javadoc
+build/ivy.xml
 
 
 # Eclipse project

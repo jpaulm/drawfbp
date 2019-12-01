@@ -80,7 +80,7 @@ case "`uname`" in
     ;;
 esac
 
-CLASSPATH=$APP_HOME/lib/drawfbp-2.18.6.jar:$APP_HOME/lib/javaGeom-0.11.1.jar
+CLASSPATH=$APP_HOME/lib/drawfbp-2.18.7.jar:$APP_HOME/lib/javaGeom-0.11.1.jar
 
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then

@@ -157,7 +157,7 @@ public class Diagram {
 					suggestedFileName = s + "/" + title + fCP.fileExt;
 			
 
-			MyFileChooser fc = new MyFileChooser(driver,f, fCP);
+			MyFileChooser fc = new MyFileChooser(driver, f, fCP);
 
 			fc.setSuggestedName(suggestedFileName);
 			//}
@@ -252,7 +252,7 @@ public class Diagram {
 		// finished choosing file...
 		
 		 
-		if (file.exists()) {
+		if (file.exists()) {   
 			if (file.isDirectory()) {
 				MyOptionPane.showMessageDialog(driver,
 						file.getName() + " is a directory",
@@ -269,10 +269,17 @@ public class Diagram {
 			 
 			
 		} else {
-			if (!(MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					driver,
 					"Create new file: " + file.getAbsolutePath() + "?",
-					"Confirm create", MyOptionPane.YES_NO_OPTION))) {
+					"Confirm create", MyOptionPane.YES_NO_OPTION)) {
+				try {
+					file.createNewFile();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			} else {
 				MyOptionPane.showMessageDialog(driver, file.getAbsolutePath() + " not saved");
 				return null;
 			}
