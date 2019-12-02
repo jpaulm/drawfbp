@@ -1752,8 +1752,16 @@ final boolean SAVEAS = true;
 				int i = s.indexOf("@");
 				if (i > -1)
 					s = s.substring(0, i);  // drop date, if any
-
-				
+				File f = new File(t_dirName + "/" + s);
+				if (f.exists())
+					if (f.isDirectory()) {
+						t_dirName.setText(f.getAbsolutePath());
+						showList();
+				}
+					else {
+						t_fileName.setText(s);
+						enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+					}
 				 
 				} else {
 				if (selComp == t_fileName) {
@@ -2059,7 +2067,9 @@ l.setFont(driver.fontg);
 				Component aComponent) {
 			
 			int idx;
-			if (aComponent == null || aComponent instanceof JList)
+			if (aComponent == null)
+				idx = 0;			
+			else if (aComponent instanceof JList)
 				idx = 4;
 			else
 				idx = order.indexOf(aComponent);
@@ -2073,11 +2083,13 @@ l.setFont(driver.fontg);
 				Component aComponent) {
 
 			int idx;
-			if (aComponent == null || aComponent instanceof JList)
+			if (aComponent == null)
+				idx = 0;			
+			else if (aComponent instanceof JList)
 				idx = 4;
 			else
 				idx = order.indexOf(aComponent);
-
+			
 			idx--;
 
 			if (idx < 0) {
