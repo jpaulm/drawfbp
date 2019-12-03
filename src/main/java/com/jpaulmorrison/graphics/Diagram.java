@@ -427,17 +427,17 @@ public class Diagram {
 		String fileString = "<?xml version=\"1.0\"?> \n ";
 		fileString += "<drawfbp_file " +
 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
-"xsi:noNamespaceSchemaLocation=\"https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd\">";
+"xsi:noNamespaceSchemaLocation=\"https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd\">\n";
 
-		fileString += "<net>";
+		fileString += "<net>\n";
 		if (desc != null)
-			fileString += "<desc>" + desc + "</desc> ";
+			fileString += "<desc>" + desc + "</desc>\n ";
 
 		// if (title != null)
 		// fileString += "<title>" + title + "</title> ";
 
 		if (diagLang != null)
-			fileString += "<complang>" + diagLang.label + "</complang> ";
+			fileString += "<complang>" + diagLang.label + "</complang>\n ";
 
 		// if (genCodeFileName != null)
 		// fileString += "<genCodeFileName>" + genCodeFileName
