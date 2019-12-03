@@ -14,19 +14,15 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 Release History
 ---
 
-Latest release is v2.18.7: the jar file (which includes the `math.geom2d` jar file) - `drawfbp-2.18.7.jar` - can be obtained from the Releases folder, or from `build/libs`.  The previous release is available from Maven - click on the Maven shield below, and select `download` and `jar`.
+Latest release is v2.18.7: the jar file (which includes the `math.geom2d` jar file) - `drawfbp-2.18.7.jar` - can be obtained from the Releases folder, or from `build/libs`.  This release's jar file is also available from Maven - click on the Maven shield below, and select `download` and `jar`.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-Releases from v2.18.2 onwards have a much speeded up sort function (by name or by date, optionally).  The current version - `drawfbp-2.18.5.jar` - is now available for evaluation.
+Releases from v2.18.2 onwards have a much speeded up sort function (by name or by date, optionally).  The current version - `drawfbp-2.18.7.jar` - is now available for evaluation.
 
-All Releases from v2.15.10 on require the `math.geom2d` jar file from Maven.
+Now all you have to do to run one of the recent releases is to position to wherever you have stored your DrawFBP jar file, and enter:
 
-At this point in time (Nov. 2019), the Maven download may result in a NoClassDefFoundError (DegeneratedLine2DException).   In this case, use the jar file in Releases, or in `build\libs`, instead.
-
-Now, all you have to do to run one of the recent releases is to position to your DrawFBP folder, and enter:
-
-<code>java -jar build/libs/drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number.  
+<code>java -jar drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
 
 The standard (javax.help) JavaHelp jar file (also available on Maven) has now been included among the DrawFBP deliverables in the `lib` folder.
 
