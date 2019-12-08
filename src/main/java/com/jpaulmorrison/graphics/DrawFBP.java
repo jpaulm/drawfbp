@@ -3580,6 +3580,10 @@ public class DrawFBP extends JFrame
 	}
 	
 	void compare() {
+		MyOptionPane.showMessageDialog(driver,
+				"Select diagram to be compared against - OK if already open!",			
+				MyOptionPane.INFORMATION_MESSAGE);
+		
 		HashMap<String, Block> newMap = new HashMap<String, Block>();
 		for (Block blk : curDiag.blocks.values()) {
 			newMap.put(blk.desc, blk);
@@ -3612,6 +3616,10 @@ public class DrawFBP extends JFrame
 			jtp.setSelectedIndex(k);
 		
 		oldDiag = curDiag;
+		
+		MyOptionPane.showMessageDialog(driver,
+				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + oldDiag.diagFile.getAbsolutePath() ,			
+				MyOptionPane.INFORMATION_MESSAGE);
 
 		HashMap<String, Block> oldMap = new HashMap<String, Block>();
 		for (Block blk : oldDiag.blocks.values()) {
@@ -3619,24 +3627,46 @@ public class DrawFBP extends JFrame
 		}
 		curDiag = newDiag;
 
-		for (Block blk : curDiag.blocks.values()) {
-			Block b = oldMap.get(blk.desc);
-			if (b == null)
+		for (Block blk : newDiag.blocks.values()) {
+			
+			for (Block b : oldDiag.blocks.values()) {
+				if ((Math.abs(b.cx - blk.cx) <= 50)
+						&& (Math.abs(b.cy - blk.cy) <= 30)) {
+							if (blk.desc != null && b.desc == null ||
+								blk.desc == null && b.desc != null)
+									blk.compareFlag = "C";
+								if (blk.desc == null || b.desc == null)
+									continue;
+								if (!(blk.type.equals(b.type)) || !(blk.desc.equals(b.desc))) {
+									blk.compareFlag = "C";
+									b.compareFlag = " ";  // to ensure doesn't show up as delete!
+								}
+							break;
+						}	
+				}
+			 
+			if (blk.compareFlag != null)
+				continue;
+			
+			Block b2 = oldMap.get(blk.desc);
+			if (b2 == null)
 				blk.compareFlag = "A";
 			else {
-				if ((Math.abs(b.cx - blk.cx) > 100)
-						|| (Math.abs(b.cy - blk.cy) > 100))
+				if ((Math.abs(b2.cx - blk.cx) > 50)
+						|| (Math.abs(b2.cy - blk.cy) > 30))
 					blk.compareFlag = "M";
 			}
 		}
 
-		for (Block blk : oldDiag.blocks.values()) {
-			Block b = newMap.get(blk.desc);
-			if (b == null) {
-				Block gBlk = createBlock(blk.type, blk.cx, blk.cy, newDiag,
+		for (Block b : oldDiag.blocks.values()) {
+			if (b.compareFlag != null)
+				continue;
+			Block blk = newMap.get(b.desc);
+			if (blk == null) {
+				Block gBlk = createBlock(b.type, b.cx, b.cy, newDiag,
 						false);
 				if (gBlk != null) {
-					gBlk.desc = blk.desc;
+					gBlk.desc = b.desc;
 					gBlk.compareFlag = "D";
 					gBlk.codeFileName = "ghost";
 				}

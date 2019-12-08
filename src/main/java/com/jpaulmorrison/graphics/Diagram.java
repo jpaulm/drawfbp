@@ -451,7 +451,8 @@ public class Diagram {
 		fileString += "<blocks>";
 
 		for (Block block : blocks.values()) {
-			if (!block.deleteOnSave) { // exclude deleteOnSave blocks
+			if (!block.deleteOnSave && 
+					!(block.compareFlag != null && block.compareFlag.equals("D"))) { // exclude deleteOnSave & ghost blocks
 				// String s = block.diagramFileName;
 				// block.diagramFileName = DrawFBP.makeRelFileName(
 				// s, file.getAbsolutePath());
