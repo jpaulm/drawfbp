@@ -49,7 +49,10 @@ public class IIPBlock extends Block {
 			g.drawString(desc, cx - width / 2 + 4, cy + 4);
 		}
 		// showZones(g);
-		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy + height / 2);
+		int tlx = cx - width / 2;
+		int tly = cy - height / 2;
+		showCompareFlag(g, tlx, tly);
+		calcDiagMaxAndMin(tlx, cx + width / 2, tly, cy + height / 2);
 		g.setFont(fontsave);
 	}
 	String checkNestedChars(String s) {

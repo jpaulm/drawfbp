@@ -168,7 +168,7 @@ public class DrawFBP extends JFrame
 	static final double FORCE_HORIZONTAL = 0.05; // can be static as this is a
 													// slope
 
-	static final int REG_CREATE = 1;
+	static final int CREATE = 1;
 	static final int MODIFY = 2;
 
 	//public static final String Side = null;
@@ -242,7 +242,7 @@ public class DrawFBP extends JFrame
 	static Color ly = new Color(255, 255, 200); // light yellow
 	static Color lb = new Color(200, 255, 255); // light blue (turquoise
 												// actually)
-	static Color grey = new Color(170, 244, 255); // sort of grey (?)
+	static Color grey = new Color(170, 244, 255); // sort of bluish grey (?)
 	// JDialog popup = null;
 	JDialog popup2 = null;
 	JDialog depDialog = null;
@@ -954,9 +954,9 @@ public class DrawFBP extends JFrame
 		runMenu.addActionListener(this);
 
 		fileMenu.addSeparator();
-		//menuItem = new JMenuItem("Generate .fbp code");
-		//fileMenu.add(menuItem);
-		//menuItem.addActionListener(this);
+		menuItem = new JMenuItem("Compare Diagrams");
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
 
@@ -1324,6 +1324,11 @@ public class DrawFBP extends JFrame
 
 		if (s.equals("Run Code")) {
 			runCode();
+			return;
+		}
+
+		if (s.equals("Compare Diagrams")) {
+			compare();
 			return;
 		}
 
@@ -1856,8 +1861,12 @@ public class DrawFBP extends JFrame
 			// }
 			// newItemMenu.setVisible(true);
 
-			if (null != createBlock(blockType, x, y))
+			Block blk = createBlock(blockType, x, y, curDiag, true); 
+			if (null != blk) {
+				//if (!blk.editDescription(CREATE))
+				//	return;;
 				curDiag.changed = true;
+			}
 			repaint();
 			return;
 
@@ -1983,45 +1992,48 @@ public class DrawFBP extends JFrame
 
 	}
 
-	Block createBlock(String blkType, int xa, int ya) {
+	// editType is false if no edit; true if block type determines type
+	
+	Block createBlock(String blkType, int xa, int ya, Diagram diag,
+			boolean editType) {
 		Block block = null;
 		boolean oneLine = false;
-		if (blkType == Block.Types.PROCESS_BLOCK) {
-			block = new ProcessBlock(curDiag);
+		if (blkType.equals(Block.Types.PROCESS_BLOCK)) {
+			block = new ProcessBlock(diag);
 			block.isSubnet = willBeSubnet;
 		}
 
-		else if (blkType == Block.Types.EXTPORT_IN_BLOCK
-				|| blkType == Block.Types.EXTPORT_OUT_BLOCK
-				|| blkType == Block.Types.EXTPORT_OUTIN_BLOCK) {
+		else if (blkType.equals(Block.Types.EXTPORT_IN_BLOCK)
+				|| blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
+				|| blkType.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
 			oneLine = true;
-			block = new ExtPortBlock(curDiag);
+			block = new ExtPortBlock(diag);
 		}
 
-		else if (blkType == Block.Types.FILE_BLOCK)
-			block = new FileBlock(curDiag);
+		else if (blkType.equals(Block.Types.FILE_BLOCK))
+			block = new FileBlock(diag);
 
-		else if (blkType == Block.Types.IIP_BLOCK) {
+		else if (blkType.equals(Block.Types.IIP_BLOCK)) {
 			oneLine = true;
-			block = new IIPBlock(curDiag);
+			block = new IIPBlock(diag);
 		}
 
-		else if (blkType == Block.Types.LEGEND_BLOCK)
-			block = new LegendBlock(curDiag);
+		else if (blkType.equals(Block.Types.LEGEND_BLOCK))
+			block = new LegendBlock(diag);
 
-		else if (blkType == Block.Types.ENCL_BLOCK) {
+		else if (blkType.equals(Block.Types.ENCL_BLOCK)) {
 			oneLine = true;
-			block = new Enclosure(curDiag);
-			Point pt = curDiag.area.getLocation();
+			block = new Enclosure(diag);
+			Point pt = diag.area.getLocation();
 			int y = Math.max(ya - block.height / 2, pt.y + 6);
 			block.cy = ((ya + block.height / 2) + y) / 2;
 		}
 
-		else if (blkType == Block.Types.PERSON_BLOCK)
-			block = new PersonBlock(curDiag);
+		else if (blkType.equals(Block.Types.PERSON_BLOCK))
+			block = new PersonBlock(diag);
 
-		else if (blkType == Block.Types.REPORT_BLOCK)
-			block = new ReportBlock(curDiag);
+		else if (blkType.equals(Block.Types.REPORT_BLOCK))
+			block = new ReportBlock(diag);
 		else
 			return null;
 
@@ -2032,32 +2044,32 @@ public class DrawFBP extends JFrame
 		if (block.cx == 0 || block.cy == 0)
 			return null; // fudge!
 
-		// if (enterDesc) {
-		if (oneLine) {
-			if (blkType != Block.Types.ENCL_BLOCK) {
-				String d = "Enter description";
-				String ans = (String) MyOptionPane.showInputDialog(this,
-						"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null, null,
-						block.desc);
+		if (editType) {
+			if (oneLine) {
+				if (blkType != Block.Types.ENCL_BLOCK) {
+					String d = "Enter description";
+					String ans = (String) MyOptionPane.showInputDialog(this,
+							"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null,
+							null, block.desc);
 
-				if (ans == null)
-					return null;
-				else
-					block.desc = ans;
+					if (ans == null)
+						return null;
+					else
+						block.desc = ans;
+				}
+			} else if (!block.editDescription(CREATE))
+				return null;
+
+			if (blkType.equals(Block.Types.IIP_BLOCK)) {
+				IIPBlock ib = (IIPBlock) block;
+				block.desc = ib.checkNestedChars(block.desc);
 			}
-		} else if (!block.editDescription(REG_CREATE))
-			return null;
-
-		if (blkType == Block.Types.IIP_BLOCK) {
-			IIPBlock ib = (IIPBlock) block;
-			block.desc = ib.checkNestedChars(block.desc);
 		}
-		// }
 		block.calcEdges();
-		// curDiag.maxBlockNo++;
-		// block.id = curDiag.maxBlockNo;
-		curDiag.blocks.put(new Integer(block.id), block);
-		// curDiag.changed = true;
+		// diag.maxBlockNo++;
+		// block.id = diag.maxBlockNo;
+		diag.blocks.put(new Integer(block.id), block);
+		// diag.changed = true;
 		selBlock = block;
 		// selArrowP = null;
 		return block;
@@ -2723,7 +2735,7 @@ public class DrawFBP extends JFrame
 		}
 
 		UIDefaults def = UIManager.getLookAndFeelDefaults();
-		// Hashtable<String, Font> ht = new Hashtable<String, Font>();
+		 
 		final FontUIResource res = new FontUIResource(fontg);
 		for (Enumeration<Object> e = def.keys(); e.hasMoreElements();) {
 			Object item = e.nextElement();
@@ -3565,6 +3577,85 @@ public class DrawFBP extends JFrame
 		
 		err += ": " + e.getMessage();
 		return err;
+	}
+	
+	void compare() {
+		HashMap<String, Block> newMap = new HashMap<String, Block>();
+		for (Block blk : curDiag.blocks.values()) {
+			newMap.put(blk.desc, blk);
+		}
+		Diagram newDiag = curDiag;
+
+		Diagram oldDiag = null;
+
+		String t = curDiag.diagFile.getParent();
+		MyFileChooser fc = new MyFileChooser(driver, new File(t),
+				curDiag.fCParm[Diagram.DIAGRAM]);
+
+		int returnVal = fc.showOpenDialog();
+
+		if (returnVal != MyFileChooser.APPROVE_OPTION)
+			return;
+
+		String dFN = getSelFile(fc);
+		String suff = curDiag.fCParm[Diagram.DIAGRAM].fileExt;
+		if (!(dFN.endsWith(suff)))
+			dFN += suff;
+		File cFile = new File(dFN);
+		if (cFile == null || !(cFile.exists()))
+			return;
+		
+		int k = getFileTabNo(dFN);
+		if (k == -1)
+			openAction(dFN);
+		else
+			jtp.setSelectedIndex(k);
+		
+		oldDiag = curDiag;
+
+		HashMap<String, Block> oldMap = new HashMap<String, Block>();
+		for (Block blk : oldDiag.blocks.values()) {
+			oldMap.put(blk.desc, blk);
+		}
+		curDiag = newDiag;
+
+		for (Block blk : curDiag.blocks.values()) {
+			Block b = oldMap.get(blk.desc);
+			if (b == null)
+				blk.compareFlag = "A";
+			else {
+				if ((Math.abs(b.cx - blk.cx) > 100)
+						|| (Math.abs(b.cy - blk.cy) > 100))
+					blk.compareFlag = "M";
+			}
+		}
+
+		for (Block blk : oldDiag.blocks.values()) {
+			Block b = newMap.get(blk.desc);
+			if (b == null) {
+				Block gBlk = createBlock(blk.type, blk.cx, blk.cy, newDiag,
+						false);
+				if (gBlk != null) {
+					gBlk.desc = blk.desc;
+					gBlk.compareFlag = "D";
+					gBlk.codeFileName = "ghost";
+				}
+			}
+		}
+
+		ButtonTabComponent b = null;
+
+		int j = getFileTabNo(curDiag.diagFile.getAbsolutePath());
+		if (-1 != j) {
+			b = (ButtonTabComponent) jtp.getTabComponentAt(j);
+			if (b == null || b.diag == null)
+				return;
+			// curDiag = b.diag; (redundant)
+			// curDiag.tabNum = i;
+			jtp.setSelectedIndex(j);
+		}
+
+		repaint();
 	}
 
 	// 'between' checks that the value val is >= lim1 and <= lim2 - or the
@@ -6023,7 +6114,7 @@ public class DrawFBP extends JFrame
 				// curDiag.xa = xa;
 				// curDiag.ya = ya;
 				if (!(blockType.equals(""))
-						&& null != createBlock(blockType, xa, ya))
+						&& null != createBlock(blockType, xa, ya, curDiag, true))
 					curDiag.changed = true;
 				repaint();
 				// repaint();

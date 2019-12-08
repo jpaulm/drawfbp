@@ -1,6 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 
 import java.io.File;
 
@@ -66,7 +67,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		}
 
 	}
-
+	
+	
+	
 	/*
 	int getSelected(){
 		int j = getTabCount();

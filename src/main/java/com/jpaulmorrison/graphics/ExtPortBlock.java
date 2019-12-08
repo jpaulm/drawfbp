@@ -71,6 +71,9 @@ public class ExtPortBlock extends Block {
 			g.setColor(DrawFBP.ly); // light yellow
 		else
 			g.setColor(DrawFBP.lb); // light turquoise
+		int tlx = cx - width / 2;
+		int tly = cy - height / 2;
+		showCompareFlag(g, tlx, tly);
 		ptx[0] += 1;
 		pty[0] += 1;
 		ptx[1] -= 1;
@@ -144,6 +147,9 @@ public class ExtPortBlock extends Block {
 			g.setColor(DrawFBP.ly); // light yellow
 		else
 			g.setColor(DrawFBP.lb); // light turquoise
+		int tlx = cx - width / 2;
+		int tly = cy - height / 2;		
+		showCompareFlag(g, tlx, tly);
 		ptx[0] -= 1;
 		pty[0] += 1;
 		ptx[1] -= 1;

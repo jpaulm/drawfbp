@@ -47,6 +47,9 @@ public class FileBlock extends Block {
 		if (desc != null) {
 			centreDesc(g);
 		}
+		int tlx = cx - width / 2;
+		int tly = cy - height / 2;
+		showCompareFlag(g, tlx, tly);
 		//showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
 				cy - height / 2, cy + height / 2);

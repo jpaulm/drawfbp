@@ -67,6 +67,10 @@ public class Block implements ActionListener {
 	String codeFileName;
 	
 	HashMap<String, Integer> portlist;
+	
+	//boolean added = false;
+	//boolean ghost = false;
+	String compareFlag = null;
 
 	static public class Types {
 		static String PROCESS_BLOCK = "B";
@@ -101,34 +105,38 @@ public class Block implements ActionListener {
 
 		if (diag == null) // fudge
 			return;
-		 
+
 		if (!visible && this != driver.selBlock) {
 			showZones(g);
 			return;
 		}
 
-		 
 		if (this == driver.selBlock && !(this instanceof ProcessBlock)) {
 			showArrowEndAreas(g);
 			return;
 		}
-         	
-		int tlx = cx - width / 2;
+
+		int tlx = cx - width / 2; // top left corner
 		int tly = cy - height / 2;
 		g.setFont(driver.fontg);
-		
-		calcDiagMaxAndMin(tlx - 20, cx + width / 2 + 20, cy - height / 2, cy + height / 2 + 40);
+
+		calcDiagMaxAndMin(tlx - 20, cx + width / 2 + 20, cy - height / 2,
+				cy + height / 2 + 40);
 
 		g.setColor(Color.BLACK);
 		g.drawRoundRect(tlx, tly, width, height, 6, 6);
-		
-		if (this == driver.selBlock)
+
+		if (compareFlag != null && compareFlag.equals("D"))
+			g.setColor(DrawFBP.lg);
+		else if (this == driver.selBlock)
 			g.setColor(DrawFBP.ly); // light yellow
-		else  
+		else
 			g.setColor(DrawFBP.lb); // light turquoise
 
 		g.fillRoundRect(tlx + 1, tly + 1, width - 2, height - 2, 6, 6);
 
+		showCompareFlag(g, tlx, tly);
+		
 		if (multiplex) {
 			int x, y;
 			String s = mpxfactor;
@@ -182,15 +190,16 @@ public class Block implements ActionListener {
 			g.drawString(name, x, y);
 			g.setFont(fontsave);
 			y += driver.gFontHeight;
-			calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
+			calcDiagMaxAndMin(x - 20,
+					x + name.length() * driver.gFontWidth + 20, cy - height / 2,
+					y + 40);
 		}
 
 		String name = null;
-		
-		if (diag.diagLang != null
-				&& (diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#"))) {
-			
-						
+
+		if (diag.diagLang != null && (diag.diagLang.label.equals("Java")
+				|| diag.diagLang.label.equals("C#"))) {
+
 			if (javaComp != null) {
 				// driver.locateJavaFBPJarFile(false);
 				Font fontsave = g.getFont();
@@ -203,14 +212,17 @@ public class Block implements ActionListener {
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
 				y += driver.gFontHeight;
-				calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
+				calcDiagMaxAndMin(x - 20,
+						x + name.length() * driver.gFontWidth + 20,
+						cy - height / 2, y + 40);
 			}
 
 			else if (fullClassName != null) {
 				// driver.locateJavaFBPJarFile(false);
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
-				name = "Class not found or out of date - rechoose comp/subnet";   
+				//if (compareFlag == null || !compareFlag.equals("D"))
+				name = "Class not found or out of date - rechoose comp/subnet";
 				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
@@ -222,7 +234,9 @@ public class Block implements ActionListener {
 				g.setFont(fontsave);
 				g.setColor(Color.BLACK);
 				y += driver.gFontHeight;
-				calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
+				calcDiagMaxAndMin(x - 20,
+						x + name.length() * driver.gFontWidth + 20,
+						cy - height / 2, y + 40);
 			}
 		}
 		if (codeFileName != null) {
@@ -238,53 +252,54 @@ public class Block implements ActionListener {
 			g.drawString(name, x, y);
 			g.setFont(fontsave);
 			g.setColor(Color.BLACK);
-			calcDiagMaxAndMin(x - 20, x + name.length() * driver.gFontWidth + 20, cy - height / 2, y + 40);
+			calcDiagMaxAndMin(x - 20,
+					x + name.length() * driver.gFontWidth + 20, cy - height / 2,
+					y + 40);
 		}
 		if (hNeighbour != null) {
 			g.setColor(Color.ORANGE);
 			if (hNeighbour.cx < cx)
-				g.drawLine(hNeighbour.cx - hNeighbour.width / 2, hNeighbour.cy
-						+ hNeighbour.height / 2, cx + width / 2, hNeighbour.cy
-						+ hNeighbour.height / 2);
+				g.drawLine(hNeighbour.cx - hNeighbour.width / 2,
+						hNeighbour.cy + hNeighbour.height / 2, cx + width / 2,
+						hNeighbour.cy + hNeighbour.height / 2);
 			else
-				g.drawLine(hNeighbour.cx + hNeighbour.width / 2, hNeighbour.cy
-						+ hNeighbour.height / 2, cx - width / 2, hNeighbour.cy
-						+ hNeighbour.height / 2);
+				g.drawLine(hNeighbour.cx + hNeighbour.width / 2,
+						hNeighbour.cy + hNeighbour.height / 2, cx - width / 2,
+						hNeighbour.cy + hNeighbour.height / 2);
 			g.setColor(Color.BLACK);
 		}
 		if (vNeighbour != null) {
 			g.setColor(Color.ORANGE);
 			if (vNeighbour.cy < cy)
-				g.drawLine(vNeighbour.cx - vNeighbour.width / 2, vNeighbour.cy
-						- vNeighbour.height / 2, vNeighbour.cx
-						- vNeighbour.width / 2, cy + height / 2);
+				g.drawLine(vNeighbour.cx - vNeighbour.width / 2,
+						vNeighbour.cy - vNeighbour.height / 2,
+						vNeighbour.cx - vNeighbour.width / 2, cy + height / 2);
 			else
-				g.drawLine(vNeighbour.cx - vNeighbour.width / 2, vNeighbour.cy
-						+ vNeighbour.height / 2, vNeighbour.cx
-						- vNeighbour.width / 2, cy - height / 2);
+				g.drawLine(vNeighbour.cx - vNeighbour.width / 2,
+						vNeighbour.cy + vNeighbour.height / 2,
+						vNeighbour.cx - vNeighbour.width / 2, cy - height / 2);
 			g.setColor(Color.BLACK);
 		}
-		
-		//if (driver.arrowRoot != null && driver.arrowRoot.block == this) {
-		//	if (driver.arrowEndForDragging == null
-		//			|| !driver.arrowEndForDragging.headMarked
-		//					&& !driver.arrowEndForDragging.tailMarked) {	
-			//	Enclosure enc = null;
-			//	if (type == Block.Types.ENCL_BLOCK)
-			//		enc = (Enclosure) this;
 
-				//if ((enc == null || enc.corner == null)) {
-				//	int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
-				//	if (opt == 1 || driver.curDiag.currentArrow.bends == null)
-		
+		// if (driver.arrowRoot != null && driver.arrowRoot.block == this) {
+		// if (driver.arrowEndForDragging == null
+		// || !driver.arrowEndForDragging.headMarked
+		// && !driver.arrowEndForDragging.tailMarked) {
+		// Enclosure enc = null;
+		// if (type == Block.Types.ENCL_BLOCK)
+		// enc = (Enclosure) this;
+
+		// if ((enc == null || enc.corner == null)) {
+		// int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
+		// if (opt == 1 || driver.curDiag.currentArrow.bends == null)
+
 		if (driver.arrowRoot != null)
 			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 1);
-		
-		if (driver.arrowEnd != null)  
-			driver.drawBlackSquare(g, driver.arrowEnd.x, driver.arrowEnd.y);		 
-		
+
+		if (driver.arrowEnd != null)
+			driver.drawBlackSquare(g, driver.arrowEnd.x, driver.arrowEnd.y);
+
 	}
-	 
 	
 	void calcEdges() {
 		leftEdge = cx - width / 2;
@@ -367,6 +382,17 @@ public class Block implements ActionListener {
 			showArrowEndAreas(g);
 	}
  
+	void showCompareFlag(Graphics g, int tlx, int tly){
+		if (compareFlag != null) {
+			g.setColor(Color.BLACK);
+			g.drawRoundRect(tlx + 1, tly + 1, 24, 24, 6, 6);
+			g.setColor(Color.WHITE);
+			g.fillRoundRect(tlx + 2, tly + 2, 22, 22, 6, 6);
+			g.setColor(Color.BLACK);
+			g.drawString(compareFlag, tlx + 10, tly + 17);
+		}
+	}
+	
 	String serialize() {
 		String s = "<block> <x> " + cx + " </x> <y> " + cy + " </y> <id> " + id
 				+ " </id> <type>" + type + "</type> ";

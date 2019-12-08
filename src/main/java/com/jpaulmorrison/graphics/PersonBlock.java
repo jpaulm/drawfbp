@@ -36,8 +36,11 @@ import java.awt.Graphics;
 			g.drawLine(cx, cy - 2, cx - 14, cy + 5);  // arms
 			g.drawLine(cx, cy - 2, cx + 14, cy + 5);
 			//showZones(g);
-			calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
-					cy - height / 2, cy + height / 2);
+			int tlx = cx - width / 2;
+			int tly = cy - height / 2;
+			showCompareFlag(g, tlx, tly);
+			calcDiagMaxAndMin(tlx, cx + width / 2,
+					tly, cy + height / 2);
 			if (desc != null) {
 				centreDesc(g);
 			}

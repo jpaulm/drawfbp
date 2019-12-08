@@ -37,9 +37,13 @@ public class LegendBlock extends Block {
 			height = 15;
 			showArrowEndAreas(g);
 		}
+		
+		int tlx = cx - width / 2;
+		int tly = cy - height / 2;		
+		showCompareFlag(g, tlx, tly);
 		 
 		// g.setColor(Color.BLACK);
-		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy
+		calcDiagMaxAndMin(tlx, cx + width / 2, tly, cy
 				+ height / 2);
 		
 		 
