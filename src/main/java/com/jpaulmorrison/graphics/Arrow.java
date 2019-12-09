@@ -31,7 +31,7 @@ public class Arrow implements ActionListener {
 	boolean endsAtBlock, endsAtLine;
 	int segNo; // only relevant if endsAtLine	
 	LinkedList<Bend> bends;
-	String type = "";
+	String type = "";  // "I" will result in an external input port; "O" -> external output port
 	String upStreamPort, downStreamPort;
 	//String uspMod;   //  upstream port after lowercasing
 	String dspMod;   // downStreamPort after lowercasing 
@@ -56,9 +56,11 @@ public class Arrow implements ActionListener {
 		UNCHECKED, COMPATIBLE, INCOMPATIBLE
 	}
 
-	Status checkStatus = Status.UNCHECKED;
+	//Status checkStatus = Status.UNCHECKED;
 
 	Diagram diag;
+	
+	String compareFlag = null;
 
 	Arrow(Diagram d) {
 		super();
@@ -91,42 +93,35 @@ public class Arrow implements ActionListener {
 		if (a != null)
 			to = diag.blocks.get(new Integer(a.toId));
  
-		/*
-		if (toX == -1) {
-			endX = diag.xa;   
-		}
-		else
-			endX = toX;
 		
-		if (toY == -1) 
-			endY = diag.ya;
-		else
-			endY = toY;
-		 */
 		g.setColor(Color.GRAY);
 
 		Stroke stroke = ((Graphics2D)g).getStroke();
 		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
 
 		if (toX == -1) {
-		 g.drawRect(fromX - 3, fromY - 3, 6, 6);		  
-		 
-		 return;
+		   g.drawRect(fromX - 3, fromY - 3, 6, 6);			 
+		   return;
 		 }
-
+		
+		showCompareFlag(g);
 
 		if (driver.selArrow == this)
 			g.setColor(Color.BLUE);
+		
 		if ((from instanceof ProcessBlock
 				|| from instanceof ExtPortBlock || from instanceof Enclosure)
 				&& (to instanceof ProcessBlock || to instanceof ExtPortBlock
 						|| to instanceof Enclosure || endsAtLine))
-			if (checkStatus == Status.UNCHECKED)
-				g.setColor(Color.BLACK);
-			else if (checkStatus == Status.COMPATIBLE)
-				g.setColor(FOREST_GREEN);
+			if (compareFlag != null && compareFlag.equals("D"))
+				g.setColor(DrawFBP.lg);
 			else
-				g.setColor(ORANGE_RED);
+			//if (checkStatus == Status.UNCHECKED)
+				g.setColor(Color.BLACK);
+			//else if (checkStatus == Status.COMPATIBLE)
+			//	g.setColor(FOREST_GREEN);
+			//else
+			//	g.setColor(ORANGE_RED);
 
 		else if (from instanceof LegendBlock || to instanceof LegendBlock)
 			g.setColor(Color.GRAY);
@@ -366,6 +361,25 @@ public class Arrow implements ActionListener {
 		g.drawOval(x, y, size, size);
 		g.fillOval(x, y, size, size);
 		g.setColor(col);
+	}
+	
+	void showCompareFlag(Graphics g){
+		if (compareFlag != null && !compareFlag.equals(" ")) {
+			int tx = toX;
+			int ty = toY;
+			if (bends != null) {
+				tx = bends.getFirst().x;
+				ty = bends.getFirst().y;
+			}
+			int x = (fromX + tx) / 2 - 12;
+			int y = (fromY + ty) / 2 - 12;
+			g.setColor(Color.BLACK);
+			g.drawOval(x, y, 24, 24);
+			g.setColor(DrawFBP.ly);
+			g.fillOval(x + 2, y + 2, 22, 22);
+			g.setColor(Color.BLACK);
+			g.drawString(compareFlag, x + 10, y + 17);
+		}
 	}
 
 	String serialize() {
@@ -1013,12 +1027,12 @@ class Arrowhead {
 			// at.rotate(theta,toX,toY);
 			Shape shape = at.createTransformedShape(path);
 			
-				if (checkStatus == Status.UNCHECKED)
+				//if (checkStatus == Status.UNCHECKED)
 					g.setColor(Color.BLACK);
-				else if (checkStatus == Status.COMPATIBLE)
-					g.setColor(FOREST_GREEN);
-				else
-					g.setColor(ORANGE_RED);
+				//else if (checkStatus == Status.COMPATIBLE)
+				//	g.setColor(FOREST_GREEN);
+				//else
+				//	g.setColor(ORANGE_RED);
 			
 			
 			((Graphics2D)g).fill(shape);

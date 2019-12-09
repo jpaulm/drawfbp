@@ -853,72 +853,17 @@ public class Diagram {
 			// test if arrow crosses a boundary; if so, copy 
 			
 			if (to == null && from != null ||
-					from == null && to != null) { 			
-				
-				// copy arrow
-				
-				Arrow arrCopy = new Arrow(sbnDiag);
-				//arrCopy.orig = arrow;
-				arrow.copy = arrCopy;
-				arrCopy.orig = arrow;
-				if (from == null)
+					from == null && to != null)  {
+				copyArrow(arrow, sbnDiag, from);
+				if (from == null){
 					arrow.type = "O";
-				else 
-					arrow.type = "I";
-				
-				arrCopy.type = arrow.type;
-				
-				arrCopy.fromX = arrow.fromX;
-				arrCopy.fromY = arrow.fromY;
-				arrCopy.toX = arrow.toX;
-				arrCopy.toY = arrow.toY;				
-				
-				arrCopy.fromId = arrow.fromId;
-				arrCopy.toId = arrow.toId;
-				sbnDiag.maxArrowNo = Math.max(sbnDiag.maxArrowNo, arrow.id);
-				arrCopy.id = sbnDiag.maxArrowNo++;
-				arrCopy.capacity = arrow.capacity;
-				arrCopy.segNo = arrow.segNo;
-				arrCopy.endsAtBlock = arrow.endsAtBlock;
-				arrCopy.endsAtLine = arrow.endsAtLine;
-				if (arrow.bends != null) {
-					//Rectangle r = new Rectangle(enc.cx - enc.width / 2, enc.cy - enc.height / 2, enc.width, enc.height);
-					//arrCopy.bends = new LinkedList<Bend>();
-					for (Bend b : arrow.bends) {
-						
-						if (from == null){
-							arrCopy.toX = b.x;   
-							arrCopy.toY = b.y;
-							break;
-						}
-						else {
-							arrCopy.fromX = b.x;  
-							arrCopy.fromY = b.y;							
-						}
-						
-						
-					}
-				}
-				arrCopy.upStreamPort = arrow.upStreamPort;
-				arrCopy.downStreamPort = arrow.downStreamPort;	
-				
-				//arr.fromSide = arrow.fromSide;
-				//arr.toSide = arrow.toSide;
-				//Diagram d = diag;
-				arrCopy.diag = sbnDiag;	
-				if (arrow.type.equals("I"))
-					arrow.toId = snBlock.id;
-				else
 					arrow.fromId = snBlock.id;
-				//arrow.diag = diag.origDiag;
-				arrow.diag = this;
-				Integer aid = new Integer(arrCopy.id);
-				sbnDiag.arrows.put(aid, arrCopy);
-				//arrCopy.orig = arrow;
-				//cl.add(arrCopy); 
-				// keep old arrow
-				// arrow.deleteOnSave = true;
-				changed = true;
+				}
+				else {
+					arrow.type = "I";
+					arrow.toId = snBlock.id;
+				}
+				
 			}
 		}
 	}
@@ -962,4 +907,73 @@ public class Diagram {
 		return subnetBlock;
 	}
 	
+	Arrow copyArrow(Arrow arrow, Diagram diag, Block from){
+		Arrow arrCopy = new Arrow(diag);
+		//arrCopy.orig = arrow;
+		arrow.copy = arrCopy;
+		arrCopy.orig = arrow;
+		//if (from == null)
+		//	arrow.type = "O";
+		//else 
+		//	arrow.type = "I";
+		
+		arrCopy.type = arrow.type;
+		
+		arrCopy.fromX = arrow.fromX;
+		arrCopy.fromY = arrow.fromY;
+		arrCopy.toX = arrow.toX;
+		arrCopy.toY = arrow.toY;				
+		
+		arrCopy.fromId = arrow.fromId;
+		arrCopy.toId = arrow.toId;
+		diag.maxArrowNo = Math.max(diag.maxArrowNo, arrow.id);
+		arrCopy.id = diag.maxArrowNo++;
+		arrCopy.capacity = arrow.capacity;
+		arrCopy.segNo = arrow.segNo;
+		arrCopy.endsAtBlock = arrow.endsAtBlock;
+		arrCopy.endsAtLine = arrow.endsAtLine;
+		if (arrow.bends != null) {
+			//Rectangle r = new Rectangle(enc.cx - enc.width / 2, enc.cy - enc.height / 2, enc.width, enc.height);
+			arrCopy.bends = new LinkedList<Bend>();
+			for (Bend b : arrow.bends) {
+				/*
+				if (from == null){
+					arrCopy.toX = b.x;   
+					arrCopy.toY = b.y;
+					break;
+				}
+				else {
+					arrCopy.fromX = b.x;  
+					arrCopy.fromY = b.y;							
+				}
+				*/
+				Bend b2 = new Bend();
+				b2.x = b.x;
+				b2.y = b.y;
+				arrCopy.bends.add(b2);
+			}
+		}
+		arrCopy.upStreamPort = arrow.upStreamPort;
+		arrCopy.downStreamPort = arrow.downStreamPort;	
+		
+		//arr.fromSide = arrow.fromSide;
+		//arr.toSide = arrow.toSide;
+		//Diagram d = diag;
+		arrCopy.diag = diag;	
+		//if (arrow.type.equals("I"))
+		//	arrow.toId = snBlock.id;
+		//else
+		//	arrow.fromId = snBlock.id;
+		//arrow.diag = diag.origDiag;
+		arrow.diag = this;
+		Integer aid = new Integer(arrCopy.id);
+		diag.arrows.put(aid, arrCopy);
+		//arrCopy.orig = arrow;
+		//cl.add(arrCopy); 
+		// keep old arrow
+		// arrow.deleteOnSave = true;
+		changed = true;
+		return arrCopy;
+	}
+	 
 }

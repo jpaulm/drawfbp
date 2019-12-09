@@ -1,6 +1,6 @@
 // Do a gradle build, followed by gradle fatJar
 
-// From v2.18.8, this will build a smaller jar file
+// From v2.19.0, this will build a smaller jar file
 
 buildscript {  
     repositories {
@@ -54,7 +54,7 @@ apply plugin: 'java-library'
    
 }
 
-version = '2.18.8'
+version = '2.19.0'
 
 
 
@@ -183,7 +183,7 @@ doLast {
             artifactId 'drawfbp'
 
  
-            version '2.18.8'
+            version '2.19.0'
         
             inceptionYear '2016'
             licenses {
@@ -241,7 +241,7 @@ uploadArchives {
         url 'https://github.com/jpaulm/drawfbp'
 
 
-        version '2.18.8'
+        version '2.19.0'
 
         scm {
           connection 'scm:git:https://github.com/jpaulm.git'

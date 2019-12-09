@@ -386,7 +386,7 @@ public class Block implements ActionListener {
 		if (compareFlag != null) {
 			g.setColor(Color.BLACK);
 			g.drawRoundRect(tlx + 1, tly + 1, 24, 24, 6, 6);
-			g.setColor(Color.WHITE);
+			g.setColor(DrawFBP.ly);
 			g.fillRoundRect(tlx + 2, tly + 2, 22, 22, 6, 6);
 			g.setColor(Color.BLACK);
 			g.drawString(compareFlag, tlx + 10, tly + 17);

@@ -45,8 +45,6 @@ import java.time.ZonedDateTime;
 
 import javax.imageio.ImageIO;
 
-import com.jpaulmorrison.graphics.Arrow.Status;
-
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
@@ -3579,17 +3577,34 @@ public class DrawFBP extends JFrame
 		return err;
 	}
 	
+	/**
+	 * 
+	 * In the following, the description will be considered to identify a block - 
+	 * unless new and old blocks are at (approximately) the same place
+	 * An output port can only be attached to one arrow, so the process description and port name  
+	 * will be considered to uniquely identify an arrow 
+	 * 
+	 */
+	
 	void compare() {
 		MyOptionPane.showMessageDialog(driver,
 				"Select diagram to be compared against - OK if already open!",			
 				MyOptionPane.INFORMATION_MESSAGE);
 		
-		HashMap<String, Block> newMap = new HashMap<String, Block>();
-		for (Block blk : curDiag.blocks.values()) {
-			newMap.put(blk.desc, blk);
-		}
 		Diagram newDiag = curDiag;
+		
+		HashMap<String, Block> newBMap = new HashMap<String, Block>();
+		for (Block blk : newDiag.blocks.values()) {
+			newBMap.put(blk.desc, blk);
+		}
+		
 
+		HashMap<String, Arrow> newAMap = new HashMap<String, Arrow>();
+		for (Arrow arr : newDiag.arrows.values()) {
+			String key = newDiag.blocks.get(new Integer(arr.fromId)).desc + "~" + arr.upStreamPort;
+			newAMap.put(key, arr);
+		}
+		
 		Diagram oldDiag = null;
 
 		String t = curDiag.diagFile.getParent();
@@ -3621,10 +3636,17 @@ public class DrawFBP extends JFrame
 				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + oldDiag.diagFile.getAbsolutePath() ,			
 				MyOptionPane.INFORMATION_MESSAGE);
 
-		HashMap<String, Block> oldMap = new HashMap<String, Block>();
+		HashMap<String, Block> oldBMap = new HashMap<String, Block>();
 		for (Block blk : oldDiag.blocks.values()) {
-			oldMap.put(blk.desc, blk);
+			oldBMap.put(blk.desc, blk);
 		}
+		
+		HashMap<String, Arrow> oldAMap = new HashMap<String, Arrow>();
+		for (Arrow arr : oldDiag.arrows.values()) {
+			String key = oldDiag.blocks.get(new Integer(arr.fromId)).desc + "~" + arr.upStreamPort;
+			oldAMap.put(key, arr);
+		}
+		
 		curDiag = newDiag;
 
 		for (Block blk : newDiag.blocks.values()) {
@@ -3639,7 +3661,7 @@ public class DrawFBP extends JFrame
 									continue;
 								if (!(blk.type.equals(b.type)) || !(blk.desc.equals(b.desc))) {
 									blk.compareFlag = "C";
-									b.compareFlag = " ";  // to ensure doesn't show up as delete!
+									b.compareFlag = " ";  // to ensure doesn't look like a delete!
 								}
 							break;
 						}	
@@ -3648,7 +3670,7 @@ public class DrawFBP extends JFrame
 			if (blk.compareFlag != null)
 				continue;
 			
-			Block b2 = oldMap.get(blk.desc);
+			Block b2 = oldBMap.get(blk.desc);
 			if (b2 == null)
 				blk.compareFlag = "A";
 			else {
@@ -3658,10 +3680,40 @@ public class DrawFBP extends JFrame
 			}
 		}
 
+		for (Arrow arr : newDiag.arrows.values()) {
+			/*
+			for (Arrow a : oldDiag.arrows.values()) {
+				if ((Math.abs(b.cx - blk.cx) <= 50)
+						&& (Math.abs(b.cy - blk.cy) <= 30)) {
+							if (blk.desc != null && b.desc == null ||
+								blk.desc == null && b.desc != null)
+									blk.compareFlag = "C";
+								if (blk.desc == null || b.desc == null)
+									continue;
+								if (!(blk.type.equals(b.type)) || !(blk.desc.equals(b.desc))) {
+									blk.compareFlag = "C";
+									b.compareFlag = " ";  // to ensure doesn't look like a delete!
+								}
+							break;
+						}	
+			}
+			*/  
+			if (arr.compareFlag != null)
+				continue;
+			
+			String key = newDiag.blocks.get(new Integer(arr.fromId)).desc + "~" + arr.upStreamPort;
+			Arrow a2 = oldAMap.get(key);
+			if (a2 == null)
+				arr.compareFlag = "A";
+			
+		}
+
+		
+		
 		for (Block b : oldDiag.blocks.values()) {
 			if (b.compareFlag != null)
 				continue;
-			Block blk = newMap.get(b.desc);
+			Block blk = newBMap.get(b.desc);
 			if (blk == null) {
 				Block gBlk = createBlock(b.type, b.cx, b.cy, newDiag,
 						false);
@@ -3673,11 +3725,23 @@ public class DrawFBP extends JFrame
 			}
 		}
 
-		ButtonTabComponent b = null;
+		for (Arrow a : oldDiag.arrows.values()) {
+			if (a.compareFlag != null)
+				continue;
+			Block from = oldDiag.blocks.get(new Integer(a.fromId));
+			Arrow aNew = newAMap.get(from.desc + "~" + a.upStreamPort);
+			if (aNew == null) {				
+				Arrow gArr = oldDiag.copyArrow(a, newDiag, from);
+				if (gArr != null) {
+					gArr.compareFlag = "D";
+				}
+			}
+		}
 
+		
 		int j = getFileTabNo(curDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
-			b = (ButtonTabComponent) jtp.getTabComponentAt(j);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(j);
 			if (b == null || b.diag == null)
 				return;
 			// curDiag = b.diag; (redundant)
@@ -3685,6 +3749,10 @@ public class DrawFBP extends JFrame
 			jtp.setSelectedIndex(j);
 		}
 
+		for (Block blk : oldDiag.blocks.values()) {
+			blk.compareFlag = null;
+		}
+		
 		repaint();
 	}
 
@@ -4212,6 +4280,7 @@ public class DrawFBP extends JFrame
 	 * 
 	 */
 
+	/*
 	void checkCompatibility(Arrow a) {
 		Arrow a2 = a.findLastArrowInChain();
 		Block from = curDiag.blocks.get(new Integer(a.fromId));
@@ -4244,6 +4313,8 @@ public class DrawFBP extends JFrame
 		else
 			a.checkStatus = Status.INCOMPATIBLE;
 	}
+	
+	*/
 
 	boolean pointInLine(Point2D p, int fx, int fy, int tx, int ty) {
 		Line2D line = new Line2D((double) fx, (double) fy, (double) tx,
