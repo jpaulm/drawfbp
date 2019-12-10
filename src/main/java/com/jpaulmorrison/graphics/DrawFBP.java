@@ -43,6 +43,9 @@ import java.net.*;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
+import javax.help.HelpSet;
+import javax.help.HelpSetException;
+import javax.help.JHelp;
 import javax.imageio.ImageIO;
 
 import java.lang.reflect.*;
@@ -1627,13 +1630,10 @@ public class DrawFBP extends JFrame
 		}
 		if (s.equals("Launch Help")) {
 
-			// The following is based on
-			// https://supportweb.cs.bham.ac.uk/documentation/tutorials/
-			// docsystem/build/tutorials/javahelp/javahelp.html
-			// plus reflection
-
+			/*
 			if (jHelpViewer == null) {
 
+				 
 				if (jhallJarFile == null) {
 
 					jhallJarFile = properties.get("jhallJarFile");
@@ -1658,10 +1658,12 @@ public class DrawFBP extends JFrame
 					if (!res)
 						return;
 				}
+				 
 				jHelpClass = null;
 				helpSetClass = null;
 				URLClassLoader cl = null;
 
+				 
 				File jFile = new File(jhallJarFile);
 				if (!(jFile.exists())) {
 					MyOptionPane.showMessageDialog(this,
@@ -1670,15 +1672,18 @@ public class DrawFBP extends JFrame
 							MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
+				 
+							
+								
 				try {
-					URL[] urls = new URL[]{jFile.toURI().toURL()};
+					 URL[] urls = new URL[]{jFile.toURI().toURL()}; 
 
 					// Create a new class loader with the directory
-					cl = new URLClassLoader(urls,
-							this.getClass().getClassLoader());
+					 cl = new URLClassLoader(urls,
+								this.getClass().getClassLoader());
 
 					// Find the HelpSet file and create the HelpSet object
-					helpSetClass = cl.loadClass("javax.help.HelpSet");
+					helpSetClass =   cl.loadClass("javax.help.HelpSet");
 				} catch (MalformedURLException e2) {
 				} catch (ClassNotFoundException e2) {
 				} catch (NoClassDefFoundError e2) {
@@ -1690,7 +1695,8 @@ public class DrawFBP extends JFrame
 							MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
-
+ 
+				
 				URL url2 = null;
 				jHelpViewer = null;
 				try {
@@ -1720,6 +1726,18 @@ public class DrawFBP extends JFrame
 					return;
 				}
 			}
+			*/
+			HelpSet hs = null;
+			URL url = HelpSet.findHelpSet(getClass().getClassLoader(), "helpSet.hs");
+			try {
+				hs = new HelpSet(null, url);
+			} catch (HelpSetException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
+	        jHelpViewer = new JHelp(hs);
+			
 			// Create a new 
 			popup2 = new JDialog(this);
 			popup2.setTitle("Help DrawFBP");
@@ -3594,8 +3612,8 @@ public class DrawFBP extends JFrame
 		Diagram newDiag = curDiag;
 		
 		HashMap<String, Block> newBMap = new HashMap<String, Block>();
-		for (Block blk : newDiag.blocks.values()) {
-			newBMap.put(blk.desc, blk);
+		for (Block blk : newDiag.blocks.values()) {			
+				newBMap.put(blk.desc, blk);			
 		}
 		
 
@@ -3637,8 +3655,8 @@ public class DrawFBP extends JFrame
 				MyOptionPane.INFORMATION_MESSAGE);
 
 		HashMap<String, Block> oldBMap = new HashMap<String, Block>();
-		for (Block blk : oldDiag.blocks.values()) {
-			oldBMap.put(blk.desc, blk);
+		for (Block blk : oldDiag.blocks.values()) {			
+				oldBMap.put(blk.desc, blk);			
 		}
 		
 		HashMap<String, Arrow> oldAMap = new HashMap<String, Arrow>();
@@ -3680,34 +3698,7 @@ public class DrawFBP extends JFrame
 			}
 		}
 
-		for (Arrow arr : newDiag.arrows.values()) {
-			/*
-			for (Arrow a : oldDiag.arrows.values()) {
-				if ((Math.abs(b.cx - blk.cx) <= 50)
-						&& (Math.abs(b.cy - blk.cy) <= 30)) {
-							if (blk.desc != null && b.desc == null ||
-								blk.desc == null && b.desc != null)
-									blk.compareFlag = "C";
-								if (blk.desc == null || b.desc == null)
-									continue;
-								if (!(blk.type.equals(b.type)) || !(blk.desc.equals(b.desc))) {
-									blk.compareFlag = "C";
-									b.compareFlag = " ";  // to ensure doesn't look like a delete!
-								}
-							break;
-						}	
-			}
-			*/  
-			if (arr.compareFlag != null)
-				continue;
-			
-			String key = newDiag.blocks.get(new Integer(arr.fromId)).desc + "~" + arr.upStreamPort;
-			Arrow a2 = oldAMap.get(key);
-			if (a2 == null)
-				arr.compareFlag = "A";
-			
-		}
-
+		
 		
 		
 		for (Block b : oldDiag.blocks.values()) {
@@ -3724,12 +3715,44 @@ public class DrawFBP extends JFrame
 				}
 			}
 		}
+	
+		 
+		for (Arrow arr : newDiag.arrows.values()) {
+			 
+			for (Arrow a : oldDiag.arrows.values()) {
+				if ((a.fromX == arr.fromX)
+						|| (a.fromY == arr.fromY)
+						|| (a.toX == arr.toX) 
+						|| (a.toY == arr.toY)) 
+					// probably same line - now check for diffs
+					        if (a.fromId != arr.fromId ||
+					            a.toId != arr.toId ||
+					            !a.upStreamPort.equals(arr.upStreamPort) ||
+					            !a.downStreamPort.equals(arr.downStreamPort) ) {
+									arr.compareFlag = "C";								
+									a.compareFlag = " ";  // to ensure doesn't look like a delete!
+								
+							break;
+						}	
+			}
+			 
+			if (arr.compareFlag != null)
+				continue;
+			
+			String key = newDiag.blocks.get(new Integer(arr.fromId)).desc + "~" + arr.upStreamPort;
+			Arrow a2 = oldAMap.get(key);
+			if (a2 == null)
+				arr.compareFlag = "A";			
+		}
+ 
 
+		 
 		for (Arrow a : oldDiag.arrows.values()) {
 			if (a.compareFlag != null)
 				continue;
 			Block from = oldDiag.blocks.get(new Integer(a.fromId));
-			Arrow aNew = newAMap.get(from.desc + "~" + a.upStreamPort);
+			String key = from.desc + "~" + a.upStreamPort;
+			Arrow aNew = newAMap.get(key);
 			if (aNew == null) {				
 				Arrow gArr = oldDiag.copyArrow(a, newDiag, from);
 				if (gArr != null) {
@@ -3737,7 +3760,7 @@ public class DrawFBP extends JFrame
 				}
 			}
 		}
-
+	 
 		
 		int j = getFileTabNo(curDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
@@ -5161,7 +5184,11 @@ public class DrawFBP extends JFrame
 					block.draw(osg);
 			}
 
+			//if (diag.diagFile != null)
+			//	System.out.println(diag.diagFile.getAbsolutePath() + " " + diag.arrows.size());
 			for (Arrow arrow : diag.arrows.values()) {
+			//	if (diag.diagFile != null)
+			//		System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
 				arrow.draw(osg);
 			}
 

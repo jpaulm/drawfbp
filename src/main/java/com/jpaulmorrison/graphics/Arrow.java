@@ -131,9 +131,11 @@ public class Arrow implements ActionListener {
 		fy = fromY;
 		 
 		if (bends != null) {
+			//System.out.println(driver.curDiag.diagFile.getAbsolutePath() + ": Bends found");
 			boolean capDrawn = false;
 			int segno = 0;
 			for (Bend bend : bends) {
+				//System.out.println("bend");
 				tx = bend.x;
 				ty = bend.y;
 				if (!dropOldest)

@@ -82,6 +82,7 @@ repositories {
 
 dependencies { 
 	compile ('math.geom2d:javaGeom:0.11.1')
+	compile ('javax.help:javahelp:2.0.05')
 }
 
 
@@ -149,7 +150,7 @@ task fatJar(type: Jar) {
 // Run after gradle build!
    
     manifest {
-        attributes 'Implementation-Title': 'DrawFBP with javaGeom jar',  
+        attributes 'Implementation-Title': 'DrawFBP with javaGeom and JavaHelp jar files',  
         	'Implementation-Version': version,
         	"Class-Path": configurations.compile.collect { it.getName() }.join(' '),
         	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
