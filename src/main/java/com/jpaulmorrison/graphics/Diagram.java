@@ -854,7 +854,8 @@ public class Diagram {
 			
 			if (to == null && from != null ||
 					from == null && to != null)  {
-				copyArrow(arrow, sbnDiag, from);
+				int id = maxArrowNo++;
+				copyArrow(arrow, sbnDiag, from, id);
 				if (from == null){
 					arrow.type = "O";
 					arrow.fromId = snBlock.id;
@@ -907,7 +908,7 @@ public class Diagram {
 		return subnetBlock;
 	}
 	
-	Arrow copyArrow(Arrow arrow, Diagram diag, Block from){
+	Arrow copyArrow(Arrow arrow, Diagram diag, Block from, int id){
 		Arrow arrCopy = new Arrow(diag);
 		//arrCopy.orig = arrow;
 		arrow.copy = arrCopy;
@@ -926,8 +927,9 @@ public class Diagram {
 		
 		arrCopy.fromId = arrow.fromId;
 		arrCopy.toId = arrow.toId;
-		diag.maxArrowNo = Math.max(diag.maxArrowNo, arrow.id);
+		
 		arrCopy.id = diag.maxArrowNo++;
+		//arrCopy.id = id;
 		arrCopy.capacity = arrow.capacity;
 		arrCopy.segNo = arrow.segNo;
 		arrCopy.endsAtBlock = arrow.endsAtBlock;

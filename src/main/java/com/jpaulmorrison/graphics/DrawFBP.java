@@ -3612,14 +3612,19 @@ public class DrawFBP extends JFrame
 		//}
 		
 
-		HashMap<String, Arrow> newAMap = new HashMap<String, Arrow>();
-		for (Arrow arr : newDiag.arrows.values()) {
-			String key = new Integer(arr.fromId) + "~" + arr.upStreamPort;
-			newAMap.put(key, arr);
-		}
+		//HashMap<String, Arrow> newAMap = new HashMap<String, Arrow>();
+		//for (Arrow arr : newDiag.arrows.values()) {
+		//	String key = new Integer(arr.fromId) + "~" + arr.upStreamPort;
+		//	newAMap.put(key, arr);
+		//}
 		
 		Diagram oldDiag = null;
 
+		//System.out.println("New diag");
+		//for (Arrow arr : newDiag.arrows.values()) {
+		//	System.out.println(arr.id);
+		//}
+		
 		String t = newDiag.diagFile.getParent();
 		MyFileChooser fc = new MyFileChooser(driver, new File(t),
 				newDiag.fCParm[Diagram.DIAGRAM]);
@@ -3661,12 +3666,16 @@ public class DrawFBP extends JFrame
 		//		oldBMap.put(blk.desc, blk);			
 		//}
 		
-		HashMap<String, Arrow> oldAMap = new HashMap<String, Arrow>();
-		for (Arrow arr : oldDiag.arrows.values()) {
-			String key = new Integer(arr.fromId) + "~" + arr.upStreamPort;
-			oldAMap.put(key, arr);
-		}
+		//HashMap<String, Arrow> oldAMap = new HashMap<String, Arrow>();
+		//for (Arrow arr : oldDiag.arrows.values()) {
+		//	String key = new Integer(arr.fromId) + "~" + arr.upStreamPort;
+		//	oldAMap.put(key, arr);
+		//}
 		
+		//System.out.println("Old diag");
+		//for (Arrow arr : oldDiag.arrows.values()) {
+		//	System.out.println(arr.id);
+		//}
 		curDiag = newDiag;
 
 		for (Block blk : newDiag.blocks.values()) {
@@ -3739,29 +3748,39 @@ public class DrawFBP extends JFrame
 			if (arr.compareFlag != null)
 				continue;
 			
-			String key = new Integer(arr.fromId) + "~" + arr.upStreamPort;
-			Arrow a2 = oldAMap.get(key);
-			if (a2 == null)
+			
+			Arrow a2 = oldDiag.arrows.get(new Integer(arr.id));
+			if (a2 == null ||
+					a2.fromX != arr.fromX ||
+					a2.toX != arr.toX ||
+					a2.fromY != arr.fromY ||
+					a2.toY != arr.toY)
 				arr.compareFlag = "A";			
 		}
  
-
+ 
 		 
 		for (Arrow a : oldDiag.arrows.values()) {
 			if (a.compareFlag != null)
 				continue;
 			Block from = oldDiag.blocks.get(new Integer(a.fromId));
-			String key = new Integer(a.fromId) + "~" + a.upStreamPort;
-			Arrow aNew = newAMap.get(key);
-			if (aNew == null) {				
-				Arrow gArr = oldDiag.copyArrow(a, newDiag, from);
+			
+			Arrow aNew = newDiag.arrows.get(new Integer(a.id));
+			if (aNew == null ||
+					aNew.fromX != a.fromX ||
+					aNew.toX != a.toX ||
+					aNew.fromY != a.fromY ||
+					aNew.toY != a.toY) {	
+				newDiag.maxArrowNo = Math.max(oldDiag.maxArrowNo, newDiag.maxArrowNo);
+				int id = newDiag.maxArrowNo++;
+				Arrow gArr = oldDiag.copyArrow(a, newDiag, from, id);
 				if (gArr != null) {
 					gArr.compareFlag = "D";
 				}
 			}
 		}
-	 
-		
+	  
+		 
 		int j = getFileTabNo(newDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
 			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(j);
@@ -3775,6 +3794,11 @@ public class DrawFBP extends JFrame
 		for (Block blk : oldDiag.blocks.values()) {
 			blk.compareFlag = null;
 		}
+		
+		//System.out.println("New diag after compare");
+		//for (Arrow arr : newDiag.arrows.values()) {
+		//	System.out.println(arr.id);
+		//}
 		MyOptionPane.showMessageDialog(driver,
 				"Compare complete",			
 				MyOptionPane.INFORMATION_MESSAGE);

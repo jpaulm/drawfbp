@@ -94,7 +94,8 @@ public class Arrow implements ActionListener {
 			to = diag.blocks.get(new Integer(a.toId));
  
 		
-		g.setColor(Color.GRAY);
+		g.setColor(Color.GRAY);  
+		
 
 		Stroke stroke = ((Graphics2D)g).getStroke();
 		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
@@ -109,23 +110,26 @@ public class Arrow implements ActionListener {
 		if (driver.selArrow == this)
 			g.setColor(Color.BLUE);
 		
-		if ((from instanceof ProcessBlock
-				|| from instanceof ExtPortBlock || from instanceof Enclosure)
-				&& (to instanceof ProcessBlock || to instanceof ExtPortBlock
-						|| to instanceof Enclosure || endsAtLine))
-			if (compareFlag != null && compareFlag.equals("D"))
-				g.setColor(DrawFBP.lg);
-			else
-			//if (checkStatus == Status.UNCHECKED)
-				g.setColor(Color.BLACK);
-			//else if (checkStatus == Status.COMPATIBLE)
-			//	g.setColor(FOREST_GREEN);
-			//else
-			//	g.setColor(ORANGE_RED);
+		if (compareFlag == null || !(compareFlag.equals("D"))) {			
 
-		else if (from instanceof LegendBlock || to instanceof LegendBlock)
-			g.setColor(Color.GRAY);
+			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock
+					|| from instanceof Enclosure)
+					&& (to instanceof ProcessBlock || to instanceof ExtPortBlock
+							|| to instanceof Enclosure || endsAtLine))
+				//if (compareFlag != null && compareFlag.equals("D"))
+				//	g.setColor(DrawFBP.lg);
+				//else
+					// if (checkStatus == Status.UNCHECKED)
+					g.setColor(Color.BLACK);
+			// else if (checkStatus == Status.COMPATIBLE)
+			// g.setColor(FOREST_GREEN);
+			// else
+			// g.setColor(ORANGE_RED);
 
+			else if (from instanceof LegendBlock || to instanceof LegendBlock)
+				g.setColor(Color.GRAY);
+		}
+		
 		int fx, fy, tx, ty;
 		fx = fromX;
 		fy = fromY;
@@ -274,9 +278,9 @@ public class Arrow implements ActionListener {
 		}
 		if (extraArrowhead != null)  
 			extraArrowhead.draw(g); 
-		
 				 
 	}
+	
 	void calcLimits(int x1, int x2, int y1, int y2) {
 		if (x1 < x2) {
 			diag.maxX = Math.max(x2 + 20, diag.maxX);
@@ -367,6 +371,7 @@ public class Arrow implements ActionListener {
 	
 	void showCompareFlag(Graphics g){
 		if (compareFlag != null && !compareFlag.equals(" ")) {
+			Color col = g.getColor();
 			int tx = toX;
 			int ty = toY;
 			if (bends != null) {
@@ -381,6 +386,7 @@ public class Arrow implements ActionListener {
 			g.fillOval(x + 2, y + 2, 22, 22);
 			g.setColor(Color.BLACK);
 			g.drawString(compareFlag, x + 10, y + 17);
+			g.setColor(col);
 		}
 	}
 
