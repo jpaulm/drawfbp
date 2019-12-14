@@ -123,6 +123,10 @@ Note: if you are displaying a network built using a pre-v2.13.0 version of DrawF
 
 **DrawFBP properties** are held in a file called <code>DrawFBPProperties.xml</code> in the user's home directory.  If this does not exist, it will be created the first time the user runs DrawFBP - it is automatically updated as the user uses various DrawFBP facilities.
 
+Compare facility
+---
+
+DrawFBP now (as of v2.19.0) lets you compare two diagrams, indicating which blocks and lines have been added or deleted.  In the case of "delete" for blocks and lines, the Compare facility paints the old block and/or line in pale gray.  Deleted blocks and lines are marked with a "D" symbol, and deleted blocks also with the word "ghost".
 
 XML Schema for `.drw` files
 ---
