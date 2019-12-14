@@ -126,7 +126,9 @@ Note: if you are displaying a network built using a pre-v2.13.0 version of DrawF
 Compare facility
 ---
 
-DrawFBP now (as of v2.19.0) lets you compare two diagrams, indicating which blocks and lines have been added or deleted.  In the case of "delete" for blocks and lines, the Compare facility paints the old block and/or line in pale gray.  Deleted blocks and lines are marked with a "D" symbol, and deleted blocks also with the word "ghost".
+DrawFBP now (as of v2.19.0) lets you compare two diagrams, indicating which blocks and lines have been added or deleted.  In the case of "delete" for blocks and lines, the Compare facility paints the old block and/or line in pale gray.   
+
+Added blocks and lines are marked with an "A" symbol, deleted blocks and lines with a "D" symbol, and deleted blocks also with the word "ghost".
 
 XML Schema for `.drw` files
 ---
