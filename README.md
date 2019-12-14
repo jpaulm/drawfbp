@@ -14,11 +14,11 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 Release History
 ---
 
-Latest release is v2.18.7: the jar file (which includes the `math.geom2d` jar file) - `drawfbp-2.18.7.jar` - can be obtained from the Releases folder, or from `build/libs`.  This release's jar file is also available from Maven - click on the Maven shield below, and select `download` and `jar`.
+Latest release is v2.19.0: the jar file (which includes the `math.geom2d` jar file) - `drawfbp-2.19.0.jar` - can be obtained from the Releases folder, or from `build/libs`.  The previous release's jar file is also available from Maven - click on the Maven shield below, and select `download` and `jar`.
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-Releases from v2.18.2 onwards have a much speeded up sort function (by name or by date, optionally).  The current version - `drawfbp-2.18.7.jar` - is now available for evaluation.
+Releases from v2.18.2 onwards have a much speeded up sort function (by name or by date, optionally).  The current version - `drawfbp-2.19.0.jar` - is now available for evaluation.
 
 Now all you have to do to run one of the recent releases is to position to wherever you have stored your DrawFBP jar file, and enter:
 
@@ -109,8 +109,6 @@ Running DrawFBP
 ----
 DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  The combination is called a "fat jar" file - before v2.18.1, the jar name contained `all-`; from v2.18.1 on, the `all-` has been dropped.  You can download DrawFBP from Maven (search for DrawFBP).  
 
-To run DrawFBP's Help facility, you will need the standard `javax.help` JavaHelp jar file (provided in the `lib` directory).  The first time you launch Help, you will be prompted to specify a folder to hold the `javax.help` jar file.  DrawFBP will remember this location from now on.
-
 DrawFBP has been compiled to run on Java 1.8.
 
 If you want access to the Java annotations of your components, add the jar file(s) containing them (at least JavaFBP and possibly others) to the project Properties/Build Path (for Eclipse), or e.g. type on the command line  
@@ -125,13 +123,6 @@ Note: if you are displaying a network built using a pre-v2.13.0 version of DrawF
 
 **DrawFBP properties** are held in a file called <code>DrawFBPProperties.xml</code> in the user's home directory.  If this does not exist, it will be created the first time the user runs DrawFBP - it is automatically updated as the user uses various DrawFBP facilities.
 
-
-JavaHelp facility
----
-
-DrawFBP has a help facility which uses the powerful JavaHelp facility.  The first time you click on Help/Launch Help, you will be prompted to locate the `javahelp.jar` file.  This is the standard JavaHelp jar file, and can be obtained from Maven Central, by doing a search for artifact `javahelp`, or from http://www.jpaulmorrison.com/graphicsstuff/DrawFBP-Help.jar , which has the same contents.
-
-From then on, DrawFBP will remember the location of your DrawFBP-Help.jar file in your `DrawFBPProperties.xml` file.
 
 XML Schema for `.drw` files
 ---
