@@ -1825,7 +1825,7 @@ final boolean SAVEAS = true;
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
 				if (fCP == driver.curDiag.fCParm[Diagram.JARFILE]
-						|| fCP == driver.curDiag.fCParm[Diagram.JHELP]) {
+						/* || fCP == driver.curDiag.fCParm[Diagram.JHELP] */) {
 					processOK();
 					return;
 				}

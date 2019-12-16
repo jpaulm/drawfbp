@@ -99,7 +99,7 @@ public class DrawFBP extends JFrame
 	JTabbedPaneWithCloseIcons jtp;
 
 	String javaFBPJarFile = null;
-	String jhallJarFile = null;
+	//String jhallJarFile = null;
 
 	Block selBlockM = null; // used only when mousing over
 	Block selBlock = null; // permanent select
@@ -1127,9 +1127,9 @@ public class DrawFBP extends JFrame
 						"currentFBPNetworkDir", "Specify file name for generated FBP code",
 						".fbp", new FBPFilter(), "fbp notation");
  
-		diag.fCParm[Diagram.JHELP] = new  FileChooserParm("Java Help file", "jhallJarFile",
-				"Choose a directory for the JavaHelp jar file", ".jar",
-				new JarFileFilter(), "Help files");
+		//diag.fCParm[Diagram.JHELP] = new  FileChooserParm("Java Help file", "jhallJarFile",
+		//		"Choose a directory for the JavaHelp jar file", ".jar",
+		//		new JarFileFilter(), "Help files");
 				
 			
 		diag.fCParm[Diagram.JARFILE] = new  FileChooserParm("Jar file", "javaFBPJarFile",
@@ -2127,7 +2127,7 @@ public class DrawFBP extends JFrame
 		propertyDescriptions.put("Default component language",
 				"defaultCompLang");
 		propertyDescriptions.put("JavaFBP jar file", "javaFBPJarFile");
-		propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
+		//propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
 		propertyDescriptions.put("Additional Jar Files",
 				"additionalJarFiles");
 		propertyDescriptions.put("Current folder for .exe files",

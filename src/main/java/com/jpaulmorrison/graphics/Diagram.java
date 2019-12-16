@@ -73,14 +73,14 @@ public class Diagram {
 	//String targetLang;
 	public static int DIAGRAM = 0;
 	public static int IMAGE = 1;	
-	public static int JHELP = 2;
-	public static int JARFILE = 3;   
-	public static int CLASS = 4;   
-	public static int PROCESS = 5;   
-	public static int NETWORK = 6;   
-	public static int DLL = 7; 
-	public static int EXE = 8;   
-	public static int FBP = 9;    
+	//public static int JHELP = 2;
+	public static int JARFILE = 2;   
+	public static int CLASS = 3;   
+	public static int PROCESS = 4;   
+	public static int NETWORK = 5;   
+	public static int DLL = 6; 
+	public static int EXE = 7;   
+	public static int FBP = 8;    
 	
 	FileChooserParm[] fCParm;
 	//int tabNum;   // index in driver.jtp
