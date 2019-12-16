@@ -3772,7 +3772,7 @@ public class DrawFBP extends JFrame
 					aNew.fromY != a.fromY ||
 					aNew.toY != a.toY) {	
 				newDiag.maxArrowNo = Math.max(oldDiag.maxArrowNo, newDiag.maxArrowNo);
-				int id = newDiag.maxArrowNo++;
+				int id = ++newDiag.maxArrowNo;
 				Arrow gArr = oldDiag.copyArrow(a, newDiag, from, id);
 				if (gArr != null) {
 					gArr.compareFlag = "D";

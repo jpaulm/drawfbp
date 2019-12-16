@@ -372,14 +372,23 @@ public class Arrow implements ActionListener {
 	void showCompareFlag(Graphics g){
 		if (compareFlag != null && !compareFlag.equals(" ")) {
 			Color col = g.getColor();
+			int fx = fromX;
+			int fy = fromY; 
 			int tx = toX;
-			int ty = toY;
-			if (bends != null) {
-				tx = bends.getFirst().x;
-				ty = bends.getFirst().y;
+			int ty = toY;			
+			
+			if (bends != null) { 
+				for (int index = 0; index < bends.size(); index ++) {
+					tx = bends.get(index).x;
+					ty = bends.get(index).y;
+					if (index > 0) {
+						fx = bends.get(index - 1).x;
+						fy = bends.get(index - 1).y;
+					}
+				}
 			}
-			int x = (fromX + tx) / 2 - 12;
-			int y = (fromY + ty) / 2 - 12;
+			int x = (fx + tx) / 2 - 12;
+			int y = (fy + ty) / 2 - 12;
 			g.setColor(Color.BLACK);
 			g.drawOval(x, y, 24, 24);
 			g.setColor(DrawFBP.ly);
@@ -476,6 +485,7 @@ public class Arrow implements ActionListener {
 			id = diag.maxArrowNo + 1;
 
 		diag.maxArrowNo = Math.max(id, diag.maxArrowNo);
+		//System.out.println(diag.maxArrowNo);
 
 	}
 

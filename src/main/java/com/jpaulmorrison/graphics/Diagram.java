@@ -452,7 +452,7 @@ public class Diagram {
 
 		for (Block block : blocks.values()) {
 			if (!block.deleteOnSave && 
-					!(block.compareFlag != null && block.compareFlag.equals("D"))) { // exclude deleteOnSave & ghost blocks
+					(block.compareFlag == null || !(block.compareFlag.equals("D")))) { // exclude deleteOnSave & ghost blocks
 				// String s = block.diagramFileName;
 				// block.diagramFileName = DrawFBP.makeRelFileName(
 				// s, file.getAbsolutePath());
@@ -928,8 +928,8 @@ public class Diagram {
 		arrCopy.fromId = arrow.fromId;
 		arrCopy.toId = arrow.toId;
 		
-		arrCopy.id = diag.maxArrowNo++;
-		//arrCopy.id = id;
+		//arrCopy.id = diag.maxArrowNo++;
+		arrCopy.id = id;
 		arrCopy.capacity = arrow.capacity;
 		arrCopy.segNo = arrow.segNo;
 		arrCopy.endsAtBlock = arrow.endsAtBlock;
