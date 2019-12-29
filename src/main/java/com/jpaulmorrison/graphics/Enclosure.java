@@ -191,7 +191,7 @@ public class Enclosure extends Block {
 			g.setColor(Color.BLACK);
 		}
 		*/
-		//showZones(g);
+		showZones(g);
 		calcDiagMaxAndMin(x - width / 2, x + width / 2,
 				y - height / 2, y + height / 2);
 		
@@ -208,5 +208,18 @@ public class Enclosure extends Block {
 		gp.closePath();	
 		return gp;
 	}
-	 
+	void showArrowEndAreas(Graphics g) {
+		Color col = g.getColor();
+		g.setColor(DrawFBP.grey);   
+
+		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // left
+		//if (!(this instanceof Enclosure))
+		//	g.fillRect(cx - width / 2 - 1, cy - height / 2 - 1, width + 3, 4); // top
+		//if (!(this instanceof ReportBlock)) {
+			g.fillRect(cx - width / 2 - zoneWidth / 2, cy + height / 2 - zoneWidth, width + 3, zoneWidth); // bottom
+			g.fillRect(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // right
+		//} else
+		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height - 12); // right
+		g.setColor(col);
+	} 
 }

@@ -609,8 +609,9 @@ public class MyFileChooser extends JFrame
 					ll.add("Folder does not exist or is not directory");
 					//return;					
 				}
-			else 
+			else {
 				inJarTree = true;
+			}
 				
 			 
 				//else {
@@ -618,8 +619,10 @@ public class MyFileChooser extends JFrame
 
 				if (!inJarTree) {
 					if (listHead.equals(listShowingJarFile)) {
-						t = driver.javaFBPJarFile;
 						String v = "";
+						t = driver.javaFBPJarFile;
+						if (t != null) {
+							
 						try {
 							File f2 = new File(t);
 							v = Files.getLastModifiedTime(f2.toPath()).toString();
@@ -632,6 +635,7 @@ public class MyFileChooser extends JFrame
 							v = v.substring(0, i);
 						v = v.replace("T", " ");
 						ll.add(t + "@" + v);
+					}
 						for (String u : driver.jarFiles.values()) {
 							if (new File(u).exists()) {
 								try {
@@ -641,7 +645,7 @@ public class MyFileChooser extends JFrame
 									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}	
-								i = v.lastIndexOf(".");
+								int i = v.lastIndexOf(".");
 								if (i > -1)
 									v = v.substring(0, i);
 								v = v.replace("T", " ");

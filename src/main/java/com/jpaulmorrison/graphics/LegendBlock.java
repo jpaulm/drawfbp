@@ -39,7 +39,8 @@ public class LegendBlock extends Block {
 		else {
 			width = 40;
 			height = 15;
-			showArrowEndAreas(g);
+			//showArrowEndAreas(g);
+			showZones(g);
 		}
 		
 		int tlx = cx - width / 2;

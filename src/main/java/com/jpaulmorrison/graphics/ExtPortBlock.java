@@ -41,6 +41,7 @@ public class ExtPortBlock extends Block {
 					* driver.gFontWidth / 2, cy + 24);
 			g.setColor(Color.BLACK);
 		}
+		showZones(g);
 	}
 
 	void drawIn(Graphics g, int ctr, int w) {

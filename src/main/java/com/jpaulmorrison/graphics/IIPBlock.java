@@ -48,7 +48,7 @@ public class IIPBlock extends Block {
 			g.setColor(Color.GRAY);
 			g.drawString(desc, cx - width / 2 + 4, cy + 4);
 		}
-		// showZones(g);
+		showZones(g);
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;
 		showCompareFlag(g, tlx, tly);
@@ -101,4 +101,20 @@ public class IIPBlock extends Block {
 					"Brackets not balanced in IIP string", MyOptionPane.ERROR_MESSAGE);
 		return res;
 	}
+	void showArrowEndAreas(Graphics g) {
+		Color col = g.getColor();
+		g.setColor(DrawFBP.grey);   
+
+		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // left
+		//if (!(this instanceof Enclosure))
+			g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + 2 * zoneWidth, zoneWidth); // top
+		//if (!(this instanceof ReportBlock)) {
+		//	g.fillRect(cx - width / 2 - 1, cy + height / 2 - 2, width + 3, 4); // bottom
+		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height); // right
+		//} else
+			g.fillRect(cx + width / 2 + zoneWidth , cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth); // right
+			g.fillRect(cx - width / 2 - zoneWidth / 2, cy + height / 2 - zoneWidth / 2, width + 2 * zoneWidth, zoneWidth);// bottom
+		g.setColor(col);
+	}
+	  
 }

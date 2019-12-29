@@ -548,7 +548,9 @@ public class DrawFBP extends JFrame
 
 		});
 
-		jtp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+		//jtp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+		//		.put(escapeKS, "CLOSE");
+		jtp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
 				.put(escapeKS, "CLOSE");
 
 		jtp.getActionMap().put("CLOSE", escapeAction);
@@ -835,7 +837,7 @@ public class DrawFBP extends JFrame
 		
 		
         }
-
+/*
 	BufferedImage loadImage(String s) {
 
 		InputStream is = this.getClass().getResourceAsStream("/" + s);
@@ -854,7 +856,7 @@ public class DrawFBP extends JFrame
 		}
 		return image;
 	}
-
+*/
 	public JMenuBar createMenuBar() {
 
 		// JMenu editMenu;
@@ -4620,10 +4622,37 @@ public class DrawFBP extends JFrame
 
 	}
 	
-	//public void repaint() {
-	//	super.repaint();
-	//	System.out.println("repaint");
-	//}
+	// Courtesy of  Craig Wood - Ranch Hand 
+	  
+	 public BufferedImage loadImage(String fileName)
+	    {
+	        BufferedImage image = null;
+	        // String fileName = "images/greathornedowl.jpg";
+	        try
+	        {
+	            URL url = getClass().getResource("/" + fileName);
+	            image = ImageIO.read(url);
+	            //InputStream is = this.getClass().getResourceAsStream("/" + s);
+	        }
+	        catch(MalformedURLException mue)
+	        {
+	            System.err.println("url: " + mue.getMessage());
+	        }
+	        catch(IllegalArgumentException iae)
+	        {
+	            System.err.println("arg: " + iae.getMessage());
+	        }
+	        catch(IOException ioe)
+	        {
+	            System.err.println("read: " + ioe.getMessage());
+	        }
+	        if(image == null)
+	        {
+	            image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
+	            System.out.println("unable to load image, returning default");
+	        }
+	        return image;
+	    }
 
 	public static void main(final String[] args) {
 
@@ -4796,7 +4825,8 @@ public class DrawFBP extends JFrame
 				return;
 			diag = b.diag;
 			curDiag = diag;
-			saveProp("currentDiagram", diag.diagFile.getAbsolutePath());
+			if (diag.diagFile != null)
+				saveProp("currentDiagram", diag.diagFile.getAbsolutePath());
 			//properties.remove("currentDiagram");
 			}
 

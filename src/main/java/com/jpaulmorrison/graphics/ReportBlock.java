@@ -86,9 +86,24 @@ public class ReportBlock extends Block {
 			centreDesc(g);
 		}
 
-		// showZones(g);
+		showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy + height
 				/ 2);
 
 	}
+	void showArrowEndAreas(Graphics g) {
+		Color col = g.getColor();
+		g.setColor(DrawFBP.grey);   
+
+		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // left
+		//if (!(this instanceof Enclosure))
+			g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + 3, zoneWidth); // top
+		//if (!(this instanceof ReportBlock)) {
+		//	g.fillRect(cx - width / 2 - 1, cy + height / 2 - 2, width + 3, 4); // bottom
+		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height); // right
+		//} else
+			g.fillRect(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height - 12); // right
+		g.setColor(col);
+	}
+	  
 }

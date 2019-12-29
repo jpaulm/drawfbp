@@ -35,7 +35,7 @@ import java.awt.Graphics;
 			g.drawLine(cx, cy + 4, cx + 12, cy + height/2);
 			g.drawLine(cx, cy - 2, cx - 14, cy + 5);  // arms
 			g.drawLine(cx, cy - 2, cx + 14, cy + 5);
-			//showZones(g);
+			showZones(g);
 			int tlx = cx - width / 2;
 			int tly = cy - height / 2;
 			showCompareFlag(g, tlx, tly);

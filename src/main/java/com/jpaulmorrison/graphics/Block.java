@@ -32,6 +32,7 @@ public class Block implements ActionListener {
 	int cx, cy; // coords of centre
 
 	int id;
+	int zoneWidth = 6;
 
 	//int tlx, tly;
 
@@ -111,10 +112,10 @@ public class Block implements ActionListener {
 			return;
 		}
 
-		if (this == driver.selBlock && !(this instanceof ProcessBlock)) {
-			showArrowEndAreas(g);
-			return;
-		}
+		//if (this == driver.selBlock && !(this instanceof ProcessBlock)) {
+		//	showArrowEndAreas(g);
+		//	return;
+		//}
 
 		int tlx = cx - width / 2; // top left corner
 		int tly = cy - height / 2;
@@ -169,7 +170,7 @@ public class Block implements ActionListener {
 		// width,
 		// tly + driver.fontHeight + driver.fontHeight / 2 + 3);
 
-		// showZones(g);
+		showZones(g);
 
 		if (desc != null) {
 			centreDesc(g);
@@ -375,11 +376,13 @@ public class Block implements ActionListener {
 
 	 
 	void showZones(Graphics g) {
-		if (driver.currentArrow == null) {
-			if (driver.selBlockM == this)
+		if (!(this instanceof LegendBlock))
+			return;
+		if (driver.currentArrow == null && driver.selBlockM == this)
 				showArrowEndAreas(g);
-		} else if (driver.currentArrow.fromId != id)
-			showArrowEndAreas(g);
+		 
+		//else if (driver.currentArrow.fromId != id)
+		//	showArrowEndAreas(g);
 	}
  
 	void showCompareFlag(Graphics g, int tlx, int tly){
@@ -743,17 +746,20 @@ public class Block implements ActionListener {
 
 	 
 	void showArrowEndAreas(Graphics g) {
+		//if (driver.currentArrow == null && driver.selBlockM == this) { // in showZones()
+		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 
-		g.fillRect(cx - width / 2 - 1, cy - height / 2 - 1, 4, height); // left
-		if (!(this instanceof Enclosure))
-			g.fillRect(cx - width / 2 - 1, cy - height / 2 - 1, width + 3, 4); // top
-		if (!(this instanceof ReportBlock)) {
-			g.fillRect(cx - width / 2 - 1, cy + height / 2 - 2, width + 3, 4); // bottom
-			g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height); // right
-		} else
-			g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height - 12); // right
-		g.setColor(Color.BLACK);
+		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth); // left
+		//if (!(this instanceof Enclosure))
+			g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + zoneWidth, zoneWidth); // top
+		//if (!(this instanceof ReportBlock)) {
+			g.fillRect(cx - width / 2 - zoneWidth / 2, cy + height / 2 /* - endAreaWidth */, width + zoneWidth, zoneWidth); // bottom
+			g.fillRect(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height+ zoneWidth); // right
+		//} else
+		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height - 12); // right
+		g.setColor(col);
+		//}
 	}
 	  
 

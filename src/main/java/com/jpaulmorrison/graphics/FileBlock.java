@@ -50,7 +50,7 @@ public class FileBlock extends Block {
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;
 		showCompareFlag(g, tlx, tly);
-		//showZones(g);
+		showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
 				cy - height / 2, cy + height / 2);
 	}
