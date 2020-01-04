@@ -371,7 +371,7 @@ public class DrawFBP extends JFrame
 		int h = (int) dim.getHeight();
 		// maxX = (int) (w * .8);
 		// maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);  // xxxxxxxxxxxx
+		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);  
 		// osg = buffer.createGraphics();
 		osg = (Graphics2D) buffer.getGraphics();
 		//osg = (Graphics2D) getGraphics();
@@ -4526,37 +4526,33 @@ public class DrawFBP extends JFrame
 		}
 	}
 
-	/*
-	 * public static BufferedImage getScreenShot( Component component) {
-	 * 
-	 * BufferedImage image = new BufferedImage( component.getWidth(),
-	 * component.getHeight(), BufferedImage.TYPE_INT_RGB ); // call the
-	 * Component's paint method, using // the Graphics object of the image.
-	 * component.paint( image.getGraphics() ); // alternately use .printAll(..)
-	 * return image; }
-	 */
-
-	// gives result Side or null (touches - yes/no), if point (x, y) is within 2
-	// pixels of a side;
+	
+    // "touches" changed to test if point (x, y) is within one of the side rectangles...
+	
+	// gives result Side or null (touches - yes/no)
 
 	static Side touches(Block b, int x, int y) {
 		Side side = null;
-		if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2,
-				b.cx - b.width / 2, b.cy + b.height / 2)) {
+		//if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2,
+		//		b.cx - b.width / 2, b.cy + b.height / 2))  
+		if (b.leftRect.contains(x, y))	
 			side = Side.LEFT;
-		}
-		if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2,
-				b.cx + b.width / 2, b.cy - b.height / 2)) {
+		 
+		//if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2,
+		//		b.cx + b.width / 2, b.cy - b.height / 2))  
+		if (b.topRect.contains(x, y))
 			side = Side.TOP;
-		}
-		if (nearpln(x, y, b.cx + b.width / 2, b.cy - b.height / 2,
-				b.cx + b.width / 2, b.cy + b.height / 2)) {
+		 
+		//if (nearpln(x, y, b.cx + b.width / 2, b.cy - b.height / 2,
+		//		b.cx + b.width / 2, b.cy + b.height / 2))  
+		if (b.rightRect.contains(x, y))
 			side = Side.RIGHT;
-		}
-		if (nearpln(x, y, b.cx - b.width / 2, b.cy + b.height / 2,
-				b.cx + b.width / 2, b.cy + b.height / 2)) {
+		 
+		//if (nearpln(x, y, b.cx - b.width / 2, b.cy + b.height / 2,
+		//		b.cx + b.width / 2, b.cy + b.height / 2)) 
+		if (b.botRect.contains(x, y))
 			side = Side.BOTTOM;
-		}
+		 
 
 		return side;
 	}
@@ -4578,7 +4574,7 @@ public class DrawFBP extends JFrame
 		}
 	}
 
-	void drawBlueCircle(Graphics g, int x, int y, int opt) {
+	void drawBlueCircle(Graphics g, int x, int y) {
 		Color col = g.getColor();
 
 		g.setColor(Color.BLUE);
@@ -6241,6 +6237,7 @@ public class DrawFBP extends JFrame
 
 				// blockSelForDragging = null;
 
+				setCursor(defaultCursor);
 				repaint();
 				return;
 			}
@@ -6249,6 +6246,7 @@ public class DrawFBP extends JFrame
 				((Enclosure) blockSelForDragging).corner = null;
 				blockSelForDragging = null;
 				curDiag.changed = true;
+				setCursor(defaultCursor);
 				repaint();
 				return;
 			}

@@ -314,8 +314,11 @@ public class Block implements ActionListener {
 		// int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
 		// if (opt == 1 || driver.curDiag.currentArrow.bends == null)
 
-		if (driver.arrowRoot != null)
-			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y, 1);
+		if (driver.arrowRoot != null) { 
+			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y);
+			driver.setCursor(driver.defaultCursor);
+			//driver.repaint();
+		}
 
 		if (driver.arrowEnd != null)
 			driver.drawBlackSquare(g, driver.arrowEnd.x, driver.arrowEnd.y);
