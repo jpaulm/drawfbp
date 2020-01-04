@@ -35,6 +35,7 @@ public class Block implements ActionListener {
 	int zoneWidth = 6;
 
 	//int tlx, tly;
+	int textX, textY;
 
 	static final int BLOCKWIDTH = 92; // was 76;
 
@@ -72,6 +73,10 @@ public class Block implements ActionListener {
 	//boolean added = false;
 	//boolean ghost = false;
 	String compareFlag = null;
+	Rectangle leftRect = null;
+	Rectangle topRect = null;
+	Rectangle botRect = null;
+	Rectangle rightRect = null;
 
 	static public class Types {
 		static String PROCESS_BLOCK = "B";
@@ -98,10 +103,18 @@ public class Block implements ActionListener {
 		fullClassName = null;
 		d.maxBlockNo ++;
 		id = d.maxBlockNo;
-		// HashMap<String, String> associatedCode = null;
+		//buildSides();
 
 	}
 
+	void buildSides(){
+		leftRect = new Rectangle(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth);
+		topRect = new Rectangle(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + zoneWidth, zoneWidth);		
+		rightRect = new Rectangle(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth);
+		if (!(this instanceof ReportBlock))
+			botRect = new Rectangle(cx - width / 2 - zoneWidth / 2, cy + height / 2  - zoneWidth / 2, width + zoneWidth, zoneWidth);
+	}
+	
 	void draw(Graphics g) {
 
 		if (diag == null) // fudge
@@ -170,11 +183,18 @@ public class Block implements ActionListener {
 		// width,
 		// tly + driver.fontHeight + driver.fontHeight / 2 + 3);
 
-		showZones(g);
+		
 
 		if (desc != null) {
-			centreDesc(g);
+			String str[] = centreDesc();
+			int x = textX;
+			int y = textY;
+			for (int i = 0; i < str.length; i++) {
+				g.drawString(str[i], x, y); 
+				y += driver.gFontHeight;
+			}
 		}
+		showZones(g);
 
 		if (!visible && this == driver.selBlock)
 			g.drawLine(tlx, tly, cx + width / 2, cy + height / 2);
@@ -302,6 +322,17 @@ public class Block implements ActionListener {
 
 	}
 	
+	public void adjEdgeRects() {
+		leftRect.x = cx - width / 2 - zoneWidth / 2;
+		leftRect.y = cy - height / 2 - zoneWidth / 2;
+		rightRect.x = cx + width / 2 - zoneWidth / 2;
+		rightRect.y = cy - height / 2 - zoneWidth / 2;
+		topRect.x = cx - width / 2 - zoneWidth / 2;
+		topRect.y = cy - height / 2 - zoneWidth / 2;
+		botRect.x = cx - width / 2 - zoneWidth / 2;
+		botRect.y = cy + height / 2 - zoneWidth / 2;
+	}
+	
 	void calcEdges() {
 		leftEdge = cx - width / 2;
 		rgtEdge = cx + width / 2;
@@ -316,29 +347,41 @@ public class Block implements ActionListener {
 			diag.minY = Math.min(ymin - 20, diag.minY);
 		//}
 	}
-	void centreDesc(Graphics g) {
+	String[] centreDesc() {
 
-		g.setColor(Color.BLACK);
+		//g.setColor(Color.BLACK);
 
 		int x = 0;
 		int y = 0;
-		int minX = Integer.MAX_VALUE;
+		//int minX = Integer.MAX_VALUE;
 		int maxX = 0;
 
 		String str[] = desc.split("\n");
 		boolean nonBlankLineFound = false;
-		FontMetrics metrics = g.getFontMetrics(g.getFont());
+		Graphics g = driver.getGraphics();
+		//FontMetrics metrics = g.getFontMetrics(g.getFont());
+		FontMetrics metrics = g.getFontMetrics(driver.fontg);
 
 		for (int i = 0; i < str.length; i++) {
-			x = 0;
+			//x = 0;
+			/*
 			for (int j = 0; j < str[i].length(); j++) {
 				char c = str[i].charAt(j);
 				if (c != ' ')
 					minX = Math.min(x, minX);
 
 				x += metrics.charWidth(c);
+				//System.out.println(x);
 			}
+			*/		
+			String t = str[i];
+			
+			byte[] str2 = t.getBytes();
+			x = 2 + metrics.bytesWidth(str2, 0, t.length());
+			x += x / 6;     // fudge - add 16%
+			
 			maxX = Math.max(x, maxX);
+			//System.out.println(maxX);
 			if (!(str[i].trim().equals(""))) {
 				// minY = Math.min(minY, y);
 				y += driver.gFontHeight;
@@ -349,7 +392,7 @@ public class Block implements ActionListener {
 			}
 		}
 
-		x = (maxX - minX) / 2; // find half width
+		x = (maxX) / 2; // find half width
 		x = cx - x;
 
 		y = y / 2; // find half height
@@ -361,28 +404,33 @@ public class Block implements ActionListener {
 			y = cy - y + driver.gFontHeight;
 
 		y -= driver.gFontHeight / 3; // fudge!
-		int saveY = y;
+		int saveY = y; 
+		textX = x; 
+		textY = y;
+		
 
 		for (int i = 0; i < str.length; i++) {
-			g.drawString(str[i], x, y);
+		//	g.drawString(str[i], x, y); 
 			y += driver.gFontHeight;
 		}
+		
 		if (this instanceof LegendBlock) {
 			height = y - saveY + 24;
-			width = maxX - minX + 24;
+			width = maxX + 24;
 			// calcEdges();
 		}
+		return str;
 	}
 
 	 
 	void showZones(Graphics g) {
-		if (!(this instanceof LegendBlock))
-			return;
+		//if (!(this instanceof LegendBlock))  // comment out for next release
+		//	return;
 		if (driver.currentArrow == null && driver.selBlockM == this)
-				showArrowEndAreas(g);
+			showArrowEndAreas(g);
 		 
-		//else if (driver.currentArrow.fromId != id)
-		//	showArrowEndAreas(g);
+		else if (driver.currentArrow != null && this == driver.foundBlock)
+			showArrowEndAreas(g);
 	}
  
 	void showCompareFlag(Graphics g, int tlx, int tly){
@@ -514,6 +562,7 @@ public class Block implements ActionListener {
 			Enclosure ol = (Enclosure) this;
 			ol.desc = item.get("description");
 		}
+		buildSides();
 		calcEdges();
 
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
@@ -746,20 +795,17 @@ public class Block implements ActionListener {
 
 	 
 	void showArrowEndAreas(Graphics g) {
-		//if (driver.currentArrow == null && driver.selBlockM == this) { // in showZones()
+		
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
-
-		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth); // left
-		//if (!(this instanceof Enclosure))
-			g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + zoneWidth, zoneWidth); // top
-		//if (!(this instanceof ReportBlock)) {
-			g.fillRect(cx - width / 2 - zoneWidth / 2, cy + height / 2 /* - endAreaWidth */, width + zoneWidth, zoneWidth); // bottom
-			g.fillRect(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height+ zoneWidth); // right
-		//} else
-		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height - 12); // right
+		Graphics2D g2 = (Graphics2D) g;
+		
+		g2.fill(leftRect);
+		g2.fill(topRect);
+		g2.fill(rightRect);
+		g2.fill(botRect);
 		g.setColor(col);
-		//}
+		
 	}
 	  
 
@@ -1756,6 +1802,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		//}
         
 		desc = area.getText();
+		
+		centreDesc();  
+		buildSides();
 		
 		diag.changed = true;
 

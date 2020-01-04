@@ -82,8 +82,14 @@ public class ReportBlock extends Block {
 			pty[i] -= 1;
 		g.fillPolygon(ptx, pty, 11);
 
+		int x = textX;
+		int y = textY;
 		if (desc != null) {
-			centreDesc(g);
+			String str[] = centreDesc();
+			for (int i = 0; i < str.length; i++) {
+				g.drawString(str[i], x, y); 
+				y += driver.gFontHeight;
+			}
 		}
 
 		showZones(g);

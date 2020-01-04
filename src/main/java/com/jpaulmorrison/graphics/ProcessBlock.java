@@ -7,7 +7,7 @@ public class ProcessBlock extends Block {
 		width = BLOCKWIDTH;
 		height = BLOCKHEIGHT;
 		type = Block.Types.PROCESS_BLOCK;
-		//calcEdges();
+		//buildSides();
 	}
 	
 }

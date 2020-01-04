@@ -309,6 +309,7 @@ public class DiagramBuilder {
 									block = new ProcessBlock(diag);
 								}
 								block.buildBlockFromXML(item);
+								block.buildSides();
 								block.calcEdges();								
 							}
 							

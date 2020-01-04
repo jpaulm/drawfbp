@@ -1884,6 +1884,7 @@ public class DrawFBP extends JFrame
 				//if (!blk.editDescription(CREATE))
 				//	return;;
 				curDiag.changed = true;
+				blk.buildSides();
 			}
 			repaint();
 			return;
@@ -2081,6 +2082,7 @@ public class DrawFBP extends JFrame
 			if (blkType.equals(Block.Types.IIP_BLOCK)) {
 				IIPBlock ib = (IIPBlock) block;
 				block.desc = ib.checkNestedChars(block.desc);
+				//block.buildSides();
 			}
 		}
 		block.calcEdges();
@@ -2090,6 +2092,7 @@ public class DrawFBP extends JFrame
 		// diag.changed = true;
 		selBlock = block;
 		// selArrowP = null;
+		block.buildSides();
 		return block;
 	}
 
@@ -5500,10 +5503,17 @@ public class DrawFBP extends JFrame
 							&& between(ya, block.topEdge - hh,
 									block.topEdge + hh / 2);
 				} else {
-					udi = between(xa, block.leftEdge + block.width / 8,
-							block.rgtEdge - block.width / 8)
-							&& between(ya, block.topEdge + block.height / 8,
-									block.botEdge - block.height / 8);
+					//udi = between(xa, block.leftEdge + block.width / 8,
+					//		block.rgtEdge - block.width / 8)
+					//		&& between(ya, block.topEdge + block.height / 8,
+					//				block.botEdge - block.height / 8);
+					
+					// anywhere in block....
+					
+					udi = between(xa, block.leftEdge - block.zoneWidth / 2,
+							block.rgtEdge + block.zoneWidth / 2)
+							&& between(ya, block.topEdge - block.zoneWidth / 2,
+									block.botEdge + block.zoneWidth / 2);
 				}
 
 				if (udi) {
@@ -5783,6 +5793,7 @@ public class DrawFBP extends JFrame
 				for (Block block : curDiag.blocks.values()) {
 					block.cx = block.cx + xa - panX;
 					block.cy = block.cy + ya - panY;
+					block.buildSides();
 					block.calcEdges();
 				}
 				for (Arrow arrow : curDiag.arrows.values()) {
@@ -5843,6 +5854,7 @@ public class DrawFBP extends JFrame
 					enc.height = oy + oh / 2 - ya;  // oy is value of cy when dragging started
 					enc.cx = xa + enc.width / 2;   // ow is value of width when dragging started
 					enc.cy = ya + enc.height / 2;  // oh is value of height when dragging started
+					enc.buildSides();
 					enc.calcEdges();
 					curDiag.changed = true;
 					repaint();
@@ -5854,6 +5866,7 @@ public class DrawFBP extends JFrame
 					enc.cx = xa + enc.width / 2;
 					enc.cy = ya - enc.height / 2;
 					enc.calcEdges();
+					enc.buildSides();
 					curDiag.changed = true;
 					repaint();
 					return;
@@ -5864,6 +5877,7 @@ public class DrawFBP extends JFrame
 					enc.cx = xa - enc.width / 2;
 					enc.cy = ya + enc.height / 2;
 					enc.calcEdges();
+					enc.buildSides();
 					curDiag.changed = true;
 					repaint();
 					return;
@@ -5874,6 +5888,7 @@ public class DrawFBP extends JFrame
 					enc.cx = xa - enc.width / 2;
 					enc.cy = ya - enc.height / 2;
 					enc.calcEdges();
+					enc.buildSides();
 					curDiag.changed = true;
 					repaint();
 					return;
@@ -5910,9 +5925,21 @@ public class DrawFBP extends JFrame
 					}
 				}
 
-				block.cx += xa - oldx;
-				block.cy += ya - oldy;
-
+				int x_inc = xa - oldx;
+				int y_inc = ya - oldy;
+				block.cx += x_inc;
+				block.cy += y_inc;
+				block.topRect.x += x_inc; 		
+				block.topRect.y += y_inc;
+				if (block.botRect != null) {
+					block.botRect.x += x_inc; 
+					block.botRect.y += y_inc; 
+				}
+				block.leftRect.x += x_inc; 
+				block.leftRect.y += y_inc; 
+				block.rightRect.x += x_inc; 
+				block.rightRect.y += y_inc; 
+				
 				block.calcEdges();
 
 				if (arrowRoot != null && arrowRoot.block == block) {
@@ -5927,6 +5954,7 @@ public class DrawFBP extends JFrame
 						for (Block bk : enc.llb) {
 							bk.cx += xa - oldx;
 							bk.cy += ya - oldy;
+							bk.buildSides();
 							bk.calcEdges();
 						}
 						repaint();
@@ -6175,6 +6203,7 @@ public class DrawFBP extends JFrame
 				if (blockSelForDragging.hNeighbour != null) {
 					if (curDiag.clickToGrid) {
 						blockSelForDragging.cy = blockSelForDragging.hNeighbour.cy;
+						blockSelForDragging.adjEdgeRects();
 						blockSelForDragging.calcEdges();
 					}
 					blockSelForDragging.hNeighbour = null;
@@ -6183,6 +6212,7 @@ public class DrawFBP extends JFrame
 				if (blockSelForDragging.vNeighbour != null) {
 					if (curDiag.clickToGrid) {
 						blockSelForDragging.cx = blockSelForDragging.vNeighbour.cx;
+						blockSelForDragging.adjEdgeRects();
 						blockSelForDragging.calcEdges();
 					}
 					blockSelForDragging.vNeighbour = null;
@@ -6609,6 +6639,8 @@ public class DrawFBP extends JFrame
 
 		}
 
+		
+		
 		public void mouseClicked(MouseEvent arg0) {
 			// do nothing
 		}

@@ -564,7 +564,8 @@ public class Diagram {
 		enc.calcEdges();		
 		
 		findEnclosedBlocksAndArrows(enc);
-				
+		
+						
 		// delete enclosed blocks from old diagram, and add to new one
 		
 		for (Block blk : enc.llb) {
@@ -581,18 +582,45 @@ public class Diagram {
 		ProcessBlock subnetBlock = buildSubnetBlock(sbnDiag, origDiag, enc, enc.cx, enc.cy);
 		sbnDiag.motherBlock = subnetBlock;
 		
-		copyArrows(sbnDiag, enc, subnetBlock);   // categorize arrows in (old) Diagram, making copies of "crossers"
+		
 		
 		// get arrows that were totally enclosed, delete from old diagram and add to new diagram
 		
 		for (Arrow arrow : enc.lla) {
 			Integer aid = new Integer(arrow.id);
 			arrows.remove(aid);
-			sbnDiag.arrows.put(aid, arrow); // add arrow to new
-													// diagram
+			sbnDiag.arrows.put(aid, arrow); // add arrow to new diagram
+			//System.out.println("Added to new diag: " + arrow.id);
 			arrow.diag = sbnDiag;
 			driver.selArrow = arrow;
-			//changed = true;
+			// changed = true;
+		}
+
+		// categorize arrows in (old) Diagram, making copies of "crossers"
+
+		for (Arrow arrow : arrows.values()) {
+
+			Block from = blocks.get(new Integer(arrow.fromId));
+			Block to = blocks.get(new Integer(arrow.toId));
+			Arrow a2 = arrow.findLastArrowInChain();
+			if (a2 != null)
+				to = blocks.get(new Integer(a2.toId));
+			// arrow.type = " ";
+
+			// test if arrow crosses a boundary; if so, copy
+
+			if (to == null && from != null || from == null && to != null) {
+				int id = ++maxArrowNo;
+				copyArrow(arrow, sbnDiag, from, id);
+				if (from == null) {
+					arrow.type = "O";
+					arrow.fromId = subnetBlock.id;
+				} else {
+					arrow.type = "I";
+					arrow.toId = subnetBlock.id;
+				}
+
+			}
 		}
 				
 		// now go through remaining arrows, creating appropriate ExtPortBlock's
@@ -602,6 +630,7 @@ public class Diagram {
 						
 			if (arrow.type.equals("I")) {
 				sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
+				//System.out.println("I-block added to new diag: " + arrow.copy.id);
 				
 				ExtPortBlock eb = new ExtPortBlock(sbnDiag);
 				
@@ -646,11 +675,13 @@ public class Diagram {
 				arrow.toX = var.x;
 				arrow.toY = var.y;	
 				arrow.toId = subnetBlock.id;
+				eb.buildSides();
 			}
 			
 			
 			if (arrow.type.equals("O")) {		
 				sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
+				//System.out.println("O-block added to new diag: " + arrow.copy.id);
 				ExtPortBlock eb = new ExtPortBlock(sbnDiag);
 				eb.cx = arrow.copy.toX + eb.width / 2;
 				eb.cy = arrow.copy.toY;
@@ -676,7 +707,7 @@ public class Diagram {
 				
 				arrow.upStreamPort = ans;
 				
-							
+				eb.buildSides();			
 				eb.calcEdges();
 				//arrow.fromId = subnetBlock.id;
 				Point fixed = new Point(arrow.toX, arrow.toY);				
@@ -742,6 +773,9 @@ public class Diagram {
 				//sbnDiag.motherBlock.desc = sbnDiag.desc;
 			}
 		
+			//for (Arrow arrow : sbnDiag.arrows.values()) {
+			//	System.out.println("Subnet diag arrow: " + arrow.id);
+			//}
 			driver.repaint();
 			return;
 			}
@@ -756,6 +790,37 @@ public class Diagram {
 		}
 	}
 
+	void findEnclosedBlocksAndArrows(Enclosure enc) {
+		// look for blocks which are within enclosure
+		  
+				enc.llb = new LinkedList<Block>();
+				for (Block block : blocks.values()) {
+					if (block == enc)
+						continue;
+					if (block.leftEdge >= enc.leftEdge
+							&& block.rgtEdge <= enc.rgtEdge
+							&& block.topEdge >= enc.topEdge
+							&& block.botEdge <= enc.botEdge) {
+						enc.llb.add(block); // set aside for action
+					}
+				}
+		 
+				// look for arrows which are within enclosure
+				
+				enc.lla = new LinkedList<Arrow>();
+				for (Arrow arrow : arrows.values()) {
+					Block from = blocks.get(new Integer(arrow.fromId));
+					Block to = blocks.get(new Integer(arrow.toId));
+					Arrow a2 = arrow.findLastArrowInChain(); 
+					if (a2 != null)
+						to = blocks.get(new Integer(a2.toId));
+					
+					if (enc.llb.contains(from)  && enc.llb.contains(to)) 
+						enc.lla.add(arrow);
+				
+				}
+	}
+	
 	Point computeArrowVar (Point fix, Block subnetBlock){
 		Point var = new Point();
 		if (fix.x == subnetBlock.cx ) {
@@ -804,74 +869,11 @@ public class Diagram {
 		return var;
 	}
 	
-	void findEnclosedBlocksAndArrows(Enclosure enc) {
-		
-		// look for blocks which are within enclosure
-		  
-		enc.llb = new LinkedList<Block>();
-		for (Block block : blocks.values()) {
-			if (block == enc)
-				continue;
-			if (block.leftEdge >= enc.leftEdge
-					&& block.rgtEdge <= enc.rgtEdge
-					&& block.topEdge >= enc.topEdge
-					&& block.botEdge <= enc.botEdge) {
-				enc.llb.add(block); // set aside for action
-			}
-		}
- 
-		// look for arrows which are within enclosure
-		enc.lla = new LinkedList<Arrow>();
-		for (Arrow arrow : arrows.values()) {
-			Block from = blocks.get(new Integer(arrow.fromId));
-			Block to = blocks.get(new Integer(arrow.toId));
-			Arrow a2 = arrow.findLastArrowInChain(); 
-			if (a2 != null)
-				to = blocks.get(new Integer(a2.toId));
-			
-			if (enc.llb.contains(from)  && enc.llb.contains(to)) 
-				enc.lla.add(arrow);
-			
-		}
-		
-		 
-	}
 	
-	
-	
-	void copyArrows(Diagram sbnDiag, Enclosure enc, Block snBlock) {
-		
-		for (Arrow arrow : arrows.values()) {
-					 
-			Block from = blocks.get(new Integer(arrow.fromId));
-			Block to = blocks.get(new Integer(arrow.toId));
-			Arrow a2 = arrow.findLastArrowInChain(); 
-			if (a2 != null)
-				to = blocks.get(new Integer(a2.toId));
-			//arrow.type = " ";
-			
-			// test if arrow crosses a boundary; if so, copy 
-			
-			if (to == null && from != null ||
-					from == null && to != null)  {
-				int id = maxArrowNo++;
-				copyArrow(arrow, sbnDiag, from, id);
-				if (from == null){
-					arrow.type = "O";
-					arrow.fromId = snBlock.id;
-				}
-				else {
-					arrow.type = "I";
-					arrow.toId = snBlock.id;
-				}
-				
-			}
-		}
-	}
-
-	/*
+	/**
 	 * build double-lined block in old diagram
 	 */
+	
 	ProcessBlock buildSubnetBlock(Diagram sbnDiag, Diagram origDiag, Enclosure enc, int x, int y) {
 		ProcessBlock subnetBlock = new ProcessBlock(origDiag);
 
@@ -904,6 +906,7 @@ public class Diagram {
 		subnetBlock.cx = enc.cx;
 		subnetBlock.cy = enc.cy;
 		//subnetBlock.diag = sbnDiag;   
+		subnetBlock.buildSides();
 		subnetBlock.calcEdges();
 		return subnetBlock;
 	}

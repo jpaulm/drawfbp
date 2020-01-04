@@ -32,14 +32,23 @@ public class LegendBlock extends Block {
 			float fl = oldf.getSize2D();
 			Font f = oldf.deriveFont((float)(fl * 1.2));
 			g.setFont(f);
-			centreDesc(g);
+			String str[] = centreDesc();
+			int x = textX;
+			int y = textY;
+			for (int i = 0; i < str.length; i++) {
+				g.drawString(str[i], x, y); 
+				y += driver.gFontHeight;
+			}
 			g.setFont(oldf);
+			buildSides();
+			showZones(g);
 		}
 		 
 		else {
 			width = 40;
 			height = 15;
 			//showArrowEndAreas(g);
+			buildSides();
 			showZones(g);
 		}
 		

@@ -45,12 +45,19 @@ public class FileBlock extends Block {
 		x = cx - width / 2;
 		g.drawArc(x, y, width, 20, 190, 160);	
 		if (desc != null) {
-			centreDesc(g);
+			String str[] = centreDesc();
+			int x1 = textX;
+			int y1 = textY;
+			for (int i = 0; i < str.length; i++) {
+				g.drawString(str[i], x1, y1); 
+				y1 += driver.gFontHeight;
+			}
 		}
+		showZones(g);
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;
 		showCompareFlag(g, tlx, tly);
-		showZones(g);
+		//showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
 				cy - height / 2, cy + height / 2);
 	}

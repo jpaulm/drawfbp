@@ -42,7 +42,13 @@ import java.awt.Graphics;
 			calcDiagMaxAndMin(tlx, cx + width / 2,
 					tly, cy + height / 2);
 			if (desc != null) {
-				centreDesc(g);
+				String str[] = centreDesc();
+				int x = textX;
+				int y = textY;
+				for (int i = 0; i < str.length; i++) {
+					g.drawString(str[i], x, y); 
+					y += driver.gFontHeight;
+				}
 			}
 			}
 }

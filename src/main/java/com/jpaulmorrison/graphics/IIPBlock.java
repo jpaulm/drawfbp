@@ -15,6 +15,7 @@ public class IIPBlock extends Block {
 		type = Block.Types.IIP_BLOCK;
 		//width = driver.fontWidth * 20 + 4;
 		height = driver.gFontHeight + 4;
+		//buildSides();
 		//calcEdges();
 	}
 	
@@ -55,6 +56,7 @@ public class IIPBlock extends Block {
 		calcDiagMaxAndMin(tlx, cx + width / 2, tly, cy + height / 2);
 		g.setFont(fontsave);
 	}
+	
 	String checkNestedChars(String s) {
 		Stack<String> stk = new Stack<String>();
 		String chars = "{[(<}])>";
