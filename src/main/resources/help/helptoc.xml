@@ -25,6 +25,7 @@
        <tocitem text="Ports" target="ports" />
        <tocitem text="Subnets" target="subnets" />
        <tocitem text="Dragging" target="dragging"/>       
+       <tocitem text="Comparing Diagrams" target="comparing"/>  
        <tocitem text="Zoom In/Out" target="zoom"/>    
        <tocitem text="Panning" target="panning"/> 
        <tocitem text="Fonts" target="fonts"/>   

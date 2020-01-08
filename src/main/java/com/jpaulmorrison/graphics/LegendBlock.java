@@ -28,10 +28,10 @@ public class LegendBlock extends Block {
 				g.setColor(Color.BLACK);
 			// g.setColor(Color.GRAY);
 			//drawDesc(g);
-			Font oldf = g.getFont();
-			float fl = oldf.getSize2D();
-			Font f = oldf.deriveFont((float)(fl * 1.2));
-			g.setFont(f);
+			//Font oldf = g.getFont();
+			//float fl = oldf.getSize2D();
+			//Font f = oldf.deriveFont((float)(fl * 1.2));
+			//g.setFont(f);
 			String str[] = centreDesc();
 			int x = textX;
 			int y = textY;
@@ -39,7 +39,7 @@ public class LegendBlock extends Block {
 				g.drawString(str[i], x, y); 
 				y += driver.gFontHeight;
 			}
-			g.setFont(oldf);
+			//g.setFont(oldf);
 			buildSides();
 			showZones(g);
 		}

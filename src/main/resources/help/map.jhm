@@ -24,7 +24,7 @@
       <mapID target="dragging" url="dragging.html" />
       <mapID target="zoom" url="zoom.html" />
       <mapID target="panning" url="panning.html" />
-      
+      <mapID target="comparing" url="comparing.html" />      
       <mapID target="gettingstarted" url="gettingstarted.html" />
       <mapID target="genprog" url="genprog.html" />
       <mapID target="propfile" url="propfile.html" />
