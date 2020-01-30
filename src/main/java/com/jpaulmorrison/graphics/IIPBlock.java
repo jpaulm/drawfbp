@@ -107,15 +107,16 @@ public class IIPBlock extends Block {
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 
-		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // left
+		//int zW = (int) Math.round(zoneWidth * DrawFBP.scalingFactor / 2);
+		g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height); // left
 		//if (!(this instanceof Enclosure))
-			g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + 2 * zoneWidth, zoneWidth); // top
+			g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, width + 2 * driver.zWS, driver.zWS); // top
 		//if (!(this instanceof ReportBlock)) {
 		//	g.fillRect(cx - width / 2 - 1, cy + height / 2 - 2, width + 3, 4); // bottom
 		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height); // right
 		//} else
-			g.fillRect(cx + width / 2 + zoneWidth , cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth); // right
-			g.fillRect(cx - width / 2 - zoneWidth / 2, cy + height / 2 - zoneWidth / 2, width + 2 * zoneWidth, zoneWidth);// bottom
+			g.fillRect(cx + width / 2 + driver.zWS, cy - height / 2 - driver.zWS / 2, driver.zWS / 2 * 2, height + driver.zWS); // right
+			g.fillRect(cx - width / 2 - driver.zWS / 2, cy + height / 2 - driver.zWS / 2, width + 4 * driver.zWS / 2, driver.zWS);// bottom
 		g.setColor(col);
 	}
 	  

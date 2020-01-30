@@ -101,14 +101,15 @@ public class ReportBlock extends Block {
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 
-		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // left
+		//int zW = (int) Math.round(zoneWidth * DrawFBP.scalingFactor / 2);
+		g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height); // left
 		//if (!(this instanceof Enclosure))
-			g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + 3, zoneWidth); // top
+			g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, width + driver.zWS / 2, driver.zWS); // top
 		//if (!(this instanceof ReportBlock)) {
 		//	g.fillRect(cx - width / 2 - 1, cy + height / 2 - 2, width + 3, 4); // bottom
 		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height); // right
 		//} else
-			g.fillRect(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height - 12); // right
+			g.fillRect(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height - driver.zWS); // right
 		g.setColor(col);
 	}
 	  

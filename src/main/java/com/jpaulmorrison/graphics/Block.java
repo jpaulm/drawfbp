@@ -32,7 +32,7 @@ public class Block implements ActionListener {
 	int cx, cy; // coords of centre
 
 	int id;
-	int zoneWidth = 6;
+	//static final int zoneWidth = 6;
 
 	//int tlx, tly;
 	int textX, textY;
@@ -108,11 +108,12 @@ public class Block implements ActionListener {
 	}
 
 	void buildSides(){
-		leftRect = new Rectangle(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth);
-		topRect = new Rectangle(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, width + zoneWidth, zoneWidth);		
-		rightRect = new Rectangle(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height + zoneWidth);
+		//int zW = (int) Math.round(zoneWidth * DrawFBP.scalingFactor / 2);
+		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height + driver.zWS);
+		topRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, width + driver.zWS, driver.zWS);		
+		rightRect = new Rectangle(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height + driver.zWS);
 		if (!(this instanceof ReportBlock))
-			botRect = new Rectangle(cx - width / 2 - zoneWidth / 2, cy + height / 2  - zoneWidth / 2, width + zoneWidth, zoneWidth);
+			botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, width + driver.zWS, driver.zWS );
 	}
 	
 	void draw(Graphics g) {
@@ -314,26 +315,31 @@ public class Block implements ActionListener {
 		// int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
 		// if (opt == 1 || driver.curDiag.currentArrow.bends == null)
 
-		if (driver.arrowRoot != null) { 
-			driver.drawBlueCircle(g, driver.arrowRoot.x, driver.arrowRoot.y);
+		if (driver.fpArrowRoot != null) { 
+			driver.drawBlueCircle(g, driver.fpArrowRoot.x, driver.fpArrowRoot.y);
 			driver.setCursor(driver.defaultCursor);
 			//driver.repaint();
 		}
 
-		if (driver.arrowEnd != null)
-			driver.drawBlackSquare(g, driver.arrowEnd.x, driver.arrowEnd.y);
-
+		 
+		if (driver.fpArrowEndB != null){
+			//if (driver.currentArrow != null && driver.currentArrow.toId != -1 && !driver.currentArrow.endsAtBlock)
+				driver.drawBlueCircle(g, driver.fpArrowEndB.x, driver.fpArrowEndB.y);
+			//else if (!driver.fpArrowEnd.arrow.endsAtBlock)
+			//	driver.drawBlackSquare(g, driver.fpArrowEnd.x, driver.fpArrowEnd.y);
+		}
+		 
 	}
 	
 	public void adjEdgeRects() {
-		leftRect.x = cx - width / 2 - zoneWidth / 2;
-		leftRect.y = cy - height / 2 - zoneWidth / 2;
-		rightRect.x = cx + width / 2 - zoneWidth / 2;
-		rightRect.y = cy - height / 2 - zoneWidth / 2;
-		topRect.x = cx - width / 2 - zoneWidth / 2;
-		topRect.y = cy - height / 2 - zoneWidth / 2;
-		botRect.x = cx - width / 2 - zoneWidth / 2;
-		botRect.y = cy + height / 2 - zoneWidth / 2;
+		leftRect.x = cx - width / 2 - driver.zWS / 2;
+		leftRect.y = cy - height / 2 - driver.zWS / 2;
+		rightRect.x = cx + width / 2 - driver.zWS / 2;
+		rightRect.y = cy - height / 2 - driver.zWS / 2;
+		topRect.x = cx - width / 2 - driver.zWS / 2;
+		topRect.y = cy - height / 2 - driver.zWS / 2;
+		botRect.x = cx - width / 2 - driver.zWS / 2;
+		botRect.y = cy + height / 2 - driver.zWS / 2;
 	}
 	
 	void calcEdges() {

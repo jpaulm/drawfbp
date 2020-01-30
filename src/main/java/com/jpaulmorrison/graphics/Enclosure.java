@@ -198,6 +198,7 @@ public class Enclosure extends Block {
 		//calcDiagMaxAndMin(xs, xs + width,   // enclosure may have been stretched...
 		//		ys, ys + height);
 	}
+	
 	static GeneralPath drawSemicircle(int sx, int sy, int multiplier) {
 		GeneralPath gp = new GeneralPath();
 		int y = sy - 10;
@@ -208,18 +209,22 @@ public class Enclosure extends Block {
 		gp.closePath();	
 		return gp;
 	}
+	
 	void showArrowEndAreas(Graphics g) {
+		 
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 
-		g.fillRect(cx - width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // left
+		//int zW = (int) Math.round(zoneWidth * DrawFBP.scalingFactor / 2);
+		g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height); // left
 		//if (!(this instanceof Enclosure))
 		//	g.fillRect(cx - width / 2 - 1, cy - height / 2 - 1, width + 3, 4); // top
 		//if (!(this instanceof ReportBlock)) {
-			g.fillRect(cx - width / 2 - zoneWidth / 2, cy + height / 2 - zoneWidth, width + 3, zoneWidth); // bottom
-			g.fillRect(cx + width / 2 - zoneWidth / 2, cy - height / 2 - zoneWidth / 2, zoneWidth, height); // right
+			g.fillRect(cx - width / 2 - driver.zWS / 2, cy + height / 2 - driver.zWS / 2 * 2, width + 3, driver.zWS ); // bottom
+			g.fillRect(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height); // right
 		//} else
 		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height - 12); // right
 		g.setColor(col);
+		 
 	} 
 }

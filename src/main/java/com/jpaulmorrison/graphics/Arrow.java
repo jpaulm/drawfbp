@@ -224,9 +224,14 @@ public class Arrow implements ActionListener {
 
 		
 		
-		if (!endsAtBlock && !endsAtLine) 		
-			g.drawRect(x - 3, toY - 3, 6, 6);		
-			 
+		if (!endsAtBlock && !endsAtLine && driver.fpArrowEndA == null && driver.fpArrowEndB == null) {		
+			//g.drawRect(x - 3, toY - 3, 6, 6);
+			driver.drawBlackSquare(g, x, toY);
+		}
+		
+		if (driver.fpArrowEndA != null) 
+			//if (driver.currentArrow != null && driver.currentArrow.toId != -1 && !driver.currentArrow.endsAtBlock)
+				driver.drawBlueCircle(g, driver.fpArrowEndA.x, driver.fpArrowEndA.y);
 		
 		if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
@@ -234,7 +239,7 @@ public class Arrow implements ActionListener {
 							|| to instanceof ExtPortBlock || to instanceof Enclosure)) {
 				Arrowhead ah = new Arrowhead(fx, fy, toX, toY);  
 				ah.draw(g);	
-				driver.arrowEnd = null;
+				driver.fpArrowEndB = null;
 				//driver.currentArrow = null;
 			}
 
@@ -280,6 +285,7 @@ public class Arrow implements ActionListener {
 			extraArrowhead.draw(g); 
 				 
 	}
+	
 	
 	void calcLimits(int x1, int x2, int y1, int y2) {
 		if (x1 < x2) {

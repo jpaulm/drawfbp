@@ -141,11 +141,12 @@ public class DrawFBP extends JFrame
 
 	String blockType = Block.Types.PROCESS_BLOCK;
 
-	FoundPoint arrowRoot = null; // this is used to draw blue circle where
+	FoundPointB fpArrowRoot = null; // this is used to draw blue circle where
 									// arrows can start
-	FoundPoint arrowEnd = null; // this is used to draw black square where
+	FoundPointB fpArrowEndB = null; // this is used to draw black square where
 								// arrows can end
-	// Arrow foundArrow = null;
+	FoundPointA fpArrowEndA = null;
+	//Arrow foundArrow = null;
 	Arrow currentArrow = null;
 	Block foundBlock;
 
@@ -160,6 +161,8 @@ public class DrawFBP extends JFrame
 	boolean leftButton;
 	
 	boolean sortByDate;  // remember across invocations of MyFileChooser
+	
+	int zWS;                   // zone width scaled
 
 	static final int gridUnitSize = 4; // can be static - try for now
 
@@ -168,7 +171,8 @@ public class DrawFBP extends JFrame
 
 	static final double FORCE_HORIZONTAL = 0.05; // can be static as this is a
 													// slope
-
+	static final int zoneWidth = 6;
+	
 	static final int CREATE = 1;
 	static final int MODIFY = 2;
 
@@ -304,7 +308,7 @@ public class DrawFBP extends JFrame
 		
 		try {
 		scalingFactor = 1.0d;
-		driver = this;
+		zWS = zoneWidth;
 
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
@@ -1809,7 +1813,7 @@ public class DrawFBP extends JFrame
 					+ "*    Authors: J.Paul Rodker Morrison, Canada,      *\n"
 					+ "*             Bob Corrick, UK                      *\n"
 					+ "*                                                  *\n"
-					+ "*    Copyright 2009, ..., 2019                     *\n"
+					+ "*    Copyright 2009, ..., 2020                     *\n"
 					+ "*                                                  *\n"
 					+ "*    FBP web site: www.jpaulmorrison.com/fbp       *\n"
 					+ "*                                                  *\n"
@@ -2402,8 +2406,9 @@ public class DrawFBP extends JFrame
 		DiagramBuilder.buildDiag(fileString, this, curDiag);
 		// driver.jtp.setRequestFocusEnabled(true);
 		// driver.jtp.requestFocusInWindow();
-		arrowEnd = null; // get rid of black square...
-		arrowRoot = null;
+		fpArrowEndA = null;
+		fpArrowEndB = null;
+		fpArrowRoot = null;
 		currentArrow = null;
 		foundBlock = null;
 		//drawToolTip = false;
@@ -4565,6 +4570,7 @@ public class DrawFBP extends JFrame
 			// oldH = getSize().height;
 			if (!(js).getValueIsAdjusting()) {
 				scalingFactor = ((int) js.getValue()) / 100.0;
+				zWS = (int) Math.round(zoneWidth * scalingFactor);
 				String scale = (int) js.getValue() + "%";
 				scaleLab.setText(scale);
 				// pack();
@@ -4586,8 +4592,8 @@ public class DrawFBP extends JFrame
 	void drawBlackSquare(Graphics g, int x, int y) {
 		Color col = g.getColor();
 		g.setColor(Color.BLACK);
-		g.drawRect(x - 2, y - 2, 4, 4);
-		g.fillRect(x - 2, y - 2, 4, 4);		
+		g.drawRect(x - zWS / 2, y - zWS / 2, zWS, zWS);
+		//g.fillRect(x - zWS / 2, y - zWS / 2, zWS, zWS);		
 		g.setColor(col);
 	}
 
@@ -4620,18 +4626,19 @@ public class DrawFBP extends JFrame
 		// TODO Auto-generated method stub
 
 	}
-	
-	// Courtesy of  Craig Wood - Ranch Hand 
-	  
+		  
 	 public BufferedImage loadImage(String fileName)
 	    {
-	        BufferedImage image = null;
-	        // String fileName = "images/greathornedowl.jpg";
+		    BufferedImage image = null;
+	        
+		    // see https://stackoverflow.com/questions/14089146/file-loading-by-getclass-getresource
+		    
 	        try
 	        {
-	            URL url = getClass().getResource("/" + fileName);
-	            image = ImageIO.read(url);
-	            //InputStream is = this.getClass().getResourceAsStream("/" + s);
+	           // URL url = getClass().getResource("/" + fileName);
+	           // image = ImageIO.read(url);
+	            
+	           image = ImageIO.read(DrawFBP.class.getResourceAsStream("/" + fileName));
 	        }
 	        catch(MalformedURLException mue)
 	        {
@@ -5277,17 +5284,20 @@ public class DrawFBP extends JFrame
 			
 		}
  
-		FoundPoint findBlockEdge(int xa, int ya) {
+		FoundPointB findBlockEdge(int xa, int ya) {
 
-			FoundPoint fp = null;
+			FoundPointB fpB = null;
 			for (Block block : curDiag.blocks.values()) {
-
-				if (!(between(xa, block.leftEdge - 4 * scalingFactor,
-						block.rgtEdge + 4 * scalingFactor)))
+				
+				// test whether to even look at block...
+				
+				//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
+				if (!(between(xa, block.leftEdge - zWS / 2,
+						block.rgtEdge + zWS / 2)))
 					continue;
 
-				if (!(between(ya, block.topEdge - 4 * scalingFactor,
-						block.botEdge + 4 * scalingFactor)))
+				if (!(between(ya, block.topEdge - zWS / 2,
+						block.botEdge + zWS / 2)))
 					continue;
 
 				/* look for block edge touching xa and ya */
@@ -5296,29 +5306,29 @@ public class DrawFBP extends JFrame
 				if (side == null)
 					continue;
 
-				fp = new FoundPoint(xa, ya, side, block);
+				fpB = new FoundPointB(xa, ya, side, block);
 
 				if (side == Side.LEFT)
-					fp.x = block.leftEdge;
+					fpB.x = block.leftEdge;
 				else if (side == Side.RIGHT)
-					fp.x = block.rgtEdge;
+					fpB.x = block.rgtEdge;
 				else if (side == Side.TOP)
-					fp.y = block.topEdge;
+					fpB.y = block.topEdge;
 				else if (side == Side.BOTTOM)
-					fp.y = block.botEdge;
+					fpB.y = block.botEdge;
 
 				// fp = new FoundPoint(xa, ya, side, block);
 
 				break;
 			}
 
-			return fp;
+			return fpB;
 		}
 
 		// see if x and y are "close" to any arrow - if so, return it, else null
-		FoundPoint findArrow(int x, int y) {
+		FoundPointA findArrow(int x, int y) {
 
-			FoundPoint fp = null;
+			FoundPointA fpA = null;
 
 			for (Arrow arrow : curDiag.arrows.values()) {
 				if (arrow.toId == -1)
@@ -5334,8 +5344,8 @@ public class DrawFBP extends JFrame
 						x2 = bend.x;
 						y2 = bend.y;
 						if (nearpln(x, y, x1, y1, x2, y2)) {
-							fp = new FoundPoint(x, y, arrow, segNo);
-							return fp;
+							fpA = new FoundPointA(x, y, arrow, segNo);
+							return fpA;
 						}
 
 						x1 = x2;
@@ -5347,8 +5357,8 @@ public class DrawFBP extends JFrame
 				x2 = arrow.toX;
 				y2 = arrow.toY;
 				if (nearpln(x, y, x1, y1, x2, y2)) {
-					fp = new FoundPoint(x, y, arrow, segNo);
-					return fp;
+					fpA = new FoundPointA(x, y, arrow, segNo);
+					return fpA;
 				}
 			}
 			return null;
@@ -5411,8 +5421,9 @@ public class DrawFBP extends JFrame
 			if (i == -1)
 				return;
 			//drawToolTip = false;
-			arrowRoot = null;
-			arrowEnd = null;
+			fpArrowRoot = null;
+			fpArrowEndA = null;
+			fpArrowEndB = null;
 			/*
 			if (!ttEndTimer.isRunning())
 				ttStartTimer.restart();
@@ -5505,11 +5516,11 @@ public class DrawFBP extends JFrame
 					//				block.botEdge - block.height / 8);
 					
 					// anywhere in block....
-					
-					udi = between(xa, block.leftEdge - block.zoneWidth / 2,
-							block.rgtEdge + block.zoneWidth / 2)
-							&& between(ya, block.topEdge - block.zoneWidth / 2,
-									block.botEdge + block.zoneWidth / 2);
+					//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
+					udi = between(xa, block.leftEdge - zWS / 2,
+							block.rgtEdge + zWS / 2)
+							&& between(ya, block.topEdge - zWS / 2,
+									block.botEdge + zWS / 2);
 				}
 
 				if (udi) {
@@ -5533,14 +5544,19 @@ public class DrawFBP extends JFrame
 			}
 			// curDiag.foundBlock = null;
 
-			FoundPoint fp = findBlockEdge(xa, ya);
-			if (fp != null) {
+			FoundPointB fpB = findBlockEdge(xa, ya);
+			if (fpB != null) {
 				if (currentArrow == null)
-					arrowRoot = fp;
-				else
-					arrowEnd = fp;
-			} else {
-				arrowEnd = findArrow(xa, ya);
+					fpArrowRoot = fpB;
+				else {
+					fpArrowEndB = fpB;
+					//currentArrow.toId = foundBlock.id;
+				}
+			}
+			else {
+				fpArrowEndA = findArrow(xa, ya);
+				if (currentArrow != null)
+					currentArrow.toId = -1;
 			}
 
 			repaint();
@@ -5702,7 +5718,7 @@ public class DrawFBP extends JFrame
 						ya = block.topEdge;
 					else if (side == Side.BOTTOM)
 						ya = block.botEdge;
-					arrowRoot = new FoundPoint(xa, ya, side, block);
+					fpArrowRoot = new FoundPointB(xa, ya, side, block);
 					break;
 				}
 
@@ -5751,6 +5767,10 @@ public class DrawFBP extends JFrame
 		}
 
 		public void mouseDragged(MouseEvent e) {
+			
+			fpArrowRoot = null;
+			fpArrowEndA = null;
+			fpArrowEndB = null;
 
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
@@ -5938,9 +5958,9 @@ public class DrawFBP extends JFrame
 				
 				block.calcEdges();
 
-				if (arrowRoot != null && arrowRoot.block == block) {
-					arrowRoot.x += xa - oldx;
-					arrowRoot.y += ya - oldy;
+				if (fpArrowRoot != null && fpArrowRoot.block == block) {
+					fpArrowRoot.x += xa - oldx;
+					fpArrowRoot.y += ya - oldy;
 				}
 
 				if (block instanceof Enclosure) {
@@ -5983,20 +6003,24 @@ public class DrawFBP extends JFrame
 			if (currentArrow != null) { // this ensures the line
 										// stays visible
 
+				currentArrow.toId = -1;
 				currentArrow.toX = xa;
 				currentArrow.toY = ya;
 				curDiag.changed = true;
-				arrowEnd = null;
+				fpArrowEndA = null;
+				fpArrowEndB = null;
 				
-				FoundPoint fp = findBlockEdge(xa, ya);
+				FoundPointB fpB = findBlockEdge(xa, ya);
 
-				if (fp != null) {
-					foundBlock = fp.block;
+				if (fpB != null) {
+					foundBlock = fpB.block;
 					// side = fp.side;
-					arrowEnd = fp;
-				} else {
-					arrowEnd = findArrow(xa, ya);
-				}
+					fpArrowEndB = fpB;
+					currentArrow.toId = foundBlock.id;
+				} 
+				else  
+					fpArrowEndA = findArrow(xa, ya);
+				
 
 			}
 			repaint();
@@ -6144,7 +6168,7 @@ public class DrawFBP extends JFrame
 							break;
 						}
 					}
-					FoundPoint fp;
+					FoundPointA fpA;
 					if (arr.headMarked) {
 						arr.toId = -1;
 						if (null != touches(block, arrowEndForDragging.toX,
@@ -6155,10 +6179,10 @@ public class DrawFBP extends JFrame
 							arr.toX = arrowEndForDragging.toX;
 							arr.toY = arrowEndForDragging.toY;
 							break;
-						} else if (null != (fp = findArrow(
+						} else if (null != (fpA = findArrow(
 								arrowEndForDragging.toX,
 								arrowEndForDragging.toY))) {
-							arr.toId = fp.arrow.id;
+							arr.toId = fpA.arrow.id;
 							arr.endsAtBlock = false;
 							arr.endsAtLine = true;
 							arr.toX = arrowEndForDragging.toX;
@@ -6258,11 +6282,11 @@ public class DrawFBP extends JFrame
 				// currentArrow = null;
 				// if (!leftButton) {
 
-				FoundPoint fp = findArrow(xa, ya);
-				if (fp != null && fp.arrow != null) {
-					currentArrow = fp.arrow;
-					arrowEnd = fp;
-				}
+				FoundPointA fpA = findArrow(xa, ya);
+				if (fpA != null && fpA.arrow != null) {
+					currentArrow = fpA.arrow;
+					fpArrowEndA = fpA;
+					}
 
 				selArrow = currentArrow;
 
@@ -6346,32 +6370,34 @@ public class DrawFBP extends JFrame
 
 			foundBlock = null;
 
-			FoundPoint fp = findBlockEdge(xa, ya);
-			if (fp != null) {
-				foundBlock = fp.block;
-				side = fp.side;
+			FoundPointB fpB = findBlockEdge(xa, ya);
+			if (fpB != null) {
+				foundBlock = fpB.block;
+				side = fpB.side;
 			}
 
 			if (foundBlock != null // && leftButton
 			) {
-				if (between(currentArrow.fromX, x - 4 * scalingFactor,
-						x + 4 * scalingFactor)
-						&& between(currentArrow.fromY, y - 4 * scalingFactor,
-								y + 4 * scalingFactor))
+				//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
+				if (between(currentArrow.fromX, x - zWS / 2,
+						x + zWS / 2)
+						&& between(currentArrow.fromY, y - zWS / 2,
+								y + zWS / 2))
 					return;
 
 				/*
-				 * if (foundBlock.id == currentArrow.fromId) {
-				 * 
-				 * if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-				 * this,
-				 * "Connecting arrow to originating block is deadlock-prone - do anyway?"
-				 * , "Allow?", MyOptionPane.YES_NO_OPTION)) { Integer aid = new
-				 * Integer(currentArrow.id); curDiag.arrows.remove(aid);
-				 * foundBlock = null; currentArrow = null;
-				 * 
-				 * repaint(); return; } }
-				 */
+				  if (foundBlock.id == currentArrow.fromId) {
+				 
+				  if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
+				  this,
+				  "Connecting arrow to originating block is deadlock-prone - do anyway?"
+				  , "Allow?", MyOptionPane.YES_NO_OPTION)) { Integer aid = new
+				 Integer(currentArrow.id); curDiag.arrows.remove(aid);
+				  foundBlock = null; currentArrow = null;
+				 
+				  repaint(); return; } }
+				  */
+				
 				boolean OK = true;
 				Block from = curDiag.blocks
 						.get(new Integer(currentArrow.fromId));
@@ -6494,10 +6520,10 @@ public class DrawFBP extends JFrame
 				Arrow foundArrow = null;
 
 				// see if xa and ya are "close" to specified arrow
-				fp = findArrow(xa, ya);
-				if (fp != null && fp.arrow != null) {
-					foundArrow = fp.arrow;
-					arrowEnd = fp;
+				FoundPointA fpA = findArrow(xa, ya);
+				if (fpA != null && fpA.arrow != null) {
+					foundArrow = fpA.arrow;
+					fpArrowEndA = fpA;
 
 					if (x != curx) {
 						double s = ya - foundArrow.lastY;
@@ -6511,7 +6537,7 @@ public class DrawFBP extends JFrame
 					currentArrow.toX = xa;
 					currentArrow.toY = ya;
 					currentArrow.endsAtLine = true;
-					currentArrow.segNo = fp.segNo;
+					currentArrow.segNo = fpA.segNo;
 					currentArrow.upStreamPort = "OUT";
 
 					// use id of target line, not of target block
@@ -6587,10 +6613,11 @@ public class DrawFBP extends JFrame
 				// appears to be a delete arrow???
 
 				if (currentArrow != null) {
-					if (!(between(xa, currentArrow.toX - 4 * scalingFactor,
-							currentArrow.toX + 4 * scalingFactor)
-							&& between(ya, currentArrow.toY - 4 * scalingFactor,
-									currentArrow.toY + 4 * scalingFactor))) {
+					//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
+					if (!(between(xa, currentArrow.toX - zWS / 2,
+							currentArrow.toX + zWS / 2)
+							&& between(ya, currentArrow.toY - zWS / 2,
+									currentArrow.toY + zWS / 2))) {
 						// curDiag.currentArrow.toX = xa;
 						// curDiag.currentArrow.toY = ya;
 						// }
