@@ -2469,7 +2469,7 @@ public class DrawFBP extends JFrame
 			} catch (IOException e) {
 				MyOptionPane.showMessageDialog(this, "I/O Exception: "
 						+ file.getName(), MyOptionPane.ERROR_MESSAGE);
-				fileString = "";
+				//fileString = "";
 			}
 
 		} catch (FileNotFoundException e) {
@@ -5317,7 +5317,8 @@ public class DrawFBP extends JFrame
 				else if (side == Side.BOTTOM)
 					fpB.y = block.botEdge;
 
-				// fp = new FoundPoint(xa, ya, side, block);
+				xa = fpB.x;
+				ya = fpB.y;
 
 				break;
 			}

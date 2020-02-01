@@ -266,12 +266,27 @@ public class Diagram {
 					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
 				
 				return null;
-			 
+			
+			if (fCP.fileExt.equals(".drw")) {	
+				fileString = driver.readFile(file /*, saveAs*/); // read previous version
+				diagFile = file;
+
+				if (fileString != null) {
+					String s = file.getAbsolutePath();
+					File oldFile = file;
+					file = new File(s.substring(0, s.length() - 1) + "~");
+					driver.writeFile(file, fileString);
+					file = oldFile;
+				}
+			}
 			
 		} else {
+			
+			// if file doesn't exist
+			
 			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					driver,
-					"Create new file: " + file.getAbsolutePath() + "?",
+					"Create new file: " + file.getAbsolutePath() + "?", 
 					"Confirm create", MyOptionPane.YES_NO_OPTION)) {
 				try {
 					file.createNewFile();
@@ -302,21 +317,22 @@ public class Diagram {
 			}
 
 		} else {
-			//fileString = (String) contents;
+			
 			// if not image
+			
 			if (fCP.fileExt.equals(".drw")) {
 
-				fileString = driver.readFile(file /*, saveAs*/); // read previous version
+				//fileString = driver.readFile(file /*, saveAs*/); // read previous version
 				diagFile = file;
 
-				if (fileString!= null) {
-					String s = file.getAbsolutePath();
-					File oldFile = file;
-					file = new File(s.substring(0, s.length() - 1) + "~");
-					driver.writeFile(file, fileString);
-					file = oldFile;
-				}
-				fileString = buildFile();
+				//if (fileString!= null) {
+				//	String s = file.getAbsolutePath();
+				//	File oldFile = file;
+				//	file = new File(s.substring(0, s.length() - 1) + "~");
+				//	driver.writeFile(file, fileString);
+				//	file = oldFile;
+				//}
+				fileString = buildFile();  // build .drw file from internal classes (blocks and arrows)
 
 			}
 
