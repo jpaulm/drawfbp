@@ -5710,7 +5710,7 @@ public class DrawFBP extends JFrame
 			//	ttStartTimer.restart();
 			//}
 
-			setCursor(drag_icon);
+			//setCursor(drag_icon);
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
