@@ -82,6 +82,8 @@ public class ReportBlock extends Block {
 			pty[i] -= 1;
 		g.fillPolygon(ptx, pty, 11);
 
+		Color col = g.getColor();
+		g.setColor(Color.BLACK);
 		int x = textX;
 		int y = textY;
 		if (desc != null) {
@@ -91,11 +93,13 @@ public class ReportBlock extends Block {
 				y += driver.gFontHeight;
 			}
 		}
-
+		
+		g.setColor(col);
+		
 		showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy + height
 				/ 2);
-
+		//blueCircs(g);
 	}
 	void showArrowEndAreas(Graphics g) {
 		Color col = g.getColor();

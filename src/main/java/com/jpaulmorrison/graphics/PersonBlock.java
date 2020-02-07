@@ -50,5 +50,6 @@ import java.awt.Graphics;
 					y += driver.gFontHeight;
 				}
 			}
+			//blueCircs(g);
 			}
 }

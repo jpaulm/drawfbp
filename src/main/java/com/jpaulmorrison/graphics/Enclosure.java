@@ -194,7 +194,7 @@ public class Enclosure extends Block {
 		showZones(g);
 		calcDiagMaxAndMin(x - width / 2, x + width / 2,
 				y - height / 2, y + height / 2);
-		
+		// blueCircs(g);
 		//calcDiagMaxAndMin(xs, xs + width,   // enclosure may have been stretched...
 		//		ys, ys + height);
 	}

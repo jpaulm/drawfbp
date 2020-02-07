@@ -249,7 +249,8 @@ public class DrawFBP extends JFrame
 												// actually)
 	static Color grey = new Color(170, 244, 255); // sort of bluish grey (?)
 	// JDialog popup = null;
-	JDialog popup2 = null;
+	//JDialog popup2 = null;
+	JFrame popup2 = null;
 	JDialog depDialog = null;
 
 	static enum Side {
@@ -1636,103 +1637,6 @@ public class DrawFBP extends JFrame
 		}
 		if (s.equals("Launch Help")) {
 
-			/*
-			if (jHelpViewer == null) {
-
-				 
-				if (jhallJarFile == null) {
-
-					jhallJarFile = properties.get("jhallJarFile");
-					boolean res = true;
-
-					if (jhallJarFile == null) {
-						int response = MyOptionPane.showConfirmDialog(this,
-								// "Locate it?",
-								"Locate the standard JavaHelp jar file (javax.help) -\n"
-										+ "and specify the folder where you will keep it -\n" 
-								        + " it is in your 'lib' folder",
-								"Locate it?", MyOptionPane.OK_CANCEL_OPTION);
-						if (response == MyOptionPane.OK_OPTION)
-							res = locateJhallJarFile(false);
-						else {
-							MyOptionPane.showMessageDialog(this,
-									"No DrawFBP Help jar file located",
-									MyOptionPane.ERROR_MESSAGE);
-							res = false;
-						}
-					}
-					if (!res)
-						return;
-				}
-				 
-				jHelpClass = null;
-				helpSetClass = null;
-				URLClassLoader cl = null;
-
-				 
-				File jFile = new File(jhallJarFile);
-				if (!(jFile.exists())) {
-					MyOptionPane.showMessageDialog(this,
-							"DrawFBP Help jar file shown in properties does not exist\n"
-									+ "Use File/Locate DrawFBP Help File, and try Help again",
-							MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				 
-							
-								
-				try {
-					 URL[] urls = new URL[]{jFile.toURI().toURL()}; 
-
-					// Create a new class loader with the directory
-					 cl = new URLClassLoader(urls,
-								this.getClass().getClassLoader());
-
-					// Find the HelpSet file and create the HelpSet object
-					helpSetClass =   cl.loadClass("javax.help.HelpSet");
-				} catch (MalformedURLException e2) {
-				} catch (ClassNotFoundException e2) {
-				} catch (NoClassDefFoundError e2) {
-				}
-
-				if (helpSetClass == null) {
-					MyOptionPane.showMessageDialog(this,
-							"HelpSet class not found in jar file or invalid",
-							MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
- 
-				
-				URL url2 = null;
-				jHelpViewer = null;
-				try {
-					Method m = helpSetClass.getMethod("findHelpSet",
-							ClassLoader.class, String.class);
-					url2 = (URL) m.invoke(null, cl, "helpSet.hs");
-
-					Constructor conhs = helpSetClass
-							.getConstructor(ClassLoader.class, URL.class);
-
-					Object hs = conhs.newInstance(cl, url2);
-
-					jHelpClass = cl.loadClass("javax.help.JHelp");
-					if (jHelpClass == null) {
-						MyOptionPane.showMessageDialog(this,
-								"JHelp class not found in jar file",
-								MyOptionPane.ERROR_MESSAGE);
-						return;
-					}
-					Constructor conjh = jHelpClass.getConstructor(helpSetClass);
-					jHelpViewer = (JComponent) conjh.newInstance(hs);
-
-				} catch (Exception e2) {
-					MyOptionPane.showMessageDialog(this,
-							"HelpSet could not be processed: " + e2,
-							MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
-			}
-			*/
 			HelpSet hs = null;
 			URL url = HelpSet.findHelpSet(getClass().getClassLoader(), "helpSet.hs");
 			try {
@@ -1744,9 +1648,10 @@ public class DrawFBP extends JFrame
 		
 	        jHelpViewer = new JHelp(hs);
 			
-			// Create a new 
-			popup2 = new JDialog(this);
-			popup2.setTitle("Help DrawFBP");
+			// Create a new dialog screen
+			//popup2 = new JDialog(this);
+			popup2 = new JFrame();
+			popup2.setTitle("DrawFBP Help");
 			popup2.setIconImage(favicon.getImage());
 			applyOrientation(popup2);
 
@@ -1773,7 +1678,7 @@ public class DrawFBP extends JFrame
 			popup2.getContentPane().add(jHelpViewer);
 			// Set a default close operation.
 			popup2.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-			// Make the this visible.
+			// Make this visible.
 			popup2.setVisible(true);
 			popup2.pack();
 			Dimension dim = getSize();
@@ -1781,8 +1686,13 @@ public class DrawFBP extends JFrame
 			int x_off = 100;
 			int y_off = 100;
 			popup2.setPreferredSize(
-					new Dimension(dim.width - x_off * 2, dim.height - y_off));
+					new Dimension(dim.width, dim.height));
+			
 			popup2.pack();
+			
+			//popup2.setPreferredSize(
+			//		new Dimension(dim.width, dim.height - y_off));
+			
 			popup2.setLocation(p.x + x_off, p.y + y_off);
 			return;
 		}
@@ -2052,8 +1962,10 @@ public class DrawFBP extends JFrame
 			block.cy = ((ya + block.height / 2) + y) / 2;
 		}
 
-		else if (blkType.equals(Block.Types.PERSON_BLOCK))
+		else if (blkType.equals(Block.Types.PERSON_BLOCK)) {
+			oneLine = true;
 			block = new PersonBlock(diag);
+		}
 
 		else if (blkType.equals(Block.Types.REPORT_BLOCK))
 			block = new ReportBlock(diag);
@@ -4538,24 +4450,17 @@ public class DrawFBP extends JFrame
 
 	static Side touches(Block b, int x, int y) {
 		Side side = null;
-		//if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2,
-		//		b.cx - b.width / 2, b.cy + b.height / 2))  
-		if (b.leftRect.contains(x, y))	
+		
+		if (b.leftRect != null && b.leftRect.contains(x, y))	
 			side = Side.LEFT;
 		 
-		//if (nearpln(x, y, b.cx - b.width / 2, b.cy - b.height / 2,
-		//		b.cx + b.width / 2, b.cy - b.height / 2))  
-		if (b.topRect.contains(x, y))
+		else if (b.topRect != null && b.topRect.contains(x, y))
 			side = Side.TOP;
 		 
-		//if (nearpln(x, y, b.cx + b.width / 2, b.cy - b.height / 2,
-		//		b.cx + b.width / 2, b.cy + b.height / 2))  
-		if (b.rightRect.contains(x, y))
+		else if (b.rightRect != null && b.rightRect.contains(x, y))
 			side = Side.RIGHT;
 		 
-		//if (nearpln(x, y, b.cx - b.width / 2, b.cy + b.height / 2,
-		//		b.cx + b.width / 2, b.cy + b.height / 2)) 
-		if (b.botRect.contains(x, y))
+		else if (b.botRect != null && b.botRect.contains(x, y))
 			side = Side.BOTTOM;
 		 
 
@@ -4577,6 +4482,23 @@ public class DrawFBP extends JFrame
 				// setPreferredSize(new Dimension(1200, 800));
 				// repaint();
 			}
+		}
+	}
+	
+	public void blueCircs(Graphics g) {
+		if (driver.fpArrowRoot != null) { 
+			driver.drawBlueCircle(g, driver.fpArrowRoot.x, driver.fpArrowRoot.y);
+			repaint();
+		}
+
+		 
+		if (driver.fpArrowEndB != null && currentArrow != null && currentArrow.toX > -1) {
+				driver.drawBlueCircle(g, driver.fpArrowEndB.x, driver.fpArrowEndB.y);		
+				repaint();
+		}
+		if (driver.fpArrowEndA != null){			
+			driver.drawBlueCircle(g, driver.fpArrowEndA.x, driver.fpArrowEndA.y);		
+			repaint();
 		}
 	}
 
@@ -5306,6 +5228,7 @@ public class DrawFBP extends JFrame
 				if (side == null)
 					continue;
 
+				
 				fpB = new FoundPointB(xa, ya, side, block);
 
 				if (side == Side.LEFT)
@@ -5323,6 +5246,7 @@ public class DrawFBP extends JFrame
 				break;
 			}
 
+			
 			return fpB;
 		}
 
@@ -5425,12 +5349,7 @@ public class DrawFBP extends JFrame
 			fpArrowRoot = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
-			/*
-			if (!ttEndTimer.isRunning())
-				ttStartTimer.restart();
-			else
-				ttEndTimer.stop();
-			*/
+			
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
@@ -5516,26 +5435,29 @@ public class DrawFBP extends JFrame
 					//		&& between(ya, block.topEdge + block.height / 8,
 					//				block.botEdge - block.height / 8);
 					
-					// anywhere in block....
+					// anywhere in block except zones....
 					//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
-					udi = between(xa, block.leftEdge - zWS / 2,
-							block.rgtEdge + zWS / 2)
-							&& between(ya, block.topEdge - zWS / 2,
-									block.botEdge + zWS / 2);
+					udi = between(xa, block.leftEdge + zWS / 2,
+							block.rgtEdge - zWS / 2)
+							&& between(ya, block.topEdge + zWS / 2,
+									block.botEdge - zWS / 2);
 				}
 
 				if (udi) {
 					selBlockM = block; // mousing select
-					if (!use_drag_icon) {
+					//if (!use_drag_icon) {
 						if (curDiag.jpm == null && !panSwitch)
 							setCursor(drag_icon);
-						use_drag_icon = true;
-					}
+						//use_drag_icon = true;						
+					//}
 
 					break;
 				}
 
 			}
+			
+			//setCursor(defaultCursor);  // experimental!
+			
 			if (selBlockM == null) {
 				if (use_drag_icon)
 					use_drag_icon = false;
@@ -5553,6 +5475,7 @@ public class DrawFBP extends JFrame
 					fpArrowEndB = fpB;
 					//currentArrow.toId = foundBlock.id;
 				}
+				
 			}
 			else {
 				fpArrowEndA = findArrow(xa, ya);
@@ -5694,11 +5617,14 @@ public class DrawFBP extends JFrame
 					 * the following leaves a strip around the outside of each
 					 * block that cannot be used for dragging!
 					 */
-					if (between((double) xa, block.leftEdge + block.width / 8,
-							block.rgtEdge - block.width / 8)
-							&& between((double) ya,
-									block.topEdge + block.height / 8,
-									block.botEdge - block.height / 8)) {
+					Rectangle rect = new Rectangle(block.leftEdge + zWS / 2, block.topEdge + zWS / 2,
+							block.width - zWS, block.height - zWS);
+					if (rect.contains(xa, ya)) {
+					//if (between((double) xa, block.leftEdge + block.width / 8,
+					//		block.rgtEdge - block.width / 8)
+					//		&& between((double) ya,
+					//				block.topEdge + block.height / 8,
+					//				block.botEdge - block.height / 8)) {
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
 						blockSelForDragging = block;
@@ -5720,6 +5646,7 @@ public class DrawFBP extends JFrame
 					else if (side == Side.BOTTOM)
 						ya = block.botEdge;
 					fpArrowRoot = new FoundPointB(xa, ya, side, block);
+					repaint();
 					break;
 				}
 
@@ -5737,16 +5664,17 @@ public class DrawFBP extends JFrame
 
 			
 			// if no currentArrow, but there is a found block, start an arrow
-			if (currentArrow == null && foundBlock != null
-					&& arrowEndForDragging == null) {
+			//if (currentArrow == null && foundBlock != null
+			//		&& arrowEndForDragging == null) {
+			if (currentArrow == null && fpArrowRoot != null) {			
 
 				Arrow arrow = new Arrow(curDiag);
 				curDiag.maxArrowNo++;
 				arrow.id = curDiag.maxArrowNo;
 				selArrow = arrow;
 				// selBlockP = null;
-				arrow.fromX = xa;
-				arrow.fromY = ya;
+				arrow.fromX = fpArrowRoot.x; // xa;
+				arrow.fromY = fpArrowRoot.y;  // ya;
 
 				arrow.fromId = foundBlock.id;
 				Block fromBlock = curDiag.blocks.get(new Integer(arrow.fromId));
@@ -5782,6 +5710,7 @@ public class DrawFBP extends JFrame
 			//	ttStartTimer.restart();
 			//}
 
+			setCursor(drag_icon);
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
@@ -6172,22 +6101,19 @@ public class DrawFBP extends JFrame
 					FoundPointA fpA;
 					if (arr.headMarked) {
 						arr.toId = -1;
-						if (null != touches(block, arrowEndForDragging.toX,
-								arrowEndForDragging.toY)) {
+						if (null != touches(block, arr.toX, arr.toY)) {
 							arr.toId = block.id;
 							arr.endsAtBlock = true;
 							arr.endsAtLine = false;
-							arr.toX = arrowEndForDragging.toX;
-							arr.toY = arrowEndForDragging.toY;
+							//arr.toX = arr.toX;
+							//arr.toY = arr.toY;
 							break;
-						} else if (null != (fpA = findArrow(
-								arrowEndForDragging.toX,
-								arrowEndForDragging.toY))) {
+						} else if (null != (fpA = findArrow(arr.toX, arr.toY))) {
 							arr.toId = fpA.arrow.id;
 							arr.endsAtBlock = false;
 							arr.endsAtLine = true;
-							arr.toX = arrowEndForDragging.toX;
-							arr.toY = arrowEndForDragging.toY;
+							//arr.toX = arr.toX;
+							//arr.toY = arr.toY;
 							break;
 						}
 					}

@@ -60,5 +60,6 @@ public class FileBlock extends Block {
 		//showZones(g);
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2,
 				cy - height / 2, cy + height / 2);
+		//blueCircs(g);
 	}
 }

@@ -101,9 +101,9 @@ public class Arrow implements ActionListener {
 		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
 
 		if (toX == -1) {
-		   g.drawRect(fromX - 3, fromY - 3, 6, 6);			 
-		   return;
-		 }
+		//   g.drawRect(fromX - 3, fromY - 3, 6, 6);			 
+		  return;
+		}
 		
 		showCompareFlag(g);
 
@@ -229,9 +229,10 @@ public class Arrow implements ActionListener {
 			driver.drawBlackSquare(g, x, toY);
 		}
 		
-		if (driver.fpArrowEndA != null) 
+		//if (driver.fpArrowEndA != null) 
 			//if (driver.currentArrow != null && driver.currentArrow.toId != -1 && !driver.currentArrow.endsAtBlock)
-				driver.drawBlueCircle(g, driver.fpArrowEndA.x, driver.fpArrowEndA.y);
+		//		driver.drawBlueCircle(g, driver.fpArrowEndA.x, driver.fpArrowEndA.y);
+		driver.blueCircs(g);
 		
 		if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 

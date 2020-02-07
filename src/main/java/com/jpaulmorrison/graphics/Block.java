@@ -121,7 +121,7 @@ public class Block implements ActionListener {
 		if (diag == null) // fudge
 			return;
 
-		if (!visible && this != driver.selBlock) {
+		if (!visible && this != driver.selBlock) {			
 			showZones(g);
 			return;
 		}
@@ -195,7 +195,12 @@ public class Block implements ActionListener {
 				y += driver.gFontHeight;
 			}
 		}
-		showZones(g);
+		
+		if (driver.fpArrowRoot != null && driver.fpArrowRoot.block == this || 
+				driver.fpArrowEndB != null && driver.fpArrowEndB.block == this)  
+			showArrowEndAreas(g);
+		
+		driver.blueCircs(g);
 
 		if (!visible && this == driver.selBlock)
 			g.drawLine(tlx, tly, cx + width / 2, cy + height / 2);
@@ -303,33 +308,14 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 		}
 
-		// if (driver.arrowRoot != null && driver.arrowRoot.block == this) {
-		// if (driver.arrowEndForDragging == null
-		// || !driver.arrowEndForDragging.headMarked
-		// && !driver.arrowEndForDragging.tailMarked) {
-		// Enclosure enc = null;
-		// if (type == Block.Types.ENCL_BLOCK)
-		// enc = (Enclosure) this;
+		
 
-		// if ((enc == null || enc.corner == null)) {
-		// int opt = (driver.curDiag.currentArrow == null) ? 1 : 2;
-		// if (opt == 1 || driver.curDiag.currentArrow.bends == null)
-
-		if (driver.fpArrowRoot != null) { 
-			driver.drawBlueCircle(g, driver.fpArrowRoot.x, driver.fpArrowRoot.y);
-			driver.setCursor(driver.defaultCursor);
-			//driver.repaint();
-		}
-
-		 
-		if (driver.fpArrowEndB != null){
-			//if (driver.currentArrow != null && driver.currentArrow.toId != -1 && !driver.currentArrow.endsAtBlock)
-				driver.drawBlueCircle(g, driver.fpArrowEndB.x, driver.fpArrowEndB.y);
-			//else if (!driver.fpArrowEnd.arrow.endsAtBlock)
-			//	driver.drawBlackSquare(g, driver.fpArrowEnd.x, driver.fpArrowEnd.y);
-		}
+		//blueCircs(g);
+		
 		 
 	}
+	
+	
 	
 	public void adjEdgeRects() {
 		leftRect.x = cx - width / 2 - driver.zWS / 2;
@@ -435,11 +421,11 @@ public class Block implements ActionListener {
 	void showZones(Graphics g) {
 		//if (!(this instanceof LegendBlock))  // comment out for next release
 		//	return;
-		if (driver.currentArrow == null && driver.selBlockM == this)
-			showArrowEndAreas(g);
+		//if (driver.currentArrow == null && driver.selBlockM == this)
+		//	showArrowEndAreas(g);
 		 
-		else if (driver.currentArrow != null && this == driver.foundBlock)
-			showArrowEndAreas(g);
+		//else if (driver.currentArrow != null && this == driver.foundBlock)
+		//	showArrowEndAreas(g);
 	}
  
 	void showCompareFlag(Graphics g, int tlx, int tly){

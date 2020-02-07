@@ -1777,13 +1777,29 @@ final boolean SAVEAS = true;
 
 					if (!f.exists() && !inJarTree) {
 						if (-1 == s.indexOf(".")) {
-							// must be a directory
+													
+							// add appropriate extension
 
-							MyOptionPane.showMessageDialog(driver,
-									"Folder " + f.getAbsolutePath()
-											+ " doesn't exist - create using New Folder",
-									MyOptionPane.ERROR_MESSAGE);
-							return;
+							//MyOptionPane.showMessageDialog(driver,
+							//		"Folder " + f.getAbsolutePath()
+							//				+ " doesn't exist - create using New Folder",
+							//		MyOptionPane.ERROR_MESSAGE);
+							//return;
+							f = new File(f.getAbsolutePath() + "." + fCP.fileExt);
+							if (!f.exists()){
+								if (MyOptionPane.YES_OPTION == MyOptionPane
+										.showConfirmDialog(driver,
+												"Create new file: "
+														+ f.getAbsolutePath() + "?",
+												"Confirm create",
+												MyOptionPane.YES_NO_OPTION))
+									try {
+										f.createNewFile();
+									} catch (IOException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+							}
 
 						} 
 						 

@@ -55,6 +55,7 @@ public class IIPBlock extends Block {
 		showCompareFlag(g, tlx, tly);
 		calcDiagMaxAndMin(tlx, cx + width / 2, tly, cy + height / 2);
 		g.setFont(fontsave);
+		//blueCircs(g);
 	}
 	
 	String checkNestedChars(String s) {

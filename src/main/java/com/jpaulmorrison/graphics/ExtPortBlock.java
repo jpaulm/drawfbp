@@ -42,6 +42,7 @@ public class ExtPortBlock extends Block {
 			g.setColor(Color.BLACK);
 		}
 		showZones(g);
+		//blueCircs(g);
 	}
 
 	void drawIn(Graphics g, int ctr, int w) {

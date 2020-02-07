@@ -17,6 +17,7 @@ public class LegendBlock extends Block {
 	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
 			showZones(g);
+			//blueCircs(g);
 			return;
 		}
 		
@@ -65,6 +66,7 @@ public class LegendBlock extends Block {
 			showZones(g);
 			//return;
 		}
-		 
+		//blueCircs(g);	 
 	} 
+	
 }
