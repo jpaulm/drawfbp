@@ -259,7 +259,7 @@ public class DrawFBP extends JFrame
 	// static boolean READFILE = true;
 
 	Cursor defaultCursor = null;
-	boolean use_drag_icon = false;
+	//boolean use_drag_icon = false;
 
 	JLabel zoom = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
@@ -842,26 +842,7 @@ public class DrawFBP extends JFrame
 		
 		
         }
-/*
-	BufferedImage loadImage(String s) {
 
-		InputStream is = this.getClass().getResourceAsStream("/" + s);
-
-		BufferedImage image = null;
-		if (is == null) {
-			MyOptionPane.showMessageDialog(this, "Missing icon: " + s,
-					MyOptionPane.ERROR_MESSAGE);
-		} else {
-			try {
-				image = ImageIO.read(is);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return image;
-	}
-*/
 	public JMenuBar createMenuBar() {
 
 		// JMenu editMenu;
@@ -1814,7 +1795,7 @@ public class DrawFBP extends JFrame
 			}
 			curDiag = b.diag;
 			b.buildBlockPopupMenu();
-			use_drag_icon = false;
+			//use_drag_icon = false;
 			curDiag.jpm.show(this, x + 100, y + 100);
 			repaint();
 			return;
@@ -4554,31 +4535,35 @@ public class DrawFBP extends JFrame
 		    BufferedImage image = null;
 	        
 		    // see https://stackoverflow.com/questions/14089146/file-loading-by-getclass-getresource
-		    
+		    URL url = null;
 	        try
 	        {
-	           // URL url = getClass().getResource("/" + fileName);
-	           // image = ImageIO.read(url);
+	           url = getClass().getResource("/" + fileName);
+	           if (url != null) 	          
+	        	   image = ImageIO.read(url);
+	           else {
+	        	   MyOptionPane.showMessageDialog(this, "Missing icon: " + fileName, MyOptionPane.ERROR_MESSAGE);
+	        	   image = new BufferedImage(6, 6, BufferedImage.TYPE_INT_RGB);
+	           }
 	            
-	           image = ImageIO.read(DrawFBP.class.getResourceAsStream("/" + fileName));
+	           //image = ImageIO.read(DrawFBP.class.getResourceAsStream("/" + fileName));
 	        }
 	        catch(MalformedURLException mue)
 	        {
-	            System.err.println("url: " + mue.getMessage());
+	            System.err.println("url: " + mue.getMessage() + ": " + url);
 	        }
 	        catch(IllegalArgumentException iae)
 	        {
-	            System.err.println("arg: " + iae.getMessage());
+	            System.err.println("arg: " + iae.getMessage() + ": " + url);
 	        }
 	        catch(IOException ioe)
 	        {
-	            System.err.println("read: " + ioe.getMessage());
+	            System.err.println("read: " + ioe.getMessage() + ": " + url);
 	        }
-	        if(image == null)
-	        {
-	            image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
-	            System.out.println("unable to load image, returning default");
-	        }
+	        //if(image == null)
+	        //{
+	        //    image = new BufferedImage(6, 6, BufferedImage.TYPE_INT_RGB);
+	        //}
 	        return image;
 	    }
 
@@ -5459,8 +5444,8 @@ public class DrawFBP extends JFrame
 			//setCursor(defaultCursor);  // experimental!
 			
 			if (selBlockM == null) {
-				if (use_drag_icon)
-					use_drag_icon = false;
+				//if (use_drag_icon)
+				//	use_drag_icon = false;
 
 				if (!panSwitch)
 					setCursor(defaultCursor);
