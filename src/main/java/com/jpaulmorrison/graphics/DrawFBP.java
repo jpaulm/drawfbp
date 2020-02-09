@@ -171,7 +171,7 @@ public class DrawFBP extends JFrame
 
 	static final double FORCE_HORIZONTAL = 0.05; // can be static as this is a
 													// slope
-	static final int zoneWidth = 6;
+	static final int zoneWidth = 8;
 	
 	static final int CREATE = 1;
 	static final int MODIFY = 2;
