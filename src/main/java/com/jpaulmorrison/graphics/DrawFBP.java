@@ -3303,7 +3303,13 @@ public class DrawFBP extends JFrame
 			Method meth = null;
 			try {
 				meth = cls.getMethod("main", String[].class);
-			} catch (NoSuchMethodException | SecurityException e2) {
+			} catch (NoSuchMethodException e2) {
+				meth = null;
+				MyOptionPane.showMessageDialog(this,
+						"Program \"" + progName + "\" has no 'main' method",
+						MyOptionPane.ERROR_MESSAGE);
+			}
+			catch (SecurityException e2) {
 				meth = null;
 				MyOptionPane.showMessageDialog(this,
 						"Program \"" + progName + "\" has no 'main' method",

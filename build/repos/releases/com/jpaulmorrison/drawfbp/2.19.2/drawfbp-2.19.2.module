@@ -1,0 +1,77 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.jpaulmorrison",
+    "module": "drawfbp",
+    "version": "2.19.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.1.1",
+      "buildId": "pnwijac6fffsbiqtau66c5jenq"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "drawfbp-2.19.2.jar",
+          "url": "drawfbp-2.19.2.jar",
+          "size": 1366492,
+          "sha512": "b65d4af097b67a53a1180db0986a380dfc0dbe34c08de432a09a443c5276c73246610fda1e2478ec84aaf9c2f63ba580fd7d86be11994d2c05e79f3b6320a616",
+          "sha256": "08e798439c763fa2cbe468ee0c81d8dea19104b67c6224df86b43e4dfb1dca44",
+          "sha1": "ce483094bf79dde9e5f8a9887c759662426573fb",
+          "md5": "deabae745aa989588b7f57e5afe1cf89"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "math.geom2d",
+          "module": "javaGeom",
+          "version": {
+            "requires": "0.11.1"
+          }
+        },
+        {
+          "group": "javax.help",
+          "module": "javahelp",
+          "version": {
+            "requires": "2.0.05"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "drawfbp-2.19.2.jar",
+          "url": "drawfbp-2.19.2.jar",
+          "size": 1366492,
+          "sha512": "b65d4af097b67a53a1180db0986a380dfc0dbe34c08de432a09a443c5276c73246610fda1e2478ec84aaf9c2f63ba580fd7d86be11994d2c05e79f3b6320a616",
+          "sha256": "08e798439c763fa2cbe468ee0c81d8dea19104b67c6224df86b43e4dfb1dca44",
+          "sha1": "ce483094bf79dde9e5f8a9887c759662426573fb",
+          "md5": "deabae745aa989588b7f57e5afe1cf89"
+        }
+      ]
+    }
+  ]
+}

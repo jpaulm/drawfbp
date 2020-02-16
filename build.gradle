@@ -1,4 +1,3 @@
-// Do a gradle build, followed by gradle fatJar
 
 
 buildscript {  
@@ -15,9 +14,9 @@ buildscript {
 
 
 
-plugins {
-    id 'maven'
-}
+//plugins {
+ //   id 'maven'
+//}
 
 
 apply plugin: 'io.codearte.nexus-staging'
@@ -45,7 +44,7 @@ allprojects {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'java-library'
@@ -53,7 +52,7 @@ apply plugin: 'java-library'
    
 }
 
-version = '2.19.1'
+version = '2.19.2'
 
 
 
@@ -78,27 +77,65 @@ repositories {
     mavenCentral()
 }
 
+ 
 
-dependencies { 
-	compile ('math.geom2d:javaGeom:0.11.1')
-	compile ('javax.help:javahelp:2.0.05')
+dependencies { 	
+	implementation ('math.geom2d:javaGeom:0.11.1')
+	implementation ('javax.help:javahelp:2.0.05')
 }
 
 
-
+// if going to Maven, have to suppress jar
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': version,
-        "Class-Path": configurations.compile.collect { it.getName() }.join(' '),
+        attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': archiveVersion,
+        "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' '),
         'Main-Class' : mainClassName
     }
+     //manifest {
+      //  attributes 'Implementation-Title': 'DrawFBP with javaGeom and JavaHelp jar files',  
+      //  	'Implementation-Version': archiveVersion,
+      //  	"Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' '),
+      //  	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
+   // }
+    
+       
+    //baseName = project.name + '-all'
+    archiveBaseName = project.name
+    from sourceSets.main.output       
+      
+    dependsOn configurations.compileClasspath
+   
+    from {       
+      configurations.compileClasspath.findAll {  it.name.endsWith('jar')  }.collect {   zipTree(it)  }           
+    }
+   
+    exclude('math/geom2s/**')
+    exclude('math/geom3d/**')
+    exclude('math/geom2s/**')
+    exclude('math/utils/**')
+    exclude('math/package/html')
+    exclude('com/seisw/util/geom/**')
 }
 
 if (JavaVersion.current().isJava8Compatible()) {   
         tasks.withType(Javadoc) {
             options.addBooleanOption('Xdoclint:none', true)
         }  
+}
+
+ext {
+    snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
+    releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+
+
+mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
+ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
+osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
+
+
+
 }
 
 ext {
@@ -140,140 +177,97 @@ artifacts {
     archives javadocJar,sourcesJar
 }
 
-signing {
-    sign configurations.archives
-}
 
-task fatJar(type: Jar) {
-
-// Run after gradle build!
-   
-    manifest {
-        attributes 'Implementation-Title': 'DrawFBP with javaGeom and JavaHelp jar files',  
-        	'Implementation-Version': version,
-        	"Class-Path": configurations.compile.collect { it.getName() }.join(' '),
-        	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
-    }
-    
-       
-    //baseName = project.name + '-all'
-    baseName = project.name
-    from sourceSets.main.output
-   
-    dependsOn configurations.compile
-    from {       
-       configurations.compile.findAll {  it.name.endsWith('jar')  }.collect {   zipTree(it)  }      
-    }
-    exclude('math/geom2s/**')
-    exclude('math/geom3d/**')
-    exclude('math/geom2s/**')
-    exclude('math/utils/**')
-    exclude('math/package/html')
-    exclude('com/seisw/util/geom/**')
-   // with jar
-}
-
-
-
-task writeNewPom {
-doLast {
-    pom {
-        project {
-            groupId 'com.jpaulmorrison'
-            artifactId 'drawfbp'
-
- 
-            version '2.19.1'
-        
-            inceptionYear '2016'
-            licenses {
-                license {
-                    name 'GNU Lesser General Public License, Version 3.0'
-                    url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                }
-            }          
-        }
-    }.writeTo("pom.xml")
-    }
-}
-
-publishing {
-  publications {
-     mavenJava(MavenPublication) {
-
-       
-       groupId 'com.jpaulmorrison'        
-      
-       artifact 'drawfbp'
-      // from components.java
-     //  artifact sourcesJar
-     //  artifact javadocJar
-    }
- }
- 
-
- 
-uploadArchives {
-
-
-
-  repositories {
-    mavenDeployer {
-    
- 
+    publishing {
   
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: releasePublicationRepository) {
-        authentication(userName: ossrhUser, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: snapshotPublicationRepository) {
-       authentication(userName: ossrhUser, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'DrawFBP'
-        description 'Diagramming Tool for Flow-Based Programming'
-        groupId 'com.jpaulmorrison'
-        packaging 'jar'
-        // optionally artifactId can be defined here         
-        url 'https://github.com/jpaulm/drawfbp'
-
-
-        version '2.19.1'
-
-        scm {
-          connection 'scm:git:https://github.com/jpaulm.git'
-          developerConnection 'scm:git:https://github.com/jpaulm.git'
-          url 'https://github.com/jpaulm.git'
+    publications {
+        mavenJava(MavenPublication) {
+          
+            artifactId = 'drawfbp'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'DrawFBP'
+                description = 'Diagramming Tool for Flow-Based Programming'
+                 // groupId 'com.jpaulmorrison'
+                // packaging 'jar'
+         
+               url = 'https://github.com/jpaulm/drawfbp'
+                
+                //properties = [
+                //    myProp: "value",
+                //    "prop.with.dots": "anotherValue"
+               // ]
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                    license {
+                        name = 'GNU Lesser General Public License, Version 3.0'
+                       url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                     }
+                }
+                
+          developers {
+           developer {
+             id = 'jpaulmorr'
+             name = 'John Paul Rodker Morrison (Software architect/developer)'
+             email = 'jpaulmorr@gmail.com'
+           }
+           developer {
+             id  = 'bobcorrick'
+             name =  'Bob Corrick (Software architect/developer)'
+             email = 'bobcorrick@outlook.com'
+           }
+         }
+        
+        //version '2.19.2'
+        
+                scm {
+          connection = 'scm:git:git:https://github.com/jpaulm.git'
+          developerConnection = 'scm:git:ssh:https://github.com/jpaulm.git'
+          url = 'https://github.com/jpaulm.git'
         }
-
-        licenses {
-          license {
-            name 'GNU Lesser General Public License, Version 3.0'
-            url 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-          }
+            }
         }
-
-        developers {
-          developer {
-            id 'jpaulmorr'
-            name 'John Paul Rodker Morrison (Software architect/developer)'
-            email 'jpaulmorr@gmail.com'
-          }
-          developer {
-            id 'bobcorrick'
-            name 'Bob Corrick (Software architect/developer)'
-            email 'bobcorrick@outlook.com'
-          }
-        }
-   
-                                                                         
-         }                                                                             
- 
-
-      }
     }
-  }
+    repositories {
+        maven {
+           
+            def releasesRepoUrl = "$buildDir/repos/releases"
+            def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        
+            
+            println(releasesRepoUrl)
+            println(snapshotsRepoUrl)
+            println(url)
+      
+       credentials { 
+          username = ossrhUser
+          password = ossrhPassword
+       }
+     
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
 }
