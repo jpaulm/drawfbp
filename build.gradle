@@ -1,4 +1,6 @@
+// Gradle migrated to v6.2.0
 
+//Uploads to Sonatype OK, but gives two (or maybe 4) failures
 
 buildscript {  
     repositories {
@@ -180,24 +182,16 @@ artifacts {
 
     publishing {
   
+  
+  
     publications {
-        mavenJava(MavenPublication) {
-          
-            artifactId = 'drawfbp'
-            from components.java
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
+        mavenJava(MavenPublication) {  
+           
             pom {
                 name = 'DrawFBP'
                 description = 'Diagramming Tool for Flow-Based Programming'
                  // groupId 'com.jpaulmorrison'
-                // packaging 'jar'
+                 packaging 'jar'
          
                url = 'https://github.com/jpaulm/drawfbp'
                 
@@ -205,6 +199,12 @@ artifacts {
                 //    myProp: "value",
                 //    "prop.with.dots": "anotherValue"
                // ]
+               
+               credentials {
+                     username = ossrhUser
+                     password = ossrhPassword   
+                }
+                
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -229,38 +229,65 @@ artifacts {
            }
          }
         
-        //version '2.19.2'
+      
+        
         
                 scm {
           connection = 'scm:git:git:https://github.com/jpaulm.git'
           developerConnection = 'scm:git:ssh:https://github.com/jpaulm.git'
           url = 'https://github.com/jpaulm.git'
         }
+        
+      
+      
             }
         }
     }
+    
+    
     repositories {
+    
+       
         maven {
            
-            def releasesRepoUrl = "$buildDir/repos/releases"
-            def snapshotsRepoUrl = "$buildDir/repos/snapshots"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-        
-            
-            println(releasesRepoUrl)
-            println(snapshotsRepoUrl)
-            println(url)
-      
-       credentials { 
-          username = ossrhUser
-          password = ossrhPassword
-       }
-     
+          // def releasesRepoUrl = "$buildDir/repos/releases"
+         // def releasesRepoUrl = "https://oss.sonatype.org/content/repositories/releases/"
+          
+          // def snapshotsRepoUrl = "$buildDir/repos/snapshots"
+         // def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+          
+          // url (version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
+          
+          url (version.endsWith('SNAPSHOT') ? snapshotPublicationRepository : releasePublicationRepository) 
+    
+    
     }
 }
 
+
+/*
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+        }
+    }
+}
+*/
+
+
+//signing {
+//    sign publishing.publications.mavenJava
+//
+
 signing {
-    sign publishing.publications.mavenJava
+    required {
+        // signing is required if this is a release version and the artifacts are to be published
+        !version.toString().endsWith('-SNAPSHOT') && tasks.withType(PublishToMavenRepository).find {
+             gradle.taskGraph.hasTask it
+        }
+    }
+    sign publishing.publications
 }
 
 
@@ -270,4 +297,4 @@ javadoc {
     }
 }
 
-}
+} 

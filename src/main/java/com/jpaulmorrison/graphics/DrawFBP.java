@@ -1706,7 +1706,8 @@ public class DrawFBP extends JFrame
 					+ "*                                                  *\n"
 					+ "*    Copyright 2009, ..., 2020                     *\n"
 					+ "*                                                  *\n"
-					+ "*    FBP web site: www.jpaulmorrison.com/fbp       *\n"
+					+ "*    FBP web site:                                 *\n"
+					+ "*      https://jpaulm.github.io/fbp/index.html     *\n"
 					+ "*                                                  *\n"
 					+ "*               (" + dt + ")            " + sp2
 					+ "       *\n"
