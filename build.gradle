@@ -1,6 +1,5 @@
 // Gradle migrated to v6.2.0
 
-//Uploads to Sonatype OK, but gives two (or maybe 4) failures
 
 buildscript {  
     repositories {
@@ -23,6 +22,7 @@ buildscript {
 
 apply plugin: 'io.codearte.nexus-staging'
 
+/*
 subprojects {
        
 
@@ -40,7 +40,7 @@ subprojects {
             archives javadocJar, sourcesJar
         }
     }
-
+*/
 
 allprojects {
 apply plugin: 'java'
@@ -87,7 +87,10 @@ dependencies {
 }
 
 
-// if going to Maven, have to suppress jar
+java {
+ withSourcesJar()
+ withJavadocJar()
+}
 
 jar {
     manifest {
@@ -121,11 +124,13 @@ jar {
     exclude('com/seisw/util/geom/**')
 }
 
+
 if (JavaVersion.current().isJava8Compatible()) {   
         tasks.withType(Javadoc) {
             options.addBooleanOption('Xdoclint:none', true)
         }  
 }
+
 
 ext {
     snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -164,6 +169,7 @@ description = "Create default maven directory structure"
 }
 }
 
+/*
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
@@ -179,6 +185,9 @@ artifacts {
     archives javadocJar,sourcesJar
 }
 
+*/
+
+  //  javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
     publishing {
   
@@ -186,7 +195,8 @@ artifacts {
   
     publications {
         mavenJava(MavenPublication) {  
-           
+        
+          
             pom {
                 name = 'DrawFBP'
                 description = 'Diagramming Tool for Flow-Based Programming'
@@ -200,10 +210,10 @@ artifacts {
                 //    "prop.with.dots": "anotherValue"
                // ]
                
-               credentials {
-                     username = ossrhUser
+            credentials {
+                   username = ossrhUser
                      password = ossrhPassword   
-                }
+            }
                 
                 licenses {
                     license {
@@ -259,7 +269,12 @@ artifacts {
           // url (version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
           
           url (version.endsWith('SNAPSHOT') ? snapshotPublicationRepository : releasePublicationRepository) 
-    
+          
+         credentials {
+                     username = ossrhUser
+                     password = ossrhPassword   
+                }
+           
     
     }
 }
