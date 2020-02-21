@@ -22,25 +22,7 @@ buildscript {
 
 apply plugin: 'io.codearte.nexus-staging'
 
-/*
-subprojects {
-       
 
-        task javadocJar(type: Jar) {
-            classifier = 'javadoc'
-            from javadoc
-        }
-
-        task sourcesJar(type: Jar) {
-            classifier = 'sources'
-            from sourceSets.main.allSource
-        }
-
-        artifacts {
-            archives javadocJar, sourcesJar
-        }
-    }
-*/
 
 allprojects {
 apply plugin: 'java'
@@ -50,15 +32,17 @@ apply plugin: 'application'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'java-library'
+//apply plugin: 'de.marcphilipp.nexus-publish'  // check it out!
 
    
 }
 
 version = '2.19.2'
 
-
-
 group = 'com.jpaulmorrison'
+
+
+              
 
 description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and will generate JavaFBP or C#FBP networks.'
 
@@ -94,17 +78,11 @@ java {
 
 jar {
     manifest {
-        attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': archiveVersion,
+        attributes 'Implementation-Title': 'DrawFBP with JavaGeom and Javahelp', 'Implementation-Version': archiveVersion,
         "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' '),
         'Main-Class' : mainClassName
     }
-     //manifest {
-      //  attributes 'Implementation-Title': 'DrawFBP with javaGeom and JavaHelp jar files',  
-      //  	'Implementation-Version': archiveVersion,
-      //  	"Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' '),
-      //  	'Main-Class': 'com.jpaulmorrison.graphics.DrawFBP'
-   // }
-    
+      
        
     //baseName = project.name + '-all'
     archiveBaseName = project.name
@@ -134,8 +112,9 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 ext {
     snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
-    releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-
+    releasePublicationRepository = "https://oss.sonatype.org/service/local/"
+    //? https://oss.sonatype.org/service/local
+    //? "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
@@ -169,34 +148,20 @@ description = "Create default maven directory structure"
 }
 }
 
-/*
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar,sourcesJar
-}
-
-*/
-
-  //  javadoc.options.addStringOption('Xdoclint:none', '-quiet')
-
-    publishing {
-  
+    publishing { 
   
   
     publications {
-        mavenJava(MavenPublication) {  
+        mavenJava(MavenPublication) {
         
-          
+            groupId = 'com.jpaulmorrison'
+            artifactId = 'drawfbp'       
+            version = '2.19.2'
+            from components.java
+           
+                  
             pom {
                 name = 'DrawFBP'
                 description = 'Diagramming Tool for Flow-Based Programming'
@@ -204,16 +169,9 @@ artifacts {
                  packaging 'jar'
          
                url = 'https://github.com/jpaulm/drawfbp'
-                
-                //properties = [
-                //    myProp: "value",
-                //    "prop.with.dots": "anotherValue"
-               // ]
                
-            credentials {
-                   username = ossrhUser
-                     password = ossrhPassword   
-            }
+               
+           
                 
                 licenses {
                     license {
@@ -260,13 +218,7 @@ artifacts {
        
         maven {
            
-          // def releasesRepoUrl = "$buildDir/repos/releases"
-         // def releasesRepoUrl = "https://oss.sonatype.org/content/repositories/releases/"
-          
-          // def snapshotsRepoUrl = "$buildDir/repos/snapshots"
-         // def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-          
-          // url (version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
+         
           
           url (version.endsWith('SNAPSHOT') ? snapshotPublicationRepository : releasePublicationRepository) 
           
@@ -280,20 +232,6 @@ artifacts {
 }
 
 
-/*
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-        }
-    }
-}
-*/
-
-
-//signing {
-//    sign publishing.publications.mavenJava
-//
 
 signing {
     required {

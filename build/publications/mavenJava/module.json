@@ -11,7 +11,7 @@
   "createdBy": {
     "gradle": {
       "version": "6.2",
-      "buildId": "ypxipfkuvzca7hgijekqwxkdhy"
+      "buildId": "owvmuaxlxjbz3n6y5vjhodk5j4"
     }
   },
   "variants": [
@@ -28,11 +28,11 @@
         {
           "name": "drawfbp-2.19.2.jar",
           "url": "drawfbp-2.19.2.jar",
-          "size": 1366516,
-          "sha512": "fefb6ffeb9f763ed95342bc2025e3a4833da516bcf8edc3f150bb7eb13eea6c245459b9b013feb6566a2e24c831bf66c8afad3e82d7da09a9853ece71f6a5031",
-          "sha256": "ea8b89b30bea330591a8d6c74bb53eaae6234c09b4c2f4e3649da65ea101d188",
-          "sha1": "e1d089a3ac546ed4035d8eb7ca25dc573a3f6159",
-          "md5": "78f8bdde1c46d098fa993187c4e5d152"
+          "size": 1366530,
+          "sha512": "15038c360b6a50724b25dbc317b3aa8d721406f76cba6105708883d63033f7472c002c60d0b15bae8a0f77cdf50f6481068264b5ba66c7ed02e298f2e26dff47",
+          "sha256": "11a7d01bd9de464e3754bdede1540baf583fae0f09104454cd665effd903c96f",
+          "sha1": "8ba8dba6cbf827800a9cc2acc6466945ce1ab413",
+          "md5": "6a9f7b131961c3deef11b3eaa62c613e"
         }
       ]
     },
@@ -65,11 +65,51 @@
         {
           "name": "drawfbp-2.19.2.jar",
           "url": "drawfbp-2.19.2.jar",
-          "size": 1366516,
-          "sha512": "fefb6ffeb9f763ed95342bc2025e3a4833da516bcf8edc3f150bb7eb13eea6c245459b9b013feb6566a2e24c831bf66c8afad3e82d7da09a9853ece71f6a5031",
-          "sha256": "ea8b89b30bea330591a8d6c74bb53eaae6234c09b4c2f4e3649da65ea101d188",
-          "sha1": "e1d089a3ac546ed4035d8eb7ca25dc573a3f6159",
-          "md5": "78f8bdde1c46d098fa993187c4e5d152"
+          "size": 1366530,
+          "sha512": "15038c360b6a50724b25dbc317b3aa8d721406f76cba6105708883d63033f7472c002c60d0b15bae8a0f77cdf50f6481068264b5ba66c7ed02e298f2e26dff47",
+          "sha256": "11a7d01bd9de464e3754bdede1540baf583fae0f09104454cd665effd903c96f",
+          "sha1": "8ba8dba6cbf827800a9cc2acc6466945ce1ab413",
+          "md5": "6a9f7b131961c3deef11b3eaa62c613e"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "drawfbp-2.19.2-sources.jar",
+          "url": "drawfbp-2.19.2-sources.jar",
+          "size": 388795,
+          "sha512": "1f34a14a663e44783df6f4982912191ce0800042754b27b5ff3731bcb39024311ec01ee6962e028a6dfee5f4325f16f79400602d3e9eac463f9d7121ee46f1c8",
+          "sha256": "79579909917c99e75fc98276bd04f5e17a144f93ce30184e7c727f85a4e695bf",
+          "sha1": "b30a9590e5f90ec7af33c32fdb487c2843e3fc94",
+          "md5": "6cc190755e72579aed3209a36bb92824"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "drawfbp-2.19.2-javadoc.jar",
+          "url": "drawfbp-2.19.2-javadoc.jar",
+          "size": 162732,
+          "sha512": "c920df28401441078807ccac9f0dd6b602af6c24aba14693e9e05f6dfeafe17d97be95cf3a0a27a001e62d95faac79398ecb0103c1c25a00e6ce6493a3cc2905",
+          "sha256": "b8d6b3d2fa57098e7a374cbb9afd15debd1781d2adc68b1d06b65c175f598e51",
+          "sha1": "78bf7ed57aefcf663649d92a5cb25a7966e2ada3",
+          "md5": "eb4bff04dbed5c2f256e3b12dcea726e"
         }
       ]
     }
