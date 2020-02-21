@@ -70,6 +70,7 @@ Features
 - Keyboard-only usage (except positioning of blocks)
 - Choose fonts (fixed size and variable size, indicating support for Russian, Hindi (Devanagari), and Chinese)
 - Change font size 
+- Compare facility
 - Structured Help facility
 - Export diagram as image
 - Print diagram
