@@ -109,21 +109,19 @@ if (JavaVersion.current().isJava8Compatible()) {
         }  
 }
 
-
+/*
 ext {
     snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
     releasePublicationRepository = "https://oss.sonatype.org/service/local/"
-    //? https://oss.sonatype.org/service/local
-    //? "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    
 
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
 osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
 
-
-
 }
 
+*/
 ext {
     snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
     releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -133,9 +131,10 @@ mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
 osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
 
-
-
 }
+
+
+
 
 // Used to generate initial maven-dir layout
 task "create-dirs" { 
