@@ -1,0 +1,39 @@
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+*.bin
+*.obj
+*.debug
+*.ipch
+
+
+# Gradle
+*.gradle
+
+# Maven packages/etc
+*.target
+*.build
+
+#VC++ stuff
+.vs
+*.tlog
+*.log
+*.pch
+*.pdb
+*.suo
+*.sdf
+*.exe
+*.opensdf
+*.opendb
+**/Release/
+**/Debug/
+
+#data files
+*/output.fil
+*/autres.fil
+
+# System crap
+Thumbs.db
+.DS_Store
+
+*.txt

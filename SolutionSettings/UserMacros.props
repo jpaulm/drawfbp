@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <LUA_INCLUDE>c:\Users\Paul\Documents\GitHub\cppfbp\CppFBPLua\src</LUA_INCLUDE>
+    <LUA_LIB>C:\Users\Paul\Documents\GitHub\cppfbp\Debug\CppFBPLua.lib</LUA_LIB>
+    <BOOST_INCLUDE>C:\Program Files\boost\boost_1_67_0</BOOST_INCLUDE>
+    <BOOST_LIB>C:\Program Files\boost\boost_1_67_0\stage\lib</BOOST_LIB>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="LUA_LIB">
+      <Value>$(LUA_LIB)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="LUA_INCLUDE">
+      <Value>$(LUA_INCLUDE)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_INCLUDE">
+      <Value>$(BOOST_INCLUDE)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+    <BuildMacro Include="BOOST_LIB">
+      <Value>$(BOOST_LIB)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+</Project>
