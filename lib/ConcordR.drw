@@ -1,0 +1,41 @@
+<?xml version="1.0"?> 
+ <drawfbp_file xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd"><net> <desc>Concordance</desc> <complang>Java</complang> <clicktogrid>false</clicktogrid> 
+<blocks><block> <x> 673 </x> <y> 401 </y> <id> 16 </id> <type>R</type> <width>100</width> <height>68</height> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 388 </x> <y> 146 </y> <id> 3 </id> <type>B</type> <width>100</width> <height>68</height> <description>Clean data _
+ make words</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 535 </x> <y> 146 </y> <id> 4 </id> <type>B</type> <width>100</width> <height>68</height> <description>Sort
+ words</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 670 </x> <y> 146 </y> <id> 5 </id> <type>B</type> <width>100</width> <height>68</height> <description>Format
+ output</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 124 </x> <y> 142 </y> <id> 7 </id> <type>F</type> <width>68</width> <height>90</height> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 673 </x> <y> 303 </y> <id> 8 </id> <type>B</type> <width>100</width> <height>68</height> <description> 
+ Display
+  Formatted 
+ Text</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 389 </x> <y> 299 </y> <id> 9 </id> <type>B</type> <width>100</width> <height>68</height> <description> 
+ Display
+   Words</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 250 </x> <y> 143 </y> <id> 10 </id> <type>B</type> <width>100</width> <height>68</height> <description> Read
+   file</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 811 </x> <y> 146 </y> <id> 11 </id> <type>B</type> <width>100</width> <height>68</height> <description>
+  Write
+   file</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 247 </x> <y> 245 </y> <id> 12 </id> <type>I</type> <width>74</width> <height>16</height> <description>source.txt</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 788 </x> <y> 39 </y> <id> 13 </id> <type>I</type> <width>109</width> <height>16</height> <description>concordance.txt</description> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 813 </x> <y> 274 </y> <id> 14 </id> <type>F</type> <width>68</width> <height>90</height> <multiplex>false</multiplex><invisible>false</invisible></block> 
+<block> <x> 389 </x> <y> 395 </y> <id> 15 </id> <type>R</type> <width>100</width> <height>68</height> <multiplex>false</multiplex><invisible>false</invisible></block> 
+</blocks> <connections>
+<connection> <fromx>669</fromx> <fromy>337</fromy> <tox>669</tox> <toy>367</toy> <fromid>8</fromid> <toid>16</toid> <id>32</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport></connection> 
+<connection> <fromx>300</fromx> <fromy>142</fromy> <tox>338</tox> <toy>142</toy> <fromid>10</fromid> <toid>3</toid> <id>19</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>438</fromx> <fromy>145</fromy> <tox>485</tox> <toy>145</toy> <fromid>3</fromid> <toid>4</toid> <id>3</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>249</fromx> <fromy>237</fromy> <tox>249</tox> <toy>177</toy> <fromid>12</fromid> <toid>10</toid> <id>21</id> <endsatline>false</endsatline><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>585</fromx> <fromy>145</fromy> <tox>620</tox> <toy>145</toy> <fromid>4</fromid> <toid>5</toid> <id>4</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>666</fromx> <fromy>180</fromy> <tox>667</tox> <toy>269</toy> <fromid>5</fromid> <toid>8</toid> <id>6</id> <endsatline>false</endsatline><upstreamport>DISP</upstreamport><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>813</fromx> <fromy>180</fromy> <tox>813</tox> <toy>229</toy> <fromid>11</fromid> <toid>14</toid> <id>23</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport></connection> 
+<connection> <fromx>385</fromx> <fromy>180</fromy> <tox>386</tox> <toy>265</toy> <fromid>3</fromid> <toid>9</toid> <id>7</id> <endsatline>false</endsatline><upstreamport>DISP</upstreamport><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>795</fromx> <fromy>47</fromy> <tox>795</tox> <toy>112</toy> <fromid>13</fromid> <toid>11</toid> <id>22</id> <endsatline>false</endsatline><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>158</fromx> <fromy>143</fromy> <tox>200</tox> <toy>143</toy> <fromid>7</fromid> <toid>10</toid> <id>11</id> <endsatline>false</endsatline><downstreamport>IN</downstreamport></connection> 
+<connection> <fromx>387</fromx> <fromy>333</fromy> <tox>387</tox> <toy>361</toy> <fromid>9</fromid> <toid>15</toid> <id>31</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport></connection> 
+<connection> <fromx>720</fromx> <fromy>148</fromy> <tox>761</tox> <toy>148</toy> <fromid>5</fromid> <toid>11</toid> <id>14</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport><downstreamport>IN</downstreamport></connection> 
+</connections> </net> </drawfbp_file>

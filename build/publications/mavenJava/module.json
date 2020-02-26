@@ -1,0 +1,117 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.jpaulmorrison",
+    "module": "drawfbp",
+    "version": "2.19.3",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.2",
+      "buildId": "u5fez7zcuba3le232wh32ex2bq"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "drawfbp-2.19.3.jar",
+          "url": "drawfbp-2.19.3.jar",
+          "size": 1366531,
+          "sha512": "f0c7f49916c6dfc3c9fd715670d0c2a05c005b88189f70502efb1e5a9c7394ee49b6a56c98733d441c83ec5db8344fca20d30c992749546e20b30698019d5f93",
+          "sha256": "9f05643cc5e9fc63ab943bbe2f97bb04d42355f2b6b4f8aab461730d5d5afe4c",
+          "sha1": "9c8981e3c8f5a82111f7bc712eca693f8d8e97db",
+          "md5": "ea8489f6e126153844f82b94b5a23113"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "math.geom2d",
+          "module": "javaGeom",
+          "version": {
+            "requires": "0.11.1"
+          }
+        },
+        {
+          "group": "javax.help",
+          "module": "javahelp",
+          "version": {
+            "requires": "2.0.05"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "drawfbp-2.19.3.jar",
+          "url": "drawfbp-2.19.3.jar",
+          "size": 1366531,
+          "sha512": "f0c7f49916c6dfc3c9fd715670d0c2a05c005b88189f70502efb1e5a9c7394ee49b6a56c98733d441c83ec5db8344fca20d30c992749546e20b30698019d5f93",
+          "sha256": "9f05643cc5e9fc63ab943bbe2f97bb04d42355f2b6b4f8aab461730d5d5afe4c",
+          "sha1": "9c8981e3c8f5a82111f7bc712eca693f8d8e97db",
+          "md5": "ea8489f6e126153844f82b94b5a23113"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "drawfbp-2.19.3-sources.jar",
+          "url": "drawfbp-2.19.3-sources.jar",
+          "size": 388796,
+          "sha512": "d02678d7ffe463344c2d3289c9b7c4e5adb4e68c74673e34500d9d170978a1d4406d4a0e4d1a685d4d1b433182ae57d4d647751e4d9e3093e7b127441f5827e3",
+          "sha256": "58388d549e7c8fb72619071d34282063f81632b79148a1b74dcd2a869b4d9731",
+          "sha1": "7058d3de14fea62099f0b4404cc5c8896949201f",
+          "md5": "5521c25c9b5c93808c62101b922900c1"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "drawfbp-2.19.3-javadoc.jar",
+          "url": "drawfbp-2.19.3-javadoc.jar",
+          "size": 162727,
+          "sha512": "a56d7b3506995c7ecb1088eaf63f8c7b77727f10e657ce810280001e7247c79a8eaf642a8c406bc89a8561ef03d03717cfadf250374321824a304d6a8875c6a3",
+          "sha256": "cca51fba38c3e96d98ff29dcd66f73b638e3fa8fc4f8650943fe13c5f0a8a356",
+          "sha1": "3433b17a2b76d3d4e9af18c8519b600e6d121b69",
+          "md5": "2248ed643f1c4d4489b264ee67d2bda8"
+        }
+      ]
+    }
+  ]
+}
