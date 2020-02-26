@@ -1,139 +1,150 @@
-CppFBP
-===
+DrawFBP
+=======
 
-C++ Implementation of Flow-Based Programming (FBP)
+#### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
-General
+
+Sample DrawFBP network
 ---
 
-In computer programming, flow-based programming (FBP) is a programming paradigm that defines applications as networks of "black box" processes, which exchange data across predefined connections by message passing, where the connections are specified externally to the processes. These black box processes can be reconnected endlessly to form different applications without having to be changed internally. FBP is thus naturally component-oriented.
+Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing process names, IIPs, and actual class names (used for generating runnable code, and also when checking port connections).
 
-FBP is a particular form of dataflow programming based on bounded buffers, information packets with defined lifetimes, named ports, and separate definition of connections.
+![FilterByFirstValue](https://github.com/jpaulm/drawfbp/blob/master/docs/FilterByFirstValue.png "Simple Network Diagram")
 
-One interesting aspect of this implementation is that it supports the scripting language `Lua`, so large parts of your networks can be written in a scripting language if desired.
-
-This implementation is based on an older C implementation called [THREADN](https://github.com/jpaulm/threadn/blob/master/README.md), which used `longjmp` and `setjmp` to control process scheduling.  The scheduling parts of CppFBP now use [BOOST](https://www.boost.org/) instead of `longjmp` and `setjmp`. Much of the rest of the overall THREADN architecture has been incorporated into CppFBP - in particular, THREADN allowed networks to be defined dynamically or statically - this has been preserved in CppFBP.  See the description of "static" vs. "dynamic" in https://github.com/jpaulm/threadn/blob/master/README.md .
-
-Web sites for FBP: 
-* http://www.jpaulmorrison.com/fbp/
-* https://github.com/flowbased/flowbased.org/wiki
-
-Sample Component, Component API and Network Definitions
-* http://www.jpaulmorrison.com/fbp/CppFBP.shtml
- 
-Services supported by Lua interface, and some sample CppFBP/Lua scripts
-* http://www.jpaulmorrison.com/fbp/thlua.html
-
-
-Prerequisites
+Release History
 ---
+**Warning:** There seems to be a problem since v2.19.1 with connecting non-Process blocks to other blocks - please revert to v2.19.0 for 
+full function.  This will be corrected in v2.19.3.
 
-Download and install Microsoft Visual Studio
+Latest release is v2.19.2: the jar file (which includes the `math.geom2d` and JavaHelp jar files) - `drawfbp-2.19.2.jar` - can be obtained from the Releases folder, from `build/libs`, or from MavenCentral.  This version is functionally identical to the previous version, but was built using the new and improved version of Gradle (6.2) - therefore there is no need to upgrade.  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. 
 
-Download and install `Boost` - http://www.boost.org/
+<!--[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)-->
 
-Download and install `Lua` - http://www.lua.org/
+[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-Update following macros with correct version numbers: `BOOST_INCLUDE`, `BOOST_LIB`, `LUA_INCLUDE`, `LUA_LIB`, as follows:
-- Go to `View/Other Windows/Property Manager/SolutionSettings`
-- Expand, showing `Debug`
-- Expand, showing `UserMacros`
-- Select `UserMacros`
-- Go to `UserMacros` under `Common Properties`
-- Click on that, revealing the 4 macros; change version numbers if necessary
-- Leave the `set this macro as an environment variable in the build environment` option set to selected
- 
-or, more simply, in Windows Explorer, just go to `SolutionSettings`, open it, open `UserMacros.props`, and make, apply and save your changes.
+To run from the command line, position to wherever you have stored your DrawFBP jar file, and enter:
+
+<code>java -jar drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
 
 
-Build FBP Project
----
+Description
+-----------
 
-Create empty `cppfbp` directory in your local GitHub directory
+DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP).  Diagrams are saved in DrawFBP XML format, and can actually be used to generate JavaFBP networks, which can then be compiled and run on an IDE such as Eclipse.
 
-Do `git clone https://github.com/jpaulm/cppfbp`
+DrawFBP supports "stepwise refinement" or "top-down development" by supporting subnets - blocks in the diagram that can specify lower level diagrams, which can in turn specify lower level ones, and so on.  DrawFBP allows the user to draw a diagram just using short, descriptive names for blocks (nodes) and to fill in either component or subnet names later.  Multiple levels can be held under separate tabs, allowing the user to jump back and forth between different levels of a design.
 
-Now go into Visual C++, and `Open/Project/Solution` `CppFBP.sln` (in the just cloned directory)
+Alternatively, complex diagrams can be turned into multi-level diagrams by using the "excise" function of the Enclosure block: a group of blocks can be converted into a separate subnet and replaced by a "subnet" block, containing appropriate "external port" blocks, in one operation (see Youtube DrawFBP 5 - https://www.youtube.com/watch?v=5brTDk8cpNo around 9:06).  
 
-There will be a "solution" line, followed by a number of "projects" - two of which are `CppFBPCore` and `CppFBPComponents`.
- 
-Do these builds in this order:
-- Right click on `CppFBPCore` and do a `Build`
-- Right click on `CppFBPComponents` and do a `Build`
-- Right click on `TestSubnets` and do a `Build`
+DrawFBP can generate networks for Java, C#, and NoFlo (JSON).  These are kept separate in the DrawFBP dialogs and typically use different libraries.
 
-Right click on the "solution" line, and do `Build Solution`
+DrawFBP also generates a network definition in .fbp notation.  This was originally defined by Wayne Stevens, and has been somewhat modified for NoFlo.  It will also be usable as input to the C++ implementation, called CppFBP. 
 
-If you get errors, you may have to build individual projects (sometimes this will require more than one try); if you only get warnings, you can proceed.
+For information about FBP in general, see the FBP web site - http://www.jpaulmorrison.com/fbp . 
 
-If you get a message saying "unknown compiler version", try reinstalling Boost.
-
-"Dynamic" Networks
----
-
-The projects whose names are of the form `xxxDyn` are "dynamic" versions of the projects named `xxx` - they start by scanning off the `.fbp` network definitions (via the `CppFBP` module with the `DYNAM` parameter set to `true`), and then run the resulting network structures.
-
-Testing Thxgen
----
-
-This program takes .fbp file and generates a .cpp network definition. If you want to try it, run Thxgen on your cloned repository - in debug mode...  To change the file being scanned, change Command Arguments in Debugging Properties...
- 
-Testing "TimingTest1" (console application)
----
-
-This test case has 5 Generate/Drop process pairs, over each of which 1,000,000 IPs travel concurrently.  This means 5,000,000 each of `create IP`, `send`, `receive`, and `drop`.  
-
-To run it, right click on `TimingTest1` in Solution Explorer; Debug/Start new instance
-
-You should see something like
-
-    Elapsed time in seconds: 180.000
-    Press any key to continue . . .
-
-The elapsed time will of course depend on your machine processing speed, number of cores, etc.
-
-Installing Lua (under VS 2015)
----
-- Download latest version of Lua from http://www.lua.org/download.html; install in `C:Program Files [(x86)]`
-- If Lua version is not 5.3.2, 
-  - Copy all files from `C:Program Files [(x86)]\Lua\5.3\src`, except `lua.c` and `luac.c`, to `CppFBPLua\src` folder
-  - Go into VS 2015
-  - Do `Add/Existing Item` with the files just added to `CppFBPLua\src` of type `.c` to `CppFBPLua/Source Files`
-  - Do `Add/Existing Item` with the files just added to `CppFBPLua\src` of type `.h` to `CppFBPLua/Header Files`
-  - Rebuild `CppFBPLua` project
-- Run tests
-
-TryLua
----
-
-This runs a simple network, where every process is a Lua script being executed by the general `ThLua` component.
-
-This test case only has 10,000 IPs travelling through the network, where half are generated by each Generate process.  The network in free-form notation is as follows:
-
-    Gen(ThLua), Gen2(ThLua), 
-    Concat(ThLua), Repl(ThLua), Drop(ThLua),
-
-    Gen OUT -> IN[0] Concat, Gen2 OUT -> IN[1] Concat,
-    Concat OUT -> IN Repl OUT -> IN Drop,
-
-    '5000' -> COUNT Gen,
-    '5000' -> COUNT Gen2,
-    'gen.lua' -> PROG Gen, 
-    'gen.lua' -> PROG Gen2,
-    'concat.lua' -> PROG Concat,
-    'repl.lua' -> PROG Repl,
-    'drop.lua' -> PROG Drop;
+Six Youtube videos are currently available showing how to use DrawFBP, for drawing diagrams, and generating running JavaFBP networks, using the Eclipse IDE - see below...
 
 
-To run it, right click on `TryLua` in Solution Explorer; Debug/Start new instance
+#### Getting Started with your Diagram
 
-You should see something like
+To get started using DrawFBP once you have downloaded it, start it going, then click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block defaults to "Process", but a number of other block types are available, controlled by by the buttons along the bottom of the screen.
 
-    5000
-    5000
-    10000
-    Elapsed time in seconds: 19.000
-    Press any key to continue . . .
+To indicate a connection between two blocks, click anywhere on the border of the "from" block; then click anywhere on the border of the "to" block - it doesn't matter whether the left mouse button is held down or not. 
+
+Other features are described in the Help facility.
+
+
+Features
+----
+
+- Variety of block types, including "Initial IP", Report, File, Legend (text with no boundary), External ports (for subnets), Human (!)
+- Top-down design supported - although bottom-up is also supported (blocks can be placed on the diagram and connected, and class names filled in later)
+- Display subnets in separate tabs
+- Convert portion of diagram to subnet ("excise")
+- Specify connection capacity
+- "Automatic" ports
+- Checking for valid port names
+- Indicate "drop oldest" attribute for given connection
+- Generate complete networks in Java, C#, JSON, or .fbp notation
+- Pan, zoom in/out
+- Drag portion only of diagram (using Enclosure block)
+- Go to folder from diagram (as of v2.14.1)
+- Keyboard-only usage (except positioning of blocks)
+- Choose fonts (fixed size and variable size, indicating support for Russian, Hindi (Devanagari), and Chinese)
+- Change font size 
+- Compare facility
+- Structured Help facility
+- Export diagram as image
+- Print diagram
+- Drag blocks, sections of diagram (using "Enclosure"), heads or tails of arrows; create or drag bends in arrows
+- "Grid" positioning on/off
+- Extra arrowhead (one per arrow)
+- New Functions (as of v2.16.1): 
+        - Compile Java program
+        - Run Java program
+- New Functions (as of v2.16.5):
+        - Compile C# program
+        - Run C# program
+- As of v2.18.1, File Chooser now displays date and time on non-jar items, and entries can be sorted by name (ascending) or by date/time (descending)         
+
+
+Videos on DrawFBP features
+----
+
+In addition, there are six Youtube videos about DrawFBP, illustrating a number of basic ("classical") FBP concepts (what we are now calling "FBP-inspired" or "FBP-like" systems do not necessarily contain all of these, although DrawFBP should be able to support most of these systems):
+- [DrawFBP video #1](https://www.youtube.com/watch?v=OrKenPOV4Js)
+- [DrawFBP video #2](https://www.youtube.com/watch?v=9NXYNxDjFWY)
+- [DrawFBP video #3](https://www.youtube.com/watch?v=-AmzfhV2hIU)
+- [DrawFBP video #4](https://www.youtube.com/watch?v=F0lKQpIjfVE)
+- [DrawFBP video #5](https://www.youtube.com/watch?v=5brTDk8cpNo) - concept of "subnets", both at design and implementation time
+- [DrawFBP video #6](https://youtu.be/IvTAexROKSA) - simple interactive systems using WebSockets, with demo of JavaFBP-WebSockets (JavaFBP and HTML5)
+
+**Note:** File Chooser now displays date and time on non-jar items, and entries can be sorted by name (ascending) or by date/time (descending).
+
+In addition, the Excise function has changed a little, so the interaction will not be exactly as shown in the video (video #5)
+              
+Running DrawFBP
+----
+DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  The combination is called a "fat jar" file - before v2.18.1, the jar name contained `all-`; from v2.18.1 on, the `all-` has been dropped.  You can download DrawFBP from Maven (search for DrawFBP).  
+
+DrawFBP requires Java 1.7 or later.
+
+If you want access to the Java annotations of your components, add the jar file(s) containing them (at least JavaFBP and possibly others) to the project Properties/Build Path (for Eclipse), or e.g. type on the command line  
+
+        java -cp "build/libs/drawfbp-x.y.z.jar;..\javafbp\build\libs\javafbp-4.1.0.jar" com.jpaulmorrison.graphics.DrawFBP
+        
+where `x.y.z` is the DrawFBP version number.
+
+- to run under Linux, replace the semi-colon(s) with colons(s).   
     
-(where the 10000 is generated by `drop.lua` for debugging purposes)    
+Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes (from JavaFBP) filled in, you will have to reaccess the component classes, as the naming conventions have changed slightly.
+
+**DrawFBP properties** are held in a file called <code>DrawFBPProperties.xml</code> in the user's home directory.  If this does not exist, it will be created the first time the user runs DrawFBP - it is automatically updated as the user uses various DrawFBP facilities.
+
+Compare facility
+---
+
+DrawFBP now (as of v2.19.0) lets you compare two diagrams, indicating which blocks and lines have been added or deleted.  In the case of deleted blocks and lines, the Compare facility paints the old block (called a "ghost") and/or line in pale gray on the new diagram.   
+
+Added blocks and lines are marked with an "A" symbol, deleted blocks and lines with a "D" symbol, and deleted blocks also with the word "ghost".
+
+XML Schema for `.drw` files
+---
+
+An XML Schema has been added to the `lib` folder - https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd - specifying the format of the XML files used to hold DrawFBP diagrams. These files have an extension of `.drw`.  This schema can also be used to check whether the file format of any other diagramming tool matches the `.drw` format.
+
+Old `.drw` files can still be displayed using the latest release of DrawFBP (v2.13.0 and following), but will be stored in the new format when they are rebuilt.
+
+External ports for subnets still have to be added.
+
+Running networks generated by DrawFBP
+---
+
+JavaFBP or C#FBP networks created by DrawFBP can be run stand-alone: for Java, you will need to add the JavaFBP jar file, obtainable from GitHub -  https://github.com/jpaulm/javafbp/releases/download/4.1.0/javafbp-4.1.0.jar , to the Java Build Path of any projects you create. 
+
+If you want to run an app using JavaFBP WebSockets, you will need the jar file for that as well, as described in the README file for the `javafbp-websockets` project on GitHub - https://github.com/jpaulm/javafbp-websockets/blob/master/lib/Java-WebSocket-1.3.4.jar .
+
+Just as any necessary Java jar files can be obtained from the JavaFBP project on GitHub, to run C# applications using FBP you will need `.dll` files for `FBPLib` and `FBPVerbs`, obtained from the C#FBP libraries - https://github.com/jpaulm/csharpfbp .
+
+`jar` files and `dll` files can be added to your project by using the `File/Add additional jar/dll files` function.  
 

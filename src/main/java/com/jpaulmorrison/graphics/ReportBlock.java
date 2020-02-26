@@ -16,7 +16,9 @@ public class ReportBlock extends Block {
 	@Override
 	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
+
 			showArrowEndAreas(g);
+
 			return;
 		}
 		int ptx[] = new int[11];
@@ -96,7 +98,9 @@ public class ReportBlock extends Block {
 		
 		g.setColor(col);
 		
+
 		showDetectionAreas(g);
+
 		calcDiagMaxAndMin(cx - width / 2, cx + width / 2, cy - height / 2, cy + height
 				/ 2);
 		//blueCircs(g);

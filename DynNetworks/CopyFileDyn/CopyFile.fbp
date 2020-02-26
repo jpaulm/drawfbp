@@ -1,3 +1,0 @@
-Read(ThFileRd)? OUT -> IN Copy(ThCopyNL)? OUT -> IN Show(ThFileWt)?,
-'..\\..\\TestData\\POMPIERS.FIL' -> OPT Read,
-'..\\..\\TestData\\output.fil' -> OPT Show;

@@ -18,7 +18,9 @@ public class FileBlock extends Block {
 	@Override
 	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
+
 			showArrowEndAreas(g);
+
 			return;
 		}
 		GeneralPath gp = new GeneralPath();
@@ -53,7 +55,9 @@ public class FileBlock extends Block {
 				y1 += driver.gFontHeight;
 			}
 		}
+
 		showDetectionAreas(g);
+
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;
 		showCompareFlag(g, tlx, tly);

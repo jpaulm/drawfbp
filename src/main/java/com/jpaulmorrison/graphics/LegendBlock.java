@@ -16,7 +16,9 @@ public class LegendBlock extends Block {
 	@Override
 	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
+
 			showArrowEndAreas(g);
+
 			//blueCircs(g);
 			return;
 		}
@@ -42,7 +44,9 @@ public class LegendBlock extends Block {
 			}
 			//g.setFont(oldf);
 			buildSides();
+
 			showDetectionAreas(g);
+
 		}
 		 
 		else {
@@ -50,7 +54,9 @@ public class LegendBlock extends Block {
 			height = 15;
 			//showArrowEndAreas(g);
 			buildSides();
+
 			showDetectionAreas(g);
+
 		}
 		
 		int tlx = cx - width / 2;
@@ -62,8 +68,10 @@ public class LegendBlock extends Block {
 				+ height / 2);
 		
 		 
+
 		 if (this == driver.selBlockM) {
 			showArrowEndAreas(g);
+
 			//return;
 		}
 		//blueCircs(g);	 

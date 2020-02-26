@@ -13,7 +13,9 @@ public class IIPBlock extends Block {
 	IIPBlock(Diagram diag) {
 		super(diag);
 		type = Block.Types.IIP_BLOCK;
+
 		//width = driver.gFontWidth * 5 + 4;
+
 		height = driver.gFontHeight + 4;
 		//buildSides();
 		//calcEdges();
@@ -22,7 +24,9 @@ public class IIPBlock extends Block {
 	@Override
 	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
+
 			showArrowEndAreas(g);
+
 			return;
 		}
 		
@@ -49,7 +53,9 @@ public class IIPBlock extends Block {
 			g.setColor(Color.GRAY);
 			g.drawString(desc, cx - width / 2 + 4, cy + 4);
 		}
+
 		showDetectionAreas(g);
+
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;
 		showCompareFlag(g, tlx, tly);

@@ -1971,6 +1971,7 @@ public class DrawFBP extends JFrame
 
 					if (ans == null)
 						return null;
+
 					else {
 						block.desc = ans;
 						FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
@@ -1980,6 +1981,7 @@ public class DrawFBP extends JFrame
 						byte[] str = t.getBytes();
 						block.width = metrics.bytesWidth(str, 0, t.length());
 					}
+
 				}
 			} else if (!block.editDescription(CREATE))
 				return null;
@@ -2419,11 +2421,13 @@ public class DrawFBP extends JFrame
 	}
 	
 	static boolean hasSuffix(String s) {
+
 		String s2 = s.replace("\\",  "/");
 		int i = s2.lastIndexOf("/");
 		if (i > -1)
 			s2 = s.substring(0, i + 1);
 		int j = s2.lastIndexOf(".");
+
 		return j > -1;
 	}
 	
@@ -4490,7 +4494,9 @@ public class DrawFBP extends JFrame
 		}
 
 		 
+
 		if (driver.fpArrowEndB != null && currentArrow != null /* && currentArrow.toX > -1 */) {
+
 				driver.drawBlueCircle(g, driver.fpArrowEndB.x, driver.fpArrowEndB.y);		
 				repaint();
 		}
@@ -5702,7 +5708,9 @@ public class DrawFBP extends JFrame
 			fpArrowRoot = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
+
 			
+
 
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
@@ -5943,17 +5951,21 @@ public class DrawFBP extends JFrame
 				fpArrowEndA = null;
 				fpArrowEndB = null;
 				
+
 				FoundPointB fpB = null;
 				
 				if (Math.abs(currentArrow.fromX - xa) > 10 && 
 					Math.abs(currentArrow.fromY - ya) > 10)				
 					fpB = findBlockEdge(xa, ya);
 				
+
 				if (fpB != null) {
 					foundBlock = fpB.block;
 					// side = fp.side;
 					fpArrowEndB = fpB;
+
 					//currentArrow.toId = foundBlock.id;
+
 				} 
 				else  
 					fpArrowEndA = findArrow(xa, ya);
@@ -6092,7 +6104,9 @@ public class DrawFBP extends JFrame
 			}
 
 			if (arrowEndForDragging != null) {
+
 				//currentArrow = null;
+
 				foundBlock = null;
 				// curDiag.changed = true;
 				Arrow arr = arrowEndForDragging;
@@ -6112,8 +6126,10 @@ public class DrawFBP extends JFrame
 							arr.toId = block.id;
 							arr.endsAtBlock = true;
 							arr.endsAtLine = false;
+
 							//currentArrow.toId = block.id;
 							currentArrow = null;
+
 							//arr.toX = arr.toX;
 							//arr.toY = arr.toY;
 							break;
@@ -6121,8 +6137,10 @@ public class DrawFBP extends JFrame
 							arr.toId = fpA.arrow.id;
 							arr.endsAtBlock = false;
 							arr.endsAtLine = true;
+
 							currentArrow = null;
 							//currentArrow.toId = arr.id;  
+
 							//arr.toX = arr.toX;
 							//arr.toY = arr.toY;
 							break;

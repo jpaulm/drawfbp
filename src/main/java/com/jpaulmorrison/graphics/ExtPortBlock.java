@@ -41,7 +41,9 @@ public class ExtPortBlock extends Block {
 					* driver.gFontWidth / 2, cy + 24);
 			g.setColor(Color.BLACK);
 		}
+
 		showDetectionAreas(g);
+
 		//blueCircs(g);
 	}
 

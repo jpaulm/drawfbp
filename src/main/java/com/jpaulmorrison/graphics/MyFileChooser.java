@@ -1785,7 +1785,9 @@ final boolean SAVEAS = true;
 							//				+ " doesn't exist - create using New Folder",
 							//		MyOptionPane.ERROR_MESSAGE);
 							//return;
+
 							f = new File(f.getAbsolutePath() +  fCP.fileExt);  
+
 							if (!f.exists()){
 								if (MyOptionPane.YES_OPTION == MyOptionPane
 										.showConfirmDialog(driver,

@@ -122,7 +122,9 @@ public class Block implements ActionListener {
 			return;
 
 		if (!visible && this != driver.selBlock) {			
+
 			showArrowEndAreas(g);
+
 			return;
 		}
 
@@ -195,8 +197,10 @@ public class Block implements ActionListener {
 				y += driver.gFontHeight;
 			}
 		}
+
 		showDetectionAreas(g);
 		
+
 
 		if (!visible && this == driver.selBlock)
 			g.drawLine(tlx, tly, cx + width / 2, cy + height / 2);
@@ -414,7 +418,9 @@ public class Block implements ActionListener {
 	}
 
 	 
+
 	//void showZones(Graphics g) {
+
 		//if (!(this instanceof LegendBlock))  // comment out for next release
 		//	return;
 		//if (driver.currentArrow == null && driver.selBlockM == this)
@@ -422,7 +428,9 @@ public class Block implements ActionListener {
 		 
 		//else if (driver.currentArrow != null && this == driver.foundBlock)
 		//	showArrowEndAreas(g);
+
 	//}
+
  
 	void showCompareFlag(Graphics g, int tlx, int tly){
 		if (compareFlag != null) {
@@ -784,6 +792,7 @@ public class Block implements ActionListener {
 		} 
 	}
 
+
 	void showDetectionAreas(Graphics g) {
 		if (driver.fpArrowRoot != null && driver.fpArrowRoot.block == this || 
 				driver.fpArrowEndB != null && driver.fpArrowEndB.block == this)  
@@ -791,6 +800,7 @@ public class Block implements ActionListener {
 		if (!(type.equals(Types.ENCL_BLOCK)))
 		    driver.blueCircs(g);
 		}
+
 	 
 	void showArrowEndAreas(Graphics g) {
 		
@@ -1448,7 +1458,9 @@ public class Block implements ActionListener {
 					//height = driver.gFontHeight + 6;
 					FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
 					String t = desc;
+
 					if (t.length() <= 1)  
+
 						t = " " + t + " ";
 					byte[] str = t.getBytes();
 					width = metrics.bytesWidth(str, 0, t.length());

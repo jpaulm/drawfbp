@@ -56,7 +56,9 @@ public class Enclosure extends Block {
 	@Override
 	void draw(Graphics g) {
 		if (!visible && this != driver.selBlock) {
+
 			showArrowEndAreas(g);
+
 			return;
 		}
 		if (!deleteOnSave)
@@ -191,7 +193,9 @@ public class Enclosure extends Block {
 			g.setColor(Color.BLACK);
 		}
 		*/
+
 		showDetectionAreas(g);
+
 		calcDiagMaxAndMin(x - width / 2, x + width / 2,
 				y - height / 2, y + height / 2);
 		// blueCircs(g);
