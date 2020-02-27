@@ -1974,12 +1974,14 @@ public class DrawFBP extends JFrame
 
 					else {
 						block.desc = ans;
-						FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
-						String t = ans;
-						if (t.length() <= 1)
-							t = " " + t + " ";
-						byte[] str = t.getBytes();
-						block.width = metrics.bytesWidth(str, 0, t.length());
+						if (blkType == Block.Types.IIP_BLOCK) {
+						    FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
+						    String t = ans;
+						    if (t.length() <= 1)
+						    	t = " " + t + " ";
+						    byte[] str = t.getBytes();
+						    block.width = metrics.bytesWidth(str, 0, t.length());
+						}
 					}
 
 				}
@@ -2243,7 +2245,7 @@ public class DrawFBP extends JFrame
 			return null;
 		}
 
-		if (!(hasSuffix(file.getName())) && !(file.isDirectory())) {
+		if (null == getSuffix(file.getName()) && !(file.isDirectory())) {
 			String name = file.getAbsolutePath();
 			name += ".drw";
 			file = new File(name);
@@ -2325,7 +2327,7 @@ public class DrawFBP extends JFrame
 		// jtp.setSelectedIndex(curDiag.tabNum);
 		GenLang gl = null;
 
-		String suff = curDiag.getSuffix(fname);
+		String suff = getSuffix(fname);
 
 		if (suff.equals("fbp")) {
 			gl = findGLFromLabel("FBP");
@@ -2419,7 +2421,18 @@ public class DrawFBP extends JFrame
 		}
 		return -1;
 	}
-	
+	String getSuffix(String s) {
+		String s2 = s.replace("\\",  "/");
+		int i = s.lastIndexOf("/");
+		if (i > -1)
+			s2 = s.substring(0, i + 1);
+		int j = s2.lastIndexOf(".");
+		if (j == -1)
+			return null;
+		else
+			return s2.substring(j + 1);
+	}
+	/*
 	static boolean hasSuffix(String s) {
 
 		String s2 = s.replace("\\",  "/");
@@ -2430,7 +2443,7 @@ public class DrawFBP extends JFrame
 
 		return j > -1;
 	}
-	
+	*/
 	void saveAction(boolean saveAs) {
 
 		//File file = null;
@@ -4488,20 +4501,18 @@ public class DrawFBP extends JFrame
 	}
 	
 	public void blueCircs(Graphics g) {
-		if (driver.fpArrowRoot != null) { 
-			driver.drawBlueCircle(g, driver.fpArrowRoot.x, driver.fpArrowRoot.y);
+		if (fpArrowRoot != null) { 
+			drawBlueCircle(g, fpArrowRoot.x, fpArrowRoot.y);
 			repaint();
 		}
 
-		 
-
-		if (driver.fpArrowEndB != null && currentArrow != null /* && currentArrow.toX > -1 */) {
-
-				driver.drawBlueCircle(g, driver.fpArrowEndB.x, driver.fpArrowEndB.y);		
-				repaint();
+		if (fpArrowEndB != null && currentArrow != null /* && currentArrow.toX > -1 */) {
+			drawBlueCircle(g, fpArrowEndB.x, fpArrowEndB.y);		
+			repaint();
 		}
-		if (driver.fpArrowEndA != null){			
-			driver.drawBlueCircle(g, driver.fpArrowEndA.x, driver.fpArrowEndA.y);		
+		
+		if (fpArrowEndA != null){			
+			drawBlueCircle(g, fpArrowEndA.x, fpArrowEndA.y);		
 			repaint();
 		}
 	}
@@ -5684,7 +5695,9 @@ public class DrawFBP extends JFrame
 				arrow.fromX = fpArrowRoot.x; // xa;
 				arrow.fromY = fpArrowRoot.y;  // ya;
 
-				arrow.fromId = foundBlock.id;
+				//int id = fpArrowRoot.block.id;
+				//arrow.fromId = foundBlock.id;
+				arrow.fromId = fpArrowRoot.block.id;
 				Block fromBlock = curDiag.blocks.get(new Integer(arrow.fromId));
 				if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
 						|| fromBlock.type
@@ -5954,9 +5967,8 @@ public class DrawFBP extends JFrame
 
 				FoundPointB fpB = null;
 				
-				if (Math.abs(currentArrow.fromX - xa) > 10 && 
-					Math.abs(currentArrow.fromY - ya) > 10)				
-					fpB = findBlockEdge(xa, ya);
+							
+				fpB = findBlockEdge(xa, ya);
 				
 
 				if (fpB != null) {
@@ -6326,7 +6338,11 @@ public class DrawFBP extends JFrame
 
 			foundBlock = null;
 
-			FoundPointB fpB = findBlockEdge(xa, ya);
+			FoundPointB fpB = null;                     
+			if (Math.abs(currentArrow.fromX - xa) > 10 ||
+					Math.abs(currentArrow.fromY - ya) > 10)	
+			    fpB = findBlockEdge(xa, ya);
+			
 			if (fpB != null) {
 				foundBlock = fpB.block;
 				side = fpB.side;
@@ -6341,18 +6357,21 @@ public class DrawFBP extends JFrame
 								y + zWS / 2))
 					return;
 
-				/*
+				 
 				  if (foundBlock.id == currentArrow.fromId) {
 				 
-				  if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-				  this,
-				  "Connecting arrow to originating block is deadlock-prone - do anyway?"
-				  , "Allow?", MyOptionPane.YES_NO_OPTION)) { Integer aid = new
-				 Integer(currentArrow.id); curDiag.arrows.remove(aid);
-				  foundBlock = null; currentArrow = null;
-				 
-				  repaint(); return; } }
-				  */
+				  if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(this,
+				        "Connecting arrow to originating block is deadlock-prone - do anyway?",
+				        "Allow?", MyOptionPane.YES_NO_OPTION)) { 
+					  Integer aid = new Integer(currentArrow.id); 
+					  curDiag.arrows.remove(aid);
+				      foundBlock = null; 
+				      currentArrow = null;				 
+				      repaint();  
+				      return; 
+				      } 
+				  }
+				   
 				
 				boolean OK = true;
 				Block from = curDiag.blocks

@@ -1776,7 +1776,8 @@ final boolean SAVEAS = true;
 					File f = new File(s2);
 
 					if (!f.exists() && !inJarTree) {
-						if (-1 == s.indexOf(".")) {
+						//if (-1 == s.indexOf(".")) {
+						if (null == driver.getSuffix(s)) {	
 													
 							// add appropriate extension
 
@@ -1788,6 +1789,7 @@ final boolean SAVEAS = true;
 
 							f = new File(f.getAbsolutePath() +  fCP.fileExt);  
 
+							/*
 							if (!f.exists()){
 								if (MyOptionPane.YES_OPTION == MyOptionPane
 										.showConfirmDialog(driver,
@@ -1796,13 +1798,18 @@ final boolean SAVEAS = true;
 												"Confirm create",
 												MyOptionPane.YES_NO_OPTION))
 									try {
-										f.createNewFile();
+										f.createNewFile();   
 									} catch (IOException e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
+								
 							}
+							
+							*/
+							s = f.getName();
 
+							t_fileName.setText(f.getName());
 						} 
 						 
 						/*

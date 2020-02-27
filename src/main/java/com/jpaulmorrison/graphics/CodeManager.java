@@ -626,7 +626,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			fbpMode = true;
 			//doc.changed = false;
 			// }
-			String suff = driver.curDiag.getSuffix(file.getName());
+			String suff = driver.getSuffix(file.getName());
 
 			if (suff != null && suff.toLowerCase().equals("java")) {
 				int i = fileString.indexOf("package ");

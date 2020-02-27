@@ -235,9 +235,9 @@ public class Arrow implements ActionListener {
 		driver.blueCircs(g);
 		
 		if (endsAtBlock) {
-			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || from instanceof Enclosure || 
+			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock || /* from instanceof Enclosure || */
 					from instanceof IIPBlock) && to != null && (to instanceof ProcessBlock
-							|| to instanceof ExtPortBlock || to instanceof Enclosure)) {
+							|| to instanceof ExtPortBlock /* || to instanceof Enclosure */)) {
 				Arrowhead ah = new Arrowhead(fx, fy, toX, toY);  
 				ah.draw(g);	
 				driver.fpArrowEndB = null;

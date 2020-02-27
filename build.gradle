@@ -1,4 +1,4 @@
-// Gradle migrated to v6.2.0
+// Gradle migrated to v6.2.1
 
 
 buildscript {  
@@ -37,7 +37,7 @@ apply plugin: 'java-library'
    
 }
 
-version = '2.19.2'
+version = '2.19.3'
 
 group = 'com.jpaulmorrison'
 
@@ -157,7 +157,7 @@ description = "Create default maven directory structure"
         
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
-            version = '2.19.2'
+            version = '2.19.3'
             from components.java
            
                   

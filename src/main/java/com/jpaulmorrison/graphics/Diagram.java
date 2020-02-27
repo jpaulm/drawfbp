@@ -208,7 +208,7 @@ public class Diagram {
 				//File f2 = new File(s);
 				if (!(newFile.exists()) || newFile.isDirectory()) {
 
-					String suff = getSuffix(s);
+					String suff = driver.getSuffix(s);
 					if (suff == null)
 						newFile = new File(s + fCP.fileExt);
 					else {
@@ -251,7 +251,7 @@ public class Diagram {
 		
 		// finished choosing file...
 		
-		 
+		if  (saveAs) { 
 		if (file.exists()) {   
 			if (file.isDirectory()) {
 				MyOptionPane.showMessageDialog(driver,
@@ -263,22 +263,12 @@ public class Diagram {
 					driver,
 					"Overwrite existing file: " + file.getAbsolutePath()
 							+ "?",
-					"Confirm overwrite", MyOptionPane.YES_NO_OPTION)))
+					"Confirm overwrite", MyOptionPane.YES_NO_OPTION))) {
 				
 				return null;
-			
-			if (fCP.fileExt.equals(".drw")) {	
-				fileString = driver.readFile(file /*, saveAs*/); // read previous version
-				diagFile = file;
-
-				if (fileString != null) {
-					String s = file.getAbsolutePath();
-					File oldFile = file;
-					file = new File(s.substring(0, s.length() - 1) + "~");
-					driver.writeFile(file, fileString);
-					file = oldFile;
-				}
 			}
+			
+			
 			
 		} else {
 			
@@ -299,6 +289,19 @@ public class Diagram {
 				return null;
 			}
 		}
+	}
+		if (fCP.fileExt.equals(".drw")) {	
+			fileString = driver.readFile(file /*, saveAs*/); // read previous version
+			diagFile = file;
+
+			if (fileString != null && !(fileString.equals(""))) {
+				String s = file.getAbsolutePath();
+				File oldFile = file;
+				file = new File(s.substring(0, s.length() - 1) + "~");
+				driver.writeFile(file, fileString);
+				file = oldFile;
+			}
+		}
 		
 		if (fCP == fCParm[IMAGE]) {
 			Path path = file.toPath();
@@ -307,7 +310,7 @@ public class Diagram {
 				file = null;
 				file = path.toFile();
 
-				String suff = getSuffix(file.getAbsolutePath());
+				String suff = driver.getSuffix(file.getAbsolutePath());
 				BufferedImage bi = (BufferedImage) contents;
 
 				ImageIO.write(bi, suff, file);
@@ -494,17 +497,7 @@ public class Diagram {
 	}
 
 	
-	String getSuffix(String s) {
-		int i = s.lastIndexOf("/");
-		if (i == -1)
-			i = s.lastIndexOf("/");
-		String t = s.substring(i + 1);
-		int j = t.lastIndexOf(".");
-		if (j == -1)
-			return null;
-		else
-			return t.substring(j + 1);
-	}
+	
 	
 	void delArrow(Arrow arrow) {
 		//LinkedList<Arrow> ll = new LinkedList<Arrow>();
