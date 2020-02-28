@@ -76,11 +76,9 @@ java {
 }
 
 jar {
+    archiveVersion = '2.19.3'
     manifest {
-      attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': version,
-
-// (don't use archiveVersion here - puts wrong version in manifest)
-
+      attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': archiveVersion,
         "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' '),
         'Main-Class' : mainClassName
     }
@@ -111,19 +109,7 @@ if (JavaVersion.current().isJava8Compatible()) {
         }  
 }
 
-/*
-ext {
-    snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
-    releasePublicationRepository = "https://oss.sonatype.org/service/local/"
-    
 
-mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
-ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
-osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
-
-}
-
-*/
 ext {
     snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
     releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
@@ -134,9 +120,6 @@ ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : 
 osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
 
 }
-
-
-
 
 // Used to generate initial maven-dir layout
 task "create-dirs" { 
@@ -159,6 +142,7 @@ description = "Create default maven directory structure"
         
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
+            
             version = '2.19.3'
             from components.java
            
@@ -237,7 +221,7 @@ description = "Create default maven directory structure"
 signing {
     required {
         // signing is required if this is a release version and the artifacts are to be published
-        !version.toString().endsWith('-SNAPSHOT') && tasks.withType(PublishToMavenRepository).find {
+        !archiveVersion.toString().endsWith('-SNAPSHOT') && tasks.withType(PublishToMavenRepository).find {
              gradle.taskGraph.hasTask it
         }
     }
