@@ -91,7 +91,8 @@ jar {
     dependsOn configurations.compileClasspath
    
     from {       
-      configurations.compileClasspath.findAll {  it.name.endsWith('jar')  }.collect {   zipTree(it)  }           
+      configurations.compileClasspath.findAll {  it.name.endsWith('jar')  }.collect {   zipTree(it)  }         
+ 
     }
    
     exclude('math/geom2s/**')
@@ -100,6 +101,7 @@ jar {
     exclude('math/utils/**')
     exclude('math/package/html')
     exclude('com/seisw/util/geom/**')
+   
 }
 
 
@@ -160,13 +162,10 @@ description = "Create default maven directory structure"
                 
                 licenses {
                     license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        name = 'Clarified Artistic License'
+                        url = 'https://spdx.org/licenses/ClArtistic.html'
                     }
-                    license {
-                        name = 'GNU Lesser General Public License, Version 3.0'
-                       url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                     }
+                    
                 }
                 
           developers {

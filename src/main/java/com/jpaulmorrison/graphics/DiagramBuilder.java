@@ -461,7 +461,7 @@ public class DiagramBuilder {
 		//}
 		if (diag.diagLang == null) {
 			diag.diagLang = driver.currLang;
-			diag.changed = true;
+			//diag.changed = true;
 		} 
 		else {
 			driver.saveProp("defaultCompLang", diag.diagLang.label);

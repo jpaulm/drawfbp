@@ -379,13 +379,16 @@ public class Diagram {
 			
 		//int res;
 		
-		if (!changed && diagFile != null) {	
-			String s = diagFile.getAbsolutePath();
-	    	if (s.endsWith(".drw"))
-	    		driver.saveProp("currentDiagram", s);
+		if (!changed) {
+			if (diagFile != null) {
+				String s = diagFile.getAbsolutePath();
+				if (s.endsWith(".drw"))
+					driver.saveProp("currentDiagram", s);
+			}
 			return MyOptionPane.YES_OPTION;
-		}
 
+		}
+		
 		int answer = MyOptionPane.showConfirmDialog(driver,
 				"Save changes to " + name + "?", "Save changes",
 				MyOptionPane.YES_NO_CANCEL_OPTION);
@@ -425,17 +428,7 @@ public class Diagram {
 		    else
 		    	driver.properties.remove("currentDiagram");
 		}
-		/*
-		String t = Integer.toString(driver.getBounds().x);
-		driver.saveProp("x", t);
-		t = Integer.toString(driver.getBounds().y);
-		driver.saveProp("y", t);
-		t = Integer.toString(driver.getSize().width);
-		driver.saveProp("width", t);
-		t = Integer.toString(driver.getSize().height);
-		driver.saveProp("height", t);
-		*/
-		//saveProperties();
+		
 		return answer;
 	}
 		
