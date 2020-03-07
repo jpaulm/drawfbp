@@ -37,7 +37,7 @@ apply plugin: 'java-library'
    
 }
 
-version = '2.19.3'
+version = '2.19.4'
 
 group = 'com.jpaulmorrison'
 
@@ -76,7 +76,7 @@ java {
 }
 
 jar {
-    archiveVersion = '2.19.3'
+    archiveVersion = '2.19.4'
     manifest {
       attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': archiveVersion,
         "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' '),
@@ -145,7 +145,7 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            version = '2.19.3'
+            version = '2.19.4'
             from components.java
            
                   
@@ -220,13 +220,16 @@ description = "Create default maven directory structure"
 signing {
     required {
         // signing is required if this is a release version and the artifacts are to be published
-        !archiveVersion.toString().endsWith('-SNAPSHOT') && tasks.withType(PublishToMavenRepository).find {
+        !version.toString().endsWith('-SNAPSHOT') && tasks.withType(PublishToMavenRepository).find {
              gradle.taskGraph.hasTask it
         }
     }
     sign publishing.publications
 }
 
+//task wrapper(type: Wrapper) {
+ //  gradleVersion = '2.0' //version required
+// }
 
 javadoc {
     if(JavaVersion.current().isJava9Compatible()) {
