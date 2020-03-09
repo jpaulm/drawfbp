@@ -11,7 +11,7 @@
   "createdBy": {
     "gradle": {
       "version": "6.2.2",
-      "buildId": "ugiagvmwavbofekuexo4eorbay"
+      "buildId": "wmfujp3625hsvb5yebhdky23ia"
     }
   },
   "variants": [
@@ -28,11 +28,11 @@
         {
           "name": "drawfbp-2.19.4.jar",
           "url": "drawfbp-2.19.4.jar",
-          "size": 1369920,
-          "sha512": "24a5ca92aa57e3cde9848265a506296483204927d163332e474f8e5525b8b84f7fced57fce741af808195749f3a5b074318e892ce10ddd309676038cfdf72781",
-          "sha256": "9e2f79a4358ebad033b4b4dfd5dc3c4a6a1545ac83bf0b2f25ed749b504650f7",
-          "sha1": "eaccd59354d72696c0b6fdfb685ec79bdd84db55",
-          "md5": "22c08fb909e99e8fd69fbf6128b799cd"
+          "size": 1369919,
+          "sha512": "a9cc3d3a26e2e42ec58e244c0b86a164a9fc33d2ef54b8ad1c2a03e1387995be6f717ed4f6f6c520bfbb03a3d03f4ce0b28b1ea8bc5977c490f4f3d24f7b5397",
+          "sha256": "ee29296313eb34961df9757c8ce4c530144306b1c0d259a9349ba26bfb2267c0",
+          "sha1": "dcf325741d1bb546e8f0cd01e27649517f1fc611",
+          "md5": "891ed69638a338d2a7aa4375848de92b"
         }
       ]
     },
@@ -65,11 +65,11 @@
         {
           "name": "drawfbp-2.19.4.jar",
           "url": "drawfbp-2.19.4.jar",
-          "size": 1369920,
-          "sha512": "24a5ca92aa57e3cde9848265a506296483204927d163332e474f8e5525b8b84f7fced57fce741af808195749f3a5b074318e892ce10ddd309676038cfdf72781",
-          "sha256": "9e2f79a4358ebad033b4b4dfd5dc3c4a6a1545ac83bf0b2f25ed749b504650f7",
-          "sha1": "eaccd59354d72696c0b6fdfb685ec79bdd84db55",
-          "md5": "22c08fb909e99e8fd69fbf6128b799cd"
+          "size": 1369919,
+          "sha512": "a9cc3d3a26e2e42ec58e244c0b86a164a9fc33d2ef54b8ad1c2a03e1387995be6f717ed4f6f6c520bfbb03a3d03f4ce0b28b1ea8bc5977c490f4f3d24f7b5397",
+          "sha256": "ee29296313eb34961df9757c8ce4c530144306b1c0d259a9349ba26bfb2267c0",
+          "sha1": "dcf325741d1bb546e8f0cd01e27649517f1fc611",
+          "md5": "891ed69638a338d2a7aa4375848de92b"
         }
       ]
     },
@@ -86,10 +86,10 @@
           "name": "drawfbp-2.19.4-sources.jar",
           "url": "drawfbp-2.19.4-sources.jar",
           "size": 392921,
-          "sha512": "f4d0382a60971688149117ff5bd49f2ee5bc927dcd4dab87e4efac1339bce3d26498affbedcbd357f50da56123cb35f51d075afbd9459be8a3dff5e713434ba8",
-          "sha256": "9d16a0b80c338ba30df9051facf489e41334a3c43a21cccb9afedb08d7ae2e02",
-          "sha1": "a04a548c3bd94ded84987582687b434a91ac5e49",
-          "md5": "d8de1b8ea8770ebb19e21b9e917ba89f"
+          "sha512": "8e164a539298f24fc8e82547e62c56e69470ccd0afa81967abd1bebbcd7c345d71cdecfe47c2eb7207022364d6d80ae34345f76445c52cb2fc596e98c8415bb5",
+          "sha256": "5e2cd06bbcd472a0948561d3a5480d350b8d83111876d83ef509f8350cc688ee",
+          "sha1": "689bc1dc3550badb2f31ace5d130b70d9ef56384",
+          "md5": "a85a5ed26b3949cc9bc772b149563c66"
         }
       ]
     },
@@ -106,10 +106,10 @@
           "name": "drawfbp-2.19.4-javadoc.jar",
           "url": "drawfbp-2.19.4-javadoc.jar",
           "size": 162728,
-          "sha512": "d2f811e42c7a71079cf46271d1c36f33dbff85e8d62a51204d0c524a4006e035bf590b72b9bbd92167af810a5c4a84899b4487b0dbe7f3c448a64962144ef17b",
-          "sha256": "c723a9de5665eba9b3d52e9849eed361734d7b61bcc6ae80e94a43cada367825",
-          "sha1": "e46f1a0553af8b5114a682773c5a42f407adf10f",
-          "md5": "bf19b7acca96c3030b7c16cbaf576a3e"
+          "sha512": "5092ac01e09ff9a912301194c9ec5289ddac342b7649a2455a05b00cae6a0ebbb1977572a9703797909f7299fdf14a33756467b70461f9022ef9c8544727cd9d",
+          "sha256": "95fa4b8cf55bd42fb8ad33365618b0f1db2a345cda3996cb3e8344594c13cfad",
+          "sha1": "9f116619db0c906883d0aa19ddc8decdce92a54a",
+          "md5": "60c3c42e9c9290a6124794c1a799f232"
         }
       ]
     }
