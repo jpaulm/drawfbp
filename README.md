@@ -13,9 +13,9 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 
 Release History
 ---
-**Warning:** There was a problem in v2.19.1 and v2.19.2, with connecting non-Process blocks to other blocks - this has been corrected in v2.19.3.
+**Warning:** There was a problem in v2.19.1 and v2.19.2, with connecting non-Process blocks to other blocks - this has been corrected in v2.19.4.
 
-Latest release is v2.19.4: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.19.4.jar` - can be obtained from the Releases folder, from `build/libs`, or from Maven - if you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. 
+Latest release is v2.19.4: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.19.4.jar` - can be obtained from the Releases folder, from `build/libs`, or from Maven.  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. 
 
 Releases v2.19.1 and v2.19.2 have been retired.  However Maven still contains these releases - please move to v2.19.4 (see above).
 
