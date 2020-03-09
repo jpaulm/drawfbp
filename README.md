@@ -19,9 +19,7 @@ Latest release is v2.19.3: the jar file (which includes the `math.geom2d` and `J
 
 Releases v2.19.1 and v2.19.2 have been retired.  However Maven still contains these releases - the version on Maven will be upgraded to  v2.19.3 within the next few days - menwhile please use the version in Releases, or from `build/libs`.
 
-<!--[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)-->
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
+<!--[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)-->
 
 To run from the command line, position to wherever you have stored your DrawFBP jar file, and enter:
 
