@@ -15,9 +15,9 @@ Release History
 ---
 **Warning:** There was a problem in v2.19.1 and v2.19.2, with connecting non-Process blocks to other blocks - this has been corrected in v2.19.3.
 
-Latest release is v2.19.3: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.19.3.jar` - can be obtained from the Releases folder, or from `build/libs`.  This version fixes a number of mostly minor problems.  <!--If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. -->
+Latest release is v2.19.4: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.19.4.jar` - can be obtained from the Releases folder, or from `build/libs`.  This version fixes a number of mostly minor problems.  <!--If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. -->
 
-Releases v2.19.1 and v2.19.2 have been retired.  However Maven still contains these releases - the version on Maven will be upgraded to  v2.19.3 within the next few days - menwhile please use the version in Releases, or from `build/libs`.
+Releases v2.19.1 and v2.19.2 have been retired.  However Maven still contains these releases - the version on Maven will be upgraded to  v2.19.4 within the next few days - meanwhile please use the version in Releases, or from `build/libs`.
 
 <!--[![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)-->
 
