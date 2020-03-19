@@ -535,7 +535,7 @@ public class Block implements ActionListener {
 			getClassInfo(w); 
 		}
 		
-		loadJavaClass();                // uses fullClassName to load javaComp
+		javaComp = loadJavaClass(fullClassName);           
 		
 		s = item.get("x").trim();
 		cx = Integer.parseInt(s);
@@ -593,7 +593,7 @@ public class Block implements ActionListener {
 							"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
 					return;
 				} 
-				loadJavaClass();
+				javaComp = loadJavaClass(fullClassName); 
 			//}
 			// diag.compLang = driver.findGLFromLabel("Java");
 		}
@@ -602,12 +602,13 @@ public class Block implements ActionListener {
 
 	// takes fullClassName and derives javaClass
 	
-	void loadJavaClass(){
+	Class<?> loadJavaClass(String name){
+		Class<?> retClass = null;
 		if (fullClassName == null || fullClassName.equals("")) 
-			return;
+			return null;
 		int i = fullClassName.indexOf("!");
 		if (i == -1)
-			return;
+			return null;
 		String fn = fullClassName.substring(0, i);  // jar file name or class folder
 		String cn = fullClassName.substring(i + 1);  // class name
 		
@@ -631,7 +632,7 @@ public class Block implements ActionListener {
 		URL[] urls = driver.buildUrls(f);
 		
 		if (urls == null)
-			javaComp = null;
+			retClass = null;
 		else 
 				 
 		try {
@@ -639,24 +640,24 @@ public class Block implements ActionListener {
 			myURLClassLoader = new URLClassLoader(urls, driver.getClass()
 					.getClassLoader());
 					
-			javaComp = myURLClassLoader.loadClass(cn);
+			retClass = myURLClassLoader.loadClass(cn);
 			
 			} catch (ClassNotFoundException e) {
 				//System.out.println("Missing class name in " + fullClassName);
 				MyOptionPane.showMessageDialog(driver,
 						"Class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
-				javaComp = null;
+				retClass = null;
 			} catch (NoClassDefFoundError e) {
 				//System.out.println("Missing internal class name in "
 				//		+ fullClassName);
 				MyOptionPane.showMessageDialog(driver,
 						"Internal class name not found: " + fullClassName, MyOptionPane.ERROR_MESSAGE);
 				// e.printStackTrace();
-				javaComp = null;
+				retClass = null;
 			} 
 		
-		
+		return retClass;
 	}
 
 	// check validity of class - returns null if not
@@ -1871,14 +1872,17 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 			int i = dFN.lastIndexOf("/");
 			dFN = dFN.substring(i + 1);
-			
-			String ans = (String) MyOptionPane.showInputDialog(driver,
-					   "Enter or change text", "Edit block description",
-					MyOptionPane.PLAIN_MESSAGE, null, null, desc);
-			
-			if (ans != null)				
-				desc = ans;
-			
+			if (desc == null || desc.equals("")) {
+				int j = dFN.lastIndexOf("/"); 
+				desc = dFN.substring(j + 1);
+
+				String ans = (String) MyOptionPane.showInputDialog(driver,
+						"Enter or change text", "Edit block description",
+						MyOptionPane.PLAIN_MESSAGE, null, null, desc);
+
+				if (ans != null)
+					desc = ans;
+			}
 			fullClassName = null;
 			javaComp = null;
 			
@@ -1897,6 +1901,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 	void selectJavaClass() throws MalformedURLException {
 
 		//String oldFullClassName = fullClassName;
+		
 
 		if (javaComp != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
@@ -1910,7 +1915,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// fullClassName = null;
 		}
 
-		javaComp = null;
+		//javaComp = null;
 		if (!driver.locateJavaFBPJarFile(false)) {
 			MyOptionPane.showMessageDialog(driver,
 					"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
@@ -1928,6 +1933,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		boolean injar = true;
 		File cFile = null;
+		Class<?> tempComp = null;
+		String tempFCN = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			String res = driver.getSelFile(fc);
 
@@ -1949,30 +1956,30 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				URL[] urls = driver.buildUrls(f);
 
 				if (urls == null)
-					javaComp = null;
+					tempComp = null;
 				else {
 					// Create a new class loader with the directory
 					myURLClassLoader = new URLClassLoader(urls, driver.getClass()
 							.getClassLoader());
 					try {
 						
-						javaComp = myURLClassLoader.loadClass(res2);
+						tempComp = myURLClassLoader.loadClass(res2);
 					} catch (ClassNotFoundException e2) {
-						javaComp = null;
-					} catch (NoClassDefFoundError e2) {
-						javaComp = null;
+						tempComp = null;
+					} catch (NoClassDefFoundError e2) {   
+						tempComp = null;
 					}
-					if (javaComp == null) {
+					if (tempComp == null) {
 						MyOptionPane.showMessageDialog(driver,
 								"Problem with classes in selected file: " + res2, MyOptionPane.ERROR_MESSAGE);
 						return;
 					} 
-					javaComp = isValidClass(res.substring(0, i), res2,
+					tempComp = isValidClass(res.substring(0, i), res2,    
 							injar);
-					if (javaComp != null)
-						fullClassName = res;
-					else
-						fullClassName = null;
+					if (tempComp != null)
+						tempFCN = res;
+					//else
+					//	fullClassName = null;
 				}
 			} else {
 				// we are looking in local class hierarchy (not a jar file)
@@ -2014,7 +2021,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 						URL[] urls = driver.buildUrls(fp);
 
 						if (urls == null)
-							javaComp = null;
+							tempComp = null;
 						else {
 
 							// Create a new class loader with the directory
@@ -2022,7 +2029,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 									.getClassLoader());
 
 							try {
-								javaComp = myURLClassLoader.loadClass(u);
+								tempComp = myURLClassLoader.loadClass(u);
 							} catch (ClassNotFoundException e2) {
 								classFound = false;
 								error = "ClassNotFoundException";
@@ -2042,7 +2049,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					//}
 				}
 			}
-				if (javaComp == null) {
+				if (tempComp == null) {
 					MyOptionPane.showMessageDialog(driver,
 							"Class '" + driver.getSelFile(fc) + "' invalid class ("
 									+ error + ")", MyOptionPane.ERROR_MESSAGE);
@@ -2054,23 +2061,25 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 							fp.getAbsolutePath());
 					//saveProperties();
 					
-					javaComp = isValidClass(fp.getAbsolutePath(),
-							javaComp.getName(), !injar);
+					tempComp = isValidClass(fp.getAbsolutePath(),
+							tempComp.getName(), !injar); 
 					
-					if (javaComp != null)
-						fullClassName = fp.getAbsolutePath() + "!"
-							+ javaComp.getName();
-					else
-						fullClassName = null;
+					if (tempComp != null)
+						tempFCN = fp.getAbsolutePath() + "!"
+							+ tempComp.getName();
+					//else
+					//	fullClassName = null;
 				}
 			}
 		}
 
-		if (javaComp == null) {
+		if (tempComp == null) {
 			MyOptionPane.showMessageDialog(driver, "No class selected", MyOptionPane.ERROR_MESSAGE);
 		} else {
 			//if (!fullClassName.equals(oldFullClassName))
-				displayPortInfo();
+			javaComp = tempComp;
+			fullClassName = tempFCN;
+			displayPortInfo();
 			
 		}
 		

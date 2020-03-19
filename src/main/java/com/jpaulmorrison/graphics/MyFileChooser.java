@@ -1810,6 +1810,7 @@ final boolean SAVEAS = true;
 							s = f.getName();
 
 							t_fileName.setText(f.getName());
+							repaint();
 						} 
 						 
 						/*
@@ -2276,6 +2277,7 @@ l.setFont(driver.fontg);
 							if (!f.isDirectory()) {
 								  t_fileName.setText(f.getName());
 								  selComp = t_fileName;
+								  repaint();
 							}
 						}
 					}

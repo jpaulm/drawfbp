@@ -149,6 +149,8 @@ public class DrawFBP extends JFrame
 	//Arrow foundArrow = null;
 	Arrow currentArrow = null;
 	Block foundBlock;
+	
+	URLClassLoader myURLClassLoader = null;
 
 	int curx, cury;
 
@@ -2737,16 +2739,32 @@ public class DrawFBP extends JFrame
 		Process proc = null;
 		//String program = "";
 		//interrupt = false;
+		String cMsg = null;
+		if (!(currLang.label.equals("Java")) && !(currLang.label.equals("C#"))) {
+			MyOptionPane.showMessageDialog(this,
+					"Language not supported: " + currLang.label,
+					MyOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		 
+		if (curDiag.changed) {
+			cMsg = "Select a Java or C# source file - if diagram has changed, \n   invoke 'File/Generate <language> Network' first";
+			return;
+		}
+		 
+		cMsg = "Select a Java or C# source file";
 		
-		if (currLang.label.equals("Java")) {
+		MyOptionPane.showMessageDialog(this, cMsg, MyOptionPane.INFORMATION_MESSAGE);
+		
+		//if (currLang.label.equals("Java")) {
 			String ss = properties.get(gl.netDirProp);
-			File genDir = null;
+			String srcDir = null;
 			if (ss == null)
-				genDir = new File(System.getProperty("user.home"));
+				srcDir = System.getProperty("user.home");
 			else
-				genDir = new File(ss);
+				srcDir = ss;
 
-			MyFileChooser fc = new MyFileChooser(this,genDir,
+			MyFileChooser fc = new MyFileChooser(this, new File(srcDir),
 					curDiag.fCParm[Diagram.NETWORK]);
 
 			int returnVal = fc.showOpenDialog();
@@ -2759,9 +2777,7 @@ public class DrawFBP extends JFrame
 			if (cFile == null || !(cFile.exists()))
 				return;
 			
-			
-
-			String srcDir = cFile.getAbsolutePath();
+			srcDir = cFile.getAbsolutePath();
 			srcDir = srcDir.replace('\\', '/');
 			
 			int j = srcDir.lastIndexOf("/");
@@ -2770,7 +2786,9 @@ public class DrawFBP extends JFrame
 			//String clsDir = srcDir;
 			//(new File(srcDir)).mkdirs();
 			saveProp(gl.netDirProp, srcDir);
-			
+		  
+		
+		if (currLang.label.equals("Java")) {	
 			String fNPkg = "";
 			int k = srcDir.indexOf("/src");
 			if (k == -1) {
@@ -2819,18 +2837,7 @@ public class DrawFBP extends JFrame
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
 
-			//String clsName = progName.replace(".java", ".class");
-
-			// (new File(clsDir + "/" + t + clsName)).delete(); // make sure old
-			// class has been deleted
-
-			//String v = "";
-			//if (!fNPkg.equals(""))
-			//	v = fNPkg + "/";
-			//MyOptionPane.showMessageDialog(this,
-			//		"Compiling program - " + srcDir + "/" + v + progName,
-			//		MyOptionPane.INFORMATION_MESSAGE);	
-
+			
 			proc = null;
 			
 			String jf = "\"" + javaFBPJarFile; 
@@ -2865,7 +2872,7 @@ public class DrawFBP extends JFrame
 			clsDir = clsDir.substring(0, clsDir.indexOf("/bin/") + 4);
 			(new File(clsDir)).mkdirs(); 
 			
-			String w = srcDir + File.separator + progName;
+			String w = srcDir + "/" + progName;
 			List<String> params = Arrays.asList("\"" + javac + "\"", 
 					// "-verbose",
 					"-cp", jf, 
@@ -2951,28 +2958,30 @@ public class DrawFBP extends JFrame
 		}
 
 		else {
+			
+			//  Must be C#
 
-			if (!(currLang.label.equals("C#"))) {
+			//if (!(currLang.label.equals("C#"))) {
 
-				MyOptionPane.showMessageDialog(this,
-						"Language not supported: " + currLang.label,
-						MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
+			//	MyOptionPane.showMessageDialog(this,
+			//			"Language not supported: " + currLang.label,
+			//			MyOptionPane.ERROR_MESSAGE);
+			//	return;
+			//}
 
 			// Start of C# part...
 
-			String srcDir = properties.get("currentCsharpNetworkDir");
-			
+			/* String */ srcDir = properties.get("currentCsharpNetworkDir");
+			/*
 			if (srcDir == null)
 				srcDir = System.getProperty("user.home");	
 
-			MyFileChooser fc = new MyFileChooser(this,new File(srcDir),
+			fc = new MyFileChooser(this,new File(srcDir),
 					curDiag.fCParm[Diagram.PROCESS]);
 
-			int returnVal = fc.showOpenDialog();
+			returnVal = fc.showOpenDialog();
 
-			String ss = null;
+			ss = null;
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				ss = getSelFile(fc);
@@ -2982,6 +2991,8 @@ public class DrawFBP extends JFrame
 			if (cFile == null || !(cFile.exists()))
 				return;
 
+			*/
+			
 			if (!(ss.endsWith(".cs"))) {
 				MyOptionPane.showMessageDialog(this,
 						"C# program " + ss + " must end in '.cs'",
@@ -2990,12 +3001,7 @@ public class DrawFBP extends JFrame
 			}
 
 			ss = ss.replace('\\', '/');
-			//int j = ss.lastIndexOf("/");
-
-			//String progName = ss.substring(j + 1);
-
-			// ss = ss.substring(0, ss.length() - 3); // drop .cs suffix
-
+			
 			String progString = readFile(new File(ss) /*, !SAVEAS */);
 			if (progString == null) {
 				MyOptionPane.showMessageDialog(this,
@@ -3124,7 +3130,7 @@ public class DrawFBP extends JFrame
 					//cma = ";";
 					String w = thisEntry.getValue();
 					w = w.replace("\\", "/");
-					int j = w.indexOf("bin/Debug");
+					j = w.indexOf("bin/Debug");
 					libs += cma + w.substring(0, j);
 					cma = ",";
 					cmdList.add("-lib:" + libs);
@@ -3136,7 +3142,7 @@ public class DrawFBP extends JFrame
 					Entry<String, String> thisEntry = entries.next();
 					String w = thisEntry.getValue();
 					w = w.replace("\\", "/");
-					int j = w.indexOf("bin/Debug");
+					j = w.indexOf("bin/Debug");
 					cmdList.add("-r:" + w.substring(j));
 				}
 				 
@@ -3300,6 +3306,9 @@ public class DrawFBP extends JFrame
 			if (!(t.equals("")))
 				progName = t.replace("\\", "/") + "/" + progName;
 			progName = progName.replace("/", ".");
+			
+			if (javaFBPJarFile == null)
+				locateJavaFBPJarFile(false);
 
 			URL[] urls = buildUrls(null);
 
@@ -3933,7 +3942,7 @@ public class DrawFBP extends JFrame
 		if (findJar) {
 			if (s == null) {
 				MyOptionPane.showMessageDialog(this,
-						"To access Java classes - continue to File Chooser to locate Java class jar file",
+						"To access Java classes - continue to File Chooser to locate JavaFBP jar file",
 						MyOptionPane.WARNING_MESSAGE);	
 			} else {
 				MyOptionPane.showMessageDialog(this,
@@ -3956,7 +3965,7 @@ public class DrawFBP extends JFrame
 			// else
 			// f = (new File(s)).getParentFile();
 
-			MyFileChooser fc = new MyFileChooser(this,f, curDiag.fCParm[Diagram.JARFILE]);
+			MyFileChooser fc = new MyFileChooser(this, f, curDiag.fCParm[Diagram.JARFILE]);
 
 			int returnVal = fc.showOpenDialog();
 
@@ -3973,6 +3982,8 @@ public class DrawFBP extends JFrame
 				// diag.currentDir = new File(cFile.getParent());
 				javaFBPJarFile = cFile.getAbsolutePath();
 				saveProp("javaFBPJarFile", javaFBPJarFile);
+				
+				
 
 				saveProperties();
 				MyOptionPane.showMessageDialog(this,
@@ -4607,8 +4618,7 @@ public class DrawFBP extends JFrame
 			SwingUtilities.invokeLater(new Runnable() {
 			        public void run() {
 			            
-			//        }
-			//    });
+			
 			String laf = UIManager.getSystemLookAndFeelClassName();
 			
 
