@@ -26,10 +26,10 @@ public class LegendBlock extends Block {
 		if (desc != null && !(desc.trim().equals(""))) {
 			
 			if (compareFlag != null && compareFlag.equals("D"))
-				g.setColor(DrawFBP.lg);
+				g.setColor(Color.GRAY);
 			else
 				g.setColor(Color.BLACK);
-			// g.setColor(Color.GRAY);
+			
 			//drawDesc(g);
 			//Font oldf = g.getFont();
 			//float fl = oldf.getSize2D();

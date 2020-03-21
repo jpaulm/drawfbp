@@ -1448,17 +1448,21 @@ public class DrawFBP extends JFrame
 			int ah = curDiag.area.getHeight();
 			w = Math.min(aw, w);
 			h = Math.min(ah, h) + 60;
-
-
-			//BufferedImage buffer2 = buffer.getSubimage(min_x, min_y , max_w,
-			//		max_h);	
-			
+			int x = min_x;
 			int y = Math.max(0, min_y - 40);
-			int bottom_border_height = 60;
-			BufferedImage buffer2 = buffer.getSubimage(min_x, y , w, h);	
+			
+			// adjust x, y, w, h to avoid RasterFormatException
+			
+			x = Math.max(x,  buffer.getMinX());
+			y = Math.max(y,  buffer.getMinY());
+			w = Math.min(w, buffer.getWidth());
+			h = Math.min(h, buffer.getHeight());
+			
+			BufferedImage buffer2 = buffer.getSubimage(x, y , w, h);	
 			//BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 			
 			//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
+			int bottom_border_height = 60;
 			Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 			
 			FontMetrics metrics = getFontMetrics(f);
@@ -1475,8 +1479,8 @@ public class DrawFBP extends JFrame
 			g.setColor(Color.WHITE);
 
 			g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
-			int x = (combined.getWidth() - buffer2.getWidth()) / 2;
-			g.drawImage(buffer2, x, 0, null);
+			int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
+			g.drawImage(buffer2, x2, 0, null);
 			// g.drawImage(buffer, 0, 0, null);
 			// g.setColor(Color.RED);
 
@@ -3551,25 +3555,8 @@ public class DrawFBP extends JFrame
 				MyOptionPane.INFORMATION_MESSAGE);
 		
 		Diagram newDiag = curDiag;
-		
-		//HashMap<String, Block> newBMap = new HashMap<String, Block>();
-		//for (Block blk : newDiag.blocks.values()) {			
-		//		newBMap.put(blk.desc, blk);			
-		//}
-		
-
-		//HashMap<String, Arrow> newAMap = new HashMap<String, Arrow>();
-		//for (Arrow arr : newDiag.arrows.values()) {
-		//	String key = new Integer(arr.fromId) + "~" + arr.upStreamPort;
-		//	newAMap.put(key, arr);
-		//}
-		
+			
 		Diagram oldDiag = null;
-
-		//System.out.println("New diag");
-		//for (Arrow arr : newDiag.arrows.values()) {
-		//	System.out.println(arr.id);
-		//}
 		
 		String t = newDiag.diagFile.getParent();
 		MyFileChooser fc = new MyFileChooser(driver, new File(t),
@@ -3607,36 +3594,22 @@ public class DrawFBP extends JFrame
 				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + oldDiag.diagFile.getAbsolutePath() ,			
 				MyOptionPane.INFORMATION_MESSAGE);
 
-		//HashMap<String, Block> oldBMap = new HashMap<String, Block>();
-		//for (Block blk : oldDiag.blocks.values()) {			
-		//		oldBMap.put(blk.desc, blk);			
-		//}
-		
-		//HashMap<String, Arrow> oldAMap = new HashMap<String, Arrow>();
-		//for (Arrow arr : oldDiag.arrows.values()) {
-		//	String key = new Integer(arr.fromId) + "~" + arr.upStreamPort;
-		//	oldAMap.put(key, arr);
-		//}
-		
-		//System.out.println("Old diag");
-		//for (Arrow arr : oldDiag.arrows.values()) {
-		//	System.out.println(arr.id);
-		//}
+	
 		curDiag = newDiag;
 
 		for (Block blk : newDiag.blocks.values()) {
+			blk.compareFlag = null;
 			
 			for (Block b : oldDiag.blocks.values()) {
 				if (blk.id == b.id) {
 					if (!(blk.type.equals(b.type))) 
 						blk.compareFlag = "C";	
-					if (blk.desc == null && b.desc != null)
+					if (!(Objects.equals(blk.desc, b.desc)))	
 						blk.compareFlag = "C";
-					if (blk.desc != null && b.desc == null)
+					if (!(Objects.equals(blk.fullClassName, b.fullClassName)))								
 						blk.compareFlag = "C";
-					if (blk.desc != null && b.desc != null && !(blk.desc.equals(b.desc)))								
+					if (blk.isSubnet != b.isSubnet)
 						blk.compareFlag = "C";
-						//b.compareFlag = " ";  // to ensure doesn't look like a delete!
 					break;
 					}
 					
@@ -3676,21 +3649,21 @@ public class DrawFBP extends JFrame
 		for (Arrow arr : newDiag.arrows.values()) {
 			 
 			for (Arrow a : oldDiag.arrows.values()) {
-				if ((a.fromX == arr.fromX)
-						&& (a.fromY == arr.fromY)
-						&& (a.toX == arr.toX) 
-						&& (a.toY == arr.toY)) 
+				//if ((a.fromX == arr.fromX)
+				//		&& (a.fromY == arr.fromY)
+				//		&& (a.toX == arr.toX) 
+				//		&& (a.toY == arr.toY)) 
+				if (a.id == arr.id)	{
 					// probably same line - now check for diffs
-					        if (a.fromId != arr.fromId ||
-					            a.toId != arr.toId ||
-					            a.upStreamPort != null && arr.upStreamPort != null && !a.upStreamPort.equals(arr.upStreamPort) ||
-					            		a.downStreamPort != null && arr.downStreamPort != null && !a.downStreamPort.equals(arr.downStreamPort) ) {
-									arr.compareFlag = "C";								
-									//a.compareFlag = " ";  // to ensure doesn't look like a delete!	
-						    }	
-				break;
-			}
-			 
+					if (a.fromId != arr.fromId ||
+					   a.toId != arr.toId ||
+					   !(Objects.equals(a.upStreamPort, arr.upStreamPort)) ||
+					   !(Objects.equals(a.downStreamPort, arr.downStreamPort)))
+						arr.compareFlag = "C";							    	
+					break;
+				}
+			} 
+			
 			if (arr.compareFlag != null)
 				continue;
 			
@@ -3703,9 +3676,10 @@ public class DrawFBP extends JFrame
 					a2.toY != arr.toY)
 				arr.compareFlag = "A";			
 		}
- 
- 
-		 
+  
+		/*
+		 * Don't bother showing deleted arrows!
+		 *  
 		for (Arrow a : oldDiag.arrows.values()) {
 			if (a.compareFlag != null)
 				continue;
@@ -3725,7 +3699,7 @@ public class DrawFBP extends JFrame
 				}
 			}
 		}
-	  
+	  */
 		 
 		int j = getFileTabNo(newDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
@@ -3741,10 +3715,7 @@ public class DrawFBP extends JFrame
 			blk.compareFlag = null;
 		}
 		
-		//System.out.println("New diag after compare");
-		//for (Arrow arr : newDiag.arrows.values()) {
-		//	System.out.println(arr.id);
-		//}
+		
 		MyOptionPane.showMessageDialog(driver,
 				"Compare complete",			
 				MyOptionPane.INFORMATION_MESSAGE);
