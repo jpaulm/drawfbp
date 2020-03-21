@@ -68,7 +68,6 @@ Features
 - Keyboard-only usage (except positioning of blocks)
 - Choose fonts (fixed size and variable size, indicating support for Russian, Hindi (Devanagari), and Chinese)
 - Change font size 
-- Compare facility
 - Structured Help facility
 - Export diagram as image
 - Print diagram
@@ -81,7 +80,9 @@ Features
 - New Functions (as of v2.16.5):
         - Compile C# program
         - Run C# program
-- As of v2.18.1, File Chooser now displays date and time on non-jar items, and entries can be sorted by name (ascending) or by date/time (descending)         
+- As of v2.18.1, File Chooser now displays date and time on non-jar items, and entries can be sorted by name (ascending) or by date/time (descending)      
+- New Function (as of v2.19.1):
+        - Compare two diagrams
 
 
 Videos on DrawFBP features
