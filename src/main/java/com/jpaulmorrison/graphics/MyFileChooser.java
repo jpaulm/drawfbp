@@ -2217,13 +2217,15 @@ l.setFont(driver.fontg);
 
 			lastEvent = e;
 
-			//firstClick(lastEvent);
+			firstClick(lastEvent);
 
 			if (e.getClickCount() == 2) 
 				secondClick(lastEvent);
+			else
+				repaint();
 			 
-			else 
-				firstClick(lastEvent);
+			//else 
+			//	firstClick(lastEvent);
 			
 			dispose();
 		}
@@ -2234,6 +2236,7 @@ l.setFont(driver.fontg);
 		//}
 
 		public void firstClick(MouseEvent e) {
+			//System.out.println(e.getClickCount());
 
 			selComp = list;
 			rowNo = -1;
@@ -2265,30 +2268,32 @@ l.setFont(driver.fontg);
 						File f = new File(t2);
 						 
 						if (!f.exists()) {
-							if (-1 < t.lastIndexOf(".")) // if file
+							if (0 < t.lastIndexOf(".")) { // if file
 								MyOptionPane.showMessageDialog(driver,
 										"File does not exist: "
 												+ f.getAbsolutePath(),
 										MyOptionPane.ERROR_MESSAGE);
-							//else // if folder, OK to mkdir
-							//	f.mkdir();
-							// return;
-						} else {
-							if (!f.isDirectory()) {
-								  t_fileName.setText(f.getName());
-								  selComp = t_fileName;
-								  repaint();
+								repaint();
+								return;
 							}
-						}
+							
+						} 
 					}
 				}
 			}
-			repaint();
+				
+			if (0 < t.indexOf(".")) {  // if has suffix
+				t_fileName.setText(t);
+			    selComp = t_fileName;			   
+			}
+			//repaint();
 		}
 		
 		public void secondClick(MouseEvent e) {
 			
 			int n;
+			//System.out.println(e.getClickCount());
+			
 			for (n = list.getFirstVisibleIndex(); n <= list.getLastVisibleIndex(); n++) {
 				Rectangle r = list.getCellBounds(n, n);
 				if (r.contains(e.getPoint())) {
@@ -2309,13 +2314,13 @@ l.setFont(driver.fontg);
 				}
 				
 				// if selected name has a suffix or is in jar tree
-				if (-1 < v.indexOf(".") || inJarTree) {
+				if (0 < v.indexOf(".") /*|| inJarTree */) {
 					t_fileName.setText(v);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-				} else {  // folder name AND not injartree
-					//if (inJarTree)
-					//	enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-					//else {
+					
+				}
+				
+				else {  // folder name AND not injartree
 						w += "/" + v;
 						File f2 = new File(w);
 						if (!f2.exists())
@@ -2326,60 +2331,13 @@ l.setFont(driver.fontg);
 						t_dirName.setText(w);
 						listHead = w;
 						showList();
-					//}
+					 
 				}
-				//} else
-				//	showList();
-				repaint();
-				
 			}
+			repaint();
 		}
 	}
 	
-	/*
-	//public class SharedListSelectionHandler() implements ListSelectionListener { 
-	public void valueChanged(ListSelectionEvent e) {
-		int row=e.getFirstIndex();
-        //if (row==previousRow) {
-        //    row=-1;
-        //}
-		if (!e.getValueIsAdjusting() && row > -1){
-            @SuppressWarnings("unchecked")
-			JList<String> source = (JList<String>)e.getSource();
-            String v = source.getSelectedValue().toString();
-            if (!inJarTree) {
-				int j = v.indexOf("@");
-				if (j > -1)
-					v = v.substring(0, j);
-			}
-         // if selected name has a suffix or is in jar tree
-			if (-1 < v.indexOf(".") || inJarTree) {
-				t_fileName.setText(v);
-				enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-			} else {  // folder name AND not injartree
-				//if (inJarTree)
-				//	enterAction.actionPerformed(new ActionEvent(e, 0, ""));
-				//else {
-				String w = t_dirName.getText();
-					w += "/" + v;
-					File f2 = new File(w);
-					if (!f2.exists()){
-						MyOptionPane.showMessageDialog(driver,
-							"File does not exist: "
-									+ f2.getAbsolutePath(),
-							MyOptionPane.ERROR_MESSAGE);
-					} else {
-					t_dirName.setText(w);
-					listHead = w;
-					showList();
-				 }
-			}
-			//} else
-			//	showList();
-			repaint();
-			//previousRow = row;
-        }
-	}
-	*/
-	//}
+
+	 
   }
