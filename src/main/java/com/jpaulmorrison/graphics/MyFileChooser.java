@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -1735,7 +1736,7 @@ final boolean SAVEAS = true;
 			if (!((selComp instanceof JList) || selComp == t_fileName))
 				return;
 
-			String s = t_fileName.getText();
+			String s = t_fileName.getText();  
 
 			// if (s == null || s.equals("")) {
 
@@ -1775,38 +1776,15 @@ final boolean SAVEAS = true;
 						s2 = t_dirName.getText() + "/" + s;
 					File f = new File(s2);
 
-					if (!f.exists() && !inJarTree) {
+					if (!inJarTree) {
+					if (!f.exists()) {
 						//if (-1 == s.indexOf(".")) {
 						if (null == driver.getSuffix(s)) {	
 													
-							// add appropriate extension
-
-							//MyOptionPane.showMessageDialog(driver,
-							//		"Folder " + f.getAbsolutePath()
-							//				+ " doesn't exist - create using New Folder",
-							//		MyOptionPane.ERROR_MESSAGE);
-							//return;
+							// add appropriate extension							
 
 							f = new File(f.getAbsolutePath() +  fCP.fileExt);  
-
-							/*
-							if (!f.exists()){
-								if (MyOptionPane.YES_OPTION == MyOptionPane
-										.showConfirmDialog(driver,
-												"Create new file: "
-														+ f.getAbsolutePath() + "?",
-												"Confirm create",
-												MyOptionPane.YES_NO_OPTION))
-									try {
-										f.createNewFile();   
-									} catch (IOException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-								
-							}
 							
-							*/
 							s = f.getName();
 
 							t_fileName.setText(f.getName());
@@ -1834,6 +1812,7 @@ final boolean SAVEAS = true;
 					} else if (selComp == t_dirName) {
 						listHead = t_dirName.getText();
 						showList();
+					}
 					}
 				}
 				}
@@ -2136,12 +2115,31 @@ l.setFont(driver.fontg);
 
 		private static final long serialVersionUID = 1L;
 		String name = null;
+		String lowLevel; 
+		JTextField field;
 
 		public MyTextField(int i, String fldName) {
 			super(i);
 			name = fldName;
 		}
 
+		/*
+		public void setText(String data){
+			lowLevel = data;
+			field = this; 
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					setFocusable(true);
+					requestFocusInWindow();
+					setEnabled(true);
+					field.getCaret().setVisible(true);
+					field.setText(lowLevel); 			
+				    selComp = field;
+				    selComp.requestFocus();
+				}
+			});
+		}
+		*/
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
@@ -2156,15 +2154,19 @@ l.setFont(driver.fontg);
 				setRequestFocusEnabled(true);
 				getCaret().setVisible(true);
 				requestFocusInWindow();
+				setVisible(true);
+				validate();
+				/*
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						setFocusable(true);
+						requestFocusInWindow();
+						setEnabled(true);
+						getCaret().setVisible(true);
+					}
+				});
+				*/
 				
-				//SwingUtilities.invokeLater(new Runnable() {
-				//	public void run() {
-				//		setFocusable(true);
-				//		requestFocusInWindow();
-				//		setEnabled(true);
-				//		getCaret().setVisible(true);
-				//	}
-				//});
 
 			} else {
 				setBackground(Color.WHITE);
@@ -2206,23 +2208,23 @@ l.setFont(driver.fontg);
 
 		MouseEvent lastEvent;
 		int rowNo;
+		String lowLevel;
 
 		public void mouseClicked(MouseEvent e)
 
 		{
 
-			// System.out.println(e.getClickCount());
+			//System.out.println("Click count: " + e.getClickCount());
 			if (e.getClickCount() > 2)
 				return;
 
 			lastEvent = e;
 
-			firstClick(lastEvent);
-
+		
 			if (e.getClickCount() == 2) 
 				secondClick(lastEvent);
 			else
-				repaint();
+				firstClick(lastEvent);
 			 
 			//else 
 			//	firstClick(lastEvent);
@@ -2236,7 +2238,7 @@ l.setFont(driver.fontg);
 		//}
 
 		public void firstClick(MouseEvent e) {
-			//System.out.println(e.getClickCount());
+			//System.out.println("First click");
 
 			selComp = list;
 			rowNo = -1;
@@ -2283,16 +2285,38 @@ l.setFont(driver.fontg);
 			}
 				
 			if (0 < t.indexOf(".")) {  // if has suffix
-				t_fileName.setText(t);
-			    selComp = t_fileName;			   
+				lowLevel = t;
+				//t_fileName.setText(lowLevel);
+				//t_fileName.setText(t);
+				selComp = t_fileName;
+				 
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+				//EventQueue.invokeLater(() -> {   // doesn't work!
+						selComp.setFocusable(true);
+						selComp.requestFocusInWindow();
+						selComp.setEnabled(true);
+						t_fileName.setText(lowLevel);
+						t_fileName.getCaret().setVisible(true);
+					    selComp = t_fileName;
+					    selComp.requestFocus();
+					    selComp.setVisible(true);;
+					    selComp.validate();
+					    repaint();
+					}
+				});
+				 
+				t_fileName.setText(t); 			
+			    //selComp = t_fileName;
+			    selComp.requestFocus();
 			}
-			//repaint();
+			repaint();
 		}
 		
 		public void secondClick(MouseEvent e) {
 			
 			int n;
-			//System.out.println(e.getClickCount());
+			//System.out.println("Second click");
 			
 			for (n = list.getFirstVisibleIndex(); n <= list.getLastVisibleIndex(); n++) {
 				Rectangle r = list.getCellBounds(n, n);
@@ -2301,25 +2325,32 @@ l.setFont(driver.fontg);
 						break;
 				}
 			}
+			
+			String w = null;
 			if (rowNo == n) {
-				selComp = t_fileName;        
-				String w = t_dirName.getText();
-
+				//selComp = t_fileName;        
+				
 				String v = list.getSelectedValue();
 				if (!inJarTree) {
+					selComp = t_fileName;        
+					w = t_dirName.getText();
 					int j = v.indexOf("@");
 					if (j > -1)
 						v = v.substring(0, j);
 
 				}
 				
-				// if selected name has a suffix or is in jar tree
+				// if selected name has a suffix
 				if (0 < v.indexOf(".") /*|| inJarTree */) {
 					t_fileName.setText(v);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+					return;
 					
 				}
-				
+				if (inJarTree) {
+					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
+					return;
+				}
 				else {  // folder name AND not injartree
 						w += "/" + v;
 						File f2 = new File(w);
