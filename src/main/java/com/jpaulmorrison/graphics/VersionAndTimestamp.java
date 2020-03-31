@@ -11,7 +11,7 @@ public final class VersionAndTimestamp {
 	static String version = "2.19.6";
 
 
-	static String date = "Mar. 28, 2020"; 
+	static String date = "Mar. 31, 2020"; 
 
 
 

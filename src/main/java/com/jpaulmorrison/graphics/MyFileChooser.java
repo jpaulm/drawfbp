@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,6 +40,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
@@ -94,6 +95,7 @@ public class MyFileChooser extends JFrame
 	String folder;
 
 	String[] nodeNames = null;
+	int rowNo = -1;
 	String suggestedName = null;
 
 	boolean clickState = true;
@@ -779,12 +781,11 @@ public class MyFileChooser extends JFrame
 		//ClickListener cL = new ClickListener();
 		list.addMouseListener(clickListener);
 		//ListSelectionListener lsl = new ListSelectionListener();  
-		//list.addListSelectionListener(this);
-		//ListSelectionModel listSelectionModel = list.getSelectionModel();
-	    //listSelectionModel.addListSelectionListener(
-	    //                        new SharedListSelectionHandler());
-		//ListSelectionModel sM = list.getSelectionModel();
-		//sM.setValueIsAdjusting(true);
+		//list.addListSelectionListener(lsl);
+		ListSelectionModel listSelectionModel = list.getSelectionModel();
+	    listSelectionModel.addListSelectionListener(
+	                            new SharedListSelectionHandler());
+		
 		list.setFocusTraversalKeysEnabled(false);
 
 		//order.remove(3);
@@ -1143,9 +1144,11 @@ final boolean SAVEAS = true;
 		Dimension maxSize;
 		Dimension prefSize;
 		DrawFBP driver;
+		JList<String> list; 
 
 		public ListRenderer(DrawFBP driver) {
 			this.driver = driver;
+			//this.list= list;
 			setOpaque(true);
 		}
 
@@ -1163,6 +1166,7 @@ final boolean SAVEAS = true;
 			jp.setLayout(gb);			
 
 			jp.setBackground(Color.WHITE);
+			
 			JLabel name = new JLabel();
 			JLabel date = new JLabel();
 			
@@ -1210,13 +1214,16 @@ final boolean SAVEAS = true;
 			}
 			name.setOpaque(true);
 			date.setOpaque(true);
-
 			
 			Color ly2 = new Color(255, 255, 51);  // slightly more intense yellow
 			if (isSelected) 
 				date.setBackground(ly2);
 			else
-				date.setBackground(DrawFBP.ly);				
+				date.setBackground(DrawFBP.ly);		
+			
+			//if (selComp == list){
+			//	date.setBackground(Color.RED);
+			//}
 			
 			if (s == null)
 				name.setBackground(vLightBlue);
@@ -1256,7 +1263,7 @@ final boolean SAVEAS = true;
 				}
 				else  if (i > -1){
 					name.setText(s.substring(0, i));	
-					String t = s.substring(i + 1);
+					String t = s.substring(i + 1);  // drop the 'Z'
 					//i = t.lastIndexOf(".");
 					//if (i > -1)
 					// = t.substring(0, i);
@@ -1376,7 +1383,8 @@ final boolean SAVEAS = true;
 			selComp.setRequestFocusEnabled(true);
 			((MyTextField) selComp).getCaret().setVisible(true);
 			((MyTextField) selComp).setEditable(true);
-			((MyTextField) selComp).requestFocusInWindow();
+			//((MyTextField) selComp).requestFocusInWindow();
+			((MyTextField) selComp).grabFocus();
 
 		} 
 		//else {
@@ -1589,7 +1597,7 @@ final boolean SAVEAS = true;
 				// s += "/" + t;
 				// File f = new File(s);
 
-				int rowNo = list.getSelectedIndex();
+				rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
 					MyOptionPane.showMessageDialog(driver,
 							"Empty directory or no entry selected",
@@ -1743,7 +1751,7 @@ final boolean SAVEAS = true;
 			if (selComp instanceof JList) {
 				t_fileName.setText("");	
 
-				int rowNo = list.getSelectedIndex();
+				rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
 					if (!saving) {
 						MyOptionPane.showMessageDialog(driver,
@@ -2123,23 +2131,7 @@ l.setFont(driver.fontg);
 			name = fldName;
 		}
 
-		/*
-		public void setText(String data){
-			lowLevel = data;
-			field = this; 
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					setFocusable(true);
-					requestFocusInWindow();
-					setEnabled(true);
-					field.getCaret().setVisible(true);
-					field.setText(lowLevel); 			
-				    selComp = field;
-				    selComp.requestFocus();
-				}
-			});
-		}
-		*/
+		
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
@@ -2205,9 +2197,11 @@ l.setFont(driver.fontg);
 	// For list only!
 
 	public class ClickListener extends MouseAdapter	{
+		
+		// Only applies to list selection
 
 		MouseEvent lastEvent;
-		int rowNo;
+		
 		String lowLevel;
 
 		public void mouseClicked(MouseEvent e)
@@ -2223,11 +2217,9 @@ l.setFont(driver.fontg);
 		
 			if (e.getClickCount() == 2) 
 				secondClick(lastEvent);
-			else
-				firstClick(lastEvent);
-			 
-			//else 
-			//	firstClick(lastEvent);
+			//else
+			//	firstClick(lastEvent);			 
+		
 			
 			dispose();
 		}
@@ -2252,10 +2244,12 @@ l.setFont(driver.fontg);
 			if (rowNo == -1 || nodeNames[rowNo].equals("(empty folder"))
 				return;
 
-			list.setSelectedIndex(rowNo);
-			list.repaint();
+			//list.setSelectedIndex(rowNo);
+			//list.repaint();                  // do we really need this?
 
-			//selComp = t_fileName;
+			selComp = t_fileName;
+			oneClick();
+			/*
 			String t = (String) list.getSelectedValue();
 			int i = t.indexOf("@");
 			if (i > -1)
@@ -2284,21 +2278,26 @@ l.setFont(driver.fontg);
 				}
 			}
 				
-			if (0 < t.indexOf(".")) {  // if has suffix
+			if (-1 == t.indexOf("."))
+				repaint();
+			else {  // if has suffix
 				lowLevel = t;
 				//t_fileName.setText(lowLevel);
 				//t_fileName.setText(t);
 				selComp = t_fileName;
+				t_fileName.setText(lowLevel);
+				repaint();
 				 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-				//EventQueue.invokeLater(() -> {   // doesn't work!
+				
 						selComp.setFocusable(true);
-						selComp.requestFocusInWindow();
+						//selComp.requestFocusInWindow();
+						selComp.grabFocus();
 						selComp.setEnabled(true);
-						t_fileName.setText(lowLevel);
+						//t_fileName.setText(lowLevel);
 						t_fileName.getCaret().setVisible(true);
-					    selComp = t_fileName;
+					   // selComp = t_fileName;
 					    selComp.requestFocus();
 					    selComp.setVisible(true);;
 					    selComp.validate();
@@ -2306,11 +2305,12 @@ l.setFont(driver.fontg);
 					}
 				});
 				 
-				t_fileName.setText(t); 			
+				//t_fileName.setText(t); 			
 			    //selComp = t_fileName;
-			    selComp.requestFocus();
+			    //selComp.requestFocus();
 			}
-			repaint();
+			//repaint();
+			*/
 		}
 		
 		public void secondClick(MouseEvent e) {
@@ -2367,6 +2367,86 @@ l.setFont(driver.fontg);
 			}
 			repaint();
 		}
+	}
+
+	public void oneClick() {
+		
+		if (rowNo == -1 || nodeNames[rowNo].equals("(empty folder"))
+			return;
+		String t = (String) list.getSelectedValue();
+		int i = t.indexOf("@");
+		if (i > -1)
+			t = t.substring(0, i);
+		
+		//t_fileName.setText(t);
+		
+		if (!inJarTree) {
+			String t2 = t;
+			if (!t.equals("")) {
+				if (!t.endsWith(".jar")) {
+					t2 = t_dirName.getText() + "/" + t;
+					File f = new File(t2);
+					 
+					if (!f.exists()) {
+						if (0 < t.lastIndexOf(".")) { // if file
+							MyOptionPane.showMessageDialog(driver,
+									"File does not exist: "
+											+ f.getAbsolutePath(),
+									MyOptionPane.ERROR_MESSAGE);
+							repaint();
+							return;
+						}
+						
+					} 
+				}
+			}
+		}
+			
+		if (-1 == t.indexOf("."))
+			repaint();
+		else {  // if has suffix
+			//String lowLevel = t;
+			//t_fileName.setText(lowLevel);
+			t_fileName.setText(t);
+			selComp = t_fileName;
+			//t_fileName.setText(lowLevel);
+			//repaint();
+			 
+			//SwingUtilities.invokeLater(new Runnable() {
+			//	public void run() {
+			
+					selComp.setFocusable(true);
+					//selComp.requestFocusInWindow();
+					selComp.grabFocus();
+					selComp.setEnabled(true);
+					//t_fileName.setText(lowLevel);
+					t_fileName.getCaret().setVisible(true);
+				   // selComp = t_fileName;
+				    selComp.requestFocus();
+				    selComp.setVisible(true);;
+				    selComp.validate();
+				    repaint();
+		//		}
+		//	});
+			 
+			//t_fileName.setText(t); 			
+		    //selComp = t_fileName;
+		    //selComp.requestFocus();
+		}
+		//repaint();
+	}
+	
+	public class SharedListSelectionHandler implements ListSelectionListener {
+
+		public void valueChanged(ListSelectionEvent lSE) {
+		        ListSelectionModel lsm = (ListSelectionModel)lSE.getSource();
+		         if (!lSE.getValueIsAdjusting() && !lsm.isSelectionEmpty()) {
+		            rowNo = lsm.getMinSelectionIndex();
+		            list.setSelectedIndex(rowNo);
+		            oneClick();
+		        }
+		}
+
 	}
 	
 
