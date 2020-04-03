@@ -123,7 +123,8 @@ public class Block implements ActionListener {
 
 		if (!visible && this != driver.selBlock) {			
 
-			showArrowEndAreas(g);
+			//showArrowEndAreas(g);
+			showDetectionAreas(g);
 
 			return;
 		}
@@ -805,11 +806,11 @@ public class Block implements ActionListener {
 		
 		driver.repaint();
 		
-		}
-
+		 
+	}
 	 
 	void showArrowEndAreas(Graphics g) {
-		
+		//if (visible) {
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 		Graphics2D g2 = (Graphics2D) g;
@@ -819,7 +820,7 @@ public class Block implements ActionListener {
 		g2.fill(rightRect);
 		g2.fill(botRect);
 		g.setColor(col);
-		
+		//}
 	}
 	  
 

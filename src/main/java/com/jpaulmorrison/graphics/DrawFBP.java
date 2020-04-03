@@ -1266,6 +1266,8 @@ public class DrawFBP extends JFrame
 
 			File cFile = null;			
 			GenLang gl = curDiag.diagLang;
+						
+			MyOptionPane.showMessageDialog(this, "Select a generated network", MyOptionPane.INFORMATION_MESSAGE);
 
 			
 			String ss = properties.get(gl.netDirProp);
@@ -1293,11 +1295,8 @@ public class DrawFBP extends JFrame
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				cFile = new File(getSelFile(fc));
 			}
-			// }
-			if (cFile == null)
-				return;
-
-			if (!(cFile.exists()))
+			 
+			if (cFile == null || !(cFile.exists()))
 				return;
 
 			
@@ -1417,6 +1416,7 @@ public class DrawFBP extends JFrame
 				w = f.getParent();
 			}
 			// w = f.getAbsolutePath();
+			
 			openAction(w);
 
 			return;
@@ -1612,7 +1612,7 @@ public class DrawFBP extends JFrame
 			// popup.setPreferredSize(dim);
 			popup.pack();
 			popup.setVisible(true);
-			popup.setAlwaysOnTop(true);
+			//popup.setAlwaysOnTop(true);
 			popup.repaint();
 			repaint();
 			return;
@@ -2522,8 +2522,9 @@ public class DrawFBP extends JFrame
 		
 		if (parent == null)
 			return current;
-		
-		parent = parent.replace('\\', '/');
+		String par = parent.replace('\\', '/');
+		if (par.endsWith("/"))
+			par = par.substring(0, par.length() - 1);	
 
 		int k = 0;
 		int m = 0;
@@ -2546,13 +2547,14 @@ public class DrawFBP extends JFrame
 		// par = par.substring(0, j);
 
 		for (int n = 0; n < m; n++) {
-			int j = parent.lastIndexOf("/");
+			int j = par.lastIndexOf("/");
 			if (j == -1)
 				return current;
-			parent = parent.substring(0, j);
+			par = par.substring(0, j);
 		}
-		return parent + "/" + cur.substring(k);
+		return par + "/" + cur.substring(k);
 	}
+	
 	public static BufferedImage readImageFromFile(File file)
 			throws IOException {
 		return ImageIO.read(file);
