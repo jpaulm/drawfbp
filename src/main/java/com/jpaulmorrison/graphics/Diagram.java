@@ -544,7 +544,7 @@ public class Diagram {
 		//fn = fn.trim();
 		
 		
-		Diagram sbnDiag = driver.getNewDiag();  
+		Diagram sbnDiag = driver.getNewDiag();  // sets curDiag as well
 		Diagram origDiag = this;
 		 
 		String w = "(subnet)";

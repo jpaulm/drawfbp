@@ -1016,25 +1016,30 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		else 
 			pkg = pkg.replace(".", "/");
 		String cDD = driver.properties.get("currentDiagramDir");
+		if (cDD == null)
+			cDD = driver.curDiag.diagFile.getParent();
+		cDD = cDD.replace("\\",  "/");
 		
 		// construct new file name
-		if (cDD != null) {
-			int j = cDD.lastIndexOf("diagrams");
-			if (j == -1)
-				cDD += "/src";
-			else
-				cDD = cDD.replace("diagrams", "src");
-		}
+		//if (cDD != null) {
+			int j = cDD.indexOf("src/");
+			if (j > -1)
+			    cDD = cDD.substring(0, j + 4);
+		//}
+		//else {
+		//	int j = cDD.lastIndexOf("diagrams");
+		//	if (j > -1)
+		//		cDD = cDD.replace("diagrams", "src");		
+		
 		fn = fn.replace("\\",  "/");
 		int k = fn.substring(0, i).lastIndexOf("/");
 		String suggName = ""; 
 		if (i > k)
 			suggName = fn.substring(k + 1, i);
 		cDD = cDD.replace("\\",  "/");		
-		suggName = cDD + "/" + pkg + "/" + suggName +  "." + gl.suggExtn;			
+		suggName = cDD + pkg + "/" + suggName +  "." + gl.suggExtn;			
 		
 		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, 
-		//		new File(fn.substring(0, i) + "." + gl.suggExtn)); 
 		        new File(suggName));
 		
 		// note: suggName does not have to be a real file!
@@ -1067,8 +1072,8 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		fileString = fileString.substring(0, m + r.length()) + p + fileString.substring(n);
 		
 		int j2 = fileString.indexOf("().go()");
-		int j = fileString.substring(0, j2).lastIndexOf(" ");
-		fileString = fileString.substring(0, j) + " " + p + fileString.substring(j2);
+		int j3 = fileString.substring(0, j2).lastIndexOf(" ");
+		fileString = fileString.substring(0, j3) + " " + p + fileString.substring(j2);
 		try {
 			doc.remove(0, doc.getLength());
 			doc.insertString(0,  fileString,  normalStyle);

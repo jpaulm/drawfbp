@@ -499,8 +499,10 @@ public class MyFileChooser extends JFrame
 		if (saveAs) {
 
 			if (suggestedName != null && !(suggestedName.equals(""))) {
+				// check if valid file name 
 				File h = new File(suggestedName);
-				listHead = h.getParent();
+				if (h.getParent() != null && h.getParentFile().exists())
+					listHead = h.getParent();
 				t_dirName.setText(listHead);
 				//t_fileName.setText(h.getName());
 				t_suggName.setText(h.getName());
@@ -1487,23 +1489,11 @@ final boolean SAVEAS = true;
 
 	public void keyPressed(KeyEvent e) {
 
-		//if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-		//	shift = true;
-		//	return;
-		//} 
-		
+				
 		if (e.getKeyCode() == KeyEvent.VK_TAB) {
-		//	if (selComp == t_dirName || selComp == t_fileName) {
-		//		selComp.setBackground(Color.WHITE);
-		//		((JTextField) selComp).setEditable(false);
-		//		((JTextField) selComp).getCaret().setVisible(false);
-		//	}
-
-		//	t_fileName.setBackground(Color.WHITE);
-			// list.setSelectedIndex(-1);
+		
 			cBox.repaint();
-			// if (saveAs)
-			// text2.setBackground(Color.WHITE);
+			
 
 			if (selComp == cBox)
 				cBox.setRequestFocusEnabled(false);
@@ -1590,6 +1580,14 @@ final boolean SAVEAS = true;
 
 			return;
 		}
+		
+		if (selComp == t_fileName) {
+			if (e.getKeyCode()  == KeyEvent.VK_UP)
+				rowNo = Math.max(list.getFirstVisibleIndex(), rowNo - 1);
+			if (e.getKeyCode()  == KeyEvent.VK_DOWN)
+				rowNo = Math.min(list.getLastVisibleIndex(), rowNo + 1);
+		}
+		list.setSelectedIndex(rowNo);
 		
 		repaint();
 	}
@@ -1818,6 +1816,8 @@ final boolean SAVEAS = true;
 				} else {
 				if (selComp == t_fileName) {
 					s = t_fileName.getText();
+					if (s.endsWith("/"))
+						s = s.substring(0, s.length() - 1);
 					String s2 = s;
 					if (!s.endsWith(".jar"))
 						s2 = t_dirName.getText() + "/" + s;
@@ -1909,10 +1909,8 @@ final boolean SAVEAS = true;
 				if (s.equals(""))
 					f = new File(listHead);
 				else {
-					// int i = listHead.lastIndexOf("package.json");
-					// if (i > -1)
-					// listHead = listHead.substring(0, i - 1);
-					//f = new File(DrawFBP.makeAbsFileName(s, listHead));
+					if (s.endsWith("/"))
+							s = s.substring(0, s.length() - 1);
 					f = new File(listHead + "/" + s);
 				}
 

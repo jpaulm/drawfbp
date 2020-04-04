@@ -615,14 +615,15 @@ public class DrawFBP extends JFrame
 		//			"Open " + diagramName));
 		//}
 		//if (diagramName == null) {
-			curDiag = getNewDiag();
-			curDiag.desc = "Click anywhere on selection area";
+		//	getNewDiag();
+		//	curDiag.desc = "Click anywhere on selection area";
 		// }
 		//else  
 			if (diagramName != null)  
 				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
 						"Open " + diagramName));
 
+		//createMenuBar();	
 		repaint();
 
 	}
@@ -659,6 +660,9 @@ public class DrawFBP extends JFrame
 			}
 		};
 
+		getNewDiag();
+		curDiag.desc = "Click anywhere on selection area";
+		
 		jtp.addMouseListener(mouseListener);
 
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -914,7 +918,7 @@ public class DrawFBP extends JFrame
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
-
+ 
 		String s = "Generate ";
 		if (curDiag != null)
 			s += curDiag.diagLang.label + " ";
@@ -922,7 +926,7 @@ public class DrawFBP extends JFrame
 		gNMenuItem = new JMenuItem(s);
 		fileMenu.add(gNMenuItem);
 		gNMenuItem.addActionListener(this);
-
+ 
 		menuItem = new JMenuItem("Display Generated Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1081,6 +1085,8 @@ public class DrawFBP extends JFrame
 		return menuBar;
 	}
 
+	// sets curDiag
+	
 	Diagram getNewDiag() {
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
@@ -1201,7 +1207,7 @@ public class DrawFBP extends JFrame
 
 			//int i = jtp.getTabCount();
 			//if (i > 1 || curDiag.diagFile != null || curDiag.changed)
-			curDiag = getNewDiag();
+			getNewDiag();
 
 			//jtp.setSelectedIndex(curDiag.tabNum);
 
@@ -1289,7 +1295,7 @@ public class DrawFBP extends JFrame
 				fc.setSuggestedName(ss);
 			}
 
-			int returnVal = fc.showOpenDialog(true, true); // force saveAs
+			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -2304,7 +2310,7 @@ public class DrawFBP extends JFrame
 		}
 		 
 		if (!found)
-			curDiag = getNewDiag();
+			getNewDiag();
 		curDiag.title = file.getName();
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
 			curDiag.title = curDiag.title.substring(0,
@@ -2523,8 +2529,8 @@ public class DrawFBP extends JFrame
 		if (parent == null)
 			return current;
 		String par = parent.replace('\\', '/');
-		if (par.endsWith("/"))
-			par = par.substring(0, par.length() - 1);	
+		//if (par.endsWith("/"))
+		//	par = par.substring(0, par.length() - 1);	
 
 		int k = 0;
 		int m = 0;
@@ -6054,7 +6060,6 @@ public class DrawFBP extends JFrame
 								}
 								
 								
-								//Diagram	sbnDiag = getNewDiag();   
 								File df = openAction(name);  
 								if (df == null)
 									return;
