@@ -211,7 +211,7 @@ public class Block implements ActionListener {
 		if (subnetFileName != null) {
 			Font fontsave = g.getFont();
 			g.setFont(driver.fontf);
-			g.setColor(Color.GRAY);
+			g.setColor(Color.GREEN);
 			File gFile = new File(subnetFileName);
 			String name = gFile.getName();
 			int x = cx - name.length() * driver.gFontWidth / 2;

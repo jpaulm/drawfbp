@@ -1437,12 +1437,17 @@ public class DrawFBP extends JFrame
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
+			
+			
+			
+			// try this!
+						
 			File file = null;
 			// curDiag.imageFile = null;
 
 			// crop
 			int min_x, w, min_y, h;
+			
 			min_x = Math.max(1, curDiag.minX);
 			min_x = Math.min(min_x, curDiag.minX);
 			w = curDiag.maxX - min_x;
@@ -1464,7 +1469,7 @@ public class DrawFBP extends JFrame
 			w = Math.min(w, buffer.getWidth());
 			h = Math.min(h, buffer.getHeight());
 			
-			BufferedImage buffer2 = buffer.getSubimage(x, y , w, h);	
+			BufferedImage buffer2 = buffer.getSubimage(x, y, w, h);	
 			//BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 			
 			//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
@@ -1534,8 +1539,6 @@ public class DrawFBP extends JFrame
 		if (s.equals("Show Image")) {
 
 			File fFile = null;
-
-			// if (fFile == null || !fFile.exists()) {
 
 			String ss = properties.get("currentImageDir");
 			if (ss == null)

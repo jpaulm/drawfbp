@@ -41,7 +41,7 @@ apply plugin: 'java-library'
    
 }
 
-version = '2.19.6'
+version = '2.20.0'
 
 group = 'com.jpaulmorrison'
 
@@ -80,7 +80,7 @@ java {
 }
 
 jar {
-    archiveVersion = '2.19.6'
+    archiveVersion = '2.20.0'
     manifest {
       attributes 'Implementation-Title': 'DrawFBP', 'Implementation-Version': archiveVersion,
         "Class-Path": configurations.compileClasspath.collect { it.getName() }.join(' '),
@@ -149,7 +149,7 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            version = '2.19.6'
+            version = '2.20.0'
             from components.java
            
                   
