@@ -27,7 +27,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	// HashMap<String, Integer> portlist;
 	Style baseStyle, normalStyle, packageNameStyle, errorStyle,
 			quotedStringStyle, commentStyle;
-	JDialog dialog;
+	JFrame dialog;
 	//StyledDocument doc;
 	//boolean changed = false;
 	boolean generated = false;
@@ -65,14 +65,13 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		gl = diag.diagLang;
 		driver = d.driver;
 		d.cm = this;
-		dialog = new JDialog(driver);
+		dialog = new JFrame();
 		driver.depDialog = dialog;
 		nsLabel.setFont(driver.fontg);
 		
 		DrawFBP.applyOrientation(dialog);
 
-		// type = DrawFBP.GENCODE;
-
+		//dialog.setAlwaysOnTop(false);
 		
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
@@ -116,9 +115,8 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		dialog.setFont(driver.fontf);
 		doc.addDocumentListener(this);
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
-
-
 	}
+	
 	void genCode() {
 		if (!generateCode()) {
 			dialog.dispose();

@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -250,10 +251,10 @@ public class DrawFBP extends JFrame
 	static Color lb = new Color(200, 255, 255); // light blue (turquoise
 												// actually)
 	static Color grey = new Color(170, 244, 255); // sort of bluish grey (?)
-	// JDialog popup = null;
-	//JDialog popup2 = null;
-	JFrame popup2 = null;
-	JDialog depDialog = null;
+	// JFrame popup = null;
+	//JFrame popup2 = null;
+	JFrame popup = null;
+	JFrame depDialog = null;
 
 	static enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
@@ -909,7 +910,7 @@ public class DrawFBP extends JFrame
 		// fileMenu.add(menuItem);
 		// menuItem.addActionListener(this);
 		fileMenu.addSeparator();
-		menuItem = new JMenuItem("Export Image");
+		menuItem = new JMenuItem("Create Image");
 		menuItem.setAccelerator(
 				KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK));
 		fileMenu.add(menuItem);
@@ -1428,7 +1429,7 @@ public class DrawFBP extends JFrame
 			return;
 		}
 
-		if (s.equals("Export Image")) {
+		if (s.equals("Create Image")) {
 
 			if (curDiag == null || curDiag.title == null
 					|| curDiag.blocks.isEmpty()) {
@@ -1438,29 +1439,26 @@ public class DrawFBP extends JFrame
 				return;
 			}
 			
-			
-			
-			// try this!
-						
-			File file = null;
-			// curDiag.imageFile = null;
 
 			// crop
-			int min_x, w, min_y, h;
+			int x, w, y, h;
 			
-			min_x = Math.max(1, curDiag.minX);
-			min_x = Math.min(min_x, curDiag.minX);
-			w = curDiag.maxX - min_x;
-			min_y = Math.max(1, curDiag.minY);
-			min_y = Math.min(min_y, curDiag.minY);
-			h = curDiag.maxY - min_y;  // ok so far!
+			int bottom_border_height = 60;
+			
+			x = curDiag.minX;
+			x = Math.max(1, x);
+			w = curDiag.maxX - x;
+			
+			y = curDiag.minY - 40;                
+			y = Math.max(1, y);			
+			h = curDiag.maxY - y; 
 
 			int aw = curDiag.area.getWidth();
 			int ah = curDiag.area.getHeight();
 			w = Math.min(aw, w);
-			h = Math.min(ah, h) + 60;
-			int x = min_x;
-			int y = Math.max(0, min_y - 40);
+			h = Math.min(ah, h + bottom_border_height);
+			
+			y = Math.max(0, y);  
 			
 			// adjust x, y, w, h to avoid RasterFormatException
 			
@@ -1473,18 +1471,25 @@ public class DrawFBP extends JFrame
 			//BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 			
 			//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
-			int bottom_border_height = 60;
+			
+			// Now we build a strip containing the diagram description
+			
 			Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 			
 			FontMetrics metrics = getFontMetrics(f);
+			int width = 0;
 			String t = curDiag.desc;
-			byte[] str = t.getBytes();
-			int width = metrics.bytesWidth(str, 0, t.length());
+			if (t != null)
+			{
+				byte[] str = t.getBytes();
+				width = metrics.bytesWidth(str, 0, t.length());
+			}
+			
 			width = Math.max(width + 40, buffer2.getWidth());
 			
 			BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
 					BufferedImage.TYPE_INT_ARGB);
-			
+			 
 			Graphics g = combined.getGraphics();
 			
 			g.setColor(Color.WHITE);
@@ -1493,12 +1498,11 @@ public class DrawFBP extends JFrame
 			int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
 			g.drawImage(buffer2, x2, 0, null);
 			// g.drawImage(buffer, 0, 0, null);
-			// g.setColor(Color.RED);
-
+			
 			//g.fillRect(0, max_h, max_w, 80);
-			g.fillRect(0, combined.getHeight(), combined.getWidth(), bottom_border_height);
+			///g.fillRect(0, combined.getHeight(), combined.getWidth(), bottom_border_height);
 
-			if (!(curDiag.desc == null || curDiag.desc.trim().equals(""))) {
+			if (curDiag.desc != null && !curDiag.desc.trim().equals("")) {
 				Color col = g.getColor();
 				g.setColor(Color.BLUE);
 				
@@ -1509,14 +1513,23 @@ public class DrawFBP extends JFrame
 				// x = buffer2.getWidth() / 2;
 				metrics = g.getFontMetrics(f);
 				t = curDiag.desc;
-				str = t.getBytes();
-				width = metrics.bytesWidth(str, 0, t.length());
-
-				g.drawString(t, x - width / 2, buffer2.getHeight() + 10);    
+				width = 0;
+				if (t != null) {
+					byte[] str = t.getBytes();
+					width = metrics.bytesWidth(str, 0, t.length());
+					int sy = (bottom_border_height - metrics.getHeight()) / 2;
+					g.drawString(t, x - width / 2, buffer2.getHeight() + bottom_border_height - sy); 
+				}
 
 				g.setColor(col);
 			}
-		
+		 
+			//BufferedImage image = combined;
+					
+			showImage(combined, curDiag.diagFile.getName()); 
+			return;
+			/*
+			
 			//curDiag.fCParm[Diagram.IMAGE].prompt = curDiag.fCParm[Diagram.IMAGE].prompt.substring(0, i) + ": " + fn;					
 			
 			file = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], combined);
@@ -1534,6 +1547,7 @@ public class DrawFBP extends JFrame
 			//Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 			file.setLastModified(date.getTime());
 			return;
+			*/
 		}
 
 		if (s.equals("Show Image")) {
@@ -1575,7 +1589,7 @@ public class DrawFBP extends JFrame
 			// }
 
 			
-			Image image = null;
+			BufferedImage image = null;
 			try {
 				image = ImageIO.read(fFile);
 			} catch (IOException e1) {
@@ -1584,7 +1598,7 @@ public class DrawFBP extends JFrame
 				return;
  
 			}
-			BufferedImage img = (BufferedImage) image;
+			
 
 			currentImageDir = new File(fFile.getParent());
 			saveProp("currentImageDir", fFile.getParent());
@@ -1592,38 +1606,9 @@ public class DrawFBP extends JFrame
 
 			// curDiag.imageFile = fFile;
 
-			JDialog popup = new JDialog();
-			popup.setTitle(fFile.getName());
-
-			//popup.setUndecorated(true);
-			JLabel jLabel = new JLabel(new ImageIcon(image));
-			//jLabel.addComponentListener(this);
-			//jLabel.setOpaque(false);
-			popup.add(jLabel);
-			popup.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		    popup.setPreferredSize(new Dimension(img.getWidth(), img.getHeight()));
-		    popup.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
-		            .getScreenSize().getWidth() / 2 - img.getWidth() / 2),
-		            (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
-		                    .getHeight() / 2 - img.getHeight() / 2),
-		            img.getWidth(), img.getHeight());
-		    //RoundRectangle2D r = new RoundRectangle2D.Double(0, 0, img.getWidth(), img.getHeight(), 25, 25);
-		    //popup.setShape(r);
-		    //popup.setOpacity(0f);
-		    popup.setMinimumSize(popup.getPreferredSize());
-		    //popup.setVisible(true);
-			//jLabel.setBackground(Color.WHITE);
-			//popup.add(jsp, BorderLayout.CENTER);
-			popup.setLocation(new Point(200, 200));
-			//popup.setBackground(Color.WHITE);
-
-			// popup.addComponentListener(this);
-			// popup.setPreferredSize(dim);
-			popup.pack();
-			popup.setVisible(true);
-			//popup.setAlwaysOnTop(true);
-			popup.repaint();
-			repaint();
+			String name = fFile.getName();
+			showImage(image, name);
+			
 			return;
 		}
 
@@ -1645,20 +1630,20 @@ public class DrawFBP extends JFrame
 	        jHelpViewer = new JHelp(hs);
 			
 			// Create a new dialog screen
-			//popup2 = new JDialog(this);
-			popup2 = new JFrame();
-			popup2.setTitle("DrawFBP Help");
-			popup2.setIconImage(favicon.getImage());
-			applyOrientation(popup2);
+			//popup2 = new JFrame(this);
+			popup = new JFrame();
+			popup.setTitle("DrawFBP Help");
+			popup.setIconImage(favicon.getImage());
+			applyOrientation(popup);
 
-			popup2.setFocusable(true);
-			popup2.requestFocusInWindow();
+			popup.setFocusable(true);
+			popup.requestFocusInWindow();
 
-			popup2.addKeyListener(new KeyAdapter() {
+			popup.addKeyListener(new KeyAdapter() {
 				public void keyPressed(KeyEvent ev) {
 					if (ev.getKeyCode() == KeyEvent.VK_ESCAPE) {
 						// frame2.setVisible(false);
-						popup2.dispose();
+						popup.dispose();
 					}
 
 				}
@@ -1671,25 +1656,25 @@ public class DrawFBP extends JFrame
 
 			// frame2.setPreferredSize(getPreferredSize());
 			// Add the created helpViewer to it.
-			popup2.getContentPane().add(jHelpViewer);
+			popup.getContentPane().add(jHelpViewer);
 			// Set a default close operation.
-			popup2.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			popup.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			// Make this visible.
-			popup2.setVisible(true);
-			popup2.pack();
+			popup.setVisible(true);
+			popup.pack();
 			Dimension dim = getSize();
 			Point p = getLocation();
 			int x_off = 100;
 			int y_off = 100;
-			popup2.setPreferredSize(
+			popup.setPreferredSize(
 					new Dimension(dim.width, dim.height));
 			
-			popup2.pack();
+			popup.pack();
 			
 			//popup2.setPreferredSize(
 			//		new Dimension(dim.width, dim.height - y_off));
 			
-			popup2.setLocation(p.x + x_off, p.y + y_off);
+			popup.setLocation(p.x + x_off, p.y + y_off);
 			return;
 		}
 
@@ -1730,7 +1715,7 @@ public class DrawFBP extends JFrame
 					+ "****************************************************\n");
 
 			ta.setFont(f);
-			final JDialog popup = new JDialog(this);
+			final JDialog popup = new JDialog(driver, Dialog.ModalityType.APPLICATION_MODAL);
 			popup.add(ta, BorderLayout.CENTER);
 			Point p = getLocation();
 			// popup.setPreferredSize(new Dimension(60,20));
@@ -1835,7 +1820,73 @@ public class DrawFBP extends JFrame
 
 		repaint();
 	}
+	void showImage(BufferedImage image, String title) {
+		//JFrame popup = new JFrame((Frame) null);		
+		JFrame iFrame = new JFrame();
+		iFrame.setTitle(title);
+		iFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		iFrame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent ev) {
+				askAboutSavingImage(image, iFrame);
+				//if (f != null) 
+				//	driver.depDialog = null;
+				//popup.dispose();
+				 
+			}
 
+		});
+		
+		JLabel jLabel = new JLabel(new ImageIcon(image));
+				
+		iFrame.add(jLabel);
+		
+	    //iFrame.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+	    //iFrame.setBounds(
+	    //		(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - image.getWidth() / 2),
+	    //        (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
+	    //                .getHeight() / 2 - image.getHeight() / 2),
+	    //        image.getWidth(), 
+	    //        image.getHeight());
+	    
+	    //Rectangle rect = iFrame.getBounds();
+	   
+	    //iFrame.setMinimumSize(iFrame.getPreferredSize());
+	    
+		iFrame.setLocation(new Point(200, 200));
+		
+		iFrame.pack();
+		iFrame.setVisible(true);
+		//iFrame.setAlwaysOnTop(false);
+		
+		iFrame.repaint();
+		repaint();
+		}
+	
+	File askAboutSavingImage(Image img, JFrame jd) {
+		int answer = MyOptionPane.showConfirmDialog(driver, "Save image?",
+				"Save image", MyOptionPane.YES_NO_CANCEL_OPTION);
+
+		//boolean b = false;
+		//final boolean SAVE_AS = true;
+		if (answer == MyOptionPane.YES_OPTION) {
+			// User clicked YES.
+			File f = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], img, null);
+			// diag.diagLang = gl;
+			Date date = new Date();
+			//Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			f.setLastModified(date.getTime());
+			jd.dispose();
+			return f;
+		}
+
+		if (answer == MyOptionPane.NO_OPTION){
+		// diag.diagLang = gl;
+			jd.dispose();
+		}
+			return null;
+		 
+	}
+		 
 	void setBlkType(String s) {
 
 		if (s.equals("none")) {
@@ -4787,7 +4838,7 @@ public class DrawFBP extends JFrame
 			}
 
 			if (e.getSource() == jHelpViewer) {
-				popup2.dispose();
+				popup.dispose();
 				repaint();
 				return;
 			}
@@ -6633,7 +6684,7 @@ public class DrawFBP extends JFrame
 		
 		
 		public void mouseClicked(MouseEvent arg0) {
-			// do nothing
+			
 		}
 
 	}

@@ -1008,7 +1008,7 @@ public class Block implements ActionListener {
 	
 	void displayPortInfo() {
 		buildMetadata();   
-		final JDialog jdialog = new JDialog(driver);
+		final JDialog jdialog = new JDialog(driver, Dialog.ModalityType.APPLICATION_MODAL);
 		jdialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				jdialog.dispose();

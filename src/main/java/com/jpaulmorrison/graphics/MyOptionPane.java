@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class MyOptionPane {	
@@ -39,7 +40,7 @@ public class MyOptionPane {
 	     if (!dialog.isResizable()) 
              dialog.setResizable(true);
           
-	     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	     DrawFBP.applyOrientation(dialog); 
 	     pane.setInputValue("");
 	     pane.setInitialSelectionValue(pane.getInitialValue());
@@ -83,7 +84,7 @@ public class MyOptionPane {
 	     JDialog dialog = pane.createDialog(f, s);
 	     if (!dialog.isResizable())  
              dialog.setResizable(true);
-	     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE); 
+	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
 	     //dialog.setPreferredSize(new Dimension(200, 200));  //fudge
 	          	     
 	     dialog.pack();	     	     
@@ -113,7 +114,7 @@ public class MyOptionPane {
 	     if (!dialog.isResizable())  
            dialog.setResizable(true);
         
-	     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	     DrawFBP.applyOrientation(dialog);  
 	     //pane.setInitialSelectionValue(pane.getInitialValue());
 	     //pane.setWantsInput(true);
@@ -149,7 +150,7 @@ public class MyOptionPane {
 	     if (!dialog.isResizable()) 
             dialog.setResizable(true);
          
-	     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	     DrawFBP.applyOrientation(dialog); 
 	     	     	     
 	     dialog.pack();	     	     

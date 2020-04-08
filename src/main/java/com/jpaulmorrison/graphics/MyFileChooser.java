@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -152,8 +153,7 @@ public class MyFileChooser extends JFrame
 
 	int showOpenDialog(final boolean saveas, final boolean saving) {
 
-		dialog = new JDialog(driver,
-				JDialog.ModalityType.APPLICATION_MODAL);
+		dialog = new JDialog(driver, Dialog.ModalityType.APPLICATION_MODAL);
 		// dialog.setUndecorated(false);
 		
 		//Dimension dim = driver.getSize();
