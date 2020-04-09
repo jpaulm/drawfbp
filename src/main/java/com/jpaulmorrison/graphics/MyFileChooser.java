@@ -1583,9 +1583,24 @@ final boolean SAVEAS = true;
 		
 		if (selComp == t_fileName) {
 			if (e.getKeyCode()  == KeyEvent.VK_UP)
-				rowNo = Math.max(list.getFirstVisibleIndex(), rowNo - 1);
+				rowNo = Math.max(0, rowNo - 1);
 			if (e.getKeyCode()  == KeyEvent.VK_DOWN)
-				rowNo = Math.min(list.getLastVisibleIndex(), rowNo + 1);
+				rowNo = Math.min(list.getModel().getSize() - 1, rowNo + 1);
+			
+			/*
+			if (e.getKeyChar() >= 'A' && e.getKeyChar() <= 'Z') {
+				String s = Character.toString(e.getKeyChar());
+				for (int i = 0; i < list.getModel().getSize(); i++) {
+		            String item = list.getModel().getElementAt(i);
+		            if (item.startsWith(s)) {
+		            		rowNo = i;	
+		            		break;
+		            }
+		        }
+		     }
+			 */
+				
+			
 		}
 		list.setSelectedIndex(rowNo);
 		

@@ -654,6 +654,7 @@ public class Arrow implements ActionListener {
 					MyOptionPane.showMessageDialog(driver,
 							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
 					arr.downStreamPort = "";
+											
 					return;
 				}
 				

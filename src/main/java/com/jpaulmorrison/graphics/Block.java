@@ -1008,7 +1008,7 @@ public class Block implements ActionListener {
 	
 	void displayPortInfo() {
 		buildMetadata();   
-		final JDialog jdialog = new JDialog(driver, Dialog.ModalityType.APPLICATION_MODAL);
+		final JDialog jdialog = new JDialog(driver);
 		jdialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				jdialog.dispose();
@@ -1729,15 +1729,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			
 			// diag is the diagram being modified, this is the "enclosure" block within it
 			// ans is the name chosen for the (new) subnet
-			//--------------------
 			
-			//final boolean NOCHOOSE = false;
-			//driver.curDiag.delBlock(this, NOCHOOSE);  //delete enclosure block 
-			//foundBlock = null;
-			//driver.curDiag.desc = ans; 
-			//driver.curDiag.title = ans;
-			
-			//driver.curDiag.changed = true;
 			driver.repaint();
 			return;
 
