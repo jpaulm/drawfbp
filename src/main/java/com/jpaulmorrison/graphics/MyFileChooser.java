@@ -1587,6 +1587,8 @@ final boolean SAVEAS = true;
 			if (e.getKeyCode()  == KeyEvent.VK_DOWN)
 				rowNo = Math.min(list.getModel().getSize() - 1, rowNo + 1);
 			
+			list.ensureIndexIsVisible(rowNo);
+			
 			/*
 			if (e.getKeyChar() >= 'A' && e.getKeyChar() <= 'Z') {
 				String s = Character.toString(e.getKeyChar());
