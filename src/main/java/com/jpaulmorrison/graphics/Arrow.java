@@ -525,7 +525,7 @@ public class Arrow implements ActionListener {
 			menuItem.addActionListener(this);
 			diag.jpm.add(menuItem);
 		}
-		if (!(to instanceof ExtPortBlock)) {
+		if (!(to instanceof ExtPortBlock) && endsAtBlock) {
 			menuItem = new JMenuItem("Edit Downstream Port Name");
 			menuItem.addActionListener(this);
 			diag.jpm.add(menuItem);
@@ -623,6 +623,8 @@ public class Arrow implements ActionListener {
 							"Upstream port must be blank", MyOptionPane.ERROR_MESSAGE);
 					upStreamPort = "";
 				}
+				
+				b.displayPortInfo();
 			}
 			driver.repaint();
 			return;
@@ -665,7 +667,7 @@ public class Arrow implements ActionListener {
 							"Downstream port must be blank", MyOptionPane.ERROR_MESSAGE);
 					arr.downStreamPort = "";
 				}
-				
+				b.displayPortInfo();	
 			}
 			driver.repaint();
 			return;			

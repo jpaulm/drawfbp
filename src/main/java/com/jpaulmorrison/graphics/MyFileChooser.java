@@ -77,16 +77,17 @@ public class MyFileChooser extends JFrame
 	DrawFBP driver = null;
 	MyButton butParent = new MyButton(null, "parent");
 	MyButton butOK = new MyButton(null, "OK");
+	MyButton butFind = new MyButton(null, "Find");
 	MyButton butCancel = new MyButton(null, "cancel");
 	MyButton butDel = new MyButton(null, "delete");
 	MyButton butNF = new MyButton(null, "new folder");
 	JCheckBox butSortByDate = new JCheckBox("Sort ByDate");
 
-	MyButton butCopy = new MyButton(null, "copy");
+	MyButton butUseSugg = new MyButton(null, "useSugg");
 
 	MyTextField t_dirName = new MyTextField(100, "dir");
 	MyTextField t_fileName = new MyTextField(100, "file");
-	MyTextField t_suggName = new MyTextField(100, "sugg");
+	MyTextField t_suggName = new MyTextField(100, "suggName");
 
 	JComponent selComp = null;
 	// Component changedField = null;
@@ -123,6 +124,7 @@ public class MyFileChooser extends JFrame
 	CancelAction cancelAction;
 	DeleteAction deleteAction;
 	EnterAction enterAction;
+	FindAction findAction;
 	CopyAction copyAction;
 
 	ParentAction parentAction;
@@ -184,13 +186,15 @@ public class MyFileChooser extends JFrame
 		order = new Vector<Component>(10);
 		order.add(t_dirName);
 		order.add(butSortByDate);
+		order.add(butFind);
 		order.add(butParent);
 		order.add(butNF);
 		order.add(panel); // just a place-holder - will be filled in by
 							// buildList
 		order.add(t_fileName);
-		order.add(butCopy);
+		order.add(butUseSugg);
 		order.add(butOK);
+		
 		order.add(cBox);
 		order.add(butDel);
 		order.add(butCancel);
@@ -243,7 +247,7 @@ public class MyFileChooser extends JFrame
 		copyAction = new CopyAction();
 		cancelAction = new CancelAction();
 		deleteAction = new DeleteAction();
-
+		findAction = new FindAction();
 		parentAction = new ParentAction();
 		newFolderAction = new NewFolderAction();
 		
@@ -255,7 +259,7 @@ public class MyFileChooser extends JFrame
 		butSortByDate.setActionCommand("Toggle Sort By Date");
 
 		butParent.setAction(parentAction);
-		butParent.setText("Parent Folder");
+		butParent.setText("Parent");
 		butParent.setMnemonic(KeyEvent.VK_P);
 
 		butNF.setAction(newFolderAction);
@@ -266,14 +270,16 @@ public class MyFileChooser extends JFrame
 
 		// butOK.setAction(okAction);
 		butOK.setAction(enterAction);
-		butCopy.setAction(copyAction);
+		butFind.setAction(findAction);
+		butUseSugg.setAction(copyAction);
 		butCancel.setAction(cancelAction);
 		butDel.setAction(deleteAction);
 
+		butFind.setRequestFocusEnabled(true);
 		butParent.setRequestFocusEnabled(true);
 		//if (saveAs)
 			butNF.setRequestFocusEnabled(true);
-		butCopy.setRequestFocusEnabled(true);
+		butUseSugg.setRequestFocusEnabled(true);
 
 		//t_dirName.addMouseListener(this);
 		//t_fileName.addMouseListener(this);
@@ -287,17 +293,18 @@ public class MyFileChooser extends JFrame
 			butNF.setFocusTraversalKeysEnabled(false);
 		t_fileName.setFocusTraversalKeysEnabled(false);
 		butOK.setFocusTraversalKeysEnabled(false);
+		butFind.setFocusTraversalKeysEnabled(false);
 		butDel.setFocusTraversalKeysEnabled(false);
 		butCancel.setFocusTraversalKeysEnabled(false);
-		butCopy.setFocusTraversalKeysEnabled(false);
+		butUseSugg.setFocusTraversalKeysEnabled(false);
 
-		butParent.setFocusTraversalKeysEnabled(false);
-		butSortByDate.setFocusTraversalKeysEnabled(false);
+		
 		// if (saveAs)
 		butNF.setEnabled(true);
 		butOK.setEnabled(true);
+		butFind.setEnabled(true);
 		// butCopy.setEnabled(saveAs);
-		butCopy.setEnabled(true);
+		butUseSugg.setEnabled(true);
 		butCancel.setEnabled(true);
 		butDel.setEnabled(true);
 
@@ -319,6 +326,8 @@ public class MyFileChooser extends JFrame
 		box1.add(t_dirName);
 		box1.add(Box.createRigidArea(new Dimension(6, 0)));
 		box1.add(butSortByDate);
+		box1.add(Box.createRigidArea(new Dimension(6, 0)));
+		box1.add(butFind);
 		box1.add(Box.createRigidArea(new Dimension(6, 0)));
 
 		box1.add(butParent);
@@ -403,8 +412,8 @@ public class MyFileChooser extends JFrame
 
 		if (saveAs) {
 			c.gridwidth = 1;
-			gridbag.setConstraints(butCopy, c);
-			pan2.add(butCopy);
+			gridbag.setConstraints(butUseSugg, c);
+			pan2.add(butUseSugg);
 
 			c.gridx = 7;
 			c.weightx = 0.0;
@@ -412,6 +421,7 @@ public class MyFileChooser extends JFrame
 			c.gridwidth = 1;
 		} else
 			c.gridwidth = 2;
+		
 		gridbag.setConstraints(butOK, c);
 		pan2.add(butOK);
 
@@ -457,9 +467,10 @@ public class MyFileChooser extends JFrame
 
 		butOK.setText("OK");
 		butOK.setFont(driver.fontg.deriveFont(Font.BOLD));
+		butFind.setText("Find");
 		butCancel.setText("Cancel");
 		butDel.setText("Delete");
-		butCopy.setText(saveAs ? "Use suggested name" : "");
+		butUseSugg.setText(saveAs ? "Use suggested name" : "");
 
 		JLabel lab3 = new JLabel();
 		lab3.setPreferredSize(new Dimension(500, 30));
@@ -480,17 +491,21 @@ public class MyFileChooser extends JFrame
 
 		dialog.setFocusTraversalKeysEnabled(false);
 		
-		t_dirName.addKeyListener(this);  // needed to service tab keys
-		t_fileName.addKeyListener(this);  // needed to service tab keys
-		t_suggName.addKeyListener(this);  // needed to service tab keys
-		butSortByDate.addKeyListener(this); // needed to service tab keys
-		butParent.addKeyListener(this); // needed to service tab keys
-		butNF.addKeyListener(this); // needed to service tab keys
-		butOK.addKeyListener(this); // needed to service tab keys
-		cBox.addKeyListener(this); // needed to service tab keys
-		butDel.addKeyListener(this); // needed to service tab keys
-		butCancel.addKeyListener(this); // needed to service tab keys
-		butCopy.addKeyListener(this); // needed to service tab keys
+		// Following statements needed to service tab keys
+		
+		t_dirName.addKeyListener(this);   
+		t_fileName.addKeyListener(this);   
+		t_suggName.addKeyListener(this);   
+		butSortByDate.addKeyListener(this);  
+		butParent.addKeyListener(this); 
+		butNF.addKeyListener(this);  
+		butOK.addKeyListener(this);  
+		butFind.addKeyListener(this);  
+		cBox.addKeyListener(this);  
+		butDel.addKeyListener(this);  
+		butCancel.addKeyListener(this);  
+		butUseSugg.addKeyListener(this);  
+		
 		cBox.setFocusTraversalKeysEnabled(false);
 		mtp = new MyTraversalPolicy();
 		setFocusTraversalPolicy(mtp);
@@ -796,8 +811,8 @@ public class MyFileChooser extends JFrame
 			list.setFocusTraversalKeysEnabled(false);
 
 			
-			order.remove(4);
-			order.add(4, list);			
+			order.remove(5);             //??????????????
+			order.add(5, list);			
 
 			FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
 			list.setFixedCellHeight(metrics.getHeight());
@@ -1513,7 +1528,7 @@ final boolean SAVEAS = true;
 			else
 				selComp = (JComponent) mtp.getComponentAfter(dialog, selComp);
 
-			if (selComp == butCopy && !saveAs)  // skip butCopy if not saveAs
+			if (selComp == butUseSugg && !saveAs)  // skip butCopy if not saveAs
 				if ((e.getModifiersEx() & onmask) == onmask)
 					selComp = (JComponent) mtp.getComponentBefore(dialog,
 							selComp);
@@ -1588,20 +1603,6 @@ final boolean SAVEAS = true;
 				rowNo = Math.min(list.getModel().getSize() - 1, rowNo + 1);
 			
 			list.ensureIndexIsVisible(rowNo);
-			
-			/*
-			if (e.getKeyChar() >= 'A' && e.getKeyChar() <= 'Z') {
-				String s = Character.toString(e.getKeyChar());
-				for (int i = 0; i < list.getModel().getSize(); i++) {
-		            String item = list.getModel().getElementAt(i);
-		            if (item.startsWith(s)) {
-		            		rowNo = i;	
-		            		break;
-		            }
-		        }
-		     }
-			 */
-				
 			
 		}
 		list.setSelectedIndex(rowNo);
@@ -1760,7 +1761,7 @@ final boolean SAVEAS = true;
 			if (selComp instanceof MyButton) {
 				// ((MyButton) selComp).getAction().actionPerformed(new
 				// ActionEvent(e, 0, ""));
-				if (selComp == butOK)
+				if (selComp == butOK)  //check this out!
 					return;
 				((MyButton) selComp).doClick();
 				return;
@@ -1985,8 +1986,9 @@ final boolean SAVEAS = true;
 
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
-			// For now we will only shift from suggested file to text2
-
+			
+			// For now we will only shift from suggested file to t_fileName
+			
 			t_fileName.setText(t_suggName.getText());
 			// text3.setText(s);
 			t_fileName.requestFocusInWindow();
@@ -1996,6 +1998,39 @@ final boolean SAVEAS = true;
 			panel.validate();
 			repaint();
 
+		}
+	}
+
+	class FindAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent e) {
+				
+				String s = (String) MyOptionPane.showInputDialog(dialog,
+						"Enter search characters", null);
+
+				if (s != null) {					
+				int row = -1;				
+				for (int i = 0; i < list.getModel().getSize(); i++) {
+		            String item = list.getModel().getElementAt(i);
+		            //item = item.substring(0, s.length());
+		            int j = item.compareToIgnoreCase(s);
+		            if (j >= 0) {
+		            	row = i;	
+		            	break;
+		            }
+		        }
+		   
+				if (row == -1)
+					MyOptionPane.showMessageDialog(driver,
+							"String not found", MyOptionPane.WARNING_MESSAGE);
+				else {
+					rowNo = row;
+					list.setSelectedIndex(rowNo);
+					list.ensureIndexIsVisible(rowNo);
+				}
+				repaint();
+				}
 		}
 	}
 
