@@ -828,6 +828,8 @@ public class Block implements ActionListener {
 		inputPortAttrs = new HashMap<String, AInPort>();
 		outputPortAttrs = new HashMap<String, AOutPort>();
 		String s = driver.javaFBPJarFile; 
+		if (s == null)
+			return;
 		int j = s.lastIndexOf("javafbp") + 8;
 		String seg = "engine.";
 		if (0 <= s.substring(j, j + 1).compareTo("4"))  // if javafbp jar file version not less than 4.0.0
@@ -1007,6 +1009,8 @@ public class Block implements ActionListener {
 
 	
 	void displayPortInfo() {
+		if (fullClassName == null)
+			return;
 		buildMetadata();   
 		final JDialog jdialog = new JDialog(driver);
 		jdialog.addWindowListener(new WindowAdapter() {
@@ -1208,12 +1212,15 @@ public class Block implements ActionListener {
 	int testMatch(String port, String type) {
 		// this logic is somewhat over-constrained!
 		// this routine returns a value of 0, 1 or 2  (Yes, Missing or Optional)
+		final int tMYes = 0;
+		final int tMMissing = 1;
+		final int tMOptional = 2;
 		boolean input = (type.indexOf("input") > -1 || type.indexOf("param") > -1);
 		boolean output = (type.indexOf("output") > -1);
 		if (!input && !output) {
 			MyOptionPane.showMessageDialog(driver, "Port type of \""
 					+ port + "\" must be \"input\" or \"output\"", MyOptionPane.ERROR_MESSAGE);
-			return 1;
+			return tMMissing;
 		}
 
 		for (Arrow arrow : diag.arrows.values()) {
@@ -1221,35 +1228,26 @@ public class Block implements ActionListener {
 			//	continue;
 			Arrow arr = arrow.findLastArrowInChain(); 
 			if (arr == null)
-				return 2;
+				return tMOptional;
 			if (id == arr.toId && arr.downStreamPort != null
 					&& stem(arr.downStreamPort).equals(port))
 				if (input)
-					return 0;
+					return tMYes;
 				else
-					return 1;
+					return tMMissing;
 
 			if (id == arrow.fromId && arrow.upStreamPort != null
 					&& stem(arrow.upStreamPort).equals(port))
 				if (output)
-					return 0;
+					return tMYes;
 				else
-					return 1;
+					return tMMissing;
 		}
-		//if (input)
-		//	return 3; // If input port missing, that's OK
-		//else if (type.indexOf("optional") > -1)
-		//	return 2;
-		//else
-		//	return 1; // If output port missing, error
 		
-		//if (input)
-		//	return 3; // If input port missing, that's OK
-		//else 
 			if (type.indexOf("optional") > -1)
-			return 2;
+			return tMOptional;
 		else
-			return 1; // If port missing, error
+			return tMMissing; // If port missing, error
 	}
 
 	LinkedList<String> checkUnmatchedPorts() {

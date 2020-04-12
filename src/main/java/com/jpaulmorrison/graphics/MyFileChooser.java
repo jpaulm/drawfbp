@@ -2013,8 +2013,16 @@ final boolean SAVEAS = true;
 				int row = -1;				
 				for (int i = 0; i < list.getModel().getSize(); i++) {
 		            String item = list.getModel().getElementAt(i);
-		            //item = item.substring(0, s.length());
-		            int j = item.compareToIgnoreCase(s);
+		            int j; 
+		            if (driver.sortByDate) {
+		            	String s2 = s + "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"; // !
+		            	int k = item.indexOf("@");
+		            	String t = item.substring(k + 1);
+		            	j = t.compareToIgnoreCase(s2);
+		            	j = -j;
+		            } else
+		                j = item.compareToIgnoreCase(s);
+		            
 		            if (j >= 0) {
 		            	row = i;	
 		            	break;
