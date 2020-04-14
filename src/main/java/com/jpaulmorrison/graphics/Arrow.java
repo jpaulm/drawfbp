@@ -100,10 +100,8 @@ public class Arrow implements ActionListener {
 		Stroke stroke = ((Graphics2D)g).getStroke();
 		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
 
-		if (toX == -1) {
-		//   g.drawRect(fromX - 3, fromY - 3, 6, 6);			 
-		  return;
-		}
+		
+		
 		
 		showCompareFlag(g);
 
@@ -204,15 +202,18 @@ public class Arrow implements ActionListener {
 			g.setColor(col);
 		}
 
-		if (!dropOldest)
-			g.drawLine(fx, fy, tx, ty);
-		else {
-			Shape shape = new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
-			shape = zzstroke.createStrokedShape(shape);
-			((Graphics2D)g).draw(shape);
-			// g.setStroke(stroke);
+		if (tx > -1 && ty > -1) {
+			if (!dropOldest)
+				g.drawLine(fx, fy, tx, ty);
+			else {
+				Shape shape = new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
+				shape = zzstroke.createStrokedShape(shape);
+				((Graphics2D) g).draw(shape);
+				// g.setStroke(stroke);
+			}
+			//System.out.println("arrow: " + fx + " " + fy + " " + tx + " " + ty);
 		}
-
+		
 		if (tailMarked) {
 			Color col = g.getColor();
 			g.setColor(Color.RED);
@@ -222,17 +223,21 @@ public class Arrow implements ActionListener {
 		
 		calcLimits(fx, x, fy, toY);
 
-		
-		
-		if (!endsAtBlock && !endsAtLine && driver.fpArrowEndA == null && driver.fpArrowEndB == null) {		
-			//g.drawRect(x - 3, toY - 3, 6, 6);
-			driver.drawBlackSquare(g, x, toY);
+		if (toId == -1) {
+			   //g.drawRect(fromX - 3, fromY - 3, 6, 6);	
+			   driver.drawBlackSquare(g, toX, toY);		
+			   return;
 		}
+		
+		//if (!endsAtBlock && !endsAtLine && driver.fpArrowEndA == null && driver.fpArrowEndB == null) {		
+			//g.drawRect(x - 3, toY - 3, 6, 6);
+		//	driver.drawBlackSquare(g, x, toY);
+		//}
 		
 		//if (driver.fpArrowEndA != null) 
 			//if (driver.currentArrow != null && driver.currentArrow.toId != -1 && !driver.currentArrow.endsAtBlock)
 		//		driver.drawBlueCircle(g, driver.fpArrowEndA.x, driver.fpArrowEndA.y);
-		driver.blueCircs(g);
+		//driver.blueCircs(g);
 		
 		if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock  /* from instanceof Enclosure */   
@@ -284,7 +289,9 @@ public class Arrow implements ActionListener {
 		}
 		if (extraArrowhead != null)  
 			extraArrowhead.draw(g); 
-				 
+		
+		
+		
 	}
 	
 	
