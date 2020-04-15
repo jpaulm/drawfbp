@@ -46,7 +46,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
-public class MyFileChooser extends JFrame
+public class MyFileChooser extends JDialog 
 		implements
 			MouseListener,
 			ActionListener,
@@ -2005,41 +2005,39 @@ final boolean SAVEAS = true;
 
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
-				
-				String s = (String) MyOptionPane.showInputDialog(dialog,
-						"Enter search characters", null);
 
-				if (s != null) {					
-				int row = -1;				
+			String s = (String) MyOptionPane.showInputDialog(dialog,
+					"Enter search characters", null);
+
+			if (s == null || s.equals(""))
+				return;
+			
+			int row = -1;
+
+			//if (s != null) {
+				s = s.toLowerCase();
+
 				for (int i = 0; i < list.getModel().getSize(); i++) {
-		            String item = list.getModel().getElementAt(i);
-		            int j; 
-		            if (driver.sortByDate) {
-		            	String s2 = s + "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"; // !
-		            	int k = item.indexOf("@");
-		            	String t = item.substring(k + 1);
-		            	j = t.compareToIgnoreCase(s2);
-		            	j = -j;
-		            } else
-		                j = item.compareToIgnoreCase(s);
-		            
-		            if (j >= 0) {
-		            	row = i;	
-		            	break;
-		            }
-		        }
-		   
-				if (row == -1)
-					MyOptionPane.showMessageDialog(driver,
-							"String not found", MyOptionPane.WARNING_MESSAGE);
-				else {
-					rowNo = row;
-					list.setSelectedIndex(rowNo);
-					list.ensureIndexIsVisible(rowNo);
+					String item = list.getModel().getElementAt(i);
+					item = item.toLowerCase();
+					if (item.startsWith(s)) {
+						row = i;
+						break;
+					}
 				}
-				repaint();
-				}
+			//}
+
+			if (row == -1)
+				MyOptionPane.showMessageDialog(driver, "String not found",
+						MyOptionPane.WARNING_MESSAGE);
+			else {
+				rowNo = row;
+				list.setSelectedIndex(rowNo);
+				list.ensureIndexIsVisible(rowNo);
+			}
+			repaint();
 		}
+
 	}
 
 	class ParentAction extends AbstractAction {

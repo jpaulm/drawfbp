@@ -103,7 +103,7 @@ public class ButtonTabComponent extends JPanel {
 					s = diag.diagFile.getName();
 			}
 
-		if (diag != null && diag.changed)
+		if (diag != null && diag.changed)   
 			s = "* " + s;
 		
 		label.setText(s);

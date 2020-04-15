@@ -5324,6 +5324,8 @@ public class DrawFBP extends JFrame
 				else if (side == Side.BOTTOM)
 					fpB.y = block.botEdge;
 
+				//fpB.block = block;  // set in FoundPointB constructor
+				
 				break;
 			}
 
@@ -5549,8 +5551,9 @@ public class DrawFBP extends JFrame
 			}
 			// curDiag.foundBlock = null;
 
-			if (currentArrow != null && Math.abs(currentArrow.fromX - xa) > 10 && 
-					Math.abs(currentArrow.fromY - ya) > 10) {
+			if (currentArrow != null && 
+					(Math.abs(currentArrow.fromX - xa) > 10 ||
+					Math.abs(currentArrow.fromY - ya) > 10)) {
 				edgePoint = findBlockEdge(xa, ya, "M");
 				if (edgePoint != null) {
 					xa = edgePoint.x;
@@ -6064,7 +6067,7 @@ public class DrawFBP extends JFrame
 				currentArrow.endsAtBlock = false;
 				currentArrow.endsAtLine = false;
 				 
-				if (Math.abs(currentArrow.fromX - xa) > 10 &&  // pick arbitrary figure!
+				if (Math.abs(currentArrow.fromX - xa) > 10 ||  // pick arbitrary figure!
 					Math.abs(currentArrow.fromY - ya) > 10) {
 					//System.out.println("dragging " + xa + " " + ya);
 				//FoundPointB fpB = findBlockEdge(xa, ya);	
@@ -6218,7 +6221,7 @@ public class DrawFBP extends JFrame
 						}
 						// blockSelForDragging = null;
 					} // else {
-					curDiag.changed = true;
+					//curDiag.changed = true;
 					// }
 					repaint();
 					// return;
@@ -6451,7 +6454,7 @@ public class DrawFBP extends JFrame
 
 			
 			//FoundPointB fpB = null;                     
-			//if (Math.abs(currentArrow.fromX - xa) > 10 &&
+			//if (Math.abs(currentArrow.fromX - xa) > 10 ||
 			//		Math.abs(currentArrow.fromY - ya) > 10)	
 			//    fpB = findBlockEdge(xa, ya);
 			

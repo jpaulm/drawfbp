@@ -1118,9 +1118,11 @@ public class Block implements ActionListener {
 			else
 				tfi[2] = new JTextField(ip.type.getName());
 			tfi[3] = new JTextField(ip.description);
+			
 			int res = testMatch(tfi[0].getText(), tfi[1].getText());
 			String results[] = {"Yes", "Missing", "Optional"};
 			tfi[4] = new JTextField(results[res]);
+			
 			gbc.gridx = 0;
 			gbc.weightx = 0.5;
 			displayRow(gbc, gbl, tfi, panel, Color.BLACK);
@@ -1142,9 +1144,11 @@ public class Block implements ActionListener {
 			else
 				tfo[2] = new JTextField(op.type.getName());
 			tfo[3] = new JTextField(op.description);
+			
 			int res = testMatch(tfo[0].getText(), tfo[1].getText());
 			String results[] = {"Yes", "Missing", "Optional"};
 			tfo[4] = new JTextField(results[res]);
+			
 			displayRow(gbc, gbl, tfo, panel, Color.BLACK);
 		}
 	
@@ -1221,6 +1225,7 @@ public class Block implements ActionListener {
 		final int tMYes = 0;
 		final int tMMissing = 1;
 		final int tMOptional = 2;
+		
 		boolean input = (type.indexOf("input") > -1 || type.indexOf("param") > -1);
 		boolean output = (type.indexOf("output") > -1);
 		if (!input && !output) {
@@ -1234,7 +1239,9 @@ public class Block implements ActionListener {
 			//	continue;
 			Arrow arr = arrow.findLastArrowInChain(); 
 			if (arr == null)
-				return tMOptional;
+				//return tMInvalid;
+				continue;
+			
 			if (id == arr.toId && arr.downStreamPort != null
 					&& stem(arr.downStreamPort).equals(port))
 				if (input)
