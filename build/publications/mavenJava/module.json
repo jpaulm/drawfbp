@@ -3,7 +3,7 @@
   "component": {
     "group": "com.jpaulmorrison",
     "module": "drawfbp",
-    "version": "2.19.5",
+    "version": "2.20.0",
     "attributes": {
       "org.gradle.status": "release"
     }
@@ -11,7 +11,7 @@
   "createdBy": {
     "gradle": {
       "version": "6.3",
-      "buildId": "nxnp4ygkjbckddfp6d42b2zjfq"
+      "buildId": "3j4hvsbesbeapls3lz7lxgkdla"
     }
   },
   "variants": [
@@ -26,13 +26,13 @@
       },
       "files": [
         {
-          "name": "drawfbp-2.19.5.jar",
-          "url": "drawfbp-2.19.5.jar",
-          "size": 1371145,
-          "sha512": "deeb2b649658e7212335567c16d6024411e493491e91ff6d4c0d638f6a75cfabdbe8121586d84f5a913fb9047db938a21e16e17f3152527add8266462d8b59d7",
-          "sha256": "a6a120d58625f23215a9d448683d0f4175d518a18887faaf84c6129a08f3dc07",
-          "sha1": "5f5252b558b145d507838cb6a2ad25efd533847f",
-          "md5": "5b4dab0cdf4a144bb6c7ea0739a3cf56"
+          "name": "drawfbp-2.20.0.jar",
+          "url": "drawfbp-2.20.0.jar",
+          "size": 1375197,
+          "sha512": "3806d535ce0bff7357498a357419d8e62065932ff90df165cbf57bec9a9249ef0fd694d38e4aeb48e2beeb1ff3f39792603978cad45245858bf3521585fa83fe",
+          "sha256": "eb8932e7b6b5f508c43da9268286fc46b34426eb20b6399776039f286a1b3519",
+          "sha1": "260aa622824ca8a7b6cc410038bc9216cb7f7f3e",
+          "md5": "74a069fe10fb5d287877859a866b44e8"
         }
       ]
     },
@@ -63,13 +63,13 @@
       ],
       "files": [
         {
-          "name": "drawfbp-2.19.5.jar",
-          "url": "drawfbp-2.19.5.jar",
-          "size": 1371145,
-          "sha512": "deeb2b649658e7212335567c16d6024411e493491e91ff6d4c0d638f6a75cfabdbe8121586d84f5a913fb9047db938a21e16e17f3152527add8266462d8b59d7",
-          "sha256": "a6a120d58625f23215a9d448683d0f4175d518a18887faaf84c6129a08f3dc07",
-          "sha1": "5f5252b558b145d507838cb6a2ad25efd533847f",
-          "md5": "5b4dab0cdf4a144bb6c7ea0739a3cf56"
+          "name": "drawfbp-2.20.0.jar",
+          "url": "drawfbp-2.20.0.jar",
+          "size": 1375197,
+          "sha512": "3806d535ce0bff7357498a357419d8e62065932ff90df165cbf57bec9a9249ef0fd694d38e4aeb48e2beeb1ff3f39792603978cad45245858bf3521585fa83fe",
+          "sha256": "eb8932e7b6b5f508c43da9268286fc46b34426eb20b6399776039f286a1b3519",
+          "sha1": "260aa622824ca8a7b6cc410038bc9216cb7f7f3e",
+          "md5": "74a069fe10fb5d287877859a866b44e8"
         }
       ]
     },
@@ -83,13 +83,13 @@
       },
       "files": [
         {
-          "name": "drawfbp-2.19.5-sources.jar",
-          "url": "drawfbp-2.19.5-sources.jar",
-          "size": 392744,
-          "sha512": "099cc79987ee25730607aa3bea56540aebc0a32ebf9f2606f553419d9ac163c6a5774dcb5f910c885d188001602e738fb1c4180e9e852ab7d410699af73d98ac",
-          "sha256": "c970763ae57bdcf033b4c56086637804f6bc4ca24052f963603e57cbc83cdc75",
-          "sha1": "5b5f1cf086e9594e7dc89eebbf48fe063ab55bc2",
-          "md5": "9cb5623c2186735d377c43cf9bab0b79"
+          "name": "drawfbp-2.20.0-sources.jar",
+          "url": "drawfbp-2.20.0-sources.jar",
+          "size": 394967,
+          "sha512": "819a1c2457c3b0f786b2c7096fa87759e354c21ae0fca5b7daaffb40ac281a9f7f1d3223ed7dfcd59b3b0c892956838792cb0b1cb64be1dddf24712993c83ed9",
+          "sha256": "706a4828d70ce8d7ee54172b4263856d697ffefa4928e7a3380bb9f5cd04b50f",
+          "sha1": "fe0613c536f734e02d875d48bbf55862f75c654b",
+          "md5": "858480958275ff44d5653c8a159bf2e5"
         }
       ]
     },
@@ -103,13 +103,13 @@
       },
       "files": [
         {
-          "name": "drawfbp-2.19.5-javadoc.jar",
-          "url": "drawfbp-2.19.5-javadoc.jar",
-          "size": 162780,
-          "sha512": "7d7fcbd33382122be76784e796a05f2865bcbdc2796cb82438ac76b807b3b5e21f7bb52e12db5540258172268e3fecaf59028f8ea8f372fb59878ffe03e1c7a0",
-          "sha256": "9ecfe2e9b3816537007e2252f56b8c399e72fd485db91829bbff7cda7bc956d9",
-          "sha1": "dc82a0d61dac8474da546745540b25f55ab96d77",
-          "md5": "24c5922751b865d5079ca309806e810a"
+          "name": "drawfbp-2.20.0-javadoc.jar",
+          "url": "drawfbp-2.20.0-javadoc.jar",
+          "size": 165286,
+          "sha512": "3851fabf7ee1a3ff2939966ed55fd28da3dc98ab587b083fc770b8e9c443d22b856a623ff31658f0c56dc1b3ee5f0f6aa40fb1742e0003dd3548ef79e0b17e48",
+          "sha256": "6227347256be4c16695ab324b7a8d99aa49e06e7b8720571feba95699ce4da1f",
+          "sha1": "42de015f8e86939ff2fb2060a075d69b99e4aaee",
+          "md5": "d05735beac27e022e03418f0b577e2f6"
         }
       ]
     }
