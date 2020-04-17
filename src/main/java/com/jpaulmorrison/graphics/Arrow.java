@@ -3,6 +3,7 @@ package com.jpaulmorrison.graphics;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.*;
@@ -39,7 +40,9 @@ public class Arrow implements ActionListener {
 	boolean deleteOnSave = false;
 	static Color FOREST_GREEN = new Color(34, 139, 34);
 	static Color ORANGE_RED = new Color(255, 69, 0);
-	boolean headMarked, tailMarked;
+	//boolean headMarked, tailMarked;
+	Point headMark;
+	Point tailMark;
 	boolean dropOldest;
 	int capacity;
 	int endX2, endY2;
@@ -195,10 +198,10 @@ public class Arrow implements ActionListener {
 			x -= i;
 		}
 		
-		if (headMarked) {
+		if (headMark != null) {
 			Color col = g.getColor();
 			g.setColor(Color.RED);
-			g.drawOval(x - 5, toY - 5, 10, 10);
+			g.drawOval(headMark.x - 5, headMark.y - 5, 10, 10);
 			g.setColor(col);
 		}
 
@@ -214,10 +217,10 @@ public class Arrow implements ActionListener {
 			//System.out.println("arrow: " + fx + " " + fy + " " + tx + " " + ty);
 		}
 		
-		if (tailMarked) {
+		if (tailMark != null) {
 			Color col = g.getColor();
 			g.setColor(Color.RED);
-			g.drawOval(fromX - 5, fromY - 5, 10, 10);
+			g.drawOval(tailMark.x - 5, tailMark.y - 5, 10, 10);
 			g.setColor(col);
 		}
 		
@@ -245,6 +248,7 @@ public class Arrow implements ActionListener {
 							|| to instanceof ExtPortBlock /* || to instanceof Enclosure */)) {
 				Arrowhead ah = new Arrowhead(fx, fy, toX, toY);  
 				ah.draw(g);	
+				driver.fpArrowEndA = null;
 				driver.fpArrowEndB = null;
 				//driver.currentArrow = null;
 			}
@@ -735,14 +739,16 @@ public class Arrow implements ActionListener {
 			return;
 			
 		}  if (s.equals("Drag Tail")) {
-			tailMarked = true;
+			//tailMarked = true;
+			tailMark = new Point(fromX, fromY);
 			driver.arrowEndForDragging = this;
 			driver.repaint();
 			diag.changed = true;
 			return;
 
 		}  if (s.equals("Drag Head")) {
-			headMarked = true;
+			//headMarked = true;
+			headMark = new Point(toX, toY);
 			driver.arrowEndForDragging = this;
 			driver.repaint();
 			diag.changed = true;
@@ -875,12 +881,14 @@ public class Arrow implements ActionListener {
 		if (!endsAtLine)
 			return null;
 
-		int id = toId; // toId not a block, so toId must be a line ID
-		Arrow a = null;		
+		int id = toId; // endsAtine, so toId must be a line ID
+		
+		Arrow a;		
 		while (true) {
 			if (id == -1)  			
 				return null;
 			
+			a = null;
 			for (Arrow arrow : diag.arrows.values()) {
 				if (id == arrow.id) {
 					a = arrow;
@@ -888,11 +896,15 @@ public class Arrow implements ActionListener {
 					break;
 				}
 			}
-			if (a == null)  
-				return a;			 
+			
+			if (a == null)  // no arrow matches id, so return null
+				return null;			 
 			
 			if (a.endsAtBlock)
 				return a;
+			
+			if (!a.endsAtLine)
+				return null;
 			
 			id = a.toId;
 		}

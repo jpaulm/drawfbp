@@ -11,10 +11,12 @@ import java.awt.geom.GeneralPath;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.jpaulmorrison.graphics.DrawFBP.Corner;
+
 public class Enclosure extends Block {
 	
 	
-	DrawFBP.Corner corner = null;
+	DrawFBP.Corner corner = Corner.NONE;
 	//LinkedList<SubnetPort> subnetPorts = null;
 	boolean editPortName = false;
 	boolean changeSubstreamSensitivity = false;
@@ -32,6 +34,7 @@ public class Enclosure extends Block {
 		type = Block.Types.ENCL_BLOCK; 
 		width = 250;
 		height = 100;
+		corner = Corner.NONE;
 		//subnetPorts = new LinkedList<SubnetPort>();
 	}
 	void buildEncl(HashMap<String, String> item) {
@@ -119,7 +122,7 @@ public class Enclosure extends Block {
 		}
 
 		// following logic draws diagonal arrow at selected corner
-		if (corner != null) {
+		if (corner != Corner.NONE) {
 			int leftEdge = cx - width / 2;
 			int rgtEdge = cx + width / 2;
 			int topEdge = cy - height / 2;

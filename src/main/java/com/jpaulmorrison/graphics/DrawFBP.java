@@ -185,7 +185,7 @@ public class DrawFBP extends JFrame
 	//public static final String Side = null;
 
 	static enum Corner {
-		TOPLEFT, BOTTOMLEFT, TOPRIGHT, BOTTOMRIGHT
+		NONE, TOPLEFT, BOTTOMLEFT, TOPRIGHT, BOTTOMRIGHT
 	}
 
 	// Side side;
@@ -5461,7 +5461,7 @@ public class DrawFBP extends JFrame
 			ya = (int) p.y();
 			//System.out.println("M: " + xa + "," + ya);
 			if (enclSelForArrow != null) {
-				enclSelForArrow.corner = null;
+				enclSelForArrow.corner = Corner.NONE;
 				enclSelForArrow = null;
 				repaint();
 				return;
@@ -5753,7 +5753,7 @@ public class DrawFBP extends JFrame
 				if (edgePoint != null)  {
 					xa = edgePoint.x;
 					ya = edgePoint.y;
-					fpArrowRoot = edgePoint;
+					//fpArrowRoot = edgePoint;
 					repaint();
 				}
 		/*		
@@ -5793,35 +5793,46 @@ public class DrawFBP extends JFrame
 			// if no currentArrow, but there is a found block, start an arrow
 			//if (currentArrow == null && foundBlock != null
 			//		&& arrowEndForDragging == null) {
-			if (currentArrow == null && fpArrowRoot != null) {			
+			if (currentArrow == null) {
+				fpArrowRoot = edgePoint;
+				if (fpArrowRoot != null) {
+					Arrow arrow = new Arrow(curDiag);
+					curDiag.maxArrowNo++;
+					arrow.id = curDiag.maxArrowNo;
+					selArrow = arrow;
+					// selBlockP = null;
+					arrow.fromX = fpArrowRoot.x; // xa;
+					arrow.fromY = fpArrowRoot.y; // ya;
 
-				Arrow arrow = new Arrow(curDiag);
-				curDiag.maxArrowNo++;
-				arrow.id = curDiag.maxArrowNo;
-				selArrow = arrow;
-				// selBlockP = null;
-				arrow.fromX = fpArrowRoot.x; // xa;
-				arrow.fromY = fpArrowRoot.y;  // ya;
+					// int id = fpArrowRoot.block.id;
+					// arrow.fromId = foundBlock.id;
+					arrow.fromId = fpArrowRoot.block.id;
+					Block fromBlock = curDiag.blocks
+							.get(new Integer(arrow.fromId));
+					if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
+							|| fromBlock.type
+									.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+						arrow.upStreamPort = "OUT";
+					// arrow.fromId = -1;
+					currentArrow = arrow;
+					arrow.lastX = xa; // save last x and y
+					arrow.lastY = ya;
+					Integer aid = new Integer(arrow.id);
+					curDiag.arrows.put(aid, arrow);
+					arrowEndForDragging = arrow;
 
-				//int id = fpArrowRoot.block.id;
-				//arrow.fromId = foundBlock.id;
-				arrow.fromId = fpArrowRoot.block.id;
-				Block fromBlock = curDiag.blocks.get(new Integer(arrow.fromId));
-				if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
-						|| fromBlock.type
-								.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
-					arrow.upStreamPort = "OUT";
-				// arrow.fromId = -1;
-				currentArrow = arrow;
-				arrow.lastX = xa; // save last x and y
-				arrow.lastY = ya;
-				Integer aid = new Integer(arrow.id);
-				curDiag.arrows.put(aid, arrow);
-				arrowEndForDragging = arrow;
+					// foundBlock = null;
 
-				// foundBlock = null;
-
+				}
 			}
+			 
+			   else {
+				Arrow arrow = currentArrow;
+				if (arrow.tailMark != null || arrow.headMark != null) {
+					arrowEndForDragging = arrow;
+				}
+			}
+			 
 			repaint();
 		}
 
@@ -5830,7 +5841,7 @@ public class DrawFBP extends JFrame
 			fpArrowRoot = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
-			edgePoint = null;
+			//edgePoint = null;
 
 			
 
@@ -5902,17 +5913,28 @@ public class DrawFBP extends JFrame
 
 			if (arrowEndForDragging != null) {
 				Arrow arr = arrowEndForDragging;
-				if (arr.tailMarked) {
+				if (arr.tailMark != null) {
 					arr.fromId = -1;
 					arr.fromX = xa;
 					arr.fromY = ya;
-				} else {
+					arr.tailMark.x = xa;
+					arr.tailMark.y = ya;
+					curDiag.changed = true;
+					repaint();
+					return;
+					
+				} else if (arr.headMark != null){
 					arr.toId = -1;
 					arr.toX = xa;
 					arr.toY = ya;
+					arr.headMark.x = xa;
+					arr.headMark.y = ya;
+					curDiag.changed = true;
+					repaint();
+					return;
 				}
-				curDiag.changed = true;
-				repaint();
+				//curDiag.changed = true;
+				//repaint();
 				//return;
 			}
 
@@ -5958,12 +5980,15 @@ public class DrawFBP extends JFrame
 					enc.cy = ya - enc.height / 2;
 					
 				}
-				enc.buildSides();				
-				enc.adjEdgeRects();
+				//enc.buildSides();				
+				//enc.adjEdgeRects();
 				enc.calcEdges();
-				curDiag.changed = true;
-				repaint();
-				return;
+				if (enc.corner != Corner.NONE) {   
+					curDiag.changed = true;
+					//enc.corner = Corner.NONE;
+					repaint();
+					return;
+				}
 				
 				}
 				
@@ -6146,7 +6171,9 @@ public class DrawFBP extends JFrame
 			// xa = curx; // used for bend dragging
 			// ya = cury;
 			// }
-
+			
+			
+			
 			if (e.getClickCount() == 2 || !leftButton) {
 				// enclSelForDragging = null;
 				// arrowEndForDragging = null;
@@ -6238,20 +6265,25 @@ public class DrawFBP extends JFrame
 				Arrow arr = arrowEndForDragging;
 
 				for (Block block : curDiag.blocks.values()) {
-					if (arr.tailMarked) {
+					if (arr.tailMark != null) {
 						arr.fromId = -1;
-						if (null != touches(block, arr.fromX, arr.fromY)) {
+						if (null != touches(block, arr.tailMark.x, arr.tailMark.y)) {
 							arr.fromId = block.id;
+							foundBlock = block;
+							currentArrow = null;
+							arr.tailMark = null;
 							break;
 						}
 					}
 					
-					if (arr.headMarked) {
+					if (arr.headMark != null) {
 						arr.toId = -1;
-						if (null != touches(block, arr.toX, arr.toY)) {
+						if (null != touches(block, arr.headMark.x, arr.headMark.y)) {
 							arr.toId = block.id;
+							foundBlock = block;
 							arr.endsAtBlock = true;
 							arr.endsAtLine = false;
+							arr.headMark = null;
 
 							//currentArrow.toId = block.id;
 							currentArrow = null;
@@ -6262,6 +6294,9 @@ public class DrawFBP extends JFrame
 						} 
 					}
 				}
+				if (foundBlock != null)
+					return;
+				
 				FoundPointA fpA;
 				if (null != (fpA = findArrow(arr.toX, arr.toY))) {
 						arr.toId = fpA.arrow.id;
@@ -6275,11 +6310,12 @@ public class DrawFBP extends JFrame
 						//arr.toY = arr.toY;
 						//break;
 					}
+				
 				if (edgePoint != null)
 					arr.toId = edgePoint.block.id;
 
-				arr.tailMarked = false;
-				arr.headMarked = false;
+				arr.tailMark = null;
+				arr.headMark = null;
 				edgePoint = null;
 
 				arrowEndForDragging = null;
@@ -6351,7 +6387,7 @@ public class DrawFBP extends JFrame
 			}
 			if (blockSelForDragging != null
 					&& blockSelForDragging instanceof Enclosure) {
-				((Enclosure) blockSelForDragging).corner = null;
+				((Enclosure) blockSelForDragging).corner = Corner.NONE;
 				blockSelForDragging = null;
 				curDiag.changed = true;
 				setCursor(defaultCursor);

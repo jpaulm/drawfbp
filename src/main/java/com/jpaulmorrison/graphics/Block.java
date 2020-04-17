@@ -796,6 +796,8 @@ public class Block implements ActionListener {
 
 
 	void showDetectionAreas(Graphics g) {
+		if (this instanceof Enclosure)
+			return;
 		
 		if (driver.edgePoint != null) 
 			if (driver.edgePoint.block == this)							
@@ -1041,20 +1043,7 @@ public class Block implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = ROWSIZE;
-		/*
-		if (desc == null)
-			desc = " ";
-		String desc2 = desc.replace('\n',  ' '); 
-		JTextField tfd = new JTextField(" " + desc2 + " ");
-		Font ft = tfd.getFont();
-		ft = ft.deriveFont(Font.BOLD);
-		tfd.setFont(ft);
-		tfd.setForeground(Color.BLUE);
-		tfd.setEditable(false);
-		gbl.setConstraints(tfd, gbc);
-		//tfd.setBackground(lg);
-		panel.add(tfd);
-		*/
+		
 		
 		int i = fullClassName.indexOf("!");
 		String s1 = fullClassName.substring(0, i); 
@@ -1082,6 +1071,7 @@ public class Block implements ActionListener {
 		if (compDescr == null || compDescr.equals("")) {
 			compDescr = "(no description)";
 		}
+		
 		JTextField tf2 = new JTextField(compDescr);
 		tf2.setEditable(false);
 		gbl.setConstraints(tf2, gbc);
@@ -1103,7 +1093,7 @@ public class Block implements ActionListener {
 		displayRow(gbc, gbl, tft, panel, Color.BLUE);
 	
 		for (AInPort ip : inputPortAttrs.values()) {
-			JTextField[] tfi = new JTextField[ROWSIZE];
+			JTextField[] tfi = new JTextField[ROWSIZE];  //array of text fields
 			tfi[0] = new JTextField(ip.value);
 			String s = "input";
 			if (ip.arrayPort)
@@ -1127,6 +1117,8 @@ public class Block implements ActionListener {
 			gbc.weightx = 0.5;
 			displayRow(gbc, gbl, tfi, panel, Color.BLACK);
 		}
+		
+		
 	
 		for (AOutPort op : outputPortAttrs.values()) {
 			JTextField[] tfo = new JTextField[ROWSIZE];
@@ -1152,6 +1144,8 @@ public class Block implements ActionListener {
 			displayRow(gbc, gbl, tfo, panel, Color.BLACK);
 		}
 	
+		
+		
 		LinkedList<String> lst = checkUnmatchedPorts();
 		for (String ls : lst) {
 			JTextField[] tfu = new JTextField[ROWSIZE];
@@ -1266,19 +1260,22 @@ public class Block implements ActionListener {
 	LinkedList<String> checkUnmatchedPorts() {
 		LinkedList<String> lst = new LinkedList<String>();
 		for (Arrow arrow : diag.arrows.values()) {
-			if (arrow.endsAtLine)
-				continue;
+
 			boolean found = false;
 			if (arrow.downStreamPort != null
-					&& !arrow.downStreamPort.equals("*") && id == arrow.toId) {
-				for (AInPort ip : inputPortAttrs.values()) {
-					if (ip.value.equals(stem(arrow.downStreamPort))) {
-						found = true;
-						break;
+					&& !arrow.downStreamPort.equals("*")) {
+				if (!arrow.endsAtLine) {
+					if (id == arrow.toId) {
+						for (AInPort ip : inputPortAttrs.values()) {
+							if (ip.value.equals(stem(arrow.downStreamPort))) {
+								found = true;
+								break;
+							}
+						}
+						if (!found)
+							lst.add("I" + arrow.downStreamPort);
 					}
 				}
-				if (!found)
-					lst.add("I" + arrow.downStreamPort);
 			}
 
 			if (arrow.upStreamPort != null && !arrow.upStreamPort.equals("*")
@@ -1292,6 +1289,7 @@ public class Block implements ActionListener {
 				if (!found)
 					lst.add("O" + arrow.upStreamPort);
 			}
+
 		}
 		return lst;
 	}

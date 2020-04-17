@@ -125,7 +125,7 @@ public class MyFileChooser extends JDialog
 	DeleteAction deleteAction;
 	EnterAction enterAction;
 	FindAction findAction;
-	CopyAction copyAction;
+	SuggAction suggAction;
 
 	ParentAction parentAction;
 	NewFolderAction newFolderAction;
@@ -170,7 +170,8 @@ public class MyFileChooser extends JDialog
 			}
 		});
 		
-		selComp = null;
+		//selComp = null;
+		selComp = t_fileName;    //experimental
 
 		DrawFBP.applyOrientation(dialog);
 
@@ -244,7 +245,7 @@ public class MyFileChooser extends JDialog
 		}
 
 		enterAction = new EnterAction();
-		copyAction = new CopyAction();
+		suggAction = new SuggAction();
 		cancelAction = new CancelAction();
 		deleteAction = new DeleteAction();
 		findAction = new FindAction();
@@ -271,7 +272,7 @@ public class MyFileChooser extends JDialog
 		// butOK.setAction(okAction);
 		butOK.setAction(enterAction);
 		butFind.setAction(findAction);
-		butUseSugg.setAction(copyAction);
+		butUseSugg.setAction(suggAction);
 		butCancel.setAction(cancelAction);
 		butDel.setAction(deleteAction);
 
@@ -510,9 +511,11 @@ public class MyFileChooser extends JDialog
 		mtp = new MyTraversalPolicy();
 		setFocusTraversalPolicy(mtp);
 		setFocusCycleRoot(false);
+		
+		selComp = t_fileName;    // experimental
 
 		if (saveAs) {
-
+			
 			if (suggestedName != null && !(suggestedName.equals(""))) {
 				// check if valid file name 
 				File h = new File(suggestedName);
@@ -1230,7 +1233,8 @@ final boolean SAVEAS = true;
 			//}
 			if (!inJarTree) {
 				jp.add(date, BorderLayout.WEST);
-				jp.add(Box.createRigidArea(new Dimension(20, 0)));
+				jp.add(Box.createHorizontalStrut(20));
+				//jp.add(Box.createRigidArea(new Dimension(20, 0)));
 				jp.add(name, BorderLayout.EAST);
 			}
 			else
@@ -1982,7 +1986,7 @@ final boolean SAVEAS = true;
 
 	}
 
-	class CopyAction extends AbstractAction {
+	class SuggAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
@@ -1992,7 +1996,7 @@ final boolean SAVEAS = true;
 			t_fileName.setText(t_suggName.getText());
 			// text3.setText(s);
 			t_fileName.requestFocusInWindow();
-			selComp.setBackground(Color.WHITE);
+			selComp.setBackground(Color.WHITE);   // selcomp nullxxxxxxxxxxxxxxxx
 			selComp = t_fileName;
 			// text2.setBackground(vLightBlue);
 			panel.validate();
@@ -2520,7 +2524,7 @@ public void oneClick() {
 		else
 			t_fileName.setText(t + "/");
 
-		selComp.setVisible(true);;
+		selComp.setVisible(true);   // selcomp nullxxxxxxxxxxxxxxx
 		selComp.validate();
 
 		repaint();
