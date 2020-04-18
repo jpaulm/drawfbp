@@ -14,7 +14,9 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 Release History
 ---
 
-Latest release is `v2.20.0`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.20.0.jar` - can be obtained from the Releases folder, or from `build/libs`.  This release has been published to Maven, but there is always a slight lag, so for a while Maven may still be downloading v2.19.5.  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. 
+Latest release is `v2.20.1`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.20.1.jar` - can be obtained from the Releases folder, or from `build/libs`.  
+
+The previous release - v2.20.0 - has a bug in the Arrow/Drag Head function - this is fixed in v2.20.1.  <!--This release has been published to Maven, but there is always a slight lag, so for a while Maven may still be downloading v2.19.5.  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. --> 
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
