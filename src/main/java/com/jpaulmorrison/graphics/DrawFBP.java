@@ -6270,8 +6270,8 @@ public class DrawFBP extends JFrame
 						if (null != touches(block, arr.tailMark.x, arr.tailMark.y)) {
 							arr.fromId = block.id;
 							foundBlock = block;
-							currentArrow = null;
-							arr.tailMark = null;
+							//currentArrow = null;
+							//arr.tailMark = null;
 							break;
 						}
 					}
@@ -6283,10 +6283,10 @@ public class DrawFBP extends JFrame
 							foundBlock = block;
 							arr.endsAtBlock = true;
 							arr.endsAtLine = false;
-							arr.headMark = null;
+							//arr.headMark = null;
 
 							//currentArrow.toId = block.id;
-							currentArrow = null;
+							//currentArrow = null;
 
 							//arr.toX = arr.toX;
 							//arr.toY = arr.toY;
@@ -6294,34 +6294,49 @@ public class DrawFBP extends JFrame
 						} 
 					}
 				}
-				if (foundBlock != null)
-					return;
+				//if (foundBlock != null) {
+				//	arr.tailMark = null;
+				//	arr.headMark = null;
+					//edgePoint = null;
+
+					//arrowEndForDragging = null;
+					//curDiag.changed = true;
+					//repaint();
+					//return;
+				//}
 				
-				FoundPointA fpA;
-				if (null != (fpA = findArrow(arr.toX, arr.toY))) {
+				// if headmarked and no block found, try to detect an arrow...
+				
+				if (arr.headMark != null && foundBlock == null) {
+					FoundPointA fpA;
+					if (null != (fpA = findArrow(arr.toX, arr.toY))) {
 						arr.toId = fpA.arrow.id;
 						arr.endsAtBlock = false;
 						arr.endsAtLine = true;
 
-						currentArrow = null;
-						//currentArrow.toId = arr.id;  
+						//currentArrow = null;
+						// currentArrow.toId = arr.id;
 
-						//arr.toX = arr.toX;
-						//arr.toY = arr.toY;
-						//break;
+						// arr.toX = arr.toX;
+						// arr.toY = arr.toY;
+						// break;
 					}
-				
+				}
 				if (edgePoint != null)
 					arr.toId = edgePoint.block.id;
 
-				arr.tailMark = null;
-				arr.headMark = null;
-				edgePoint = null;
+				
 
 				arrowEndForDragging = null;
 				curDiag.changed = true;
 				repaint();
-				//return;
+				if (arr.headMark != null || arr.tailMark != null) {
+					arr.tailMark = null;
+					arr.headMark = null;
+					currentArrow = null;
+					edgePoint = null;
+					return;
+				}
 			}
 
 			if (bendForDragging != null) {
@@ -6384,9 +6399,9 @@ public class DrawFBP extends JFrame
 				setCursor(defaultCursor);
 				repaint();
 				return;
-			}
-			if (blockSelForDragging != null
-					&& blockSelForDragging instanceof Enclosure) {
+			} 
+			
+			if (blockSelForDragging != null && blockSelForDragging instanceof Enclosure) {
 				((Enclosure) blockSelForDragging).corner = Corner.NONE;
 				blockSelForDragging = null;
 				curDiag.changed = true;
@@ -6394,6 +6409,8 @@ public class DrawFBP extends JFrame
 				repaint();
 				return;
 			}
+		 
+		
 			foundBlock = null;
 			if (currentArrow == null) {
 
@@ -6410,12 +6427,12 @@ public class DrawFBP extends JFrame
 
 				selArrow = currentArrow;
 
-				if (currentArrow != null) {
+				if (currentArrow != null) {                    
 					// Arrow arr = foundArrow;
 					// arr.fromId = curDiag.foundBlock.id;
 					if (currentArrow.endsAtLine || currentArrow.endsAtBlock) {
 						curDiag = currentArrow.diag;
-						currentArrow.buildArrowPopupMenu();
+						currentArrow.buildArrowPopupMenu();           
 
 						// currentArrow.lastX = xa;
 						// currentArrow.lastY = ya;

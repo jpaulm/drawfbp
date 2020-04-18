@@ -800,7 +800,10 @@ public class Block implements ActionListener {
 			return;
 		
 		if (driver.edgePoint != null) 
-			if (driver.edgePoint.block == this)							
+			if (driver.edgePoint.block == this)		
+				showArrowEndAreas(g);
+		
+		if (driver.selBlockM == this)
 				showArrowEndAreas(g);
 		
 		//if (driver.fpArrowRoot != null && driver.fpArrowRoot.block == this) 

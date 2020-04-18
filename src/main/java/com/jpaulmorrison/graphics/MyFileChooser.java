@@ -1996,7 +1996,7 @@ final boolean SAVEAS = true;
 			t_fileName.setText(t_suggName.getText());
 			// text3.setText(s);
 			t_fileName.requestFocusInWindow();
-			selComp.setBackground(Color.WHITE);   // selcomp nullxxxxxxxxxxxxxxxx
+			selComp.setBackground(Color.WHITE);   
 			selComp = t_fileName;
 			// text2.setBackground(vLightBlue);
 			panel.validate();
@@ -2524,7 +2524,7 @@ public void oneClick() {
 		else
 			t_fileName.setText(t + "/");
 
-		selComp.setVisible(true);   // selcomp nullxxxxxxxxxxxxxxx
+		selComp.setVisible(true);   
 		selComp.validate();
 
 		repaint();
