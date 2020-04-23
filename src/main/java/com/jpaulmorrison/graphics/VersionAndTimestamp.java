@@ -8,10 +8,10 @@ public final class VersionAndTimestamp {
 
 
 
-	static String version = "2.20.1";
+	static String version = "2.20.2";
 
 
-	static String date = "Apr. 18, 2020"; 
+	static String date = "Apr. 23, 2020"; 
 
 
 

@@ -18,10 +18,14 @@ import java.awt.GridBagLayout;
 
 import java.awt.Image; 
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
+//import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.*;
+//import java.awt.geom.GeneralPath;
 
 //import java.awt.geom.RoundRectangle2D;
 
@@ -30,6 +34,7 @@ import math.geom2d.line.DegeneratedLine2DException;
 import math.geom2d.line.Line2D;
 import math.geom2d.Point2D;
 import math.geom2d.line.StraightLine2D;
+//import java.awt.geom.AffineTransform;
 
 import java.awt.image.*;
 
@@ -289,7 +294,16 @@ public class DrawFBP extends JFrame
 	
 	String[] pBCmdArray = null;
 	String pBDir = null;
+	
+	Point headMark;  // used for arrows
+	Point tailMark;
 
+	int moveX;
+	int moveY;
+	
+	Arrow detArr = null;
+	int detArrSegNo;
+	
 	// constructor
 	DrawFBP(String[] args) {
 		
@@ -4370,12 +4384,34 @@ public class DrawFBP extends JFrame
 	}
 
 	/**
-	 * Test if point (xp, yp) is "near" line defined by (x1, y1) and (x2, y2)
+	 * Test if point (xp, yp) is "near" line defined by arrow and segment no.
 	 */
-	static boolean nearpln(int xp, int yp, int x1, int y1, int x2, int y2) {
+	
+	boolean nearpln(int xp, int yp, Arrow arr, int segNo) {
 
-		if (x1 == x2 && y1 == y2)  // fudge to get around odd bug when creating bends 
-			return false;
+				
+		int x1 = arr.fromX;  
+		int y1 = arr.fromY;
+		int x2 = 0;
+		int y2 = 0;
+		int seg = 0;
+		if (arr.bends != null) { 
+			for (Bend bend: arr.bends) {
+				x2 = bend.x;
+				y2 = bend.y;
+				if (seg == segNo)
+					break;				
+				x1 = x2;
+				y1 = y2;
+				
+				seg ++;
+			}	
+		}
+		if (arr.bends == null || seg == arr.bends.size()) {
+			x2 = arr.toX;
+			y2 = arr.toY;	
+		}
+		
 		Line2D line = new Line2D(x1, y1, x2, y2);
 		Point2D p = new Point2D(xp, yp);
 		double d = 0.0;
@@ -4384,7 +4420,21 @@ public class DrawFBP extends JFrame
 		} catch (DegeneratedLine2DException e) {
 
 		}
-		return d < 4.0;
+		boolean res = false;
+		
+		if (d < 40.0) {
+			detArr = arr;
+			detArrSegNo = segNo;
+
+			if (arr.shapeList == null || arr.shapeList.size() == 0)
+				return false;
+
+			Shape sh = arr.shapeList.get(segNo);
+
+			res = sh.contains(xp, yp);
+		}
+		
+		return res;
 	}
 
 	
@@ -4589,6 +4639,13 @@ public class DrawFBP extends JFrame
 		Color col = g.getColor();
 		g.setColor(Color.BLACK);
 		g.drawRect(x - squSize / 2, y - squSize / 2, squSize, squSize);		
+		g.setColor(col);
+	}
+	
+	public void drawRedCircle(Graphics g, int x, int y) {		 
+		Color col = g.getColor();
+		g.setColor(Color.RED);
+		g.drawOval(x - 5, y - 5, 10,  10);
 		g.setColor(col);
 	}
 
@@ -5249,7 +5306,7 @@ public class DrawFBP extends JFrame
 					block.draw(osg);
 			}
 
-			driver.blueCircs(osg);
+			
 			
 			//if (diag.diagFile != null)
 			//	System.out.println(diag.diagFile.getAbsolutePath() + " " + diag.arrows.size());
@@ -5259,6 +5316,14 @@ public class DrawFBP extends JFrame
 				arrow.draw(osg);
 				//System.out.println("arrow-draw");
 			}
+
+			if (driver.tailMark != null)  				
+				drawRedCircle(osg, driver.tailMark.x, driver.tailMark.y);		
+			
+			if (driver.headMark != null)  				
+				drawRedCircle(osg, driver.headMark.x, driver.headMark.y);	
+			
+			driver.blueCircs(osg);
 
 			String s = diag.desc;
 			if (s != null) {
@@ -5333,6 +5398,7 @@ public class DrawFBP extends JFrame
 			return fpB;
 		}
 
+		@SuppressWarnings("unused")
 		// see if x and y are "close" to any arrow - if so, return it, else null
 		FoundPointA findArrow(int x, int y) {
 
@@ -5342,29 +5408,31 @@ public class DrawFBP extends JFrame
 				if (arrow.toId == -1)
 					continue;
 
-				int x1 = arrow.fromX;
-				int y1 = arrow.fromY;
+				//int x1 = arrow.fromX;
+				//int y1 = arrow.fromY;
 				int segNo = 0;
-				int x2, y2;
+				//int x2, y2;
 
 				if (arrow.bends != null) {
 					for (Bend bend : arrow.bends) {
-						x2 = bend.x;
-						y2 = bend.y;
-						if (nearpln(x, y, x1, y1, x2, y2)) {
+						//x2 = bend.x;
+						//y2 = bend.y;
+						
+						if (nearpln(x, y, arrow, segNo)) {
 							fpA = new FoundPointA(x, y, arrow, segNo);
 							return fpA;
 						}
 
-						x1 = x2;
-						y1 = y2;
+						//x1 = x2;
+						//y1 = y2;
 						segNo++;
 					}
 				}
 
-				x2 = arrow.toX;
-				y2 = arrow.toY;
-				if (nearpln(x, y, x1, y1, x2, y2)) {
+				//x2 = arrow.toX;
+				//y2 = arrow.toY;
+				
+				if (nearpln(x, y, arrow, segNo)) {	
 					fpA = new FoundPointA(x, y, arrow, segNo);
 					return fpA;
 				}
@@ -5423,6 +5491,9 @@ public class DrawFBP extends JFrame
 				adjustArrowsEndingAtLine(arr); // call recursively
 			}
 		}
+		
+		
+		 
 
 		public void mouseMoved(MouseEvent e) {
 			int i = jtp.getSelectedIndex();
@@ -5434,6 +5505,9 @@ public class DrawFBP extends JFrame
 			fpArrowEndB = null;
 			edgePoint = null;
 			
+			//detArr = null;
+			//detArrSegNo = -1;
+								
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
@@ -5459,6 +5533,10 @@ public class DrawFBP extends JFrame
 			p = gridAlign(p);
 			xa = (int) p.x();
 			ya = (int) p.y();
+			
+			moveX = xa;
+			moveY = ya;
+			
 			//System.out.println("M: " + xa + "," + ya);
 			if (enclSelForArrow != null) {
 				enclSelForArrow.corner = Corner.NONE;
@@ -5570,31 +5648,11 @@ public class DrawFBP extends JFrame
 					xa = edgePoint.x;
 					ya = edgePoint.y;
 				}
+				
 			}
-			/*
-			if (fpB != null) {
-				if (currentArrow == null)
-					fpArrowRoot = fpB;
-				else  
-					//if 	(Math.abs(currentArrow.fromX - xa) > zWS &&  // pick arbitrary figure!
-					//		Math.abs(currentArrow.fromY - ya) > zWS)  
-
-					fpArrowEndB = fpB;				
-			}
-			else {
-				fpArrowEndA = findArrow(xa, ya);
-				if (currentArrow != null)
-					currentArrow.toId = -1;
-			}
-*/
-			//if (fpB != null &&
-			//	currentArrow == null)
-			//		fpArrowRoot = fpB;
-			//else {
-				//fpArrowEndA = findArrow(xa, ya);
-				//if (currentArrow != null)
-				//	currentArrow.toId = -1;
-			//}
+			
+			
+			detectArrow(xa, ya);
 				
 			repaint();
 		}
@@ -5749,34 +5807,18 @@ public class DrawFBP extends JFrame
 
 				/* check for possible starts of arrows */
 
+				if (headMark != null || tailMark != null) {
+					repaint();
+					return;
+				}
 				edgePoint = findBlockEdge(xa, ya, "P");  
 				if (edgePoint != null)  {
 					xa = edgePoint.x;
 					ya = edgePoint.y;
 					//fpArrowRoot = edgePoint;
 					repaint();
-				}
-		/*		
-				side = touches(block, xa, ya);
-				if (side != null) {
-					foundBlock = block;
-					
-					if (side == Side.LEFT)
-						xa = block.leftEdge;
-					else if (side == Side.RIGHT)
-						xa = block.rgtEdge;
-					else if (side == Side.TOP)
-						ya = block.topEdge;
-					else if (side == Side.BOTTOM)
-						ya = block.botEdge;
-					edgePoint = new FoundPointB(xa, ya, side, block);
-					fpArrowRoot = edgePoint;
-					//fpArrowRoot = new FoundPointB(xa, ya, side, block);
-					
-					repaint();
-					break;
-				}
-*/
+				}				 
+		
 			}
 
 			if (blockSelForDragging != null
@@ -5828,7 +5870,7 @@ public class DrawFBP extends JFrame
 			 
 			   else {
 				Arrow arrow = currentArrow;
-				if (arrow.tailMark != null || arrow.headMark != null) {
+				if (tailMark != null || headMark != null) {
 					arrowEndForDragging = arrow;
 				}
 			}
@@ -5913,22 +5955,22 @@ public class DrawFBP extends JFrame
 
 			if (arrowEndForDragging != null) {
 				Arrow arr = arrowEndForDragging;
-				if (arr.tailMark != null) {
+				if (tailMark != null) {
 					arr.fromId = -1;
 					arr.fromX = xa;
 					arr.fromY = ya;
-					arr.tailMark.x = xa;
-					arr.tailMark.y = ya;
+					tailMark.x = xa;    
+					tailMark.y = ya;
 					curDiag.changed = true;
 					repaint();
 					return;
 					
-				} else if (arr.headMark != null){
+				} else if (headMark != null){
 					arr.toId = -1;
 					arr.toX = xa;
 					arr.toY = ya;
-					arr.headMark.x = xa;
-					arr.headMark.y = ya;
+					headMark.x = xa;
+					headMark.y = ya;
 					curDiag.changed = true;
 					repaint();
 					return;
@@ -6102,23 +6144,13 @@ public class DrawFBP extends JFrame
 					ya = edgePoint.y;
 					repaint();
 				}
-				/*
-				if (edgePoint != null) {
-					foundBlock = edgePoint.block;
-					// side = fp.side;
-					fpArrowEndB = fpB;
-					currentArrow.endsAtBlock = true;
-
-					//currentArrow.toId = foundBlock.id;
-
-				} 
-				else  
-					fpArrowEndA = findArrow(xa, ya);
-				*/
+				
 				
 				}
 				 
 			}
+			detectArrow(xa, ya);
+			
 			repaint();
 		}
 
@@ -6129,6 +6161,8 @@ public class DrawFBP extends JFrame
 			edgePoint = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
+			detArr = null;
+			detArrSegNo = 0;
 
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
@@ -6264,10 +6298,12 @@ public class DrawFBP extends JFrame
 				// curDiag.changed = true;
 				Arrow arr = arrowEndForDragging;
 
+				// try to anchor arrow tail or head!
+				
 				for (Block block : curDiag.blocks.values()) {
-					if (arr.tailMark != null) {
+					if (tailMark != null) {
 						arr.fromId = -1;
-						if (null != touches(block, arr.tailMark.x, arr.tailMark.y)) {
+						if (null != touches(block, tailMark.x, tailMark.y)) {
 							arr.fromId = block.id;
 							foundBlock = block;
 							//currentArrow = null;
@@ -6276,9 +6312,9 @@ public class DrawFBP extends JFrame
 						}
 					}
 					
-					if (arr.headMark != null) {
+					if (headMark != null) {
 						arr.toId = -1;
-						if (null != touches(block, arr.headMark.x, arr.headMark.y)) {
+						if (null != touches(block, headMark.x, headMark.y)) {
 							arr.toId = block.id;
 							foundBlock = block;
 							arr.endsAtBlock = true;
@@ -6307,7 +6343,7 @@ public class DrawFBP extends JFrame
 				
 				// if headmarked and no block found, try to detect an arrow...
 				
-				if (arr.headMark != null && foundBlock == null) {
+				if (headMark != null && foundBlock == null) {
 					FoundPointA fpA;
 					if (null != (fpA = findArrow(arr.toX, arr.toY))) {
 						arr.toId = fpA.arrow.id;
@@ -6329,14 +6365,16 @@ public class DrawFBP extends JFrame
 
 				arrowEndForDragging = null;
 				curDiag.changed = true;
-				repaint();
-				if (arr.headMark != null || arr.tailMark != null) {
-					arr.tailMark = null;
-					arr.headMark = null;
+				 
+				if (headMark != null || tailMark != null) {
+					tailMark = null;
+					headMark = null;
 					currentArrow = null;
 					edgePoint = null;
+					repaint();
 					return;
 				}
+				repaint();
 			}
 
 			if (bendForDragging != null) {
@@ -6501,6 +6539,7 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
+			// This code actually builds new arrow -
 			// curDiag.currentArrow is not null....
 
 			// check for end of arrow
@@ -6510,7 +6549,15 @@ public class DrawFBP extends JFrame
 			//if (Math.abs(currentArrow.fromX - xa) > 10 ||
 			//		Math.abs(currentArrow.fromY - ya) > 10)	
 			//    fpB = findBlockEdge(xa, ya);
-			
+			if (headMark != null || tailMark != null) {
+				tailMark = null;
+				headMark = null;
+				currentArrow = null;
+				edgePoint = null;
+				repaint();
+				return;
+				
+			}
 			edgePoint = findBlockEdge(xa, ya, "R");
 			foundBlock = null;
 			
@@ -6522,7 +6569,7 @@ public class DrawFBP extends JFrame
 
 			if (foundBlock != null // && leftButton
 			) {
-				//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
+				
 				if (between(currentArrow.fromX, x - zWS / 2,
 						x + zWS / 2)
 						&& between(currentArrow.fromY, y - zWS / 2,
@@ -6607,8 +6654,8 @@ public class DrawFBP extends JFrame
 				a.toX = xa;
 				a.toY = ya;
 
-				// a.toSide = side;
-
+				
+				
 				defaultPortNames(a);
 
 				from = curDiag.blocks.get(new Integer(a.fromId));
@@ -6660,8 +6707,10 @@ public class DrawFBP extends JFrame
 				repaint();
 				return;
 			}
+			
 			// currentDiag.foundBlock must be null
 			// see if we can end an arrow on a line or line segment
+			
 			if (currentArrow != null && foundBlock == null) {
 
 				Arrow foundArrow = null;
@@ -6759,9 +6808,9 @@ public class DrawFBP extends JFrame
 
 				
 
-				if (currentArrow != null) {
-					//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
-					if (!(between(xa, currentArrow.toX - zWS / 2,
+				//if (currentArrow != null) {
+					
+					if (!(between(xa, currentArrow.toX - zWS / 2,   // what is this?!
 							currentArrow.toX + zWS / 2)
 							&& between(ya, currentArrow.toY - zWS / 2,
 									currentArrow.toY + zWS / 2))) {
@@ -6777,7 +6826,7 @@ public class DrawFBP extends JFrame
 						return;
 					}
 					// repaint();
-				}
+				//}
 
 				if (currentArrow.bends == null) {
 					currentArrow.bends = new LinkedList<Bend>();
@@ -6796,9 +6845,9 @@ public class DrawFBP extends JFrame
 					if (Math.abs(s) > FORCE_VERTICAL) // force vertical
 						xa = currentArrow.lastX;
 				}
-				//Bend bend = new Bend(xa, ya);
-				//currentArrow.bends.add(bend);  // was resulting in duplicate bend objects
+				
 				currentArrow.createBend(xa, ya);  
+			
 				currentArrow.lastX = x;
 				currentArrow.lastY = y;
 				currentArrow.toX = x;
@@ -6815,6 +6864,26 @@ public class DrawFBP extends JFrame
 		
 		public void mouseClicked(MouseEvent arg0) {
 			
+		}
+		
+		@SuppressWarnings("unused")
+		void detectArrow(int x, int y) {
+			
+			// following loop is just to colour arrows - x and y are the position of the cursor
+			
+						for (Arrow arr : curDiag.arrows.values()) {
+							int seg = 0;
+							if (arr.bends != null){
+								for (Bend bend: arr.bends) {
+									if (nearpln(x, y, arr, seg))
+										break;
+									seg ++;
+								}					
+							}	
+							
+							if (nearpln(x, y, arr, seg))
+									break;				
+						}
 		}
 
 	}

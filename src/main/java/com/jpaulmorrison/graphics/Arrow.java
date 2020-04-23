@@ -4,16 +4,17 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
+
 import java.awt.geom.PathIterator;
 
 import math.geom2d.*;
-// import math.geom2d.line.Line2D;
 
 import java.util.*;
 
@@ -41,8 +42,8 @@ public class Arrow implements ActionListener {
 	static Color FOREST_GREEN = new Color(34, 139, 34);
 	static Color ORANGE_RED = new Color(255, 69, 0);
 	//boolean headMarked, tailMarked;
-	Point headMark;
-	Point tailMark;
+	//Point headMark;
+	//Point tailMark;
 	boolean dropOldest;
 	int capacity;
 	int endX2, endY2;
@@ -51,6 +52,7 @@ public class Arrow implements ActionListener {
 	//String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
 	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
+	LinkedList<Shape> shapeList = null;
 	
 	//Arrowhead tipArrowhead = null;    
 	Arrowhead extraArrowhead = null;
@@ -64,7 +66,9 @@ public class Arrow implements ActionListener {
 	Diagram diag;
 	
 	String compareFlag = null;
-
+	
+	//EPoly poly = null;
+	
 	Arrow(Diagram d) {
 		super();
 		endsAtBlock = false;
@@ -78,11 +82,17 @@ public class Arrow implements ActionListener {
 		driver = d.driver;		
 		capacity = -1;
 		endX2 = endY2 = -1;
+		  
 		
 	}
 
 	void draw(Graphics g) {
+		//driver.validate();
+		//driver.repaint();
 
+			
+		shapeList = new LinkedList<Shape>(); 
+		
 		//int endX, endY;
 		Block from = null;
 		Block to = null;
@@ -101,10 +111,7 @@ public class Arrow implements ActionListener {
 		
 
 		Stroke stroke = ((Graphics2D)g).getStroke();
-		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);
-
-		
-		
+		ZigzagStroke zzstroke = new ZigzagStroke(stroke, 2, 4);		
 		
 		showCompareFlag(g);
 
@@ -135,14 +142,18 @@ public class Arrow implements ActionListener {
 		fx = fromX;
 		fy = fromY;
 		 
+		int segno = 0;
+		
 		if (bends != null) {
-			//System.out.println(driver.curDiag.diagFile.getAbsolutePath() + ": Bends found");
+			
 			boolean capDrawn = false;
-			int segno = 0;
+			
 			for (Bend bend : bends) {
 				//System.out.println("bend");
 				tx = bend.x;
 				ty = bend.y;
+				buildFatLine(fx, fy, tx, ty, segno, g);
+				
 				if (!dropOldest)
 					g.drawLine(fx, fy, tx, ty);
 				else {
@@ -162,16 +173,18 @@ public class Arrow implements ActionListener {
 				}	
 
 				if (bend.marked) {
-					Color col = g.getColor();
-					g.setColor(Color.RED);
-					g.drawOval(tx - 5, ty - 5, 10, 10);
-					g.setColor(col);
+					driver.drawRedCircle(g, tx, ty);					
 				}
 				calcLimits(fx, tx, fy, ty);
 				fx = tx;
 				fy = ty;
+				
+				
+				
 				segno++;
 			}
+			//tx = toX;
+			//ty = toY;
 		} else  
 			if (capacity > 0) {
 				
@@ -179,7 +192,7 @@ public class Arrow implements ActionListener {
 				int y = (fy + toY) / 2;
 				String s = "(" + capacity + ")";
 				x -= s.length() * driver.gFontWidth / 2;
-				g.drawString(s, x, y + 12);
+				g.drawString(s, x, y + 12);  // add "capacity" string to display
 				calcLimits(x,  x + s.length() * driver.gFontWidth, y + 12, y + 12 + driver.gFontHeight);
 				
 			}
@@ -198,14 +211,12 @@ public class Arrow implements ActionListener {
 			x -= i;
 		}
 		
-		if (headMark != null) {
-			Color col = g.getColor();
-			g.setColor(Color.RED);
-			g.drawOval(headMark.x - 5, headMark.y - 5, 10, 10);
-			g.setColor(col);
-		}
-
+		
+		
 		if (tx > -1 && ty > -1) {
+			buildFatLine(fx, fy, tx, ty, segno, g);
+			
+			
 			if (!dropOldest)
 				g.drawLine(fx, fy, tx, ty);
 			else {
@@ -214,16 +225,12 @@ public class Arrow implements ActionListener {
 				((Graphics2D) g).draw(shape);
 				// g.setStroke(stroke);
 			}
+			
+			
 			//System.out.println("arrow: " + fx + " " + fy + " " + tx + " " + ty);
 		}
 		
-		if (tailMark != null) {
-			Color col = g.getColor();
-			g.setColor(Color.RED);
-			g.drawOval(tailMark.x - 5, tailMark.y - 5, 10, 10);
-			g.setColor(col);
-		}
-		
+				
 		calcLimits(fx, x, fy, toY);
 
 		if (toId == -1) {
@@ -232,15 +239,7 @@ public class Arrow implements ActionListener {
 			   return;
 		}
 		
-		//if (!endsAtBlock && !endsAtLine && driver.fpArrowEndA == null && driver.fpArrowEndB == null) {		
-			//g.drawRect(x - 3, toY - 3, 6, 6);
-		//	driver.drawBlackSquare(g, x, toY);
-		//}
 		
-		//if (driver.fpArrowEndA != null) 
-			//if (driver.currentArrow != null && driver.currentArrow.toId != -1 && !driver.currentArrow.endsAtBlock)
-		//		driver.drawBlueCircle(g, driver.fpArrowEndA.x, driver.fpArrowEndA.y);
-		//driver.blueCircs(g);
 		
 		if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock  /* from instanceof Enclosure */   
@@ -387,6 +386,7 @@ public class Arrow implements ActionListener {
 		g.setColor(col);
 	}
 	
+	
 	void showCompareFlag(Graphics g){
 		if (compareFlag != null && !compareFlag.equals(" ")) {
 			Color col = g.getColor();
@@ -404,7 +404,10 @@ public class Arrow implements ActionListener {
 						fy = bends.get(index - 1).y;
 					}
 				}
+				
 			}
+			tx = toX;
+			ty = toY;
 			int x = (fx + tx) / 2 - 12;
 			int y = (fy + ty) / 2 - 12;
 			g.setColor(Color.BLACK);
@@ -740,7 +743,7 @@ public class Arrow implements ActionListener {
 			
 		}  if (s.equals("Drag Tail")) {
 			//tailMarked = true;
-			tailMark = new Point(fromX, fromY);
+			driver.tailMark = new Point(fromX, fromY);
 			driver.arrowEndForDragging = this;
 			driver.repaint();
 			diag.changed = true;
@@ -748,7 +751,7 @@ public class Arrow implements ActionListener {
 
 		}  if (s.equals("Drag Head")) {
 			//headMarked = true;
-			headMark = new Point(toX, toY);
+			driver.headMark = new Point(toX, toY);
 			driver.arrowEndForDragging = this;
 			driver.repaint();
 			diag.changed = true;
@@ -756,6 +759,7 @@ public class Arrow implements ActionListener {
 
 		}  if (s.equals("Drag New or Existing Bend")) {
 			createBend(driver.curx, driver.cury);
+			//buildFatLine(a.fromX, a.fromY, xa, ya); 
 			diag.changed = true;
 			driver.repaint();			
 			return;
@@ -818,7 +822,7 @@ public class Arrow implements ActionListener {
 
 	void createBend(int bendx, int bendy) {
 				
-		int index = 0;				
+		int segNo = 0;				
 		Bend bn = null;
 		
 		if (!endsAtBlock && !endsAtLine) {
@@ -829,6 +833,7 @@ public class Arrow implements ActionListener {
 		int x1 = fromX;
 		int y1 = fromY;
 		if (bends != null) {
+			
 			for (Bend b : bends) {
 
 				if (sameBend(bendx, bendy, b)) {
@@ -837,26 +842,27 @@ public class Arrow implements ActionListener {
 					driver.bendForDragging = bn;
 					return;
 				}
-				if (DrawFBP.nearpln(bendx, bendy, x1, y1, b.x, b.y)) {
+				
+				if (driver.nearpln(bendx, bendy, this, segNo)) {
 					bn = new Bend(bendx, bendy);
 					if (x1 == b.x) // if line vertical
 						bn.x = x1;
 					if (y1 == b.y) // if line horizontal
 						bn.y = y1;
-					bends.add(index, bn);
+					bends.add(segNo, bn);
 					bn.marked = true;
 					driver.bendForDragging = bn;
 					return;
 				}
 				x1 = b.x;
 				y1 = b.y;
-				index++;
+				segNo++;
 			}
 		}
 		else
 			bends = new LinkedList<Bend>();
-		
-		if (DrawFBP.nearpln(bendx, bendy, x1, y1, toX, toY)) {
+				
+		if (driver.nearpln(bendx, bendy, this, segNo)) {	
 			bn = new Bend(bendx, bendy);
 			if (x1 == toX) // if line vertical
 				bn.x = x1;
@@ -943,7 +949,55 @@ public class Arrow implements ActionListener {
 		
 		}
 	
+	// Build rectangle around arrow segment, and add to Shape array
+	static Color ltBlue = new Color(173, 216, 230); 
 	
+	void buildFatLine(int fx, int fy, int tx, int ty, int segNo, Graphics g) {
+		
+		GeneralPath path = new GeneralPath();
+		double x, y;
+		final int aDW = 12; // arrow Detect Width
+		x = tx - fx;
+		y = ty - fy;
+		double hypoSqu = (double) (x * x) + (double) (y * y);
+		double aLth = Math.sqrt(hypoSqu);
+		path.moveTo(0, -aDW / 2);
+		path.lineTo(0, aDW / 2);
+		path.lineTo(aLth, aDW / 2);
+		path.lineTo(aLth, -aDW / 2);
+		path.closePath();
+		AffineTransform at = AffineTransform.getTranslateInstance(fx, fy);
+		// at.rotate(Math.PI / 4); // 45 degrees
+		at.rotate(tx - fx, ty - fy);
+		//Shape sh = path.createTransformedShape(at);
+		Shape sh = path.createTransformedShape(at);
+
+		shapeList.add(sh);
+		
+		//int xPoints[] = {fx + 6, tx + 6, tx - 6, fx - 6}; 
+		//int yPoints[] = {fy - 6, ty - 6, ty + 6, fy + 6}; 
+		//Polygon poly = new Polygon(xPoints, yPoints, 4);
+		//shapeList.add(poly);
+		/*
+		Line2D line = new Line2D(fx, fy, tx, ty);
+		Point2D p = new Point2D(driver.moveX, driver.moveY);
+		double d = 0.0;
+		try {
+			d = line.distance(p);
+		} catch (DegeneratedLine2DException e) {
+
+		}
+		*/
+									
+		if (this == driver.detArr && segNo == driver.detArrSegNo) {
+			Color col = g.getColor();
+			g.setColor(ltBlue);  
+			((Graphics2D)g).fill(sh);				
+			g.setColor(col);	
+		}
+		 
+	}
+				
 	/* Thanks to Jerry Huxtable 
 	 *   http://www.jhlabs.com/java/java2d/strokes/
 	 */
@@ -1021,12 +1075,14 @@ public class Arrow implements ActionListener {
 	
 class Arrowhead {
 	int fx, fy, toX, toY;	
+	Shape shape;
 		
 	Arrowhead(int fx, int fy, int toX, int toY) {
 		this.fx = fx; 
 		this.fy = fy;
 		this.toX = toX; 
 		this.toY = toY;		
+		
 		}
 	
 	void draw(Graphics g) {
@@ -1034,7 +1090,7 @@ class Arrowhead {
 			// toX/toY is tip of arrow and fx/fy is a point on the line -
 			// fx/fy is used to determine direction & angle
 
-			AffineTransform at = AffineTransform.getTranslateInstance(toX, toY);
+			//AffineTransform at = AffineTransform.getTranslateInstance(toX, toY);
 			int b = 9;
 			double theta = Math.toRadians(20);
 			// The idea of using a GeneralPath is so we can
@@ -1059,6 +1115,7 @@ class Arrowhead {
 			path.lineTo(x2, y2);
 			path.closePath();
 
+			/*
 			// theta is in radians
 			double s, t;
 			s = toY - fy; // calculate slopes.
@@ -1072,13 +1129,20 @@ class Arrowhead {
 				theta = -(Math.PI / 2);
 			else
 				theta = Math.PI / 2;
+			*/
 
-			at.rotate(theta);
-			// at.rotate(theta,toX,toY);
-			Shape shape = at.createTransformedShape(path);
+			AffineTransform at = AffineTransform.getTranslateInstance(toX, toY);
+			if (toX == fx)   // vertical line
+				if (fy > toY)
+					at.quadrantRotate(3);
+				else
+					at.quadrantRotate(1);
+			else		
+				at.rotate(toX - fx, toY - fy);
+			shape = at.createTransformedShape(path);   
 			
 				//if (checkStatus == Status.UNCHECKED)
-					g.setColor(Color.BLACK);
+			g.setColor(Color.BLACK);
 				//else if (checkStatus == Status.COMPATIBLE)
 				//	g.setColor(FOREST_GREEN);
 				//else
@@ -1089,6 +1153,8 @@ class Arrowhead {
 			((Graphics2D)g).draw(shape);
 		}
 	}
-}
+
+	
+	}
  
 
