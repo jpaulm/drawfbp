@@ -18,7 +18,6 @@ import java.awt.GridBagLayout;
 
 import java.awt.Image; 
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -862,7 +861,7 @@ public class DrawFBP extends JFrame
 				"Paw");
 
 		image = loadImage("drag_icon.gif");
-		drag_icon = tk.createCustomCursor(image, new Point(1, 1), "Drag");
+		drag_icon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
 		
 		
         }
@@ -5585,24 +5584,18 @@ public class DrawFBP extends JFrame
 
 				// logic to change cursor to drag_icon
 				int hh = gFontHeight;
-				boolean udi;
+				boolean udi;                                      // Use Drag Icon
 				if (block.type.equals(Block.Types.ENCL_BLOCK)) {
 					udi = between(xa, block.leftEdge + block.width / 5,
 							block.rgtEdge - block.width / 5)
 							&& between(ya, block.topEdge - hh,
 									block.topEdge + hh / 2);
 				} else {
-					//udi = between(xa, block.leftEdge + block.width / 8,
-					//		block.rgtEdge - block.width / 8)
-					//		&& between(ya, block.topEdge + block.height / 8,
-					//				block.botEdge - block.height / 8);
 					
-					// anywhere in block except zones....
-					//int zW = (int) Math.round(Block.zoneWidth * DrawFBP.scalingFactor / 2);
-					udi = between(xa, block.leftEdge + zWS / 2,
-							block.rgtEdge - zWS / 2)
-							&& between(ya, block.topEdge + zWS / 2,
-									block.botEdge - zWS / 2);
+					udi = between(xa, block.leftEdge + zWS * 3 / 4,
+							block.rgtEdge - zWS * 3 / 4)
+							&& between(ya, block.topEdge + zWS * 3 / 2,
+									block.botEdge - zWS * 3 / 2);
 				}
 
 				if (udi) {
@@ -5685,6 +5678,9 @@ public class DrawFBP extends JFrame
 			if (b == null || b.diag == null)
 				return;
 			curDiag = b.diag;
+			detArr = null;
+			detArrSegNo = 0;
+			repaint();
 
 			//Side side = null;
 			leftButton = (e.getModifiers()
@@ -5790,14 +5786,10 @@ public class DrawFBP extends JFrame
 					 * the following leaves a strip around the outside of each
 					 * block that cannot be used for dragging!
 					 */
-					Rectangle rect = new Rectangle(block.leftEdge + zWS / 2, block.topEdge + zWS / 2,
-							block.width - zWS, block.height - zWS);
+					Rectangle rect = new Rectangle(block.leftEdge + zWS * 3 / 4, block.topEdge + zWS * 3 / 4,
+							block.width - zWS * 3 / 2, block.height - zWS * 3 / 2);
 					if (rect.contains(xa, ya)) {
-					//if (between((double) xa, block.leftEdge + block.width / 8,
-					//		block.rgtEdge - block.width / 8)
-					//		&& between((double) ya,
-					//				block.topEdge + block.height / 8,
-					//				block.botEdge - block.height / 8)) {
+					
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
 						blockSelForDragging = block;
@@ -6161,9 +6153,7 @@ public class DrawFBP extends JFrame
 			edgePoint = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
-			detArr = null;
-			detArrSegNo = 0;
-
+			
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
@@ -6172,6 +6162,10 @@ public class DrawFBP extends JFrame
 			if (b == null || b.diag == null)
 				return;
 			curDiag = b.diag;
+			
+			detArr = null;
+			detArrSegNo = 0;
+			repaint();
 			
 			if (curDiag.jpm != null) {
 				curDiag.jpm.setVisible(false);
