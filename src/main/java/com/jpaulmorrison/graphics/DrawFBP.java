@@ -4421,7 +4421,9 @@ public class DrawFBP extends JFrame
 		}
 		boolean res = false;
 		
-		if (d < 40.0) {
+		if (d >= 40.0) 
+			detArr = null;
+		else {
 			detArr = arr;
 			detArrSegNo = segNo;
 
@@ -5678,6 +5680,7 @@ public class DrawFBP extends JFrame
 			if (b == null || b.diag == null)
 				return;
 			curDiag = b.diag;
+			
 			detArr = null;
 			detArrSegNo = 0;
 			repaint();
