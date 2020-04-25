@@ -32,14 +32,13 @@ public class Block implements ActionListener {
 	int cx, cy; // coords of centre
 
 	int id;
-	//static final int zoneWidth = 6;
-
+	
 	//int tlx, tly;
 	int textX, textY;
 
-	static final int BLOCKWIDTH = 92; // was 76;
+	static final int BLOCKWIDTH = 105;   // was 92; 
 
-	static final int BLOCKHEIGHT = 64; // was 52;
+	static final int BLOCKHEIGHT = 73;    // was 64; 
 
 	boolean multiplex = false;
 	boolean deleteOnSave = false;
@@ -1475,14 +1474,14 @@ public class Block implements ActionListener {
 					IIPBlock ib = (IIPBlock) this;
 					desc = ib.checkNestedChars(desc);					
 					//height = driver.gFontHeight + 6;
-					FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
-					String t = desc;
+					//FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
+					//String t = desc;
 
-					if (t.length() <= 1)  
+					//if (t.length() <= 1)  
 
-						t = " " + t + " ";
-					byte[] str = t.getBytes();
-					width = metrics.bytesWidth(str, 0, t.length());
+						//t = " " + t + " ";
+					//byte[] str = t.getBytes();
+					//width = metrics.bytesWidth(str, 0, t.length());
 					
 
 					for (Arrow arrow : diag.arrows.values()) {

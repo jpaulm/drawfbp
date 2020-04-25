@@ -180,8 +180,8 @@ public class DrawFBP extends JFrame
 
 	static final double FORCE_HORIZONTAL = 0.05; // can be static as this is a
 													// slope
-	//static final int zoneWidth = 8;
-	static final int zoneWidth = 12;
+	static final int zoneWidth = 10;
+	//static final int zoneWidth = 12;
 	
 	static final int CREATE = 1;
 	static final int MODIFY = 2;
@@ -2056,6 +2056,7 @@ public class DrawFBP extends JFrame
 
 					else {
 						block.desc = ans;
+						/*
 						if (blkType == Block.Types.IIP_BLOCK) {
 						    FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
 						    String t = ans;
@@ -2064,6 +2065,7 @@ public class DrawFBP extends JFrame
 						    byte[] str = t.getBytes();
 						    block.width = metrics.bytesWidth(str, 0, t.length());
 						}
+						*/
 					}
 
 				}
@@ -4427,7 +4429,7 @@ public class DrawFBP extends JFrame
 			detArr = arr;
 			detArrSegNo = segNo;
 
-			if (arr.shapeList == null || arr.shapeList.size() == 0)
+			if (arr.shapeList == null || arr.shapeList.size() <= segNo)
 				return false;
 
 			Shape sh = arr.shapeList.get(segNo);
@@ -4596,7 +4598,7 @@ public class DrawFBP extends JFrame
 			// oldH = getSize().height;
 			if (!(js).getValueIsAdjusting()) {
 				scalingFactor = ((int) js.getValue()) / 100.0;
-				zWS = (int) Math.round(zoneWidth * scalingFactor);
+				//zWS = (int) Math.round(zoneWidth * scalingFactor);
 				String scale = (int) js.getValue() + "%";
 				scaleLab.setText(scale);
 				// pack();
