@@ -36,9 +36,9 @@ public class Block implements ActionListener {
 	//int tlx, tly;
 	int textX, textY;
 
-	static final int BLOCKWIDTH = 105;   // was 92; 
+	static final int BLOCKWIDTH = 92; 
 
-	static final int BLOCKHEIGHT = 73;    // was 64; 
+	static final int BLOCKHEIGHT = 64; 
 
 	boolean multiplex = false;
 	boolean deleteOnSave = false;
