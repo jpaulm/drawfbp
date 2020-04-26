@@ -18,6 +18,8 @@ Latest release is `v2.20.3`: the jar file (which includes the `math.geom2d` and 
 
 <!--The previous release - `v2.20.0` - has a bug in the Arrow/Drag Head function - this is fixed in `v2.20.1`.  This release has been published to Maven, but there is always a slight lag, so for a while Maven may still be downloading `v2.20.0`.  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. --> 
 
+The new release will be published to Maven once it has been checked out a bit...
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
 To run from the command line, do a `cd` to wherever you have stored your DrawFBP jar file, and enter:
