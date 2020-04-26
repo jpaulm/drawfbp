@@ -956,7 +956,7 @@ public class Arrow implements ActionListener {
 		
 		GeneralPath path = new GeneralPath();
 		double x, y;
-		final int aDW = 12; // arrow Detect Width
+		final int aDW = driver.zWS; // arrow Detect Width - same as detect edge size
 		x = tx - fx;
 		y = ty - fy;
 		double hypoSqu = (double) (x * x) + (double) (y * y);

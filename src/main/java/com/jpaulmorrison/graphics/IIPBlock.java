@@ -11,6 +11,7 @@ import java.util.Stack;
 
 public class IIPBlock extends Block {
 	
+		
 	IIPBlock(Diagram diag) {
 		super(diag);
 		type = Block.Types.IIP_BLOCK;
@@ -43,6 +44,7 @@ public class IIPBlock extends Block {
 				t = " " + t;
 			byte[] str = t.getBytes();
 			width = 6 + metrics.bytesWidth(str, 0, t.length());
+			buildSides();
 		}
 		g.drawRoundRect(cx - width / 2, cy - height / 2, width /* + 4 */, height, 6, 6);
 		if (this == driver.selBlock)

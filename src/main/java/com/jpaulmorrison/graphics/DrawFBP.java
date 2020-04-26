@@ -2946,7 +2946,12 @@ public class DrawFBP extends JFrame
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			String javac = jh + "/bin/javac.exe";
+			
+			String javac = null;
+			if (System.getProperty("os.name").startsWith("Windows"))  
+			    javac = jh + "/bin/javac.exe";
+			else
+			    javac = jh + "/bin/javac";
 			
 			srcDir += "/" + fNPkg;
 			//clsDir += "/" + fNPkg;
@@ -5644,12 +5649,13 @@ public class DrawFBP extends JFrame
 					//fpArrowRoot = edgePoint;
 					xa = edgePoint.x;
 					ya = edgePoint.y;
+					selBlockM = edgePoint.block;
 				}
 				
 			}
 			
 			
-			detectArrow(xa, ya);
+			colourArrows(xa, ya);
 				
 			repaint();
 		}
@@ -5959,6 +5965,7 @@ public class DrawFBP extends JFrame
 					tailMark.x = xa;    
 					tailMark.y = ya;
 					curDiag.changed = true;
+					currentArrow = arr;
 					repaint();
 					return;
 					
@@ -5969,6 +5976,7 @@ public class DrawFBP extends JFrame
 					headMark.x = xa;
 					headMark.y = ya;
 					curDiag.changed = true;
+					currentArrow = arr;
 					repaint();
 					return;
 				}
@@ -6146,7 +6154,7 @@ public class DrawFBP extends JFrame
 				}
 				 
 			}
-			detectArrow(xa, ya);
+			colourArrows(xa, ya);
 			
 			repaint();
 		}
@@ -6305,10 +6313,20 @@ public class DrawFBP extends JFrame
 						if (null != touches(block, tailMark.x, tailMark.y)) {
 							arr.fromId = block.id;
 							foundBlock = block;
+						 
+							arrowEndForDragging = null;
+							currentArrow = null;
 							//currentArrow = null;
 							//arr.tailMark = null;
-							break;
-						}
+							tailMark = null;
+							//break;
+							currentArrow = null;
+							edgePoint = null;
+						 
+							repaint();
+							return;
+						} 
+						
 					}
 					
 					if (headMark != null) {
@@ -6317,28 +6335,17 @@ public class DrawFBP extends JFrame
 							arr.toId = block.id;
 							foundBlock = block;
 							arr.endsAtBlock = true;
-							arr.endsAtLine = false;
-							//arr.headMark = null;
-
-							//currentArrow.toId = block.id;
-							//currentArrow = null;
-
-							//arr.toX = arr.toX;
-							//arr.toY = arr.toY;
-							break;
+							arr.endsAtLine = false;							
+							//break;
+							headMark = null;							
+							currentArrow = null;
+							edgePoint = null;
+							repaint();
+							return;
 						} 
 					}
 				}
-				//if (foundBlock != null) {
-				//	arr.tailMark = null;
-				//	arr.headMark = null;
-					//edgePoint = null;
-
-					//arrowEndForDragging = null;
-					//curDiag.changed = true;
-					//repaint();
-					//return;
-				//}
+				
 				
 				// if headmarked and no block found, try to detect an arrow...
 				
@@ -6348,31 +6355,46 @@ public class DrawFBP extends JFrame
 						arr.toId = fpA.arrow.id;
 						arr.endsAtBlock = false;
 						arr.endsAtLine = true;
-
-						//currentArrow = null;
+						
 						// currentArrow.toId = arr.id;
 
-						// arr.toX = arr.toX;
-						// arr.toY = arr.toY;
-						// break;
+						arr.toX = fpA.x;
+						arr.toY = fpA.y;
+						arrowEndForDragging = null;
+						currentArrow = null;
+						headMark = null;			
+						edgePoint = null;
+						repaint();
+						return;
 					}
+					
+					arr.toId = -1;
+						//arr.toX = -1;
+						//if (arr.bends == null)
+						//	arr.bends = new LinkedList<Bend>();
+						//arr.bends.add(new Bend(arr.toX, arr.toY)); 
+					arr.toX = xa;
+					arr.toY = ya;
+					Arrow arr2 = currentArrow;
+					arrowEndForDragging = arr2;
+					headMark = null;              
+					
 				}
-				if (edgePoint != null)
-					arr.toId = edgePoint.block.id;
-
 				
-
-				arrowEndForDragging = null;
+				
+				
 				curDiag.changed = true;
 				 
-				if (headMark != null || tailMark != null) {
+				/*
+				if (tailMark != null || headMark != null ) {
 					tailMark = null;
-					headMark = null;
-					currentArrow = null;
+					//headMark = null;
+					//currentArrow = null;
 					edgePoint = null;
 					repaint();
 					return;
 				}
+				*/
 				repaint();
 			}
 
@@ -6528,13 +6550,11 @@ public class DrawFBP extends JFrame
 
 				// curDiag.xa = xa;
 				// curDiag.ya = ya;
-				if (!(blockType.equals(""))
-						&& null != createBlock(blockType, xa, ya, curDiag, true))
-					curDiag.changed = true;
+				if (!(blockType.equals("")) && foundBlock == null)
+					if (null != createBlock(blockType, xa, ya, curDiag, true))
+						curDiag.changed = true;
 				repaint();
-				// repaint();
-
-				// repaint();
+				
 				return;
 			}
 
@@ -6548,17 +6568,18 @@ public class DrawFBP extends JFrame
 			//if (Math.abs(currentArrow.fromX - xa) > 10 ||
 			//		Math.abs(currentArrow.fromY - ya) > 10)	
 			//    fpB = findBlockEdge(xa, ya);
+			/*
 			if (headMark != null || tailMark != null) {
 				tailMark = null;
 				headMark = null;
 				currentArrow = null;
 				edgePoint = null;
 				repaint();
-				return;
-				
+				return;				
 			}
+			*/
 			edgePoint = findBlockEdge(xa, ya, "R");
-			foundBlock = null;
+			//foundBlock = null;
 			
 			if (edgePoint != null) {
 				foundBlock = edgePoint.block;
@@ -6866,7 +6887,7 @@ public class DrawFBP extends JFrame
 		}
 		
 		@SuppressWarnings("unused")
-		void detectArrow(int x, int y) {
+		void colourArrows(int x, int y) {
 			
 			// following loop is just to colour arrows - x and y are the position of the cursor
 			

@@ -320,7 +320,7 @@ public class Block implements ActionListener {
 	public void adjEdgeRects() {
 		leftRect.x = cx - width / 2 - driver.zWS / 2;
 		leftRect.y = cy - height / 2 - driver.zWS / 2;
-		rightRect.x = cx + width / 2 - driver.zWS / 2;
+		rightRect.x = cx + width / 2 - driver.zWS / 2; 
 		rightRect.y = cy - height / 2 - driver.zWS / 2;
 		topRect.x = cx - width / 2 - driver.zWS / 2;
 		topRect.y = cy - height / 2 - driver.zWS / 2;
@@ -802,14 +802,16 @@ public class Block implements ActionListener {
 			if (driver.edgePoint.block == this)		
 				showArrowEndAreas(g);
 		
+		if (driver.fpArrowEndB != null && driver.fpArrowEndB.block == this)  
+				showArrowEndAreas(g);
+		
 		if (driver.selBlockM == this)
 				showArrowEndAreas(g);
 		
 		//if (driver.fpArrowRoot != null && driver.fpArrowRoot.block == this) 
 		//	showArrowEndAreas(g);
 		
-		//if (driver.fpArrowEndB != null && driver.fpArrowEndB.block == this)  
-		//	showArrowEndAreas(g);
+		
 		
 		if (!(type.equals(Types.ENCL_BLOCK)))
 		    driver.blueCircs(g);
