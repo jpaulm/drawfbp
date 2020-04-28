@@ -2953,8 +2953,9 @@ public class DrawFBP extends JFrame
 			else
 			    javac = jh + "/bin/javac";
 			
-			srcDir += "/" + fNPkg;
-			//clsDir += "/" + fNPkg;
+			if (fNPkg != null && !(fNPkg.trim().equals("")))
+				srcDir += "/" + fNPkg;
+			
 			
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = srcDir.replace("/src/", "/bin/");
@@ -2997,6 +2998,10 @@ public class DrawFBP extends JFrame
 				if (!err.equals(""))
 					proc = null;
 			} 
+			
+			if (srcDir.endsWith("/"))
+				srcDir = srcDir.substring(0, srcDir.length() - 1);
+			
 			if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane.showMessageDialog(this,
 						"<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +

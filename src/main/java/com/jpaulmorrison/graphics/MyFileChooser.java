@@ -1779,7 +1779,7 @@ final boolean SAVEAS = true;
 				return;
 			}
 			
-			if (selComp == t_dirName) {
+			if (selComp == t_dirName) {           
 				String u = t_dirName.getText();
 				File h = new File(u);
 				if (!h.exists() || !h.isDirectory()) {
