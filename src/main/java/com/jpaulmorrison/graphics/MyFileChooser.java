@@ -135,6 +135,9 @@ public class MyFileChooser extends JDialog
 	public ClickListener clickListener;
 
 	public MyFileChooser(DrawFBP driver, File f, DrawFBP.FileChooserParm fcp) {
+		if (!f.isDirectory()){
+			throw new NullPointerException("File Chooser called using file not directory");			
+		}
 
 		this.fCP = fcp;
 		clickListener = new ClickListener();
@@ -185,7 +188,7 @@ public class MyFileChooser extends JDialog
 		cBox.setSelectedIndex(driver.allFiles ? 1 : 0);
 
 		order = new Vector<Component>(10);
-		order.add(t_dirName);
+		//order.add(t_dirName);
 		order.add(butSortByDate);
 		order.add(butFind);
 		order.add(butParent);
@@ -201,12 +204,12 @@ public class MyFileChooser extends JDialog
 		order.add(butCancel);
 
 		//t_dirName.setBackground(vLightBlue);
-		t_dirName.setEditable(true);
-		t_dirName.setEnabled(true);
-		t_dirName.getCaret().setVisible(true);
-		t_dirName.setRequestFocusEnabled(true);
-		t_dirName.addActionListener(this);
-		t_dirName.addMouseListener(this);
+		//t_dirName.setEditable(true);
+		//t_dirName.setEnabled(true);
+		//t_dirName.getCaret().setVisible(true);
+		//t_dirName.setRequestFocusEnabled(true);
+		//t_dirName.addActionListener(this);
+		//t_dirName.addMouseListener(this);
 
 		// text.getDocument().addDocumentListener(this);
 
@@ -287,7 +290,7 @@ public class MyFileChooser extends JDialog
 
 		panel.setPreferredSize(new Dimension(600, 600));
 
-		t_dirName.setFocusTraversalKeysEnabled(false);
+		//t_dirName.setFocusTraversalKeysEnabled(false);
 		butParent.setFocusTraversalKeysEnabled(false);
 		butSortByDate.setFocusTraversalKeysEnabled(false);
 		//if (saveAs)
@@ -494,7 +497,7 @@ public class MyFileChooser extends JDialog
 		
 		// Following statements needed to service tab keys
 		
-		t_dirName.addKeyListener(this);   
+		//t_dirName.addKeyListener(this);   
 		t_fileName.addKeyListener(this);   
 		t_suggName.addKeyListener(this);   
 		butSortByDate.addKeyListener(this);  
@@ -1377,9 +1380,9 @@ final boolean SAVEAS = true;
 			selComp = t_fileName;  
 		}
 			
-		if (e.getSource() == t_dirName){
-			selComp = t_dirName;  
-		}
+		//if (e.getSource() == t_dirName){
+		//	selComp = t_dirName;  
+		//}
 		
 		if (e.getSource() == butSortByDate){
 			String s = e.getActionCommand();
@@ -1436,7 +1439,7 @@ final boolean SAVEAS = true;
 		selComp = (JComponent) e.getSource();
 		repaint();
 
-		if (selComp == t_dirName || selComp == t_fileName) {
+		if (/* selComp == t_dirName || */ selComp == t_fileName) {
 
 			//selComp.setBackground(vLightBlue);
 			selComp.setRequestFocusEnabled(true);
@@ -1540,7 +1543,7 @@ final boolean SAVEAS = true;
 					selComp = (JComponent) mtp.getComponentAfter(dialog,
 							selComp);
 
-			if (selComp == t_dirName || selComp == t_fileName) {
+			if (/*selComp == t_dirName || */ selComp == t_fileName) {
 				selComp.setBackground(vLightBlue);
 				((MyTextField) selComp).getCaret().setVisible(true);
 				((MyTextField) selComp).setEditable(true);
@@ -1779,6 +1782,7 @@ final boolean SAVEAS = true;
 				return;
 			}
 			
+			/*		
 			if (selComp == t_dirName) {           
 				String u = t_dirName.getText();
 				File h = new File(u);
@@ -1796,6 +1800,7 @@ final boolean SAVEAS = true;
 				showList();
 				return;
 			}
+			*/
 
 			butNF.setEnabled(!inJarTree /*&& saveAs */);
 			butDel.setEnabled(!inJarTree);
@@ -1878,10 +1883,12 @@ final boolean SAVEAS = true;
 
 						}
 					*/	 
-					} else if (selComp == t_dirName) {
+					} /* else   Not sure about this... ?
+						if (selComp == t_dirName) {
 						listHead = t_dirName.getText();
 						showList();
 					}
+					*/
 					}
 				}
 				}
