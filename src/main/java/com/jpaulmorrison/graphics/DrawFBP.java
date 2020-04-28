@@ -301,7 +301,7 @@ public class DrawFBP extends JFrame
 	int moveY;
 	
 	Arrow detArr = null;
-	int detArrSegNo;
+	int detArrSegNo;	
 	
 	// constructor
 	DrawFBP(String[] args) {
@@ -1995,6 +1995,7 @@ public class DrawFBP extends JFrame
 			boolean editType) {
 		Block block = null;
 		boolean oneLine = false;
+		String title = "";
 		if (blkType.equals(Block.Types.PROCESS_BLOCK)) {
 			block = new ProcessBlock(diag);
 			block.isSubnet = willBeSubnet;
@@ -2004,22 +2005,29 @@ public class DrawFBP extends JFrame
 				|| blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
 				|| blkType.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
 			oneLine = true;
+			title = "External Port";			
 			block = new ExtPortBlock(diag);
 		}
 
-		else if (blkType.equals(Block.Types.FILE_BLOCK))
+		else if (blkType.equals(Block.Types.FILE_BLOCK)) {
+			title = "File";
 			block = new FileBlock(diag);
+		}
 
 		else if (blkType.equals(Block.Types.IIP_BLOCK)) {
 			oneLine = true;
+			title = "IIP";
 			block = new IIPBlock(diag);
 		}
 
-		else if (blkType.equals(Block.Types.LEGEND_BLOCK))
+		else if (blkType.equals(Block.Types.LEGEND_BLOCK)) {
+			title = "Legend";
 			block = new LegendBlock(diag);
+		}
 
 		else if (blkType.equals(Block.Types.ENCL_BLOCK)) {
 			oneLine = true;
+			title = "Enclosure";
 			block = new Enclosure(diag);
 			Point pt = diag.area.getLocation();
 			int y = Math.max(ya - block.height / 2, pt.y + 6);
@@ -2027,12 +2035,15 @@ public class DrawFBP extends JFrame
 		}
 
 		else if (blkType.equals(Block.Types.PERSON_BLOCK)) {
+			title = "Person";
 			oneLine = true;
 			block = new PersonBlock(diag);
 		}
 
-		else if (blkType.equals(Block.Types.REPORT_BLOCK))
+		else if (blkType.equals(Block.Types.REPORT_BLOCK)) {
+			title = "Report";
 			block = new ReportBlock(diag);
+		}
 		else
 			return null;
 
@@ -2046,7 +2057,8 @@ public class DrawFBP extends JFrame
 		if (editType) {
 			if (oneLine) {
 				if (blkType != Block.Types.ENCL_BLOCK) {
-					String d = "Enter description";
+					//String d = "Enter description";
+					String d = "Enter " + title + " text";
 					String ans = (String) MyOptionPane.showInputDialog(this,
 							"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null,
 							null, block.desc);
@@ -2054,20 +2066,8 @@ public class DrawFBP extends JFrame
 					if (ans == null)
 						return null;
 
-					else {
-						block.desc = ans;
-						/*
-						if (blkType == Block.Types.IIP_BLOCK) {
-						    FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
-						    String t = ans;
-						    if (t.length() <= 1)
-						    	t = " " + t + " ";
-						    byte[] str = t.getBytes();
-						    block.width = metrics.bytesWidth(str, 0, t.length());
-						}
-						*/
-					}
-
+					else
+						block.desc = ans;			
 				}
 			} else if (!block.editDescription(CREATE))
 				return null;

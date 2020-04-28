@@ -4,13 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
 
 
 public class IIPBlock extends Block {
-	
 		
 	IIPBlock(Diagram diag) {
 		super(diag);
@@ -44,19 +44,25 @@ public class IIPBlock extends Block {
 				t = " " + t;
 			byte[] str = t.getBytes();
 			width = 6 + metrics.bytesWidth(str, 0, t.length());
-			buildSides();
+			//width = 60;    // fudge
+						
 		}
-		g.drawRoundRect(cx - width / 2, cy - height / 2, width /* + 4 */, height, 6, 6);
+		
+		g.drawRoundRect(cx - width / 2, cy - height / 2, width + 12 , height, 6, 6);   // added 12 to compensate 
+		                                                                 //     for apparent bug in DrawRect functions 	
+		                                                                 // same for fillRoundRect, below 
+		
 		if (this == driver.selBlock)
 			g.setColor(DrawFBP.ly); // light yellow
 		else
 			g.setColor(DrawFBP.lb); // light turquoise
-		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width /* + 4 */ - 1,
-				height - 1, 6, 6);
+		
+		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width + 12 - 1, height - 1, 6, 6);
+				
 		g.setColor(Color.GRAY);
 		if (desc != null) {
 			g.setColor(Color.GRAY);
-			g.drawString(desc, cx - width / 2 + 4, cy + 4);
+			g.drawString(desc, cx - width / 2 + 4 + 6, cy + 4);
 		}
 
 		buildSides();
@@ -69,6 +75,18 @@ public class IIPBlock extends Block {
 		calcDiagMaxAndMin(tlx, cx + width / 2, tly, cy + height / 2);
 		g.setFont(fontsave);
 		//blueCircs(g);
+	}
+	
+void buildSides(){		
+		
+		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+				driver.zWS, height + driver.zWS);
+		topRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+				width + driver.zWS, driver.zWS);		
+		rightRect = new Rectangle(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+				driver.zWS, height + driver.zWS);		
+		botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, 
+					width + driver.zWS, driver.zWS );
 	}
 	
 	String checkNestedChars(String s) {

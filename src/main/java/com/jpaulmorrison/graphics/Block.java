@@ -106,13 +106,17 @@ public class Block implements ActionListener {
 
 	}
 
-	void buildSides(){
-		//int zW = (int) Math.round(zoneWidth * DrawFBP.scalingFactor / 2);
-		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height + driver.zWS);
-		topRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, width + driver.zWS, driver.zWS);		
-		rightRect = new Rectangle(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height + driver.zWS);
+	void buildSides(){		
+		
+		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+				driver.zWS, height + driver.zWS);
+		topRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+				width + driver.zWS, driver.zWS);		
+		rightRect = new Rectangle(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+				driver.zWS, height + driver.zWS);
 		if (!(this instanceof ReportBlock))
-			botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, width + driver.zWS, driver.zWS );
+			botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, 
+					width + driver.zWS, driver.zWS );
 	}
 	
 	void draw(Graphics g) {
@@ -320,12 +324,22 @@ public class Block implements ActionListener {
 	public void adjEdgeRects() {
 		leftRect.x = cx - width / 2 - driver.zWS / 2;
 		leftRect.y = cy - height / 2 - driver.zWS / 2;
+		leftRect.width = driver.zWS;
+		leftRect.height = height + driver.zWS;
 		rightRect.x = cx + width / 2 - driver.zWS / 2; 
 		rightRect.y = cy - height / 2 - driver.zWS / 2;
+		rightRect.width = driver.zWS;
+		rightRect.height = height + driver.zWS;
 		topRect.x = cx - width / 2 - driver.zWS / 2;
 		topRect.y = cy - height / 2 - driver.zWS / 2;
-		botRect.x = cx - width / 2 - driver.zWS / 2;
-		botRect.y = cy + height / 2 - driver.zWS / 2;
+		topRect.width = width + driver.zWS;
+		topRect.height = driver.zWS;
+		if (botRect != null) {
+			botRect.x = cx - width / 2 - driver.zWS / 2;
+			botRect.y = cy + height / 2 - driver.zWS / 2;
+			botRect.width = width + driver.zWS;
+			botRect.height = driver.zWS;
+		}
 	}
 	
 	void calcEdges() {
@@ -389,6 +403,7 @@ public class Block implements ActionListener {
 
 		x = (maxX) / 2; // find half width
 		x = cx - x;
+		x += 4;                     //fudge
 
 		y = y / 2; // find half height
 		if (this instanceof ReportBlock)
@@ -1816,7 +1831,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		
 
 		int result = MyOptionPane.showOptionDialog(driver, new Object[]{ 
-				"Enter/change name or description", pane}, init + t);		
+				"Enter/change " + t + " name or description", 
+				pane
+			}, init + t);		
 		
 		//if (option > DrawFBP.EDIT_NO_CANCEL) {
 			if (result != MyOptionPane.OK_OPTION)
