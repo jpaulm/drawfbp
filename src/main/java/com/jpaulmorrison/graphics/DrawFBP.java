@@ -2832,11 +2832,11 @@ public class DrawFBP extends JFrame
 		}
 		 
 		if (curDiag.changed) {
-			cMsg = "Select a Java or C# source file - if diagram has changed, \n   invoke 'File/Generate <language> Network' first";
+			cMsg = "Select a " + currLang.label + " source file - if diagram has changed, \n   invoke 'File/Generate " + currLang.label + " Network' first";
 			return;
 		}
 		 
-		cMsg = "Select a Java or C# source file";
+		cMsg = "Select  a " + currLang.label + " source file";
 		
 		MyOptionPane.showMessageDialog(this, cMsg, MyOptionPane.INFORMATION_MESSAGE);
 		
@@ -2958,8 +2958,9 @@ public class DrawFBP extends JFrame
 			
 			
 			srcDir = srcDir.replace("\\",  "/");
-			clsDir = srcDir.replace("/src/", "/bin/");
-			clsDir = clsDir.substring(0, clsDir.indexOf("/bin/") + 4);
+			clsDir = srcDir.replace("/src", "/bin");
+			clsDir = clsDir.substring(0, clsDir.indexOf("/bin") + 4);
+			
 			(new File(clsDir)).mkdirs(); 
 			
 			String w = srcDir + "/" + progName;
@@ -3030,14 +3031,15 @@ public class DrawFBP extends JFrame
 				
 				proc.destroy();
 				u = proc.exitValue();
-			 
-				clsDir += "/" + fNPkg;
+				
+				if (fNPkg != null && !(fNPkg.trim().equals("")))			 
+					clsDir += "/" + fNPkg;
 				
 				  
 				if (u == 0)
 					MyOptionPane.showMessageDialog(this,
 							"Program compiled - " + srcDir + "/" + progName
-									+ "\n" + "   into - " + clsDir + "/"  
+									+ "\n" + "   into - " + clsDir   + "/"  
 									+ progName.substring(0,
 											progName.length() - 5)
 									+ ".class",
