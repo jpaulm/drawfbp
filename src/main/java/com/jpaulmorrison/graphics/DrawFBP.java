@@ -2874,19 +2874,22 @@ public class DrawFBP extends JFrame
 		
 		if (currLang.label.equals("Java")) {	
 			String fNPkg = "";
-			int k = srcDir.indexOf("/src");
+			int k = srcDir.indexOf("/src/");
 			if (k == -1) {
-				MyOptionPane.showMessageDialog(this,
+				k = srcDir.length() - 4;
+				if (!(srcDir.substring(k).equals("/src"))) {  // folder name starting with "src" would not work!
+					MyOptionPane.showMessageDialog(this,
 						"File name '" + srcDir + "' - file name should contain 'src' - cannot compile",
 						MyOptionPane.ERROR_MESSAGE);
-				return;
+					return;
+				}
 			}
 			
 			if (j >= k + 5){
 				fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
 				fNPkg = fNPkg.replace("\\", "/");
 			}
-			String clsDir = srcDir.replace("/src/", "/bin/");
+			String clsDir = srcDir.replace("/src", "/bin");
 			srcDir = srcDir.substring(0, k + 4); // drop after src
 			clsDir = clsDir.substring(0, k + 4); // drop after bin
 			//(new File(clsDir)).mkdir();
@@ -2965,7 +2968,7 @@ public class DrawFBP extends JFrame
 			
 			String w = srcDir + "/" + progName;
 			List<String> params = Arrays.asList("\"" + javac + "\"", 
-					// "-verbose",
+					"-verbose",
 					"-cp", jf, 
 					"-d", "\"" + clsDir + "\"",					 
 					"\"" + w + "\""); 
@@ -3124,16 +3127,10 @@ public class DrawFBP extends JFrame
 				v = progString.substring(ks, k); // get name of
 																// namespace
 				v = v.replace(".", "/");
-				//t = cFile.getAbsolutePath();
-				//t = t.replace("\\", "/");
-				//k = t.indexOf(v);
 				
-				//srcDir = ss.substring(0, k); // drop before namespace
-													// string
 			}
 			 
-			//if (srcDir.endsWith("/"))
-			//	srcDir = srcDir.substring(0, srcDir.length() - 1);
+			
 			
 			String trunc = ss.substring(0, ss.lastIndexOf("/"));
 			String progName = ss.substring(ss.lastIndexOf("/") + 1);

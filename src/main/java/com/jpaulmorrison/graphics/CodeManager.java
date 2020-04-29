@@ -1006,36 +1006,50 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			return false;
 		}
 
-		String fn = diag.diagFile.getAbsolutePath();
-		int i = fn.lastIndexOf(".drw");
+		String sfn = null;
+		File f = diag.diagFile;
+		String suggName = null;
+		if (f != null)	{
+			sfn = f.getAbsolutePath();
+			sfn = sfn.replace("\\", "/");
+	    	int ix = sfn.lastIndexOf(".drw");
+	    	int j = sfn.substring(0, ix).lastIndexOf("/");
+	    	suggName = sfn.substring(j, ix);
+		}
+	 
 		String pkg = driver.properties.get("currentPackageName");
-		if (pkg == null || pkg.equals("(null)"))
+		if (pkg == null || pkg.equals("(null)") || pkg.trim().equals(""))
 			pkg = "";
 		else 
 			pkg = pkg.replace(".", "/");
-		String cDD = driver.properties.get("currentDiagramDir");
-		if (cDD == null)
-			cDD = driver.curDiag.diagFile.getParent();
-		cDD = cDD.replace("\\",  "/");
+		//String dir = "current" + driver.currLang.label + "NetworkDir";
+		String dir = diag.diagLang.netDirProp;
+		String fn = driver.properties.get(dir);
 		
-		// construct new file name
-		//if (cDD != null) {
-			int j = cDD.indexOf("src/");
-			if (j > -1)
-			    cDD = cDD.substring(0, j + 4);
-		//}
-		//else {
-		//	int j = cDD.lastIndexOf("diagrams");
-		//	if (j > -1)
-		//		cDD = cDD.replace("diagrams", "src");		
+		if (fn == null)							
+			fn = System.getProperty("user.home") + "/src";				
+			
+		fn = fn.replace("\\",  "/");
+		
+		
+		int i = fn.indexOf("/src");
+		if (i > -1)
+		    fn = fn.substring(0, i + 4);
+		
 		
 		fn = fn.replace("\\",  "/");
+		//int i = fn.lastIndexOf(".drw");
 		int k = fn.substring(0, i).lastIndexOf("/");
-		String suggName = ""; 
-		if (i > k)
-			suggName = fn.substring(k + 1, i);
-		cDD = cDD.replace("\\",  "/");		
-		suggName = cDD + pkg + "/" + suggName +  "." + gl.suggExtn;			
+		//String suggName = ""; 
+		//if (i > k)
+		//	suggName = fn.substring(k + 1, i);
+		//fn = fn.replace("\\",  "/");
+		if (!(fn.endsWith("/")))
+			fn += "/";
+		if (!(pkg.equals("") ))
+			suggName = fn + pkg + "/" + suggName +  "." + gl.suggExtn;			
+		else
+			suggName = fn + suggName +  "." + gl.suggExtn;	
 		
 		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, 
 		        new File(suggName));
@@ -1048,6 +1062,8 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			// diag.changeCompLang();
 			return false;
 		}
+		
+		//checkPackage(file, fileString);
 		
 		String r = "public class ";
 		int m = fileString.indexOf(r);
@@ -1063,32 +1079,39 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		
 		//doc.addDocumentListener(this);  // to allow late changes!
 		
-		if (!(p.equals(oldFN)))	{	
+		if (!(p.equals(oldFN))) {
 			MyOptionPane.showMessageDialog(driver,
-				"File name in generated code doesn't match actual file name - " + p, MyOptionPane.WARNING_MESSAGE);
-		
-		fileString = fileString.substring(0, m + r.length()) + p + fileString.substring(n);
-		
-		int j2 = fileString.indexOf("().go()");
-		int j3 = fileString.substring(0, j2).lastIndexOf(" ");
-		fileString = fileString.substring(0, j3) + " " + p + fileString.substring(j2);
-		try {
-			doc.remove(0, doc.getLength());
-			doc.insertString(0,  fileString,  normalStyle);
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+					"File name in generated code doesn't match actual file name - "
+							+ p,
+					MyOptionPane.WARNING_MESSAGE);
 
-		colourCode();  
-		if (!(driver.writeFile(file, fileString))) {			
-			MyOptionPane.showMessageDialog(driver, "File not saved");
-			// diag.changeCompLang();
-			return false;
+			fileString = fileString.substring(0, m + r.length()) + p
+					+ fileString.substring(n);
+
+			int j2 = fileString.indexOf("().go()");
+			int j3 = fileString.substring(0, j2).lastIndexOf(" ");
+			fileString = fileString.substring(0, j3) + " " + p
+					+ fileString.substring(j2);
+			try {
+				doc.remove(0, doc.getLength());
+				doc.insertString(0, fileString, normalStyle);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		
-		MyOptionPane.showMessageDialog(driver, "File name references changed in " + file.getName() + ", and file saved");
+
+			colourCode();
+			if (!(driver.writeFile(file, fileString))) {
+				MyOptionPane.showMessageDialog(driver, "File not saved");
+				// diag.changeCompLang();
+				return false;
+			}
+
+			MyOptionPane.showMessageDialog(driver,
+					"File name references changed in " + file.getName()
+							+ ", and file saved");
 		}
+		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
 		//saveProperties();
@@ -1703,18 +1726,18 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	}
 	//@Override
 	public void insertUpdate(DocumentEvent e) {
-	//	doc.changed = true;
+		doc.changed = true;
 		
 	}
 	//@Override
 	public void removeUpdate(DocumentEvent e) {
-	//  doc.changed = true;
+	  doc.changed = true;
 
 		
 	}
 	//@Override
 	public void changedUpdate(DocumentEvent e) {
-	//	doc.changed = true;
+	  doc.changed = true;
 
 		
 	}
