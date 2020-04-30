@@ -2968,7 +2968,7 @@ public class DrawFBP extends JFrame
 			
 			String w = srcDir + "/" + progName;
 			List<String> params = Arrays.asList("\"" + javac + "\"", 
-					"-verbose",
+					//"-verbose",
 					"-cp", jf, 
 					"-d", "\"" + clsDir + "\"",					 
 					"\"" + w + "\""); 
