@@ -2927,11 +2927,17 @@ public class DrawFBP extends JFrame
 			
 			proc = null;
 			
+			String delim = null;
+			if (System.getProperty("os.name").startsWith("Windows"))  
+				delim = ";";
+			else
+				delim = ":";
+			
 			String jf = "\"" + javaFBPJarFile; 
 			for (String jfv : jarFiles.values()) {
-				jf += ";" + jfv;
+				jf += delim + jfv;
 			}
-			jf += ";.\"";			 
+			jf += delim + ".\"";			 
 			
 			srcDir = srcDir.replace("\\",  "/");
 			// clsDir = clsDir.replace("\\",  "/");
