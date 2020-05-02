@@ -1202,7 +1202,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		if (pkg != null) {
 			//int t = fileString.substring(s + 8).indexOf(";");
 			//String pkg = fileString.substring(s + 8, s + 8 + t);
-			fileString = fileString.replace(pkg, "@!@"); 
+			
 			String fs = file.getAbsolutePath();
 			fs = fs.replace("\\", "/");
 			
@@ -1231,6 +1231,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				fNPkg = fNPkg.replace('/', '.');
 			}
 			if (!(pkg.equals(fNPkg))) {
+				fileString = fileString.replace(pkg, "@!@"); 
 				int ans = MyOptionPane.showConfirmDialog(
 						driver,
 						"Package name in file: " + pkg + ",\n"
