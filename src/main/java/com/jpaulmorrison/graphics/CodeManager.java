@@ -19,7 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-public class CodeManager implements ActionListener , DocumentListener  {
+public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 	DrawFBP driver;
 	HashSet<String> portNames;
@@ -58,7 +58,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	String dnPort = null;
 	//StyledDocument doc = null;
 	MyDocument doc = null;
-	//boolean saveType;
+	//boolean completeChange;
 
 	CodeManager(Diagram d) {
 		diag = d;
@@ -68,6 +68,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		dialog = new JFrame();
 		driver.depDialog = dialog;
 		nsLabel.setFont(driver.fontg);
+		//completeChange = false;
 		
 		DrawFBP.applyOrientation(dialog);
 
@@ -113,7 +114,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		dialog.add(scrollPane);		
 		textPane.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
-		doc.addDocumentListener(this);
+		
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 	}
 	
@@ -190,18 +191,21 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		w = w.substring(j + 1);
 		
 		
+		
 		if (gl.label.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
-			if (packageName == null || packageName.equals("(null)")) {
+			if (packageName == null || packageName.equals("") || packageName.equals("(null)")) {
 				packageName = (String) MyOptionPane.showInputDialog(dialog,
-						"Please fill in a package/namespace name", null);
-				if (packageName == null)
+						"Please fill in a package name or namespace here if desired", null);
+				if (packageName == null || packageName.equals(""))
 					packageName = "(null)";
-				packageName = packageName.trim();				
+				else
+					packageName = packageName.trim();				
 				driver.saveProp("currentPackageName", packageName);
 				//saveProperties();
 			}
 		}
+		
 		
 		
 		String[] contents;
@@ -214,7 +218,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			if (gl.label.equals("Java")) {
 				contents[0] = "package ";
 				contents[1] = packageName + ";";
-				contents[2] = " //change package name if desired\n"; 
+				contents[2] = " //change package name, or delete statement, if desired\n"; 
 			} else {
 				contents[0] = "using System;\nusing System.IO;\nusing FBPLIB;\nusing Components;\nnamespace Xxxxxxxxxx{";
 				contents[2] = " //change namespace name if desired\n";  
@@ -621,36 +625,37 @@ public class CodeManager implements ActionListener , DocumentListener  {
 			// changed = false;
 			// if (file.getName().endsWith(".fbp")) {
 			//nsLabel.setText("Not changed");
+			
+			
+			MyDocListener1 myDocListener1 = new MyDocListener1();
+			doc.addDocumentListener(myDocListener1);
+			
 			fbpMode = true;
-			//doc.changed = false;
+			doc.changed = false;
 			// }
 			String suff = driver.getSuffix(file.getName());
+			String packageName = null;
 
 			if (suff != null && suff.toLowerCase().equals("java")) {
-				int i = fileString.indexOf("package ");
-				if (i == -1) {
-					packageName = (String) MyOptionPane.showInputDialog(
-							driver,
-							"Missing package name - please specify package name",
+				packageName = findPackage(fileString); 
+				if (null == packageName) {
+				
+					packageName = (String) MyOptionPane.showInputDialog(driver,
+							"Missing package name - please specify package name, if desired",
 							null);
 
-					//driver.saveProp("currentPackageName", packageName);
-					//driver.saveProperties();
-					fileString = "package " + packageName + ";\n" + fileString;
-					doc.changed = true;
-				} else {
-					int k = fileString.indexOf(";", i);
-					packageName = fileString.substring(i + 8, k);
+					if (packageName != null) {
+						fileString = "package " + packageName + ";\n" + fileString;
+						doc.changed = true;
+					}
 				}
-				packageName = packageName.trim();
-				//String pkg = (String) driver.properties
-				//		.get("currentPackageName");
-				//if (pkg != null && !(pkg.equals(packageName))) {
-					driver.saveProp("currentPackageName", packageName);
-					// saveProperties();
-				//}
+								
+				driver.saveProp("currentPackageName", packageName);
+				driver.saveProperties();
+				
 			}
 		}
+		//completeChange = true;
 		try {
 			doc.remove(0, doc.getLength());
 			doc.insertString(0, fileString, normalStyle);
@@ -670,22 +675,76 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		// type = DrawFBP.DIAGRAM;
 		dialog.repaint();
 		
-		/*
-		Segment seg = new Segment();
-		seg.setPartialReturn(false);
-		try {
-			doc.getText(0,  doc.getLength(), seg);
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		fileString = seg.toString();
-		*/
-		// frame.repaint();
+		
 		return fileString;
 
 	}
 
+	String findPackage(String data){
+		String pkg = null;
+		//int lineNo = 0;
+		int errNo = 0;
+		BabelParser2 bp = new BabelParser2(data, errNo);
+		
+		while (true) {
+			while (true) {
+				if (!bp.tb('o'))
+					break;
+			}
+			
+			if (bp.tc('/', 'o')) { 
+				if (bp.tc('*', 'o')) {
+					while (true) {
+						if (bp.tc('*', 'o') && bp.tc('/', 'o'))
+							break;
+						bp.tu('o');
+					}
+				}
+				else
+					bp.bsp();     // back up one character bc one slash has been consumed
+			}
+	
+			if (bp.tc('/', 'o') && bp.tc('/', 'o')) {
+					while (true) {
+						if (bp.tc('\r', 'o')){
+							bp.tc('\n', 'o');
+								break;
+						}
+						if (bp.tc('\n', 'o')){
+							bp.tc('\r', 'o');
+							break;
+						}
+						bp.tu('o');
+					}
+				}
+			else
+				break;
+			}
+	
+			if (bp.tc('p', 'o') &&
+				bp.tc('a', 'o') &&
+				bp.tc('c', 'o') &&
+				bp.tc('k', 'o') &&
+				bp.tc('a', 'o') &&
+				bp.tc('g', 'o') &&
+				bp.tc('e', 'o')) {
+				
+			 
+				while (true) {
+					if (!bp.tb('o'))
+						break;
+				}
+				while (true) {
+					if (bp.tc(';', 'o') || bp.tb('o'))
+						break;
+					bp.tu();
+				}
+			}	
+		pkg = bp.getOutStr();
+		if (pkg != null)
+			pkg = pkg.trim();
+		return pkg;		
+	}
 	 
 	String genMetadata(String lang) {
 		String inData = "";
@@ -1039,7 +1098,7 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		
 		fn = fn.replace("\\",  "/");
 		//int i = fn.lastIndexOf(".drw");
-		int k = fn.substring(0, i).lastIndexOf("/");
+		//int k = fn.substring(0, i).lastIndexOf("/");
 		//String suggName = ""; 
 		//if (i > k)
 		//	suggName = fn.substring(k + 1, i);
@@ -1137,11 +1196,13 @@ public class CodeManager implements ActionListener , DocumentListener  {
 	
 	 
 	String checkPackage(File file, String fileString){
-		int s = fileString.indexOf("package ");
+		//int s = fileString.indexOf("package ");
 		//boolean res = false;
-		if (s > -1) {
-			int t = fileString.substring(s + 8).indexOf(";");
-			String pkg = fileString.substring(s + 8, s + 8 + t);
+		String pkg = findPackage(fileString);
+		if (pkg != null) {
+			//int t = fileString.substring(s + 8).indexOf(";");
+			//String pkg = fileString.substring(s + 8, s + 8 + t);
+			fileString = fileString.replace(pkg, "@!@"); 
 			String fs = file.getAbsolutePath();
 			fs = fs.replace("\\", "/");
 			
@@ -1189,8 +1250,9 @@ public class CodeManager implements ActionListener , DocumentListener  {
 					driver.saveProp("currentPackageName", pkg);
 					// saveProperties();
 				}
-				fileString = fileString.substring(0, s + 8) + pkg
-						+ fileString.substring(s + 8 + t);
+				//fileString = fileString.substring(0, s + 8) + pkg
+				//		+ fileString.substring(s + 8 + t);
+				fileString = fileString.replace("@!@", pkg);
 				doc.changed = true;
 				//res = true;
 				displayDoc(file, gl, fileString);
@@ -1724,21 +1786,33 @@ public class CodeManager implements ActionListener , DocumentListener  {
 		else
 			return s;
 	}
-	//@Override
-	public void insertUpdate(DocumentEvent e) {
-		doc.changed = true;
+	
+	public class MyDocListener1 implements DocumentListener {
 		
-	}
-	//@Override
-	public void removeUpdate(DocumentEvent e) {
-	  doc.changed = true;
+		// used by displayDoc only
+
+		//@Override
+		public void insertUpdate(DocumentEvent e) {
+			if (e.getOffset() > 0 || e.getLength() < doc.getLength())
+				doc.changed = true;
+			
+		}
+		//@Override
+		public void removeUpdate(DocumentEvent e) {
+			if (e.getOffset() > 0 || e.getLength() < doc.getLength())
+				doc.changed = true;
+
+			
+		}
+		//@Override
+		public void changedUpdate(DocumentEvent e) {
+				//doc.changed = true; 
+					
+		}
 
 		
 	}
-	//@Override
-	public void changedUpdate(DocumentEvent e) {
-	  doc.changed = true;
-
-		
-	}
+	
+	
+	
 }

@@ -99,7 +99,7 @@ public class BabelParser2 {
 	}
 	/**
 	 * Same as tc(char), but with modification (must be 'i', 'n' or 'o') ('n' is
-	 * equivalent to old Babel 'IO' - I- and O-modification)
+	 * equivalent to old Babel 'IO' - I- AND O-modification)
 	 * 
 	 * @param x
 	 *            char
@@ -296,6 +296,16 @@ public class BabelParser2 {
 		}
 		output[outputIndex] = x;
 		outputIndex++;
+		return true;
+	}
+	
+	/**
+	 * Back up one char in input stream
+	 *  
+	 */
+	public boolean bsp() {
+		
+		inputIndex--;
 		return true;
 	}
 }

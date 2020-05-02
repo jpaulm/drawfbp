@@ -135,18 +135,16 @@ public class MyFileChooser extends JDialog
 	public ClickListener clickListener;
 
 	public MyFileChooser(DrawFBP driver, File f, DrawFBP.FileChooserParm fcp) {
-		if (!f.isDirectory()){
-			throw new NullPointerException("File Chooser called using file not directory");			
-		}
+		
 
 		this.fCP = fcp;
 		clickListener = new ClickListener();
 
-		if (f == null || !f.exists())
+		if (f == null || !f.exists() || !f.isDirectory())
 			listHead = System.getProperty("user.home");
 		else
 			listHead = f.getAbsolutePath();
-		// fullNodeName = f.getAbsolutePath();
+	
 		this.driver = driver;		
 				
 		butSortByDate.setSelected(driver.sortByDate);

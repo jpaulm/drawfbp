@@ -1324,9 +1324,10 @@ public class DrawFBP extends JFrame
 
 			
 			CodeManager cm = new CodeManager(curDiag);
-			cm.doc.changed = false;
+			//cm.doc.changed = false;
 			cm.displayDoc(cFile, gl, null);
 
+			repaint();
 			return;
 		}
 
@@ -2845,8 +2846,14 @@ public class DrawFBP extends JFrame
 			String srcDir = null;
 			if (ss == null)
 				srcDir = System.getProperty("user.home");
-			else
-				srcDir = ss;
+			else {
+				ss = ss.replace("\\", "/");
+				String st = ss.substring(ss.lastIndexOf("/") + 1); 
+				if (0 < st.lastIndexOf(".")) 
+					srcDir = System.getProperty("user.home");
+				else
+					srcDir = ss;
+			}
 
 			MyFileChooser fc = new MyFileChooser(this, new File(srcDir),
 					curDiag.fCParm[Diagram.NETWORK]);

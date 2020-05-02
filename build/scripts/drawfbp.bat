@@ -82,7 +82,7 @@ set CMD_LINE_ARGS=%*
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\drawfbp-2.20.3.jar;%APP_HOME%\lib\javaGeom-0.11.1.jar;%APP_HOME%\lib\javahelp-2.0.05.jar
+set CLASSPATH=%APP_HOME%\lib\drawfbp-2.20.4.jar;%APP_HOME%\lib\javaGeom-0.11.1.jar;%APP_HOME%\lib\javahelp-2.0.05.jar
 
 @rem Execute drawfbp
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %DRAWFBP_OPTS%  -classpath "%CLASSPATH%" com.jpaulmorrison.graphics.DrawFBP %CMD_LINE_ARGS%
