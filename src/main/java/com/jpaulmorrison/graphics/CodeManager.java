@@ -1231,7 +1231,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				fNPkg = fNPkg.replace('/', '.');
 			}
 			if (!(pkg.equals(fNPkg))) {
-				fileString = fileString.replace(pkg, "@!@"); 
+				
 				int ans = MyOptionPane.showConfirmDialog(
 						driver,
 						"Package name in file: " + pkg + ",\n"
@@ -1243,9 +1243,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 				if (ans != MyOptionPane.CANCEL_OPTION) {
 					if (ans == MyOptionPane.YES_OPTION) {
+						fileString = fileString.replace(pkg, "@!@"); 
 						pkg = fNPkg;
 						MyOptionPane.showMessageDialog(driver,
 								"Package name changed: " + pkg);
+						fileString = fileString.replace("@!@", pkg);
 
 					}
 					driver.saveProp("currentPackageName", pkg);
@@ -1253,7 +1255,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				}
 				//fileString = fileString.substring(0, s + 8) + pkg
 				//		+ fileString.substring(s + 8 + t);
-				fileString = fileString.replace("@!@", pkg);
+				
 				doc.changed = true;
 				//res = true;
 				displayDoc(file, gl, fileString);
