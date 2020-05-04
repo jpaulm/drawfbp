@@ -291,6 +291,9 @@ public class DiagramBuilder {
 									}
 								} else if (type.equals(Block.Types.IIP_BLOCK)) {
 									block = new IIPBlock(diag);
+									IIPBlock ib = (IIPBlock) block;
+									//ib.width = ib.calcIIPWidth(driver.osg);
+									//block.buildSides();
 
 								} else if (type
 										.equals(Block.Types.LEGEND_BLOCK)) {
@@ -308,9 +311,11 @@ public class DiagramBuilder {
 											"Undefined block type", MyOptionPane.ERROR_MESSAGE);
 									block = new ProcessBlock(diag);
 								}
+								
 								block.buildBlockFromXML(item);
 								block.buildSides();
-								block.calcEdges();								
+								block.calcEdges();				
+								
 							}
 							
 							String s = item.get("multiplex");							
@@ -428,8 +433,8 @@ public class DiagramBuilder {
 		
 		for (Arrow a : diag.arrows.values()) {
 			Block fromBlock = diag.blocks.get(new Integer(a.fromId));
-			if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
-					|| fromBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+			if (fromBlock != null && (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
+					|| fromBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)))
 				a.upStreamPort = "OUT";
 			
 			Arrow a2 = a.findLastArrowInChain();

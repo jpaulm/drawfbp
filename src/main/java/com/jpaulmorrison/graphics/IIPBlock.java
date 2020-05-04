@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.Graphics2D;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -15,8 +15,8 @@ public class IIPBlock extends Block {
 	IIPBlock(Diagram diag) {
 		super(diag);
 		type = Block.Types.IIP_BLOCK;
-
-		width = driver.gFontWidth * 5 + 4;
+		
+		width = 60;  // will be overwritten - depends on contents of desc
 
 		height = driver.gFontHeight + 4;
 		
@@ -36,33 +36,22 @@ public class IIPBlock extends Block {
 		Font fontsave = g.getFont();
 		g.setFont(driver.fontf);
 		g.setColor(Color.GRAY);
-		if (desc != null) {
-			FontMetrics metrics = g.getFontMetrics(g.getFont());	
-			height = driver.gFontHeight + metrics.getMaxAscent();
-			String t = desc;
-			if (t.length() < 2)
-				t = " " + t;
-			byte[] str = t.getBytes();
-			width = 6 + metrics.bytesWidth(str, 0, t.length());
-			//width = 60;    // fudge
-						
-		}
+		//width = calcIIPWidth((Graphics2D) g);
 		
-		g.drawRoundRect(cx - width / 2, cy - height / 2, width + 12 , height, 6, 6);   // added 12 to compensate 
-		                                                                 //     for apparent bug in DrawRect functions 	
-		                                                                 // same for fillRoundRect, below 
+		
+		g.drawRoundRect(cx - width / 2, cy - height / 2, width /* + 12 */ , height, 6, 6);   
 		
 		if (this == driver.selBlock)
 			g.setColor(DrawFBP.ly); // light yellow
 		else
 			g.setColor(DrawFBP.lb); // light turquoise
 		
-		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width + 12 - 1, height - 1, 6, 6);
+		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width /* + 12 */ - 1, height - 1, 6, 6);
 				
 		g.setColor(Color.GRAY);
 		if (desc != null) {
 			g.setColor(Color.GRAY);
-			g.drawString(desc, cx - width / 2 + 4 + 6, cy + 4);
+			g.drawString(desc, cx - width / 2 + 4 /*+ 6 */, cy + 4);
 		}
 
 		buildSides();
@@ -77,7 +66,27 @@ public class IIPBlock extends Block {
 		//blueCircs(g);
 	}
 	
-void buildSides(){		
+	int calcIIPWidth(Graphics2D g2d) {
+		int w = 10;
+		if (desc != null) {
+			//FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());	
+			FontMetrics metrics = g2d.getFontMetrics(driver.fontf);
+			height = driver.gFontHeight + metrics.getMaxAscent();
+			String t = desc;
+			if (t.length() < 2)
+				t = " " + t;
+			byte[] str = t.getBytes();
+			w = 4 + metrics.bytesWidth(str, 0, t.length());
+			//width = 60;    // fudge
+						
+		}
+		return w;
+	}
+	
+
+	/*
+	
+	void buildSides(){		
 		
 		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
 				driver.zWS, height + driver.zWS);
@@ -88,7 +97,7 @@ void buildSides(){
 		botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, 
 					width + driver.zWS, driver.zWS );
 	}
-	
+*/	
 	String checkNestedChars(String s) {
 		Stack<String> stk = new Stack<String>();
 		String chars = "{[(<}])>";
@@ -139,17 +148,20 @@ void buildSides(){
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 
-		//int zW = (int) Math.round(zoneWidth * DrawFBP.scalingFactor / 2);
-		g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height); // left
-		//if (!(this instanceof Enclosure))
-			g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, width + 2 * driver.zWS, driver.zWS); // top
-		//if (!(this instanceof ReportBlock)) {
-		//	g.fillRect(cx - width / 2 - 1, cy + height / 2 - 2, width + 3, 4); // bottom
-		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height); // right
-		//} else
-			g.fillRect(cx + width / 2 + driver.zWS, cy - height / 2 - driver.zWS / 2, driver.zWS / 2 * 2, height + driver.zWS); // right
-			g.fillRect(cx - width / 2 - driver.zWS / 2, cy + height / 2 - driver.zWS / 2, width + 4 * driver.zWS / 2, driver.zWS);// bottom
-		g.setColor(col);
+		Graphics2D g2d = (Graphics2D) g;
+		//g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height); // left
+		
+		//	g.fillRect(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, width + 2 * driver.zWS, driver.zWS); // top
+		
+		//	g.fillRect(cx + width / 2 + driver.zWS, cy - height / 2 - driver.zWS / 2, driver.zWS / 2 * 2, height + driver.zWS); // right
+		//	g.fillRect(cx - width / 2 - driver.zWS / 2, cy + height / 2 - driver.zWS / 2, width + 4 * driver.zWS / 2, driver.zWS);// bottom
+			
+			g2d.fill(leftRect);
+			g2d.fill(rightRect);
+			g2d.fill(topRect);
+			g2d.fill(botRect);
+			
+			g.setColor(col);
 	}
 	  
 }

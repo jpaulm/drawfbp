@@ -58,6 +58,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	String dnPort = null;
 	//StyledDocument doc = null;
 	MyDocument doc = null;
+	String clsName = null;
 	//boolean completeChange;
 
 	CodeManager(Diagram d) {
@@ -188,17 +189,19 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		w = w.replace("\\", "/");
 		int j = w.lastIndexOf("/");
 		j = Math.max(i,  j);
-		w = w.substring(j + 1);
+		clsName = w.substring(j + 1);
 		
 		
 		
 		if (gl.label.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
-			if (packageName == null || packageName.equals("") || packageName.equals("(null)")) {
+			if (packageName == null || packageName.equals("") || packageName.equals("null")
+					|| packageName.equals("(null)")) {
 				packageName = (String) MyOptionPane.showInputDialog(dialog,
 						"Please fill in a package name or namespace here if desired", null);
-				if (packageName == null || packageName.equals(""))
-					packageName = "(null)";
+				if (packageName == null || packageName.equals("") || packageName.equals("null"))
+					//packageName = "(null)";
+					packageName = null;
 				else
 					packageName = packageName.trim();				
 				driver.saveProp("currentPackageName", packageName);
@@ -214,57 +217,72 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			contents[0] = generateJSON();
 			styles[0] = normalStyle;
 		} else {
-			contents = new String[20];
+			contents = new String[20];  
+			int k = 0;
 			if (gl.label.equals("Java")) {
-				contents[0] = "package ";
-				contents[1] = packageName + ";";
-				contents[2] = " //change package name, or delete statement, if desired\n"; 
+				if (packageName != null) {
+					contents[0] = "package ";
+					contents[1] = packageName + ";";
+					contents[2] = " //change package name, or delete statement, if desired\n"; 
+					k = 3;
+				}
 			} else {
 				contents[0] = "using System;\nusing System.IO;\nusing FBPLIB;\nusing Components;\nnamespace Xxxxxxxxxx{";
+				contents[1] = " ";
 				contents[2] = " //change namespace name if desired\n";  
+				k = 3;
 			}
 
 			if (gl.label.equals("Java"))
-				contents[2] += "import com.jpaulmorrison.fbp.core.engine.*; \n";
+				contents[k + 0] = "import com.jpaulmorrison.fbp.core.engine.*; \n";
 
 			if (ext.equals("SubNet"))
-				contents[3] = genMetadata(gl.label) + "\n";
+				contents[k + 1] = genMetadata(gl.label) + "\n";
 			else
-				contents[3] = "";
+				contents[k + 1] = "";
 
-			contents[4] = "public class ";
+			contents[k + 2] = "public class ";
 			
-			contents[5] = w;
+			contents[k + 3] = clsName;
 			
 			if (gl.label.equals("Java"))
-				contents[6] = " extends ";
+				contents[k + 4] = " extends ";
 			else
-				contents[6] = " : ";
-			contents[7] = ext;
+				contents[k + 4] = " : ";
+			contents[k + 5] = ext;
+			
 			if (gl.label.equals("Java"))
-				contents[8] = " {\nString description = ";
+				contents[k + 6] = " {\nString description = ";
 			else
-				contents[8] = " {\nstring description = ";
+				contents[k + 6] = " {\nstring description = ";
+			
 			if (diag.desc == null)
 				diag.desc = "(no description)";
-			contents[9] = "\"" + diag.desc + "\"";
+			contents[k + 7] = "\"" + diag.desc + "\"";
+			
 			if (gl.label.equals("Java"))
-				contents[10] = ";\nprotected void define() { \n";
+				contents[k + 8] = ";\nprotected void define() { \n";
 			else
-				contents[10] = ";\npublic override void Define() { \n";
+				contents[k + 8] = ";\npublic override void Define() { \n";
 
-			styles[0] = normalStyle;
-			styles[1] = packageNameStyle;
-			styles[2] = baseStyle;
-			styles[3] = packageNameStyle;
-			styles[4] = normalStyle;
-			styles[5] = packageNameStyle;
-			styles[6] = normalStyle;
-			styles[7] = packageNameStyle;
-			styles[8] = normalStyle;
-			styles[9] = packageNameStyle;
-			styles[10] = normalStyle;
-
+			k = 0;
+			if (packageName != null) {
+				styles[k + 0] = normalStyle;
+				styles[k + 1] = packageNameStyle;
+				styles[k + 2] = baseStyle;
+				k = 3;
+			}
+			styles[k + 0] = baseStyle;
+			styles[k + 1] = packageNameStyle;
+			styles[k + 2] = normalStyle;
+			styles[k + 3] = packageNameStyle;
+			styles[k + 4] = normalStyle;
+			styles[k + 5] = packageNameStyle;
+			styles[k + 6] = normalStyle;
+			styles[k + 7] = packageNameStyle;
+			styles[k + 8] = normalStyle;
+		
+			
 			for (Block block : diag.blocks.values()) {
 
 				String t;
@@ -519,7 +537,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 			code += "} \n";
 
-			int sno = 11;
+			int sno = 12;
 			contents[sno] = code;
 			styles[sno] = normalStyle;
 
@@ -542,7 +560,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			
 			for (i = 0; i < contents.length; i++) {
 				if (contents[i] != null)
-					doc.insertString(doc.getLength(), contents[i], styles[i]);
+					doc.insertString(doc.getLength(), contents[i], styles[i]); // insert data at end of doc
 			}
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(driver,
@@ -665,6 +683,10 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			return fileString;
 
 		}
+		
+		clsName = file.getName();
+		int i = clsName.lastIndexOf(".");
+		clsName = clsName.substring(0, i);
 
 		colourCode();
 		
@@ -944,6 +966,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					}
 					doc.setCharacterAttributes(i, j - i, baseStyle, false); // Gray
 				}
+			 
+				if (doc.getText(i, clsName.length()).equals(clsName))
+					doc.setCharacterAttributes(i, clsName.length(), packageNameStyle,
+							false); // Magenta
+				 
 
 			} catch (BadLocationException e) {
 			}
@@ -1199,7 +1226,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		//int s = fileString.indexOf("package ");
 		//boolean res = false;
 		String pkg = findPackage(fileString);
-		if (pkg != null) {
+		//if (pkg != null) {
 			//int t = fileString.substring(s + 8).indexOf(";");
 			//String pkg = fileString.substring(s + 8, s + 8 + t);
 			
@@ -1224,13 +1251,17 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			int w = fs.indexOf(".java");
 			int u = fs.substring(0, w).lastIndexOf("/");
 
-			String fNPkg = "(null)";
+			String fNPkg = null;   
 			if (v < u) {
 				fNPkg = fs.substring(v, u);
 				fNPkg = fNPkg.replace('\\', '/');
 				fNPkg = fNPkg.replace('/', '.');
 			}
-			if (!(pkg.equals(fNPkg))) {
+			
+			fNPkg = String.valueOf(fNPkg);
+			pkg = String.valueOf(pkg);
+			
+			if (!(fNPkg.equals(pkg))) {
 				
 				int ans = MyOptionPane.showConfirmDialog(
 						driver,
@@ -1243,12 +1274,24 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 				if (ans != MyOptionPane.CANCEL_OPTION) {
 					if (ans == MyOptionPane.YES_OPTION) {
-						fileString = fileString.replace(pkg, "@!@"); 
-						pkg = fNPkg;
-						MyOptionPane.showMessageDialog(driver,
-								"Package name changed: " + pkg);
-						fileString = fileString.replace("@!@", pkg);
-
+						//fileString = fileString.replace(pkg, "@!@"); 
+						// package must be first line
+						int i = fileString.indexOf(";");
+						int j = fileString.substring(0, i).indexOf("package");
+						if (j == -1) {
+							fileString = "package " + fNPkg + ";\n" + fileString;
+							MyOptionPane.showMessageDialog(driver,
+									"Package name added: " + fNPkg);
+						}
+						else {
+							fileString = fileString.replace(pkg, "@!@"); 						
+							MyOptionPane.showMessageDialog(driver,
+									"Package name changed: " + pkg + " to " + fNPkg);
+							pkg = fNPkg;
+							fileString = fileString.replace("@!@", pkg);
+							
+						}
+						displayDoc(file, gl, fileString);			
 					}
 					driver.saveProp("currentPackageName", pkg);
 					// saveProperties();
@@ -1258,9 +1301,9 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				
 				doc.changed = true;
 				//res = true;
-				displayDoc(file, gl, fileString);
+				
 			}
-		}
+		//}
 		return fileString;
 	}
 	

@@ -10,7 +10,8 @@ public class LegendBlock extends Block {
 		type = Block.Types.LEGEND_BLOCK;
 		width = driver.gFontWidth * 12 + 4;
 		height = driver.gFontHeight * 4 + 4;
-		// calcEdges();
+		buildSides();
+		calcEdges();
 	}
 
 	@Override

@@ -2018,7 +2018,7 @@ public class DrawFBP extends JFrame
 		else if (blkType.equals(Block.Types.IIP_BLOCK)) {
 			oneLine = true;
 			title = "IIP";
-			block = new IIPBlock(diag);
+			block = new IIPBlock(diag);			
 		}
 
 		else if (blkType.equals(Block.Types.LEGEND_BLOCK)) {
@@ -2076,7 +2076,8 @@ public class DrawFBP extends JFrame
 			if (blkType.equals(Block.Types.IIP_BLOCK)) {
 				IIPBlock ib = (IIPBlock) block;
 				block.desc = ib.checkNestedChars(block.desc);
-				//block.buildSides();
+				block.width = ib.calcIIPWidth(osg);
+				block.buildSides();
 			}
 		}
 		block.calcEdges();
@@ -3949,6 +3950,11 @@ public class DrawFBP extends JFrame
 						 k.startsWith("additionalJarFiles") ||
 						 k.startsWith("additionalDllFiles"))
 					continue;
+				if (k.equals("currentPackageName")) {
+					String t = properties.get(k);
+					if (t == null || t.equals("null") || t.equals("(null)"))
+						continue;
+				}
 				String s = "<" + k + ">" + properties.get(k) + "</" + k
 						+ "> \n";
 				out.write(s);

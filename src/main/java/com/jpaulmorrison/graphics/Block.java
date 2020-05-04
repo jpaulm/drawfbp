@@ -427,7 +427,8 @@ public class Block implements ActionListener {
 		if (this instanceof LegendBlock) {
 			height = y - saveY + 24;
 			width = maxX + 24;
-			// calcEdges();
+			buildSides();
+			calcEdges();
 		}
 		return str;
 	}
@@ -520,7 +521,7 @@ public class Block implements ActionListener {
 		type = item.get("type");
 		desc = item.get("description");
 		if (type.equals("I") && desc != null && desc.length() > 0 && desc.substring(0,1).equals("\""))
-			desc = desc.substring(1,desc.length() - 1);				
+			desc = desc.substring(1,desc.length() - 2);				
 		
 		if (type == null)
 			type = Block.Types.PROCESS_BLOCK;
@@ -557,9 +558,15 @@ public class Block implements ActionListener {
 		s = item.get("y").trim();
 		cy = Integer.parseInt(s);
 		s = item.get("id").trim();
-		id = Integer.parseInt(s);
+		id = Integer.parseInt(s);		
 		s = item.get("width");
 		width = Integer.parseInt(s.trim());
+		
+		if (this instanceof IIPBlock) {
+			IIPBlock iip = (IIPBlock) this;
+			width = iip.calcIIPWidth(driver.osg);
+			buildSides();
+		} 
 		s = item.get("height");
 		if (s != null)
 			height = Integer.parseInt(s.trim());
@@ -1490,16 +1497,9 @@ public class Block implements ActionListener {
 				if (this instanceof IIPBlock) {
 					IIPBlock ib = (IIPBlock) this;
 					desc = ib.checkNestedChars(desc);					
-					//height = driver.gFontHeight + 6;
-					//FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);			
-					//String t = desc;
-
-					//if (t.length() <= 1)  
-
-						//t = " " + t + " ";
-					//byte[] str = t.getBytes();
-					//width = metrics.bytesWidth(str, 0, t.length());
 					
+					width = ib.calcIIPWidth(driver.osg);
+					buildSides();
 
 					for (Arrow arrow : diag.arrows.values()) {
 						if (arrow.fromId == id && arrow.fromY == arrow.toY) // i.e.
