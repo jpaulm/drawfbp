@@ -53,7 +53,7 @@ Six Youtube videos are currently available showing how to use DrawFBP, for drawi
 
 To get started using DrawFBP once you have downloaded it, start it going, then click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block defaults to "Process", but a number of other block types are available, controlled by by the buttons along the bottom of the screen.
 
-To indicate a connection between two blocks, click anywhere on the border of the "from" block; then click anywhere on the border of the "to" block - it doesn't matter whether the left mouse button is held down or not. 
+To indicate a connection between two blocks, click anywhere on the border of the "from" block; then hold down the button and drag the mouse to an edge of the "to" block.  You should see a small blue circle appear where you can click the end of the arrow. 
 
 Other features are described in the Help facility.
 
