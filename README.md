@@ -16,7 +16,7 @@ Release History
 
 Latest release is `v2.20.4`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.20.4.jar` - can be obtained from the Releases folder, or from `build/libs` .
 
-The previous release, `v2.20.3`, has been published to Maven <!-- but there is always a slight lag, so for a while Maven may still be downloading `2.20.1`, even though the shield says `2.20.3`-->.  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. 
+This release, `v2.20.4`, has been published to Maven, but there is always a slight lag, so for a while Maven may still be downloading `2.20.3`, even though the shield says `2.20.4`.  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`. 
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
