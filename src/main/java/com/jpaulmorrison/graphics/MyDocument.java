@@ -8,8 +8,8 @@ public class MyDocument extends DefaultStyledDocument {
 	 */
 	private static final long serialVersionUID = 1L;
 	boolean changed = false;
-	public MyDocument() {
-		super();
+	public MyDocument(StyleContext sc) {
+		super(sc);
 	}
 	
 }

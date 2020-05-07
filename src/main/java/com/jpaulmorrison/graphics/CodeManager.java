@@ -42,7 +42,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	// Font font;
 	String packageName = null;
 	LinkedList<String> counterList = new LinkedList<String>();
-	JTextPane textPane;
+	JPanel panel;
 	JScrollPane scrollPane;
 
 	// GenLang compLang;
@@ -59,6 +59,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	//StyledDocument doc = null;
 	MyDocument doc = null;
 	String clsName = null;
+	JTextPane docText = null;
+	JTextPane lineNos = null;
 	//boolean completeChange;
 
 	CodeManager(Diagram d) {
@@ -100,21 +102,79 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		dialog.setPreferredSize(new Dimension(dim.width - 100, dim.height - 50));
 		dialog.setLocation(p.x + 100, p.y + 50);
 		dialog.setForeground(Color.WHITE);
+		
 		// jframe.setVisible(false);
-		dialog.pack();
+		
 
 		StyleContext sc = new StyleContext();	
 		//doc = new DefaultStyledDocument(); 
-		doc = new MyDocument(); 
-		textPane = new JTextPane(doc);
-		scrollPane = new JScrollPane(textPane);			
+		doc = new MyDocument(sc); 
 		setStyles(sc);
-		dialog.setVisible(true);
-		textPane.setVisible(true);
-		scrollPane.setVisible(true);
-		dialog.add(scrollPane);		
-		textPane.setFont(driver.fontf);
+		
+		panel = new JPanel();
+		scrollPane = new JScrollPane();
+		//scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
+		dialog.add(scrollPane);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		//scrollPane.add(panel);
+		lineNos = new JTextPane();
+		
+		docText = new JTextPane();
+		 
+		panel.add(lineNos);
+		panel.add(Box.createHorizontalStrut(20));
+		panel.add(docText);	
+		lineNos.setPreferredSize(new Dimension(40, 0));
+		lineNos.setBackground(DrawFBP.lb);
+	
+		dialog.pack();
+		 
+		scrollPane.setViewportView(panel);
+		/*
+		String data = "";
+		try {
+			data = doc.getText(0, doc.getLength());
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int lines = 0;
+		for (int i = 0; i < data.length(); i++) {
+		    if (data.charAt(i) == '\n') {
+		        lines++;
+		    }
+		}		
+				
+		JTextPane lineNos = new JTextPane();
+		//lineNos.setMinimumSize(new Dimension(50, 10000));
+		lineNos.setPreferredSize(new Dimension(50, 10000));
+		lineNos.setBackground(DrawFBP.lb);
+		String numbers = "";
+		for (int i = 1; i < lines; i++) {
+			numbers += String.format("%8s", i) + "\n";
+		}
+		lineNos.setText(numbers);
+		lineNos.setVisible(true);
+		JTextPane docText = new JTextPane(doc);
+		docText.setVisible(true);
+		panel.add(lineNos);
+		panel.add(docText);		
+		//scrollPane = new JScrollPane(panel,
+		//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		setStyles(sc);
+		*/
+		//dialog.setVisible(true);
+		//panel.setVisible(true);
+		//scrollPane.setVisible(true);
+		
+		//dialog.add(scrollPane);		
+		//panel.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
+		//dialog.pack();
 		
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 	}
@@ -689,14 +749,86 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		clsName = clsName.substring(0, i);
 
 		colourCode();
+		 // try this
+		
+		//scrollPane = new JScrollPane();
+		//scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));		
+		//scrollPane.setViewportView(textPane);
+		String data = "";
+		try {
+			data = doc.getText(0, doc.getLength());
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int lines = 0;
+		for (int j = 0; j < data.length(); j++) {
+		    if (data.charAt(j) == '\n') {
+		        lines++;
+		    }
+		}	
+		
+		panel = new JPanel();
+		//scrollPane = new JScrollPane();
+		
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		//scrollPane.add(panel);
+		//lineNos = new JTextField();
+		//docText = new JTextPane();
+				
+		//lineNos.setPreferredSize(new Dimension(50, 10000));
+		//lineNos.setBackground(DrawFBP.lb);
+		
+		
+		//lineNos = new JTextPane();
+		//lineNos.setMinimumSize(new Dimension(50, 10000));
+		//lineNos.setPreferredSize(new Dimension(50, 10000));
+	  //  lineNos.setBackground(DrawFBP.lb);
+		String numbers = "";
+		for (int j = 1; j < lines + 1; j++) {
+			numbers += String.format("%12s", j) + "\n";
+		}
+		lineNos.setText(numbers);
+		lineNos.setForeground(Color.BLACK);
+		
+		lineNos.setVisible(true);
+		//docText = new JTextPane(doc);
+		
+		docText.setStyledDocument(doc);
+		docText.setVisible(true);
+		//dialog.add(scrollPane);		
+		panel.setFont(driver.fontf);
+		//panel.add(lineNos);
+		//panel.add(docText);		
+		//scrollPane = new JScrollPane(panel,
+		//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		dialog.pack();
+		dialog.setVisible(true);
+		panel.setVisible(true);
+		scrollPane.add(panel);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS); 
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
+		
+		dialog.add(scrollPane);
+		
+		scrollPane.setVisible(true);
+		//dialog.pack();
+		
+		
+		
+		// end of try this
 		
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 		
 		//doc.changed = true;
 		// if (file.getName().endsWith(".fbp"))
 		// type = DrawFBP.DIAGRAM;
-		dialog.repaint();
 		
+		dialog.repaint();	
 		
 		return fileString;
 
@@ -868,7 +1000,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		StyleConstants.setSpaceAbove(baseStyle, 4);
 		StyleConstants.setSpaceBelow(baseStyle, 4);
 		StyleConstants.setForeground(baseStyle, Color.DARK_GRAY);
-		StyleConstants.setFontFamily(baseStyle, font.getFamily());
+		//StyleConstants.setFontFamily(baseStyle, font.getFamily());
+		StyleConstants.setFontFamily(baseStyle, font.getName());		
 		StyleConstants.setFontSize(baseStyle, s);
 
 		normalStyle = sc.addStyle(null, baseStyle);
@@ -974,8 +1107,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 			} catch (BadLocationException e) {
 			}
-		textPane.setFont(driver.fontf);
-		scrollPane.setFont(driver.fontf);
+		//panel.setFont(driver.fontf);
+		//scrollPane.setFont(driver.fontf);
 		dialog.setFont(driver.fontf);
 
 	}
@@ -1317,8 +1450,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		menuBar.setBorderPainted(true);
 
-		// Box box = new Box(BoxLayout.X_AXIS);
-		// box.setLayout(new FlowLayout(FlowLayout.LEFT));
+		menuBar.add(Box.createHorizontalStrut(200));
 		JMenuItem menuItem = new JMenuItem("Save As");
 		menuBar.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1329,7 +1461,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		menuItem.setBorderPainted(true);
 		// menuBar.add(box);
 		// int w = frame.getWidth();
-		menuBar.add(Box.createHorizontalStrut(200));
+		menuBar.add(Box.createHorizontalStrut(100));
 		JPanel p = new JPanel();
 		
 		p.add(nsLabel, BorderLayout.LINE_END);
