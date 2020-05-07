@@ -60,7 +60,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	MyDocument doc = null;
 	String clsName = null;
 	JTextPane docText = null;
-	JTextPane lineNos = null;
+	JTextArea lineNos = null;
 	//boolean completeChange;
 
 	CodeManager(Diagram d) {
@@ -118,14 +118,15 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		dialog.add(scrollPane);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		//scrollPane.add(panel);
-		lineNos = new JTextPane();
+		lineNos = new JTextArea();
 		
 		docText = new JTextPane();
 		 
 		panel.add(lineNos);
 		panel.add(Box.createHorizontalStrut(20));
 		panel.add(docText);	
-		lineNos.setPreferredSize(new Dimension(40, 0));
+		//lineNos.setPreferredSize(new Dimension(40, 0));
+		lineNos.setMinimumSize(new Dimension(60, 0));
 		lineNos.setBackground(DrawFBP.lb);
 	
 		dialog.pack();
@@ -638,6 +639,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		//nsLabel.setText("Not saved");
 		nsLabel.setText(doc.changed ? "Changed" : " ");
 
+		displayDoc(null, gl, null);
 
 		dialog.repaint();
 		// jframe.update(jdriver.osg);
@@ -687,52 +689,64 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 	String displayDoc(File file, GenLang gl, String fileString) {
 		
-		
-
-		dialog.setTitle("Displayed Code: " + file.getName());
-		// genLang = gl;
-		
-		if (fileString == null) {
-			fileString = driver.readFile(file /*, !saveType */);
-			if (fileString == null) {
-				MyOptionPane.showMessageDialog(driver,
-						"Couldn't read file: " + file.getAbsolutePath(),
-						MyOptionPane.ERROR_MESSAGE);
-				return fileString;
- 			}
-			// changed = false;
-			// if (file.getName().endsWith(".fbp")) {
-			//nsLabel.setText("Not changed");
-			
-			
-			MyDocListener1 myDocListener1 = new MyDocListener1();
-			doc.addDocumentListener(myDocListener1);
-			
-			fbpMode = true;
-			doc.changed = false;
-			// }
-			String suff = driver.getSuffix(file.getName());
-			String packageName = null;
-
-			if (suff != null && suff.toLowerCase().equals("java")) {
-				packageName = findPackage(fileString); 
-				if (null == packageName) {
-				
-					packageName = (String) MyOptionPane.showInputDialog(driver,
-							"Missing package name - please specify package name, if desired",
-							null);
-
-					if (packageName != null) {
-						fileString = "package " + packageName + ";\n" + fileString;
-						doc.changed = true;
-					}
-				}
-								
-				driver.saveProp("currentPackageName", packageName);
-				driver.saveProperties();
-				
-			}
+		if (file != null) {
+			clsName = file.getName();
+			int i = clsName.lastIndexOf(".");
+			if (i > -1)
+				clsName = clsName.substring(0, i);
 		}
+		dialog.setTitle("Displayed Code: " + clsName);
+		
+		// genLang = gl;
+		if (file != null) {
+			//clsName = file.getName();
+			//int i = clsName.lastIndexOf(".");
+			//if (i > -1)
+			//	clsName = clsName.substring(0, i);
+
+			if (fileString == null) {
+				fileString = driver.readFile(file /* , !saveType */);
+				if (fileString == null) {
+					MyOptionPane.showMessageDialog(driver,
+							"Couldn't read file: " + file.getAbsolutePath(),
+							MyOptionPane.ERROR_MESSAGE);
+					return fileString;
+				}
+				// changed = false;
+				// if (file.getName().endsWith(".fbp")) {
+				// nsLabel.setText("Not changed");
+
+				MyDocListener1 myDocListener1 = new MyDocListener1();
+				doc.addDocumentListener(myDocListener1);
+
+				fbpMode = true;
+
+				// }
+				String suff = driver.getSuffix(file.getName());
+				String packageName = null;
+
+				if (suff != null && suff.toLowerCase().equals("java")) {
+					packageName = findPackage(fileString);
+					if (null == packageName) {
+
+						packageName = (String) MyOptionPane.showInputDialog(
+								driver,
+								"Missing package name - please specify package name, if desired",
+								null);
+
+						if (packageName != null) {
+							fileString = "package " + packageName + ";\n"
+									+ fileString;
+							doc.changed = true;
+						}
+					}
+
+					driver.saveProp("currentPackageName", packageName);
+					driver.saveProperties();
+
+				}
+			}
+		 
 		//completeChange = true;
 		try {
 			doc.remove(0, doc.getLength());
@@ -743,19 +757,14 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			return fileString;
 
 		}
+		}
 		
-		clsName = file.getName();
-		int i = clsName.lastIndexOf(".");
-		clsName = clsName.substring(0, i);
+		//clsName = file.getName();
+		//int i = clsName.lastIndexOf(".");
+		//clsName = clsName.substring(0, i);
 
 		colourCode();
-		 // try this
-		
-		//scrollPane = new JScrollPane();
-		//scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
-		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
-		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));		
-		//scrollPane.setViewportView(textPane);
+		 
 		String data = "";
 		try {
 			data = doc.getText(0, doc.getLength());
@@ -772,21 +781,10 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		}	
 		
 		panel = new JPanel();
-		//scrollPane = new JScrollPane();
+	 
 		
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		//scrollPane.add(panel);
-		//lineNos = new JTextField();
-		//docText = new JTextPane();
-				
-		//lineNos.setPreferredSize(new Dimension(50, 10000));
-		//lineNos.setBackground(DrawFBP.lb);
-		
-		
-		//lineNos = new JTextPane();
-		//lineNos.setMinimumSize(new Dimension(50, 10000));
-		//lineNos.setPreferredSize(new Dimension(50, 10000));
-	  //  lineNos.setBackground(DrawFBP.lb);
+		 
 		String numbers = "";
 		for (int j = 1; j < lines + 1; j++) {
 			numbers += String.format("%12s", j) + "\n";
@@ -801,11 +799,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		docText.setVisible(true);
 		//dialog.add(scrollPane);		
 		panel.setFont(driver.fontf);
-		//panel.add(lineNos);
-		//panel.add(docText);		
-		//scrollPane = new JScrollPane(panel,
-		//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	 
 		dialog.pack();
 		dialog.setVisible(true);
 		panel.setVisible(true);
@@ -816,11 +810,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		dialog.add(scrollPane);
 		
 		scrollPane.setVisible(true);
-		//dialog.pack();
-		
-		
-		
-		// end of try this
+		 
 		
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 		
