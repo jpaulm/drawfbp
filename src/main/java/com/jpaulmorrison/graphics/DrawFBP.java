@@ -944,7 +944,7 @@ public class DrawFBP extends JFrame
 		fileMenu.add(gNMenuItem);
 		gNMenuItem.addActionListener(this);
  
-		menuItem = new JMenuItem("Display Generated Code");
+		menuItem = new JMenuItem("Display Source Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 
@@ -1285,12 +1285,12 @@ public class DrawFBP extends JFrame
 
 		}
 
-		if (s.equals("Display Generated Code")) {
+		if (s.equals("Display Source Code")) {
 
 			File cFile = null;			
 			GenLang gl = curDiag.diagLang;
 						
-			MyOptionPane.showMessageDialog(this, "Select a generated network", MyOptionPane.INFORMATION_MESSAGE);
+			MyOptionPane.showMessageDialog(this, "Select a file", MyOptionPane.INFORMATION_MESSAGE);
 
 			
 			String ss = properties.get(gl.netDirProp);

@@ -125,8 +125,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		panel.add(lineNos);
 		panel.add(Box.createHorizontalStrut(20));
 		panel.add(docText);	
-		//lineNos.setPreferredSize(new Dimension(40, 0));
-		lineNos.setMinimumSize(new Dimension(60, 0));
+		lineNos.setPreferredSize(new Dimension(40, 0));
+		//lineNos.setMinimumSize(new Dimension(60, 0));
 		lineNos.setBackground(DrawFBP.lb);
 	
 		dialog.pack();
@@ -222,6 +222,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
 		dialog.setIconImage(image);
+		
+		JFrame.setDefaultLookAndFeelDecorated(true);
 
 		String code = "";
 
@@ -333,7 +335,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				styles[k + 2] = baseStyle;
 				k = 3;
 			}
-			styles[k + 0] = baseStyle;
+			styles[k + 0] = normalStyle;
 			styles[k + 1] = packageNameStyle;
 			styles[k + 2] = normalStyle;
 			styles[k + 3] = packageNameStyle;
@@ -694,16 +696,18 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			int i = clsName.lastIndexOf(".");
 			if (i > -1)
 				clsName = clsName.substring(0, i);
+			dialog.setTitle("Displayed Code: " + file.getName());
 		}
-		dialog.setTitle("Displayed Code: " + clsName);
+		else
+			dialog.setTitle("Displayed Code: " + clsName + "." + gl.suggExtn);
 		
 		// genLang = gl;
-		if (file != null) {
+		//if (file != null) {
 			//clsName = file.getName();
 			//int i = clsName.lastIndexOf(".");
 			//if (i > -1)
 			//	clsName = clsName.substring(0, i);
-
+			if (file != null) {
 			if (fileString == null) {
 				fileString = driver.readFile(file /* , !saveType */);
 				if (fileString == null) {
@@ -757,7 +761,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			return fileString;
 
 		}
-		}
+		 }
 		
 		//clsName = file.getName();
 		//int i = clsName.lastIndexOf(".");
@@ -1414,7 +1418,17 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 							fileString = fileString.replace("@!@", pkg);
 							
 						}
-						displayDoc(file, gl, fileString);			
+						try {
+							doc.remove(0, doc.getLength());
+							doc.insertString(0, fileString, normalStyle);
+						} catch (BadLocationException ble) {
+							MyOptionPane.showMessageDialog(driver,
+									"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
+							return fileString;
+
+						}
+						displayDoc(null, gl, fileString);	
+						dialog.repaint();
 					}
 					driver.saveProp("currentPackageName", pkg);
 					// saveProperties();
