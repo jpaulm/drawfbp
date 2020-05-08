@@ -68,6 +68,7 @@ public class Block implements ActionListener {
 	String codeFileName;
 	
 	HashMap<String, Integer> portlist;
+	JDialog portInfo = null;
 	
 	//boolean added = false;
 	//boolean ghost = false;
@@ -1045,16 +1046,20 @@ public class Block implements ActionListener {
 	void displayPortInfo() {
 		if (fullClassName == null)
 			return;
+		if (portInfo != null)
+			portInfo.dispose();
 		buildMetadata();   
-		final JDialog jdialog = new JDialog(driver);
-		jdialog.addWindowListener(new WindowAdapter() {
+		// final JDialog portInfo = new JDialog(driver);
+		portInfo = new JDialog(driver);
+		
+		portInfo.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
-				jdialog.dispose();
+				portInfo.dispose();
 			}
 		});
 	
-		jdialog.setTitle("Description and Port Information");
-		jdialog.toFront();
+		portInfo.setTitle("Description and Port Information");
+		portInfo.toFront();
 		JPanel panel = new JPanel(new GridBagLayout());
 	
 		panel.setBackground(Color.GRAY);
@@ -1186,7 +1191,7 @@ public class Block implements ActionListener {
 			displayRow(gbc, gbl, tfu, panel, Color.BLACK);
 		}
 	
-		jdialog.add(panel);
+		portInfo.add(panel);
 		//jdialog.pack();  
 		
 		 
@@ -1197,26 +1202,26 @@ public class Block implements ActionListener {
 		//jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
 		//jdialog.pack();
 		//int height = 200 + inputPortAttrs.size() * 40 + outputPortAttrs.size() * 40;
-		int width = (int)jdialog.getPreferredSize().getWidth();		
+		int width = (int)portInfo.getPreferredSize().getWidth();		
 		
 		int max_y = 0;
 		for (Block b: driver.curDiag.blocks.values()) {
 			max_y = Math.max(max_y, b.cy + b.height / 2 );
 		}
 		
-		jdialog.pack();
+		portInfo.pack();
 		//jdialog.setLocation(p.x + dim.width / 2 - width / 2, p.y + dim.height - height - y_off);
-		jdialog.setLocation(p.x + dim.width / 2 - width / 2, p.y + max_y + 50);
+		portInfo.setLocation(p.x + dim.width / 2 - width / 2, p.y + max_y + 50);
 		
 		
 		panel.setVisible(true);
-		jdialog.setVisible(true);
-		jdialog.toFront();
+		portInfo.setVisible(true);
+		portInfo.toFront();
 		//jdialog.setPreferredSize(new Dimension(dim.width / 2, dim.height / 2));
 		
-		jdialog.validate();
+		portInfo.validate();
 		panel.repaint();
-		jdialog.repaint();
+		portInfo.repaint();
 		driver.repaint();
 	}
 
