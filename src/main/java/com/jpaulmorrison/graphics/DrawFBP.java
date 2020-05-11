@@ -1507,38 +1507,40 @@ public class DrawFBP extends JFrame
 			BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
 					BufferedImage.TYPE_INT_ARGB);
 			 
-			Graphics g = combined.getGraphics();
+			//Graphics g = combined.getGraphics();
 			
-			g.setColor(Color.WHITE);
+			osg.setColor(Color.WHITE);
 
-			g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
+			osg.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 			int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
-			g.drawImage(buffer2, x2, 0, null);
+			osg.drawImage(buffer2, x2, 0, null);
 			// g.drawImage(buffer, 0, 0, null);
 			
 			//g.fillRect(0, max_h, max_w, 80);
 			///g.fillRect(0, combined.getHeight(), combined.getWidth(), bottom_border_height);
 
+			// some getGraphics() replaced by refs to osg
+			
 			if (curDiag.desc != null && !curDiag.desc.trim().equals("")) {
-				Color col = g.getColor();
-				g.setColor(Color.BLUE);
+				Color col = osg.getColor();
+				osg.setColor(Color.BLUE);
 				
 				//Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 
-				g.setFont(f);
+				osg.setFont(f);
 				x = combined.getWidth() / 2;
 				// x = buffer2.getWidth() / 2;
-				metrics = g.getFontMetrics(f);
+				metrics = osg.getFontMetrics(f);
 				t = curDiag.desc;
 				width = 0;
 				if (t != null) {
 					byte[] str = t.getBytes();
 					width = metrics.bytesWidth(str, 0, t.length());
 					int sy = (bottom_border_height - metrics.getHeight()) / 2;
-					g.drawString(t, x - width / 2, buffer2.getHeight() + bottom_border_height - sy); 
+					osg.drawString(t, x - width / 2, buffer2.getHeight() + bottom_border_height - sy); 
 				}
 
-				g.setColor(col);
+				osg.setColor(col);
 			}
 		 
 			//BufferedImage image = combined;

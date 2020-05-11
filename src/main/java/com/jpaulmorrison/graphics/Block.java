@@ -69,6 +69,7 @@ public class Block implements ActionListener {
 	
 	HashMap<String, Integer> portlist;
 	JDialog portInfo = null;
+	Point ptInfoLoc = null;
 	
 	//boolean added = false;
 	//boolean ghost = false;
@@ -368,9 +369,10 @@ public class Block implements ActionListener {
 
 		String str[] = desc.split("\n");
 		boolean nonBlankLineFound = false;
-		Graphics g = driver.getGraphics();
+		//Graphics g = driver.getGraphics();
 		//FontMetrics metrics = g.getFontMetrics(g.getFont());
-		FontMetrics metrics = g.getFontMetrics(driver.fontg);
+		//FontMetrics metrics = g.getFontMetrics(driver.fontg);
+		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
 
 		for (int i = 0; i < str.length; i++) {
 			//x = 0;
@@ -544,6 +546,10 @@ public class Block implements ActionListener {
 
 		fullClassName = item.get("blockclassname");
 		String w = fullClassName; 
+		if (w != null) {
+			w = w.replace("\\",  File.separator);
+			w = w.replace("/",  File.separator);
+		}
 		if (diag.diagLang.label.equals("Java") && w != null){
 			if (!fullClassName.endsWith(".class"))  
 				fullClassName += ".class";
@@ -1046,18 +1052,47 @@ public class Block implements ActionListener {
 	void displayPortInfo() {
 		if (fullClassName == null)
 			return;
-		if (portInfo != null)
+		if (portInfo != null) {
+			ptInfoLoc = portInfo.getLocation();
 			portInfo.dispose();
+		}
 		buildMetadata();   
 		// final JDialog portInfo = new JDialog(driver);
-		portInfo = new JDialog(driver);
+		portInfo = new JDialog(driver);		
 		
 		portInfo.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
+				ptInfoLoc = portInfo.getLocation();
 				portInfo.dispose();
+				portInfo = null;
 			}
 		});
-	
+		
+		 
+		
+		/* 
+		portInfo.addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				//super.mouseDragged(e);
+				if (pILocn != null) {
+					pILocn = portInfo.getLocation();
+					portInfo.repaint();
+				}
+				
+			}
+
+			//@Override
+			//public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			//}
+			
+		});
+	 */
+		//portInfo.addMouseMotionListener(portInfo);
+		//portInfo.addWindowListener(portInfo);
+		//portInfo.addMouseMotionListener(portInfo);
+		
 		portInfo.setTitle("Description and Port Information");
 		portInfo.toFront();
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -1195,31 +1230,41 @@ public class Block implements ActionListener {
 		//jdialog.pack();  
 		
 		 
-		Point p = driver.getLocation();
-		Dimension dim = driver.getSize();
-		//int x_off = 100;
-		//int y_off = 100;
-		//jdialog.setPreferredSize(new Dimension(dim.width - x_off, dim.height - y_off));
-		//jdialog.pack();
-		//int height = 200 + inputPortAttrs.size() * 40 + outputPortAttrs.size() * 40;
-		int width = (int)portInfo.getPreferredSize().getWidth();		
+		//Point p = driver.getLocationOnScreen();
+		//Dimension dim = driver.getSize();
+	
+		// int width = (int)portInfo.getPreferredSize().getWidth();		
 		
-		int max_y = 0;
-		for (Block b: driver.curDiag.blocks.values()) {
-			max_y = Math.max(max_y, b.cy + b.height / 2 );
+		//int max_y = 0;
+		//for (Block b: driver.curDiag.blocks.values()) {
+		//	max_y = Math.max(max_y, b.cy + b.height / 2 );
+		//}
+		
+		portInfo.pack();		
+		
+		//int width = portInfo.getWidth();
+		//int height = portInfo.getHeight();
+		
+		// portInfo.setLocation(p.x + dim.width / 2 - width / 2, p.y + max_y + 50);
+		
+		//portInfo.setLocation(p.x + cx + width / 2 + 50, p.y + cy + height / 2 + 50); 
+		//portInfo.setLocationRelativeTo(driver);
+		
+		if (ptInfoLoc != null){
+			portInfo.setLocation(ptInfoLoc);
+			portInfo.repaint();
 		}
-		
-		portInfo.pack();
-		//jdialog.setLocation(p.x + dim.width / 2 - width / 2, p.y + dim.height - height - y_off);
-		portInfo.setLocation(p.x + dim.width / 2 - width / 2, p.y + max_y + 50);
-		
+		else {
+			portInfo.setLocationRelativeTo(driver);
+			ptInfoLoc = portInfo.getLocation();
+		}
 		
 		panel.setVisible(true);
 		portInfo.setVisible(true);
-		portInfo.toFront();
+		//portInfo.toFront();
 		//jdialog.setPreferredSize(new Dimension(dim.width / 2, dim.height / 2));
 		
-		portInfo.validate();
+		//portInfo.validate();
 		panel.repaint();
 		portInfo.repaint();
 		driver.repaint();
@@ -2106,6 +2151,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		} else {
 			//if (!fullClassName.equals(oldFullClassName))
 			javaComp = tempComp;
+			String w = fullClassName;
+			w = w.replace("\\",  File.separator);
+			w = w.replace("/",  File.separator);
 			fullClassName = tempFCN;
 			displayPortInfo();
 			
@@ -2206,4 +2254,73 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		cm.displayDoc(new File(t), diag.diagLang, null);
 
 	}
+	
+	/*
+	
+	public class PortInfo extends JDialog implements MouseMotionListener, WindowListener {
+
+		private static final long serialVersionUID = 1L;
+		
+		public PortInfo(DrawFBP driver) {
+			super(driver);
+		}
+
+		public void windowClosing(WindowEvent ev) {
+			portInfo.dispose();
+			portInfo = null;
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			
+			if (pILocn != null) {
+				pILocn = portInfo.getLocation();
+				portInfo.repaint();
+			}
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowActivated(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	*/
 }

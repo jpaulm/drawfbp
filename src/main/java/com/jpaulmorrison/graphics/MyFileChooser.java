@@ -218,7 +218,7 @@ public class MyFileChooser extends JDialog
 		t_fileName.getCaret().setVisible(true);
 		t_fileName.addActionListener(this);
 		t_fileName.addMouseListener(this);
-		t_fileName.setText(new File(listHead).getName() + "/");
+		t_fileName.setText(new File(listHead).getName() + File.separator);
 
 		t_fileName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
 
@@ -522,16 +522,20 @@ public class MyFileChooser extends JDialog
 				File h = new File(suggestedName);
 				if (h.getParent() != null && h.getParentFile().exists())
 					listHead = h.getParent();
-				t_dirName.setText(listHead);
+				//t_dirName.setText(listHead);
+				showListHead();
 				//t_fileName.setText(h.getName());
-				t_suggName.setText(h.getName());
+				String w = h.getName();
+				w = w.replace("\\",  File.separator);
+				w = w.replace("/",  File.separator);
+				t_suggName.setText(w);
 
 				t_fileName.addAncestorListener(new RequestFocusListener(false));
 				selComp = t_fileName;
 
 			}
 
-			t_dirName.setText(listHead);
+			showListHead();
 			
 			if (driver.curDiag.title != null
 					&& driver.curDiag.diagFile != null) {
@@ -540,7 +544,7 @@ public class MyFileChooser extends JDialog
 			}
 			showList();
 		} else {
-			t_dirName.setText(listHead);
+			showListHead();
 			showList();
 			if (list != null) {
 				SwingUtilities.invokeLater(new Runnable() {
@@ -587,6 +591,11 @@ public class MyFileChooser extends JDialog
 		return showOpenDialog(false, false);
 	}
 
+	void showListHead() {
+		listHead = listHead.replace("\\",  File.separator);
+		listHead = listHead.replace("/",  File.separator);		
+		t_dirName.setText(listHead);
+	}
 	void getSelectedFile(String[] s) {
 
 		s[0] = DrawFBP.makeAbsFileName(t_fileName.getText(),
@@ -760,7 +769,7 @@ public class MyFileChooser extends JDialog
 
 				if (currentNode.getChildCount() > 0) {
 
-					t_dirName.setText(listHead);
+					showListHead();
 					Enumeration<DefaultMutableTreeNode> e = currentNode
 							.children();
 
@@ -1746,7 +1755,7 @@ final boolean SAVEAS = true;
 
 			// fullNodeName = listHead.getAbsolutePath();
 			// showFileNames();
-			t_dirName.setText(listHead);
+			showListHead();
 			t_fileName.setText("");
 
 			panel.validate();
@@ -1830,10 +1839,15 @@ final boolean SAVEAS = true;
 				File f = new File(t_dirName + "/" + s);
 				if (f.exists())
 					if (f.isDirectory()) {
-						t_dirName.setText(f.getAbsolutePath());
+						String w = f.getAbsolutePath();
+						w = w.replace("\\",  File.separator);
+						w = w.replace("/",  File.separator);
+						t_dirName.setText(w);
 						showList();
 				}
 					else {
+						s = s.replace("\\",  File.separator);
+						s = s.replace("/",  File.separator);
 						t_fileName.setText(s);
 						enterAction.actionPerformed(new ActionEvent(e, 0, ""));  // recursive!  probably doesn't get control!
 					}
@@ -1859,7 +1873,9 @@ final boolean SAVEAS = true;
 							
 							s = f.getName();
 
-							t_fileName.setText(f.getName());
+							s = s.replace("\\",  File.separator);
+							s = s.replace("/",  File.separator);
+							t_fileName.setText(s);
 							repaint();
 						} 
 						 
@@ -1927,7 +1943,7 @@ final boolean SAVEAS = true;
 				}
 
 				listHead = s + "!";   //?????????????
-				t_dirName.setText(listHead);
+				showListHead();
 
 				showList();
 
@@ -1957,7 +1973,7 @@ final boolean SAVEAS = true;
 						|| f.getName().toLowerCase().endsWith("package.json")) {
 
 					listHead = f.getAbsolutePath();
-					t_dirName.setText(listHead);
+					showListHead();
 					
 					showList();
 
@@ -1974,7 +1990,7 @@ final boolean SAVEAS = true;
 				if (currentNode.getChildCount() > 0) {
 					listHead = listHead + "/" + s;
 					//listHead = s;
-					t_dirName.setText(listHead);
+					showListHead();
 					// panel.remove(listView);
 					showList();
 				} else
@@ -1997,8 +2013,10 @@ final boolean SAVEAS = true;
 		public void actionPerformed(ActionEvent e) {
 			
 			// For now we will only shift from suggested file to t_fileName
-			
-			t_fileName.setText(t_suggName.getText());
+			String s = t_suggName.getText();
+			s = s.replace("\\",  File.separator);
+			s = s.replace("/",  File.separator);
+			t_fileName.setText(s);
 			// text3.setText(s);
 			t_fileName.requestFocusInWindow();
 			selComp.setBackground(Color.WHITE);   
@@ -2060,7 +2078,7 @@ final boolean SAVEAS = true;
 				if (listHead == null)
 					listHead = System.getProperty("user.home");
 
-				t_dirName.setText(listHead);
+				showListHead();
 				
 
 			} else {
@@ -2087,7 +2105,7 @@ final boolean SAVEAS = true;
 			butDel.setEnabled(!inJarTree);
 			// if (selComp instanceof MyButton) {
 			butParent.setSelected(false);
-			t_fileName.setText((new File(listHead)).getName()+ "/");
+			t_fileName.setText((new File(listHead)).getName()+ File.separator);
 			showList();
 						
 			//listView.repaint();
@@ -2449,6 +2467,8 @@ l.setFont(driver.fontg);
 				
 				// if selected name has a suffix
 				if (0 < v.indexOf(".") /*|| inJarTree */) {
+					v = v.replace("\\",  File.separator);
+					v = v.replace("/",  File.separator);
 					t_fileName.setText(v);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 					return;
@@ -2466,6 +2486,8 @@ l.setFont(driver.fontg);
 								"File does not exist: "
 										+ f2.getAbsolutePath(),
 								MyOptionPane.ERROR_MESSAGE);
+						w = w.replace("\\",  File.separator);
+						w = w.replace("/",  File.separator);
 						t_dirName.setText(w);
 						listHead = w;
 						showList();
@@ -2512,6 +2534,8 @@ public void oneClick() {
 				
 
 		if (-1 < t.indexOf(".")) { // if has suffix
+			t = t.replace("\\",  File.separator);
+			t = t.replace("/",  File.separator);
 			t_fileName.setText(t);
 			t_fileName.getCaret().setVisible(true);
 			
@@ -2527,7 +2551,7 @@ public void oneClick() {
 			selComp.requestFocus();
 		}
 		else
-			t_fileName.setText(t + "/");
+			t_fileName.setText(t + File.separator);
 
 		selComp.setVisible(true);   
 		selComp.validate();

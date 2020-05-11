@@ -609,6 +609,7 @@ public class Arrow implements ActionListener {
 					MyOptionPane.PLAIN_MESSAGE, null, null, upStreamPort);
 			
 			if (ans != null /* && ans.length() > 0*/ ) {
+				ans = ans.trim();
 				Block b = diag.blocks.get(new Integer(fromId));
 				// upStreamPort = ans;
 				diag.changed = true;
@@ -650,7 +651,7 @@ public class Arrow implements ActionListener {
 			
 			
 			if (ans != null /* && ans.length() > 0 */) {
-				
+				ans = ans.trim();
 				Arrow arr = findLastArrowInChain();
 				Block b = diag.blocks.get(new Integer(arr.toId));
 
