@@ -218,7 +218,7 @@ public class MyFileChooser extends JDialog
 		t_fileName.getCaret().setVisible(true);
 		t_fileName.addActionListener(this);
 		t_fileName.addMouseListener(this);
-		t_fileName.setText(new File(listHead).getName() + File.separator);
+		t_fileName.setText(new File(listHead).getName() + "/");
 
 		t_fileName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
 
@@ -857,36 +857,6 @@ public class MyFileChooser extends JDialog
 					list.setSelectedIndex(0);    // select first row - will trigger list selection handler valueChanged
 				}
 			});
-						
-			
-			/*
-			String u = list.getSelectedValue();
-			
-			int j = u.indexOf("@");
-			if (-1 < j)
-				u = u.substring(0, j);
-			
-			if (-1 < u.indexOf("."))  { // if has suffix
-				selComp = t_fileName;
-				t_fileName.setText(u);
-				t_fileName.getCaret().setVisible(true);
-				
-				selComp = t_fileName;
-				((MyTextField) selComp).setEditable(true);
-
-				selComp.setFocusable(true);
-				// selComp.requestFocusInWindow();
-				selComp.grabFocus();
-				selComp.setEnabled(true);
-				// t_fileName.setText(lowLevel);
-
-				selComp.requestFocus();
-			}
-			else
-				t_fileName.setText(u + "/");
-			*/
-			
-
 		}
 
 		// dialog.pack();
@@ -1846,8 +1816,8 @@ final boolean SAVEAS = true;
 						showList();
 				}
 					else {
-						s = s.replace("\\",  File.separator);
-						s = s.replace("/",  File.separator);
+						//s = s.replace("\\",  File.separator);
+						//s = s.replace("/",  File.separator);
 						t_fileName.setText(s);
 						enterAction.actionPerformed(new ActionEvent(e, 0, ""));  // recursive!  probably doesn't get control!
 					}
@@ -1873,8 +1843,8 @@ final boolean SAVEAS = true;
 							
 							s = f.getName();
 
-							s = s.replace("\\",  File.separator);
-							s = s.replace("/",  File.separator);
+							//s = s.replace("\\",  File.separator);
+							//s = s.replace("/",  File.separator);
 							t_fileName.setText(s);
 							repaint();
 						} 
@@ -2014,8 +1984,8 @@ final boolean SAVEAS = true;
 			
 			// For now we will only shift from suggested file to t_fileName
 			String s = t_suggName.getText();
-			s = s.replace("\\",  File.separator);
-			s = s.replace("/",  File.separator);
+			//s = s.replace("\\",  File.separator);
+			//s = s.replace("/",  File.separator);
 			t_fileName.setText(s);
 			// text3.setText(s);
 			t_fileName.requestFocusInWindow();
@@ -2105,7 +2075,7 @@ final boolean SAVEAS = true;
 			butDel.setEnabled(!inJarTree);
 			// if (selComp instanceof MyButton) {
 			butParent.setSelected(false);
-			t_fileName.setText((new File(listHead)).getName()+ File.separator);
+			t_fileName.setText((new File(listHead)).getName()+ "/");
 			showList();
 						
 			//listView.repaint();
@@ -2374,68 +2344,7 @@ l.setFont(driver.fontg);
 
 			selComp = t_fileName;
 			oneClick();
-			/*
-			String t = (String) list.getSelectedValue();
-			int i = t.indexOf("@");
-			if (i > -1)
-				t = t.substring(0, i);
 			
-			//t_fileName.setText(t);
-			if (!inJarTree) {
-				String t2 = t;
-				if (!t.equals("")) {
-					if (!t.endsWith(".jar")) {
-						t2 = t_dirName.getText() + "/" + t;
-						File f = new File(t2);
-						 
-						if (!f.exists()) {
-							if (0 < t.lastIndexOf(".")) { // if file
-								MyOptionPane.showMessageDialog(driver,
-										"File does not exist: "
-												+ f.getAbsolutePath(),
-										MyOptionPane.ERROR_MESSAGE);
-								repaint();
-								return;
-							}
-							
-						} 
-					}
-				}
-			}
-				
-			if (-1 == t.indexOf("."))
-				repaint();
-			else {  // if has suffix
-				lowLevel = t;
-				//t_fileName.setText(lowLevel);
-				//t_fileName.setText(t);
-				selComp = t_fileName;
-				t_fileName.setText(lowLevel);
-				repaint();
-				 
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-				
-						selComp.setFocusable(true);
-						//selComp.requestFocusInWindow();
-						selComp.grabFocus();
-						selComp.setEnabled(true);
-						//t_fileName.setText(lowLevel);
-						t_fileName.getCaret().setVisible(true);
-					   // selComp = t_fileName;
-					    selComp.requestFocus();
-					    selComp.setVisible(true);;
-					    selComp.validate();
-					    repaint();
-					}
-				});
-				 
-				//t_fileName.setText(t); 			
-			    //selComp = t_fileName;
-			    //selComp.requestFocus();
-			}
-			//repaint();
-			*/
 		}
 		
 		public void secondClick(MouseEvent e) {
@@ -2467,8 +2376,8 @@ l.setFont(driver.fontg);
 				
 				// if selected name has a suffix
 				if (0 < v.indexOf(".") /*|| inJarTree */) {
-					v = v.replace("\\",  File.separator);
-					v = v.replace("/",  File.separator);
+					//v = v.replace("\\",  File.separator);
+					//v = v.replace("/",  File.separator);
 					t_fileName.setText(v);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 					return;
@@ -2534,8 +2443,8 @@ public void oneClick() {
 				
 
 		if (-1 < t.indexOf(".")) { // if has suffix
-			t = t.replace("\\",  File.separator);
-			t = t.replace("/",  File.separator);
+			//t = t.replace("\\",  File.separator);
+			//t = t.replace("/",  File.separator);
 			t_fileName.setText(t);
 			t_fileName.getCaret().setVisible(true);
 			
@@ -2551,7 +2460,7 @@ public void oneClick() {
 			selComp.requestFocus();
 		}
 		else
-			t_fileName.setText(t + File.separator);
+			t_fileName.setText(t + "/");
 
 		selComp.setVisible(true);   
 		selComp.validate();
