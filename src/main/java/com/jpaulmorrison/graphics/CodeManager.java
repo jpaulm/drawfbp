@@ -125,9 +125,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		panel.add(lineNos);
 		panel.add(Box.createHorizontalStrut(20));
 		panel.add(docText);	
-		lineNos.setPreferredSize(new Dimension(40, 0));
-		//lineNos.setMinimumSize(new Dimension(60, 0));
+		lineNos.setPreferredSize(new Dimension(80, Short.MAX_VALUE));
+		lineNos.setMinimumSize(new Dimension(60, Short.MAX_VALUE));
+		lineNos.setMaximumSize(new Dimension(100, Short.MAX_VALUE));
 		lineNos.setBackground(DrawFBP.lb);
+		lineNos.setEditable(false);
 	
 		dialog.pack();
 		 
@@ -612,7 +614,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 			if (error) {
 				contents[sno] = "\n /* Errors in generated code - they must be corrected for your program to run - \n\n"
-						+ "               remove this comment when you are done  */";
+						+ "               remove this comment when you are done  */  \n";
 				styles[sno] = errorStyle;
 				MyOptionPane.showMessageDialog(driver,
 						"Error in generated code", MyOptionPane.ERROR_MESSAGE);
@@ -791,7 +793,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		 
 		String numbers = "";
 		for (int j = 1; j < lines + 1; j++) {
-			numbers += String.format("%12s", j) + "\n";
+			numbers += String.format("%12s", j) + "    \n";
 		}
 		lineNos.setText(numbers);
 		lineNos.setForeground(Color.BLACK);
@@ -1809,9 +1811,20 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		return true;
 
 	}
+	
+	/*********************
+	 * 
+	 * The idea here is that, if the string already has double backslashes, 
+	 * then the designer will be aware of the Java convention for showing 
+	 * backslashes;  if not, then we will convert single backslashes to double
+	 *
+	 */
 
 	String q(String s) {
-		return "\"" + s + "\"";
+		String t = "\"" + s + "\"";
+		if (-1 == t.indexOf("\\\\"))
+				t = t.replace("\\",  "\\\\");
+		return t;
 	}
 
 	String cleanComp(Block b) {

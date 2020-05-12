@@ -2061,7 +2061,8 @@ final boolean SAVEAS = true;
 					currentNode = (DefaultMutableTreeNode) currentNode
 							.getParent();
 					u = listHead;
-					int k = u.lastIndexOf("/");
+					//int k = u.lastIndexOf("/");
+					int k = u.lastIndexOf(File.separator);
 					u = u.substring(0, k);
 					listHead = u;
 					

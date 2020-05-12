@@ -87,7 +87,7 @@ public class ReportBlock extends Block {
 		Color col = g.getColor();
 		g.setColor(Color.BLACK);
 		int x = textX;
-		int y = textY;
+		int y = textY + driver.gFontHeight / 2;
 		if (desc != null) {
 			String str[] = centreDesc();
 			for (int i = 0; i < str.length; i++) {
