@@ -228,11 +228,11 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			jp.setLayout(gb);
 			jp.setBackground(Color.WHITE);
 
-			Dimension minSize2;
-			Dimension prefSize2;
-			Dimension maxSize2;
-			Dimension minSize = new Dimension(100, 15);
-			Dimension prefSize = new Dimension(100, 15);
+			//Dimension minSize2;
+			//Dimension prefSize2;
+			//Dimension maxSize2;
+			Dimension minSize = new Dimension(120, 15);
+			Dimension prefSize = new Dimension(200, 15);
 			Dimension maxSize = new Dimension(Short.MAX_VALUE, 15);
 			JLabel lab1 = new JLabel((String) value);
 			lab1.setFont(new Font("Arial", Font.PLAIN, (int) driver.defaultFontSize));
@@ -241,9 +241,9 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			lab1.setPreferredSize(prefSize);
 			jp.add(lab1);
 			
-			minSize2 = new Dimension(20, 15);
-			prefSize2 = new Dimension(20, 15);
-			maxSize2 = new Dimension(Short.MAX_VALUE, 15);
+			Dimension minSize2 = new Dimension(10, 15);
+			Dimension prefSize2 = new Dimension(10, 15);
+			Dimension maxSize2 = new Dimension(10, 15);
 			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
 
 			JLabel lab2 = new JLabel("Sample English Text \\");
@@ -278,8 +278,8 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		    //  Hindi for "Hindi text sample"
 			lab4.setFont(new Font((String) value, Font.PLAIN,
 					(int) driver.defaultFontSize));
-			minSize = new Dimension(150, 15);
-			prefSize = new Dimension(150, 15);
+			minSize = new Dimension(100, 15);
+			prefSize = new Dimension(100, 15);
 			lab4.setMinimumSize(minSize);
 			lab4.setMaximumSize(maxSize);
 			lab4.setPreferredSize(prefSize);
@@ -287,17 +287,18 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			jp.add(lab4);
 			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
 		
-			JLabel lab40 = new JLabel("\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8\u4f8b");
+			JLabel lab5 = new JLabel("\u65e5\u672c\u8a9e\u306e\u30c6\u30ad\u30b9\u30c8\u4f8b");
 		    //  Japanese for "japanese text sample"
-			lab40.setFont(new Font((String) value, Font.PLAIN,
+			lab5.setFont(new Font((String) value, Font.PLAIN,
 					(int) driver.defaultFontSize));
 			minSize = new Dimension(150, 15);
 			prefSize = new Dimension(150, 15);
-			lab40.setMinimumSize(minSize);
-			lab40.setMaximumSize(maxSize);
-			lab40.setPreferredSize(prefSize);
+			lab5.setMinimumSize(minSize);
+			lab5.setMaximumSize(maxSize);
+			lab5.setPreferredSize(prefSize);
 
-			jp.add(lab40);
+			jp.add(lab5);
+			/*
 			jp.add(new Box.Filler(minSize2, prefSize2, maxSize2));
 
 			JLabel lab5 = new JLabel("\u4e2d\u6587\u6587\u672c\u793a\u4f8b");  			
@@ -311,6 +312,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 			lab5.setPreferredSize(prefSize);
 
 			jp.add(lab5);
+			*/
 			Color vLightBlue = new Color(220, 235, 255);			
 			
 			if (isSelected) { 

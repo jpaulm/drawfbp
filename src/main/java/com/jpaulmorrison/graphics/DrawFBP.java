@@ -2662,6 +2662,7 @@ public class DrawFBP extends JFrame
 			adjustFonts();
 			repaint();
 			// repaint();
+			redrawVarBlocks();
 		}
 
 		if (fFontChanged) {
@@ -2674,12 +2675,22 @@ public class DrawFBP extends JFrame
 			adjustFonts();
 			repaint();
 			// repaint();
-
+			redrawVarBlocks();
 		}
 
 		return;
 	}
 
+	
+	void redrawVarBlocks() {
+		for (Block b: curDiag.blocks.values()){
+			if (b.type.equals(Block.Types.IIP_BLOCK) ||
+					b.type.equals(Block.Types.LEGEND_BLOCK)){
+				update(osg);
+			}
+			
+		}
+	}
 	void chooseFonts(MyFontChooser fontChooser) {
 
 		fontChooser.buildFontLists();
@@ -3022,7 +3033,7 @@ public class DrawFBP extends JFrame
 			if (srcDir.endsWith("/"))
 				srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
-			if (!(output.equals("")) || !(err.equals(""))) {
+			//if (!(output.equals("")) || !(err.equals(""))) {
 				MyOptionPane.showMessageDialog(this,
 						"<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
 				err + "<br>" + output + "<br>" +
@@ -3032,7 +3043,7 @@ public class DrawFBP extends JFrame
 				"File name: " + progName + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 				//return;
-			} 
+			//} 
 			
 			if (proc == null) 
 				return;
