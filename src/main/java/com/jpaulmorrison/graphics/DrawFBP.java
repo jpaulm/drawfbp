@@ -2686,7 +2686,11 @@ public class DrawFBP extends JFrame
 		for (Block b: curDiag.blocks.values()){
 			if (b.type.equals(Block.Types.IIP_BLOCK) ||
 					b.type.equals(Block.Types.LEGEND_BLOCK)){
-				update(osg);
+				SwingUtilities.invokeLater(new Runnable(){
+			        public void run(){
+			            curDiag.area.repaint();
+			        }
+			    });
 			}
 			
 		}
@@ -3034,6 +3038,7 @@ public class DrawFBP extends JFrame
 				srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
 			//if (!(output.equals("")) || !(err.equals(""))) {
+			/*
 				MyOptionPane.showMessageDialog(this,
 						"<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
 				err + "<br>" + output + "<br>" +
@@ -3042,6 +3047,37 @@ public class DrawFBP extends JFrame
 				"Class dir: " + clsDir + "<br>" +
 				"File name: " + progName + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
+				*/
+			
+			String s = "<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
+			err + output + "<br>" +
+			"Jar files: ";
+			s += javaFBPJarFile + "<br>"; 
+			if (jarFiles != null) {				
+				for (String jfv : jarFiles.values()) {
+					s += "--- " + jfv + "<br>";
+				}				
+			}
+			s += 
+			"Source dir: " + srcDir + "<br>" +
+			"Class dir: " + clsDir + "<br>" +
+			"File name: " + progName + "</html>";
+			
+				JFrame jf2 = new JFrame();
+				JEditorPane jep = new JEditorPane(/*"text/plain",*/ "text/html", " ");
+		        jep.setEditable(false);
+		        JScrollPane jsp = new JScrollPane(jep);
+				jf2.add(jsp);
+				jsp.setViewportView(jep);
+				jf2.setVisible(true);
+				jf2.setTitle("Compile Output");
+				jep.setText(s); 
+				jf2.pack();
+				jf2.setLocation(200, 200);
+				jf2.setSize(500, 300);
+				//jf2.setAlwaysOnTop(true);
+				jep.setFont(fontf);
+				
 				//return;
 			//} 
 			

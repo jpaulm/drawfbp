@@ -27,7 +27,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	// HashMap<String, Integer> portlist;
 	Style baseStyle, normalStyle, packageNameStyle, errorStyle,
 			quotedStringStyle, commentStyle;
-	JFrame dialog;
+	JFrame jf;
 	//StyledDocument doc;
 	//boolean changed = false;
 	boolean generated = false;
@@ -68,40 +68,40 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		gl = diag.diagLang;
 		driver = d.driver;
 		d.cm = this;
-		dialog = new JFrame();
-		driver.depDialog = dialog;
+		jf = new JFrame();
+		driver.depDialog = jf;
 		nsLabel.setFont(driver.fontg);
 		//completeChange = false;
 		
-		DrawFBP.applyOrientation(dialog);
+		DrawFBP.applyOrientation(jf);
 
 		//dialog.setAlwaysOnTop(false);
 		
-		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		dialog.addWindowListener(new WindowAdapter() {
+		jf.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		jf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				boolean res = true;
 				if (doc.changed)
 					res = askAboutSaving();
 				if (res){
 					driver.depDialog = null;
-					dialog.dispose();
+					jf.dispose();
 				}
 			}
 
 		});
 		
-		dialog.setJMenuBar(createMenuBar());
-		dialog.repaint();
+		jf.setJMenuBar(createMenuBar());
+		jf.repaint();
 
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
-		dialog.setIconImage(image);
+		jf.setIconImage(image);
 
 		Point p = driver.getLocation();
 		Dimension dim = driver.getSize();
-		dialog.setPreferredSize(new Dimension(dim.width - 100, dim.height - 50));
-		dialog.setLocation(p.x + 100, p.y + 50);
-		dialog.setForeground(Color.WHITE);
+		jf.setPreferredSize(new Dimension(dim.width - 100, dim.height - 50));
+		jf.setLocation(p.x + 100, p.y + 50);
+		jf.setForeground(Color.WHITE);
 		
 		// jframe.setVisible(false);
 		
@@ -115,7 +115,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		scrollPane = new JScrollPane();
 		//scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
 		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
-		dialog.add(scrollPane);
+		jf.add(scrollPane);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		//scrollPane.add(panel);
 		lineNos = new JTextArea();
@@ -131,7 +131,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		lineNos.setBackground(DrawFBP.lb);
 		lineNos.setEditable(false);
 	
-		dialog.pack();
+		jf.pack();
 		 
 		scrollPane.setViewportView(panel);
 		/*
@@ -176,7 +176,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		
 		//dialog.add(scrollPane);		
 		//panel.setFont(driver.fontf);
-		dialog.setFont(driver.fontf);
+		jf.setFont(driver.fontf);
 		//dialog.pack();
 		
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
@@ -184,7 +184,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	
 	void genCode() {
 		if (!generateCode()) {
-			dialog.dispose();
+			jf.dispose();
 		}
 	}
 
@@ -218,12 +218,12 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		
 		String fn = diag.diagFile == null ? "unknown" : diag.diagFile.getName();		
 			
-		dialog.setTitle("Generated Code for " + fn);		
+		jf.setTitle("Generated Code for " + fn);		
 
-		dialog.setJMenuBar(createMenuBar());		
+		jf.setJMenuBar(createMenuBar());		
 
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
-		dialog.setIconImage(image);
+		jf.setIconImage(image);
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);
 
@@ -262,7 +262,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			packageName = driver.properties.get("currentPackageName");
 			if (packageName == null || packageName.equals("") || packageName.equals("null")
 					|| packageName.equals("(null)")) {
-				packageName = (String) MyOptionPane.showInputDialog(dialog,
+				packageName = (String) MyOptionPane.showInputDialog(jf,
 						"Please fill in a package name or namespace here if desired", null);
 				if (packageName == null || packageName.equals("") || packageName.equals("null"))
 					//packageName = "(null)";
@@ -401,7 +401,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 							diag.changed = true;
 						}
 
-						dialog.repaint();
+						jf.repaint();
 						if (block.mpxfactor != null) {
 							code += "int " + compress(s) + "_count = "
 									+ block.mpxfactor + "; "
@@ -488,7 +488,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				if (!getPortNames(arrow))
 					return false;
 
-				dialog.repaint();
+				jf.repaint();
 
 				String fromDesc = descArray.get(new Integer(arrow.fromId));
 				// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
@@ -500,7 +500,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 				// }
 
-				dialog.repaint();
+				jf.repaint();
 				// String upPort = arrow.upStreamPort;
 				// String dnPort = a2.downStreamPort;
 
@@ -645,7 +645,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		displayDoc(null, gl, null);
 
-		dialog.repaint();
+		jf.repaint();
 		// jframe.update(jdriver.osg);
 
 		return true;
@@ -698,10 +698,10 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			int i = clsName.lastIndexOf(".");
 			if (i > -1)
 				clsName = clsName.substring(0, i);
-			dialog.setTitle("Displayed Code: " + file.getName());
+			jf.setTitle("Displayed Code: " + file.getName());
 		}
 		else
-			dialog.setTitle("Displayed Code: " + clsName + "." + gl.suggExtn);
+			jf.setTitle("Displayed Code: " + clsName + "." + gl.suggExtn);
 		
 		// genLang = gl;
 		//if (file != null) {
@@ -806,14 +806,14 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		//dialog.add(scrollPane);		
 		panel.setFont(driver.fontf);
 	 
-		dialog.pack();
-		dialog.setVisible(true);
+		jf.pack();
+		jf.setVisible(true);
 		panel.setVisible(true);
 		scrollPane.add(panel);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS); 
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
 		
-		dialog.add(scrollPane);
+		jf.add(scrollPane);
 		
 		scrollPane.setVisible(true);
 		 
@@ -824,7 +824,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		// if (file.getName().endsWith(".fbp"))
 		// type = DrawFBP.DIAGRAM;
 		
-		dialog.repaint();	
+		jf.repaint();	
 		
 		return fileString;
 
@@ -1105,7 +1105,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			}
 		//panel.setFont(driver.fontf);
 		//scrollPane.setFont(driver.fontf);
-		dialog.setFont(driver.fontf);
+		jf.setFont(driver.fontf);
 
 	}
 
@@ -1121,7 +1121,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			//if (doc.changed)
 				res = askAboutSaving();
 			if (res)
-				dialog.dispose();
+				jf.dispose();
 
 		}
 		return;
@@ -1331,7 +1331,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
 		//saveProperties();
 		doc.changed = false;
-		dialog.repaint();
+		jf.repaint();
 
 		if (packageNameChanged) {
 			driver.saveProp("currentPackageName", packageName);
@@ -1341,11 +1341,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		// diag.targetLang = gl.label;
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 		// diag.genCodeFileName = file.getAbsolutePath();
-		dialog.setTitle("Generated Code: " + file.getName());		
-		dialog.repaint();
+		jf.setTitle("Generated Code: " + file.getName());		
+		jf.repaint();
 
 		if (saveType != SAVE_AS)
-			dialog.dispose();
+			jf.dispose();
 		return true;
 	}
 
@@ -1430,7 +1430,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 						}
 						displayDoc(null, gl, fileString);	
-						dialog.repaint();
+						jf.repaint();
 					}
 					driver.saveProp("currentPackageName", pkg);
 					// saveProperties();
@@ -1580,7 +1580,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 			String toDesc = descArray.get(new Integer(a2.toId));
 
-			dialog.repaint();
+			jf.repaint();
 			if (!(from instanceof ProcessBlock) && !(from instanceof IIPBlock)
 					|| !(to instanceof ProcessBlock))
 				continue;
@@ -1712,7 +1712,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			String toDesc = descArray.get(new Integer(a2.toId));
 			// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
-			dialog.repaint();
+			jf.repaint();
 
 			if (!(from instanceof IIPBlock)) {
 				upPort = a2.upStreamPort;
@@ -1803,7 +1803,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		//nsLabel.setText(doc.changed ? "Changed" : " ");
 
-		dialog.repaint();
+		jf.repaint();
 		// jframe.update(jdriver.osg);
 
 		

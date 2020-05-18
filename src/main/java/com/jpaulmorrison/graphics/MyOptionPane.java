@@ -32,13 +32,17 @@ public class MyOptionPane {
 		 JOptionPane pane = new JOptionPane(message, messageType, OK_CANCEL_OPTION, ico,
 				  options, initialValue);
 		
-		/*
-		http://stackoverflow.com/questions/27404362/custom-dialog-using-joptionpane-api-wont-dispose
-		*/
-			
-	     JDialog dialog = pane.createDialog(f, title);
+		//JScrollPane jsp = new JScrollPane();
+		
+		//pane.add(jsp);
+					
+	    JDialog dialog = pane.createDialog(f, title);
+	    // JDialog dialog = new JDialog();
+	     dialog.setTitle(title);
 	     if (!dialog.isResizable()) 
              dialog.setResizable(true);
+	     
+	     //jsp.add(dialog);
           
 	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	     DrawFBP.applyOrientation(dialog); 
@@ -78,10 +82,14 @@ public class MyOptionPane {
 		
 		JOptionPane pane = new JOptionPane(message, i, DEFAULT_OPTION, ico);
 		 
-		 //if (options != null)
-		//	 new Throwable().printStackTrace();
-		 
-	     JDialog dialog = pane.createDialog(f, s);
+	     
+	    // JScrollPane jsp = new JScrollPane();
+	   //  pane.add(jsp);
+	    JDialog dialog = pane.createDialog(f, s);
+	    // JDialog dialog = new JDialog();
+	   //  dialog.setTitle(s);
+	     
+	    // jsp.add(dialog);
 	     if (!dialog.isResizable())  
              dialog.setResizable(true);
 	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 

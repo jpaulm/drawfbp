@@ -2151,7 +2151,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		} else {
 			//if (!fullClassName.equals(oldFullClassName))
 			javaComp = tempComp;
-			String w = fullClassName;
+			//String w = fullClassName;
 			//w = w.replace("\\",  File.separator);
 			//w = w.replace("/",  File.separator);
 			fullClassName = tempFCN;
