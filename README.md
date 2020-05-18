@@ -114,7 +114,7 @@ DrawFBP requires Java 1.7 or later.
 
 If you want access to the Java annotations of your components, add the jar file(s) containing them (at least JavaFBP and possibly others) to the project Properties/Build Path (for Eclipse), or e.g. type on the command line  
 
-        java -cp "build/libs/drawfbp-x.y.z.jar;..\javafbp\build\libs\javafbp-4.1.0.jar" com.jpaulmorrison.graphics.DrawFBP
+        java -cp "build/libs/drawfbp-x.y.z.jar;..\javafbp\build\libs\javafbp-4.1.2.jar" com.jpaulmorrison.graphics.DrawFBP
         
 where `x.y.z` is the DrawFBP version number.
 
