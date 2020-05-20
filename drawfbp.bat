@@ -1,3 +1,4 @@
-echo Displaying %~1
-java -jar build\libs\drawfbp-2.19.1.jar %~1
+echo Displaying %1
+pause
+java -jar "C:\Users\%USERNAME%\Documents\GitHub\drawfbp\build\libs\drawfbp-2.20.6.jar" %1
 pause

@@ -3155,6 +3155,7 @@ public class DrawFBP extends JFrame
 
 			*/
 			
+			ss = cFile.getAbsolutePath();
 			if (!(ss.endsWith(".cs"))) {
 				MyOptionPane.showMessageDialog(this,
 						"C# program " + ss + " must end in '.cs'",
@@ -3163,8 +3164,9 @@ public class DrawFBP extends JFrame
 			}
 
 			ss = ss.replace('\\', '/');
+			ss = ss.replace("/", File.separator);
 			
-			String progString = readFile(new File(ss) /*, !SAVEAS */);
+			String progString = readFile(cFile /*new File(ss), !SAVEAS */);
 			if (progString == null) {
 				MyOptionPane.showMessageDialog(this,
 						"Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);
@@ -3172,7 +3174,8 @@ public class DrawFBP extends JFrame
 			}
 			String t = "";
 			String v = "";
-			srcDir = ss;
+			int i = ss.lastIndexOf(File.separator);
+			srcDir = ss.substring(0, i);
 			int k = progString.indexOf("namespace ");
 			if (k > -1) {				
 				k += 10; // skip over "namespace"
@@ -3195,8 +3198,9 @@ public class DrawFBP extends JFrame
 			 
 			
 			
-			String trunc = ss.substring(0, ss.lastIndexOf("/"));
-			String progName = ss.substring(ss.lastIndexOf("/") + 1);
+			//String trunc = ss.substring(0, ss.lastIndexOf("/"));
+			String trunc = srcDir;
+			String progName = ss.substring(ss.lastIndexOf(File.separator) + 1);
 			
 			
 			File f = new File(trunc);
