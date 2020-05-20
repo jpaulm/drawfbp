@@ -290,6 +290,7 @@ public class DrawFBP extends JFrame
 	String progName = null;
 	String output = "";
 	String error = "";
+	String exeDir = null;
 	
 	String[] pBCmdArray = null;
 	String pBDir = null;
@@ -2852,7 +2853,7 @@ public class DrawFBP extends JFrame
 		 
 		if (curDiag.changed) {
 			cMsg = "Select a " + currLang.label + " source file - if diagram has changed, \n   invoke 'File/Generate " + currLang.label + " Network' first";
-			return;
+			//return;
 		}
 		 
 		cMsg = "Select  a " + currLang.label + " source file";
@@ -3034,6 +3035,9 @@ public class DrawFBP extends JFrame
 					proc = null;
 			} 
 			
+			if (proc == null) 
+				return;
+			
 			if (srcDir.endsWith("/"))
 				srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
@@ -3050,7 +3054,7 @@ public class DrawFBP extends JFrame
 				*/
 			
 			String s = "<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
-			err + output + "<br>" +
+					err + output + "<br>" +
 			"Jar files: ";
 			s += javaFBPJarFile + "<br>"; 
 			if (jarFiles != null) {				
@@ -3062,6 +3066,14 @@ public class DrawFBP extends JFrame
 			"Source dir: " + srcDir + "<br>" +
 			"Class dir: " + clsDir + "<br>" +
 			"File name: " + progName + "</html>";
+			
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 			
 				JFrame jf2 = new JFrame();
 				JEditorPane jep = new JEditorPane(/*"text/plain",*/ "text/html", " ");
@@ -3081,16 +3093,9 @@ public class DrawFBP extends JFrame
 				//return;
 			//} 
 			
-			if (proc == null) 
-				return;
+			
 			int u = 0;
-				try {
-					proc.waitFor();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
+				
 				//interrupt = true;
 				
 				
@@ -3125,35 +3130,11 @@ public class DrawFBP extends JFrame
 
 			//if (!(currLang.label.equals("C#"))) {
 
-			//	MyOptionPane.showMessageDialog(this,
-			//			"Language not supported: " + currLang.label,
-			//			MyOptionPane.ERROR_MESSAGE);
-			//	return;
-			//}
-
+			
 			// Start of C# part...
 
-			/* String */ srcDir = properties.get("currentCsharpNetworkDir");
-			/*
-			if (srcDir == null)
-				srcDir = System.getProperty("user.home");	
-
-			fc = new MyFileChooser(this,new File(srcDir),
-					curDiag.fCParm[Diagram.PROCESS]);
-
-			returnVal = fc.showOpenDialog();
-
-			ss = null;
-			cFile = null;
-			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				ss = getSelFile(fc);
-				cFile = new File(ss);
-			}
-			// }
-			if (cFile == null || !(cFile.exists()))
-				return;
-
-			*/
+			srcDir = properties.get("currentCsharpNetworkDir");
+			
 			
 			ss = cFile.getAbsolutePath();
 			if (!(ss.endsWith(".cs"))) {
@@ -3205,12 +3186,12 @@ public class DrawFBP extends JFrame
 			
 			File f = new File(trunc);
 			f.mkdirs();
-			if (f == null || !f.exists()) {				
-				MyOptionPane.showMessageDialog(this,
-						"'bin' directory does not exist - " + f.getAbsolutePath(),
-						MyOptionPane.ERROR_MESSAGE);
-				return;
-		}
+			//if (f == null || !f.exists()) {				
+			//	MyOptionPane.showMessageDialog(this,
+			//			"'bin' directory does not exist - " + f.getAbsolutePath(),
+			//			MyOptionPane.ERROR_MESSAGE);
+			//	return;
+		    //}
 			
 			saveProp("currentCsharpNetworkDir",
 					trunc);
@@ -3260,6 +3241,7 @@ public class DrawFBP extends JFrame
             //cmdList.add("-main:" + v + "." + progName);
             //progName = progName.substring(0, progName.length() - 3);  // drop the .cs
             cmdList.add("-out:" + target + "/" + v + ".exe");
+            exeDir = trunc + File.separator + target;
             			
 			if (!gotDlls  && !gotDllReminder) {
 				MyOptionPane.showMessageDialog(this,
@@ -3306,8 +3288,7 @@ public class DrawFBP extends JFrame
 					cmdList.add("-r:" + w.substring(j));
 				}
 				 
-				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPLib/bin/Debug/FBPLib.dll\"");
-				//cmdList.add("\"/r:C:/Users/Paul/My Documents/GitHub/csharpfbp/FBPVerbs/bin/Debug/FBPVerbs.dll\"");
+				
 			}					
 			//String w = "\"" + trunc + "/" + "*.cs\"";
 			ss = ss.replace("\\",  "/");
@@ -3341,6 +3322,9 @@ public class DrawFBP extends JFrame
 					proc = null;
 			} 
 
+			if (proc == null)
+				return;
+			
 			//interrupt = true;
 			//program = v + "/" + progName + ".cs";
 			int u = 0;
@@ -3352,23 +3336,55 @@ public class DrawFBP extends JFrame
 			//					MyOptionPane.ERROR_MESSAGE);
 				//return;
 			//} 
-			if (proc == null)
-				return;
+			
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			String s = "<html>Compile output for " + "\"" + srcDir + "/" + progName + ".cs\"<br>" +
+					err + output + "<br>" +
+			"Dll files: ";
+			
+			if (dllFiles != null) {				
+				for (String dlv : dllFiles.values()) {
+					s += "--- \"" + dlv + "\"<br>";
+				}				
+			}
+			s += 
+			"Source dir: \"" + srcDir + "\"<br>" +
+			"Exe dir: \"" + exeDir + "\"<br>" +
+			"File name: " + progName + ".cs</html>";
+			
+				JFrame jf2 = new JFrame();
+				JEditorPane jep = new JEditorPane(/*"text/plain",*/ "text/html", " ");
+		        jep.setEditable(false);
+		        JScrollPane jsp = new JScrollPane(jep);
+				jf2.add(jsp);
+				jsp.setViewportView(jep);
+				jf2.setVisible(true);
+				jf2.setTitle("Compile Output");
+				jep.setText(s); 
+				jf2.pack();
+				jf2.setLocation(200, 200);
+				jf2.setSize(500, 300);
+				//jf2.setAlwaysOnTop(true);
+				jep.setFont(fontf);
 				
-				try {
-					proc.waitFor();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+			
 
-				proc.destroy();
-			 
+			
+
+			proc.destroy();
 
 			u = proc.exitValue();
 			//interrupt = true;
 			 
 			//setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			
+			 
 			 
 			if (u == 0) {
 
@@ -3563,7 +3579,7 @@ public class DrawFBP extends JFrame
 
 				
 			
-			String exeDir = properties.get("exeDir");
+			exeDir = properties.get("exeDir");
 			if (exeDir == null)
 				exeDir = System.getProperty("user.home");
 
