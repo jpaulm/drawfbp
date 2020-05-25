@@ -291,7 +291,7 @@ public class DiagramBuilder {
 									}
 								} else if (type.equals(Block.Types.IIP_BLOCK)) {
 									block = new IIPBlock(diag);
-									IIPBlock ib = (IIPBlock) block;
+									//IIPBlock ib = (IIPBlock) block;
 									//ib.width = ib.calcIIPWidth(driver.osg);
 									//block.buildSides();
 

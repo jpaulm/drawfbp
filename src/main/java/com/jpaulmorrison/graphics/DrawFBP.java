@@ -3065,7 +3065,8 @@ public class DrawFBP extends JFrame
 			s += 
 			"Source dir: " + srcDir + "<br>" +
 			"Class dir: " + clsDir + "<br>" +
-			"File name: " + progName + "</html>";
+			"File name: " + srcDir + "/" + progName + "<br>" + 
+			"Class file name: " + clsDir +  "/" +  progName + ".class</html>";
 			
 			try {
 				proc.waitFor();
@@ -3353,10 +3354,12 @@ public class DrawFBP extends JFrame
 					s += "--- \"" + dlv + "\"<br>";
 				}				
 			}
+			exeDir = exeDir.replace("/",  File.separator);
 			s += 
 			"Source dir: \"" + srcDir + "\"<br>" +
 			"Exe dir: \"" + exeDir + "\"<br>" +
-			"File name: " + progName + ".cs</html>";
+			"File name: \"" + srcDir + File.separator + "*" + ".cs\"<br>" +
+			"Output file: \"" + exeDir + File.separator + v + ".exe\"</html>";
 			
 				JFrame jf2 = new JFrame();
 				JEditorPane jep = new JEditorPane(/*"text/plain",*/ "text/html", " ");
