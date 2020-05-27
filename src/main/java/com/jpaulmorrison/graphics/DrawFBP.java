@@ -2994,7 +2994,7 @@ public class DrawFBP extends JFrame
 			
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = srcDir.replace("/src", "/bin");
-			clsDir = clsDir.substring(0, clsDir.indexOf("/bin") + 4);
+			//clsDir = clsDir.substring(0, clsDir.indexOf("/bin") + 4);
 			
 			(new File(clsDir)).mkdirs(); 
 			
@@ -3041,17 +3041,7 @@ public class DrawFBP extends JFrame
 			if (srcDir.endsWith("/"))
 				srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
-			//if (!(output.equals("")) || !(err.equals(""))) {
-			/*
-				MyOptionPane.showMessageDialog(this,
-						"<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
-				err + "<br>" + output + "<br>" +
-				"Jar files:" + jf + "<br>" +
-				"Source dir: " + srcDir + "<br>" +
-				"Class dir: " + clsDir + "<br>" +
-				"File name: " + progName + "</html>",
-						MyOptionPane.ERROR_MESSAGE);
-				*/
+			
 			
 			String s = "<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
 					err + output + "<br>" +
@@ -3062,11 +3052,15 @@ public class DrawFBP extends JFrame
 					s += "--- " + jfv + "<br>";
 				}				
 			}
+			String cls = progName;
+			if (progName.endsWith(".java"))
+				cls = progName.substring(0, progName.length() - 5);
+			
 			s += 
 			"Source dir: " + srcDir + "<br>" +
 			"Class dir: " + clsDir + "<br>" +
 			"File name: " + srcDir + "/" + progName + "<br>" + 
-			"Class file name: " + clsDir +  "/" +  progName + ".class</html>";
+			"Class file name: " + clsDir +  "/" +  cls + ".class</html>";
 			
 			try {
 				proc.waitFor();
@@ -3104,8 +3098,8 @@ public class DrawFBP extends JFrame
 				proc.destroy();
 				u = proc.exitValue();
 				
-				if (fNPkg != null && !(fNPkg.trim().equals("")))			 
-					clsDir += "/" + fNPkg;
+				//if (fNPkg != null && !(fNPkg.trim().equals("")))			 
+				//	clsDir += "/" + fNPkg;
 				
 				  
 				if (u == 0)
