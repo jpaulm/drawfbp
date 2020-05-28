@@ -690,10 +690,13 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	}
 	
 	final boolean SAVEAS = true;
+	
+	File file = null;
 
-	String displayDoc(File file, GenLang gl, String fileString) {
+	String displayDoc(File filex, GenLang gl, String fileString) {
 		
-		if (file != null) {
+		file = filex;
+		if (filex != null) {
 			clsName = file.getName();
 			int i = clsName.lastIndexOf(".");
 			if (i > -1)
@@ -712,11 +715,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			if (file != null) {
 			if (fileString == null) {
 				fileString = driver.readFile(file /* , !saveType */);
-				if (fileString == null) {
+				if (fileString == null || fileString.equals("")) {
 					MyOptionPane.showMessageDialog(driver,
 							"Couldn't read file: " + file.getAbsolutePath(),
 							MyOptionPane.ERROR_MESSAGE);
-					return fileString;
+					return null;
 				}
 				// changed = false;
 				// if (file.getName().endsWith(".fbp")) {
@@ -1112,7 +1115,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
 		
-		if (s.equals("Save As")) {
+		if (s.equals("Save")) {
+
+			saveCode(false);   
+		
+		} else if (s.equals("Save As")) {
 
 			saveCode(SAVE_AS);
 
@@ -1266,7 +1273,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		else
 			suggName = fn + suggName +  "." + gl.suggExtn;	
 		
-		File file = diag.genSave(null, diag.fCParm[Diagram.NETWORK], fileString, 
+		File x = null;
+		if (!saveType)
+			x = file;
+			
+		File file = diag.genSave(x, diag.fCParm[Diagram.NETWORK], fileString, 
 		        new File(suggName));
 		
 		// note: suggName does not have to be a real file!
@@ -1280,20 +1291,20 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		
 		//checkPackage(file, fileString);
 		
-		String r = "public class ";
-		int m = fileString.indexOf(r);
-		int n = fileString.indexOf(" extends ");
+		//String r = "public class ";
+		//int m = fileString.indexOf(r);
+		//int n = fileString.indexOf(" extends ");
 		
-		String oldFN = fileString.substring(m + r.length(), n);	
+		//String oldFN = fileString.substring(m + r.length(), n);	
 		
-		String p = file.getName();
+		//String p = file.getName();
 		//int q = diag.fCParm[Diagram.NETWORK].fileExt.length();
 		//p = p.substring(0, p.length() - q);
-		int q = file.getName().indexOf(".");
-		p = p.substring(0, q);
+		//int q = file.getName().indexOf(".");
+		//p = p.substring(0, q);
 		
 		//doc.addDocumentListener(this);  // to allow late changes!
-		
+		/*
 		if (!(p.equals(oldFN))) {
 			MyOptionPane.showMessageDialog(driver,
 					"File name in generated code doesn't match actual file name - "
@@ -1307,6 +1318,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			int j3 = fileString.substring(0, j2).lastIndexOf(" ");
 			fileString = fileString.substring(0, j3) + " " + p
 					+ fileString.substring(j2);
+			*/
 			try {
 				doc.remove(0, doc.getLength());
 				doc.insertString(0, fileString, normalStyle);
@@ -1322,10 +1334,10 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				return false;
 			}
 
-			MyOptionPane.showMessageDialog(driver,
-					"File name references changed in " + file.getName()
-							+ ", and file saved");
-		}
+			//MyOptionPane.showMessageDialog(driver,
+			//		"File " + file.getName() + " saved");
+						
+		//}
 		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
@@ -1457,7 +1469,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		menuBar.setBorderPainted(true);
 
 		menuBar.add(Box.createHorizontalStrut(200));
-		JMenuItem menuItem = new JMenuItem("Save As");
+		JMenuItem menuItem = new JMenuItem("Save");
+		menuBar.add(menuItem);
+		menuItem.addActionListener(this);
+		menuItem.setBorderPainted(true);
+		menuItem = new JMenuItem("Save As");
 		menuBar.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem.setBorderPainted(true);
@@ -2001,7 +2017,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		}
 		//@Override
 		public void changedUpdate(DocumentEvent e) {
-				//doc.changed = true; 
+				doc.changed = true; 
 					
 		}
 

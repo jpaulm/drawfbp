@@ -3027,7 +3027,7 @@ public class DrawFBP extends JFrame
 				while ((line = br.readLine()) != null) {
 					//System.out.println(line);
 					output += "<br>" + line;
-					// System.out.flush();
+					//System.out.flush();
 				}
 			} catch (Exception e) {
 				err = analyzeCatch(e);
@@ -3042,16 +3042,19 @@ public class DrawFBP extends JFrame
 				srcDir = srcDir.substring(0, srcDir.length() - 1);
 			
 			
-			
-			String s = "<html>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
-					err + output + "<br>" +
-			"Jar files: ";
-			s += javaFBPJarFile + "<br>"; 
+			String fontFamily = fontf.getFamily(); 
+			String s = "<html><body style=\"font-family: " + fontFamily + 
+					"\"> <p>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
+					err + /* output + */ "<br>" +
+			"Jar files: <br> ";
+			s += "&nbsp;&nbsp;" + javaFBPJarFile + "<br>"; 
 			if (jarFiles != null) {				
 				for (String jfv : jarFiles.values()) {
-					s += "--- " + jfv + "<br>";
+					s += "&nbsp;&nbsp;" + jfv + "<br>";
 				}				
 			}
+			
+			s += "<br><br>";
 			String cls = progName;
 			if (progName.endsWith(".java"))
 				cls = progName.substring(0, progName.length() - 5);
@@ -3060,7 +3063,7 @@ public class DrawFBP extends JFrame
 			"Source dir: " + srcDir + "<br>" +
 			"Class dir: " + clsDir + "<br>" +
 			"File name: " + srcDir + "/" + progName + "<br>" + 
-			"Class file name: " + clsDir +  "/" +  cls + ".class</html>";
+			"Class file name: " + clsDir +  "/" +  cls + ".class";
 			
 			try {
 				proc.waitFor();
@@ -3069,39 +3072,61 @@ public class DrawFBP extends JFrame
 				e1.printStackTrace();
 			}
 
+			s += "<br><br>";
 			
-				JFrame jf2 = new JFrame();
-				JEditorPane jep = new JEditorPane(/*"text/plain",*/ "text/html", " ");
-		        jep.setEditable(false);
-		        JScrollPane jsp = new JScrollPane(jep);
-				jf2.add(jsp);
-				jsp.setViewportView(jep);
-				jf2.setVisible(true);
-				jf2.setTitle("Compile Output");
-				jep.setText(s); 
-				jf2.pack();
-				jf2.setLocation(200, 200);
-				jf2.setSize(500, 300);
-				//jf2.setAlwaysOnTop(true);
-				jep.setFont(fontf);
-				
-				//return;
-			//} 
+			int u = proc.exitValue();
 			
+			if (u == 0) {
+				s += "Program compiled and linked - \"" + srcDir + "/" + progName +"\"<br>" + 
+						"&nbsp;&nbsp;&nbsp;into - \"" + clsDir   + "/"  
+						+ progName.substring(0,
+								progName.length() - 5)
+						+ ".class\"";
+				saveProp("currentClassDir", clsDir)  ;
+			}
+			else {
+				s += "Program compile failed, rc: " + u + " - \"" + srcDir + "/" + progName + "\"<br>" +
+						"&nbsp;&nbsp;&nbsp;errcode: " + err + "<br>"	+	
+				         output;
+			}
+			s += "</html>";
+
+			// JFrame jf2 = new JFrame();
+			JDialog jf2 = new JDialog(this,
+					Dialog.ModalityType.APPLICATION_MODAL);
+			// JDialog jf2 = new JDialog(this);
+			// jf2.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+			JEditorPane jep = new JEditorPane(/* "text/plain", */ "text/html",
+					" ");
+			jep.setEditable(false);
+			JScrollPane jsp = new JScrollPane(jep);
+			jf2.add(jsp);
+			jsp.setViewportView(jep);
+			// jf2.setVisible(true);
+			jf2.setTitle("Compile Output");
+			jep.setText(s);
 			
-			int u = 0;
-				
-				//interrupt = true;
-				
-				
-				
-				proc.destroy();
-				u = proc.exitValue();
+			jf2.setLocation(200, 200);
+			jf2.setSize(800, 500);
+			// jf2.setAlwaysOnTop(true);
+			jep.setFont(fontf);
+			jf2.pack();
+			jf2.setVisible(true);
+
+			// return;
+			// }
+
+			// int u = 0;
+
+			// interrupt = true;
+
+			proc.destroy();
+			//u = proc.exitValue();
 				
 				//if (fNPkg != null && !(fNPkg.trim().equals("")))			 
 				//	clsDir += "/" + fNPkg;
 				
-				  
+			 /* 
 				if (u == 0)
 					MyOptionPane.showMessageDialog(this,
 							"Program compiled - " + srcDir + "/" + progName
@@ -3116,6 +3141,8 @@ public class DrawFBP extends JFrame
 									+ "/" + progName + "<br>" +
 									output + "</html>",
 							MyOptionPane.WARNING_MESSAGE);
+				
+				*/
 			  
 		}
 
@@ -3338,66 +3365,80 @@ public class DrawFBP extends JFrame
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			String fontFamily = fontf.getFamily(); 
+			String s = "<html><body style=\"font-family: " + fontFamily + 
+					"\"> <p> Compile output for " + "\"" + srcDir + "/" + progName + ".cs\"<br>" +
+					err + /* output + */ "<br>";
 			
-			String s = "<html>Compile output for " + "\"" + srcDir + "/" + progName + ".cs\"<br>" +
-					err + output + "<br>" +
-			"Dll files: ";
 			
-			if (dllFiles != null) {				
+			if (dllFiles != null) {			
+				s += "Dll files: <br>";
 				for (String dlv : dllFiles.values()) {
-					s += "--- \"" + dlv + "\"<br>";
-				}				
+					s += "&nbsp;&nbsp;&nbsp; \"" + dlv + "\"<br>";
+				}
+				s += "<br>";
 			}
-			exeDir = exeDir.replace("/",  File.separator);
-			s += 
-			"Source dir: \"" + srcDir + "\"<br>" +
-			"Exe dir: \"" + exeDir + "\"<br>" +
-			"File name: \"" + srcDir + File.separator + "*" + ".cs\"<br>" +
-			"Output file: \"" + exeDir + File.separator + v + ".exe\"</html>";
-			
-				JFrame jf2 = new JFrame();
-				JEditorPane jep = new JEditorPane(/*"text/plain",*/ "text/html", " ");
-		        jep.setEditable(false);
-		        JScrollPane jsp = new JScrollPane(jep);
-				jf2.add(jsp);
-				jsp.setViewportView(jep);
-				jf2.setVisible(true);
-				jf2.setTitle("Compile Output");
-				jep.setText(s); 
-				jf2.pack();
-				jf2.setLocation(200, 200);
-				jf2.setSize(500, 300);
-				//jf2.setAlwaysOnTop(true);
-				jep.setFont(fontf);
-				
-			
+			exeDir = exeDir.replace("/", File.separator);
+			s += "Source dir: \"" + srcDir + "\"<br>" + "Exe dir: \"" + exeDir
+					+ "\"<br>" + "File name: \"" + srcDir + File.separator + "*"
+					+ ".cs\"<br>" + "Output file: \"" + exeDir + File.separator
+					+ v + ".exe\"";
 
+			s += "<br><br>";
 			
-
-			proc.destroy();
-
 			u = proc.exitValue();
-			//interrupt = true;
-			 
-			//setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			
-			 
-			 
 			if (u == 0) {
-
-				MyOptionPane.showMessageDialog(this,
-						"Programs compiled and linked - " + trunc + "/"
-								+ "*.cs\n" + "   into - " +  trunc + "/bin/Debug/" + v + ".exe",
-						MyOptionPane.INFORMATION_MESSAGE);
+				s += "Programs compiled and linked - \"" + trunc + "/"
+						+ "*.cs\"<br>" + "&nbsp;&nbsp;&nbsp;into - \"" +  trunc + "/bin/Debug/" + v + ".exe\"";
 				saveProp("exeDir", trunc)  ;
 			}
-			else
-				MyOptionPane.showMessageDialog(this,
-						"<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
-						"errcode: " + err + "<br>"	+	
-				         output + "</html>" ,
-						MyOptionPane.WARNING_MESSAGE);
+			else {
+				s += "Program compile failed, rc: " + u + " - \"" + trunc + "/*.cs\"" + "<br>" +
+						"&nbsp;&nbsp;&nbsp;errcode: " + err + "<br>"	+	
+				         output;
+			}
+			s += "</html>";
+			// JFrame jf2 = new JFrame();
+			JDialog jf2 = new JDialog(this,
+					Dialog.ModalityType.APPLICATION_MODAL);
+			JEditorPane jep = new JEditorPane(/* "text/plain", */ "text/html",
+					" ");
+			jep.setEditable(false);
+			JScrollPane jsp = new JScrollPane(jep);
+			jf2.add(jsp);
+			jsp.setViewportView(jep);
+
+			jf2.setTitle("Compile Output");
+			jep.setText(s);
+
+			jf2.setLocation(200, 200);
+			jf2.setSize(800, 500);
+			// jf2.setAlwaysOnTop(true);
+			jep.setFont(fontf);
+
+			jf2.pack();
+			jf2.setVisible(true);
+
+			//proc.destroy();
+
+			//u = proc.exitValue();
 			
+			//if (u == 0) {
+
+				//MyOptionPane.showMessageDialog(this,
+				//		"Programs compiled and linked - " + trunc + "/"
+				//				+ "*.cs\n" + "   into - " +  trunc + "/bin/Debug/" + v + ".exe",
+				//		MyOptionPane.INFORMATION_MESSAGE);
+			//	saveProp("exeDir", trunc)  ;
+			//}
+			//else
+			//	MyOptionPane.showMessageDialog(this,
+			//			"<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
+			//			"errcode: " + err + "<br>"	+	
+			//	         output + "</html>" ,
+			//			MyOptionPane.WARNING_MESSAGE);
+			proc.destroy();
 			 
 		}
 		
@@ -3623,75 +3664,7 @@ public class DrawFBP extends JFrame
 			
 			pBDir = exeDir;
 			
-			/*
-			
-			pb = new ProcessBuilder(pBCmdArray);
-			
-			pb.directory(new File(pBDir));
-
-			pb.redirectErrorStream(true);
-			
-			//new WaitWindow(this); // display "Processing..." message
-			output = "";
-			String err = "";
-			try {
-				proc = pb.start();
-
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(proc.getInputStream()));
-				String line;
-				while ((line = br.readLine()) != null) {
-					output += line + "<br>";
-				}
-			} catch (NullPointerException npe) {
-				err = "Null Pointer Exception"; 
-				proc = null;
-				//return;
-			} catch (IOException ioe) {
-				err = "I/O Exception"; 
-				proc = null;
-				//return;
-			} catch (IndexOutOfBoundsException iobe) {
-				err = "Index Out Of Bounds Exception"; 
-				proc = null;
-				//return;
-			} catch (SecurityException se) {
-				err = "Security Exception"; 
-				proc = null;
-				//return;
-			}
-			if (!(err.equals("")) || !(output.equals(""))) {
-				MyOptionPane.showMessageDialog(this, "<html>Run output<br>" + err + "<br>" + output + "</html>",
-						MyOptionPane.ERROR_MESSAGE);
-				//return;
-			}
-			if (proc != null) {
-				try {
-					proc.waitFor();
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				
-				proc.destroy();
-			}
-		}
-		//interrupt = true;
-		 
 		
-		if (proc == null)
-			return;
-		int u = proc.exitValue(); 
-		if (u == 0)
-			MyOptionPane.showMessageDialog(this,
-					"Program completed - " + progName,
-					MyOptionPane.INFORMATION_MESSAGE);
-		else
-			MyOptionPane.showMessageDialog(this,
-					"Program test failed, rc: " + u + " - " + progName,
-					MyOptionPane.WARNING_MESSAGE);
-		*/
 			Thread runthr = new Thread(new RunTask());
 			runthr.start();
 		}

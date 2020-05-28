@@ -131,8 +131,8 @@ public class Diagram {
 		if (file == null)
 			saveAs = true;
 		
-		if (diagFile == null)    
-			saveAs = true;
+		//if (diagFile == null)    
+		//	saveAs = true;
 
 		if (saveAs) {
 			
@@ -241,13 +241,15 @@ public class Diagram {
 			
 		}
 				    
+		fileString = (String) contents;	
 		
 		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
-			fileString = (String) contents;			 
+			//fileString = (String) contents;			 
 			fileString = cm.checkPackage(file, fileString);
 			if (fileString == null)
 				return new File(fileString);
 		}
+		
 		
 		// finished choosing file...
 		
