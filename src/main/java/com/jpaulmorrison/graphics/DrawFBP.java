@@ -222,7 +222,7 @@ public class DrawFBP extends JFrame
 			Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
 			Block.Types.REPORT_BLOCK};
 
-	HashMap<String, String> jarFiles = new HashMap<String, String>();
+	HashMap<String, String> jarFiles = new HashMap<String, String>();  // does not contain JavaFBP jar file
 	HashMap<String, String> dllFiles = new HashMap<String, String>();
 
 	// JPopupMenu curPopup = null; // currently active popup menu
@@ -466,8 +466,7 @@ public class DrawFBP extends JFrame
 		saveProp("defaultFontSize", dfs);
 
 		String dcl = properties.get("defaultCompLang");
-		// if (dcl.equals("NoFlo")) // transitional!
-		// dcl = "JSON";
+		
 		if (dcl == null) {
 			currLang = findGLFromLabel("Java");
 			saveProperties();
@@ -989,7 +988,8 @@ public class DrawFBP extends JFrame
 		fileMenu.add(menuItem2c);
 		menuItem2c.addActionListener(this);
 		
-		menuItem = new JMenuItem("Remove Additional Jar and Dll Files");
+		String lib = currLang.label.equals("Java") ? "Jar" : "Dll";
+		menuItem = new JMenuItem("Remove Additional " + lib + " Files");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 
@@ -1374,13 +1374,20 @@ public class DrawFBP extends JFrame
 			return;
 		}
 		
-		if (s.equals("Remove Additional Jar and Dll Files")) {
+		if (s.startsWith("Remove Additional ")) {
 			jarFiles.clear();
 			dllFiles.clear();
-			properties.remove("additionalJarFiles");
-			properties.remove("additionalDllFiles");
+			String lib;
+			if (currLang.label.equals("Java")) {
+				properties.remove("additionalJarFiles");
+				lib = "Jar";
+			}
+			else {
+				properties.remove("additionalDllFiles");
+				lib = "Dll";
+			}
 			MyOptionPane.showMessageDialog(null,
-					"References to additional jar and dll files removed (not deleted)",
+					"References to additional " + lib + " files removed (not deleted)",
 					MyOptionPane.INFORMATION_MESSAGE);
 		}
 		
@@ -2994,7 +3001,7 @@ public class DrawFBP extends JFrame
 			
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = srcDir.replace("/src", "/bin");
-			//clsDir = clsDir.substring(0, clsDir.indexOf("/bin") + 4);
+			String clsDirTr = clsDir.substring(0, clsDir.indexOf("/bin") + 4);
 			
 			(new File(clsDir)).mkdirs(); 
 			
@@ -3002,7 +3009,7 @@ public class DrawFBP extends JFrame
 			List<String> params = Arrays.asList("\"" + javac + "\"", 
 					//"-verbose",
 					"-cp", jf, 
-					"-d", "\"" + clsDir + "\"",					 
+					"-d", "\"" + clsDirTr + "\"",					 
 					"\"" + w + "\""); 
 			
 			ProcessBuilder pb = new ProcessBuilder(params);
