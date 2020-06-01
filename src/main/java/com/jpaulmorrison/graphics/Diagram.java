@@ -240,8 +240,8 @@ public class Diagram {
 			file = newFile;
 			
 		}
-				    
-		fileString = (String) contents;	
+		if (!(contents instanceof BufferedImage))	    			    
+			fileString = (String) contents;	
 		
 		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
 			//fileString = (String) contents;			 
