@@ -180,8 +180,7 @@ public class DrawFBP extends JFrame
 
 	static final double FORCE_HORIZONTAL = 0.05; // can be static as this is a
 													// slope
-	static final int zoneWidth = 10;
-	//static final int zoneWidth = 12;
+	static final int zoneWidth = 8;
 	
 	static final int CREATE = 1;
 	static final int MODIFY = 2;
@@ -1901,7 +1900,8 @@ public class DrawFBP extends JFrame
 			// diag.diagLang = gl;
 			Date date = new Date();
 			//Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			f.setLastModified(date.getTime());
+			if (f!= null)
+				f.setLastModified(date.getTime());
 			jd.dispose();
 			return f;
 		}
@@ -2966,11 +2966,7 @@ public class DrawFBP extends JFrame
 			else
 				delim = ":";
 			
-			String jf = "\"" + javaFBPJarFile; 
-			for (String jfv : jarFiles.values()) {
-				jf += delim + jfv;
-			}
-			jf += delim + ".\"";			 
+					 
 			
 			srcDir = srcDir.replace("\\",  "/");
 			// clsDir = clsDir.replace("\\",  "/");
@@ -2995,6 +2991,8 @@ public class DrawFBP extends JFrame
 			else
 			    javac = jh + "/bin/javac";
 			
+			// Switch to JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
+			
 			if (fNPkg != null && !(fNPkg.trim().equals("")))
 				srcDir += "/" + fNPkg;
 			
@@ -3004,6 +3002,13 @@ public class DrawFBP extends JFrame
 			String clsDirTr = clsDir.substring(0, clsDir.indexOf("/bin") + 4);
 			
 			(new File(clsDir)).mkdirs(); 
+			
+			String jf = "\"" + javaFBPJarFile; 
+			for (String jfv : jarFiles.values()) {
+				jf += delim + jfv;
+			}
+			jf += delim + clsDirTr;
+			jf += delim + ".\"";	
 			
 			String w = srcDir + "/" + progName;
 			List<String> params = Arrays.asList("\"" + javac + "\"", 
@@ -3595,10 +3600,19 @@ public class DrawFBP extends JFrame
 				return;
 			}
 			String java = jh + "/bin/java";
+			String delim = "";
+			if (System.getProperty("os.name").startsWith("Windows"))  
+				delim = ";";
+			else
+				delim = ":";
 			
+			String jf = "\"" + javaFBPJarFile; 
+			for (String jfv : jarFiles.values()) {
+				jf += delim + jfv;
+			}
 			pBCmdArray = new String[] {
 					java, "-cp",
-					"\"" + javaFBPJarFile + ";.\"", "\"" + progName + "\""	
+					jf + ";.\"", "\"" + progName + "\""	
 			};
 			
 			int m = clsDir.indexOf("/bin");
