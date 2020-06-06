@@ -247,7 +247,7 @@ public class Diagram {
 		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
 			//fileString = (String) contents;			 
 			fileString = cm.checkPackage(file, fileString);
-			if (fileString == null)
+			if (fileString != null)
 				return new File(fileString);
 		}
 		
