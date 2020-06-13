@@ -4916,7 +4916,8 @@ public class DrawFBP extends JFrame
 
 			boolean close = true;
 
-			for (int i = 0; i < jtp.getTabCount(); i++) {
+			//for (int i = 0; i < jtp.getTabCount(); i++) {
+			for (int i = jtp.getTabCount() - 1; i > -1; i--) {
 				ButtonTabComponent b = (ButtonTabComponent) jtp
 						.getTabComponentAt(i);
 				jtp.setSelectedIndex(i);
@@ -4925,10 +4926,13 @@ public class DrawFBP extends JFrame
 				Diagram diag = b.diag;
 
 				if (diag != null) {
-					if (diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION) {
-						close = false;
+					if (!diag.changed)
+						jtp.remove(i);
+					else
+						if (diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION) {
+							close = false;
 						//break;
-					}
+						}
 				}
 			}
 			// if (propertiesChanged) {
@@ -4966,8 +4970,8 @@ public class DrawFBP extends JFrame
 					return;
 			}
 
-			if (i < jtp.getTabCount())
-				jtp.remove(i);
+			//if (i < jtp.getTabCount())
+			//	jtp.remove(i);
 			
 			//curDiag = null;  
 			if (jtp.getTabCount() > 0) {

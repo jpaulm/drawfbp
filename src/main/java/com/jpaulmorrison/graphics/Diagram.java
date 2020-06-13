@@ -409,13 +409,17 @@ public class Diagram {
 
 		}
 		if (answer == -1) 
-			answer = MyOptionPane.CANCEL_OPTION;
+			answer = MyOptionPane.CANCEL_OPTION;		
+		
 		
 		if (answer != MyOptionPane.CANCEL_OPTION) {
 			int i = driver.jtp.getSelectedIndex();
 			driver.jtp.remove(i);
 		}
 
+		else
+			return answer;
+		
 		File currentDiagramDir = null;
 		
 		if (diagFile != null) {
