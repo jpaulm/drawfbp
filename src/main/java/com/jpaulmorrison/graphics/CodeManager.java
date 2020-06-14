@@ -1257,6 +1257,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		int i = fn.indexOf("/src");
 		if (i > -1)
 		    fn = fn.substring(0, i + 4);
+		else
+			fn = System.getProperty("user.home") + "/src";	
 		
 		
 		fn = fn.replace("\\",  "/");

@@ -247,8 +247,10 @@ public class Diagram {
 		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
 			//fileString = (String) contents;			 
 			fileString = cm.checkPackage(file, fileString);
-			if (fileString != null)
-				return new File(fileString);
+			//if (fileString != null)
+				//return new File(fileString);  // that's odd - must be a recent typo!
+			// fileString was never null, so code would (should) drop through and continue
+			//    return file;  
 		}
 		
 		
@@ -413,8 +415,8 @@ public class Diagram {
 		
 		
 		if (answer != MyOptionPane.CANCEL_OPTION) {
-			int i = driver.jtp.getSelectedIndex();
-			driver.jtp.remove(i);
+		//	int i = driver.jtp.getSelectedIndex();
+		//	driver.jtp.remove(i);
 		}
 
 		else
@@ -795,7 +797,7 @@ public class Diagram {
 					MyOptionPane.ERROR_MESSAGE);
 		   
 			sbnDiag.changed = false; 
-			driver.closeTab();   // close selected tab
+			driver.closeTab(false);   // close selected tab
 		}
 	}
 

@@ -48,14 +48,14 @@ import javax.swing.plaf.basic.BasicButtonUI;
             //jtp.add(this);
         }
  
-        public void actionPerformed(ActionEvent e) {
+       public void actionPerformed(ActionEvent e) {
             int i = jtp.indexOfTabComponent(getParent());
             if (i != -1) {
-            	jtp.setSelectedIndex(i);
-            	jtp.driver.closeTab();
-           //   pane.remove(i);
-            }
-        }
+             	jtp.setSelectedIndex(i);
+             	jtp.driver.closeTab(false);
+              // pane.remove(i);
+              }
+       }
  
         //we don't want to update UI for this button
         //public void updateUI() {

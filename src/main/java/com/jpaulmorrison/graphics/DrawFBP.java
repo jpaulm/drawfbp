@@ -1639,7 +1639,7 @@ public class DrawFBP extends JFrame
 		}
 
 		if (s.equals("Close Diagram")) {
-			closeTab();
+			closeTab(false);
 			return;
 		}
 		if (s.equals("Launch Help")) {
@@ -4353,8 +4353,10 @@ public class DrawFBP extends JFrame
 		writePropertiesFile();
 	}
 	
-	void closeTab() {
+	void closeTab(boolean b) {
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
+		if (b)
+			return;
 		if (jtp.getTabCount() == 0) {
 			getNewDiag();
 			curDiag.desc = "Click anywhere on selection area";
@@ -4913,10 +4915,7 @@ public class DrawFBP extends JFrame
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
-
-			boolean close = true;
-
-			//for (int i = 0; i < jtp.getTabCount(); i++) {
+			
 			for (int i = jtp.getTabCount() - 1; i > -1; i--) {
 				ButtonTabComponent b = (ButtonTabComponent) jtp
 						.getTabComponentAt(i);
@@ -4925,22 +4924,33 @@ public class DrawFBP extends JFrame
 					return;
 				Diagram diag = b.diag;
 
-				if (diag != null) {
-					if (!diag.changed)
-						jtp.remove(i);
-					else
-						if (diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION) {
-							close = false;
-						//break;
-						}
+				if (diag != null && diag.changed) {
+					closeTab(true);
 				}
 			}
-			// if (propertiesChanged) {
-			//writePropertiesFile();
-			saveProperties();
-			// }
+			int openDiags = 0;
+			
+			for (int i = jtp.getTabCount() - 1; i > -1; i--) {
+				ButtonTabComponent b = (ButtonTabComponent) jtp
+						.getTabComponentAt(i);
+				jtp.setSelectedIndex(i);
+				if (b == null || b.diag == null)
+					return;
+				Diagram diag = b.diag;
 
-			if (close) {
+				if (diag != null)
+					if (diag.changed) 
+						openDiags ++;
+					else
+						closeTab(true);
+			}
+			
+			saveProperties();
+			
+
+			
+			//if (jtp.getTabCount() == 0) {
+			if (openDiags == 0) {	
 				dispose();
 				System.exit(0);
 			}
@@ -4966,12 +4976,13 @@ public class DrawFBP extends JFrame
 			Diagram diag = b.diag;
 
 			if (diag != null) {
-				if (diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION)
+				if (diag.changed && 
+						diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION)
 					return;
 			}
 
-			//if (i < jtp.getTabCount())
-			//	jtp.remove(i);
+			if (i < jtp.getTabCount())
+				jtp.remove(i);
 			
 			//curDiag = null;  
 			if (jtp.getTabCount() > 0) {
