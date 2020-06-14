@@ -2250,7 +2250,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		// String suff = t.substring(k + 1);
 
 		// diag.changeCompLang();
-		CodeManager cm = new CodeManager(diag);
+		CodeManager cm = new CodeManager(diag, driver.CODEMGRCREATE);
 		cm.displayDoc(new File(t), diag.diagLang, null);
 
 	}

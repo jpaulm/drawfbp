@@ -62,8 +62,13 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	JTextPane docText = null;
 	JTextArea lineNos = null;
 	//boolean completeChange;
+    final boolean SAVEAS = true;
+	
+	File file = null;
+	boolean create = true;
 
-	CodeManager(Diagram d) {
+	CodeManager(Diagram d, boolean create) {
+		this.create = create;
 		diag = d;
 		gl = diag.diagLang;
 		driver = d.driver;
@@ -689,9 +694,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					+ "))";
 	}
 	
-	final boolean SAVEAS = true;
 	
-	File file = null;
 
 	String displayDoc(File filex, GenLang gl, String fileString) {
 		
@@ -1471,10 +1474,13 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		menuBar.setBorderPainted(true);
 
 		menuBar.add(Box.createHorizontalStrut(200));
-		JMenuItem menuItem = new JMenuItem("Save");
+		JMenuItem menuItem = null;
+		if (!create) {
+			menuItem = new JMenuItem("Save");
 		menuBar.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem.setBorderPainted(true);
+		}
 		menuItem = new JMenuItem("Save As");
 		menuBar.add(menuItem);
 		menuItem.addActionListener(this);

@@ -302,6 +302,7 @@ public class DrawFBP extends JFrame
 	
 	Arrow detArr = null;
 	int detArrSegNo;	
+	final boolean CODEMGRCREATE = true;
 	
 	// constructor
 	DrawFBP(String[] args) {
@@ -1278,7 +1279,7 @@ public class DrawFBP extends JFrame
 
 			//properties.get(gl.netDirProp);
 			
-			CodeManager mc = new CodeManager(curDiag);
+			CodeManager mc = new CodeManager(curDiag, CODEMGRCREATE);
 			mc.genCode();
 
 			return;
@@ -1289,7 +1290,7 @@ public class DrawFBP extends JFrame
 
 			File cFile = null;			
 			GenLang gl = curDiag.diagLang;
-						
+									
 			MyOptionPane.showMessageDialog(this, "Select a file", MyOptionPane.INFORMATION_MESSAGE);
 
 			
@@ -1323,7 +1324,7 @@ public class DrawFBP extends JFrame
 				return;
 
 			
-			CodeManager cm = new CodeManager(curDiag);
+			CodeManager cm = new CodeManager(curDiag, !CODEMGRCREATE);
 			//cm.doc.changed = false;
 			cm.displayDoc(cFile, gl, null);
 
@@ -2427,13 +2428,13 @@ public class DrawFBP extends JFrame
 
 		if (suff.equals("fbp")) {
 			gl = findGLFromLabel("FBP");
-			CodeManager cm = new CodeManager(curDiag);
+			CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE);  // does fbp have a Display form?
 			cm.displayDoc(file, gl, null);
 			return file;
 		}
 		if (!(suff.equals("drw"))) {
 			gl = findGLFromLanguage(suff);
-			CodeManager cm = new CodeManager(curDiag);
+			CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE);  // do.
 			cm.displayDoc(file, gl, null);
 			return file;
 		}
