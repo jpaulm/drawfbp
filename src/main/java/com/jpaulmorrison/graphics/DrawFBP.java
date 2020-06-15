@@ -6657,26 +6657,7 @@ public class DrawFBP extends JFrame
 				return;
 			}
 
-			// This code actually builds new arrow -
-			// curDiag.currentArrow is not null....
-
-			// check for end of arrow
-
 			
-			//FoundPointB fpB = null;                     
-			//if (Math.abs(currentArrow.fromX - xa) > 10 ||
-			//		Math.abs(currentArrow.fromY - ya) > 10)	
-			//    fpB = findBlockEdge(xa, ya);
-			/*
-			if (headMark != null || tailMark != null) {
-				tailMark = null;
-				headMark = null;
-				currentArrow = null;
-				edgePoint = null;
-				repaint();
-				return;				
-			}
-			*/
 			edgePoint = findBlockEdge(xa, ya, "R");
 			//foundBlock = null;
 			
@@ -6772,7 +6753,6 @@ public class DrawFBP extends JFrame
 
 				a.toX = xa;
 				a.toY = ya;
-
 				
 				
 				defaultPortNames(a);
@@ -6813,10 +6793,14 @@ public class DrawFBP extends JFrame
 					curDiag.changed = true;
 					// checkCompatibility(a);
 				}
+				
+				from.displayPortInfo(); 
 
-				Block toBlock = curDiag.blocks.get(new Integer(a2.fromId));
-				if (toBlock.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
-						|| toBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+				to.displayPortInfo(); 
+				
+				//Block toBlock = curDiag.blocks.get(new Integer(a2.toId));
+				if (to.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
+						|| to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
 					a2.downStreamPort = "IN";
 				foundBlock = null;
 

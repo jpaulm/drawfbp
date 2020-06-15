@@ -18,7 +18,7 @@ public class IIPBlock extends Block {
 		
 		width = 60;  // will be overwritten - depends on contents of desc
 
-		height = driver.gFontHeight + 4;
+		height = driver.gFontHeight + 8;
 		
 		//buildSides();
 		//calcEdges();
@@ -39,14 +39,14 @@ public class IIPBlock extends Block {
 		//width = calcIIPWidth((Graphics2D) g);
 		
 		
-		g.drawRoundRect(cx - width / 2, cy - height / 2, width /* + 12 */ , height, 6, 6);   
+		g.drawRoundRect(cx - width / 2, cy - height / 2, width + 4 , height, 6, 6);   
 		
 		if (this == driver.selBlock)
 			g.setColor(DrawFBP.ly); // light yellow
 		else
 			g.setColor(DrawFBP.lb); // light turquoise
 		
-		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width /* + 12 */ - 1, height - 1, 6, 6);
+		g.fillRoundRect(cx - width / 2 + 1, cy - height / 2 + 1, width + 4 - 1, height - 1, 6, 6);
 				
 		g.setColor(Color.GRAY);
 		if (desc != null) {
