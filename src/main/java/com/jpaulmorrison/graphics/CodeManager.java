@@ -1836,18 +1836,18 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 	}
 	
-	/*********************
-	 * 
-	 * The idea here is that, if the string already has double backslashes, 
-	 * then the designer will be aware of the Java convention for showing 
-	 * backslashes;  if not, then we will convert single backslashes to double
-	 *
+	/**
+	 * Convert back slashes to double; double quotes to \"
 	 */
 
 	String q(String s) {
-		String t = "\"" + s + "\"";
-		if (-1 == t.indexOf("\\\\"))
-				t = t.replace("\\",  "\\\\");
+		if (s == null)
+			return "";
+		String t = s.replace("\\",  "\\\\");
+		t = t.replace("\"", "\\\"");
+		t = "\"" + t + "\"";
+		//if (-1 == t.indexOf("\\\\"))
+		
 		return t;
 	}
 
@@ -1972,7 +1972,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			}
 			dnPort = (String) MyOptionPane.showInputDialog(driver,
 					"Input port to " + "\"" + to.desc + "\"",
-					"Please enter port name");
+					"Please enter port name for arrow from " + from.desc);
 			//if (dnPort == null)
 			//	return false;
 			diag.changed = true;
