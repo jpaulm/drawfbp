@@ -301,7 +301,10 @@ public class DrawFBP extends JFrame
 	int moveY;
 	
 	Arrow detArr = null;
-	int detArrSegNo;	
+	int detArrSegNo;
+	
+	boolean tabCloseOK = true;
+	
 	final boolean CODEMGRCREATE = true;
 	
 	// constructor
@@ -1640,8 +1643,8 @@ public class DrawFBP extends JFrame
 		}
 
 		if (s.equals("Close Diagram")) {
-			closeTab(false);
-			return;
+			if (closeTab(false));
+				return;
 		}
 		if (s.equals("Launch Help")) {
 
@@ -4354,14 +4357,18 @@ public class DrawFBP extends JFrame
 		writePropertiesFile();
 	}
 	
-	void closeTab(boolean b) {
+	boolean closeTab(boolean terminate) {
+	
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
-		if (b)
-			return;
+		if (!tabCloseOK)
+			return false;
+		if (terminate)
+			return true;
 		if (jtp.getTabCount() == 0) {
 			getNewDiag();
 			curDiag.desc = "Click anywhere on selection area";
 		}
+		return true;
 	}
 
 	
@@ -4917,18 +4924,6 @@ public class DrawFBP extends JFrame
 
 		public void actionPerformed(ActionEvent e) {
 			
-			for (int i = jtp.getTabCount() - 1; i > -1; i--) {
-				ButtonTabComponent b = (ButtonTabComponent) jtp
-						.getTabComponentAt(i);
-				jtp.setSelectedIndex(i);
-				if (b == null || b.diag == null)
-					return;
-				Diagram diag = b.diag;
-
-				if (diag != null && diag.changed) {
-					closeTab(true);
-				}
-			}
 			int openDiags = 0;
 			
 			for (int i = jtp.getTabCount() - 1; i > -1; i--) {
@@ -4939,11 +4934,33 @@ public class DrawFBP extends JFrame
 					return;
 				Diagram diag = b.diag;
 
-				if (diag != null)
-					if (diag.changed) 
-						openDiags ++;
-					else
-						closeTab(true);
+				if (diag != null && diag.changed) {
+					if (!closeTab(true)) {
+						openDiags++;
+						break;  // return true if tab closed
+					}
+				}
+			}
+			
+			
+			if (tabCloseOK) {
+
+				for (int i = jtp.getTabCount() - 1; i > -1; i--) {
+					ButtonTabComponent b = (ButtonTabComponent) jtp
+							.getTabComponentAt(i);
+					jtp.setSelectedIndex(i);
+					if (b == null || b.diag == null)
+						return;
+					Diagram diag = b.diag;
+
+					if (diag != null)
+						if (diag.changed)
+							openDiags++;
+						else if (!closeTab(true)) {
+							openDiags++;
+							break; // return true if tab closed
+						}
+				}
 			}
 			
 			saveProperties();
@@ -4962,6 +4979,8 @@ public class DrawFBP extends JFrame
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
+			
+			tabCloseOK = true;
 
 			int j = jtp.getTabCount();
 			if (j < 1)
@@ -4978,8 +4997,10 @@ public class DrawFBP extends JFrame
 
 			if (diag != null) {
 				if (diag.changed && 
-						diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION)
+						diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION){
+					tabCloseOK = false;
 					return;
+				}
 			}
 
 			if (i < jtp.getTabCount())
