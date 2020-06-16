@@ -49,7 +49,7 @@ Six Youtube videos are currently available showing how to use DrawFBP, for drawi
 
 #### Getting Started with your Diagram
 
-To get started using DrawFBP once you have downloaded it, start it going, then click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block defaults to "Process", but a number of other block types are available, controlled by by the buttons along the bottom of the screen.
+To get started using DrawFBP once you have downloaded it, start it going, then click anywhere on the drawing screen, and a block will appear, with a popup prompting you to add a (short) description.  The type of block defaults to "Process", but a number of other block types are available, controlled by the buttons along the bottom of the screen.
 
 To indicate a connection between two blocks, click anywhere on the border of the "from" block; then hold down the button and drag the mouse to an edge of the "to" block.  You should see a small blue circle appear where you can click the end of the arrow. 
 
@@ -118,7 +118,7 @@ If you want access to the Java annotations of your components, add the jar file(
         
 where `x.y.z` is the DrawFBP version number.
 
-- to run under Linux, replace the semi-colon(s) with colons(s).   
+- to run under Linux, replace the semi-colon(s) with colon(s).   
     
 Note: if you are displaying a network built using a pre-v2.13.0 version of DrawFBP, with some or all of the component classes (from JavaFBP) filled in, you will have to reaccess the component classes, as the naming conventions have changed slightly.
 
