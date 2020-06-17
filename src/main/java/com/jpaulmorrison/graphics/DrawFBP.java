@@ -2032,7 +2032,10 @@ public class DrawFBP extends JFrame
 		else if (blkType.equals(Block.Types.IIP_BLOCK)) {
 			oneLine = true;
 			title = "IIP";
-			block = new IIPBlock(diag);			
+			block = new IIPBlock(diag);		
+			//IIPBlock ib = (IIPBlock) block;
+			//block.width = ib.width;
+			//block.width = 60;  // default
 		}
 
 		else if (blkType.equals(Block.Types.LEGEND_BLOCK)) {
@@ -2089,9 +2092,11 @@ public class DrawFBP extends JFrame
 
 			if (blkType.equals(Block.Types.IIP_BLOCK)) {
 				IIPBlock ib = (IIPBlock) block;
-				block.desc = ib.checkNestedChars(block.desc);
-				block.width = ib.calcIIPWidth(osg);
-				block.buildSides();
+				ib.desc = ib.checkNestedChars(block.desc);
+				ib.width = ib.calcIIPWidth(osg);
+				if (ib.width < 15)
+					ib.width = 15;
+				ib.buildSides();
 			}
 		}
 		block.calcEdges();

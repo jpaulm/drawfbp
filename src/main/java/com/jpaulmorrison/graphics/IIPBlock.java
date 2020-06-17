@@ -11,7 +11,8 @@ import java.util.Stack;
 
 
 public class IIPBlock extends Block {
-		
+	
+			
 	IIPBlock(Diagram diag) {
 		super(diag);
 		type = Block.Types.IIP_BLOCK;
@@ -77,8 +78,7 @@ public class IIPBlock extends Block {
 				t = " " + t;
 			byte[] str = t.getBytes();
 			w = 4 + metrics.bytesWidth(str, 0, t.length());
-			//width = 60;    // fudge
-						
+									
 		}
 		return w;
 	}

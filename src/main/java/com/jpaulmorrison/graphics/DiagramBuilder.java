@@ -291,9 +291,10 @@ public class DiagramBuilder {
 									}
 								} else if (type.equals(Block.Types.IIP_BLOCK)) {
 									block = new IIPBlock(diag);
-									//IIPBlock ib = (IIPBlock) block;
-									//ib.width = ib.calcIIPWidth(driver.osg);
-									//block.buildSides();
+									IIPBlock ib = (IIPBlock) block;
+									//block.width = ib.width;
+									ib.width = ib.calcIIPWidth(driver.osg);
+									block.buildSides();
 
 								} else if (type
 										.equals(Block.Types.LEGEND_BLOCK)) {

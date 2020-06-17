@@ -572,6 +572,8 @@ public class Block implements ActionListener {
 		if (this instanceof IIPBlock) {
 			IIPBlock iip = (IIPBlock) this;
 			width = iip.calcIIPWidth(driver.osg);
+			if (iip.width < 15)
+				iip.width = 15;
 			buildSides();
 		} 
 		s = item.get("height");
@@ -1549,6 +1551,8 @@ public class Block implements ActionListener {
 					desc = ib.checkNestedChars(desc);					
 					
 					width = ib.calcIIPWidth(driver.osg);
+					if (width < 12)
+						width = 12;
 					buildSides();
 
 					for (Arrow arrow : diag.arrows.values()) {
