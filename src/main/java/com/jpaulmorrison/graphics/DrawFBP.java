@@ -2869,7 +2869,7 @@ public class DrawFBP extends JFrame
 		 
 		if (curDiag.changed) {
 			cMsg = "Select a " + currLang.label + " source file - if diagram has changed, \n   invoke 'File/Generate " + currLang.label + " Network' first";
-			//return;
+			
 		}
 		 
 		cMsg = "Select  a " + currLang.label + " source file";
@@ -2900,8 +2900,11 @@ public class DrawFBP extends JFrame
 				cFile = new File(getSelFile(fc));
 			}
 			// }
-			if (cFile == null || !(cFile.exists()))
+			if (cFile == null || !(cFile.exists())) {
+				
+				MyOptionPane.showMessageDialog(this, "File \"" + cFile + "\" does not exist", MyOptionPane.ERROR_MESSAGE);
 				return;
+			}
 			
 			srcDir = cFile.getAbsolutePath();
 			srcDir = srcDir.replace('\\', '/');
@@ -3056,8 +3059,10 @@ public class DrawFBP extends JFrame
 					proc = null;
 			} 
 			
-			if (proc == null) 
+			if (proc == null) {
+				MyOptionPane.showMessageDialog(this, "Compile process failed", MyOptionPane.WARNING_MESSAGE);
 				return;
+			}
 			
 			if (srcDir.endsWith("/"))
 				srcDir = srcDir.substring(0, srcDir.length() - 1);
@@ -3365,8 +3370,10 @@ public class DrawFBP extends JFrame
 					proc = null;
 			} 
 
-			if (proc == null)
+			if (proc == null) {
+				MyOptionPane.showMessageDialog(this, "Compile process failed", MyOptionPane.WARNING_MESSAGE);
 				return;
+			}
 			
 			//interrupt = true;
 			//program = v + "/" + progName + ".cs";
@@ -3494,8 +3501,10 @@ public class DrawFBP extends JFrame
 				cFile = new File(ss);
 			}
 			// }
-			if (cFile == null || !(cFile.exists()))
+			if (cFile == null || !(cFile.exists())) {
+				MyOptionPane.showMessageDialog(this, "File \"" + cFile + "\" does not exist", MyOptionPane.ERROR_MESSAGE);				
 				return;
+			}
 
 			// if (currLang.label.equals("Java")) {
 			if (!(ss.endsWith(".class"))) {
@@ -3716,6 +3725,9 @@ public class DrawFBP extends JFrame
 			err = "Security Exception";
 		
 		err += ": " + e.getMessage();
+
+		e.printStackTrace();
+
 		return err;
 	}
 	
