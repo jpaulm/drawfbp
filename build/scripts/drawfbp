@@ -80,7 +80,8 @@ case "`uname`" in
     ;;
 esac
 
-CLASSPATH=$APP_HOME/lib/drawfbp-2.20.8.jar:$APP_HOME/lib/javaGeom-0.11.1.jar:$APP_HOME/lib/javahelp-2.0.05.jar
+CLASSPATH=$APP_HOME/lib/drawfbp-2.20.9.jar:$APP_HOME/lib/javaGeom-0.11.1.jar:$APP_HOME/lib/javahelp-2.0.05.jar
+
 
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
@@ -129,6 +130,7 @@ fi
 if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
     APP_HOME=`cygpath --path --mixed "$APP_HOME"`
     CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
+    
     JAVACMD=`cygpath --unix "$JAVACMD"`
 
     # We build the pattern for arguments to be converted via cygpath

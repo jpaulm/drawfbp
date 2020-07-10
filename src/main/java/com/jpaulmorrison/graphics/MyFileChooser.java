@@ -670,7 +670,7 @@ public class MyFileChooser extends JDialog
 						v = v.replace("T", " ");
 						ll.add(t + "@" + v);
 					}
-					for (String u : driver.jarFiles.values()) {
+					for (String u : driver.jarFiles) {
 						if (new File(u).exists()) {
 							try {
 								File f2 = new File(u);
@@ -1697,10 +1697,11 @@ final boolean SAVEAS = true;
 			if (s.endsWith(".jar")) {
 				f = new File(s);
 				String t = null;
-				for (Entry<String, String> entry : driver.jarFiles.entrySet()) {
+				//for (Entry<String, String> entry : driver.jarFiles.entrySet()) {
+				for (String entry : driver.jarFiles) {
 					// (entry.getValue().equals(s)) {
-					if (entry.getValue().startsWith(s)) {
-						t = entry.getKey();
+					if (entry.startsWith(s)) {
+						t = entry;
 						break;
 					}
 				}

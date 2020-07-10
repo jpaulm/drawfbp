@@ -655,12 +655,14 @@ public class Block implements ActionListener {
 		fn = fn.replace("\\", "/");
 		driver.locateJavaFBPJarFile(false);
 		driver.javaFBPJarFile = driver.javaFBPJarFile.replace("\\",  "/");
-		if (!(driver.jarFiles.containsValue(fn)) && 
-				!(fn.equals(driver.javaFBPJarFile))
-				&& fn.endsWith(".jar"))
-			driver.jarFiles.put("x" + driver.jarFiles.size(), fn);
+		//if (!(driver.jarFiles.containsValue(fn)) && 
+		//		!(fn.equals(driver.javaFBPJarFile))
+		//		&& fn.endsWith(".jar"))
+			//driver.jarFiles.put("x" + driver.jarFiles.size(), fn);
+		//if (!fn.equals(""))
+		//	driver.jarFiles.add(fn);  // why did I add this?!
 				
-		URL[] urls = driver.buildUrls(f);
+		URL[] urls = driver.buildUrls(f);   
 		
 		if (urls == null)
 			retClass = null;

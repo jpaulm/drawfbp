@@ -41,7 +41,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import java.util.*;
-import java.util.Map.Entry;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.*;
 import java.net.*;
@@ -221,8 +221,10 @@ public class DrawFBP extends JFrame
 			Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
 			Block.Types.REPORT_BLOCK};
 
-	HashMap<String, String> jarFiles = new HashMap<String, String>();  // does not contain JavaFBP jar file
-	HashMap<String, String> dllFiles = new HashMap<String, String>();
+	//HashMap<String, String> jarFiles = new HashMap<String, String>();  // does not contain JavaFBP jar file
+	Set<String> jarFiles = new HashSet<String>();  // does not contain JavaFBP jar file
+	//HashMap<String, String> dllFiles = new HashMap<String, String>();
+	Set<String> dllFiles = new HashSet<String>();  
 
 	// JPopupMenu curPopup = null; // currently active popup menu
 
@@ -486,25 +488,26 @@ public class DrawFBP extends JFrame
 		} else 
 			sortByDate = (new Boolean(sBD)).booleanValue();
 
-		Iterator<Entry<String, String>> entries = jarFiles.entrySet()
-				.iterator();
+		//Iterator<String> entries = jarFiles.iterator();
 		String z = "";
 		String cma = "";
 
-		while (entries.hasNext()) {
-			Entry<String, String> thisEntry = entries.next();
-			z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+		//while (entries.hasNext()) {
+		//	String thisEntry = entries.next();
+		for (String thisEntry: jarFiles) {
+			z += cma + thisEntry;
 			cma = ";";
 		}
 		saveProp("additionalJarFiles", z);
 		
-		entries = dllFiles.entrySet().iterator();
+		//entries = dllFiles.iterator();
 		z = "";
 		cma = "";
 
-		while (entries.hasNext()) {
-			Entry<String, String> thisEntry = entries.next();
-			z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+		//while (entries.hasNext()) {
+		//	String thisEntry = entries.next();
+		for (String thisEntry: dllFiles) {
+			z += cma + thisEntry;
 			cma = ";";
 		}
 		saveProp("additionalDllFiles", z);
@@ -2149,6 +2152,8 @@ public class DrawFBP extends JFrame
 		//propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
 		propertyDescriptions.put("Additional Jar Files",
 				"additionalJarFiles");
+		propertyDescriptions.put("Additional Dll Files",
+				"additionalDllFiles");
 		propertyDescriptions.put("Current folder for .exe files",
 				"exeDir");
 		propertyDescriptions.put("Current folder for .dll files",
@@ -2212,6 +2217,12 @@ public class DrawFBP extends JFrame
 		tft[3].setFont(fontg);
 
 		displayRow(gbc, gbl, tft, panel, Color.BLUE);
+		
+		tft[0].setFont(fontg);
+		tft[1].setFont(fontg);
+		tft[2].setFont(fontf);
+		tft[3].setFont(fontf);
+
 
 		for (String p : propertyDescriptions.keySet()) {
 			tft[0] = new JTextField(p);
@@ -2219,60 +2230,89 @@ public class DrawFBP extends JFrame
 			tft[1] = new JTextField(q);
 			String u = properties.get(q);
 			String w = "";
+			//System.out.println(p + " " + q);
 			int i;
-			if (u != null)
-				w = u;
-			boolean done = true;
-			boolean first = true;
+			if (u == null)
+				u = "";
+			w = u;
+			String v = startProperties.get(q);
+			//if (v == null)
+			//	v = "(null)";
+			//else 
+			if (v == null || v.equals(properties.get(q)))
+				v = "";
+			
+			if (q.equals("defaultCompLang")) {
+				if (!(u.equals("(null)"))) {
+					u = findGLFromLabel(u).showLangs();
+					if (!(v.equals("")))
+						v = findGLFromLabel(v).showLangs();
+				}
+				continue;
+			}
+			
+			if (q.equals("additionalJarFiles") ||
+					q.equals("additionalDllFiles")) {
+				 
+					
+			boolean done = false;
+			//boolean first = true;
 
-			while (true) {
+			while (!done) {
 
-				String v = "";
+				v = "";
 				if (u == null)
 					u = "(null)";
 
 				else {
-					if (q.equals("additionalJarFiles") && first) {
-						first = false;
-						continue;
-					}
+					
+						//first = false;
+						//done = false;
+					
 					if ((i = w.indexOf(";")) > -1) {
 						u = w.substring(0, i);
-						w = w.substring(i + 1);
-						done = false;
+						w = w.substring(i + 1);  // remainder
+						//if (!done) {
+							tft[2] = new JTextField(u);
+							tft[3] = new JTextField(v);
+
+							//tft[0].setFont(fontg);
+							//tft[1].setFont(fontg);
+							//tft[2].setFont(fontf);
+							//tft[3].setFont(fontf);
+
+							displayRow(gbc, gbl, tft, panel, Color.BLACK);
+							tft[0] = new JTextField("");
+							tft[1] = new JTextField("");
+						//}
+							
+						//done = false;
 					} else {
 						u = w;
 						done = true;
 					}
 
-					v = startProperties.get(q);
-					if (v == null)
-						v = "(null)";
-					else if (v.equals(properties.get(q)) || v == null)
-						v = "";
+					
 				}
-				if (q.equals("defaultCompLang")) {
-					if (!(u.equals("(null)"))) {
-						u = findGLFromLabel(u).showLangs();
-						if (!(v.equals("")))
-							v = findGLFromLabel(v).showLangs();
-					}
-				}
+				//if (done)
+				//	break;
+			}
+			}	
 				tft[2] = new JTextField(u);
 				tft[3] = new JTextField(v);
 
-				tft[0].setFont(fontg);
-				tft[1].setFont(fontg);
-				tft[2].setFont(fontf);
-				tft[3].setFont(fontf);
+				//tft[0].setFont(fontg);
+				//tft[1].setFont(fontg);
+				//tft[2].setFont(fontf);
+				//tft[3].setFont(fontf);
 
 				displayRow(gbc, gbl, tft, panel, Color.BLACK);
 
-				if (done)
-					break;
+				//if (done)
+				//	break;
 				tft[0] = new JTextField("");
 				tft[1] = new JTextField("");
-			}
+		 
 		}
 
 		// jsp.add(panel);
@@ -3016,7 +3056,7 @@ public class DrawFBP extends JFrame
 			(new File(clsDir)).mkdirs(); 
 			
 			String jf = "\"" + javaFBPJarFile; 
-			for (String jfv : jarFiles.values()) {
+			for (String jfv : jarFiles) {
 				jf += delim + jfv;
 			}
 			jf += delim + clsDirTr;
@@ -3075,7 +3115,7 @@ public class DrawFBP extends JFrame
 			"Jar files: <br> ";
 			s += "&nbsp;&nbsp;" + javaFBPJarFile + "<br>"; 
 			if (jarFiles != null) {				
-				for (String jfv : jarFiles.values()) {
+				for (String jfv : jarFiles) {
 					s += "&nbsp;&nbsp;" + jfv + "<br>";
 				}				
 			}
@@ -3300,7 +3340,7 @@ public class DrawFBP extends JFrame
 			}
 			
 			else {
-				Iterator<Entry<String, String>> entries = dllFiles.entrySet().iterator();
+				//Iterator<String> entries = dllFiles.iterator();
 				//z = "";
 				//String cma = "";
 
@@ -3308,17 +3348,18 @@ public class DrawFBP extends JFrame
 				//String w = "";
 				String libs = "";
 				String cma = "";
-				while (entries.hasNext()) {
-					Entry<String, String> thisEntry = entries.next();
-					if (!(new File(thisEntry.getValue()).exists())) {
+				//while (entries.hasNext()) {
+				//	String thisEntry = entries.next();
+				for (String thisEntry: dllFiles) {
+					if (!(new File(thisEntry).exists())) {
 						MyOptionPane.showMessageDialog(this,
-								"Dll file does not exist: " + thisEntry.getValue(),
+								"Dll file does not exist: " + thisEntry,
 								MyOptionPane.WARNING_MESSAGE);
 						return;
 					}
 					//z += "\"/r:" + thisEntry.getValue() + "\" ";
 					//cma = ";";
-					String w = thisEntry.getValue();
+					String w = thisEntry;
 					w = w.replace("\\", "/");
 					j = w.indexOf("bin/Debug");
 					libs += cma + w.substring(0, j);
@@ -3327,10 +3368,11 @@ public class DrawFBP extends JFrame
 					
 					
 				}
-				entries = dllFiles.entrySet().iterator();
-				while (entries.hasNext()) {
-					Entry<String, String> thisEntry = entries.next();
-					String w = thisEntry.getValue();
+				//entries = dllFiles.iterator();
+				//while (entries.hasNext()) {					 
+				//	String thisEntry = entries.next();
+				for(String thisEntry: dllFiles) {
+					String w = thisEntry;
 					w = w.replace("\\", "/");
 					j = w.indexOf("bin/Debug");
 					cmdList.add("-r:" + w.substring(j));
@@ -3401,7 +3443,7 @@ public class DrawFBP extends JFrame
 			
 			if (dllFiles != null) {			
 				s += "Dll files: <br>";
-				for (String dlv : dllFiles.values()) {
+				for (String dlv : dllFiles) {
 					s += "&nbsp;&nbsp;&nbsp; \"" + dlv + "\"<br>";
 				}
 				s += "<br>";
@@ -3625,7 +3667,7 @@ public class DrawFBP extends JFrame
 				delim = ":";
 			
 			String jf = "\"" + javaFBPJarFile; 
-			for (String jfv : jarFiles.values()) {
+			for (String jfv : jarFiles) {
 				jf += delim + jfv;
 			}
 			pBCmdArray = new String[] {
@@ -3970,34 +4012,36 @@ public class DrawFBP extends JFrame
 							saveProp(key, s);
 					} else {
 						// additionalJar/DllFiles
-						HashMap<String, String> list = key.equals("additionalJarFiles")? jarFiles: dllFiles;
+						Set<String> set = key.equals("additionalJarFiles")? jarFiles: dllFiles;
 						s = s.substring(0, k).trim();
 						while (true) {
 							int m = s.indexOf(";");
 							if (m == -1) {
 								u = s;
-								int n = u.indexOf(":");
+								//int n = u.indexOf(":");
 
-								if (n == -1)
-									break;
+								//if (n == -1)
+								//	break;
 
 								//saveProp("addnl_jf_" + u.substring(0, n),  
 								// 		u.substring(n + 1));
-								list.put(u.substring(0, n),
-										u.substring(n + 1));
+								//list.put(u.substring(0, n),
+								//		u.substring(n + 1));
+								set.add(u);
 								break;
 							} else {
 								u = s.substring(0, m);
 								s = s.substring(m + 1);
-								int n = u.indexOf(":");
+								//int n = u.indexOf(":");
 
-								if (n == -1)
-									break;
+								//if (n == -1)
+								//	break;
 
 								//saveProp("addnl_jf_" + u.substring(0, n),
 								// 		u.substring(n + 1));
-								list.put(u.substring(0, n),
-										u.substring(n + 1));
+								//list.put(u.substring(0, n),
+								//		u.substring(n + 1));
+								set.add(u);
 							}
 						}
 					}
@@ -4041,31 +4085,33 @@ public class DrawFBP extends JFrame
 				out.write(s);
 			}
 			
-			Iterator<Entry<String, String>> entries = jarFiles.entrySet()
-					.iterator();
+			//Iterator<String> entries = jarFiles.iterator();
 			String z = "";
 			String cma = "";
 
-			while (entries.hasNext()) {
-				Entry<String, String> thisEntry = entries.next();
-
-				z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
-				cma = ";";
+			//while (entries.hasNext()) {
+			//	String thisEntry = entries.next();
+			for(String thisEntry: jarFiles) {
+				if (!thisEntry.equals("")) {
+				 z += cma + thisEntry;
+				 cma = ";";
+				}
 
 			}
 			String s = "<additionalJarFiles> " + z + "</additionalJarFiles> \n";
 			out.write(s);
 			
-			entries = dllFiles.entrySet()
-					.iterator();
+			//entries = dllFiles.iterator();
 			z = "";
 			cma = "";
 
-			while (entries.hasNext()) {
-				Entry<String, String> thisEntry = entries.next();
-
-				z += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
-				cma = ";";
+			//while (entries.hasNext()) {
+			//	String thisEntry = entries.next();
+			for(String thisEntry: dllFiles) {	
+				if (!thisEntry.equals("")) {
+				 z += cma + thisEntry;
+				 cma = ";";
+				}
 
 			}
 			s = "<additionalDllFiles> " + z + "</additionalDllFiles> \n";
@@ -4178,6 +4224,7 @@ public class DrawFBP extends JFrame
 	
 	boolean addAdditionalJarFile() {
 
+		/*
 		String ans = (String) MyOptionPane.showInputDialog(this,
 				"Enter Description of jar file being added",
 				"Enter Description", MyOptionPane.PLAIN_MESSAGE, null, null,
@@ -4187,7 +4234,7 @@ public class DrawFBP extends JFrame
 					MyOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-
+		*/
 		String s = properties.get("javaFBPJarFile");
 		File f = null;
 		if (s == null)
@@ -4195,7 +4242,7 @@ public class DrawFBP extends JFrame
 		else
 			f = (new File(s)).getParentFile();
 				
-		curDiag.fCParm[Diagram.JARFILE].prompt = "Specify file name for " + ans + " jar file";
+		curDiag.fCParm[Diagram.JARFILE].prompt = "Select jar file";
 		MyFileChooser fc = new MyFileChooser(this,f, curDiag.fCParm[Diagram.JARFILE]);	
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
@@ -4208,19 +4255,17 @@ public class DrawFBP extends JFrame
 				return false;
 			}
 
-			jarFiles.put(ans, cFile.getAbsolutePath());
+			jarFiles.add(cFile.getAbsolutePath());
 
-			@SuppressWarnings("rawtypes")
-			Iterator entries = jarFiles.entrySet().iterator();
+			
+			//Iterator<String> entries = jarFiles.iterator();
 			String t = "";
 			String cma = "";
 
-			while (entries.hasNext()) {
-				@SuppressWarnings("unchecked")
-				Entry<String, String> thisEntry = (Entry<String, String>) entries
-						.next();
-
-				t += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+			//while (entries.hasNext()) {
+				//String thisEntry = (String) entries.next();
+			for (String thisEntry:jarFiles) {
+				t += cma + thisEntry;
 				cma = ";";
 
 			}
@@ -4237,6 +4282,7 @@ public class DrawFBP extends JFrame
 	
 	boolean addAdditionalDllFile() {
 
+		/*
 		String ans = (String) MyOptionPane.showInputDialog(this,
 				"Enter Description of dll file being added",
 				"Enter Description", MyOptionPane.PLAIN_MESSAGE, null, null,
@@ -4246,7 +4292,7 @@ public class DrawFBP extends JFrame
 					MyOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-
+		 */
 		String s = properties.get("dllFileDir");
 		File f = null;
 		if (s == null)
@@ -4255,7 +4301,7 @@ public class DrawFBP extends JFrame
 			f = (new File(s)).getParentFile();
 		MyFileChooser fc = new MyFileChooser(this,f, curDiag.fCParm[Diagram.DLL]);
 
-		curDiag.fCParm[Diagram.DLL].prompt = "Specify file name for " + ans + " dll";
+		curDiag.fCParm[Diagram.DLL].prompt = "Select dll name";
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -4267,19 +4313,19 @@ public class DrawFBP extends JFrame
 				return false;
 			}
 
-			dllFiles.put(ans, cFile.getAbsolutePath());
+			dllFiles.add(cFile.getAbsolutePath());
 
 			@SuppressWarnings("rawtypes")
-			Iterator entries = dllFiles.entrySet().iterator();
+			//Iterator entries = dllFiles.iterator();
 			String t = "";
 			String cma = "";
 
-			while (entries.hasNext()) {
-				@SuppressWarnings("unchecked")
-				Entry<String, String> thisEntry = (Entry<String, String>) entries
-						.next();
+			//while (entries.hasNext()) {
+			
+			//	String thisEntry = (String) entries.next();
+			for (String thisEntry: dllFiles) {
 
-				t += cma + thisEntry.getKey() + ":" + thisEntry.getValue();
+				t += cma + thisEntry;
 				cma = ";";
 
 			}
@@ -4299,71 +4345,6 @@ public class DrawFBP extends JFrame
 	}
 
 	
-	/*	
-	boolean locateJhallJarFile(boolean checkLocation) {
-
-		// setting of checkLocation doesn't matter if javaFBPJarFile is null!
-		
-		String s = properties.get("jhallJarFile");
-		javaFBPJarFile = s;
-
-		boolean findJar = false;
-		if (checkLocation || s == null)
-			findJar = true;
-		
-		if (findJar) {
-			if (s != null) {
-				MyOptionPane.showMessageDialog(this,
-						"JavaHelp jar file location: " + s,
-						MyOptionPane.INFORMATION_MESSAGE);			
-
-			int res = MyOptionPane.showConfirmDialog(this,					
-					"Change JavaHelp jar file location?",
-					"Change JavaHelp jar file", MyOptionPane.YES_NO_OPTION);	
-			if (res != MyOptionPane.YES_OPTION)
-				return true;
-			}
-
-			//MyOptionPane.showMessageDialog(this,
-			//		"Use File Chooser to locate JavaFBP jar file",
-			//		MyOptionPane.WARNING_MESSAGE);
-
-			File f = new File(System.getProperty("user.home"));
-
-			// else
-			// f = (new File(s)).getParentFile();
-
-			MyFileChooser fc = new MyFileChooser(this,f, curDiag.fCParm[Diagram.JHELP]);
-
-			int returnVal = fc.showOpenDialog();
-
-			File cFile = null;
-			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				cFile = new File(getSelFile(fc));
-				if (cFile == null || !(cFile.exists())) {
-					MyOptionPane.showMessageDialog(this,
-							"Unable to read JavaHelp jar file "
-									+ cFile.getName(),
-							MyOptionPane.ERROR_MESSAGE);
-					return false;
-				}
-				// diag.currentDir = new File(cFile.getParent());
-				jhallJarFile = cFile.getAbsolutePath();
-				saveProp("jhallJarFile", jhallJarFile);
-
-				saveProperties();
-				MyOptionPane.showMessageDialog(this,
-						"JavaHelp jar file location: " + cFile.getAbsolutePath(),
-						MyOptionPane.INFORMATION_MESSAGE);
-				// jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
-				
-				//return true;
-			}
-			// return false;
-		}
-		return true;
-	}
-	*/
 	
 	void saveProp(String s, String t){
 		properties.put(s, t); 
@@ -4627,7 +4608,7 @@ public class DrawFBP extends JFrame
 			File f2 = new File(javaFBPJarFile);
 			ll.add(f2.toURI().toURL());
 
-			for (String jfv : jarFiles.values()) {
+			for (String jfv : jarFiles) {
 				f2 = new File(jfv);
 				if (!(f2.equals(f)))
 					ll.add(f2.toURI().toURL());
