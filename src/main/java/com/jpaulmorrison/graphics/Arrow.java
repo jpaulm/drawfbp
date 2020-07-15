@@ -53,6 +53,7 @@ public class Arrow implements ActionListener {
 	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
 	LinkedList<Shape> shapeList = null;
+	int highlightedSeg = -1;
 	
 	//Arrowhead tipArrowhead = null;    
 	Arrowhead extraArrowhead = null;
@@ -293,7 +294,13 @@ public class Arrow implements ActionListener {
 		if (extraArrowhead != null)  
 			extraArrowhead.draw(g); 
 		
-		
+		if (highlightedSeg != -1) {
+			Shape sh = shapeList.get(highlightedSeg);
+			Color col = g.getColor();
+			g.setColor(ltBlue);  
+			((Graphics2D)g).fill(sh);				
+			g.setColor(col);	
+		}
 		
 	}
 	
@@ -844,7 +851,8 @@ public class Arrow implements ActionListener {
 					return;
 				}
 				
-				if (driver.nearpln(bendx, bendy, this, segNo)) {
+				if (driver.nearpln(bendx, bendy, this) &&  
+						highlightedSeg == segNo) {
 					bn = new Bend(bendx, bendy);
 					if (x1 == b.x) // if line vertical
 						bn.x = x1;
@@ -863,7 +871,8 @@ public class Arrow implements ActionListener {
 		else
 			bends = new LinkedList<Bend>();
 				
-		if (driver.nearpln(bendx, bendy, this, segNo)) {	
+		if (driver.nearpln(bendx, bendy, this) &&  
+				highlightedSeg == segNo) {	
 			bn = new Bend(bendx, bendy);
 			if (x1 == toX) // if line vertical
 				bn.x = x1;
@@ -957,7 +966,7 @@ public class Arrow implements ActionListener {
 		
 		GeneralPath path = new GeneralPath();
 		double x, y;
-		final int aDW = driver.zWS; // arrow Detect Width - same as detect edge size
+		final int aDW = driver.zWS + 4; // arrow Detect Width - same as detect edge size + 4
 		x = tx - fx;
 		y = ty - fy;
 		double hypoSqu = (double) (x * x) + (double) (y * y);
@@ -973,30 +982,19 @@ public class Arrow implements ActionListener {
 		//Shape sh = path.createTransformedShape(at);
 		Shape sh = path.createTransformedShape(at);
 
-		shapeList.add(sh);
-		
-		//int xPoints[] = {fx + 6, tx + 6, tx - 6, fx - 6}; 
-		//int yPoints[] = {fy - 6, ty - 6, ty + 6, fy + 6}; 
-		//Polygon poly = new Polygon(xPoints, yPoints, 4);
-		//shapeList.add(poly);
-		/*
-		Line2D line = new Line2D(fx, fy, tx, ty);
-		Point2D p = new Point2D(driver.moveX, driver.moveY);
-		double d = 0.0;
-		try {
-			d = line.distance(p);
-		} catch (DegeneratedLine2DException e) {
-
-		}
-		*/
-									
+		shapeList.add(sh);		
+	 	
+		/* 
+		  
 		if (this == driver.detArr && segNo == driver.detArrSegNo) {
 			Color col = g.getColor();
 			g.setColor(ltBlue);  
+			//g.setColor(Color.BLUE);  
 			((Graphics2D)g).fill(sh);				
 			g.setColor(col);	
 		}
-		 
+		*/  
+		
 	}
 				
 	/* Thanks to Jerry Huxtable 

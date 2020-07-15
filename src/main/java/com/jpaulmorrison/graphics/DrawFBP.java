@@ -302,8 +302,8 @@ public class DrawFBP extends JFrame
 	int moveX;
 	int moveY;
 	
-	Arrow detArr = null;
-	int detArrSegNo;
+	//Arrow detArr = null;
+	//int detArrSegNo;
 	
 	boolean tabCloseOK = true;
 	
@@ -4315,7 +4315,7 @@ public class DrawFBP extends JFrame
 
 			dllFiles.add(cFile.getAbsolutePath());
 
-			@SuppressWarnings("rawtypes")
+		
 			//Iterator entries = dllFiles.iterator();
 			String t = "";
 			String cma = "";
@@ -4481,10 +4481,10 @@ public class DrawFBP extends JFrame
 	}
 
 	/**
-	 * Test if point (xp, yp) is "near" line defined by arrow and segment no.
+	 * Test if point (xp, yp) is "near" line defined by arrow
 	 */
 	
-	boolean nearpln(int xp, int yp, Arrow arr, int segNo) {
+	boolean nearpln(int xp, int yp, Arrow arr) {
 
 				
 		int x1 = arr.fromX;  
@@ -4492,46 +4492,81 @@ public class DrawFBP extends JFrame
 		int x2 = 0;
 		int y2 = 0;
 		int seg = 0;
+		Point2D p = new Point2D(xp, yp);
+		Line2D line; 
+		double d = 0.0;
+		boolean res = false;
+		arr.highlightedSeg = -1;
+		
+		if (arr.shapeList == null)
+			return false;
+		
 		if (arr.bends != null) { 
 			for (Bend bend: arr.bends) {
+				//if (seg > arr.bends.size() -1)
+				//	return false;
 				x2 = bend.x;
 				y2 = bend.y;
-				if (seg == segNo)
-					break;				
+				//if (seg == segNo)
+				//	break;		
+				line = new Line2D(x1, y1, x2, y2);				
+				try {
+					d = line.distance(p);
+				} catch (DegeneratedLine2DException e) {
+
+				}
+				if (d < 40.0) {
+					res = true;
+					break;
+				}
 				x1 = x2;
 				y1 = y2;
 				
 				seg ++;
-			}	
+			}
+			//if (seg > arr.bends.size() -1)
+			//	return false;
 		}
-		if (arr.bends == null || seg == arr.bends.size()) {
-			x2 = arr.toX;
-			y2 = arr.toY;	
-		}
-		
-		Line2D line = new Line2D(x1, y1, x2, y2);
-		Point2D p = new Point2D(xp, yp);
-		double d = 0.0;
-		try {
-			d = line.distance(p);
-		} catch (DegeneratedLine2DException e) {
+		//if (arr.bends == null || seg == arr.bends.size()) {
+		x2 = arr.toX;
+		y2 = arr.toY;	
+		//}
+		if (!res) {
+			
+			line = new Line2D(x1, y1, x2, y2);
+			try {
+				d = line.distance(p);
+			} catch (DegeneratedLine2DException e) {
 
-		}
-		boolean res = false;
-		
-		if (d >= 40.0) 
-			detArr = null;
-		else {
-			detArr = arr;
-			detArrSegNo = segNo;
-
-			if (arr.shapeList == null || arr.shapeList.size() <= segNo)
+			}
+			if (d >= 40.0)
 				return false;
 
-			Shape sh = arr.shapeList.get(segNo);
-
-			res = sh.contains(xp, yp);
 		}
+		//boolean res = false;
+		
+		//System.out.println(d);
+		
+		//if (d >= 40.0) {
+		//	detArr = null;
+		//	detArrSegNo = -1;
+		//	arr.highlightedSeg = -1;
+		//}
+		//else {
+		//	detArr = arr;
+		//	detArrSegNo = segNo;
+			
+		
+			if (arr.shapeList == null || arr.shapeList.size() <= seg)
+				return false;
+		
+			Shape sh = arr.shapeList.get(seg);
+			
+			arr.highlightedSeg = seg;
+			
+			
+			res = sh.contains(xp, yp);
+		//}
 		
 		return res;
 	}
@@ -5544,7 +5579,8 @@ public class DrawFBP extends JFrame
 						//x2 = bend.x;
 						//y2 = bend.y;
 						
-						if (nearpln(x, y, arrow, segNo)) {
+						if (nearpln(x, y, arrow)) {
+							segNo = arrow.highlightedSeg;
 							fpA = new FoundPointA(x, y, arrow, segNo);
 							return fpA;
 						}
@@ -5558,7 +5594,8 @@ public class DrawFBP extends JFrame
 				//x2 = arrow.toX;
 				//y2 = arrow.toY;
 				
-				if (nearpln(x, y, arrow, segNo)) {	
+				if (nearpln(x, y, arrow)) {	
+					segNo = arrow.highlightedSeg;
 					fpA = new FoundPointA(x, y, arrow, segNo);
 					return fpA;
 				}
@@ -5807,8 +5844,8 @@ public class DrawFBP extends JFrame
 				return;
 			curDiag = b.diag;
 			
-			detArr = null;
-			detArrSegNo = 0;
+			//detArr = null;
+			//detArrSegNo = 0;
 			repaint();
 
 			//Side side = null;
@@ -6294,8 +6331,8 @@ public class DrawFBP extends JFrame
 				return;
 			curDiag = b.diag;
 			
-			detArr = null;
-			detArrSegNo = 0;
+			//detArr = null;
+			//detArrSegNo = 0;
 			repaint();
 			
 			if (curDiag.jpm != null) {
@@ -6997,14 +7034,18 @@ public class DrawFBP extends JFrame
 							int seg = 0;
 							if (arr.bends != null){
 								for (Bend bend: arr.bends) {
-									if (nearpln(x, y, arr, seg))
+									if (nearpln(x, y, arr)) {
+										seg = arr.highlightedSeg;
 										break;
+									}
 									seg ++;
 								}					
 							}	
 							
-							if (nearpln(x, y, arr, seg))
-									break;				
+							if (nearpln(x, y, arr)) {
+								seg = arr.highlightedSeg;
+									break;	
+							}
 						}
 		}
 
