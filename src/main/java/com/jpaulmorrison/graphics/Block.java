@@ -2260,6 +2260,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		cm.displayDoc(new File(t), diag.diagLang, null);
 
 	}
+
+	public boolean contains(Point xp) {
+		return xp.x >= cx - width / 2 && xp.x <= cx + width / 2 &&
+				xp.y >= cy - height / 2 && xp.y <= cy + height / 2;
+	}
 	
 	
 }

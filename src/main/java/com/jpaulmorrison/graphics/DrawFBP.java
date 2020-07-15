@@ -4501,14 +4501,15 @@ public class DrawFBP extends JFrame
 		if (arr.shapeList == null)
 			return false;
 		
+		Block b = curDiag.blocks.get(new Integer(arr.fromId));	
+		if (b.contains(new Point(xp, yp)))
+			return false;
+		
 		if (arr.bends != null) { 
 			for (Bend bend: arr.bends) {
-				//if (seg > arr.bends.size() -1)
-				//	return false;
 				x2 = bend.x;
 				y2 = bend.y;
-				//if (seg == segNo)
-				//	break;		
+				
 				line = new Line2D(x1, y1, x2, y2);				
 				try {
 					d = line.distance(p);
@@ -4524,13 +4525,12 @@ public class DrawFBP extends JFrame
 				
 				seg ++;
 			}
-			//if (seg > arr.bends.size() -1)
-			//	return false;
+			
 		}
-		//if (arr.bends == null || seg == arr.bends.size()) {
+		
 		x2 = arr.toX;
 		y2 = arr.toY;	
-		//}
+		
 		if (!res) {
 			
 			line = new Line2D(x1, y1, x2, y2);
