@@ -1236,8 +1236,11 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		String suggName = null;
 		if (f != null)	{
 			sfn = f.getAbsolutePath();
+			System.out.println("File name for diagram: " + sfn);
 			sfn = sfn.replace("\\", "/");
 	    	int ix = sfn.lastIndexOf(".drw");
+	    	if (ix == -1)
+	    		System.out.println("File name for diagram missing '.drw' suffix: " + sfn);
 	    	int j = sfn.substring(0, ix).lastIndexOf("/");
 	    	suggName = sfn.substring(j, ix);
 		}

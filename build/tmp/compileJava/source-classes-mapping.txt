@@ -1,3 +1,59 @@
+com/jpaulmorrison/graphics/MyFileChooser.java
+ com.jpaulmorrison.graphics.MyFileChooser
+ com.jpaulmorrison.graphics.MyFileChooser$1
+ com.jpaulmorrison.graphics.MyFileChooser$2
+ com.jpaulmorrison.graphics.MyFileChooser$3
+ com.jpaulmorrison.graphics.MyFileChooser$4
+ com.jpaulmorrison.graphics.MyFileChooser$5
+ com.jpaulmorrison.graphics.MyFileChooser$CancelAction
+ com.jpaulmorrison.graphics.MyFileChooser$ClickListener
+ com.jpaulmorrison.graphics.MyFileChooser$ComboBoxRenderer
+ com.jpaulmorrison.graphics.MyFileChooser$DeleteAction
+ com.jpaulmorrison.graphics.MyFileChooser$EnterAction
+ com.jpaulmorrison.graphics.MyFileChooser$FindAction
+ com.jpaulmorrison.graphics.MyFileChooser$ListRenderer
+ com.jpaulmorrison.graphics.MyFileChooser$MyButton
+ com.jpaulmorrison.graphics.MyFileChooser$MyComboBox
+ com.jpaulmorrison.graphics.MyFileChooser$MyTextField
+ com.jpaulmorrison.graphics.MyFileChooser$MyTraversalPolicy
+ com.jpaulmorrison.graphics.MyFileChooser$NewFolderAction
+ com.jpaulmorrison.graphics.MyFileChooser$ParentAction
+ com.jpaulmorrison.graphics.MyFileChooser$SharedListSelectionHandler
+ com.jpaulmorrison.graphics.MyFileChooser$SuggAction
+com/jpaulmorrison/graphics/BabelParser2.java
+ com.jpaulmorrison.graphics.BabelParser2
+com/jpaulmorrison/graphics/JTabbedPaneWithCloseIcons.java
+ com.jpaulmorrison.graphics.JTabbedPaneWithCloseIcons
+com/jpaulmorrison/graphics/MyDocument.java
+ com.jpaulmorrison.graphics.MyDocument
+com/jpaulmorrison/graphics/Bend.java
+ com.jpaulmorrison.graphics.Bend
+com/jpaulmorrison/graphics/TabButton.java
+ com.jpaulmorrison.graphics.TabButton
+com/jpaulmorrison/graphics/SplashWindow.java
+ com.jpaulmorrison.graphics.SplashWindow
+ com.jpaulmorrison.graphics.SplashWindow$1
+ com.jpaulmorrison.graphics.SplashWindow$2
+ com.jpaulmorrison.graphics.SplashWindow$2$1
+com/jpaulmorrison/graphics/MyOptionPane.java
+ com.jpaulmorrison.graphics.MyOptionPane
+com/jpaulmorrison/graphics/AInPort.java
+ com.jpaulmorrison.graphics.AInPort
+com/jpaulmorrison/graphics/FoundPointB.java
+ com.jpaulmorrison.graphics.FoundPointB
+com/jpaulmorrison/graphics/AOutPort.java
+ com.jpaulmorrison.graphics.AOutPort
+com/jpaulmorrison/graphics/PrintableDocument.java
+ com.jpaulmorrison.graphics.PrintableDocument
+com/jpaulmorrison/graphics/MyFontChooser.java
+ com.jpaulmorrison.graphics.MyFontChooser
+ com.jpaulmorrison.graphics.MyFontChooser$1
+ com.jpaulmorrison.graphics.MyFontChooser$2
+ com.jpaulmorrison.graphics.MyFontChooser$CellRenderer
+com/jpaulmorrison/graphics/RequestFocusListener.java
+ com.jpaulmorrison.graphics.RequestFocusListener
+com/jpaulmorrison/graphics/FoundPointA.java
+ com.jpaulmorrison.graphics.FoundPointA
 com/jpaulmorrison/graphics/ReportBlock.java
  com.jpaulmorrison.graphics.ReportBlock
 com/jpaulmorrison/graphics/Block.java
@@ -6,63 +62,27 @@ com/jpaulmorrison/graphics/Block.java
  com.jpaulmorrison.graphics.Block$2
  com.jpaulmorrison.graphics.Block$2$1
  com.jpaulmorrison.graphics.Block$Types
-com/jpaulmorrison/graphics/JTabbedPaneWithCloseIcons.java
- com.jpaulmorrison.graphics.JTabbedPaneWithCloseIcons
-com/jpaulmorrison/graphics/MyDocument.java
- com.jpaulmorrison.graphics.MyDocument
 com/jpaulmorrison/graphics/LegendBlock.java
  com.jpaulmorrison.graphics.LegendBlock
-com/jpaulmorrison/graphics/IIPBlock.java
- com.jpaulmorrison.graphics.IIPBlock
-com/jpaulmorrison/graphics/SplashWindow.java
- com.jpaulmorrison.graphics.SplashWindow
- com.jpaulmorrison.graphics.SplashWindow$1
- com.jpaulmorrison.graphics.SplashWindow$2
- com.jpaulmorrison.graphics.SplashWindow$2$1
-com/jpaulmorrison/graphics/Diagram.java
- com.jpaulmorrison.graphics.Diagram
-com/jpaulmorrison/graphics/AInPort.java
- com.jpaulmorrison.graphics.AInPort
-com/jpaulmorrison/graphics/Enclosure.java
- com.jpaulmorrison.graphics.Enclosure
-com/jpaulmorrison/graphics/ExtPortBlock.java
- com.jpaulmorrison.graphics.ExtPortBlock
-com/jpaulmorrison/graphics/VersionAndTimestamp.java
- com.jpaulmorrison.graphics.VersionAndTimestamp
-com/jpaulmorrison/graphics/MyFontChooser.java
- com.jpaulmorrison.graphics.MyFontChooser
- com.jpaulmorrison.graphics.MyFontChooser$1
- com.jpaulmorrison.graphics.MyFontChooser$2
- com.jpaulmorrison.graphics.MyFontChooser$CellRenderer
-com/jpaulmorrison/graphics/RequestFocusListener.java
- com.jpaulmorrison.graphics.RequestFocusListener
-com/jpaulmorrison/graphics/PrintableDocument.java
- com.jpaulmorrison.graphics.PrintableDocument
-com/jpaulmorrison/graphics/FoundPointA.java
- com.jpaulmorrison.graphics.FoundPointA
-com/jpaulmorrison/graphics/AOutPort.java
- com.jpaulmorrison.graphics.AOutPort
 com/jpaulmorrison/graphics/ButtonTabComponent.java
  com.jpaulmorrison.graphics.ButtonTabComponent
+com/jpaulmorrison/graphics/IIPBlock.java
+ com.jpaulmorrison.graphics.IIPBlock
 com/jpaulmorrison/graphics/DiagramBuilder.java
  com.jpaulmorrison.graphics.DiagramBuilder
 com/jpaulmorrison/graphics/CodeManager.java
  com.jpaulmorrison.graphics.CodeManager
  com.jpaulmorrison.graphics.CodeManager$1
  com.jpaulmorrison.graphics.CodeManager$MyDocListener1
-com/jpaulmorrison/graphics/TabButton.java
- com.jpaulmorrison.graphics.TabButton
 com/jpaulmorrison/graphics/PersonBlock.java
  com.jpaulmorrison.graphics.PersonBlock
-com/jpaulmorrison/graphics/MyOptionPane.java
- com.jpaulmorrison.graphics.MyOptionPane
+com/jpaulmorrison/graphics/Diagram.java
+ com.jpaulmorrison.graphics.Diagram
 com/jpaulmorrison/graphics/Arrow.java
  com.jpaulmorrison.graphics.Arrow
  com.jpaulmorrison.graphics.Arrow$Arrowhead
  com.jpaulmorrison.graphics.Arrow$Status
  com.jpaulmorrison.graphics.Arrow$ZigzagStroke
-com/jpaulmorrison/graphics/FoundPointB.java
- com.jpaulmorrison.graphics.FoundPointB
 com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP
  com.jpaulmorrison.graphics.DrawFBP$1
@@ -97,33 +117,13 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$RunTask
  com.jpaulmorrison.graphics.DrawFBP$SelectionArea
  com.jpaulmorrison.graphics.DrawFBP$Side
+com/jpaulmorrison/graphics/Enclosure.java
+ com.jpaulmorrison.graphics.Enclosure
 com/jpaulmorrison/graphics/ProcessBlock.java
  com.jpaulmorrison.graphics.ProcessBlock
-com/jpaulmorrison/graphics/Bend.java
- com.jpaulmorrison.graphics.Bend
+com/jpaulmorrison/graphics/ExtPortBlock.java
+ com.jpaulmorrison.graphics.ExtPortBlock
 com/jpaulmorrison/graphics/FileBlock.java
  com.jpaulmorrison.graphics.FileBlock
-com/jpaulmorrison/graphics/MyFileChooser.java
- com.jpaulmorrison.graphics.MyFileChooser
- com.jpaulmorrison.graphics.MyFileChooser$1
- com.jpaulmorrison.graphics.MyFileChooser$2
- com.jpaulmorrison.graphics.MyFileChooser$3
- com.jpaulmorrison.graphics.MyFileChooser$4
- com.jpaulmorrison.graphics.MyFileChooser$5
- com.jpaulmorrison.graphics.MyFileChooser$CancelAction
- com.jpaulmorrison.graphics.MyFileChooser$ClickListener
- com.jpaulmorrison.graphics.MyFileChooser$ComboBoxRenderer
- com.jpaulmorrison.graphics.MyFileChooser$DeleteAction
- com.jpaulmorrison.graphics.MyFileChooser$EnterAction
- com.jpaulmorrison.graphics.MyFileChooser$FindAction
- com.jpaulmorrison.graphics.MyFileChooser$ListRenderer
- com.jpaulmorrison.graphics.MyFileChooser$MyButton
- com.jpaulmorrison.graphics.MyFileChooser$MyComboBox
- com.jpaulmorrison.graphics.MyFileChooser$MyTextField
- com.jpaulmorrison.graphics.MyFileChooser$MyTraversalPolicy
- com.jpaulmorrison.graphics.MyFileChooser$NewFolderAction
- com.jpaulmorrison.graphics.MyFileChooser$ParentAction
- com.jpaulmorrison.graphics.MyFileChooser$SharedListSelectionHandler
- com.jpaulmorrison.graphics.MyFileChooser$SuggAction
-com/jpaulmorrison/graphics/BabelParser2.java
- com.jpaulmorrison.graphics.BabelParser2
+com/jpaulmorrison/graphics/VersionAndTimestamp.java
+ com.jpaulmorrison.graphics.VersionAndTimestamp
