@@ -1489,14 +1489,14 @@ public class DrawFBP extends JFrame
 			w = Math.min(aw, w);
 			h = Math.min(ah, h + bottom_border_height);
 			
-			y = Math.max(0, y);  
-			
+			y = Math.max(0, y);  			
+		
 			// adjust x, y, w, h to avoid RasterFormatException
 			
 			x = Math.max(x,  buffer.getMinX());
 			y = Math.max(y,  buffer.getMinY());
 			w = Math.min(w, buffer.getWidth());
-			h = Math.min(h, buffer.getHeight());
+			h = Math.min(h, buffer.getHeight());			
 			
 			BufferedImage buffer2 = buffer.getSubimage(x, y, w, h);	
 			//BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
@@ -1516,8 +1516,12 @@ public class DrawFBP extends JFrame
 				width = metrics.bytesWidth(str, 0, t.length());
 			}
 			
-			width = Math.max(width + 40, buffer2.getWidth());
+			w = Math.max(w, width);			
+						
+			//width = Math.max(width + 40, buffer2.getWidth());
+			width = Math.max(w + 40, buffer2.getWidth());
 			
+						
 			BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
 					BufferedImage.TYPE_INT_ARGB);
 			 

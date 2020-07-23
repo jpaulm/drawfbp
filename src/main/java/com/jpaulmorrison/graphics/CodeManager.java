@@ -1226,24 +1226,25 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			fileString = doc.getText(0, doc.getLength());
 		} catch (BadLocationException ble) {
 			MyOptionPane.showMessageDialog(driver,
-					"Couldn't get text from text pane", MyOptionPane.ERROR_MESSAGE);
+					"Save Code: Couldn't get text from text pane", MyOptionPane.ERROR_MESSAGE);
 			// diag.changeCompLang();
 			return false;
 		}
 
+		try {
 		String sfn = null;
 		File f = diag.diagFile;
 		String suggName = null;
 		if (f != null)	{
 			sfn = f.getAbsolutePath();
-			System.out.println("File name for diagram: " + sfn);
+			//System.out.println("File name for diagram: " + sfn);
 			sfn = sfn.replace("\\", "/");
 	    	int ix = sfn.lastIndexOf(".drw");
 	    	if (ix == -1)
 	    		System.out.println("File name for diagram missing '.drw' suffix: " + sfn);
 	    	int j = sfn.substring(0, ix).lastIndexOf("/");
 	    	suggName = sfn.substring(j, ix);
-		}
+	    	}
 	 
 		String pkg = driver.properties.get("currentPackageName");
 		if (pkg == null || pkg.equals("(null)") || pkg.trim().equals(""))
@@ -1268,12 +1269,6 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		
 		
 		fn = fn.replace("\\",  "/");
-		//int i = fn.lastIndexOf(".drw");
-		//int k = fn.substring(0, i).lastIndexOf("/");
-		//String suggName = ""; 
-		//if (i > k)
-		//	suggName = fn.substring(k + 1, i);
-		//fn = fn.replace("\\",  "/");
 		if (!(fn.endsWith("/")))
 			fn += "/";
 		if (!(pkg.equals("") ))
@@ -1299,40 +1294,15 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		
 		//checkPackage(file, fileString);
 		
-		//String r = "public class ";
-		//int m = fileString.indexOf(r);
-		//int n = fileString.indexOf(" extends ");
 		
-		//String oldFN = fileString.substring(m + r.length(), n);	
-		
-		//String p = file.getName();
-		//int q = diag.fCParm[Diagram.NETWORK].fileExt.length();
-		//p = p.substring(0, p.length() - q);
-		//int q = file.getName().indexOf(".");
-		//p = p.substring(0, q);
-		
-		//doc.addDocumentListener(this);  // to allow late changes!
-		/*
-		if (!(p.equals(oldFN))) {
-			MyOptionPane.showMessageDialog(driver,
-					"File name in generated code doesn't match actual file name - "
-							+ p,
-					MyOptionPane.WARNING_MESSAGE);
-
-			fileString = fileString.substring(0, m + r.length()) + p
-					+ fileString.substring(n);
-
-			int j2 = fileString.indexOf("().go()");
-			int j3 = fileString.substring(0, j2).lastIndexOf(" ");
-			fileString = fileString.substring(0, j3) + " " + p
-					+ fileString.substring(j2);
-			*/
 			try {
 				doc.remove(0, doc.getLength());
 				doc.insertString(0, fileString, normalStyle);
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				MyOptionPane.showMessageDialog(driver,
+						"Save Code: Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
+				// diag.changeCompLang();
+				return false;
 			}
 
 			colourCode();
@@ -1367,6 +1337,12 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		if (saveType != SAVE_AS)
 			jf.dispose();
 		return true;
+		
+		} catch(IndexOutOfBoundsException e ) {
+			System.out.println("Save Code: index out of bounds - ");
+			e.printStackTrace();  
+			return false;
+		}
 	}
 
 	
