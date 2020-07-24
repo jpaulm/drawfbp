@@ -1338,8 +1338,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			jf.dispose();
 		return true;
 		
-		} catch(IndexOutOfBoundsException e ) {
-			System.out.println("Save Code: index out of bounds - ");
+		} catch(Exception e ) {
 			e.printStackTrace();  
 			return false;
 		}
