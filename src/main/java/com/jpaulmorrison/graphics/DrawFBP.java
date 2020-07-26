@@ -654,8 +654,10 @@ public class DrawFBP extends JFrame
 	private void buildUI(Container container) {
 
 		buildPropDescTable();
+		
+		if (diagramName == null)
 
-		diagramName = properties.get("currentDiagram");
+			diagramName = properties.get("currentDiagram");
 			 
 
 		MouseListener mouseListener = new MouseAdapter() {
