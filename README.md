@@ -26,7 +26,7 @@ If you have downloaded the whole DrawFBP project, you will have to enter this co
 
 <code>java -jar build\libs\drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
 
-In either case, this command may be followed withe the location of a `.drw` file, e.g.
+In either case, this command may be followed with the location of a `.drw` file, as of `v2.20.10`, e.g.
 
 <code>java -jar drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\fbp-etl\src\main\java\com\jpaulmorrison\Step20\diagrams\Extract.drw</code>
 
