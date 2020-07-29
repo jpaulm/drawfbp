@@ -2383,8 +2383,8 @@ public class DrawFBP extends JFrame
 
 			int returnVal = fc.showOpenDialog();
 
-			if (returnVal == MyFileChooser.APPROVE_OPTION)
-				file = new File(getSelFile(fc));
+			if (returnVal == MyFileChooser.APPROVE_OPTION)  
+				 file = new File(getSelFile(fc));		//xxx	 
 
 			if (file == null)
 				return file;

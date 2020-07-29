@@ -1743,6 +1743,7 @@ final boolean SAVEAS = true;
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent e) {
 
+			//System.out.println(selComp);
 			if (selComp instanceof MyButton) {
 				// ((MyButton) selComp).getAction().actionPerformed(new
 				// ActionEvent(e, 0, ""));
@@ -1849,26 +1850,24 @@ final boolean SAVEAS = true;
 							t_fileName.setText(s);
 							repaint();
 						} 
-						 
-						/*
-						else {
-							// must be a file
-							if (MyOptionPane.YES_OPTION == MyOptionPane
-									.showConfirmDialog(driver,
-											"Create new file: "
-													+ f.getAbsolutePath() + "?",
-											"Confirm create",
-											MyOptionPane.YES_NO_OPTION))
+						if (!f.exists()) {
+							if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+									driver,
+									"Create new file: " + f.getAbsolutePath() + "?", 
+									"Confirm create", MyOptionPane.YES_NO_OPTION)) {
 								try {
 									f.createNewFile();
 								} catch (IOException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
-
+							} else {
+								MyOptionPane.showMessageDialog(driver, f.getAbsolutePath() + " not created");
+								return;
+							}
 						}
-					*/	 
-					} /* else   Not sure about this... ?
+						 
+											} /* else   Not sure about this... ?
 						if (selComp == t_dirName) {
 						listHead = t_dirName.getText();
 						showList();
