@@ -1830,7 +1830,7 @@ final boolean SAVEAS = true;
 					if (s.endsWith("/"))
 						s = s.substring(0, s.length() - 1);
 					String s2 = s;
-					if (!s.endsWith(".jar"))
+					//if (!s.endsWith(".jar"))
 						s2 = t_dirName.getText() + "/" + s;
 					File f = new File(s2);
 

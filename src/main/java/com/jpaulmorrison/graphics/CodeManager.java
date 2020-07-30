@@ -369,6 +369,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					
 					String c = "\"Invalid class\""; 
 					error = true;
+					
+					//xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 					 
 					if (block.javaComp == null) {
 						MyOptionPane.showMessageDialog(driver,

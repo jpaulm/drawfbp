@@ -4241,15 +4241,14 @@ public class DrawFBP extends JFrame
 			return false;
 		}
 		*/
-		String s = properties.get("javaFBPJarFile");
-		File f = null;
-		if (s == null)
-			f = new File(System.getProperty("user.home"));
-		else
-			f = (new File(s)).getParentFile();
+	
+		
+		File f = new File(System.getProperty("user.home"));
+		
 				
 		curDiag.fCParm[Diagram.JARFILE].prompt = "Select jar file";
-		MyFileChooser fc = new MyFileChooser(this,f, curDiag.fCParm[Diagram.JARFILE]);	
+		//MyFileChooser fc = new MyFileChooser(this,f, curDiag.fCParm[Diagram.JARFILE]);	
+		MyFileChooser fc = new MyFileChooser(this, f, curDiag.fCParm[Diagram.JARFILE]);
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
