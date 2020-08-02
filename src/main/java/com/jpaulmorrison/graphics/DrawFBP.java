@@ -2977,12 +2977,21 @@ public class DrawFBP extends JFrame
 			}
 			
 			if (j >= k + 5){
-				fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
-				fNPkg = fNPkg.replace("\\", "/");
+				//fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
+				String fileString = readFile(cFile);
+				fNPkg = findPackage(fileString);
+				
+				//if (null == packageName) {
+				//}
+				//}
+				if (fNPkg != null) 
+					fNPkg = fNPkg.replace(".", "/");
 			}
 			String clsDir = srcDir.replace("/src", "/bin");
-			srcDir = srcDir.substring(0, k + 4); // drop after src
-			clsDir = clsDir.substring(0, k + 4); // drop after bin
+			//srcDir = srcDir.substring(0, k + 4); // drop after src
+			//clsDir = clsDir.substring(0, k + 4); // drop after bin
+				
+			
 			//(new File(clsDir)).mkdir();
 			
 			saveProp("currentClassDir", clsDir);
@@ -2990,16 +2999,17 @@ public class DrawFBP extends JFrame
 
 			File fd = new File(clsDir);
 
-			// pkg = pkg.replace(".", "/");
-
 			fd.mkdirs();
+			
 			if (fd == null || !fd.exists()) {				    
 				MyOptionPane.showMessageDialog(this,
 					"'bin' directory does not exist - " + clsDir,
 					MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			
 			saveProp("currentClassDir", clsDir);
+			/*
 			if (!(fNPkg.equals(""))) {
 				fd = new File(clsDir + "/" + fNPkg);
 				fd.mkdirs();
@@ -3011,6 +3021,8 @@ public class DrawFBP extends JFrame
 				
 			}
 			}
+			
+			*/
 
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
@@ -3051,15 +3063,19 @@ public class DrawFBP extends JFrame
 			
 			// Switch to JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
 			
-			if (fNPkg != null && !(fNPkg.trim().equals("")))
-				srcDir += "/" + fNPkg;
+			//if (fNPkg != null && !(fNPkg.trim().equals("")))
+			//	srcDir += "/" + fNPkg;
 			
 			
 			srcDir = srcDir.replace("\\",  "/");
 			clsDir = srcDir.replace("/src", "/bin");
-			String clsDirTr = clsDir.substring(0, clsDir.indexOf("/bin") + 4);
 			
-			(new File(clsDir)).mkdirs(); 
+			int m = clsDir.indexOf(fNPkg);
+			if (m == -1)
+				m = clsDir.indexOf("bin/") + 4;
+			String clsDirTr = clsDir.substring(0, m);		
+			
+			(new File(clsDirTr)).mkdirs(); 
 			
 			String jf = "\"" + javaFBPJarFile; 
 			for (String jfv : jarFiles) {
@@ -3755,6 +3771,72 @@ public class DrawFBP extends JFrame
 			Thread runthr = new Thread(new RunTask());
 			runthr.start();
 		}
+	}
+	
+	String findPackage(String data){
+		String pkg = null;
+		//int lineNo = 0;
+		int errNo = 0;
+		BabelParser2 bp = new BabelParser2(data, errNo);
+		
+		while (true) {
+			while (true) {
+				if (!bp.tb('o'))
+					break;
+			}
+			
+			if (bp.tc('/', 'o')) { 
+				if (bp.tc('*', 'o')) {
+					while (true) {
+						if (bp.tc('*', 'o') && bp.tc('/', 'o'))
+							break;
+						bp.tu('o');
+					}
+				}
+				else
+					bp.bsp();     // back up one character bc one slash has been consumed
+			}
+	
+			if (bp.tc('/', 'o') && bp.tc('/', 'o')) {
+					while (true) {
+						if (bp.tc('\r', 'o')){
+							bp.tc('\n', 'o');
+								break;
+						}
+						if (bp.tc('\n', 'o')){
+							bp.tc('\r', 'o');
+							break;
+						}
+						bp.tu('o');
+					}
+				}
+			else
+				break;
+			}
+	
+			if (bp.tc('p', 'o') &&
+				bp.tc('a', 'o') &&
+				bp.tc('c', 'o') &&
+				bp.tc('k', 'o') &&
+				bp.tc('a', 'o') &&
+				bp.tc('g', 'o') &&
+				bp.tc('e', 'o')) {
+				
+			 
+				while (true) {
+					if (!bp.tb('o'))
+						break;
+				}
+				while (true) {
+					if (bp.tc(';', 'o') || bp.tb('o'))
+						break;
+					bp.tu();
+				}
+			}	
+		pkg = bp.getOutStr();
+		if (pkg != null)
+			pkg = pkg.trim();
+		return pkg;		
 	}
 	
 	String analyzeCatch(Exception e) {

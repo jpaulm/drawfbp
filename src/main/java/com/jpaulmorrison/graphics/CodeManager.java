@@ -296,6 +296,12 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					contents[2] = " //change package name, or delete statement, if desired\n"; 
 					k = 3;
 				}
+				else {
+					contents[0] = "package ";
+					contents[1] = "(null) ;";
+					contents[2] = " //change package name, or delete statement, if desired\\n ";
+					k = 3;
+				}
 			} else {
 				contents[0] = "using System;\nusing System.IO;\nusing FBPLIB;\nusing Components;\nnamespace Xxxxxxxxxx{";
 				contents[1] = " ";
@@ -370,8 +376,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					String c = "\"Invalid class\""; 
 					error = true;
 					
-					//xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-					 
+										 
 					if (block.javaComp == null) {
 						MyOptionPane.showMessageDialog(driver,
 								"Class name missing for '" + s + "' - diagram needs to be updated",
@@ -740,7 +745,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				String packageName = null;
 
 				if (suff != null && suff.toLowerCase().equals("java")) {
-					packageName = findPackage(fileString);
+					packageName = driver.findPackage(fileString);
 					if (null == packageName) {
 
 						packageName = (String) MyOptionPane.showInputDialog(
@@ -838,71 +843,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 	}
 
-	String findPackage(String data){
-		String pkg = null;
-		//int lineNo = 0;
-		int errNo = 0;
-		BabelParser2 bp = new BabelParser2(data, errNo);
-		
-		while (true) {
-			while (true) {
-				if (!bp.tb('o'))
-					break;
-			}
-			
-			if (bp.tc('/', 'o')) { 
-				if (bp.tc('*', 'o')) {
-					while (true) {
-						if (bp.tc('*', 'o') && bp.tc('/', 'o'))
-							break;
-						bp.tu('o');
-					}
-				}
-				else
-					bp.bsp();     // back up one character bc one slash has been consumed
-			}
 	
-			if (bp.tc('/', 'o') && bp.tc('/', 'o')) {
-					while (true) {
-						if (bp.tc('\r', 'o')){
-							bp.tc('\n', 'o');
-								break;
-						}
-						if (bp.tc('\n', 'o')){
-							bp.tc('\r', 'o');
-							break;
-						}
-						bp.tu('o');
-					}
-				}
-			else
-				break;
-			}
-	
-			if (bp.tc('p', 'o') &&
-				bp.tc('a', 'o') &&
-				bp.tc('c', 'o') &&
-				bp.tc('k', 'o') &&
-				bp.tc('a', 'o') &&
-				bp.tc('g', 'o') &&
-				bp.tc('e', 'o')) {
-				
-			 
-				while (true) {
-					if (!bp.tb('o'))
-						break;
-				}
-				while (true) {
-					if (bp.tc(';', 'o') || bp.tb('o'))
-						break;
-					bp.tu();
-				}
-			}	
-		pkg = bp.getOutStr();
-		if (pkg != null)
-			pkg = pkg.trim();
-		return pkg;		
-	}
 	 
 	String genMetadata(String lang) {
 		String inData = "";
@@ -1351,7 +1292,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	String checkPackage(File file, String fileString){
 		//int s = fileString.indexOf("package ");
 		//boolean res = false;
-		String pkg = findPackage(fileString);
+		String pkg = driver.findPackage(fileString);
 		//if (pkg != null) {
 			//int t = fileString.substring(s + 8).indexOf(";");
 			//String pkg = fileString.substring(s + 8, s + 8 + t);
@@ -1369,6 +1310,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				return null;
 			}
 			//v += 5;
+			/* 
 			int v2 = fs.substring(v).indexOf("networks/");
 			if (v2 > -1)
 				v += v2 + 9;
@@ -1383,17 +1325,21 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				fNPkg = fNPkg.replace('\\', '/');
 				fNPkg = fNPkg.replace('/', '.');
 			}
+			*/
 			
-			fNPkg = String.valueOf(fNPkg);
-			pkg = String.valueOf(pkg);
+			String fNPkg = pkg;
 			
-			if (!(fNPkg.equals(pkg))) {
+			fNPkg = fNPkg.replace(".",  "/");
+			
+			fs = fs.replace("\\",  "/");
+		 
+			if (-1 == fs.indexOf(fNPkg)) {
 				
 				int ans = MyOptionPane.showConfirmDialog(
 						driver,
-						"Package name in file: " + pkg + ",\n"
-								+ "   suggested package name based on file name is: "
-								+ fNPkg
+						"Package name in file: " + pkg + "\n"
+								+ "   not contained in file name\n"
+								+ fs
 								+ ", \n   do you want to change to suggested name?",
 						"Change package?",
 						MyOptionPane.YES_NO_CANCEL_OPTION);

@@ -688,15 +688,9 @@ public class MyFileChooser extends JDialog
 						}
 					}
 				}
-				// }
+				
 
-				// String[] fl = f.list();
-				// if (!f.exists()) {
-				// ll.add("Folder does not exist");
-				// }
-				// else {
-
-				Path p = f.toPath();
+				//Path p = f.toPath();
 				if (!f.exists()) {
 					MyOptionPane.showMessageDialog(driver,
 							"File does not exist: " + f.getAbsolutePath(),
@@ -706,18 +700,28 @@ public class MyFileChooser extends JDialog
 
 				else {
 
-					DirectoryStream<Path> ds = null;
-					try {
-						ds = Files.newDirectoryStream(p);
-					} catch (IOException e) {
+					//DirectoryStream<Path> ds = null;
+					//try {
+					//	ds = Files.newDirectoryStream(p);
+					//} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
+					//	e.printStackTrace();
+					//}
+					
+					File[] ds = f.listFiles();
 					ll2 = new LinkedList<String>();
+					// if (ds != null) {
+					 //  for (File child : ds) {
+					//      // Do something with child
+					//    }
 
-					for (Path entry : ds) {
-						String fs = entry.toString();
+					
+
+					 if (ds != null) {
+						    for (File entry : ds) {
+						String fs = entry.toString();		
+						//System.out.println(fs);
+
 
 						File fx = new File(fs);
 						if (!fx.exists())
@@ -729,17 +733,23 @@ public class MyFileChooser extends JDialog
 					ll.addAll(mySort(ll2)); // add elements of ll2 to ll in
 											// sorted
 											// order
-
+					 
 					ll2.clear();
-					try {
-						ds = Files.newDirectoryStream(p);
-					} catch (IOException e) {
+					//try (DirectoryStream<Path> ds2 = Files.newDirectoryStream(p))) 
+					
+					//try {
+					//	ds = Files.newDirectoryStream(p);
+					//} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					//	e.printStackTrace();
+					//}
+					//ds = f.listFiles();
 
-					for (Path entry : ds) {
+					//if (ds != null) {
+					    for (File entry : ds) {
+				
 						String fs = entry.toString();
+						//System.out.println("-" + fs);
 
 						File fx = new File(fs);
 						if (!fx.exists())
@@ -752,14 +762,22 @@ public class MyFileChooser extends JDialog
 						// then sorted into ll
 
 					}
-
-					ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll
-
+ 
+					
+				//} catch (IOException e) {
+					// TODO Auto-generated catch block
+				//	e.printStackTrace();
+				//}
+				
+				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll
+					    }
 				}
 
 			} else {
-				// inJarTree = true;
-
+				
+				// must be in jar tree
+				
+				
 				if (currentNode == null)
 					return;
 
@@ -1830,7 +1848,8 @@ final boolean SAVEAS = true;
 					if (s.endsWith("/"))
 						s = s.substring(0, s.length() - 1);
 					String s2 = s;
-					//if (!s.endsWith(".jar"))
+					//System.out.println("Show file name: " + s2);
+					if (!s.endsWith(".jar"))
 						s2 = t_dirName.getText() + "/" + s;
 					File f = new File(s2);
 
