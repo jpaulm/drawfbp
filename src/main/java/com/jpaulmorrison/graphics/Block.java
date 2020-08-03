@@ -558,7 +558,8 @@ public class Block implements ActionListener {
 			getClassInfo(w); 
 		}
 		
-		javaComp = loadJavaClass(fullClassName);           
+		if (fullClassName != null)		
+			javaComp = loadJavaClass(fullClassName);           
 		
 		s = item.get("x").trim();
 		cx = Integer.parseInt(s);
@@ -1683,9 +1684,9 @@ public class Block implements ActionListener {
 				return;
 			}
 
-			if (javaComp != null || fullClassName != null) {
+			//if (javaComp != null || fullClassName != null) {
 				MyOptionPane.showMessageDialog(driver, fullClassName + ".class");
-			}
+			//}
 			return;
 		}
 		if (s.equals("Toggle Multiplexing")) {
@@ -2017,7 +2018,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			String res = driver.getSelFile(fc);
 
-			int i = res.indexOf("!");  // res only has ! if from jar file
+			int i = res.indexOf("!");  
 			if (i > -1) { 
 				String res2 = res.substring(i + 2); // ! will be followed by
 													// slash
@@ -2088,7 +2089,28 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				    u = u.substring(0, u.length() - 6);
 
 				//String error = "";
+				 
 
+				    /*
+				Class<?> cls = null;
+				String pkg = null;
+				URL[] urls = driver.buildUrls(fp);
+			
+				// Create a new class loader with the directory
+				myURLClassLoader = new URLClassLoader(urls, driver.getClass()
+							.getClassLoader());
+
+				try {
+					cls = myURLClassLoader.loadClass(u);
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+				
+				pkg = (cls.getPackage()).toString();
+				*/  
+				    
+				    URL[] urls = null;
 				while (true) {
 
 					fp = cFile.getParentFile();    
@@ -2097,7 +2119,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					//try {
 						classFound = true;
 
-						URL[] urls = driver.buildUrls(fp);
+						urls = driver.buildUrls(fp);
 
 						if (urls == null)
 							tempComp = null;
@@ -2202,11 +2224,12 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				"Enter/change source code name", MyOptionPane.PLAIN_MESSAGE,
 				null, null, codeFileName);
 
-		if (ans != null/* && ans.length() > 0*/) {
-			codeFileName = ans.trim();
-			// javaClass = null;
-			diag.changed = true;
-		}
+		if (ans == null  || ans.length() == 0) 
+			return;
+		codeFileName = ans.trim();
+		// javaClass = null;
+		diag.changed = true;
+		 
 
 		if (codeFileName.equals("#")) {
 

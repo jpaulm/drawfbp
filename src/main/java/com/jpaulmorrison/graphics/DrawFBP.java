@@ -3538,7 +3538,7 @@ public class DrawFBP extends JFrame
 
 	void runCode() {
 
-		File cFile = null;
+		File cFile = null;  
 		//program = "";
 		//Process proc = null;
 		//interrupt = false;
@@ -3586,42 +3586,78 @@ public class DrawFBP extends JFrame
 			progName = ss.substring(j + 1);
 
 			// if (currLang.label.equals("Java"))
-			ss = ss.substring(0, ss.length() - 6); // drop .class suffix
+			
+			
+			if (javaFBPJarFile == null)
+				locateJavaFBPJarFile(false);
+			
+			Class<?> cls = null;
+
+			/*
+			URL[] urls = buildUrls(ssPlus);
+
+			URLClassLoader loader = null;
+			Class<?> cls = null;
+			if (urls != null) {
+
+				// Create a new class loader with the directory
+				loader = new URLClassLoader(urls,
+						this.getClass().getClassLoader());
+
+				//try {
+					// cls = loader.loadClass(thisCls);
+				//	cls = loader.loadClass(progName);
+				//} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+				//	e1.printStackTrace();
+				//}
+			}
+			*/
 
 			int k = ss.indexOf("/bin");
 			String t = "";
 			if (k > -1) {
-				if (j > k + 5) {
-					t = cFile.getAbsolutePath().substring(k + 5, j);
-					t = t.replace("\\", "/");
-				}
+				String st = ss.replace("/bin", "/src");
+				st = st.replace(".class",  ".java");
+				File f = new File(st);
+				String stc = readFile(f);
+				
+				String pkg = findPackage(stc);
+				pkg = pkg.replace(".",  "/");
+				
+				j = ss.indexOf(pkg);
+				t = cFile.getAbsolutePath().substring(j);
+				t = t.replace("\\", "/");
+				int n = t.lastIndexOf("/");				
+				t = t.substring(0, n);
+				String u = ss.substring(0, j); 				
 
-				String u = ss.substring(0, k + 4);
-				u = u.replace("\\",  "/");
-				clsDir = u; // drop after bin
+				clsDir = u; // drop before package
 			}
 
+			ss = ss.substring(0, ss.length() - 6); // drop .class suffix
 			//clsDir.mkdirs(); 
 			if (clsDir == null || !(new File(clsDir)).exists()) {				
 			MyOptionPane.showMessageDialog(this,
-							"'bin' directory does not exist - " + clsDir,
+							"Run class directory does not exist - " + clsDir,
 							MyOptionPane.ERROR_MESSAGE);
 					return;
 			}
-			//saveProp("currentClassDir", clsDir);
+			saveProp("currentClassDir", clsDir);
 
 			progName = progName.substring(0, progName.length() - 6);
 			if (!(t.equals("")))
 				progName = t.replace("\\", "/") + "/" + progName;
 			progName = progName.replace("/", ".");
 			
+			 
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
 
-			URL[] urls = buildUrls(null);
+			URL[] urls = buildUrls(new File(clsDir));
 
 			URLClassLoader loader = null;
-			Class<?> cls = null;
+			//Class<?> cls = null;
 			if (urls != null) {
 
 				// Create a new class loader with the directory
@@ -3638,7 +3674,7 @@ public class DrawFBP extends JFrame
 			}
 			// Class<?> cls = null;
 			// cls = loader.loaderClass(thisCls);
-
+             
 			if (cls == null) {
 				MyOptionPane.showMessageDialog(this,
 						"Class not generated for program " + progName ,
@@ -4940,9 +4976,16 @@ public class DrawFBP extends JFrame
 	public static void main(final String[] args) {
 
 		
-			SwingUtilities.invokeLater(new Runnable() {
-			        public void run() {
+			Runnable myRunnable = createRunnable(args);
+
+		
+			SwingUtilities.invokeLater(myRunnable);
+			
+			/*
+			SwingUtilities.invokeLater(new Runnable(args) {
+			        public void run(args) {
 			            
+			String[] runArgs = args;
 			
 			String laf = UIManager.getSystemLookAndFeelClassName();
 			
@@ -4963,12 +5006,48 @@ public class DrawFBP extends JFrame
 
 			setDefaultLookAndFeelDecorated(true);
 
-			DrawFBP _mf= new DrawFBP(args);
+			DrawFBP _mf= new DrawFBP(runArgs);
 			_mf.setVisible(true);
-			
+			System.out.println(runArgs); 
 			        }
 					   });
+					   */
 			
+	}
+	
+	private static Runnable createRunnable(final String[] paramStr){
+
+	    Runnable aRunnable = new Runnable(){
+	        public void run(){
+	        	String[] runArgs = paramStr;
+				
+				String laf = UIManager.getSystemLookAndFeelClassName();
+				
+
+				System.setProperty("apple.laf.useScreenMenuBar", "true");
+
+				try {
+					UIManager.setLookAndFeel(laf);
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (InstantiationException e1) {
+					e1.printStackTrace();
+				} catch (IllegalAccessException e1) {
+					e1.printStackTrace();
+				} catch (UnsupportedLookAndFeelException e1) {
+					e1.printStackTrace();
+				}
+
+				setDefaultLookAndFeelDecorated(true);
+
+				DrawFBP _mf= new DrawFBP(runArgs);
+				_mf.setVisible(true);
+				//System.out.println(runArgs); 
+	        }
+	    };
+
+	    return aRunnable;
+
 	}
 
 	public class Lang {
