@@ -1849,7 +1849,8 @@ final boolean SAVEAS = true;
 						s = s.substring(0, s.length() - 1);
 					String s2 = s;
 					//System.out.println("Show file name: " + s2);
-					if (!s.endsWith(".jar"))
+					s = s.replace("\\", "/");
+ 					if (!s.endsWith(".jar") || -1 == s.indexOf("/"))
 						s2 = t_dirName.getText() + "/" + s;
 					File f = new File(s2);
 
