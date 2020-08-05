@@ -3726,15 +3726,21 @@ public class DrawFBP extends JFrame
 			
 			String jf = "\"" + javaFBPJarFile; 
 			for (String jfv : jarFiles) {
+				jfv = jfv.replace("\\",  "/");
 				jf += delim + jfv;
 			}
+			
+			String progName2 = progName.substring(0, progName.lastIndexOf("."));  // drop program name
+			jf += delim + clsDir + progName2.replace(".", "/");
 			pBCmdArray = new String[] {
-					java, "-cp",
-					jf + ";.\"", "\"" + progName + "\""	
+					java, "-cp", 
+					jf + ";.\"", "-Xdiag",
+					"\"" + progName + "\""	
 			};
 			
-			int m = clsDir.indexOf("/bin");
-			pBDir = clsDir.substring(0, m + 4) + "/";
+			//int m = clsDir.indexOf("/bin");
+			//pBDir = clsDir.substring(0, m + 4) + "/";
+			pBDir = clsDir;
 
 			Thread runthr = new Thread(new RunTask());
 			runthr.start();
