@@ -22,7 +22,7 @@ To run from the command line, do a `cd` to wherever you have stored your DrawFBP
 
 <code>java -jar drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
 
-If you have downloaded the whole DrawFBP project, you will have to enter this command as 
+If you have downloaded the whole DrawFBP project, you can position to your DrawFBP folder, and then enter this command:
 
 <code>java -jar build\libs\drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
 
@@ -31,6 +31,7 @@ In either case, this command may be followed with the location of a `.drw` file,
     cd ....GitHub\drawfbp
     java -jar build\libs\drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\fbp-etl\src\main\java\com\jpaulmorrison\Step20\diagrams\Extract.drw 
 
+You can also associate the `.drw` extension with your copy of the DrawFBP jar file, and apply it automatically.
 
 Description
 -----------
