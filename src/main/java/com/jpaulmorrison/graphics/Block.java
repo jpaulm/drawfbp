@@ -2110,7 +2110,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				pkg = (cls.getPackage()).toString();
 				*/  
 				    
-				    URL[] urls = null;
+				// check this logic!
+				    
+				URL[] urls = null;
+				
+				
 				while (true) {
 
 					fp = cFile.getParentFile();    

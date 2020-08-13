@@ -3826,55 +3826,55 @@ public class DrawFBP extends JFrame
 				if (!bp.tb('o'))
 					break;
 			}
-			
-			if (bp.tc('/', 'o')) { 
+
+			if (bp.tc('/', 'o')) {
 				if (bp.tc('*', 'o')) {
 					while (true) {
 						if (bp.tc('*', 'o') && bp.tc('/', 'o'))
 							break;
 						bp.tu('o');
 					}
-				}
-				else
-					bp.bsp();     // back up one character bc one slash has been consumed
+					continue;
+				} else
+					bp.bsp(); // back up one character bc one slash has been consumed
 			}
-	
+
 			if (bp.tc('/', 'o') && bp.tc('/', 'o')) {
-					while (true) {
-						if (bp.tc('\r', 'o')){
-							bp.tc('\n', 'o');
-								break;
-						}
-						if (bp.tc('\n', 'o')){
-							bp.tc('\r', 'o');
-							break;
-						}
-						bp.tu('o');
+				while (true) {
+					if (bp.tc('\r', 'o')) {
+						bp.tc('\n', 'o');
+						break;
 					}
+					if (bp.tc('\n', 'o')) {
+						bp.tc('\r', 'o');
+						break;
+					}
+					bp.tu('o');
 				}
-			else
-				break;
+				continue;
 			}
-	
-			if (bp.tc('p', 'o') &&
-				bp.tc('a', 'o') &&
-				bp.tc('c', 'o') &&
-				bp.tc('k', 'o') &&
-				bp.tc('a', 'o') &&
-				bp.tc('g', 'o') &&
-				bp.tc('e', 'o')) {
-				
-			 
-				while (true) {
-					if (!bp.tb('o'))
-						break;
-				}
-				while (true) {
-					if (bp.tc(';', 'o') || bp.tb('o'))
-						break;
-					bp.tu();
-				}
-			}	
+			// else
+
+			if (bp.tc('\r', 'o'))
+				continue;
+			if (bp.tc('\n', 'o'))
+				continue;
+			break;
+		}
+
+		if (bp.tc('p', 'o') && bp.tc('a', 'o') && bp.tc('c', 'o') && bp.tc('k', 'o') && bp.tc('a', 'o')
+				&& bp.tc('g', 'o') && bp.tc('e', 'o')) {
+
+			while (true) {
+				if (!bp.tb('o'))
+					break;
+			}
+			while (true) {
+				if (bp.tc(';', 'o') || bp.tb('o'))
+					break;
+				bp.tu();
+			}
+		}
 		pkg = bp.getOutStr();
 		if (pkg != null)
 			pkg = pkg.trim();

@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: DrawFBP
-Implementation-Version: 2.20.10
-
