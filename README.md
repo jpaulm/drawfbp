@@ -31,7 +31,7 @@ In either case, this command may be followed with the location of a `.drw` file,
     cd ....GitHub\drawfbp
     java -jar build\libs\drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\fbp-etl\src\main\java\com\jpaulmorrison\Step20\diagrams\Extract.drw 
 
-You can also associate the `.drw` extension with your copy of the DrawFBP jar file, and apply it automatically.
+You can also associate your copy of the DrawFBP jar file permanently with all occurrences of the `.drw` extension (using Windows facilities).
 
 Description
 -----------
