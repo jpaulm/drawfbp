@@ -69,6 +69,8 @@ public class DrawFBP extends JFrame
 	DrawFBP driver = this;
 
 	JLabel diagDesc;
+	
+	JFrame jf = null;
 
 	JTextField jfl = null;
 	JTextField jfs = null;
@@ -262,7 +264,7 @@ public class DrawFBP extends JFrame
 	// JFrame popup = null;
 	//JFrame popup2 = null;
 	JFrame popup = null;
-	JFrame depDialog = null;
+	//JFrame depDialog = null;
 
 	static enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
@@ -1334,6 +1336,7 @@ public class DrawFBP extends JFrame
 			
 			CodeManager cm = new CodeManager(curDiag, !CODEMGRCREATE);
 			//cm.doc.changed = false;
+			
 			cm.displayDoc(cFile, gl, null);
 
 			repaint();
@@ -2603,7 +2606,7 @@ public class DrawFBP extends JFrame
 		//if (!saveAs)
 		File file = (!saveAs) ? curDiag.diagFile : null;
 
-		file = curDiag.genSave(file, curDiag.fCParm[Diagram.DIAGRAM], null);  
+		file = curDiag.genSave(file, curDiag.fCParm[Diagram.DIAGRAM], null, driver);  
 
 		int i = jtp.getSelectedIndex();
 		if (file == null) {
@@ -2880,8 +2883,8 @@ public class DrawFBP extends JFrame
 		// arrow.draw(osg);
 		// }
 
-		if (depDialog != null)
-			depDialog.setFont(fontf);
+		//if (depDialog != null)
+		//	depDialog.setFont(fontf);
 
 		/*
 		 * for (Object item : ht.keySet()) { UIManager.put(item, fontg); //
@@ -2979,7 +2982,7 @@ public class DrawFBP extends JFrame
 			if (j >= k + 5){
 				//fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
 				String fileString = readFile(cFile);
-				fNPkg = findPackage(fileString);
+				fNPkg = getPackageFromCode(fileString);
 				
 				//if (null == packageName) {
 				//}
@@ -3622,7 +3625,7 @@ public class DrawFBP extends JFrame
 				File f = new File(st);
 				String stc = readFile(f);
 				
-				String pkg = findPackage(stc);
+				String pkg = getPackageFromCode(stc);
 				pkg = pkg.replace(".",  "/");
 				
 				j = ss.indexOf(pkg);
@@ -3815,7 +3818,7 @@ public class DrawFBP extends JFrame
 		}
 	}
 	
-	String findPackage(String data){
+	String getPackageFromCode(String data){
 		String pkg = null;
 		//int lineNo = 0;
 		int errNo = 0;

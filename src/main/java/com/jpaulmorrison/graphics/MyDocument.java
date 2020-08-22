@@ -12,4 +12,9 @@ public class MyDocument extends DefaultStyledDocument {
 		super(sc);
 	}
 	
+	public void insertString(int i, String s, AttributeSet a) throws BadLocationException {		
+			super.insertString(i, s, a);	
+			//System.out.println(i + ":" + s); 
+	}
+	
 }

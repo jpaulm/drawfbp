@@ -19,7 +19,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
-public class CodeManager implements ActionListener /* , DocumentListener */ {
+public class CodeManager implements ActionListener {
 
 	DrawFBP driver;
 	HashSet<String> portNames;
@@ -27,7 +27,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	// HashMap<String, Integer> portlist;
 	Style baseStyle, normalStyle, packageNameStyle, errorStyle,
 			quotedStringStyle, commentStyle;
-	JFrame jf;
+	
 	//StyledDocument doc;
 	//boolean changed = false;
 	boolean generated = false;
@@ -63,7 +63,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 	JTextArea lineNos = null;
 	//boolean completeChange;
     final boolean SAVEAS = true;
-	
+    CloseAction closeAction = null;
+    
 	File file = null;
 	boolean create = true;
 
@@ -73,123 +74,23 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		gl = diag.diagLang;
 		driver = d.driver;
 		d.cm = this;
-		jf = new JFrame();
-		driver.depDialog = jf;
-		nsLabel.setFont(driver.fontg);
-		//completeChange = false;
+		closeAction = new CloseAction();
 		
-		DrawFBP.applyOrientation(jf);
-
-		//dialog.setAlwaysOnTop(false);
 		
-		jf.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		jf.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent ev) {
-				boolean res = true;
-				if (doc.changed)
-					res = askAboutSaving();
-				if (res){
-					driver.depDialog = null;
-					jf.dispose();
-				}
-			}
-
-		});
 		
-		jf.setJMenuBar(createMenuBar());
-		jf.repaint();
-
-		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
-		jf.setIconImage(image);
-
-		Point p = driver.getLocation();
-		Dimension dim = driver.getSize();
-		jf.setPreferredSize(new Dimension(dim.width - 100, dim.height - 50));
-		jf.setLocation(p.x + 100, p.y + 50);
-		jf.setForeground(Color.WHITE);
-		
-		// jframe.setVisible(false);
-		
-
 		StyleContext sc = new StyleContext();	
 		//doc = new DefaultStyledDocument(); 
 		doc = new MyDocument(sc); 
+		docText = new JTextPane(doc);
+		//doc = (MyDocument) docText.getStyledDocument();
+		//addStylesToDocument(doc);
 		setStyles(sc);
 		
-		panel = new JPanel();
-		scrollPane = new JScrollPane();
-		//scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
-		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
-		jf.add(scrollPane);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		//scrollPane.add(panel);
-		lineNos = new JTextArea();
-		
-		docText = new JTextPane();
-		 
-		panel.add(lineNos);
-		panel.add(Box.createHorizontalStrut(20));
-		panel.add(docText);	
-		lineNos.setPreferredSize(new Dimension(80, Short.MAX_VALUE));
-		lineNos.setMinimumSize(new Dimension(60, Short.MAX_VALUE));
-		lineNos.setMaximumSize(new Dimension(100, Short.MAX_VALUE));
-		lineNos.setBackground(DrawFBP.lb);
-		lineNos.setEditable(false);
-	
-		jf.pack();
-		 
-		scrollPane.setViewportView(panel);
-		/*
-		String data = "";
-		try {
-			data = doc.getText(0, doc.getLength());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		int lines = 0;
-		for (int i = 0; i < data.length(); i++) {
-		    if (data.charAt(i) == '\n') {
-		        lines++;
-		    }
-		}		
-				
-		JTextPane lineNos = new JTextPane();
-		//lineNos.setMinimumSize(new Dimension(50, 10000));
-		lineNos.setPreferredSize(new Dimension(50, 10000));
-		lineNos.setBackground(DrawFBP.lb);
-		String numbers = "";
-		for (int i = 1; i < lines; i++) {
-			numbers += String.format("%8s", i) + "\n";
-		}
-		lineNos.setText(numbers);
-		lineNos.setVisible(true);
-		JTextPane docText = new JTextPane(doc);
-		docText.setVisible(true);
-		panel.add(lineNos);
-		panel.add(docText);		
-		//scrollPane = new JScrollPane(panel,
-		//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
-		setStyles(sc);
-		*/
-		//dialog.setVisible(true);
-		//panel.setVisible(true);
-		//scrollPane.setVisible(true);
-		
-		//dialog.add(scrollPane);		
-		//panel.setFont(driver.fontf);
-		jf.setFont(driver.fontf);
-		//dialog.pack();
-		
-		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 	}
 	
 	void genCode() {
 		if (!generateCode()) {
-			jf.dispose();
+			//driver.jf.dispose();
 		}
 	}
 
@@ -221,16 +122,18 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				? "setDropOldest()"
 				: "SetDropOldest()";
 		
+		/*
 		String fn = diag.diagFile == null ? "unknown" : diag.diagFile.getName();		
 			
-		jf.setTitle("Generated Code for " + fn);		
+		driver.jf.setTitle("Generated Code for " + fn);		
 
-		jf.setJMenuBar(createMenuBar());		
+		driver.jf.setJMenuBar(createMenuBar());		
 
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
-		jf.setIconImage(image);
+		driver.jf.setIconImage(image);
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);
+		*/
 
 		String code = "";
 
@@ -261,13 +164,14 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		j = Math.max(i,  j);
 		clsName = w.substring(j + 1);
 		
-		
-		
+			
 		if (gl.label.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
+		}
+		/*
 			if (packageName == null || packageName.equals("") || packageName.equals("null")
 					|| packageName.equals("(null)")) {
-				packageName = (String) MyOptionPane.showInputDialog(jf,
+				packageName = (String) MyOptionPane.showInputDialog(driver.jf,
 						"Please fill in a package name or namespace here if desired", null);
 				if (packageName == null || packageName.equals("") || packageName.equals("null"))
 					//packageName = "(null)";
@@ -279,7 +183,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			}
 		}
 		
-		
+		*/
 		
 		String[] contents;
 		if (gl.label.equals("JSON")) {
@@ -290,18 +194,18 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			contents = new String[20];  
 			int k = 0;
 			if (gl.label.equals("Java")) {
-				if (packageName != null) {
+				//if (packageName != null) {
 					contents[0] = "package ";
-					contents[1] = packageName + ";";
-					contents[2] = " //change package name, or delete statement, if desired\n"; 
+					contents[1] = packageName;
+					contents[2] = ";  //change package name, or delete statement, if desired\n"; 
 					k = 3;
-				}
-				else {
-					contents[0] = "package ";
-					contents[1] = "(null) ;";
-					contents[2] = " //change package name, or delete statement, if desired\\n ";
-					k = 3;
-				}
+				//}
+				//else {
+				//	contents[0] = "package ";
+				//	contents[1] = "(null) ;";
+				//	contents[2] = " //change package name, or delete statement, if desired\n ";
+				//	k = 3;
+				//}
 			} else {
 				contents[0] = "using System;\nusing System.IO;\nusing FBPLIB;\nusing Components;\nnamespace Xxxxxxxxxx{";
 				contents[1] = " ";
@@ -413,7 +317,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 							diag.changed = true;
 						}
 
-						jf.repaint();
+						driver.repaint();
 						if (block.mpxfactor != null) {
 							code += "int " + compress(s) + "_count = "
 									+ block.mpxfactor + "; "
@@ -500,7 +404,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				if (!getPortNames(arrow))
 					return false;
 
-				jf.repaint();
+				//driver.jf.jf.repaint();
 
 				String fromDesc = descArray.get(new Integer(arrow.fromId));
 				// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
@@ -512,7 +416,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 				// }
 
-				jf.repaint();
+				//driver.jf.repaint();
 				// String upPort = arrow.upStreamPort;
 				// String dnPort = a2.downStreamPort;
 
@@ -654,11 +558,18 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		//nsLabel.setText("Not saved");
 		nsLabel.setText(doc.changed ? "Changed" : " ");
+		nsLabel.repaint();
 
-		displayDoc(null, gl, null);
+		//displayDoc(null, gl, null);
+		try {
+			displayDoc(null, gl, doc.getText(0,  doc.getLength()));
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		jf.repaint();
-		// jframe.update(jdriver.osg);
+		driver.jf.repaint();
+		// driver.jframe.update(jdriver.osg);
 
 		return true;
 	}
@@ -705,29 +616,153 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 	String displayDoc(File filex, GenLang gl, String fileString) {
 		
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		
+		driver.jf = new JFrame();
+		
+		driver.jf.setFont(driver.fontf);
+
+		driver.jf.setTitle("Generated Code for " + diag.diagFile);		
+
+		driver.jf.setJMenuBar(createMenuBar());		
+
+		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
+		driver.jf.setIconImage(image);
+		
 		file = filex;
-		if (filex != null) {
+		//String fileString = null;
+		
+		
+		
+		if (file != null) {
+			//file = diag.diagFile;
 			clsName = file.getName();
 			int i = clsName.lastIndexOf(".");
 			if (i > -1)
 				clsName = clsName.substring(0, i);
-			jf.setTitle("Displayed Code: " + file.getName());
-		}
-		else
-			jf.setTitle("Displayed Code: " + clsName + "." + gl.suggExtn);
+			driver.jf.setTitle("Displayed Code: " + file.getName());
+		} else
+			driver.jf.setTitle("Displayed Code: " + clsName + "." + gl.suggExtn);
+
 		
-		// genLang = gl;
-		//if (file != null) {
-			//clsName = file.getName();
-			//int i = clsName.lastIndexOf(".");
-			//if (i > -1)
-			//	clsName = clsName.substring(0, i);
-			if (file != null) {
+		//driver.depDialog = driver.jf;
+		nsLabel.setFont(driver.fontg);
+		//completeChange = false;
+		
+		DrawFBP.applyOrientation(driver.jf);
+
+		//dialog.setAlwaysOnTop(false);
+		
+		driver.jf.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		
+		driver.jf.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent ev) {
+				closeAction.actionPerformed(new ActionEvent(ev, 0, "CLOSE"));
+			}
+
+		});
+		
+		driver.jf.setJMenuBar(createMenuBar());
+		driver.jf.repaint();
+
+		image = driver.loadImage("DrawFBP-logo-small.png");
+		driver.jf.setIconImage(image);
+
+		Point p = driver.getLocation();
+		Dimension dim = driver.getSize();
+		driver.jf.setPreferredSize(new Dimension(dim.width - 100, dim.height - 50));
+		driver.jf.setLocation(p.x + 100, p.y + 50);
+		driver.jf.setForeground(Color.WHITE);
+		
+		// driver.jframe.setVisible(false);
+		
+
+		//StyleContext sc = new StyleContext();			
+		//doc = new MyDocument(sc); 
+		//setStyles(sc);
+		
+		panel = new JPanel();
+		scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
+		driver.jf.add(scrollPane);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		scrollPane.setViewportView(panel);
+		//scrollPane.add(panel);
+		lineNos = new JTextArea();
+		
+		docText = new JTextPane();
+		 
+		panel.add(lineNos);
+		panel.add(Box.createHorizontalStrut(20));
+		panel.add(docText);	
+		lineNos.setPreferredSize(new Dimension(80, Short.MAX_VALUE));
+		lineNos.setMinimumSize(new Dimension(60, Short.MAX_VALUE));
+		lineNos.setMaximumSize(new Dimension(100, Short.MAX_VALUE));
+		lineNos.setBackground(DrawFBP.lb);
+		lineNos.setEditable(false);
+	
+		
+		 
+		
+		//driver.jf.pack();
+		/*
+		String data = "";
+		try {
+			data = doc.getText(0, doc.getLength());
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int lines = 0;
+		for (int i = 0; i < data.length(); i++) {
+		    if (data.charAt(i) == '\n') {
+		        lines++;
+		    }
+		}		
+				
+		JTextPane lineNos = new JTextPane();
+		//lineNos.setMinimumSize(new Dimension(50, 10000));
+		lineNos.setPreferredSize(new Dimension(50, 10000));
+		lineNos.setBackground(DrawFBP.lb);
+		String numbers = "";
+		for (int i = 1; i < lines; i++) {
+			numbers += String.format("%8s", i) + "\n";
+		}
+		lineNos.setText(numbers);
+		lineNos.setVisible(true);
+		JTextPane docText = new JTextPane(doc);
+		docText.setVisible(true);
+		panel.add(lineNos);
+		panel.add(docText);		
+		//scrollPane = new JScrollPane(panel,
+		//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+		//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		setStyles(sc);
+		*/
+		//dialog.setVisible(true);
+		//panel.setVisible(true);
+		//scrollPane.setVisible(true);
+		
+		//dialog.add(scrollPane);		
+		//panel.setFont(driver.fontf);
+		//lineNos.setFont(driver.fontf);
+		//docText.setFont(driver.fontf);
+		//driver.jf.setFont(driver.fontf);
+		//dialog.pack();
+		
+		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+		//nsLabel.paint(driver.jf.getGraphics());
+		nsLabel.repaint();
+		
+		if (file != null) {
+			
 			if (fileString == null) {
 				fileString = driver.readFile(file /* , !saveType */);
 				if (fileString == null || fileString.equals("")) {
-					MyOptionPane.showMessageDialog(driver,
-							"Couldn't read file: " + file.getAbsolutePath(),
+					MyOptionPane.showMessageDialog(driver, "Couldn't read file: " + file.getAbsolutePath(),
 							MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
@@ -745,17 +780,14 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				String packageName = null;
 
 				if (suff != null && suff.toLowerCase().equals("java")) {
-					packageName = driver.findPackage(fileString);
+					packageName = driver.getPackageFromCode(fileString);
 					if (null == packageName) {
 
-						packageName = (String) MyOptionPane.showInputDialog(
-								driver,
-								"Missing package name - please specify package name, if desired",
-								null);
+						packageName = (String) MyOptionPane.showInputDialog(driver,
+								"Missing package name - please specify package name, if desired", null);
 
 						if (packageName != null) {
-							fileString = "package " + packageName + ";\n"
-									+ fileString;
+							fileString = "package " + packageName + ";\n" + fileString;
 							doc.changed = true;
 						}
 					}
@@ -765,84 +797,113 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 				}
 			}
-		 
-		//completeChange = true;
-		try {
-			doc.remove(0, doc.getLength());
-			doc.insertString(0, fileString, normalStyle);
-		} catch (BadLocationException ble) {
-			MyOptionPane.showMessageDialog(driver,
-					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
-			return fileString;
 
+			// completeChange = true;
+			try {
+				doc.remove(0, doc.getLength());
+				doc.insertString(0, fileString, normalStyle);
+			} catch (BadLocationException ble) {
+				MyOptionPane.showMessageDialog(driver.jf, "Couldn't insert text into text pane",
+						MyOptionPane.ERROR_MESSAGE);
+				return fileString;
+
+			}
 		}
-		 }
-		
-		//clsName = file.getName();
-		//int i = clsName.lastIndexOf(".");
-		//clsName = clsName.substring(0, i);
+
+		// clsName = file.getName();
+		// int i = clsName.lastIndexOf(".");
+		// clsName = clsName.substring(0, i);
 
 		colourCode();
-		 
-		String data = "";
-		try {
-			data = doc.getText(0, doc.getLength());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+		//String data = "";
+		//try {
+		//	data = doc.getText(0, doc.getLength());
+		//} catch (BadLocationException e) {
+	    // TODO Auto-generated catch block
+		//	e.printStackTrace();
+		//}
+
+		int lines = 0;
+		for (int j = 0; j < fileString.length(); j++) {
+			if (fileString.charAt(j) == '\n') {
+				lines++;
+			}
 		}
 		
-		int lines = 0;
-		for (int j = 0; j < data.length(); j++) {
-		    if (data.charAt(j) == '\n') {
-		        lines++;
-		    }
-		}	
+		//panel = new JPanel();
+		//scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
+		//driver.jf.add(scrollPane);
 		
-		panel = new JPanel();
-	 
+
+		//panel = new JPanel();
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+	    //lineNos = new JTextArea();
 		
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		//docText = new JTextPane();
 		 
+		
+
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+
 		String numbers = "";
-		for (int j = 1; j < lines + 1; j++) {
+		for (int j = 1; j < lines - 1; j++) {
 			numbers += String.format("%12s", j) + "    \n";
 		}
 		lineNos.setText(numbers);
-		lineNos.setForeground(Color.BLACK);
-		
-		lineNos.setVisible(true);
+		//lineNos.setForeground(Color.BLACK);
+
+		//lineNos.setVisible(true);
 		//docText = new JTextPane(doc);
-		
+		//docText.add(doc);
+		docText.setText(fileString);
 		docText.setStyledDocument(doc);
+		//colourCode();
 		docText.setVisible(true);
-		//dialog.add(scrollPane);		
-		panel.setFont(driver.fontf);
-	 
-		jf.pack();
-		jf.setVisible(true);
-		panel.setVisible(true);
-		scrollPane.add(panel);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS); 
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
+		// dialog.add(scrollPane);
 		
-		jf.add(scrollPane);
+		//panel.setFont(driver.fontf);
 		
-		scrollPane.setVisible(true);
+		//panel.add(lineNos);
+		//panel.add(Box.createHorizontalStrut(20));
+		//panel.add(docText);	
+		//lineNos.setPreferredSize(new Dimension(80, Short.MAX_VALUE));
+		//lineNos.setMinimumSize(new Dimension(60, Short.MAX_VALUE));
+		//lineNos.setMaximumSize(new Dimension(100, Short.MAX_VALUE));
+		//lineNos.setBackground(DrawFBP.lb);
+		//lineNos.setEditable(false);		
+		
+
+		//driver.jf.add(scrollPane);
+		scrollPane.setViewportView(panel);
+		
+		driver.jf.pack();
+		driver.jf.setVisible(true);
+		//panel.setVisible(true);
+		//scrollPane.add(panel);
+		//scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+		
+		//driver.jf.pack();
 		 
-		
-		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
-		
-		//doc.changed = true;
+		//scrollPane.setViewportView(panel);
+
+		//scrollPane.setVisible(true);
+
+		//nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+
+		// doc.changed = true;
 		// if (file.getName().endsWith(".fbp"))
 		// type = DrawFBP.DIAGRAM;
-		
-		jf.repaint();	
-		
+
+		driver.jf.repaint();
+
 		return fileString;
 
 	}
-
 	
 	 
 	String genMetadata(String lang) {
@@ -1054,8 +1115,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			}
 		//panel.setFont(driver.fontf);
 		//scrollPane.setFont(driver.fontf);
-		jf.setFont(driver.fontf);
-
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -1063,44 +1123,23 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		
 		if (s.equals("Save")) {
 
-			saveCode(false);   
+			saveCode(!SAVE_AS);   
 		
 		} else if (s.equals("Save As")) {
 
 			saveCode(SAVE_AS);
 
-		} else if (s.equals("Exit")) {
-			boolean res = true;
-			//if (doc.changed)
-				res = askAboutSaving();
-			if (res)
-				jf.dispose();
-
+		} else if (s.equals("Exit")) {			
+			closeAction.actionPerformed(new ActionEvent(null, 0, "CLOSE"));			
 		}
 		return;
 	}
 
-	// askAboutSaving returns true if Code Manager window can be deleted
-	
-	public boolean askAboutSaving() {
-		if (!doc.changed)
-			return true;
-		int answer = MyOptionPane.showConfirmDialog(driver,
-				"Save generated or modified code?", "Save code",
-				MyOptionPane.YES_NO_CANCEL_OPTION);
-
-		boolean b;
-		if (answer == MyOptionPane.YES_OPTION) {
-			// User clicked YES.
-			b = saveCode(!SAVE_AS);
-			// diag.diagLang = gl;
-			return b;
-		}
-
-		b = (answer == MyOptionPane.NO_OPTION);
-		// diag.diagLang = gl;
-		return b;
-	}
+		
+	//public boolean askAboutSaving() {
+				
+		
+	//}
 
 	/*
 	public void changedUpdate(DocumentEvent e) {
@@ -1164,11 +1203,13 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 	boolean saveCode(boolean saveType) {
 
+		// saveType = true = SAVE_AS
+		
 		String fileString = null;
 		try {
 			fileString = doc.getText(0, doc.getLength());
 		} catch (BadLocationException ble) {
-			MyOptionPane.showMessageDialog(driver,
+			MyOptionPane.showMessageDialog(driver.jf,
 					"Save Code: Couldn't get text from text pane", MyOptionPane.ERROR_MESSAGE);
 			// diag.changeCompLang();
 			return false;
@@ -1224,7 +1265,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			x = file;
 			
 		File file = diag.genSave(x, diag.fCParm[Diagram.NETWORK], fileString, 
-		        new File(suggName));
+		        new File(suggName), driver.jf);
+		
 		
 		// note: suggName does not have to be a real file!
 
@@ -1234,15 +1276,17 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			// diag.changeCompLang();
 			return false;
 		}
+		fileString = checkMain(file, fileString);
+		fileString = checkPackage(file, fileString);
 		
-		//checkPackage(file, fileString);
+		if(packageNameChanged) {
 		
 		
 			try {
 				doc.remove(0, doc.getLength());
 				doc.insertString(0, fileString, normalStyle);
 			} catch (BadLocationException e) {
-				MyOptionPane.showMessageDialog(driver,
+				MyOptionPane.showMessageDialog(driver.jf,
 						"Save Code: Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 				// diag.changeCompLang();
 				return false;
@@ -1250,21 +1294,23 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 			colourCode();
 			if (!(driver.writeFile(file, fileString))) {
-				MyOptionPane.showMessageDialog(driver, "File not saved");
+				MyOptionPane.showMessageDialog(driver.jf, "File not saved");
 				// diag.changeCompLang();
 				return false;
 			}
 
-			//MyOptionPane.showMessageDialog(driver,
-			//		"File " + file.getName() + " saved");
+			MyOptionPane.showMessageDialog(driver.jf,
+					"File " + file.getName() + " saved with new package");
+			
+			docText.repaint();
 						
-		//}
+		}
 		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
 		//saveProperties();
 		doc.changed = false;
-		jf.repaint();
+		driver.jf.repaint();
 
 		if (packageNameChanged) {
 			driver.saveProp("currentPackageName", packageName);
@@ -1273,12 +1319,13 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		// diag.targetLang = gl.label;
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+		nsLabel.repaint();
 		// diag.genCodeFileName = file.getAbsolutePath();
-		jf.setTitle("Generated Code: " + file.getName());		
-		jf.repaint();
+		driver.jf.setTitle("Generated Code: " + file.getName());		
+		driver.jf.repaint();
 
-		if (saveType != SAVE_AS)
-			jf.dispose();
+		//if (saveType != SAVE_AS)
+		//	driver.jf.dispose();
 		return true;
 		
 		} catch(Exception e ) {
@@ -1286,106 +1333,119 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			return false;
 		}
 	}
-
 	
-	 
-	String checkPackage(File file, String fileString){
-		//int s = fileString.indexOf("package ");
-		//boolean res = false;
-		String pkg = driver.findPackage(fileString);
-		//if (pkg != null) {
-			//int t = fileString.substring(s + 8).indexOf(";");
-			//String pkg = fileString.substring(s + 8, s + 8 + t);
-			
-			String fs = file.getAbsolutePath();
-			fs = fs.replace("\\", "/");
-			
-			// look for src in name; if found, look for networks...; if found do comparison starting beyond that...
-			
-			int v = fs.indexOf("/src/");
-			if (v == -1){
-				MyOptionPane.showMessageDialog(driver,
-			 			fs + " does not reference a 'src' directory!",
-			 			MyOptionPane.WARNING_MESSAGE);
-				return null;
-			}
-			//v += 5;
-			/* 
-			int v2 = fs.substring(v).indexOf("networks/");
-			if (v2 > -1)
-				v += v2 + 9;
-			else
-				v += 5;
-			int w = fs.indexOf(".java");
-			int u = fs.substring(0, w).lastIndexOf("/");
+	String checkMain(File file, String fileString) {
+		String f = file.getName();
+		int i = f.lastIndexOf(".");
+		String ff = f.substring(0, i);
+		int j = fileString.lastIndexOf("new ");
+		int k = fileString.lastIndexOf("().go()");
+		return fileString.substring(0, j + 4) + ff + fileString.substring(k);
+		//i = 0;
+	}
 
-			String fNPkg = null;   
-			if (v < u) {
-				fNPkg = fs.substring(v, u);
-				fNPkg = fNPkg.replace('\\', '/');
-				fNPkg = fNPkg.replace('/', '.');
-			}
-			*/
-			
-			String fNPkg = pkg;
-			
-			fNPkg = fNPkg.replace(".",  "/");
-			
-			fs = fs.replace("\\",  "/");
-		 
-			if (-1 == fs.indexOf(fNPkg)) {
-				
-				int ans = MyOptionPane.showConfirmDialog(
-						driver,
-						"Package name in file: " + pkg + "\n"
-								+ "   not contained in file name\n"
-								+ fs
-								+ ", \n   do you want to change to suggested name?",
-						"Change package?",
-						MyOptionPane.YES_NO_CANCEL_OPTION);
+	/*      
+	 *  Output of method is (perhaps modified) fileString     
+	 */
+	 
+	String checkPackage(File file, String fileString) {
+		
+		String pkg = driver.getPackageFromCode(fileString);
+		
+		String fs = file.getAbsolutePath();
+		fs = fs.replace("\\", "/");
+
+		int v = fs.indexOf("/src/");
+		if (v == -1) {
+			MyOptionPane.showMessageDialog(driver.jf, fs + " does not reference a 'src' directory!",
+					MyOptionPane.WARNING_MESSAGE);
+			return null;
+		}
+		
+		String s = fs.substring(v + 5);
+		
+		v = s.indexOf("main/java/");
+		
+		if (v > -1)
+			s = s.substring(v + 10);
+		
+		int w = s.lastIndexOf("/");		
+		s = s.substring(0, w);
+		s = s.replace("/",  ".");   // package deduced from file name
+		
+		String fNPkg = s;
+		if (!fNPkg.equals(pkg)) {
+ 	
+
+				int ans = MyOptionPane.showConfirmDialog(driver.jf,
+						"Package name in file: " + pkg + "\n" + "   does not match package name based on file name:\n" +
+				             fNPkg	+ ", \n   do you want to change it?",
+						"Change package name?", MyOptionPane.YES_NO_CANCEL_OPTION);
 
 				if (ans != MyOptionPane.CANCEL_OPTION) {
 					if (ans == MyOptionPane.YES_OPTION) {
-						//fileString = fileString.replace(pkg, "@!@"); 
+						// fileString = fileString.replace(pkg, "@!@");
 						// package must be first line
 						int i = fileString.indexOf(";");
 						int j = fileString.substring(0, i).indexOf("package");
 						if (j == -1) {
 							fileString = "package " + fNPkg + ";\n" + fileString;
-							MyOptionPane.showMessageDialog(driver,
-									"Package name added: " + fNPkg);
-						}
-						else {
-							fileString = fileString.replace(pkg, "@!@"); 						
-							MyOptionPane.showMessageDialog(driver,
-									"Package name changed: " + pkg + " to " + fNPkg);
-							pkg = fNPkg;
-							fileString = fileString.replace("@!@", pkg);
+							MyOptionPane.showMessageDialog(driver.jf, "Package name added: " + fNPkg);
+						} else {
+							if (pkg == null) {								
+								String t = "package " + fNPkg + ";\n"; 
+								int k = fileString.substring(j + 7).indexOf("\n"); 
+								fileString = t + fileString.substring(j + k + 8);
+							}
+							else {
+								fileString = fileString.replace(pkg, "@!@");							
+								//pkg = fNPkg;
+								fileString = fileString.replace("@!@", fNPkg);
+							}
+							MyOptionPane.showMessageDialog(driver.jf, "Package name changed: " + pkg + " to " + fNPkg);
+							driver.jf.setVisible(false);
+							//driver.jf = null;
+							//driver.writeFile(file,  fileString);  done in saveCode
+							//displayDoc(file, gl, fileString);
 							
+							packageNameChanged = true;
+							doc.changed = false;  // don't want to save again!
 						}
+						/*
 						try {
+							//System.out.println(doc.getText(0, doc.getLength()));
+						
 							doc.remove(0, doc.getLength());
 							doc.insertString(0, fileString, normalStyle);
 						} catch (BadLocationException ble) {
-							MyOptionPane.showMessageDialog(driver,
-									"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
+							MyOptionPane.showMessageDialog(driver.jf, "Couldn't insert text into text pane",
+									MyOptionPane.ERROR_MESSAGE);
 							return fileString;
 
 						}
-						displayDoc(null, gl, fileString);	
-						jf.repaint();
+						*/
+						//docText.setText(doc); 
+						//driver.jf.dispose();
+						displayDoc(null, gl, fileString);
+						//driver.writeFile(file,  fileString);
+						//driver.saveProp("currentPackageName", pkg);
+						doc.changed = false; 
+						driver.jf.repaint();
 					}
-					driver.saveProp("currentPackageName", pkg);
+					
 					// saveProperties();
 				}
-				//fileString = fileString.substring(0, s + 8) + pkg
-				//		+ fileString.substring(s + 8 + t);
+				// fileString = fileString.substring(0, s + 8) + pkg
+				// + fileString.substring(s + 8 + t);
+
 				
-				doc.changed = true;
-				//res = true;
-				
-			}
-		//}
+				// res = true;
+
+			 
+		}
+		
+		driver.saveProp("currentPackageName", fNPkg) ;
+		
 		return fileString;
 	}
 	
@@ -1440,7 +1500,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		for (Block block : diag.blocks.values()) {
 			// String s = "";
 			if (block instanceof ProcessBlock && block.desc == null) {
-				MyOptionPane.showMessageDialog(driver,
+				MyOptionPane.showMessageDialog(driver.jf,
 						"One or more missing block descriptions", MyOptionPane.WARNING_MESSAGE);
 				// error = true;
 				return null;
@@ -1513,7 +1573,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			Arrow a2 = arrow.findLastArrowInChain();
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
-				MyOptionPane.showMessageDialog(driver,
+				MyOptionPane.showMessageDialog(driver.jf,
 						"Downstream block not found: from " + from.desc, MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
@@ -1530,7 +1590,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 			String toDesc = descArray.get(new Integer(a2.toId));
 
-			jf.repaint();
+			driver.jf.repaint();
 			if (!(from instanceof ProcessBlock) && !(from instanceof IIPBlock)
 					|| !(to instanceof ProcessBlock))
 				continue;
@@ -1550,7 +1610,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			if (from instanceof IIPBlock) {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 					String proc = to.desc;
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
@@ -1619,7 +1679,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			}
 			if (block instanceof ProcessBlock) {
 				if (block.desc == null) {
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(driver.jf,
 							"One or more missing block descriptions", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 					return false;
@@ -1643,7 +1703,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			Arrow a2 = arrow.findLastArrowInChain();
 			Block to = diag.blocks.get(new Integer(a2.toId));
 			if (to == null) {
-				MyOptionPane.showMessageDialog(driver,
+				MyOptionPane.showMessageDialog(driver.jf,
 						"Downstream block not found", MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
@@ -1662,7 +1722,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			String toDesc = descArray.get(new Integer(a2.toId));
 			// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
-			jf.repaint();
+			driver.jf.repaint();
 
 			if (!(from instanceof IIPBlock)) {
 				upPort = a2.upStreamPort;
@@ -1684,25 +1744,25 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					&& to instanceof ProcessBlock) {
 				if (!a2.endsAtLine && checkDupPort(dnPort, to)) {
 					String proc = to.desc;
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 				if (checkDupPort(upPort, from)) {
 					String proc = from.desc;
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 
 				if (from.multiplex) {
 
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(driver.jf,
 							"Multiplexing not supported", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				} else if (to.multiplex) {
 
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(driver.jf,
 							"Multiplexing not supported", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				} else
@@ -1713,7 +1773,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 				if (from instanceof IIPBlock && to instanceof ProcessBlock) {
 				if (checkDupPort(dnPort, to)) {
 					String proc = to.desc;
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
@@ -1739,7 +1799,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 			doc.insertString(doc.getLength(), code, baseStyle);
 
 		} catch (BadLocationException ble) {
-			MyOptionPane.showMessageDialog(driver,
+			MyOptionPane.showMessageDialog(driver.jf,
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
 			
@@ -1753,8 +1813,8 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		//nsLabel.setText(doc.changed ? "Changed" : " ");
 
-		jf.repaint();
-		// jframe.update(jdriver.osg);
+		driver.jf.repaint();
+		// driver.jframe.update(jdriver.osg);
 
 		
 
@@ -1784,7 +1844,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 		if (c == null) {
 			c = b.codeFileName;
 			if (c == null) {
-				MyOptionPane.showMessageDialog(driver,
+				MyOptionPane.showMessageDialog(driver.jf,
 						"Missing full class name for: " + b.desc, MyOptionPane.ERROR_MESSAGE);
 			 
 				error = true;
@@ -1856,7 +1916,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 						break;
 					}
 					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-							driver, "Invalid port name: " + upPort,
+							driver.jf, "Invalid port name: " + upPort,
 							"Invalid output port name - try again?",
 							MyOptionPane.YES_NO_OPTION)) {
 						// ok = false;
@@ -1865,7 +1925,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					}
 				}
 				
-				upPort = (String) MyOptionPane.showInputDialog(driver,
+				upPort = (String) MyOptionPane.showInputDialog(driver.jf,
 						"Output port from " + "\"" + from.desc + "\"",
 						"Please enter port name");
 				//if (upPort == null)
@@ -1888,7 +1948,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					break;
 				}
 				if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-						driver, "Invalid port name: " + dnPort,
+						driver.jf, "Invalid port name: " + dnPort,
 						"Invalid input port name - try again?",
 						MyOptionPane.YES_NO_OPTION)) {
 					// ok = false;
@@ -1896,7 +1956,7 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 					break;
 				}
 			}
-			dnPort = (String) MyOptionPane.showInputDialog(driver,
+			dnPort = (String) MyOptionPane.showInputDialog(driver.jf,
 					"Input port to " + "\"" + to.desc + "\"",
 					"Please enter port name for arrow from " + from.desc);
 			//if (dnPort == null)
@@ -1938,26 +1998,65 @@ public class CodeManager implements ActionListener /* , DocumentListener */ {
 
 		//@Override
 		public void insertUpdate(DocumentEvent e) {
-			if (e.getOffset() > 0 || e.getLength() < doc.getLength())
+			if (e.getOffset() > 0 || e.getLength() < doc.getLength()) {
 				doc.changed = true;
+				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+				nsLabel.repaint();
+				driver.jf.repaint();
+			}
 			
 		}
 		//@Override
 		public void removeUpdate(DocumentEvent e) {
-			if (e.getOffset() > 0 || e.getLength() < doc.getLength())
+			if (e.getOffset() > 0 || e.getLength() < doc.getLength()) {
 				doc.changed = true;
+				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+				nsLabel.repaint();
+				driver.jf.repaint();
+			}
 
 			
 		}
 		//@Override
 		public void changedUpdate(DocumentEvent e) {
 				doc.changed = true; 
-					
+				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+				nsLabel.repaint();
+				driver.jf.repaint();					
 		}
 
 		
 	}
+
 	
-	
-	
+	public class CloseAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public void actionPerformed(ActionEvent e) {
+
+			if (!doc.changed) {
+				driver.jf.dispose();
+				return;
+			}
+
+			int answer = MyOptionPane.showConfirmDialog(driver.jf, "Save generated or modified code?", 
+					"Save code", MyOptionPane.YES_NO_CANCEL_OPTION);
+
+			if (answer == MyOptionPane.NO_OPTION) {
+				doc.changed = false;
+				driver.jf.setVisible(false);
+				driver.jf.dispose();
+				
+			} else if (answer != MyOptionPane.CANCEL_OPTION) {  // i.e. YES
+				doc.changed = false;
+				saveCode(false);
+				//if (doc.changed)
+				//	return;
+
+				//driver.jf.dispose();
+			}
+		}
+	}
+
 }

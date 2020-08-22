@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.imageio.ImageIO;
-
+import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 
 import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
@@ -115,12 +115,12 @@ public class Diagram {
 		
 	/* General save function */
 	
-	public File genSave(File file, FileChooserParm fCP, Object contents) { 
-		return genSave(file, fCP, contents, null);  
+	public File genSave(File file, FileChooserParm fCP, Object contents, JFrame jf) { 
+		return genSave(file, fCP, contents, null, jf);  
 	}
 	 
 
-	public File genSave(File file, FileChooserParm fCP, Object contents, File suggFile) {  
+	public File genSave(File file, FileChooserParm fCP, Object contents, File suggFile, JFrame jf) {  
 
 	//  contents only used for (generated) java files, and images 
 		
@@ -143,7 +143,7 @@ public class Diagram {
 
 			File f = new File(s);
 			if (!f.exists()) {
-				MyOptionPane.showMessageDialog(driver, "Directory '" + s
+				MyOptionPane.showMessageDialog(jf, "Directory '" + s
 						+ "' does not exist - create it or reselect", MyOptionPane.ERROR_MESSAGE);
 
 				f = new File(System.getProperty("user.home"));
@@ -170,7 +170,7 @@ public class Diagram {
 				return null;
 			if (returnVal != MyFileChooser.APPROVE_OPTION) {
 				if (parent.isSubnet) {   
-					int answer = MyOptionPane.showConfirmDialog(driver, 
+					int answer = MyOptionPane.showConfirmDialog(jf, 
 						 "Subnet will be deleted - are you sure you want to do this?", "Save changes",
 							MyOptionPane.YES_NO_CANCEL_OPTION);
 					
@@ -182,14 +182,14 @@ public class Diagram {
 				s = newFile.getAbsolutePath();
 				
 				if (s.endsWith("(empty folder)")) {
-					MyOptionPane.showMessageDialog(driver, "Invalid file name: "
+					MyOptionPane.showMessageDialog(jf, "Invalid file name: "
 							+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
 
 				
 				 if (newFile.getParentFile() == null) {
-				 	MyOptionPane.showMessageDialog(driver, "Missing parent file for: "
+				 	MyOptionPane.showMessageDialog(jf, "Missing parent file for: "
 				 			+ newFile.getName(), MyOptionPane.ERROR_MESSAGE);
 				 	return null;
 				 }
@@ -201,7 +201,7 @@ public class Diagram {
 				// }
 
 				if (s.toLowerCase().endsWith("~")) {
-					MyOptionPane.showMessageDialog(driver,
+					MyOptionPane.showMessageDialog(jf,
 							"Cannot save into backup file: " + s, MyOptionPane.ERROR_MESSAGE);
 					return null;
 				}
@@ -215,7 +215,7 @@ public class Diagram {
 						
 						if (!fCP.filter.accept(new File(s))) {    
 							
-							int answer = MyOptionPane.showConfirmDialog(driver, 
+							int answer = MyOptionPane.showConfirmDialog(jf, 
 									"\"" + suff + "\" not valid suffix for " +
 								            fCP.title + " files - change suffix?", "Change suffix?",
 									MyOptionPane.YES_NO_CANCEL_OPTION);
@@ -244,22 +244,17 @@ public class Diagram {
 		if (!(fCP == fCParm[IMAGE]))
 			fileString = (String) contents;	
 		
-		if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
+		// finished choosing file - compare file name against package in code, if any!
+		
+		//if (fCP.fileExt.equals(".java") && driver.currLang.label.equals("Java")) {			
 			//fileString = (String) contents;			 
-			fileString = cm.checkPackage(file, fileString);
-			//if (fileString != null)
-				//return new File(fileString);  // that's odd - must be a recent typo!
-			// fileString was never null, so code would (should) drop through and continue
-			//    return file;  
-		}
-		
-		
-		// finished choosing file...
-		
+		//	fileString = cm.checkPackage(file, fileString);			
+		//}		
+				
 		if  (saveAs) { 
 		if (file.exists()) {   
 			if (file.isDirectory()) {
-				MyOptionPane.showMessageDialog(driver,
+				MyOptionPane.showMessageDialog(jf,
 						file.getName() + " is a directory",
 						MyOptionPane.WARNING_MESSAGE);
 				return null;
@@ -280,7 +275,7 @@ public class Diagram {
 			// if file doesn't exist
 			
 			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-					driver,
+					jf,
 					"Create new file: " + file.getAbsolutePath() + "?", 
 					"Confirm create", MyOptionPane.YES_NO_OPTION)) {
 				try {
@@ -290,7 +285,7 @@ public class Diagram {
 					e1.printStackTrace();
 				}
 			} else {
-				MyOptionPane.showMessageDialog(driver, file.getAbsolutePath() + " not saved");
+				MyOptionPane.showMessageDialog(jf, file.getAbsolutePath() + " not saved");
 				return null;
 			}
 		}
@@ -356,7 +351,7 @@ public class Diagram {
 		}
 		
 		//suggFile = null;
-		MyOptionPane.showMessageDialog(driver, w + " saved: " + file.getName());
+		MyOptionPane.showMessageDialog(jf, w + " saved: " + file.getName());
 		changed = false;
 		return file;
 	}
@@ -402,7 +397,7 @@ public class Diagram {
 
 			// User clicked YES.
 
-			file = genSave(diagFile, fCParm[DIAGRAM], null);
+			file = genSave(diagFile, fCParm[DIAGRAM], null, driver);
 			if (file == null) {
 				MyOptionPane.showMessageDialog(driver, "File not saved");
 				answer = MyOptionPane.CANCEL_OPTION;
@@ -755,7 +750,7 @@ public class Diagram {
 				driver, "Subnet created - please assign .drw file and save",
 				"Name and save subnet", MyOptionPane.YES_NO_CANCEL_OPTION)) {
 						
-			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null);
+			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null, driver);
 			
 			if (file != null) {
 				

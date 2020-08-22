@@ -49,6 +49,7 @@ com/jpaulmorrison/graphics/DiagramBuilder.java
 com/jpaulmorrison/graphics/CodeManager.java
  com.jpaulmorrison.graphics.CodeManager
  com.jpaulmorrison.graphics.CodeManager$1
+ com.jpaulmorrison.graphics.CodeManager$CloseAction
  com.jpaulmorrison.graphics.CodeManager$MyDocListener1
 com/jpaulmorrison/graphics/TabButton.java
  com.jpaulmorrison.graphics.TabButton
