@@ -91,8 +91,8 @@ Features
         - Compile C# program
         - Run C# program
 - As of v2.18.1, File Chooser now displays date and time on non-jar items, and entries can be sorted by name (ascending) or by date/time (descending)      
-- New Function (as of v2.19.1):
-        - Compare two diagrams
+- Compare two diagrams
+- When saving generated network, code compares package name against directory structure, and adjusts package name if they don't match
 
 
 Videos on DrawFBP features
