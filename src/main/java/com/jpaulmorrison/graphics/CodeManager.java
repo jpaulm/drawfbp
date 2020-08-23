@@ -1279,7 +1279,7 @@ public class CodeManager implements ActionListener {
 		fileString = checkMain(file, fileString);
 		fileString = checkPackage(file, fileString);
 		
-		if(packageNameChanged) {
+		//if(packageNameChanged) {
 		
 		
 			try {
@@ -1300,11 +1300,11 @@ public class CodeManager implements ActionListener {
 			}
 
 			MyOptionPane.showMessageDialog(driver.jf,
-					"File " + file.getName() + " saved with new package");
+					"File " + file.getName() + " (re)saved");
 			
 			docText.repaint();
 						
-		}
+		//}
 		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
@@ -1338,8 +1338,12 @@ public class CodeManager implements ActionListener {
 		String f = file.getName();
 		int i = f.lastIndexOf(".");
 		String ff = f.substring(0, i);
-		int j = fileString.lastIndexOf("new ");
-		int k = fileString.lastIndexOf("().go()");
+		int j = fileString.indexOf("public class ");
+		int k = fileString.lastIndexOf(" extends");
+		fileString = fileString.substring(0, j + 13) + ff + fileString.substring(k);
+		
+		j = fileString.lastIndexOf("new ");
+		k = fileString.lastIndexOf("().go()");
 		return fileString.substring(0, j + 4) + ff + fileString.substring(k);
 		//i = 0;
 	}
