@@ -88,13 +88,13 @@ public class CodeManager implements ActionListener {
 		
 	}
 	
-	void genCode() {
-		if (!generateCode()) {
-			//driver.jf.dispose();
-		}
-	}
+	//void genCode() {
+	//	if (!generateCode()) {
+	//		//driver.jf.dispose();
+	//	}
+	//}
 
-	boolean generateCode() {
+	boolean genCode() {
 
 		fbpMode = false;
 		//langLabel = diag.diagLang.label;
