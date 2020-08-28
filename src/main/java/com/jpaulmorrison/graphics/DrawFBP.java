@@ -935,6 +935,7 @@ public class DrawFBP extends JFrame
 		// menuItem = new JMenuItem("Clear Language Association");
 		// fileMenu.add(menuItem);
 		// menuItem.addActionListener(this);
+		/*
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Create Image");
 		menuItem.setAccelerator(
@@ -944,8 +945,9 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Show Image");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		*/
 		fileMenu.addSeparator();
- 
+       
 		String s = "Generate ";
 		if (curDiag != null)
 			s += curDiag.diagLang.label + " ";
@@ -957,8 +959,19 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Display Source Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
-
+		
 		fileMenu.addSeparator();
+		menuItem = new JMenuItem("Create Image");
+		menuItem.setAccelerator(
+				KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK));
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
+		menuItem = new JMenuItem("Show Image");
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
+		fileMenu.addSeparator();
+
+		
 		compMenu = new JMenuItem("Compile Code");
 		// compMenu.setEnabled(currLang != null &&
 		// currLang.label.equals("Java"));
@@ -1568,7 +1581,7 @@ public class DrawFBP extends JFrame
 		 
 			//BufferedImage image = combined;
 					
-			showImage(combined, curDiag.diagFile.getName()); 
+			showImage(combined, curDiag.diagFile.getName(), true); 
 			return;
 			/*
 			
@@ -1649,7 +1662,7 @@ public class DrawFBP extends JFrame
 			// curDiag.imageFile = fFile;
 
 			String name = fFile.getName();
-			showImage(image, name);
+			showImage(image, name, false);
 			
 			return;
 		}
@@ -1862,18 +1875,14 @@ public class DrawFBP extends JFrame
 
 		repaint();
 	}
-	void showImage(BufferedImage image, String title) {
+	void showImage(BufferedImage image, String title, boolean save) {
 		//JFrame popup = new JFrame((Frame) null);		
 		JFrame iFrame = new JFrame();
 		iFrame.setTitle(title);
 		iFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		iFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
-				askAboutSavingImage(image, iFrame);
-				//if (f != null) 
-				//	driver.depDialog = null;
-				//popup.dispose();
-				 
+				askAboutSavingImage(image, iFrame, save);
 			}
 
 		});
@@ -1882,17 +1891,7 @@ public class DrawFBP extends JFrame
 				
 		iFrame.add(jLabel);
 		
-	    //iFrame.setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-	    //iFrame.setBounds(
-	    //		(int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - image.getWidth() / 2),
-	    //        (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
-	    //                .getHeight() / 2 - image.getHeight() / 2),
-	    //        image.getWidth(), 
-	    //        image.getHeight());
-	    
-	    //Rectangle rect = iFrame.getBounds();
 	   
-	    //iFrame.setMinimumSize(iFrame.getPreferredSize());
 	    
 		iFrame.setLocation(new Point(200, 200));
 		
@@ -1904,7 +1903,11 @@ public class DrawFBP extends JFrame
 		repaint();
 		}
 	
-	File askAboutSavingImage(Image img, JFrame jd) {
+	void askAboutSavingImage(Image img, JFrame jd, boolean save) {
+		if (!save) {
+			jd.dispose();
+			return;
+		}
 		int answer = MyOptionPane.showConfirmDialog(driver, "Save image?",
 				"Save image", MyOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -1919,14 +1922,14 @@ public class DrawFBP extends JFrame
 			if (f!= null)
 				f.setLastModified(date.getTime());
 			jd.dispose();
-			return f;
+			return;
 		}
 
 		if (answer == MyOptionPane.NO_OPTION){
 		// diag.diagLang = gl;
 			jd.dispose();
 		}
-			return null;
+			return;
 		 
 	}
 		 
@@ -1999,7 +2002,7 @@ public class DrawFBP extends JFrame
 		u += "Network";
 		gNMenuItem = new JMenuItem(u);
 		gNMenuItem.addActionListener(this);
-		fileMenu.add(gNMenuItem, 10);
+		fileMenu.add(gNMenuItem, 7);
 		filterOptions[0] = gl.showLangs();
 
 		curDiag.fCParm[Diagram.PROCESS] = new  FileChooserParm("Process",
