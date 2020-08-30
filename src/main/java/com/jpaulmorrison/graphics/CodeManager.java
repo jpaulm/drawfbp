@@ -1130,7 +1130,7 @@ public class CodeManager implements ActionListener {
 			saveCode(SAVE_AS);
 
 		} else if (s.equals("Exit")) {			
-			closeAction.actionPerformed(new ActionEvent(null, 0, "CLOSE"));			
+			closeAction.actionPerformed(new ActionEvent(e, 0, "CLOSE"));			
 		}
 		return;
 	}
@@ -1342,10 +1342,12 @@ public class CodeManager implements ActionListener {
 		int k = fileString.lastIndexOf(" extends");
 		fileString = fileString.substring(0, j + 13) + ff + fileString.substring(k);
 		
-		j = fileString.lastIndexOf("new ");
-		k = fileString.lastIndexOf("().go()");
-		return fileString.substring(0, j + 4) + ff + fileString.substring(k);
-		//i = 0;
+		k = fileString.lastIndexOf("().go()");		
+		if (k > -1) {
+			j = fileString.lastIndexOf("new ");
+			fileString = fileString.substring(0, j + 4) + ff + fileString.substring(k);
+		}
+		return fileString;
 	}
 
 	/*      

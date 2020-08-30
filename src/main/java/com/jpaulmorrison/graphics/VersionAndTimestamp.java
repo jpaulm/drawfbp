@@ -9,7 +9,7 @@ public final class VersionAndTimestamp {
 
 
 
-	static String date = "Aug. 22, 2020"; 
+	static String date = "Aug. 29, 2020"; 
 
 
 

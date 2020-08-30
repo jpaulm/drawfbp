@@ -1437,11 +1437,13 @@ final boolean SAVEAS = true;
 		if (/* selComp == t_dirName || */ selComp == t_fileName) {
 
 			//selComp.setBackground(vLightBlue);
-			selComp.setRequestFocusEnabled(true);
-			((MyTextField) selComp).getCaret().setVisible(true);
-			((MyTextField) selComp).setEditable(true);
+			//selComp.setRequestFocusEnabled(true);
+			//((MyTextField) selComp).getCaret().setVisible(true);
+			//((MyTextField) selComp).setEditable(true);
 			//((MyTextField) selComp).requestFocusInWindow();
-			((MyTextField) selComp).grabFocus();
+			//((MyTextField) selComp).grabFocus();
+			//String s = ((MyTextField) selComp).getText();
+			//((MyTextField) selComp).setCaretPosition(s.length());
 
 		} 
 		//else {
@@ -1870,8 +1872,11 @@ final boolean SAVEAS = true;
 							t_fileName.setText(s);
 							repaint();
 						} 
+						 
 						if (!f.exists()) {
-							if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+					 /*
+					 	if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+					 
 									driver,
 									"Create new file: " + f.getAbsolutePath() + "?", 
 									"Confirm create", MyOptionPane.YES_NO_OPTION)) {
@@ -1882,12 +1887,17 @@ final boolean SAVEAS = true;
 									e1.printStackTrace();
 								}
 							} else {
-								MyOptionPane.showMessageDialog(driver, f.getAbsolutePath() + " not created");
+							 
+								MyOptionPane.showMessageDialog(driver, f.getAbsolutePath() + " does not exist - use New Diagram or Save As");
 								return;
+								*/
 							}
-						}
 						 
-											} /* else   Not sure about this... ?
+					//	}
+						
+						 
+						} 
+					/* else   
 						if (selComp == t_dirName) {
 						listHead = t_dirName.getText();
 						showList();
@@ -2254,31 +2264,42 @@ l.setFont(driver.fontg);
 			
 			if (this == selComp) {
 				setBackground(vLightBlue);
-				if (-1 < getText().indexOf(".")){		// if has suffix			
-					getCaret().setVisible(true);
-					setEditable(true);
-				}
+				//int i = getText().indexOf(".");
+				//if (-1 < i){		// if has suffix			
+				//getCaret().setVisible(true);
+				//setEditable(true);
+				//}
+				 
+				 	/*
 				setFocusable(true);
 				setRequestFocusEnabled(true);
-				
+				setEnabled(true);
 				requestFocusInWindow();
 				setVisible(true);
+				//String s = getText();
+				//setCaretPosition(s.length());
 				validate();
-				/*
+				 */
+				 
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						setFocusable(true);
+						setRequestFocusEnabled(true);
 						requestFocusInWindow();
 						setEnabled(true);
+						setVisible(true);
 						getCaret().setVisible(true);
+						setEditable(true);	
 					}
 				});
-				*/
+				 
+			 
 				
 
 			} else {
 				setBackground(Color.WHITE);
 				setEditable(false);
+				setEnabled(false);
 				getCaret().setVisible(false);
 			}
 			repaint();
@@ -2467,15 +2488,15 @@ public void oneClick() {
 			//t = t.replace("\\",  File.separator);
 			//t = t.replace("/",  File.separator);
 			t_fileName.setText(t);
-			t_fileName.getCaret().setVisible(true);
+			//t_fileName.getCaret().setVisible(true);
 			
 			selComp = t_fileName;
-			((MyTextField) selComp).setEditable(true);
+			//((MyTextField) selComp).setEditable(true);
 
-			selComp.setFocusable(true);
+			//selComp.setFocusable(true);
 			// selComp.requestFocusInWindow();
-			selComp.grabFocus();
-			selComp.setEnabled(true);
+			//selComp.grabFocus();
+			//selComp.setEnabled(true);
 			// t_fileName.setText(lowLevel);
 
 			selComp.requestFocus();

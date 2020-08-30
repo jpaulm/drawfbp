@@ -121,6 +121,7 @@ com/jpaulmorrison/graphics/MyFileChooser.java
  com.jpaulmorrison.graphics.MyFileChooser$MyButton
  com.jpaulmorrison.graphics.MyFileChooser$MyComboBox
  com.jpaulmorrison.graphics.MyFileChooser$MyTextField
+ com.jpaulmorrison.graphics.MyFileChooser$MyTextField$1
  com.jpaulmorrison.graphics.MyFileChooser$MyTraversalPolicy
  com.jpaulmorrison.graphics.MyFileChooser$NewFolderAction
  com.jpaulmorrison.graphics.MyFileChooser$ParentAction

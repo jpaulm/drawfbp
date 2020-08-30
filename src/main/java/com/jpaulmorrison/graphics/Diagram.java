@@ -336,7 +336,7 @@ public class Diagram {
 				//	file = oldFile;
 				//}
 				fileString = buildFile();  // build .drw file from internal classes (blocks and arrows)
-
+                driver.saveProp("currentDiagram",  diagFile.getAbsolutePath());
 			}
 
 			
