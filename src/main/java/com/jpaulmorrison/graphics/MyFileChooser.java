@@ -131,13 +131,16 @@ public class MyFileChooser extends JDialog
 	NewFolderAction newFolderAction;
 
 	DrawFBP.FileChooserParm fCP;
+	
+	String chooserTitle;
 
 	public ClickListener clickListener;
 
-	public MyFileChooser(DrawFBP driver, File f, DrawFBP.FileChooserParm fcp) {
+	public MyFileChooser(DrawFBP driver, File f, DrawFBP.FileChooserParm fcp, String chooserTitle) {
 		
 
 		this.fCP = fcp;
+		this.chooserTitle = chooserTitle; 
 		clickListener = new ClickListener();
 
 		if (f == null || !f.exists() || !f.isDirectory())
@@ -228,22 +231,23 @@ public class MyFileChooser extends JDialog
 		t_suggName.setFont(driver.fontg.deriveFont(Font.ITALIC));
 		// text3.setPreferredSize(new Dimension(100, driver.fontHeight + 2));
 
-		String s = (saveAs) ? "Save or Save As" : "Open File";
+		//String s = (saveAs) ? "Save or Save As" : "Open File";
 		// comp = new MyFileCompare();
 		renderer = new ListRenderer(driver);
 
-		if (fCP == driver.diagFCParm)
-			dialog.setTitle(s);
-		else {
-			if (fCP == driver.curDiag.fCParm[Diagram.NETWORK]) {
+		//if (fCP == driver.diagFCParm)
+		//	dialog.setTitle(s);
+		//else {
+			//if (fCP == driver.curDiag.fCParm[Diagram.NETWORK]) {
 				//String w = driver.curDiag.diagFile.getAbsolutePath();
-				fCP.prompt = "Specify file name";
-			}
+				//fCP.prompt = "Specify file name";
+			//}
 
-			dialog.setTitle(fCP.prompt);
+			//dialog.setTitle(fCP.prompt);
+			dialog.setTitle(chooserTitle);
 			if (fCP == driver.curDiag.fCParm[Diagram.CLASS])
 				listShowingJarFile = listHead;
-		}
+		//}
 
 		enterAction = new EnterAction();
 		suggAction = new SuggAction();
@@ -537,11 +541,11 @@ public class MyFileChooser extends JDialog
 
 			showListHead();
 			
-			if (driver.curDiag.title != null
-					&& driver.curDiag.diagFile != null) {
-				s += " (current file: "
-						+ driver.curDiag.diagFile.getAbsolutePath() + ")";
-			}
+			//if (driver.curDiag.title != null
+			//		&& driver.curDiag.diagFile != null) {
+			//	s += " (current file: "
+			//			+ driver.curDiag.diagFile.getAbsolutePath() + ")";
+			//}
 			showList();
 		} else {
 			showListHead();

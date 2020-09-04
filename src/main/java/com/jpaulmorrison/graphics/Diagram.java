@@ -157,7 +157,7 @@ public class Diagram {
 					suggestedFileName = s + "/" + title + fCP.fileExt;
 			
 
-			MyFileChooser fc = new MyFileChooser(driver, f, fCP);
+			MyFileChooser fc = new MyFileChooser(driver, f, fCP, "Save File");
 
 			fc.setSuggestedName(suggestedFileName);
 			//}

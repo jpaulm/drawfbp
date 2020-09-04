@@ -1929,7 +1929,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				t = System.getProperty("user.home");
 		}
 		MyFileChooser fc = new MyFileChooser(driver,new File(t),
-				diag.fCParm[Diagram.DIAGRAM]);
+				diag.fCParm[Diagram.DIAGRAM], "Assign Subnet Diagram");
 
 		int returnVal = fc.showOpenDialog();
 		String dFN = null;
@@ -2007,7 +2007,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			t = System.getProperty("user.home");
 
 		MyFileChooser fc = new MyFileChooser(driver,new File(t),
-				diag.fCParm[Diagram.CLASS]);
+				diag.fCParm[Diagram.CLASS], "Select Java Class");
 
 		int returnVal = fc.showOpenDialog();
 
@@ -2242,7 +2242,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				t = System.getProperty("user.home");
 
 			MyFileChooser fc = new MyFileChooser(driver,new File(t),
-					diag.fCParm[Diagram.PROCESS]);
+					diag.fCParm[Diagram.PROCESS], "Select Source Code");
 
 			int returnVal = fc.showOpenDialog();
 
