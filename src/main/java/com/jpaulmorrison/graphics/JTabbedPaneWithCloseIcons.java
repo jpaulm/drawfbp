@@ -55,6 +55,15 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 						driver.saveProp("currentDiagramDir",
 								currentDiagramDir.getAbsolutePath());
 					// saveProperties();
+					
+					driver.curDiag.area.removeMouseListener(driver.curDiag.area);
+					driver.curDiag.area.removeMouseMotionListener(driver.curDiag.area);
+					String s = f.getAbsolutePath();
+					if (s == null || s.endsWith(".drw")) {
+						driver.curDiag.area.addMouseListener(driver.curDiag.area);
+						driver.curDiag.area.addMouseMotionListener(driver.curDiag.area);
+					}
+					
 				}
 
 				if (driver.curDiag != null && driver.curDiag.diagLang != null

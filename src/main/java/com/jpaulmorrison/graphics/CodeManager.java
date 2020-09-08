@@ -62,7 +62,7 @@ public class CodeManager implements ActionListener {
 	JTextPane docText = null;
 	JTextArea lineNos = null;
 	//boolean completeChange;
-    final boolean SAVEAS = true;
+    //final boolean SAVEAS = true;
     CloseAction closeAction = null;
     
 	File file = null;
@@ -2005,7 +2005,8 @@ public class CodeManager implements ActionListener {
 		//@Override
 		public void insertUpdate(DocumentEvent e) {
 			if (e.getOffset() > 0 || e.getLength() < doc.getLength()) {
-				doc.changed = true;
+				if (create)
+					doc.changed = true;
 				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 				nsLabel.repaint();
 				driver.jf.repaint();
@@ -2015,7 +2016,8 @@ public class CodeManager implements ActionListener {
 		//@Override
 		public void removeUpdate(DocumentEvent e) {
 			if (e.getOffset() > 0 || e.getLength() < doc.getLength()) {
-				doc.changed = true;
+				if (create)
+					doc.changed = true;
 				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 				nsLabel.repaint();
 				driver.jf.repaint();
@@ -2025,10 +2027,11 @@ public class CodeManager implements ActionListener {
 		}
 		//@Override
 		public void changedUpdate(DocumentEvent e) {
+			if (create)
 				doc.changed = true; 
-				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
-				nsLabel.repaint();
-				driver.jf.repaint();					
+			nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
+			nsLabel.repaint();
+			driver.jf.repaint();					
 		}
 
 		

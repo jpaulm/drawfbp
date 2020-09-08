@@ -656,11 +656,12 @@ public class DrawFBP extends JFrame
 	private void buildUI(Container container) {
 
 		buildPropDescTable();
-		
-		if (diagramName == null)
 
-			diagramName = properties.get("currentDiagram");
-			 
+		// if (diagramName == null)
+
+		diagramName = properties.get("currentDiagram");
+
+		
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -1135,6 +1136,12 @@ public class DrawFBP extends JFrame
 		int i = jtp.getTabCount(); // get count *before* adding new sa & label
 		jtp.add(sa, new JLabel());
 		
+		String s = diagramName;
+		if (s == null || s.endsWith(".drw")) {
+			curDiag.area.addMouseListener(curDiag.area);
+			curDiag.area.addMouseMotionListener(curDiag.area);
+		}
+		
 		//int j = jtp.getTabCount();  // for debugging
 		// System.out.println("new tab");
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
@@ -1305,7 +1312,7 @@ public class DrawFBP extends JFrame
 			File cFile = null;			
 			GenLang gl = curDiag.diagLang;
 									
-			MyOptionPane.showMessageDialog(this, "Select a file", MyOptionPane.INFORMATION_MESSAGE);
+			MyOptionPane.showMessageDialog(this, "Select a source file", MyOptionPane.INFORMATION_MESSAGE);
 
 			
 			String ss = properties.get(gl.netDirProp);
@@ -1319,6 +1326,7 @@ public class DrawFBP extends JFrame
 			File file = new File(ss);
 			MyFileChooser fc = new MyFileChooser(this, file, curDiag.fCParm[Diagram.NETWORK],
 					"Display Source Code");
+			/*
 			File f = curDiag.diagFile;	
 			if (f != null) {
 				String name = f.getName();
@@ -1327,7 +1335,8 @@ public class DrawFBP extends JFrame
 					+ curDiag.fCParm[Diagram.NETWORK].fileExt;
 				fc.setSuggestedName(ss);
 			}
-
+			*/
+			
 			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
 
 			cFile = null;
@@ -2415,10 +2424,19 @@ public class DrawFBP extends JFrame
 
 		File currentDiagramDir = file.getParentFile();
 		saveProp("currentDiagramDir", currentDiagramDir.getAbsolutePath());
-		// saveProperties();
-
-		// int j = jtp.getTabCount();
-
+		
+		diagramName = file.getAbsolutePath();
+		saveProp("currentDiagram", diagramName);
+		
+		String s = diagramName;
+		curDiag.area.removeMouseListener(curDiag.area);
+		curDiag.area.removeMouseMotionListener(curDiag.area);
+		if (s == null || s.endsWith(".drw")) {
+			curDiag.area.addMouseListener(curDiag.area);
+			curDiag.area.addMouseMotionListener(curDiag.area);
+		}
+		
+		
 		ButtonTabComponent b = null;
 
 		int i = getFileTabNo(file.getAbsolutePath());
@@ -2453,6 +2471,7 @@ public class DrawFBP extends JFrame
 		if (!found)
 			getNewDiag();
 		curDiag.title = file.getName();
+		
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
 			curDiag.title = curDiag.title.substring(0,
 					curDiag.title.length() - 4);
@@ -2488,7 +2507,7 @@ public class DrawFBP extends JFrame
 			cm.displayDoc(file, gl, null);
 			return file;
 		}
-		if (!(suff.equals("drw"))) {
+		if (!(suff.equals("drw"))  && !(suff.equals("dr~"))) {
 			gl = findGLFromLanguage(suff);
 			CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE);  // do.
 			cm.displayDoc(file, gl, null);
@@ -2950,7 +2969,7 @@ public class DrawFBP extends JFrame
 			// }
 			if (cFile == null || !(cFile.exists())) {
 				
-				MyOptionPane.showMessageDialog(this, "File \"" + cFile + "\" does not exist", MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.showMessageDialog(this, "No file selected or file does not exist", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			
@@ -3569,7 +3588,7 @@ public class DrawFBP extends JFrame
 			}
 			// }
 			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(this, "File \"" + cFile + "\" does not exist", MyOptionPane.ERROR_MESSAGE);				
+				MyOptionPane.showMessageDialog(this, "No file selected or file does not exist", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -3909,6 +3928,8 @@ public class DrawFBP extends JFrame
 
 	
 	void compare() {
+		
+			
 		MyOptionPane.showMessageDialog(driver,
 				"Select diagram to be compared against - OK if already open!",			
 				MyOptionPane.INFORMATION_MESSAGE);
@@ -5563,8 +5584,14 @@ public class DrawFBP extends JFrame
 
 			setOpaque(true);
 
-			addMouseListener(this);
-			addMouseMotionListener(this);
+			/*
+			String s = diagramName;
+			if (s == null || s.endsWith(".drw")) {
+			   addMouseListener(this);
+			   addMouseMotionListener(this);
+			}
+			
+			*/
 			// setFont(fontg);
 
 			setBackground(Color.WHITE);
