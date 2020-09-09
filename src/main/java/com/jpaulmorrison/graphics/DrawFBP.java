@@ -989,10 +989,10 @@ public class DrawFBP extends JFrame
 		fileMenu.add(runMenu);
 		runMenu.addActionListener(this);
 
-		fileMenu.addSeparator();
-		menuItem = new JMenuItem("Compare Diagrams");
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		//fileMenu.addSeparator();
+		//menuItem = new JMenuItem("Compare Diagrams");
+		//fileMenu.add(menuItem);
+		//menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
 
@@ -1059,6 +1059,11 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("New Block");
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		editMenu.addSeparator();
+		menuItem = new JMenuItem("Compare Diagrams");
+		editMenu.add(menuItem);
+		menuItem.addActionListener(this);
+		editMenu.addSeparator();
 		menuItem = new JMenuItem("Block-related Actions");
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1312,7 +1317,7 @@ public class DrawFBP extends JFrame
 			File cFile = null;			
 			GenLang gl = curDiag.diagLang;
 									
-			MyOptionPane.showMessageDialog(this, "Select a source file", MyOptionPane.INFORMATION_MESSAGE);
+			//MyOptionPane.showMessageDialog(this, "Select a source file", MyOptionPane.INFORMATION_MESSAGE);
 
 			
 			String ss = properties.get(gl.netDirProp);
@@ -2926,7 +2931,7 @@ public class DrawFBP extends JFrame
 		Process proc = null;
 		//String program = "";
 		//interrupt = false;
-		String cMsg = null;
+		//String cMsg = null;
 		if (!(currLang.label.equals("Java")) && !(currLang.label.equals("C#"))) {
 			MyOptionPane.showMessageDialog(this,
 					"Language not supported: " + currLang.label,
@@ -2934,14 +2939,14 @@ public class DrawFBP extends JFrame
 			return;
 		}
 		 
-		if (curDiag.changed) {
-			cMsg = "Select a " + currLang.label + " source file - if diagram has changed, \n   invoke 'File/Generate " + currLang.label + " Network' first";
+		//if (curDiag.changed) {
+		//	cMsg = "Select a " + currLang.label + " source file - if diagram has changed, \n   invoke 'File/Generate " + currLang.label + " Network' first";
 			
-		}
+		//}
 		 
-		cMsg = "Select  a " + currLang.label + " source file";
+		//cMsg = "Select  a " + currLang.label + " source file";
 		
-		MyOptionPane.showMessageDialog(this, cMsg, MyOptionPane.INFORMATION_MESSAGE);
+		//MyOptionPane.showMessageDialog(this, cMsg, MyOptionPane.INFORMATION_MESSAGE);
 		
 		//if (currLang.label.equals("Java")) {
 			String ss = properties.get(gl.netDirProp);
@@ -3938,7 +3943,11 @@ public class DrawFBP extends JFrame
 			
 		Diagram oldDiag = null;
 		
-		String t = newDiag.diagFile.getParent();
+		File f = newDiag.diagFile;
+		if (f == null)
+			return;
+		
+		String t = f.getParent();
 		MyFileChooser fc = new MyFileChooser(driver, new File(t),
 				newDiag.fCParm[Diagram.DIAGRAM], "Compare Diagrams");
 
