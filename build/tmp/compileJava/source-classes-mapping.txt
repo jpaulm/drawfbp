@@ -68,7 +68,6 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP
  com.jpaulmorrison.graphics.DrawFBP$1
  com.jpaulmorrison.graphics.DrawFBP$10
- com.jpaulmorrison.graphics.DrawFBP$11
  com.jpaulmorrison.graphics.DrawFBP$2
  com.jpaulmorrison.graphics.DrawFBP$3
  com.jpaulmorrison.graphics.DrawFBP$4

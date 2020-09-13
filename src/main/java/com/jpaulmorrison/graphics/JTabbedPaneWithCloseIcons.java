@@ -37,7 +37,7 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 		*/
 		ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);
 
-		if (b != null) {
+		if (b != null  && !driver.comparing) {
 			//b.selected = true;
 			if (b.diag != null) {
 				driver.curDiag = b.diag;

@@ -61,7 +61,8 @@ public class DrawFBP extends JFrame
 		implements
 			ActionListener,
 			ComponentListener, 
-			ChangeListener 
+			ChangeListener,
+			MouseListener
 			{
 
 	static final long serialVersionUID = 111L;
@@ -308,6 +309,8 @@ public class DrawFBP extends JFrame
 	//int detArrSegNo;
 	
 	boolean tabCloseOK = true;
+	
+	boolean comparing = false;
 	
 	final boolean CODEMGRCREATE = true;
 	
@@ -661,7 +664,7 @@ public class DrawFBP extends JFrame
 
 		diagramName = properties.get("currentDiagram");
 
-		
+		/*
 
 		MouseListener mouseListener = new MouseAdapter() {
 
@@ -682,16 +685,33 @@ public class DrawFBP extends JFrame
 					// b.diag = diag;
 				}
 				// curDiag = diag;
+				else {
+					//if (i == -1 ) {
+					//	 MyOptionPane.showMessageDialog(driver,
+					//				 "No diagram selected",
+					//				  MyOptionPane.WARNING_MESSAGE);
+					//}
+					//else 
+						if (comparing) {
+							comparing = false;
+							compare(i);
+							return;
+						}
+						else
+							jtp.setSelectedIndex(i);
+					repaint();
+				}
 
 				repaint();
 
 			}
 		};
-
+*/
 		getNewDiag();
 		curDiag.desc = "Click anywhere on selection area";
 		
-		jtp.addMouseListener(mouseListener);
+		//jtp.addMouseListener(mouseListener);
+		jtp.addMouseListener(this);
 
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 		Box box1 = new Box(BoxLayout.Y_AXIS);
@@ -1063,6 +1083,9 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Compare Diagrams");
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		menuItem = new JMenuItem("Clear Compare Indicators");
+		editMenu.add(menuItem);
+		menuItem.addActionListener(this);
 		editMenu.addSeparator();
 		menuItem = new JMenuItem("Block-related Actions");
 		editMenu.add(menuItem);
@@ -1373,9 +1396,39 @@ public class DrawFBP extends JFrame
 		}
 
 		if (s.equals("Compare Diagrams")) {
-			compare();
+			
+			if (1 >= jtp.getTabCount()) {
+				MyOptionPane.showMessageDialog(driver, "Must have at least two diagrams open",			
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			int result = MyOptionPane.showConfirmDialog(driver, 
+					"Compare current diagram: " + curDiag.diagFile.getName() + 
+					", against other open diagram - click on tab to select",
+					"Comparing",  MyOptionPane.OK_CANCEL_OPTION);	
+			
+			if (result == MyOptionPane.OK_OPTION)			
+				comparing = true;
+			
 			return;
 		}
+		
+		if (s.equals("Clear Compare Indicators")) {
+						
+						
+			for (Block bl: curDiag.blocks.values()) {
+				bl.compareFlag = null;
+			}
+			
+			for (Arrow ar: curDiag.arrows.values()) {
+				ar.compareFlag = null;
+			}
+			
+			
+			return;
+		}
+		
 
 		if (s.equals("Clear Language Association")) {
 			curDiag.diagLang = null;
@@ -3932,72 +3985,63 @@ public class DrawFBP extends JFrame
 	
 
 	
-	void compare() {
+	void compare(int tabNo) {
 		
-			
-		MyOptionPane.showMessageDialog(driver,
-				"Select diagram to be compared against - OK if already open!",			
-				MyOptionPane.INFORMATION_MESSAGE);
+		
+
+		//int i = jtp.getSelectedIndex();
+		int i = tabNo;
+		if (i == -1) {
+			//comparing = false;
+			return;
+		}
+		repaint();
+		ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+		if (b == null || b.diag == null) {
+			//comparing = false;
+			return;
+		}
+		//curDiag = b.diag;
+		Diagram oldDiag = b.diag;
+
 		
 		Diagram newDiag = curDiag;
 			
-		Diagram oldDiag = null;
+		//Diagram oldDiag = null;
 		
 		File f = newDiag.diagFile;
-		if (f == null)
+		if (f == null) {
+			//comparing = false;
 			return;
-		
-		String t = f.getParent();
-		MyFileChooser fc = new MyFileChooser(driver, new File(t),
-				newDiag.fCParm[Diagram.DIAGRAM], "Compare Diagrams");
-
-		int returnVal = fc.showOpenDialog();
-
-		if (returnVal != MyFileChooser.APPROVE_OPTION)
-			return;
-
-		String dFN = getSelFile(fc);
-		String suff = newDiag.fCParm[Diagram.DIAGRAM].fileExt;
-		if (!(dFN.endsWith(suff)))
-			dFN += suff;
-		File cFile = new File(dFN);
-		if (cFile == null || !(cFile.exists()))
-			return;
-		
-		int k = getFileTabNo(dFN);
-		if (k == -1) {
-			openAction(dFN);
-			oldDiag = curDiag;
-		}
-		else {
-			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(k);
-			if (b == null || b.diag == null)
-				return;
-			oldDiag = b.diag;	
-			jtp.setSelectedIndex(k);   
 		}
 		
-		//oldDiag = curDiag;
 		
-		MyOptionPane.showMessageDialog(driver,
-				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + oldDiag.diagFile.getAbsolutePath() ,			
-				MyOptionPane.INFORMATION_MESSAGE);
+		
 
+		int result = MyOptionPane.showConfirmDialog(driver, 
+				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + 
+				oldDiag.diagFile.getAbsolutePath() ,
+				"Comparing",  MyOptionPane.OK_CANCEL_OPTION);	
+		if (result != MyOptionPane.OK_OPTION)
+			return;
 	
-		curDiag = newDiag;
+		//curDiag = newDiag;
+		
+		MyOptionPane.showMessageDialog(driver, "Comparing... ",			
+				MyOptionPane.INFORMATION_MESSAGE);
 
 		for (Block blk : newDiag.blocks.values()) {
 			blk.compareFlag = null;
 			
-			for (Block b : oldDiag.blocks.values()) {
-				if (blk.id == b.id) {
-					if (!(blk.type.equals(b.type))) 
+			for (Block bk : oldDiag.blocks.values()) {
+				if (blk.id == bk.id) {
+					if (!(blk.type.equals(bk.type))) 
 						blk.compareFlag = "C";	
-					if (!(Objects.equals(blk.desc, b.desc)))	
+					if (!(Objects.equals(blk.desc, bk.desc)))	
 						blk.compareFlag = "C";
-					if (!(Objects.equals(blk.fullClassName, b.fullClassName)))								
+					if (!(Objects.equals(blk.fullClassName, bk.fullClassName)))								
 						blk.compareFlag = "C";
-					if (blk.isSubnet != b.isSubnet)
+					if (blk.isSubnet != bk.isSubnet)
 						blk.compareFlag = "C";
 					break;
 					}
@@ -4018,16 +4062,16 @@ public class DrawFBP extends JFrame
 			
 		}
 		
-		for (Block b : oldDiag.blocks.values()) {
-			if (b.compareFlag != null)
+		for (Block bk : oldDiag.blocks.values()) {
+			if (bk.compareFlag != null)
 				continue;
-			Block blk = newDiag.blocks.get(b.id);
+			Block blk = newDiag.blocks.get(bk.id);
 			if (blk == null) {
-				Block gBlk = createBlock(b.type, b.cx, b.cy, newDiag,
+				Block gBlk = createBlock(bk.type, bk.cx, bk.cy, newDiag,
 						false);
 				if (gBlk != null) {
-					gBlk.desc = b.desc;
-					gBlk.id = b.id;
+					gBlk.desc = bk.desc;
+					gBlk.id = bk.id;
 					gBlk.compareFlag = "D";
 					gBlk.codeFileName = "ghost";
 				}
@@ -4092,9 +4136,11 @@ public class DrawFBP extends JFrame
 		 
 		int j = getFileTabNo(newDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
-			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(j);
-			if (b == null || b.diag == null)
+			/*ButtonTabComponent*/ b = (ButtonTabComponent) jtp.getTabComponentAt(j);
+			if (b == null || b.diag == null) {
+				//comparing = false;
 				return;
+			}
 			// curDiag = b.diag; (redundant)
 			// curDiag.tabNum = i;
 			jtp.setSelectedIndex(j);
@@ -4110,9 +4156,10 @@ public class DrawFBP extends JFrame
 				MyOptionPane.INFORMATION_MESSAGE);
 		
 		curDiag = newDiag;
-		oldDiag.changed = false;
-		newDiag.changed = false;
+		//oldDiag.changed = false;
+		//newDiag.changed = false;
 		repaint();
+		//comparing = false;
 	}
 
 	// 'between' checks that the value val is >= lim1 and <= lim2 - or the
@@ -4886,23 +4933,6 @@ public class DrawFBP extends JFrame
 		return side;
 	}
 
-	public void stateChanged(ChangeEvent e) {
-		Object source = e.getSource();
-		if (source instanceof JSlider) {
-			JSlider js = (JSlider) source;
-			// oldW = getSize().width;
-			// oldH = getSize().height;
-			if (!(js).getValueIsAdjusting()) {
-				scalingFactor = ((int) js.getValue()) / 100.0;
-				//zWS = (int) Math.round(zoneWidth * scalingFactor);
-				String scale = (int) js.getValue() + "%";
-				scaleLab.setText(scale);
-				// pack();
-				// setPreferredSize(new Dimension(1200, 800));
-				// repaint();
-			}
-		}
-	}
 	
 	public void blueCircs(Graphics g) {
 		if (fpArrowRoot != null) { 
@@ -4977,6 +5007,80 @@ public class DrawFBP extends JFrame
 		// TODO Auto-generated method stub
 
 	}
+	
+	public void stateChanged(ChangeEvent e) {
+		Object source = e.getSource();
+		if (source instanceof JSlider) {
+			JSlider js = (JSlider) source;
+			// oldW = getSize().width;
+			// oldH = getSize().height;
+			if (!(js).getValueIsAdjusting()) {
+				scalingFactor = ((int) js.getValue()) / 100.0;
+				//zWS = (int) Math.round(zoneWidth * scalingFactor);
+				String scale = (int) js.getValue() + "%";
+				scaleLab.setText(scale);
+				// pack();
+				// setPreferredSize(new Dimension(1200, 800));
+				// repaint();
+			}
+		}
+		
+		
+	}
+	
+	/*
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int i = -1;
+		//if (comparing) {
+			Object source = e.getSource();
+			if (source == jtp) {
+				Point p = new Point(e.getX(), e.getY());
+				for (i = 0; i < jtp.getTabCount(); i++) {
+					if (jtp.getTabComponentAt(i).getBounds().contains(p)) {
+						//jtp.setSelectedIndex(i);
+						break;
+					}
+				}
+			}
+		//	comparing = false;
+		//}
+		//repaint();
+		if (i == -1 ) {
+			 MyOptionPane.showMessageDialog(driver,
+						 "No diagram selected",
+						  MyOptionPane.WARNING_MESSAGE);
+		}
+		else 
+			if (comparing) {
+				comparing = false;
+				jtp.removeMouseListener(this);
+				compare(i);
+			}
+			else
+				jtp.setSelectedIndex(i);
+		repaint();
+	}
+	 
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	*/
 		  
 	 public BufferedImage loadImage(String fileName)
 	    {
@@ -6263,14 +6367,7 @@ public class DrawFBP extends JFrame
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
-			// arrowRoot = null;
-			//if (!ttEndTimer.isRunning()) {
-			//	drawToolTip = false;
-			//	ttStartTimer.restart();
-			//}
-
-			//setCursor(drag_icon);
-			
+						
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp
 					.getTabComponentAt(i);
@@ -7263,6 +7360,59 @@ public class DrawFBP extends JFrame
 						}
 		}
 
+	}
+
+
+	
+
+	//@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int i = jtp.indexAtLocation(e.getX(), e.getY());
+		if (i > -1) {
+			
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+			if (b != null && b.diag != null) {
+
+				Diagram diag = b.diag;
+
+				if (diag == null)
+					getNewDiag();
+
+				if (comparing)
+					compare(i);
+
+				else
+					jtp.setSelectedIndex(i);
+			}
+			
+		}
+		comparing = false;
+		repaint();
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
