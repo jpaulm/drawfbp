@@ -101,6 +101,8 @@ public class ButtonTabComponent extends JPanel {
 					s = diag.diagFile.getAbsolutePath();
 				  else  
 					s = diag.diagFile.getName();
+				//if (driver.comparing) 
+				//	s += " (comparing)";
 			}
 
 		if (diag != null && diag.changed)   

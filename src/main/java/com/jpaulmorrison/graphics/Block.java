@@ -238,9 +238,13 @@ public class Block implements ActionListener {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				g.setColor(Color.BLUE);
-				name = javaComp.getSimpleName();
-				if (!(name.endsWith(".class")))
-					name = name += ".class";
+				//if (!driver.comparing) {
+					name = javaComp.getSimpleName();
+					if (!(name.endsWith(".class")))
+						name = name += ".class";
+				//}
+				//else
+				//	name = fullClassName;
 				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);

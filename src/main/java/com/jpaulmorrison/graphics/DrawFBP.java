@@ -1235,6 +1235,9 @@ public class DrawFBP extends JFrame
 
 	
 	public void actionPerformed(ActionEvent e) {
+		
+		comparing = false;
+		
 		if (e.getSource() == jfl) {
 			changeFonts();
 			return;
@@ -1411,6 +1414,7 @@ public class DrawFBP extends JFrame
 			if (result == MyOptionPane.OK_OPTION)			
 				comparing = true;
 			
+			repaint();
 			return;
 		}
 		
@@ -3987,15 +3991,14 @@ public class DrawFBP extends JFrame
 	
 	void compare(int tabNo) {
 		
-		
-
-		//int i = jtp.getSelectedIndex();
+		comparing = false;
+		repaint();
 		int i = tabNo;
 		if (i == -1) {
 			//comparing = false;
 			return;
 		}
-		repaint();
+		
 		ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 		if (b == null || b.diag == null) {
 			//comparing = false;
@@ -4027,19 +4030,40 @@ public class DrawFBP extends JFrame
 	
 		//curDiag = newDiag;
 		
-		MyOptionPane.showMessageDialog(driver, "Comparing... ",			
-				MyOptionPane.INFORMATION_MESSAGE);
+		//MyOptionPane.showMessageDialog(driver, "Comparing... ",			
+		//		MyOptionPane.INFORMATION_MESSAGE);
 
 		for (Block blk : newDiag.blocks.values()) {
 			blk.compareFlag = null;
 			
 			for (Block bk : oldDiag.blocks.values()) {
 				if (blk.id == bk.id) {
+					String desc = blk.desc.replace("\n", " ");
 					if (!(blk.type.equals(bk.type))) 
 						blk.compareFlag = "C";	
-					if (!(Objects.equals(blk.desc, bk.desc)))	
+					if (!(strEqu(blk.desc, bk.desc)))	
 						blk.compareFlag = "C";
-					if (!(Objects.equals(blk.fullClassName, bk.fullClassName)))								
+					if (!(strEqu(blk.fullClassName, bk.fullClassName)))	{							
+						blk.compareFlag = "C";
+						String cs = "Full Class Name for '" + desc + "' different: \n" +
+								"   Old value: " + bk.fullClassName + "\n" + 
+								"   New value: " + blk.fullClassName;
+					
+						JFrame jf2 = new JFrame();						
+						jf2.setLocation(500, 500);
+						jf2.setForeground(Color.WHITE);
+						JTextPane pane = new JTextPane();
+						pane.setPreferredSize(new Dimension(800, 300));
+						jf2.add(pane, BorderLayout.CENTER);
+						pane.setText(cs);
+					
+						//jf2.setSize(520, 520);
+						jf2.pack();
+						jf2.setVisible(true);
+					}
+					if (!(strEqu(blk.codeFileName, bk.codeFileName)))								
+						blk.compareFlag = "C";
+					if (!(strEqu(blk.subnetFileName, bk.subnetFileName)))								
 						blk.compareFlag = "C";
 					if (blk.isSubnet != bk.isSubnet)
 						blk.compareFlag = "C";
@@ -4090,8 +4114,10 @@ public class DrawFBP extends JFrame
 					// probably same line - now check for diffs
 					if (a.fromId != arr.fromId ||
 					   a.toId != arr.toId ||
-					   !(Objects.equals(a.upStreamPort, arr.upStreamPort)) ||
-					   !(Objects.equals(a.downStreamPort, arr.downStreamPort)))
+							   a.dropOldest != arr.dropOldest ||
+									   a.capacity != arr.capacity ||
+					   !(strEqu(a.upStreamPort, arr.upStreamPort)) ||
+					   !(strEqu(a.downStreamPort, arr.downStreamPort)))
 						arr.compareFlag = "C";							    	
 					break;
 				}
@@ -4132,11 +4158,11 @@ public class DrawFBP extends JFrame
 				}
 			}
 		}
-	  */
-		 
+	   
+		*/ 
 		int j = getFileTabNo(newDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
-			/*ButtonTabComponent*/ b = (ButtonTabComponent) jtp.getTabComponentAt(j);
+			b = (ButtonTabComponent) jtp.getTabComponentAt(j);
 			if (b == null || b.diag == null) {
 				//comparing = false;
 				return;
@@ -4144,16 +4170,20 @@ public class DrawFBP extends JFrame
 			// curDiag = b.diag; (redundant)
 			// curDiag.tabNum = i;
 			jtp.setSelectedIndex(j);
+			 
 		}
+		
+		 
+		 
 
 		for (Block blk : oldDiag.blocks.values()) {
 			blk.compareFlag = null;
 		}
 		
 		
-		MyOptionPane.showMessageDialog(driver,
-				"Compare complete",			
-				MyOptionPane.INFORMATION_MESSAGE);
+		//MyOptionPane.showMessageDialog(driver,
+		//		"Compare complete",			
+		//		MyOptionPane.INFORMATION_MESSAGE);
 		
 		curDiag = newDiag;
 		//oldDiag.changed = false;
@@ -4162,12 +4192,20 @@ public class DrawFBP extends JFrame
 		//comparing = false;
 	}
 
+	// Compare two strings, checking for null first
+	
+	boolean strEqu (String a, String b) {
+		if (a == null)
+			return b == null;
+		if (b == null)
+			return a == null;
+		
+		return (a.trim().equals(b.trim()));
+		
+		}
+	
 	// 'between' checks that the value val is >= lim1 and <= lim2 - or the
 	// inverse
-
-	//static boolean between(int val, int lim1, int lim2) {
-	//	return between((double) val, (double) lim1, (double) lim2);
-	//}
 
 	static boolean between(int val, int lim1, int lim2) {
 		boolean res;
@@ -5746,12 +5784,10 @@ public class DrawFBP extends JFrame
 
 			// Paint background if we're opaque.
 			// super.paintComponent(g);
-			
+			int w = getWidth();
 			if (this.isOpaque()) {
 				// g.setColor(getBackground());
 				osg.setColor(Color.WHITE);
-
-				int w = getWidth();
 				int h = getHeight();
 				osg.fillRect(0, 0, (int) (w / scalingFactor),
 						(int) (h / scalingFactor - 0));
@@ -5814,6 +5850,30 @@ public class DrawFBP extends JFrame
 			// s = "(no description)";
 
 			diagDesc.setText(s);    
+		
+			if (comparing) {
+				Color col = osg.getColor();
+				osg.setColor(lb);
+				int cSize = 80;
+				int x = w - cSize / 2;
+				int y = cSize / 2;
+				
+				osg.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
+				osg.fillOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
+				osg.setColor(col);
+				osg.setFont(fontg);
+				FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+				
+				String[] s1 = new String[]{"waiting", "to", "compare"};
+				y -= 10;
+				
+				for (int j = 0; j < s1.length; j++) {					
+					byte[] str2 = s1[j].getBytes();
+					int xx = 2 + metrics.bytesWidth(str2, 0, s1[j].length());
+					osg.drawString(s1[j], x - xx / 2, y); 
+					y += 15;
+				}
+			}
 
 			Graphics2D g2d = (Graphics2D) g;
 
@@ -6627,6 +6687,7 @@ public class DrawFBP extends JFrame
 
 		public void mouseReleased(MouseEvent e) {
 
+			comparing = false;
 			// Arrow foundArrow = null;
 			//Block foundBlock = null;
 			edgePoint = null;
