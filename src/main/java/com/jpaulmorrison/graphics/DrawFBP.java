@@ -21,13 +21,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-//import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.*;
-//import java.awt.geom.GeneralPath;
-
-//import java.awt.geom.RoundRectangle2D;
-
 
 import math.geom2d.line.DegeneratedLine2DException;
 import math.geom2d.line.Line2D;
@@ -56,6 +51,9 @@ import javax.imageio.ImageIO;
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleContext;
 
 public class DrawFBP extends JFrame
 		implements
@@ -311,6 +309,7 @@ public class DrawFBP extends JFrame
 	boolean tabCloseOK = true;
 	
 	boolean comparing = false;
+	JFrame mmFrame = new JFrame();
 	
 	final boolean CODEMGRCREATE = true;
 	
@@ -1420,15 +1419,23 @@ public class DrawFBP extends JFrame
 		
 		if (s.equals("Clear Compare Indicators")) {
 						
-						
-			for (Block bl: curDiag.blocks.values()) {
+			LinkedList<Block> ghosts = new LinkedList<Block>();
+			
+			for (Block bl : curDiag.blocks.values()) {				
+				if (bl.compareFlag != null && bl.compareFlag.equals("G"))
+					ghosts.add(bl);
 				bl.compareFlag = null;
 			}
 			
-			for (Arrow ar: curDiag.arrows.values()) {
+			for (Arrow ar : curDiag.arrows.values()) {
 				ar.compareFlag = null;
 			}
 			
+			if (mmFrame != null)
+				mmFrame.dispose();	
+			
+			for (Block bl : ghosts)
+				curDiag.blocks.remove(new Integer(bl.id));			
 			
 			return;
 		}
@@ -3992,6 +3999,7 @@ public class DrawFBP extends JFrame
 	void compare(int tabNo) {
 		
 		comparing = false;
+		LinkedList<String> mismatches = new LinkedList<String>();
 		repaint();
 		int i = tabNo;
 		if (i == -1) {
@@ -4025,13 +4033,17 @@ public class DrawFBP extends JFrame
 				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + 
 				oldDiag.diagFile.getAbsolutePath() ,
 				"Comparing",  MyOptionPane.OK_CANCEL_OPTION);	
+		
 		if (result != MyOptionPane.OK_OPTION)
 			return;
 	
-		//curDiag = newDiag;
+		if (!strEqu(oldDiag.desc, newDiag.desc)) {
+			String cd = new String("Diagram descriptions different: \n" +
+					"   Old value: " + oldDiag.desc + "\n" + 
+					"   New value: " + newDiag.desc + "\n\n");
 		
-		//MyOptionPane.showMessageDialog(driver, "Comparing... ",			
-		//		MyOptionPane.INFORMATION_MESSAGE);
+			mismatches.add(cd);
+		}
 
 		for (Block blk : newDiag.blocks.values()) {
 			blk.compareFlag = null;
@@ -4045,21 +4057,12 @@ public class DrawFBP extends JFrame
 						blk.compareFlag = "C";
 					if (!(strEqu(blk.fullClassName, bk.fullClassName)))	{							
 						blk.compareFlag = "C";
-						String cs = "Full Class Name for '" + desc + "' different: \n" +
+						String cs = new String("Full Class Name for '" + desc + "' different: \n" +
 								"   Old value: " + bk.fullClassName + "\n" + 
-								"   New value: " + blk.fullClassName;
+								"   New value: " + blk.fullClassName + "\n\n");
 					
-						JFrame jf2 = new JFrame();						
-						jf2.setLocation(500, 500);
-						jf2.setForeground(Color.WHITE);
-						JTextPane pane = new JTextPane();
-						pane.setPreferredSize(new Dimension(800, 300));
-						jf2.add(pane, BorderLayout.CENTER);
-						pane.setText(cs);
-					
-						//jf2.setSize(520, 520);
-						jf2.pack();
-						jf2.setVisible(true);
+						mismatches.add(cs);
+						
 					}
 					if (!(strEqu(blk.codeFileName, bk.codeFileName)))								
 						blk.compareFlag = "C";
@@ -4096,9 +4099,14 @@ public class DrawFBP extends JFrame
 				if (gBlk != null) {
 					gBlk.desc = bk.desc;
 					gBlk.id = bk.id;
-					gBlk.compareFlag = "D";
+					gBlk.compareFlag = "G";
 					gBlk.codeFileName = "ghost";
 				}
+				
+				String cg = new String("Old diagram had a block '" + bk.desc  + "',\n" +
+				"   which is missing from new diagram" +  "\n\n");
+			
+				mismatches.add(cg);
 			}
 		}
 	
@@ -4179,16 +4187,53 @@ public class DrawFBP extends JFrame
 		for (Block blk : oldDiag.blocks.values()) {
 			blk.compareFlag = null;
 		}
+			
+		if (mismatches == null || mismatches.isEmpty()) {
+			curDiag = newDiag;
+			return;
+		}
 		
+		mmFrame = new JFrame();					
+		mmFrame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent ev) {
+				mmFrame = null;
+			}
+		});
+		mmFrame.setLocation(500, 500);
+		mmFrame.setForeground(Color.WHITE);
+		JTextPane pane = new JTextPane();
+		JScrollPane sp = new JScrollPane(pane);
+		StyleContext sc = new StyleContext();	
+		Style defaultStyle = sc.getStyle(StyleContext.DEFAULT_STYLE);
+		//Style baseStyle = sc.addStyle(null, defaultStyle);
+		MyDocument doc = new MyDocument(sc);
 		
-		//MyOptionPane.showMessageDialog(driver,
-		//		"Compare complete",			
-		//		MyOptionPane.INFORMATION_MESSAGE);
+		sp.setViewportView(pane);
+		pane.setStyledDocument(doc);
+		//pane.setPreferredSize(new Dimension(800, 300));
+		//sp.add(pane);
+		pane.setPreferredSize(new Dimension(800, 300));
+		mmFrame.add(sp, BorderLayout.CENTER);
+		
+		for (String s: mismatches) { 
+			try {
+				doc.insertString(doc.getLength(), s, defaultStyle);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		
+		mmFrame.pack();
+		mmFrame.setVisible(true);
+		pane.repaint();
+		sp.repaint();
+		mmFrame.repaint();
 		
 		curDiag = newDiag;
 		//oldDiag.changed = false;
 		//newDiag.changed = false;
-		repaint();
+		//repaint();
 		//comparing = false;
 	}
 

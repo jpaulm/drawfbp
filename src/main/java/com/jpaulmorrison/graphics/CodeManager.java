@@ -81,7 +81,7 @@ public class CodeManager implements ActionListener {
 		StyleContext sc = new StyleContext();	
 		//doc = new DefaultStyledDocument(); 
 		doc = new MyDocument(sc); 
-		docText = new JTextPane(doc);
+		//docText = new JTextPane(doc);
 		//doc = (MyDocument) docText.getStyledDocument();
 		//addStylesToDocument(doc);
 		setStyles(sc);
@@ -858,7 +858,7 @@ public class CodeManager implements ActionListener {
 		//lineNos.setVisible(true);
 		//docText = new JTextPane(doc);
 		//docText.add(doc);
-		docText.setText(fileString);
+		//docText.setText(fileString);
 		docText.setStyledDocument(doc);
 		//colourCode();
 		docText.setVisible(true);
