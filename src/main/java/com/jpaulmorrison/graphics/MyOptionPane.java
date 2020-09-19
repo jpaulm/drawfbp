@@ -37,7 +37,7 @@ public class MyOptionPane {
 		//pane.add(jsp);
 					
 	    JDialog dialog = pane.createDialog(f, title);
-	    // JDialog dialog = new JDialog();
+	    dialog.setModal(true);
 	     dialog.setTitle(title);
 	     if (!dialog.isResizable()) 
              dialog.setResizable(true);
@@ -56,6 +56,7 @@ public class MyOptionPane {
 	     Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 	     
 	     Object selValue = pane.getValue();
+	     dialog.setVisible(false);
 	     if (selValue == null)
 	     	 return null;
 	     if (selValue instanceof Integer && ((Integer) selValue).intValue() == CANCEL_OPTION)
@@ -76,7 +77,7 @@ public class MyOptionPane {
 	
 	
 	//-------------------------------------------
-	
+	 
 	
 	static void showMessageDialog(Component f,  Object message, String s, int i, ImageIcon ico) {
 		
@@ -86,10 +87,8 @@ public class MyOptionPane {
 	    // JScrollPane jsp = new JScrollPane();
 	   //  pane.add(jsp);
 	    JDialog dialog = pane.createDialog(f, s);
-	    // JDialog dialog = new JDialog();
-	   //  dialog.setTitle(s);
+	    dialog.setModal(true);
 	     
-	    // jsp.add(dialog);
 	     if (!dialog.isResizable())  
              dialog.setResizable(true);
 	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
@@ -113,12 +112,14 @@ public class MyOptionPane {
 		showMessageDialog(f, message, null, PLAIN_MESSAGE, null);
 	}
 	//------------------------------------------------------------
+	 
 	
 	static int showConfirmDialog(Component f,  Object message, String title, int optionType, int messageType) {
 		
 		JOptionPane pane = new JOptionPane(message, messageType, optionType);		 
 	 	 
 	     JDialog dialog = pane.createDialog((Component) f, title);
+	     dialog.setModal(true);
 	     if (!dialog.isResizable())  
            dialog.setResizable(true);
         
@@ -133,8 +134,10 @@ public class MyOptionPane {
 	     Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 	     int i = -1;
 	     if (pane.getValue() != null)  
-	         i = ((Integer) pane.getValue()).intValue();
+	       i = ((Integer) pane.getValue()).intValue();
+	     dialog.setVisible(false);
 	     return i;
+	     //return pane;
 	     
 	}
 	static int showConfirmDialog(Component f,  Object message, String title, int optionType) {
@@ -155,6 +158,7 @@ public class MyOptionPane {
 		*/
 			
 	     JDialog dialog = pane.createDialog(f, title);
+	     dialog.setModal(true);
 	     if (!dialog.isResizable()) 
             dialog.setResizable(true);
          
@@ -168,6 +172,7 @@ public class MyOptionPane {
 	     int i = -1;
 	     if (pane.getValue() != null)  
 	         i = ((Integer) pane.getValue()).intValue();
+	     dialog.setVisible(false);
 	     return i;
 	     
 	     

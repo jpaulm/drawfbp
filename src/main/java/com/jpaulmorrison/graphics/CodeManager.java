@@ -60,13 +60,14 @@ public class CodeManager implements ActionListener {
 	MyDocument doc = null;
 	String clsName = null;
 	JTextPane docText = null;
-	JTextArea lineNos = null;
+	JTextPane lineNos = null;	
 	//boolean completeChange;
     //final boolean SAVEAS = true;
     CloseAction closeAction = null;
     
 	File file = null;
 	boolean create = true;
+	StyleContext sc = null;
 
 	CodeManager(Diagram d, boolean create) {
 		this.create = create;
@@ -78,7 +79,7 @@ public class CodeManager implements ActionListener {
 		
 		
 		
-		StyleContext sc = new StyleContext();	
+		sc = new StyleContext();	
 		//doc = new DefaultStyledDocument(); 
 		doc = new MyDocument(sc); 
 		//docText = new JTextPane(doc);
@@ -674,13 +675,7 @@ public class CodeManager implements ActionListener {
 		driver.jf.setLocation(p.x + 100, p.y + 50);
 		driver.jf.setForeground(Color.WHITE);
 		
-		// driver.jframe.setVisible(false);
-		
-
-		//StyleContext sc = new StyleContext();			
-		//doc = new MyDocument(sc); 
-		//setStyles(sc);
-		
+				
 		panel = new JPanel();
 		scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
@@ -689,70 +684,22 @@ public class CodeManager implements ActionListener {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		scrollPane.setViewportView(panel);
 		//scrollPane.add(panel);
-		lineNos = new JTextArea();
 		
+		lineNos = new JTextPane();		
 		docText = new JTextPane();
 		 
 		panel.add(lineNos);
 		panel.add(Box.createHorizontalStrut(20));
 		panel.add(docText);	
+		
+		MyDocument doc2 = new MyDocument(sc);
+		lineNos.setStyledDocument(doc2); 
 		lineNos.setPreferredSize(new Dimension(80, Short.MAX_VALUE));
 		lineNos.setMinimumSize(new Dimension(60, Short.MAX_VALUE));
 		lineNos.setMaximumSize(new Dimension(100, Short.MAX_VALUE));
 		lineNos.setBackground(DrawFBP.lb);
-		lineNos.setEditable(false);
-	
-		
-		 
-		
-		//driver.jf.pack();
-		/*
-		String data = "";
-		try {
-			data = doc.getText(0, doc.getLength());
-		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		int lines = 0;
-		for (int i = 0; i < data.length(); i++) {
-		    if (data.charAt(i) == '\n') {
-		        lines++;
-		    }
-		}		
+		lineNos.setEditable(false);		
 				
-		JTextPane lineNos = new JTextPane();
-		//lineNos.setMinimumSize(new Dimension(50, 10000));
-		lineNos.setPreferredSize(new Dimension(50, 10000));
-		lineNos.setBackground(DrawFBP.lb);
-		String numbers = "";
-		for (int i = 1; i < lines; i++) {
-			numbers += String.format("%8s", i) + "\n";
-		}
-		lineNos.setText(numbers);
-		lineNos.setVisible(true);
-		JTextPane docText = new JTextPane(doc);
-		docText.setVisible(true);
-		panel.add(lineNos);
-		panel.add(docText);		
-		//scrollPane = new JScrollPane(panel,
-		//		ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-		//		ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
-		setStyles(sc);
-		*/
-		//dialog.setVisible(true);
-		//panel.setVisible(true);
-		//scrollPane.setVisible(true);
-		
-		//dialog.add(scrollPane);		
-		//panel.setFont(driver.fontf);
-		//lineNos.setFont(driver.fontf);
-		//docText.setFont(driver.fontf);
-		//driver.jf.setFont(driver.fontf);
-		//dialog.pack();
-		
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 		//nsLabel.paint(driver.jf.getGraphics());
 		nsLabel.repaint();
@@ -810,20 +757,10 @@ public class CodeManager implements ActionListener {
 			}
 		}
 
-		// clsName = file.getName();
-		// int i = clsName.lastIndexOf(".");
-		// clsName = clsName.substring(0, i);
-
 		colourCode();
 
-		//String data = "";
-		//try {
-		//	data = doc.getText(0, doc.getLength());
-		//} catch (BadLocationException e) {
-	    // TODO Auto-generated catch block
-		//	e.printStackTrace();
-		//}
-
+		// count lines
+		
 		int lines = 0;
 		for (int j = 0; j < fileString.length(); j++) {
 			if (fileString.charAt(j) == '\n') {
@@ -831,74 +768,31 @@ public class CodeManager implements ActionListener {
 			}
 		}
 		
-		//panel = new JPanel();
-		//scrollPane = new JScrollPane();
+		
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
-		//driver.jf.add(scrollPane);
-		
-
-		//panel = new JPanel();
-		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-	    //lineNos = new JTextArea();
-		
-		//docText = new JTextPane();
-		 
-		
-
-		//panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-
-		String numbers = "";
-		for (int j = 1; j < lines - 1; j++) {
-			numbers += String.format("%12s", j) + "    \n";
+	
+	
+		for (int j = 1; j < lines + 1; j++) {
+			String num = String.format("%8s", j) + "\n";
+			try {				
+				doc2.insertString(doc2.getLength(), num, baseStyle);				
+			} catch (BadLocationException ble) {
+				System.err.println("Couldn't insert initial text into text pane.");
+			}
 		}
-		lineNos.setText(numbers);
+		
 		//lineNos.setForeground(Color.BLACK);
-
-		//lineNos.setVisible(true);
-		//docText = new JTextPane(doc);
-		//docText.add(doc);
-		//docText.setText(fileString);
-		docText.setStyledDocument(doc);
-		//colourCode();
+		
+		docText.setStyledDocument(doc);  
+	
 		docText.setVisible(true);
-		// dialog.add(scrollPane);
 		
-		//panel.setFont(driver.fontf);
-		
-		//panel.add(lineNos);
-		//panel.add(Box.createHorizontalStrut(20));
-		//panel.add(docText);	
-		//lineNos.setPreferredSize(new Dimension(80, Short.MAX_VALUE));
-		//lineNos.setMinimumSize(new Dimension(60, Short.MAX_VALUE));
-		//lineNos.setMaximumSize(new Dimension(100, Short.MAX_VALUE));
-		//lineNos.setBackground(DrawFBP.lb);
-		//lineNos.setEditable(false);		
-		
-
-		//driver.jf.add(scrollPane);
 		scrollPane.setViewportView(panel);
 		
 		driver.jf.pack();
 		driver.jf.setVisible(true);
-		//panel.setVisible(true);
-		//scrollPane.add(panel);
-		//scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		//scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
 		
-		//driver.jf.pack();
-		 
-		//scrollPane.setViewportView(panel);
-
-		//scrollPane.setVisible(true);
-
-		//nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
-
-		// doc.changed = true;
-		// if (file.getName().endsWith(".fbp"))
-		// type = DrawFBP.DIAGRAM;
-
 		driver.jf.repaint();
 
 		return fileString;
@@ -1003,12 +897,14 @@ public class CodeManager implements ActionListener {
 		baseStyle = sc.addStyle(null, defaultStyle);
 		int s = font.getSize();
 
-		StyleConstants.setSpaceAbove(baseStyle, 4);
-		StyleConstants.setSpaceBelow(baseStyle, 4);
+		//StyleConstants.setSpaceAbove(baseStyle, 4);
+		//StyleConstants.setSpaceBelow(baseStyle, 4);
 		StyleConstants.setForeground(baseStyle, Color.DARK_GRAY);
 		//StyleConstants.setFontFamily(baseStyle, font.getFamily());
 		StyleConstants.setFontFamily(baseStyle, font.getName());		
 		StyleConstants.setFontSize(baseStyle, s);
+		//StyleConstants.setLineSpacing(baseStyle, 4.0f);
+
 
 		normalStyle = sc.addStyle(null, baseStyle);
 		StyleConstants.setForeground(normalStyle, Color.BLUE);

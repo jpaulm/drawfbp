@@ -28,16 +28,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 
 		super.setSelectedIndex(i);
 
-		/*
-		for (int j = 0; j < getTabCount(); j++) {
-			ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(j);
-			if (b != null  )
-				b.selected = false;
-		}
-		*/
 		ButtonTabComponent b = (ButtonTabComponent) getTabComponentAt(i);
 
-		if (b != null  && !driver.comparing) {
+		if (b != null) {
 			//b.selected = true;
 			if (b.diag != null) {
 				driver.curDiag = b.diag;

@@ -26,7 +26,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -34,7 +33,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.jar.JarEntry;
@@ -143,8 +141,10 @@ public class MyFileChooser extends JDialog
 		this.chooserTitle = chooserTitle; 
 		clickListener = new ClickListener();
 
-		if (f == null || !f.exists() || !f.isDirectory())
+		if (f == null || !f.exists() /* || !f.isDirectory() */)
 			listHead = System.getProperty("user.home");
+		else if (!f.isDirectory())
+			listHead = f.getParent();
 		else
 			listHead = f.getAbsolutePath();
 	

@@ -308,7 +308,7 @@ public class DrawFBP extends JFrame
 	
 	boolean tabCloseOK = true;
 	
-	boolean comparing = false;
+	//boolean comparing = false;
 	JFrame mmFrame = new JFrame();
 	
 	final boolean CODEMGRCREATE = true;
@@ -952,20 +952,7 @@ public class DrawFBP extends JFrame
 			//}
 		}
 
-		// menuItem = new JMenuItem("Clear Language Association");
-		// fileMenu.add(menuItem);
-		// menuItem.addActionListener(this);
-		/*
-		fileMenu.addSeparator();
-		menuItem = new JMenuItem("Create Image");
-		menuItem.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK));
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
-		menuItem = new JMenuItem("Show Image");
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
-		*/
+		
 		fileMenu.addSeparator();
        
 		String s = "Generate ";
@@ -981,11 +968,7 @@ public class DrawFBP extends JFrame
 		menuItem.addActionListener(this);
 		
 		fileMenu.addSeparator();
-		menuItem = new JMenuItem("Create Image");
-		menuItem.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_I, ActionEvent.ALT_MASK));
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		
 		menuItem = new JMenuItem("Show Image");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1076,6 +1059,10 @@ public class DrawFBP extends JFrame
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("New Block");
+		editMenu.add(menuItem);
+		menuItem.addActionListener(this);
+		editMenu.addSeparator();
+		menuItem = new JMenuItem("Create Image");
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		editMenu.addSeparator();
@@ -1235,7 +1222,7 @@ public class DrawFBP extends JFrame
 	
 	public void actionPerformed(ActionEvent e) {
 		
-		comparing = false;
+		//comparing = false;
 		
 		if (e.getSource() == jfl) {
 			changeFonts();
@@ -1356,16 +1343,7 @@ public class DrawFBP extends JFrame
 			File file = new File(ss);
 			MyFileChooser fc = new MyFileChooser(this, file, curDiag.fCParm[Diagram.NETWORK],
 					"Display Source Code");
-			/*
-			File f = curDiag.diagFile;	
-			if (f != null) {
-				String name = f.getName();
-				int i = name.indexOf(".drw");
-				ss += "/" + name.substring(0, i)
-					+ curDiag.fCParm[Diagram.NETWORK].fileExt;
-				fc.setSuggestedName(ss);
-			}
-			*/
+			
 			
 			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
 
@@ -1399,20 +1377,41 @@ public class DrawFBP extends JFrame
 
 		if (s.equals("Compare Diagrams")) {
 			
-			if (1 >= jtp.getTabCount()) {
-				MyOptionPane.showMessageDialog(driver, "Must have at least two diagrams open",			
-						MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
+			
 			
 			int result = MyOptionPane.showConfirmDialog(driver, 
-					"Compare current diagram: " + curDiag.diagFile.getName() + 
-					", against other open diagram - click on tab to select",
-					"Comparing",  MyOptionPane.OK_CANCEL_OPTION);	
+					"Select diagram to compare against current diagram: " + curDiag.diagFile.getName(),
+					"Select diagram to compare against",  MyOptionPane.OK_CANCEL_OPTION);	
 			
-			if (result == MyOptionPane.OK_OPTION)			
-				comparing = true;
+			if (result != MyOptionPane.OK_OPTION)			
+				return;
 			
+			
+			File f = curDiag.diagFile;			
+			
+			MyFileChooser fc = new MyFileChooser(this, f, curDiag.fCParm[Diagram.DIAGRAM],
+					"Select compare diagram");			
+			
+			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
+
+			File cFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+				cFile = new File(getSelFile(fc));
+			}
+			 
+			if (cFile == null || !(cFile.exists()))
+				return;
+			
+			Diagram sd = curDiag;
+			
+			openAction(cFile.getAbsolutePath());
+			
+			curDiag = sd;
+			 
+			int i = getFileTabNo(cFile.getAbsolutePath());
+			if (i == -1)
+				return;
+			compare(i);   
 			repaint();
 			return;
 		}
@@ -3998,9 +3997,9 @@ public class DrawFBP extends JFrame
 	
 	void compare(int tabNo) {
 		
-		comparing = false;
+		//comparing = false;
 		LinkedList<String> mismatches = new LinkedList<String>();
-		repaint();
+		
 		int i = tabNo;
 		if (i == -1) {
 			//comparing = false;
@@ -4014,7 +4013,6 @@ public class DrawFBP extends JFrame
 		}
 		//curDiag = b.diag;
 		Diagram oldDiag = b.diag;
-
 		
 		Diagram newDiag = curDiag;
 			
@@ -4025,8 +4023,6 @@ public class DrawFBP extends JFrame
 			//comparing = false;
 			return;
 		}
-		
-		
 		
 
 		int result = MyOptionPane.showConfirmDialog(driver, 
@@ -4192,6 +4188,8 @@ public class DrawFBP extends JFrame
 			curDiag = newDiag;
 			return;
 		}
+		if (mmFrame != null)
+			mmFrame.dispose();
 		
 		mmFrame = new JFrame();					
 		mmFrame.addWindowListener(new WindowAdapter() {
@@ -5894,7 +5892,9 @@ public class DrawFBP extends JFrame
 			// else
 			// s = "(no description)";
 
-			diagDesc.setText(s);    
+			diagDesc.setText(s);   
+			
+			/*
 		
 			if (comparing) {
 				Color col = osg.getColor();
@@ -5919,6 +5919,8 @@ public class DrawFBP extends JFrame
 					y += 15;
 				}
 			}
+			
+			*/
 
 			Graphics2D g2d = (Graphics2D) g;
 
@@ -6732,7 +6734,7 @@ public class DrawFBP extends JFrame
 
 		public void mouseReleased(MouseEvent e) {
 
-			comparing = false;
+			//comparing = false;
 			// Arrow foundArrow = null;
 			//Block foundBlock = null;
 			edgePoint = null;
@@ -6835,17 +6837,7 @@ public class DrawFBP extends JFrame
 								curDiag.diagFile = df;
 								curDiag.desc = df.getName();
 								curDiag.title = df.getName();
-								/*
-								String subnet = null;
-								if (null == (subnet = readFile(df, !SAVEAS))) {    
-									MyOptionPane.showMessageDialog(this, "Unable to read file: "
-											+ df.getName(), MyOptionPane.ERROR_MESSAGE);
-									return;
-								}
-								DiagramBuilder.buildDiag(subnet, this, sbnDiag);
-								//jtp.setSelectedIndex(sbnDiag.tabNum);
-								*/
-								//curDiag = sbnDiag;
+								
 								curDiag.changed = false;
 								return;  
 							}
@@ -6859,10 +6851,8 @@ public class DrawFBP extends JFrame
 							curDiag.jpm.show(this, xa + 100, ya + 100);
 
 						}
-						// blockSelForDragging = null;
-					} // else {
-					//curDiag.changed = true;
-					// }
+						
+					} 
 					repaint();
 					// return;
 				}
@@ -7490,15 +7480,11 @@ public class DrawFBP extends JFrame
 				if (diag == null)
 					getNewDiag();
 
-				if (comparing)
-					compare(i);
-
-				else
-					jtp.setSelectedIndex(i);
+				jtp.setSelectedIndex(i);
 			}
 			
 		}
-		comparing = false;
+		
 		repaint();
 
 	}
