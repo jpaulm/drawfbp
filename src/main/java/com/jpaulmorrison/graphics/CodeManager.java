@@ -693,9 +693,15 @@ public class CodeManager implements ActionListener {
 		panel.add(docText);	
 		
 		MyDocument doc2 = new MyDocument(sc);
-		lineNos.setStyledDocument(doc2); 
-		lineNos.setPreferredSize(new Dimension(80, Short.MAX_VALUE));
-		lineNos.setMinimumSize(new Dimension(60, Short.MAX_VALUE));
+		lineNos.setStyledDocument(doc2); 		
+		
+		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);
+		String str = "        ";  // 8 blanks
+		byte[] str2 = str.getBytes();
+		int xx = 2 + metrics.bytesWidth(str2, 0, str.length());
+		
+		lineNos.setPreferredSize(new Dimension(80, xx + 2));
+		lineNos.setMinimumSize(new Dimension(60, xx));  
 		lineNos.setMaximumSize(new Dimension(100, Short.MAX_VALUE));
 		lineNos.setBackground(DrawFBP.lb);
 		lineNos.setEditable(false);		
@@ -891,17 +897,17 @@ public class CodeManager implements ActionListener {
 
 	void setStyles(StyleContext sc) {
 
-		Font font = driver.fontf;
+		//Font font = driver.fontf;
 		// baseStyle = new SimpleAttributeSet();
 		Style defaultStyle = sc.getStyle(StyleContext.DEFAULT_STYLE);
 		baseStyle = sc.addStyle(null, defaultStyle);
-		int s = font.getSize();
+		int s = driver.fontf.getSize();
 
 		//StyleConstants.setSpaceAbove(baseStyle, 4);
 		//StyleConstants.setSpaceBelow(baseStyle, 4);
 		StyleConstants.setForeground(baseStyle, Color.DARK_GRAY);
 		//StyleConstants.setFontFamily(baseStyle, font.getFamily());
-		StyleConstants.setFontFamily(baseStyle, font.getName());		
+		StyleConstants.setFontFamily(baseStyle, driver.fontf.getName());		
 		StyleConstants.setFontSize(baseStyle, s);
 		//StyleConstants.setLineSpacing(baseStyle, 4.0f);
 
