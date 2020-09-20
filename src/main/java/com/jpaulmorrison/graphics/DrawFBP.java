@@ -1055,7 +1055,7 @@ public class DrawFBP extends JFrame
 		menuBar.add(editMenu);
 		editMenu.setBorderPainted(true);
 
-		menuItem = new JMenuItem("Edit Diagram Description");
+		menuItem = new JMenuItem("Edit Description");
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("New Block");
@@ -1868,7 +1868,7 @@ public class DrawFBP extends JFrame
 
 		}
 
-		if (s.equals("Edit Diagram Description")) { // Title of diagram
+		if (s.equals("Edit Description")) { // Title of diagram
 			// as a whole
 
 			String ans = (String) MyOptionPane.showInputDialog(this,
@@ -2895,7 +2895,7 @@ public class DrawFBP extends JFrame
 
 	void adjustFonts() {
 		fileMenu = new JMenu(" File ");
-		editMenu = new JMenu(" Edit ");
+		editMenu = new JMenu(" Diagram ");
 		helpMenu = new JMenu(" Help ");
 		// runMenu = new JMenu(" Run ");
 

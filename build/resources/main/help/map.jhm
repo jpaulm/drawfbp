@@ -9,7 +9,7 @@
       <mapID target="overview" url="overview.html" />
       <mapID target="filechooser" url="filechooser.html" />
       <mapID target="blocks" url="blocks.html" />
-      <mapID target="onebutton" url="onebutton.html" />
+      <mapID target="diagram" url="diagram.html" />
       <mapID target="files" url="files.html" />
       <mapID target="reports" url="reports.html" />
       <mapID target="processes" url="processes.html"/>
