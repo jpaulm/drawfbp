@@ -53,6 +53,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 public class DrawFBP extends JFrame
@@ -4034,9 +4035,9 @@ public class DrawFBP extends JFrame
 			return;
 	
 		if (!strEqu(oldDiag.desc, newDiag.desc)) {
-			String cd = new String("Diagram descriptions different: \n" +
-					"   Old value: " + oldDiag.desc + "\n" + 
-					"   New value: " + newDiag.desc + "\n\n");
+			String cd = new String("Diagram descriptions different: \n" +					
+					"   This value:   " + newDiag.desc + "\n" +
+			        "   Other value: " + oldDiag.desc + "\n\n"); 
 		
 			mismatches.add(cd);
 		}
@@ -4053,9 +4054,9 @@ public class DrawFBP extends JFrame
 						blk.compareFlag = "C";
 					if (!(strEqu(blk.fullClassName, bk.fullClassName)))	{							
 						blk.compareFlag = "C";
-						String cs = new String("Full Class Name for '" + desc + "' different: \n" +
-								"   Old value: " + bk.fullClassName + "\n" + 
-								"   New value: " + blk.fullClassName + "\n\n");
+						String cs = new String("Full Class Name for '" + desc + "' different: \n" +								 
+								"   This value:   " + blk.fullClassName + "\n" +
+								"   Other value: " + bk.fullClassName + "\n\n");
 					
 						mismatches.add(cs);
 						
@@ -4099,8 +4100,8 @@ public class DrawFBP extends JFrame
 					gBlk.codeFileName = "ghost";
 				}
 				
-				String cg = new String("Old diagram had a block '" + bk.desc  + "',\n" +
-				"   which is missing from new diagram" +  "\n\n");
+				String cg = new String("Other diagram had a block '" + bk.desc  + "',\n" +
+				"   which is missing from this diagram (marked 'ghost'" +  "\n\n");
 			
 				mismatches.add(cg);
 			}
@@ -4197,6 +4198,10 @@ public class DrawFBP extends JFrame
 				mmFrame = null;
 			}
 		});
+		
+		BufferedImage image = loadImage("DrawFBP-logo-small.png");
+		mmFrame.setIconImage(image);
+		
 		mmFrame.setLocation(500, 500);
 		mmFrame.setForeground(Color.WHITE);
 		JTextPane pane = new JTextPane();
@@ -4204,6 +4209,9 @@ public class DrawFBP extends JFrame
 		StyleContext sc = new StyleContext();	
 		Style defaultStyle = sc.getStyle(StyleContext.DEFAULT_STYLE);
 		//Style baseStyle = sc.addStyle(null, defaultStyle);
+		Style hdgStyle = sc.addStyle(null, defaultStyle);
+		StyleConstants.setItalic(hdgStyle, true);
+		//StyleConstants.setAlignment(hdgStyle, StyleConstants.ALIGN_CENTER);
 		MyDocument doc = new MyDocument(sc);
 		
 		sp.setViewportView(pane);
@@ -4212,6 +4220,17 @@ public class DrawFBP extends JFrame
 		//sp.add(pane);
 		pane.setPreferredSize(new Dimension(800, 300));
 		mmFrame.add(sp, BorderLayout.CENTER);
+		
+		try {
+			doc.insertString(0, "Differences between ", hdgStyle);
+			doc.insertString(doc.getLength(), newDiag.diagFile.getAbsolutePath(), defaultStyle);
+			doc.insertString(doc.getLength(), " (this diagram) and \n    ", hdgStyle);
+			doc.insertString(doc.getLength(), oldDiag.diagFile.getAbsolutePath(), defaultStyle);
+			doc.insertString(doc.getLength(), " (other diagram):\n\n", hdgStyle);
+		} catch (BadLocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		for (String s: mismatches) { 
 			try {
