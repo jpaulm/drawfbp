@@ -38,6 +38,8 @@ import javax.swing.event.*;
 import java.util.*;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
@@ -1419,13 +1421,8 @@ public class DrawFBP extends JFrame
 		
 		if (s.equals("Clear Compare Indicators")) {
 						
-			LinkedList<Block> ghosts = new LinkedList<Block>();
+						
 			
-			for (Block bl : curDiag.blocks.values()) {				
-				if (bl.compareFlag != null && bl.compareFlag.equals("G"))
-					ghosts.add(bl);
-				bl.compareFlag = null;
-			}
 			
 			for (Arrow ar : curDiag.arrows.values()) {
 				ar.compareFlag = null;
@@ -1434,8 +1431,7 @@ public class DrawFBP extends JFrame
 			if (mmFrame != null)
 				mmFrame.dispose();	
 			
-			for (Block bl : ghosts)
-				curDiag.blocks.remove(new Integer(bl.id));			
+					
 			
 			return;
 		}
@@ -4042,72 +4038,71 @@ public class DrawFBP extends JFrame
 			mismatches.add(cd);
 		}
 
-		for (Block blk : newDiag.blocks.values()) {
-			blk.compareFlag = null;
+		for (Block nb : newDiag.blocks.values()) {
+			nb.compareFlag = null;
 			
-			for (Block bk : oldDiag.blocks.values()) {
-				if (blk.id == bk.id) {
-					String desc = blk.desc.replace("\n", " ");
-					if (!(blk.type.equals(bk.type))) 
-						blk.compareFlag = "C";	
-					if (!(strEqu(blk.desc, bk.desc)))	
-						blk.compareFlag = "C";
-					if (!(strEqu(blk.fullClassName, bk.fullClassName)))	{							
-						blk.compareFlag = "C";
-						String cs = new String("Full Class Name for '" + desc + "' different: \n" +								 
-								"   This value:   " + blk.fullClassName + "\n" +
-								"   Other value: " + bk.fullClassName + "\n\n");
+			for (Block ob : oldDiag.blocks.values()) {
+				if (strEqu(nb.desc, ob.desc)) {
+					
+					ob.compareFlag = "N";
+					nb.compareFlag = "N";
+					
+					if ((Math.abs(ob.cx - nb.cx) > 10)
+							|| (Math.abs(ob.cy - nb.cy) > 10))						
+						nb.compareFlag = "M";
+					
+					if (!(strEqu(nb.type, ob.type)))  
+						nb.compareFlag = "C";	
+					
+					if (!(strEqu(nb.fullClassName, ob.fullClassName)))	{							
+						nb.compareFlag = "C";
+						String cs = new String("Full Class Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
+								"   This value:   " + nb.fullClassName + "\n" +
+								"   Other value: " + ob.fullClassName + "\n\n");
 					
 						mismatches.add(cs);
 						
 					}
-					if (!(strEqu(blk.codeFileName, bk.codeFileName)))								
-						blk.compareFlag = "C";
-					if (!(strEqu(blk.subnetFileName, bk.subnetFileName)))								
-						blk.compareFlag = "C";
-					if (blk.isSubnet != bk.isSubnet)
-						blk.compareFlag = "C";
+					if (!(strEqu(nb.codeFileName, ob.codeFileName)))								
+						nb.compareFlag = "C";
+					if (!(strEqu(nb.subnetFileName, ob.subnetFileName)))								
+						nb.compareFlag = "C";
+					if (nb.isSubnet != ob.isSubnet)
+						nb.compareFlag = "C";
+														
 					break;
 					}
 					
 				}	
 			 
-			 
-			if (blk.compareFlag != null)
-				continue;
+			if (nb.compareFlag == null) {
+				nb.compareFlag = "A";
+				String ce = new String("Block with name '" + driver.cleanDesc(nb, false) + "' added to 'this' diagram: \n" +
+						 newDiag.diagFile.getAbsolutePath() + "\n\n"); 
 			
-			Block b2 = oldDiag.blocks.get(blk.id);
-			if (b2 == null)
-				blk.compareFlag = "A";
-			else 
-				if ((Math.abs(b2.cx - blk.cx) > 10)
-						|| (Math.abs(b2.cy - blk.cy) > 10))
-					blk.compareFlag = "M";
-			
-		}
-		
-		for (Block bk : oldDiag.blocks.values()) {
-			if (bk.compareFlag != null)
-				continue;
-			Block blk = newDiag.blocks.get(bk.id);
-			if (blk == null) {
-				Block gBlk = createBlock(bk.type, bk.cx, bk.cy, newDiag,
-						false);
-				if (gBlk != null) {
-					gBlk.desc = bk.desc;
-					gBlk.id = bk.id;
-					gBlk.compareFlag = "G";
-					gBlk.codeFileName = "ghost";
-				}
-				
-				String cg = new String("Other diagram had a block '" + bk.desc  + "',\n" +
-				"   which is missing from this diagram (marked 'ghost'" +  "\n\n");
-			
-				mismatches.add(cg);
+				mismatches.add(ce);
 			}
+		
 		}
-	
 		 
+		for (Block ob : oldDiag.blocks.values()) {
+			if (ob.compareFlag == null) {
+				ob.compareFlag = "D";
+				String ce = new String("Block with name '" + driver.cleanDesc(ob, false) + "' deleted from 'other' diagram: \n" +
+						 oldDiag.diagFile.getAbsolutePath() + "\n\n"); 
+			
+				mismatches.add(ce);
+			}
+			else 
+				ob.compareFlag = null;
+		}
+	 
+		for (Block nb : newDiag.blocks.values()) {
+			if (nb.compareFlag != null  && nb.compareFlag.equals("N")) 
+				nb.compareFlag = null;			
+		} 
+		
+		/*
 		for (Arrow arr : newDiag.arrows.values()) {
 			 
 			for (Arrow a : oldDiag.arrows.values()) {
@@ -4140,31 +4135,9 @@ public class DrawFBP extends JFrame
 					a2.toY != arr.toY)
 				arr.compareFlag = "A";			
 		}
+		*/
   
-		/*
-		 * Don't bother showing deleted arrows!
-		 *  
-		for (Arrow a : oldDiag.arrows.values()) {
-			if (a.compareFlag != null)
-				continue;
-			Block from = oldDiag.blocks.get(new Integer(a.fromId));
-			
-			Arrow aNew = newDiag.arrows.get(new Integer(a.id));
-			if (aNew == null ||
-					aNew.fromX != a.fromX ||
-					aNew.toX != a.toX ||
-					aNew.fromY != a.fromY ||
-					aNew.toY != a.toY) {	
-				newDiag.maxArrowNo = Math.max(oldDiag.maxArrowNo, newDiag.maxArrowNo);
-				int id = ++newDiag.maxArrowNo;
-				Arrow gArr = oldDiag.copyArrow(a, newDiag, from, id);
-				if (gArr != null) {
-					gArr.compareFlag = "D";
-				}
-			}
-		}
-	   
-		*/ 
+	
 		int j = getFileTabNo(newDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
 			b = (ButtonTabComponent) jtp.getTabComponentAt(j);
@@ -4181,9 +4154,6 @@ public class DrawFBP extends JFrame
 		 
 		 
 
-		for (Block blk : oldDiag.blocks.values()) {
-			blk.compareFlag = null;
-		}
 			
 		if (mismatches == null || mismatches.isEmpty()) {
 			curDiag = newDiag;
@@ -4254,6 +4224,44 @@ public class DrawFBP extends JFrame
 		//comparing = false;
 	}
 
+	String cleanDesc(Block b, boolean fbpMode) {
+
+		String t = b.desc;
+
+		// if (!(b instanceof IIPBlock)) {
+
+		if (t == null || t.equals(""))
+			t = "_comp_";
+		t = t.replace('"', '\u0007');
+		Pattern p;
+		Matcher ma;
+
+		if (fbpMode) {
+			t = t.replace('_', '\u0007');
+			p = Pattern.compile("\\p{Punct}"); // punctuation chars
+			ma = p.matcher(t);
+
+			String u = "";
+			int i = 0;
+			while (ma.find(i)) {
+				String s = "\\" + ma.group();
+				u += t.substring(i, ma.start()) + s;
+				i = ma.end();
+			}
+			u += t.substring(i);
+			t = u;
+		}
+
+		p = Pattern.compile("\\s"); // whitespace chars
+		ma = p.matcher(t);
+		t = ma.replaceAll("_");
+
+		t = t.replace('\u0007', '_');
+
+		//	return makeUniqueDesc(t); // and make it unique
+		return t;
+
+	}
 	// Compare two strings, checking for null first
 	
 	boolean strEqu (String a, String b) {
@@ -4814,7 +4822,7 @@ public class DrawFBP extends JFrame
 			return false;
 		
 		Block b = curDiag.blocks.get(new Integer(arr.fromId));	
-		if (b.contains(new Point(xp, yp)))
+		if (b == null || b.contains(new Point(xp, yp)))
 			return false;
 		
 		if (arr.bends != null) { 
@@ -5463,7 +5471,19 @@ public class DrawFBP extends JFrame
 				saveProp("currentDiagram", diag.diagFile.getAbsolutePath());
 			//properties.remove("currentDiagram");
 			}
-
+			
+						
+			
+			
+			for (Arrow ar : curDiag.arrows.values()) {
+				ar.compareFlag = null;
+			}
+			
+			if (mmFrame != null)
+				mmFrame.dispose();	
+			
+			
+			
 			repaint();
 		}
 	}

@@ -10,7 +10,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 
-
 import javax.swing.*;
 
 import com.jpaulmorrison.graphics.DrawFBP.GenLang;
@@ -149,9 +148,7 @@ public class Block implements ActionListener {
 		g.setColor(Color.BLACK);
 		g.drawRoundRect(tlx, tly, width, height, 6, 6);
 
-		if (compareFlag != null && compareFlag.equals("D"))
-			g.setColor(DrawFBP.lg);
-		else if (this == driver.selBlock)
+		if (this == driver.selBlock)
 			g.setColor(DrawFBP.ly); // light yellow
 		else
 			g.setColor(DrawFBP.lb); // light turquoise
@@ -697,6 +694,7 @@ public class Block implements ActionListener {
 		
 		return retClass;
 	}
+
 
 	// check validity of class - returns null if not
 	

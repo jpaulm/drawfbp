@@ -276,7 +276,8 @@ public class CodeManager implements ActionListener {
 						return false;
 					}
 
-					String s = cleanDesc(block);
+					String s = driver.cleanDesc(block, false);
+					s = makeUniqueDesc(s);
 					
 					String c = "\"Invalid class\""; 
 					error = true;
@@ -1459,7 +1460,8 @@ public class CodeManager implements ActionListener {
 			}
 
 			if (block instanceof ProcessBlock) {
-				String s = cleanDesc(block);
+				String s = driver.cleanDesc(block, false);
+				s = makeUniqueDesc(s);
 				String t = cleanComp(block);
 				data += comma + q(s) + ":{ \"component\" :" + q(t)
 						+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
@@ -1593,7 +1595,8 @@ public class CodeManager implements ActionListener {
 					return false;
 				}
 
-				String s = cleanDesc(block);
+				String s = driver.cleanDesc(block, true);
+				s = makeUniqueDesc(s);
 				// String s = cleanComp(block);
 				code += cma + s + "(" + s + ")";
 				
@@ -1770,6 +1773,7 @@ public class CodeManager implements ActionListener {
 		return c;
 	}
 
+	/*
 	String cleanDesc(Block b) {
 
 		String t = b.desc;
@@ -1808,6 +1812,7 @@ public class CodeManager implements ActionListener {
 
 	}
 
+	*/
 	boolean getPortNames(Arrow arrow) {
 		Block from = diag.blocks.get(new Integer(arrow.fromId));
 		Arrow a2 = arrow.findLastArrowInChain();
