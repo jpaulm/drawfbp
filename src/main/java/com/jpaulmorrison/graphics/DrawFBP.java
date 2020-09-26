@@ -1380,8 +1380,11 @@ public class DrawFBP extends JFrame
 
 		if (s.equals("Compare Diagrams")) {
 			
-			if (curDiag == null || curDiag.diagFile == null)
+			if (curDiag == null || curDiag.diagFile == null) {
+				MyOptionPane.showMessageDialog(driver, "No diagram selected",
+						MyOptionPane.INFORMATION_MESSAGE);
 				return;
+			}
 			
 			int result = MyOptionPane.showConfirmDialog(driver, 
 					"Select diagram to compare against current diagram: " + curDiag.diagFile.getName(),
@@ -1477,7 +1480,7 @@ public class DrawFBP extends JFrame
 				properties.remove("additionalDllFiles");
 				lib = "Dll";
 			}
-			MyOptionPane.showMessageDialog(null,
+			MyOptionPane.showMessageDialog(driver,
 					"References to additional " + lib + " files removed (not deleted)",
 					MyOptionPane.INFORMATION_MESSAGE);
 		}
@@ -1549,7 +1552,7 @@ public class DrawFBP extends JFrame
 
 			if (curDiag == null || curDiag.title == null
 					|| curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(null,
+				MyOptionPane.showMessageDialog(driver,
 						"Unable to export image for empty or unsaved diagram - please do save first",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -6872,7 +6875,7 @@ public class DrawFBP extends JFrame
 
 						if (leftButton && blockSelForDragging.isSubnet) {
 							if (blockSelForDragging.subnetFileName == null) {
-								MyOptionPane.showMessageDialog(null,
+								MyOptionPane.showMessageDialog(driver,
 										"No subnet diagram assigned",
 										MyOptionPane.INFORMATION_MESSAGE);
 							} else {
