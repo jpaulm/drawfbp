@@ -136,6 +136,7 @@ public class MyOptionPane {
 	     if (pane.getValue() != null)  
 	       i = ((Integer) pane.getValue()).intValue();
 	     dialog.setVisible(false);
+	     pane.setVisible(false);
 	     return i;
 	     //return pane;
 	     

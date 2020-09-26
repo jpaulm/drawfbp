@@ -1380,7 +1380,8 @@ public class DrawFBP extends JFrame
 
 		if (s.equals("Compare Diagrams")) {
 			
-			
+			if (curDiag == null || curDiag.diagFile == null)
+				return;
 			
 			int result = MyOptionPane.showConfirmDialog(driver, 
 					"Select diagram to compare against current diagram: " + curDiag.diagFile.getName(),
@@ -4042,7 +4043,7 @@ public class DrawFBP extends JFrame
 			nb.compareFlag = null;
 			
 			for (Block ob : oldDiag.blocks.values()) {
-				if (strEqu(nb.desc, ob.desc)) {
+				if (strEqu(nb.desc, ob.desc)) {				
 					
 					ob.compareFlag = "N";
 					nb.compareFlag = "N";
@@ -4051,24 +4052,42 @@ public class DrawFBP extends JFrame
 							|| (Math.abs(ob.cy - nb.cy) > 10))						
 						nb.compareFlag = "M";
 					
-					if (!(strEqu(nb.type, ob.type)))  
-						nb.compareFlag = "C";	
+					if (!(strEqu(nb.type, ob.type)))  {
+						nb.compareFlag = "C";
+						mismatches.add(new String("Block Type for '" + cleanDesc(nb, false) + "' different: \n" +								 
+							 	"   This value:   " + nb.type + "\n" +
+							 	"   Other value: " + ob.type + "\n\n"));
+					}
+					
+					//if (!(strEqu(nb.desc, ob.desc)))  {
+					//	nb.compareFlag = "C";	
+					//}
 					
 					if (!(strEqu(nb.fullClassName, ob.fullClassName)))	{							
-						nb.compareFlag = "C";
-						String cs = new String("Full Class Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
-								"   This value:   " + nb.fullClassName + "\n" +
-								"   Other value: " + ob.fullClassName + "\n\n");
-					
-						mismatches.add(cs);
+						nb.compareFlag = "C";						
+						mismatches.add(new String("Full Class Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
+								 	"   This value:   " + nb.fullClassName + "\n" +
+								 	"   Other value: " + ob.fullClassName + "\n\n"));
 						
 					}
-					if (!(strEqu(nb.codeFileName, ob.codeFileName)))								
+					if (!(strEqu(nb.codeFileName, ob.codeFileName)))	{							
 						nb.compareFlag = "C";
-					if (!(strEqu(nb.subnetFileName, ob.subnetFileName)))								
+						mismatches.add(new String("Code File Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
+							 	"   This value:   " + nb.codeFileName + "\n" +
+							 	"   Other value: " + ob.codeFileName + "\n\n"));
+					}
+					if (!(strEqu(nb.subnetFileName, ob.subnetFileName))) {								
 						nb.compareFlag = "C";
-					if (nb.isSubnet != ob.isSubnet)
+						mismatches.add(new String("Subnet File Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
+							 	"   This value:   " + nb.subnetFileName + "\n" +
+							 	"   Other value: " + ob.subnetFileName + "\n\n"));
+					}
+					if (nb.isSubnet != ob.isSubnet) {
 						nb.compareFlag = "C";
+						mismatches.add(new String("Is Subnet flag for '" + cleanDesc(nb, false) + "' different: \n" +								 
+							 	"   This value:   " + nb.isSubnet + "\n" +
+							 	"   Other value: " + ob.isSubnet + "\n\n"));
+					}
 														
 					break;
 					}
@@ -4162,7 +4181,8 @@ public class DrawFBP extends JFrame
 		if (mmFrame != null)
 			mmFrame.dispose();
 		
-		mmFrame = new JFrame();					
+		mmFrame = new JFrame();	
+	
 		mmFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				mmFrame = null;
@@ -4174,6 +4194,8 @@ public class DrawFBP extends JFrame
 		
 		mmFrame.setLocation(500, 500);
 		mmFrame.setForeground(Color.WHITE);
+		mmFrame.setTitle("Differences between " + newDiag.diagFile.getName() + 
+				" and " + oldDiag.diagFile.getName());
 		JTextPane pane = new JTextPane();
 		JScrollPane sp = new JScrollPane(pane);
 		StyleContext sc = new StyleContext();	
@@ -4190,7 +4212,7 @@ public class DrawFBP extends JFrame
 		//sp.add(pane);
 		pane.setPreferredSize(new Dimension(800, 300));
 		mmFrame.add(sp, BorderLayout.CENTER);
-		
+		 
 		try {
 			doc.insertString(0, "Differences between ", hdgStyle);
 			doc.insertString(doc.getLength(), newDiag.diagFile.getAbsolutePath(), defaultStyle);
@@ -4201,7 +4223,7 @@ public class DrawFBP extends JFrame
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+	 
 		for (String s: mismatches) { 
 			try {
 				doc.insertString(doc.getLength(), s, defaultStyle);
@@ -4224,6 +4246,7 @@ public class DrawFBP extends JFrame
 		//comparing = false;
 	}
 
+	
 	String cleanDesc(Block b, boolean fbpMode) {
 
 		String t = b.desc;
