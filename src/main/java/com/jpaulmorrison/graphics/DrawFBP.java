@@ -1425,15 +1425,16 @@ public class DrawFBP extends JFrame
 		
 		if (s.equals("Clear Compare Indicators")) {
 						
-						
-			
-			
-			for (Arrow ar : curDiag.arrows.values()) {
-				ar.compareFlag = null;
+			for (Block bl : curDiag.blocks.values()) {
+				bl.compareFlag = null;
 			}
 			
-			if (mmFrame != null)
-				mmFrame.dispose();	
+			//for (Arrow ar : curDiag.arrows.values()) {
+			//	ar.compareFlag = null;
+			//}
+			
+			//if (mmFrame != null)
+			//	mmFrame.dispose();	
 			
 					
 			
@@ -1593,7 +1594,8 @@ public class DrawFBP extends JFrame
 			
 			// Now we build a strip containing the diagram description
 			
-			Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+			//Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+			Font f = fontg;
 			
 			FontMetrics metrics = getFontMetrics(f);
 			int width = 0;
@@ -4057,38 +4059,30 @@ public class DrawFBP extends JFrame
 					
 					if (!(strEqu(nb.type, ob.type)))  {
 						nb.compareFlag = "C";
-						mismatches.add(new String("Block Type for '" + cleanDesc(nb, false) + "' different: \n" +								 
-							 	"   This value:   " + nb.type + "\n" +
+						mismatches.add(new String("This Block Type for '" + cleanDesc(nb, false) + ": " +  nb.type + "\n" +
 							 	"   Other value: " + ob.type + "\n\n"));
-					}
-					
-					//if (!(strEqu(nb.desc, ob.desc)))  {
-					//	nb.compareFlag = "C";	
-					//}
-					
+					}					
+										
 					if (!(strEqu(nb.fullClassName, ob.fullClassName)))	{							
 						nb.compareFlag = "C";						
-						mismatches.add(new String("Full Class Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
-								 	"   This value:   " + nb.fullClassName + "\n" +
+						mismatches.add(new String("This Full Class Name for '" + cleanDesc(nb, false) + 
+								": \n                      " + 	nb.fullClassName + "\n" +
 								 	"   Other value: " + ob.fullClassName + "\n\n"));
 						
 					}
 					if (!(strEqu(nb.codeFileName, ob.codeFileName)))	{							
 						nb.compareFlag = "C";
-						mismatches.add(new String("Code File Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
-							 	"   This value:   " + nb.codeFileName + "\n" +
+						mismatches.add(new String("This Code File Name for '" + cleanDesc(nb, false) + ": " + nb.codeFileName + "\n" +
 							 	"   Other value: " + ob.codeFileName + "\n\n"));
 					}
 					if (!(strEqu(nb.subnetFileName, ob.subnetFileName))) {								
 						nb.compareFlag = "C";
-						mismatches.add(new String("Subnet File Name for '" + cleanDesc(nb, false) + "' different: \n" +								 
-							 	"   This value:   " + nb.subnetFileName + "\n" +
+						mismatches.add(new String("This Subnet File Name for '" + cleanDesc(nb, false) + ": " + nb.subnetFileName + "\n" +
 							 	"   Other value: " + ob.subnetFileName + "\n\n"));
 					}
 					if (nb.isSubnet != ob.isSubnet) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("Is Subnet flag for '" + cleanDesc(nb, false) + "' different: \n" +								 
-							 	"   This value:   " + nb.isSubnet + "\n" +
+						mismatches.add(new String("This Subnet flag for '" + cleanDesc(nb, false) + ": " + nb.isSubnet + "\n" +
 							 	"   Other value: " + ob.isSubnet + "\n\n"));
 					}
 														
@@ -4099,8 +4093,7 @@ public class DrawFBP extends JFrame
 			 
 			if (nb.compareFlag == null) {
 				nb.compareFlag = "A";
-				String ce = new String("Block with name '" + driver.cleanDesc(nb, false) + "' added to 'this' diagram: \n" +
-						 newDiag.diagFile.getAbsolutePath() + "\n\n"); 
+				String ce = new String("Block with name '" + driver.cleanDesc(nb, false) + "' added to this diagram\n\n"); 
 			
 				mismatches.add(ce);
 			}
@@ -4109,9 +4102,8 @@ public class DrawFBP extends JFrame
 		 
 		for (Block ob : oldDiag.blocks.values()) {
 			if (ob.compareFlag == null) {
-				ob.compareFlag = "D";
-				String ce = new String("Block with name '" + driver.cleanDesc(ob, false) + "' deleted from 'other' diagram: \n" +
-						 oldDiag.diagFile.getAbsolutePath() + "\n\n"); 
+				ob.compareFlag = "O";
+				String ce = new String("Block with name '" + driver.cleanDesc(ob, false) + "' omitted from other diagram\n\n"); 
 			
 				mismatches.add(ce);
 			}
@@ -4205,7 +4197,7 @@ public class DrawFBP extends JFrame
 		Style defaultStyle = sc.getStyle(StyleContext.DEFAULT_STYLE);
 		//Style baseStyle = sc.addStyle(null, defaultStyle);
 		Style hdgStyle = sc.addStyle(null, defaultStyle);
-		StyleConstants.setItalic(hdgStyle, true);
+		//StyleConstants.setItalic(hdgStyle, true);
 		//StyleConstants.setAlignment(hdgStyle, StyleConstants.ALIGN_CENTER);
 		MyDocument doc = new MyDocument(sc);
 		
@@ -4213,15 +4205,15 @@ public class DrawFBP extends JFrame
 		pane.setStyledDocument(doc);
 		//pane.setPreferredSize(new Dimension(800, 300));
 		//sp.add(pane);
-		pane.setPreferredSize(new Dimension(800, 300));
+		pane.setPreferredSize(new Dimension(800, 400));
 		mmFrame.add(sp, BorderLayout.CENTER);
 		 
 		try {
-			doc.insertString(0, "Differences between ", hdgStyle);
+			doc.insertString(0, "This diagram: ", hdgStyle);
 			doc.insertString(doc.getLength(), newDiag.diagFile.getAbsolutePath(), defaultStyle);
-			doc.insertString(doc.getLength(), " (this diagram) and \n    ", hdgStyle);
+			doc.insertString(doc.getLength(), "\nOther diagram: ", hdgStyle);
 			doc.insertString(doc.getLength(), oldDiag.diagFile.getAbsolutePath(), defaultStyle);
-			doc.insertString(doc.getLength(), " (other diagram):\n\n", hdgStyle);
+			doc.insertString(doc.getLength(), "\n\n", hdgStyle);
 		} catch (BadLocationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
