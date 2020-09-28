@@ -3,6 +3,8 @@ DrawFBP
 
 #### Tool for Creating and Exploring Flow-Based Programming Diagram Hierarchies
 
+General web site on Flow-Based Programming: https://jpaulm.github.io/fbp/ .
+
 
 Sample DrawFBP network
 ---
