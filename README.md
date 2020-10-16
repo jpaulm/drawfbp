@@ -16,7 +16,7 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 Release History
 ---
 
-Latest release is `v2.20.12`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.20.12.jar` - can be obtained from the Releases folder (click on `tags`, then `Releases`), from `build/libs`, or from Maven (click on shield below).  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`.  
+Latest release is `v2.20.13`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.20.13.jar` - can be obtained from the Releases folder (click on `tags`, then `Releases`), or from `build/libs`.  It will shortly be available from Maven (click on shield below).  If you click on the Maven shield below to obtain DrawFBP, select `download` and `jar`.  
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
