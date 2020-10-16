@@ -1072,7 +1072,7 @@ public class DrawFBP extends JFrame
 		menuItem = new JMenuItem("Compare Diagrams");
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		menuItem = new JMenuItem("Clear Compare Indicators");
+		menuItem = new JMenuItem("Clear Visible Indicators");
 		editMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		editMenu.addSeparator();
@@ -1423,7 +1423,7 @@ public class DrawFBP extends JFrame
 			return;
 		}
 		
-		if (s.equals("Clear Compare Indicators")) {
+		if (s.equals("Clear Visible Indicators")) {
 						
 			for (Block bl : curDiag.blocks.values()) {
 				bl.compareFlag = null;
@@ -4103,7 +4103,7 @@ public class DrawFBP extends JFrame
 		for (Block ob : oldDiag.blocks.values()) {
 			if (ob.compareFlag == null) {
 				ob.compareFlag = "O";
-				String ce = new String("Block with name '" + driver.cleanDesc(ob, false) + "' omitted from other diagram\n\n"); 
+				String ce = new String("Block with name '" + driver.cleanDesc(ob, false) + "' omitted from this diagram\n\n"); 
 			
 				mismatches.add(ce);
 			}
