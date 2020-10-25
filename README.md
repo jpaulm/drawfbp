@@ -24,6 +24,8 @@ Latest release is `v2.20.13`: the jar file (which includes the `math.geom2d` and
 
 -->
 
+`v2.20.14` had an error, and is not usable. Apologies!
+
 To run from the command line, do a `cd` to wherever you have stored your DrawFBP jar file, and enter:
 
 <code>java -jar drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
