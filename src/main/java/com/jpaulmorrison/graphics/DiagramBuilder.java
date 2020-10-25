@@ -22,7 +22,7 @@ public class DiagramBuilder {
 		 */
 
 		DrawFBP driver = diag.driver;
-		Integer errNo = new Integer(0);
+		Integer errNo = Integer.valueOf(0);
 		BabelParser2 bp = new BabelParser2(input, errNo);
 		HashMap<String, HashMap<String, String>> tagInfo = new HashMap<String, HashMap<String, String>>();
 		createTables(tagInfo);
@@ -155,7 +155,7 @@ public class DiagramBuilder {
 							arrowBuilt = false;							
 
 						} else if (starttag.equals("bends")) {
-							Integer aid = new Integer(item.get("id"));
+							Integer aid = Integer.valueOf(item.get("id"));
 							diag.arrows.put(aid, thisArrow);
 							thisArrow.buildArrow(item);
 							arrowBuilt = true;
@@ -192,6 +192,7 @@ public class DiagramBuilder {
 								starttag.equals("multiplex") ||
 								starttag.equals("invisible") ||
 								starttag.equals("clicktogrid") ||
+								starttag.equals("scalingfactor") ||
 								starttag.equals("sortbydate") ||
 								starttag.equals("dropoldest"))
 								    item.put(starttag, "true");
@@ -227,6 +228,13 @@ public class DiagramBuilder {
 
 						else if (endtag.equals("clicktogrid")) {
 							diag.clickToGrid = saveData.equals("true");
+						}
+						else if (endtag.equals("scalingfactor")) {
+							driver.scalingFactor = Double.valueOf(saveData);
+							driver.zoomControl.setValue((int) driver.scalingFactor * 100);
+							//String scale = (int) js.getValue() + "%";
+							String scale = ((int) driver.scalingFactor) + "%";
+							driver.scaleLab.setText(scale);
 						}
 						else if (endtag.equals("sortbydate")) {
 							driver.sortByDate = saveData.equals("true");
@@ -327,13 +335,13 @@ public class DiagramBuilder {
 							if (s != null)
 							   block.visible = s.equals("false");
 							
-							diag.blocks.put(new Integer(block.id), block);
+							diag.blocks.put(Integer.valueOf(block.id), block);
 							
 						} else if (endtag.equals("connection")) {
 							if (!arrowBuilt) {
 								thisArrow.buildArrow(item);
 								if (thisArrow.fromId > -1 && thisArrow.toId > -1 && thisArrow.toX > -1)  { 
-									Integer aid = new Integer(item.get("id"));
+									Integer aid = Integer.valueOf(item.get("id"));
 									diag.arrows.put(aid, thisArrow);
 								}								
 							}													
@@ -433,7 +441,7 @@ public class DiagramBuilder {
 		
 		
 		for (Arrow a : diag.arrows.values()) {
-			Block fromBlock = diag.blocks.get(new Integer(a.fromId));
+			Block fromBlock = diag.blocks.get(Integer.valueOf(a.fromId));
 			if (fromBlock != null && (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
 					|| fromBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)))
 				a.upStreamPort = "OUT";
@@ -445,7 +453,7 @@ public class DiagramBuilder {
 						MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
-			Block toBlock = diag.blocks.get(new Integer(a2.toId));
+			Block toBlock = diag.blocks.get(Integer.valueOf(a2.toId));
 
 			if (toBlock != null && (
 			 toBlock.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
@@ -489,7 +497,7 @@ public class DiagramBuilder {
 		fl1.put("clicktogrid", "*");
 		fl1.put("sortbydate", "*");
 		fl1.put("genCodeFileName", "*"); //deprecated
-		// fl1.put("scalingFactor", "*");
+		fl1.put("scalingFactor", "*");
 		fl1.put("generatedCodeFileName", "*"); // deprecated
 		fl1.put("genCodeFileNames", "*"); // deprecated
 		fl1.put("blocks", "LinkedList");

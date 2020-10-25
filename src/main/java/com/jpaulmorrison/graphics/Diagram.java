@@ -39,6 +39,8 @@ public class Diagram {
 	String desc;  // description at bottom
 
 	GenLang diagLang;
+	
+	//double scalingFactor;
 
 	boolean changed = false;
 	//boolean saving;
@@ -108,7 +110,7 @@ public class Diagram {
 			clickToGrid = true;
 			driver.saveProp("clicktogrid", "true");
 		} else 
-			clickToGrid = (new Boolean(cTG)).booleanValue();
+			clickToGrid = Boolean.valueOf(cTG);
 		
 		driver.grid.setSelected(clickToGrid);
 	}			
@@ -460,7 +462,9 @@ public class Diagram {
 		// + "</genCodeFileName> ";
 
 				
-		fileString += "<clicktogrid>" + (clickToGrid?"true":"false") + "</clicktogrid> \n" ;
+		fileString += "<clicktogrid>" + Boolean.toString(clickToGrid) + "</clicktogrid> \n" ;
+		
+		fileString += "<scalingfactor>" + Double.toString(driver.scalingFactor) + "</scalingfactor> \n" ;
 		
 		fileString += "<sortbydate>" + (driver.sortByDate?"true":"false") + "</sortbydate> \n" ;
 
@@ -501,13 +505,13 @@ public class Diagram {
 		
 		for (Arrow arr : arrows.values()) {
 			if (arr.endsAtLine && arr.toId == arrow.id) {
-				Integer aid = new Integer(arr.id);
+				Integer aid = Integer.valueOf(arr.id);
 				arrows.remove(aid);
 				arr.toId = -1;									
 			}
 		}			
 				
-		Integer aid = new Integer(arrow.id);
+		Integer aid = Integer.valueOf(arrow.id);
 		arrows.remove(aid);
 	}
 
@@ -533,7 +537,7 @@ public class Diagram {
 		}
 
 		changed = true;
-		Integer aid = new Integer(block.id);
+		Integer aid = Integer.valueOf(block.id);
 		blocks.remove(aid);
 		// changeCompLang();
 
@@ -576,12 +580,12 @@ public class Diagram {
 		for (Block blk : enc.llb) {
 			
 			//changed = true;
-			Integer bid = new Integer(blk.id);
+			Integer bid = Integer.valueOf(blk.id);
 			blocks.remove(bid);
 			sbnDiag.maxBlockNo = Math.max(blk.id, sbnDiag.maxBlockNo);
 			blk.diag = sbnDiag;
 			//blk.id = sbnDiag.maxBlockNo++;
-			sbnDiag.blocks.put(new Integer(blk.id), blk);
+			sbnDiag.blocks.put(Integer.valueOf(blk.id), blk);
 		}
 			
 		ProcessBlock subnetBlock = buildSubnetBlock(sbnDiag, origDiag, enc, enc.cx, enc.cy);
@@ -592,7 +596,7 @@ public class Diagram {
 		// get arrows that were totally enclosed, delete from old diagram and add to new diagram
 		
 		for (Arrow arrow : enc.lla) {
-			Integer aid = new Integer(arrow.id);
+			Integer aid = Integer.valueOf(arrow.id);
 			arrows.remove(aid);
 			sbnDiag.arrows.put(aid, arrow); // add arrow to new diagram
 			//System.out.println("Added to new diag: " + arrow.id);
@@ -605,11 +609,11 @@ public class Diagram {
 
 		for (Arrow arrow : arrows.values()) {
 
-			Block from = blocks.get(new Integer(arrow.fromId));
-			Block to = blocks.get(new Integer(arrow.toId));
+			Block from = blocks.get(Integer.valueOf(arrow.fromId));
+			Block to = blocks.get(Integer.valueOf(arrow.toId));
 			Arrow a2 = arrow.findLastArrowInChain();
 			if (a2 != null)
-				to = blocks.get(new Integer(a2.toId));
+				to = blocks.get(Integer.valueOf(a2.toId));
 			// arrow.type = " ";
 
 			// test if arrow crosses a boundary; if so, copy
@@ -634,7 +638,7 @@ public class Diagram {
 		for (Arrow arrow : origDiag.arrows.values()) {
 						
 			if (arrow.type.equals("I")) {
-				sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
+				sbnDiag.arrows.put(Integer.valueOf(arrow.copy.id), arrow.copy);
 				//System.out.println("I-block added to new diag: " + arrow.copy.id);
 				
 				ExtPortBlock eb = new ExtPortBlock(sbnDiag);
@@ -648,7 +652,7 @@ public class Diagram {
 				//arrow.toId = subnetBlock.id;
 				arrow.copy.upStreamPort = "OUT";
 				//arrow.type = "I";
-				sbnDiag.blocks.put(new Integer(eb.id), eb);
+				sbnDiag.blocks.put(Integer.valueOf(eb.id), eb);
 				driver.selBlock = eb;
 				driver.repaint();
 				
@@ -685,7 +689,7 @@ public class Diagram {
 			
 			
 			if (arrow.type.equals("O")) {		
-				sbnDiag.arrows.put(new Integer(arrow.copy.id), arrow.copy);
+				sbnDiag.arrows.put(Integer.valueOf(arrow.copy.id), arrow.copy);
 				//System.out.println("O-block added to new diag: " + arrow.copy.id);
 				ExtPortBlock eb = new ExtPortBlock(sbnDiag);
 				eb.cx = arrow.copy.toX + eb.width / 2;
@@ -697,7 +701,7 @@ public class Diagram {
 				//arrow.fromId = subnetBlock.id;
 				arrow.copy.downStreamPort = "IN";
 				//arrow.type = "O";
-				sbnDiag.blocks.put(new Integer(eb.id), eb);
+				sbnDiag.blocks.put(Integer.valueOf(eb.id), eb);
 				driver.selBlock = eb;
 				driver.repaint();
 				
@@ -814,11 +818,11 @@ public class Diagram {
 				
 				enc.lla = new LinkedList<Arrow>();
 				for (Arrow arrow : arrows.values()) {
-					Block from = blocks.get(new Integer(arrow.fromId));
-					Block to = blocks.get(new Integer(arrow.toId));
+					Block from = blocks.get(Integer.valueOf(arrow.fromId));
+					Block to = blocks.get(Integer.valueOf(arrow.toId));
 					Arrow a2 = arrow.findLastArrowInChain(); 
 					if (a2 != null)
-						to = blocks.get(new Integer(a2.toId));
+						to = blocks.get(Integer.valueOf(a2.toId));
 					
 					if (enc.llb.contains(from)  && enc.llb.contains(to)) 
 						enc.lla.add(arrow);
@@ -887,7 +891,7 @@ public class Diagram {
 		subnetBlock.calcEdges();
 		origDiag.maxBlockNo++;
 		subnetBlock.id = origDiag.maxBlockNo;
-		origDiag.blocks.put(new Integer(subnetBlock.id), subnetBlock);
+		origDiag.blocks.put(Integer.valueOf(subnetBlock.id), subnetBlock);
 		//changed = true;
 		driver.selBlock = subnetBlock;
 		//subnetBlock.diagramFileName = enc.diag.desc;
@@ -976,7 +980,7 @@ public class Diagram {
 		//	arrow.fromId = snBlock.id;
 		//arrow.diag = diag.origDiag;
 		arrow.diag = this;
-		Integer aid = new Integer(arrCopy.id);
+		Integer aid = Integer.valueOf(arrCopy.id);
 		diag.arrows.put(aid, arrCopy);
 		//arrCopy.orig = arrow;
 		//cl.add(arrCopy); 

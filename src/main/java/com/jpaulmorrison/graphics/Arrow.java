@@ -100,12 +100,12 @@ public class Arrow implements ActionListener {
 		//if (fromId == -1 || toId == -1 || toX == -1) 
 		//	return;
 		
-		from = diag.blocks.get(new Integer(fromId));		
-		to = diag.blocks.get(new Integer(toId));			
+		from = diag.blocks.get(Integer.valueOf(fromId));		
+		to = diag.blocks.get(Integer.valueOf(toId));			
 		 
 		Arrow a = findLastArrowInChain();
 		if (a != null)
-			to = diag.blocks.get(new Integer(a.toId));
+			to = diag.blocks.get(Integer.valueOf(a.toId));
  
 		
 		g.setColor(Color.GRAY);  
@@ -529,8 +529,8 @@ public class Arrow implements ActionListener {
 		diag.jpm.add(label2);
 		diag.jpm.addSeparator();
 		JMenuItem menuItem;
-		Block from = diag.blocks.get(new Integer(fromId));
-		Block to = diag.blocks.get(new Integer(toId));
+		Block from = diag.blocks.get(Integer.valueOf(fromId));
+		Block to = diag.blocks.get(Integer.valueOf(toId));
 		Arrow a = this.findLastArrowInChain();
 		if (a == null) {
 			MyOptionPane.showMessageDialog(driver,
@@ -538,7 +538,7 @@ public class Arrow implements ActionListener {
 					MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		to = diag.blocks.get(new Integer(a.toId));
+		to = diag.blocks.get(Integer.valueOf(a.toId));
 		if (!(from instanceof FileBlock || from instanceof PersonBlock || from instanceof ReportBlock || from instanceof LegendBlock ||
 				to instanceof FileBlock || to instanceof PersonBlock || to instanceof ReportBlock || to instanceof LegendBlock 	) ) {
 		if (!(from instanceof ExtPortBlock) && !(from instanceof IIPBlock)) {
@@ -617,7 +617,7 @@ public class Arrow implements ActionListener {
 			
 			if (ans != null /* && ans.length() > 0*/ ) {
 				ans = ans.trim();
-				Block b = diag.blocks.get(new Integer(fromId));
+				Block b = diag.blocks.get(Integer.valueOf(fromId));
 				// upStreamPort = ans;
 				diag.changed = true;
 				boolean found = false;
@@ -660,7 +660,7 @@ public class Arrow implements ActionListener {
 			if (ans != null /* && ans.length() > 0 */) {
 				ans = ans.trim();
 				Arrow arr = findLastArrowInChain();
-				Block b = diag.blocks.get(new Integer(arr.toId));
+				Block b = diag.blocks.get(Integer.valueOf(arr.toId));
 
 				diag.changed = true;
 				boolean found = false;
@@ -927,10 +927,10 @@ public class Arrow implements ActionListener {
 	}
 	
 	boolean checkSides() {
-		Block from = diag.blocks.get(new Integer(fromId));
-		Block to = diag.blocks.get(new Integer(toId));
+		Block from = diag.blocks.get(Integer.valueOf(fromId));
+		Block to = diag.blocks.get(Integer.valueOf(toId));
 		Arrow a = findLastArrowInChain();
-		to = diag.blocks.get(new Integer(a.toId));
+		to = diag.blocks.get(Integer.valueOf(a.toId));
 		if (!(from instanceof ProcessBlock)
 				&& !(from instanceof ExtPortBlock))
 			return true;

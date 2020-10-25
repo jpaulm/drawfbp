@@ -297,7 +297,7 @@ public class CodeManager implements ActionListener {
 					
 					 
 					
-					descArray.put(new Integer(block.id), s);
+					descArray.put(Integer.valueOf(block.id), s);
 
 					if (!block.multiplex){
 						if (!block.visible)
@@ -371,11 +371,11 @@ public class CodeManager implements ActionListener {
 					code += "  " + genComp(s, t, gl.label) + "; \n";
 					code += "  " + initialize + "(\"" + eb.desc + "\", " + component + "(\""
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
-					descArray.put(new Integer(block.id), s);
+					descArray.put(Integer.valueOf(block.id), s);
 				}
 
 				if (block instanceof IIPBlock)
-					descArray.put(new Integer(block.id), block.desc);
+					descArray.put(Integer.valueOf(block.id), block.desc);
 				
 			}
 
@@ -383,11 +383,11 @@ public class CodeManager implements ActionListener {
 				// generate a connection or initialize
 				if (arrow.toX == -1  || arrow.toId == -1)               // if toX or toId = -1, do not generate
 					continue;
-				Block from = diag.blocks.get(new Integer(arrow.fromId));
+				Block from = diag.blocks.get(Integer.valueOf(arrow.fromId));
 				Arrow a2 = arrow.findLastArrowInChain();
 				if (a2 == null)
 					continue;
-				Block to = diag.blocks.get(new Integer(a2.toId));
+				Block to = diag.blocks.get(Integer.valueOf(a2.toId));
 				if (to == null) {
 					String s = "Downstream block not found";
 					if (from != null)
@@ -408,10 +408,10 @@ public class CodeManager implements ActionListener {
 
 				//driver.jf.jf.repaint();
 
-				String fromDesc = descArray.get(new Integer(arrow.fromId));
+				String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 				// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
 
-				String toDesc = descArray.get(new Integer(a2.toId));
+				String toDesc = descArray.get(Integer.valueOf(a2.toId));
 				// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
 				// boolean ok;
@@ -862,10 +862,10 @@ public class CodeManager implements ActionListener {
 		String t = s;
 		if (blocklist.containsKey(s)) {
 			i = blocklist.get(s);
-			i = new Integer(i.intValue() + 1);
+			i = Integer.valueOf(i.intValue() + 1);
 			t = s + "_" + i.toString() + "_";
 		} else
-			i = new Integer(1);
+			i = Integer.valueOf(1);
 		blocklist.put(s, i);
 		return t;
 
@@ -878,10 +878,10 @@ public class CodeManager implements ActionListener {
 			b.portlist = new HashMap<String, Integer>();
 		if (b.portlist.containsKey(s)) {
 			i = b.portlist.get(s);
-			i = new Integer(i.intValue() + 1);
+			i = Integer.valueOf(i.intValue() + 1);
 			t = s + "_" + i.toString() + "_";
 		} else
-			i = new Integer(1);
+			i = Integer.valueOf(1);
 		b.portlist.put(s, i);
 		return t;
 
@@ -1456,7 +1456,7 @@ public class CodeManager implements ActionListener {
 			comma = "\n,";
 		//}
 		data += "\n]\n}";
-				descArray.put(new Integer(block.id), s);
+				descArray.put(Integer.valueOf(block.id), s);
 			}
 
 			if (block instanceof ProcessBlock) {
@@ -1468,20 +1468,20 @@ public class CodeManager implements ActionListener {
 						+ block.cy + "}}";
 				comma = "\n,";
 
-				descArray.put(new Integer(block.id), s);
+				descArray.put(Integer.valueOf(block.id), s);
 			}
 			// cdescArray.put(new Integer(block.id), block.description);
 			if (block instanceof IIPBlock) {
-				descArray.put(new Integer(block.id), block.desc);
+				descArray.put(Integer.valueOf(block.id), block.desc);
 			}
 		}
 		data += "\n},\n \"connections\": [\n";
 		comma = "";
 		for (Arrow arrow : diag.arrows.values()) {
 			// generate a connection or initialize
-			Block from = diag.blocks.get(new Integer(arrow.fromId));
+			Block from = diag.blocks.get(Integer.valueOf(arrow.fromId));
 			Arrow a2 = arrow.findLastArrowInChain();
-			Block to = diag.blocks.get(new Integer(a2.toId));
+			Block to = diag.blocks.get(Integer.valueOf(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(driver.jf,
 						"Downstream block not found: from " + from.desc, MyOptionPane.ERROR_MESSAGE);
@@ -1495,10 +1495,10 @@ public class CodeManager implements ActionListener {
 
 			if (!getPortNames(arrow))
 				return "";
-			String fromDesc = descArray.get(new Integer(arrow.fromId));
+			String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 			// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
 
-			String toDesc = descArray.get(new Integer(a2.toId));
+			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 
 			driver.jf.repaint();
 			if (!(from instanceof ProcessBlock) && !(from instanceof IIPBlock)
@@ -1585,7 +1585,7 @@ public class CodeManager implements ActionListener {
 				//cma = "\n,";
 		//}
 		//code += "\n\n}";
-				descArray.put(new Integer(block.id), s);
+				descArray.put(Integer.valueOf(block.id), s);
 			}
 			if (block instanceof ProcessBlock) {
 				if (block.desc == null) {
@@ -1600,19 +1600,19 @@ public class CodeManager implements ActionListener {
 				// String s = cleanComp(block);
 				code += cma + s + "(" + s + ")";
 				
-				descArray.put(new Integer(block.id), s);
+				descArray.put(Integer.valueOf(block.id), s);
 				// cdescArray.put(new Integer(block.id), s);
 			}
 			if (block instanceof IIPBlock) {
-				descArray.put(new Integer(block.id), block.desc);
+				descArray.put(Integer.valueOf(block.id), block.desc);
 			}
 			cma  = ",\n";
 		}
 
 		for (Arrow arrow : diag.arrows.values()) {
-			Block from = diag.blocks.get(new Integer(arrow.fromId));
+			Block from = diag.blocks.get(Integer.valueOf(arrow.fromId));
 			Arrow a2 = arrow.findLastArrowInChain();
-			Block to = diag.blocks.get(new Integer(a2.toId));
+			Block to = diag.blocks.get(Integer.valueOf(a2.toId));
 			if (to == null) {
 				MyOptionPane.showMessageDialog(driver.jf,
 						"Downstream block not found", MyOptionPane.ERROR_MESSAGE);
@@ -1627,10 +1627,10 @@ public class CodeManager implements ActionListener {
 			if (!getPortNames(arrow))
 				return false;
 
-			String fromDesc = descArray.get(new Integer(arrow.fromId));
+			String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 			// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
 
-			String toDesc = descArray.get(new Integer(a2.toId));
+			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 			// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
 			driver.jf.repaint();
@@ -1814,9 +1814,9 @@ public class CodeManager implements ActionListener {
 
 	*/
 	boolean getPortNames(Arrow arrow) {
-		Block from = diag.blocks.get(new Integer(arrow.fromId));
+		Block from = diag.blocks.get(Integer.valueOf(arrow.fromId));
 		Arrow a2 = arrow.findLastArrowInChain();
-		Block to = diag.blocks.get(new Integer(a2.toId));
+		Block to = diag.blocks.get(Integer.valueOf(a2.toId));
 		String z;
 
 		if (from instanceof ProcessBlock) {

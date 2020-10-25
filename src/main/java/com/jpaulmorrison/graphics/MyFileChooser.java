@@ -42,6 +42,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 
 public class MyFileChooser extends JDialog 
@@ -612,7 +613,6 @@ public class MyFileChooser extends JDialog
 		suggestedName = s;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void showList() {
 
 		LinkedList<String> ll = new LinkedList<String>();
@@ -792,11 +792,11 @@ public class MyFileChooser extends JDialog
 				if (currentNode.getChildCount() > 0) {
 
 					showListHead();
-					Enumeration<DefaultMutableTreeNode> e = currentNode
+					Enumeration<TreeNode> e = currentNode
 							.children();
 
 					while (e.hasMoreElements()) {
-						DefaultMutableTreeNode node = (e.nextElement());
+						DefaultMutableTreeNode node = (DefaultMutableTreeNode) (e.nextElement());
 						t = (String) node.getUserObject();
 						ll2.add((String) t);
 					}
@@ -958,14 +958,14 @@ public class MyFileChooser extends JDialog
 		return top;
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	private DefaultMutableTreeNode findChild(DefaultMutableTreeNode current,
 			String t) {
 		if (current == null)
 			return null;
-		Enumeration<DefaultMutableTreeNode> e = current.children();
+		Enumeration<TreeNode> e = current.children();
 		while (e.hasMoreElements()) {
-			DefaultMutableTreeNode node = (e.nextElement());
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
 			Object obj = node.getUserObject();
 			if (t.equals((String) obj))
 				return node;
@@ -986,7 +986,7 @@ final boolean SAVEAS = true;
 					MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		Integer errNo = new Integer(0);
+		Integer errNo = /*new Integer(0);*/  Integer.valueOf(0);
 		BabelParser2 bp = new BabelParser2(fileString, errNo);
 		String label = null;
 		String operand = null;
@@ -1388,7 +1388,8 @@ final boolean SAVEAS = true;
 			if (s.equals("Toggle Sort By Date")){
 				driver.sortByDate = !driver.sortByDate;
 				butSortByDate.setSelected(driver.sortByDate);
-				driver.saveProp("sortbydate",(new Boolean(driver.sortByDate)).toString());
+				//driver.saveProp("sortbydate",(new Boolean(driver.sortByDate)).toString());
+				driver.saveProp("sortbydate", Boolean.toString(driver.sortByDate));
 				showList();
 				repaint();
 			}
@@ -1779,7 +1780,7 @@ final boolean SAVEAS = true;
 			if (selComp == butSortByDate) {
 				driver.sortByDate = !driver.sortByDate;
 				butSortByDate.setSelected(driver.sortByDate);
-				driver.saveProp("sortbydate",(new Boolean(driver.sortByDate)).toString());
+				driver.saveProp("sortbydate",Boolean.toString(driver.sortByDate));
 				showList();
 				repaint();
 				return;

@@ -9,10 +9,13 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -55,7 +58,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 public class DrawFBP extends JFrame
@@ -121,7 +123,7 @@ public class DrawFBP extends JFrame
 	float defaultFontSize;
 	GenLang currLang;
 
-	static double scalingFactor;
+	double scalingFactor;
 	// int xTranslate = 0; // 400;
 	// int yTranslate = 0; // 400;
 
@@ -314,6 +316,8 @@ public class DrawFBP extends JFrame
 	//boolean comparing = false;
 	JFrame mmFrame = new JFrame();
 	
+	JSlider zoomControl = null;
+	
 	final boolean CODEMGRCREATE = true;
 	
 	// constructor
@@ -339,8 +343,34 @@ public class DrawFBP extends JFrame
 			diagramName = properties.get("currentDiagram");
 		}
 		
+		frameInit();
+				
 		scalingFactor = 1.0d;
-		//zWS = zoneWidth;
+		
+		String sF = properties.get("scalingfactor");
+		if (sF != null)
+			scalingFactor = Double.valueOf(sF);
+		
+		zoomControl = new JSlider(SwingConstants.VERTICAL, 60, 200, (int)(scalingFactor * 100));
+		zoomControl.setPreferredSize(new Dimension(40, 200));
+		zoomControl.setMajorTickSpacing(20);
+		// zoomControl.setMinorTickSpacing(10);
+		zoomControl.setPaintTicks(true);
+		zoomControl.setSnapToTicks(true);
+		zoomControl.setPaintLabels(false);
+		zoomControl.setPaintTrack(true);
+		zoomControl.setVisible(true);
+		zoomControl.addChangeListener(this);
+		zoomControl.getInputMap().put(escapeKS, "CLOSE");
+		zoomControl.getActionMap().put("CLOSE", escapeAction);
+
+		
+		zoomControl.setValue((int) (scalingFactor * 100));
+		//String scale = (int) js.getValue() + "%";
+		String scale = (int) (scalingFactor * 100) + "%";
+		scaleLab = new JLabel();
+		scaleLab.setText(scale);
+	
 		zWS = (int) Math.round(zoneWidth * scalingFactor);
 		
 		try {		
@@ -388,7 +418,7 @@ public class DrawFBP extends JFrame
 
 		// Create and set up the window.
 		
-		
+		//readPropertiesFile();
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
@@ -493,7 +523,7 @@ public class DrawFBP extends JFrame
 			sortByDate = false;
 			saveProp("sortbydate", "false");
 		} else 
-			sortByDate = (new Boolean(sBD)).booleanValue();
+			sortByDate = Boolean.getBoolean(sBD);
 
 		//Iterator<String> entries = jarFiles.iterator();
 		String z = "";
@@ -606,7 +636,7 @@ public class DrawFBP extends JFrame
 			y = Integer.parseInt(t);
 		Point p = new Point(x, y);
 		setLocation(p);
-
+		
 		t = properties.get("width");
 		if (t != null)
 			w2 = Integer.parseInt(t);
@@ -619,7 +649,24 @@ public class DrawFBP extends JFrame
 		// repaint();
 		// Display the window.
 		pack();
+		
+		/*
+		// try this... courtesy of 
+		//  https://alvinalexander.com/blog/post/jfc-swing/how-center-jframe-java-swing/
+		
+		// make the frame half the height and width
+		  Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		  int height = screenSize.height - 60;
+		  int width = screenSize.width - 60;
+		  setSize((int) (width * .75), (int) (height * .75));
+		  setPreferredSize(new Dimension((int) (width * .75), (int) (height * .75)));
+		  
 
+		  // here's the part where i center the jframe on screen
+		  setLocationRelativeTo(null);
+		  
+		  setVisible(true);
+*/
 		setVisible(true);
 		addComponentListener(this);
 		
@@ -649,9 +696,10 @@ public class DrawFBP extends JFrame
 		//	curDiag.desc = "Click anywhere on selection area";
 		// }
 		//else  
-			if (diagramName != null)  
+		if (diagramName != null)  
 				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
 						"Open " + diagramName));
+		
 
 		//createMenuBar();	
 		repaint();
@@ -721,10 +769,9 @@ public class DrawFBP extends JFrame
 
 		Box box4 = new Box(BoxLayout.X_AXIS);
 		box1.add(box4);
-
-		int sf = (int) Math.round(100.0 * scalingFactor);
-
-		JSlider zoomControl = new JSlider(JSlider.VERTICAL, 60, 200, sf);
+/*
+		int sf = (int) Math.round(100.0 * scalingFactor); 
+		zoomControl = new JSlider(JSlider.VERTICAL, 60, 200, sf);
 		zoomControl.setPreferredSize(new Dimension(40, 200));
 		zoomControl.setMajorTickSpacing(20);
 		// zoomControl.setMinorTickSpacing(10);
@@ -736,7 +783,7 @@ public class DrawFBP extends JFrame
 		zoomControl.addChangeListener(this);
 		zoomControl.getInputMap().put(escapeKS, "CLOSE");
 		zoomControl.getActionMap().put("CLOSE", escapeAction);
-
+*/
 		// zoomControl.setBackground(Color.WHITE);
 		Box box45 = new Box(BoxLayout.Y_AXIS);
 		Box box46 = new Box(BoxLayout.X_AXIS);
@@ -749,7 +796,7 @@ public class DrawFBP extends JFrame
 
 		box6.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		scaleLab = new JLabel();
+		//scaleLab = new JLabel();
 		box61.add(scaleLab);
 		box61.add(Box.createRigidArea(new Dimension(5, 0)));
 
@@ -760,8 +807,10 @@ public class DrawFBP extends JFrame
 		box6.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		scaleLab.setForeground(Color.BLUE);
-		String scale = "100%";
-		scaleLab.setText(scale);
+		//String scale = "100%";
+		//scaleLab.setText(scale);
+		
+		driver.saveProp("scalingfactor", Double.toString(scalingFactor));
 
 		box6.add(Box.createRigidArea(new Dimension(0, 10)));
 		box6.add(box61);
@@ -1523,7 +1572,7 @@ public class DrawFBP extends JFrame
 		if (s.equals("Toggle Click to Grid")) {
 			curDiag.clickToGrid = !curDiag.clickToGrid;
 			grid.setSelected(curDiag.clickToGrid);
-			driver.saveProp("clicktogrid",(new Boolean(curDiag.clickToGrid)).toString());
+			driver.saveProp("clicktogrid",Boolean.toString(curDiag.clickToGrid));
 			return;
 
 		}
@@ -2189,7 +2238,7 @@ public class DrawFBP extends JFrame
 		block.calcEdges();
 		// diag.maxBlockNo++;
 		// block.id = diag.maxBlockNo;
-		diag.blocks.put(new Integer(block.id), block);
+		diag.blocks.put(Integer.valueOf(block.id), block);
 		// diag.changed = true;
 		selBlock = block;
 		// selArrowP = null;
@@ -2203,6 +2252,7 @@ public class DrawFBP extends JFrame
 		propertyDescriptions.put("Version #", "versionNo");
 		propertyDescriptions.put("Date", "date");
 		propertyDescriptions.put("Click To Grid", "clicktogrid");
+		propertyDescriptions.put("Scaling Factor", "scalingfactor");
 		propertyDescriptions.put("Sort By Date", "sortbydate");
 		propertyDescriptions.put("Current C# source code directory",
 				"currentCsharpSourceDir");
@@ -2868,8 +2918,12 @@ public class DrawFBP extends JFrame
 
 	private void changeFontSize() {
 
-		Float[] selectionValues = {new Float(10), new Float(12), new Float(14),
-				new Float(16), new Float(18), new Float(20), new Float(22)};
+		//Float[] selectionValues = {new Float(10), new Float(12), new Float(14),
+		//		new Float(16), new Float(18), new Float(20), new Float(22)};
+		Float[] selectionValues = new Float[7];
+		for (int i = 0; i < selectionValues.length; i++ ) {
+			selectionValues[i] = Float.valueOf(i * 2.0f + 10);
+		}
 		int j = 0;
 		for (int i = 0; i < selectionValues.length; i++) {
 			if (Float.compare(selectionValues[i].floatValue(),
@@ -4839,7 +4893,7 @@ public class DrawFBP extends JFrame
 		if (arr.shapeList == null)
 			return false;
 		
-		Block b = curDiag.blocks.get(new Integer(arr.fromId));	
+		Block b = curDiag.blocks.get(Integer.valueOf(arr.fromId));	
 		if (b == null || b.contains(new Point(xp, yp)))
 			return false;
 		
@@ -5136,12 +5190,13 @@ public class DrawFBP extends JFrame
 	
 	public void stateChanged(ChangeEvent e) {
 		Object source = e.getSource();
-		if (source instanceof JSlider) {
+		if (source instanceof JSlider && scaleLab != null) {
 			JSlider js = (JSlider) source;
 			// oldW = getSize().width;
 			// oldH = getSize().height;
 			if (!(js).getValueIsAdjusting()) {
-				scalingFactor = ((int) js.getValue()) / 100.0;
+				scalingFactor = ((double) js.getValue()) / 100.0;
+				driver.saveProp("scalingfactor",Double.toString(scalingFactor));
 				//zWS = (int) Math.round(zoneWidth * scalingFactor);
 				String scale = (int) js.getValue() + "%";
 				scaleLab.setText(scale);
@@ -5512,7 +5567,7 @@ public class DrawFBP extends JFrame
 
 		public void actionPerformed(ActionEvent e) {
 			if (currentArrow != null) {
-				Integer aid = new Integer(currentArrow.id);
+				Integer aid = Integer.valueOf(currentArrow.id);
 				curDiag.arrows.remove(aid);
 				currentArrow = null; // terminate arrow drawing
 				repaint();
@@ -5853,10 +5908,10 @@ public class DrawFBP extends JFrame
 
 		// a is "from" arrow; a2 may be same, or arrow that a joins to...
 		void defaultPortNames(Arrow a) {
-			Block from = curDiag.blocks.get(new Integer(a.fromId));
-			Block to = curDiag.blocks.get(new Integer(a.toId));
+			Block from = curDiag.blocks.get(Integer.valueOf(a.fromId));
+			Block to = curDiag.blocks.get(Integer.valueOf(a.toId));
 			Arrow a2 = a.findLastArrowInChain();
-			to = curDiag.blocks.get(new Integer(a2.toId));
+			to = curDiag.blocks.get(Integer.valueOf(a2.toId));
 			if (from != null
 					&& (from instanceof ProcessBlock
 							|| from instanceof ExtPortBlock)
@@ -5979,7 +6034,7 @@ public class DrawFBP extends JFrame
 			
 			*/
 
-			Graphics2D g2d = (Graphics2D) g;
+			Graphics2D g2d = (Graphics2D) g;  
 
 			//g2d.scale(scalingFactor, scalingFactor);
 			//osg.scale(scalingFactor, scalingFactor);
@@ -5989,6 +6044,7 @@ public class DrawFBP extends JFrame
 			// Now copy that off-screen image onto the screen
 			//g2d.drawImage(buffer, 0, 0, null);   
 			g2d.scale(scalingFactor, scalingFactor);
+			//g2d.scale(.8, .8);
 			g.drawImage(buffer, 0, 0, null);   
 			
 		}
@@ -6331,8 +6387,8 @@ public class DrawFBP extends JFrame
 			repaint();
 
 			//Side side = null;
-			leftButton = (e.getModifiers()
-					& InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK;
+			leftButton = (e.getModifiersEx()
+					& InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK;
 			int x = e.getX();
 			x = (int) Math.round(x / scalingFactor);
 			int y = e.getY();
@@ -6490,7 +6546,7 @@ public class DrawFBP extends JFrame
 					// arrow.fromId = foundBlock.id;
 					arrow.fromId = fpArrowRoot.block.id;
 					Block fromBlock = curDiag.blocks
-							.get(new Integer(arrow.fromId));
+							.get(Integer.valueOf(arrow.fromId));
 					if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
 							|| fromBlock.type
 									.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
@@ -6499,7 +6555,7 @@ public class DrawFBP extends JFrame
 					currentArrow = arrow;
 					arrow.lastX = xa; // save last x and y
 					arrow.lastY = ya;
-					Integer aid = new Integer(arrow.id);
+					Integer aid = Integer.valueOf(arrow.id);
 					curDiag.arrows.put(aid, arrow);
 					arrowEndForDragging = arrow;
 
@@ -7202,7 +7258,7 @@ public class DrawFBP extends JFrame
 				  if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(this,
 				        "Connecting arrow to originating block is deadlock-prone - do anyway?",
 				        "Allow?", MyOptionPane.YES_NO_OPTION)) { 
-					  Integer aid = new Integer(currentArrow.id); 
+					  Integer aid = Integer.valueOf(currentArrow.id); 
 					  curDiag.arrows.remove(aid);
 				      foundBlock = null; 
 				      currentArrow = null;				 
@@ -7214,7 +7270,7 @@ public class DrawFBP extends JFrame
 				
 				boolean OK = true;
 				Block from = curDiag.blocks
-						.get(new Integer(currentArrow.fromId));
+						.get(Integer.valueOf(currentArrow.fromId));
 				if ((foundBlock instanceof ProcessBlock
 						|| foundBlock instanceof ExtPortBlock)
 						&& !(from instanceof IIPBlock)) {
@@ -7238,7 +7294,7 @@ public class DrawFBP extends JFrame
 				if (!OK) {
 					// MyOptionPane.showMessageDialog(this,
 					// "Cannot end an arrow here");
-					Integer aid = new Integer(currentArrow.id);
+					Integer aid = Integer.valueOf(currentArrow.id);
 					curDiag.arrows.remove(aid);
 					foundBlock = null;
 					currentArrow = null;
@@ -7277,10 +7333,10 @@ public class DrawFBP extends JFrame
 				
 				defaultPortNames(a);
 
-				from = curDiag.blocks.get(new Integer(a.fromId));
-				Block to = curDiag.blocks.get(new Integer(a.toId));
+				from = curDiag.blocks.get(Integer.valueOf(a.fromId));
+				Block to = curDiag.blocks.get(Integer.valueOf(a.toId));
 				Arrow a2 = a.findLastArrowInChain();
-				to = curDiag.blocks.get(new Integer(a2.toId));
+				to = curDiag.blocks.get(Integer.valueOf(a2.toId));
 
 				boolean error = false;
 				if (to instanceof IIPBlock && from instanceof ProcessBlock) {
@@ -7307,7 +7363,7 @@ public class DrawFBP extends JFrame
 					MyOptionPane.showMessageDialog(this,
 							"Arrow attached to one or both wrong side(s) of blocks",
 							MyOptionPane.WARNING_MESSAGE);
-					Integer aid = new Integer(a2.id);
+					Integer aid = Integer.valueOf(a2.id);
 					curDiag.arrows.remove(aid);
 				} else {
 					curDiag.changed = true;
@@ -7365,17 +7421,17 @@ public class DrawFBP extends JFrame
 					defaultPortNames(foundArrow);
 
 					Block from = curDiag.blocks
-							.get(new Integer(currentArrow.fromId));
-					Block to = curDiag.blocks.get(new Integer(foundArrow.toId));
+							.get(Integer.valueOf(currentArrow.fromId));
+					Block to = curDiag.blocks.get(Integer.valueOf(foundArrow.toId));
 					Arrow a2 = foundArrow.findLastArrowInChain();
-					to = curDiag.blocks.get(new Integer(a2.toId));
+					to = curDiag.blocks.get(Integer.valueOf(a2.toId));
 
 					if (to == from) {
 						if (MyOptionPane.NO_OPTION == MyOptionPane
 								.showConfirmDialog(this,
 										"Connecting arrow to originating block is deadlock-prone - do anyway?",
 										"Allow?", MyOptionPane.YES_NO_OPTION)) {
-							Integer aid = new Integer(currentArrow.id);
+							Integer aid = Integer.valueOf(currentArrow.id);
 							curDiag.arrows.remove(aid);
 							foundBlock = null;
 							currentArrow = null;
@@ -7400,7 +7456,7 @@ public class DrawFBP extends JFrame
 					else
 						error = false;
 					if (error) {
-						Integer aid = new Integer(currentArrow.id);
+						Integer aid = Integer.valueOf(currentArrow.id);
 						curDiag.arrows.remove(aid);
 					} else {
 						curDiag.changed = true;
@@ -7441,7 +7497,7 @@ public class DrawFBP extends JFrame
 						// curDiag.currentArrow.toY = ya;
 						// }
 						// else {
-						Integer aid = new Integer(currentArrow.id);
+						Integer aid = Integer.valueOf(currentArrow.id);
 						curDiag.arrows.remove(aid);
 						foundBlock = null;
 						currentArrow = null;

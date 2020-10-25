@@ -89,7 +89,7 @@ public class BabelParser2 {
 		if (input[inputIndex] != x)
 			return false;
 		if (outputIndex >= output.length) {
-			errNo = new Integer(1);
+			errNo = Integer.valueOf(1);
 			return false;
 		}
 		output[outputIndex] = input[inputIndex];
@@ -166,7 +166,7 @@ public class BabelParser2 {
 		if (!Character.isDigit(input[inputIndex]))
 			return false;
 		if (outputIndex >= output.length) {
-			errNo = new Integer(1);
+			errNo = Integer.valueOf(1);
 			return false;
 		}
 		output[outputIndex] = input[inputIndex];
@@ -211,7 +211,7 @@ public class BabelParser2 {
 		if (!Character.isLetter(input[inputIndex]))
 			return false;
 		if (outputIndex >= output.length) {
-			errNo = new Integer(1);
+			errNo = Integer.valueOf(1);
 			return false;
 		}
 		output[outputIndex] = input[inputIndex];
@@ -254,7 +254,7 @@ public class BabelParser2 {
 		}
 
 		if (outputIndex >= output.length) {
-			errNo = new Integer(1);
+			errNo = Integer.valueOf(1);
 			return false;
 		}
 		output[outputIndex] = input[inputIndex];
@@ -291,7 +291,7 @@ public class BabelParser2 {
 	 */
 	public boolean w(char x) {
 		if (outputIndex >= output.length) {
-			errNo = new Integer(1);
+			errNo = Integer.valueOf(1);
 			return false;
 		}
 		output[outputIndex] = x;

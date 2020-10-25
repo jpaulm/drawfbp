@@ -26,7 +26,7 @@ apply plugin: 'java-library'
    
 }
 
-version = '2.20.13'
+version = '2.20.14'
 
 group = 'com.jpaulmorrison'
 
@@ -135,7 +135,7 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            version = '2.20.13'
+            version = '2.20.14'
             from components.java
            
                   
