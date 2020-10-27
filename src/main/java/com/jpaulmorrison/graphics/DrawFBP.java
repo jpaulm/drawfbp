@@ -9,13 +9,10 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.DisplayMode;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -31,7 +28,6 @@ import math.geom2d.line.DegeneratedLine2DException;
 import math.geom2d.line.Line2D;
 import math.geom2d.Point2D;
 import math.geom2d.line.StraightLine2D;
-//import java.awt.geom.AffineTransform;
 
 import java.awt.image.*;
 
@@ -318,6 +314,8 @@ public class DrawFBP extends JFrame
 	
 	JSlider zoomControl = null;
 	
+	boolean clickToGrid = true;
+	
 	final boolean CODEMGRCREATE = true;
 	
 	// constructor
@@ -345,7 +343,7 @@ public class DrawFBP extends JFrame
 		
 		frameInit();
 				
-		scalingFactor = 1.0d;
+		scalingFactor = 1.0d;  
 		
 		String sF = properties.get("scalingfactor");
 		if (sF != null)
@@ -521,7 +519,7 @@ public class DrawFBP extends JFrame
 		String sBD = properties.get("sortbydate");
 		if (sBD == null) {
 			sortByDate = false;
-			saveProp("sortbydate", "false");
+		    saveProp("sortbydate", "false");
 		} else 
 			sortByDate = Boolean.getBoolean(sBD);
 
@@ -1570,9 +1568,9 @@ public class DrawFBP extends JFrame
 		}
 
 		if (s.equals("Toggle Click to Grid")) {
-			curDiag.clickToGrid = !curDiag.clickToGrid;
-			grid.setSelected(curDiag.clickToGrid);
-			driver.saveProp("clicktogrid",Boolean.toString(curDiag.clickToGrid));
+			clickToGrid = !clickToGrid;
+			grid.setSelected(clickToGrid);
+			driver.saveProp("clicktogrid",Boolean.toString(clickToGrid));
 			return;
 
 		}
@@ -4399,7 +4397,8 @@ public class DrawFBP extends JFrame
 						s = s.substring(0, k).trim();
 						key = key.replace("\\", "/");
 						if (-1 == key.indexOf("/")) // compensate for old bug (key and value were reversed)!
-							saveProp(key, s);
+							//saveProp(key, s);
+						    properties.put(key, s); 
 					} else {
 						// additionalJar/DllFiles
 						Set<String> set = key.equals("additionalJarFiles")? jarFiles: dllFiles;
@@ -4995,7 +4994,7 @@ public class DrawFBP extends JFrame
 
 	Point2D gridAlign(Point2D p) {
 		Point2D p2 = p;
-		if (curDiag.clickToGrid) {
+		if (clickToGrid) {
 			int x = ((int) (p.x() + gridUnitSize / 2) / gridUnitSize)
 					* gridUnitSize;
 			int y = ((int) (p.y() + gridUnitSize / 2) / gridUnitSize)
@@ -5489,6 +5488,11 @@ public class DrawFBP extends JFrame
 				}
 			}
 			
+			saveProp("scalingfactor", scalingFactor + "");
+			saveProp("x", getX() + "");
+			saveProp("y", getY() + "");
+			saveProp("width", getWidth() + "");
+			saveProp("height", getHeight() + "");
 			saveProperties();
 			
 
@@ -5961,7 +5965,7 @@ public class DrawFBP extends JFrame
 			// int x = 0; // problem!
 			// }
 
-			grid.setSelected(diag.clickToGrid);
+			grid.setSelected(clickToGrid);
 
 			// repaint();
 			// Graphics2D g2d = (Graphics2D) g;
@@ -6726,7 +6730,7 @@ public class DrawFBP extends JFrame
 				}
 				
 			
-				if (curDiag.clickToGrid && Math.abs(xa - oldx) < 6
+				if (clickToGrid && Math.abs(xa - oldx) < 6
 						&& Math.abs(ya - oldy) < 6 || // do not respond
 						Math.abs(xa - oldx) > 200 || // to small twitches
 						Math.abs(ya - oldy) > 200) // or big twitches!
@@ -7090,7 +7094,7 @@ public class DrawFBP extends JFrame
 				int savey = blockSelForDragging.cy;
 
 				if (blockSelForDragging.hNeighbour != null) {
-					if (curDiag.clickToGrid) {
+					if (clickToGrid) {
 						blockSelForDragging.cy = blockSelForDragging.hNeighbour.cy;
 						blockSelForDragging.adjEdgeRects();
 						blockSelForDragging.calcEdges();
@@ -7099,7 +7103,7 @@ public class DrawFBP extends JFrame
 				}
 
 				if (blockSelForDragging.vNeighbour != null) {
-					if (curDiag.clickToGrid) {
+					if (clickToGrid) {
 						blockSelForDragging.cx = blockSelForDragging.vNeighbour.cx;
 						blockSelForDragging.adjEdgeRects();
 						blockSelForDragging.calcEdges();

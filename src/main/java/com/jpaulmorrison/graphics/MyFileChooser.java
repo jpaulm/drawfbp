@@ -1388,7 +1388,6 @@ final boolean SAVEAS = true;
 			if (s.equals("Toggle Sort By Date")){
 				driver.sortByDate = !driver.sortByDate;
 				butSortByDate.setSelected(driver.sortByDate);
-				//driver.saveProp("sortbydate",(new Boolean(driver.sortByDate)).toString());
 				driver.saveProp("sortbydate", Boolean.toString(driver.sortByDate));
 				showList();
 				repaint();

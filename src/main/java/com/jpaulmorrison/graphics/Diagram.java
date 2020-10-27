@@ -57,7 +57,7 @@ public class Diagram {
 
 	//Block foundBlock;
 
-	boolean clickToGrid;
+	//boolean clickToGrid;
 
 	//int xa, ya;
 	
@@ -95,7 +95,7 @@ public class Diagram {
 		driver.curDiag = this;
 		blocks = new ConcurrentHashMap<Integer, Block>();
 		arrows = new ConcurrentHashMap<Integer, Arrow>();
-		clickToGrid = true;
+		//clickToGrid = true;
 		parent = null;
 		//StyleContext sc = new StyleContext();
 		//doc = new DefaultStyledDocument(sc);   
@@ -105,14 +105,14 @@ public class Diagram {
 		
 		fCParm = new FileChooserParm[10];
 		//motherBlock = null;
-		String cTG = driver.properties.get("clicktogrid");
-		if (cTG == null) {
-			clickToGrid = true;
-			driver.saveProp("clicktogrid", "true");
-		} else 
-			clickToGrid = Boolean.valueOf(cTG);
+		//String cTG = driver.properties.get("clicktogrid");
+		//if (cTG == null) {
+		//	clickToGrid = true;
+		//	driver.saveProp("clicktogrid", "true");
+		//} else 
+		//	clickToGrid = Boolean.valueOf(cTG);
 		
-		driver.grid.setSelected(clickToGrid);
+		//driver.grid.setSelected(clickToGrid);
 	}			
 		
 	/* General save function */
@@ -462,11 +462,15 @@ public class Diagram {
 		// + "</genCodeFileName> ";
 
 				
-		fileString += "<clicktogrid>" + Boolean.toString(clickToGrid) + "</clicktogrid> \n" ;
+		//fileString += "<clicktogrid>" + Boolean.toString(clickToGrid) + "</clicktogrid> \n" ;
 		
+		/*
+		 * 
 		fileString += "<scalingfactor>" + Double.toString(driver.scalingFactor) + "</scalingfactor> \n" ;
 		
 		fileString += "<sortbydate>" + (driver.sortByDate?"true":"false") + "</sortbydate> \n" ;
+		
+		*/
 
 		fileString += "<blocks>";
 

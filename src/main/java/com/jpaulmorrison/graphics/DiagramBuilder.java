@@ -61,8 +61,8 @@ public class DiagramBuilder {
 
 		//String type;
 
-		diag.clickToGrid = true;
-		driver.grid.setSelected(diag.clickToGrid);
+		//diag.clickToGrid = true;
+		//driver.grid.setSelected(diag.clickToGrid);
 
 		while (true) { // skip blanks, CRs or tabs
 			if (!(bp.tb('o')))				
@@ -124,7 +124,10 @@ public class DiagramBuilder {
 
 					if (curFl != null) {
 
-						t = (String) curFl.get(starttag);
+						//if (starttag.equals("scalingfactor"))
+						//	t = (String) curFl.get("scalingFactor");  // fudge
+						//else
+						//	t = (String) curFl.get(starttag);
 						if (t == null) {
 							MyOptionPane.showMessageDialog(frame, "Field '"
 									+ starttag + "' not defined for this class", MyOptionPane.ERROR_MESSAGE);
@@ -191,9 +194,9 @@ public class DiagramBuilder {
 								starttag.equals("substreamsensitive") ||
 								starttag.equals("multiplex") ||
 								starttag.equals("invisible") ||
-								starttag.equals("clicktogrid") ||
-								starttag.equals("scalingfactor") ||
-								starttag.equals("sortbydate") ||
+								//starttag.equals("clicktogrid") ||
+								//starttag.equals("scalingfactor") ||
+								//starttag.equals("sortbydate") ||
 								starttag.equals("dropoldest"))
 								    item.put(starttag, "true");
 
@@ -226,19 +229,21 @@ public class DiagramBuilder {
 								// nothing!
 							}
 
-						else if (endtag.equals("clicktogrid")) {
-							diag.clickToGrid = saveData.equals("true");
-						}
+						//else if (endtag.equals("clicktogrid")) {
+						//	diag.clickToGrid = saveData.equals("true");
+						//}
+						/*
 						else if (endtag.equals("scalingfactor")) {
 							driver.scalingFactor = Double.valueOf(saveData);
 							driver.zoomControl.setValue((int) driver.scalingFactor * 100);
 							//String scale = (int) js.getValue() + "%";
-							String scale = ((int) driver.scalingFactor) + "%";
+							String scale = (int) (driver.scalingFactor * 100) + "%";
 							driver.scaleLab.setText(scale);
 						}
 						else if (endtag.equals("sortbydate")) {
 							driver.sortByDate = saveData.equals("true");
 						}
+						*/
 						else
 							item.put(endtag, saveData);
 
@@ -488,16 +493,17 @@ public class DiagramBuilder {
 	public static void createTables(
 			HashMap<String, HashMap<String, String>> tagInfo) {
 
+		// fields in Diagram
 		HashMap<String, String> fl1 = new HashMap<String, String>();
 		fl1.put("title", "*");  // deprecated
 		//fl1.put("drawfbp_file", "LinkedList");
 		fl1.put("net", "LinkedList");
 		fl1.put("desc", "*");
 		fl1.put("complang", "*");
-		fl1.put("clicktogrid", "*");
-		fl1.put("sortbydate", "*");
+		fl1.put("clicktogrid", "*");  // moved to driver
+		fl1.put("sortbydate", "*");   // moved to driver
 		fl1.put("genCodeFileName", "*"); //deprecated
-		fl1.put("scalingFactor", "*");
+		fl1.put("scalingFactor", "*"); // moved to driver
 		fl1.put("generatedCodeFileName", "*"); // deprecated
 		fl1.put("genCodeFileNames", "*"); // deprecated
 		fl1.put("blocks", "LinkedList");
