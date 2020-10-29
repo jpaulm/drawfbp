@@ -39,10 +39,10 @@ public class DiagramBuilder {
 
 		boolean atomic = false;
 		HashMap<String, String> curFl = null;
-		boolean debugging = false;
-		//boolean debugging = true;
-
-
+		boolean tracing = false;
+		//boolean tracing = true;
+		//testing
+		
 		// 3 stacks
 		Stack<String> names = new Stack<String>(); // names (atomic and
 		// non-atomic)
@@ -124,10 +124,10 @@ public class DiagramBuilder {
 
 					if (curFl != null) {
 
-						//if (starttag.equals("scalingfactor"))
-						//	t = (String) curFl.get("scalingFactor");  // fudge
-						//else
-						//	t = (String) curFl.get(starttag);
+						if (starttag.equals("scalingfactor"))
+							t = (String) curFl.get("scalingFactor");  // fudge
+						else
+							t = (String) curFl.get(starttag);
 						if (t == null) {
 							MyOptionPane.showMessageDialog(frame, "Field '"
 									+ starttag + "' not defined for this class", MyOptionPane.ERROR_MESSAGE);
@@ -149,7 +149,7 @@ public class DiagramBuilder {
 						clsNames.push(starttag); //  push class name
 						
 						
-						if (debugging)
+						if (tracing)
 							System.out.println("Starting class " + starttag);
 
 						if (starttag.equals("connection")) {
@@ -175,7 +175,7 @@ public class DiagramBuilder {
 
 				} else { // if endsw is on...
 					endtag = (String) names.pop();
-					if (debugging)
+					if (tracing)
 						System.out.println(endtag + " popped");
 					if (!starttag.equals(endtag)) {
 						if (starttag.equals("net"))  // from code before 2.13.4
@@ -188,15 +188,15 @@ public class DiagramBuilder {
 						if (data == null) { 
 							// patterns as follows:
 							// <xx> </xx> OR <yy/>
-							if (debugging)
+							if (tracing)
 								System.out.println("Stand-alone tag: " + endtag);
 							if (starttag.equals("endsatline") ||
 								starttag.equals("substreamsensitive") ||
 								starttag.equals("multiplex") ||
 								starttag.equals("invisible") ||
-								//starttag.equals("clicktogrid") ||
-								//starttag.equals("scalingfactor") ||
-								//starttag.equals("sortbydate") ||
+								starttag.equals("clicktogrid") ||
+								starttag.equals("scalingfactor") ||
+								starttag.equals("sortbydate") ||
 								starttag.equals("dropoldest"))
 								    item.put(starttag, "true");
 
@@ -219,15 +219,13 @@ public class DiagramBuilder {
 									saveData = "JSON";   // transitional! 
 								diag.diagLang = driver
 										.findGLFromLabel(saveData);
-								 
-								
 							}
 
-						else if (endtag.equals("generatedCodeFileName")) {
+						//else if (endtag.equals("generatedCodeFileName")) {
 								// diag.generatedCodeFileName = saveData; //
 								// there may be some in old diagrams, so do
 								// nothing!
-							}
+						//	}
 
 						//else if (endtag.equals("clicktogrid")) {
 						//	diag.clickToGrid = saveData.equals("true");
@@ -247,7 +245,7 @@ public class DiagramBuilder {
 						else
 							item.put(endtag, saveData);
 
-						if (debugging)
+						if (tracing)
 								System.out.println("Data at " + endtag + ": "
 										+ saveData);
 						data = null;

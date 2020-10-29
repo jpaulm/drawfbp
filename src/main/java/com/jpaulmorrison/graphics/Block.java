@@ -523,12 +523,13 @@ public class Block implements ActionListener {
 
 		String s;
 		type = item.get("type");
-		desc = item.get("description");
-		if (type.equals("I") && desc != null && desc.length() > 0 && desc.substring(0,1).equals("\""))
-			desc = desc.substring(1,desc.length() - 2);				
-		
 		if (type == null)
 			type = Block.Types.PROCESS_BLOCK;
+		desc = item.get("description");
+		if (type.equals(Block.Types.IIP_BLOCK) && desc != null && desc.length() > 0 && desc.substring(0,1).equals("\""))
+			desc = desc.substring(1,desc.length() - 2);				
+		
+		
 		codeFileName = item.get("codefilename");
 		//if (codeFileName != null) { 
 		//	codeFileName = DrawFBP.makeAbsFileName(codeFileName,

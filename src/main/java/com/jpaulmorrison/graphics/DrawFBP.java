@@ -648,23 +648,19 @@ public class DrawFBP extends JFrame
 		// Display the window.
 		pack();
 		
-		/*
-		// try this... courtesy of 
-		//  https://alvinalexander.com/blog/post/jfc-swing/how-center-jframe-java-swing/
+		sortByDate = false;
+		t = properties.get("sortbydate");
+		if (t != null)
+			sortByDate = Boolean.parseBoolean(t);
 		
-		// make the frame half the height and width
-		  Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		  int height = screenSize.height - 60;
-		  int width = screenSize.width - 60;
-		  setSize((int) (width * .75), (int) (height * .75));
-		  setPreferredSize(new Dimension((int) (width * .75), (int) (height * .75)));
-		  
-
-		  // here's the part where i center the jframe on screen
-		  setLocationRelativeTo(null);
-		  
-		  setVisible(true);
-*/
+		t = driver.properties.get("clicktogrid");
+		if (t == null)  
+			clickToGrid = true; 
+		else 
+		 	clickToGrid = Boolean.valueOf(t);
+		
+		driver.grid.setSelected(clickToGrid);		
+		
 		setVisible(true);
 		addComponentListener(this);
 		
@@ -1994,9 +1990,9 @@ public class DrawFBP extends JFrame
 
 		repaint();
 	}
-	void showImage(BufferedImage image, String title, boolean save) {
+	void showImage(final BufferedImage image, String title, final boolean save) {
 		//JFrame popup = new JFrame((Frame) null);		
-		JFrame iFrame = new JFrame();
+		final JFrame iFrame = new JFrame();
 		iFrame.setTitle(title);
 		iFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		iFrame.addWindowListener(new WindowAdapter() {
@@ -4469,8 +4465,8 @@ public class DrawFBP extends JFrame
 					if (t == null || t.equals("null") || t.equals("(null)"))
 						continue;
 				}
-				String s = "<" + k + ">" + properties.get(k) + "</" + k
-						+ "> \n";
+				String t = properties.get(k);
+				String s = "<" + k + ">" + t + "</" + k + "> \n";
 				out.write(s);
 			}
 			
@@ -5488,11 +5484,14 @@ public class DrawFBP extends JFrame
 				}
 			}
 			
+			saveProp("currentDiagram", curDiag.diagFile.getAbsolutePath());
+			saveProp("currentDiagramDir", curDiag.diagFile.getParent());
 			saveProp("scalingfactor", scalingFactor + "");
 			saveProp("x", getX() + "");
 			saveProp("y", getY() + "");
 			saveProp("width", getWidth() + "");
 			saveProp("height", getHeight() + "");
+			saveProp("sortbydate", sortByDate + "");
 			saveProperties();
 			
 
@@ -7584,7 +7583,6 @@ public class DrawFBP extends JFrame
 		
 	}
 
-	@Override
 	public void mouseClicked(MouseEvent e) {
 		int i = jtp.indexAtLocation(e.getX(), e.getY());
 		if (i > -1) {
@@ -7606,19 +7604,16 @@ public class DrawFBP extends JFrame
 
 	}
 
-	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
