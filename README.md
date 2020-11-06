@@ -19,9 +19,6 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 
 ![FilterByFirstValue](https://github.com/jpaulm/drawfbp/blob/master/docs/FilterByFirstValue.png "Simple Network Diagram")
 
-
--->
-
 `v2.20.14` had an error, and is not usable. Apologies!
 
 To run from the command line, do a `cd` to wherever you have stored your DrawFBP jar file, and enter:
@@ -35,7 +32,7 @@ If you have downloaded the whole DrawFBP project, you can position to your DrawF
 In either case, this command may be followed with the location of a `.drw` file, as of `v2.20.10`, e.g.
 
     cd ....GitHub\drawfbp
-    java -jar build\libs\drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\drawfbp\lib\ConcordR.drw
+    java -jar build\libs\drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\drawfbp\Testing.drw
 
 You can also associate your copy of the DrawFBP jar file permanently with all occurrences of the `.drw` extension (using Windows facilities).
 
