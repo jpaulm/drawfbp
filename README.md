@@ -35,7 +35,7 @@ If you have downloaded the whole DrawFBP project, you can position to your DrawF
 In either case, this command may be followed with the location of a `.drw` file, as of `v2.20.10`, e.g.
 
     cd ....GitHub\drawfbp
-    java -jar build\libs\drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\fbp-etl\src\main\java\com\jpaulmorrison\Step20\diagrams\Extract.drw 
+    java -jar build\libs\drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\drawfbp\lib\ConcordR.drw
 
 You can also associate your copy of the DrawFBP jar file permanently with all occurrences of the `.drw` extension (using Windows facilities).
 
