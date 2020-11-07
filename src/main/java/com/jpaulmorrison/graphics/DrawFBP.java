@@ -704,9 +704,8 @@ public class DrawFBP extends JFrame
 
 		buildPropDescTable();
 
-		// if (diagramName == null)
-
-		diagramName = properties.get("currentDiagram");
+		if (diagramName == null) 
+			diagramName = properties.get("currentDiagram");
 
 		/*
 
