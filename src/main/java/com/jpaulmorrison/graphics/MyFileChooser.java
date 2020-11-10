@@ -613,6 +613,7 @@ public class MyFileChooser extends JDialog
 		suggestedName = s;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void showList() {
 
 		LinkedList<String> ll = new LinkedList<String>();

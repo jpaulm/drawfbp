@@ -5483,8 +5483,10 @@ public class DrawFBP extends JFrame
 				}
 			}
 			
-			saveProp("currentDiagram", curDiag.diagFile.getAbsolutePath());
-			saveProp("currentDiagramDir", curDiag.diagFile.getParent());
+			if (curDiag != null && curDiag.diagFile != null) {
+				saveProp("currentDiagram", curDiag.diagFile.getAbsolutePath());
+				saveProp("currentDiagramDir", curDiag.diagFile.getParent());
+			}
 			saveProp("scalingfactor", scalingFactor + "");
 			saveProp("x", getX() + "");
 			saveProp("y", getY() + "");
