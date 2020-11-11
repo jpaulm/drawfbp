@@ -21,6 +21,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.awt.Toolkit;
 import java.awt.event.*;
 
@@ -6048,7 +6049,12 @@ public class DrawFBP extends JFrame
 			// Now copy that off-screen image onto the screen
 			//g2d.drawImage(buffer, 0, 0, null);   
 			g2d.scale(scalingFactor, scalingFactor);
-			//g2d.scale(.8, .8);
+			
+			BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
+			// https://stackoverflow.com/questions/15327220/fill-rectangle-with-pattern-in-java-swing
+			TexturePaint tp = new TexturePaint(image, new Rectangle(0, 0, 16, 16));
+			g2d.setPaint(tp);
+			
 			g.drawImage(buffer, 0, 0, null);   
 			
 		}
