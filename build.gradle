@@ -32,7 +32,7 @@ gradle.projectsEvaluated {
    
 }
 
-version = '2.20.18'
+version = '2.20.17'
 
 group = 'com.jpaulmorrison'
 
@@ -141,7 +141,7 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            version = '2.20.18'
+            version = '2.20.17'
             from components.java
            
                   
