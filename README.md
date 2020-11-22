@@ -5,7 +5,7 @@ DrawFBP
 
 General web site on Flow-Based Programming: https://jpaulm.github.io/fbp/ .
 
-Latest release is `v2.20.16`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.20.16.jar` - can be obtained from the Releases folder (click on `tags`, then `Releases`), or from `build/libs`.  
+Latest release is `v2.20.17`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.20.17.jar` - can be obtained from the Releases folder (click on `tags`, then `Releases`), or from `build/libs`.  
 
 It will shortly be available from Maven (shield below).  If you click on the Maven shield below to obtain DrawFBP, select `Download` and `jar`.  
 
@@ -18,8 +18,6 @@ Sample DrawFBP network
 Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing process names, IIPs, and actual class names (used for generating runnable code, and also when checking port connections).
 
 ![FilterByFirstValue](https://github.com/jpaulm/drawfbp/blob/master/docs/FilterByFirstValue.png "Simple Network Diagram")
-
-`v2.20.14` had an error, and is not usable. Apologies!
 
 To run from the command line, do a `cd` to wherever you have stored your DrawFBP jar file, and enter:
 

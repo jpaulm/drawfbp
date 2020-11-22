@@ -16,11 +16,13 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import java.awt.Image; 
+import java.awt.Image;
+import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.awt.Toolkit;
 import java.awt.event.*;
 
@@ -418,7 +420,7 @@ public class DrawFBP extends JFrame
 		
 		//readPropertiesFile();
 
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();  
 		// label = new JLabel(" ");
 
 		//this = this;
@@ -437,7 +439,7 @@ public class DrawFBP extends JFrame
 		// maxX = (int) (w * .8);
 		// maxY = (int) (h * .8);
 		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);  
-		// osg = buffer.createGraphics();
+		//osg = buffer.createGraphics();
 		osg = (Graphics2D) buffer.getGraphics();
 		//osg = (Graphics2D) getGraphics();
 		// setVisible(true);
@@ -1592,7 +1594,8 @@ public class DrawFBP extends JFrame
 		}
 
 		if (s.equals("Create Image")) {
-
+			
+		
 			if (curDiag == null || curDiag.title == null
 					|| curDiag.blocks.isEmpty()) {
 				MyOptionPane.showMessageDialog(driver,
@@ -1627,7 +1630,9 @@ public class DrawFBP extends JFrame
 			x = Math.max(x,  buffer.getMinX());
 			y = Math.max(y,  buffer.getMinY());
 			w = Math.min(w, buffer.getWidth());
-			h = Math.min(h, buffer.getHeight());			
+			h = Math.min(h, buffer.getHeight());		
+			
+			//osg.scale(scalingFactor, scalingFactor);
 			
 			BufferedImage buffer2 = buffer.getSubimage(x, y, w, h);	
 			//BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
@@ -1675,12 +1680,12 @@ public class DrawFBP extends JFrame
 				Color col = g.getColor();
 				g.setColor(Color.BLUE);
 				
-				//Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+				Font f2 = fontg /*.deriveFont((float) (fontg.getSize() + 2 ) ) */;
 
-				g.setFont(f);
+				g.setFont(f2);
 				x = combined.getWidth() / 2;
 				// x = buffer2.getWidth() / 2;
-				metrics = g.getFontMetrics(f);
+				metrics = g.getFontMetrics(f2);
 				t = curDiag.desc;
 				width = 0;
 				if (t != null) {
@@ -1691,6 +1696,7 @@ public class DrawFBP extends JFrame
 				}
 
 				g.setColor(col);
+				g.setFont(f);
 			}
 		 
 			//BufferedImage image = combined;
@@ -2238,7 +2244,115 @@ public class DrawFBP extends JFrame
 		block.buildSides();
 		return block;
 	}
+	
+	/*
 
+	// editType is false if no edit; true if block type determines type
+	
+	Block createBlock(String blkType, int xa, int ya, Diagram diag,
+			boolean editType) {
+		Block block = null;
+		boolean oneLine = false;
+		String title = "";
+		if (blkType.equals(Block.Types.PROCESS_BLOCK)) {
+			block = new ProcessBlock(diag);
+			block.isSubnet = willBeSubnet;
+		}
+	
+		else if (blkType.equals(Block.Types.EXTPORT_IN_BLOCK)
+				|| blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
+				|| blkType.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
+			oneLine = true;
+			title = "External Port";			
+			block = new ExtPortBlock(diag);
+		}
+	
+		else if (blkType.equals(Block.Types.FILE_BLOCK)) {
+			title = "File";
+			block = new FileBlock(diag);
+		}
+	
+		else if (blkType.equals(Block.Types.IIP_BLOCK)) {
+			oneLine = true;
+			title = "IIP";
+			block = new IIPBlock(diag);		
+			//IIPBlock ib = (IIPBlock) block;
+			//block.width = ib.width;
+			//block.width = 60;  // default
+		}
+	
+		else if (blkType.equals(Block.Types.LEGEND_BLOCK)) {
+			title = "Legend";
+			block = new LegendBlock(diag);
+		}
+	
+		else if (blkType.equals(Block.Types.ENCL_BLOCK)) {
+			oneLine = true;
+			title = "Enclosure";
+			block = new Enclosure(diag);
+			Point pt = diag.area.getLocation();
+			int y = Math.max(ya - block.height / 2, pt.y + 6);
+			block.cy = ((ya + block.height / 2) + y) / 2;
+		}
+	
+		else if (blkType.equals(Block.Types.PERSON_BLOCK)) {
+			title = "Person";
+			oneLine = true;
+			block = new PersonBlock(diag);
+		}
+	
+		else if (blkType.equals(Block.Types.REPORT_BLOCK)) {
+			title = "Report";
+			block = new ReportBlock(diag);
+		}
+		else
+			return null;
+	
+		block.type = blkType;
+	
+		block.cx = xa;
+		block.cy = ya;
+		if (block.cx == 0 || block.cy == 0)
+			return null; // fudge!
+	
+		if (editType) {
+			if (oneLine) {
+				if (blkType != Block.Types.ENCL_BLOCK) {
+					//String d = "Enter description";
+					String d = "Enter " + title + " text";
+					String ans = (String) MyOptionPane.showInputDialog(this,
+							"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null,
+							null, block.desc);
+	
+					if (ans == null)
+						return null;
+	
+					else
+						block.desc = ans;			
+				}
+			} else if (!block.editDescription(CREATE))
+				return null;
+	
+			if (blkType.equals(Block.Types.IIP_BLOCK)) {
+				IIPBlock ib = (IIPBlock) block;
+				ib.desc = ib.checkNestedChars(block.desc);
+				ib.width = ib.calcIIPWidth(osg);
+				if (ib.width < 15)
+					ib.width = 15;
+				ib.buildSides();
+			}
+		}
+		block.calcEdges();
+		// diag.maxBlockNo++;
+		// block.id = diag.maxBlockNo;
+		diag.blocks.put(Integer.valueOf(block.id), block);
+		// diag.changed = true;
+		selBlock = block;
+		// selArrowP = null;
+		block.buildSides();
+		return block;
+	}
+*/
 	void buildPropDescTable() {
 		propertyDescriptions = new LinkedHashMap<String, String>();
 
@@ -5293,7 +5407,18 @@ public class DrawFBP extends JFrame
 	        //}
 	        return image;
 	    }
-
+	 
+ 	/* 
+ 	    
+	public void paintComponent(Graphics g) {
+		 Graphics2D g2dComponent = (Graphics2D) g;
+		 curDiag.area.paint(osg);
+		 osg.scale(scalingFactor, scalingFactor);
+		 g2dComponent.drawImage(buffer, null, 0, 0); 
+	}
+ 
+	*/ 
+	
 	public static void main(final String[] args) {
 
 		
@@ -5905,7 +6030,7 @@ public class DrawFBP extends JFrame
 			// setFont(fontg);
 
 			setBackground(Color.WHITE);
-			// setPreferredSize(new Dimension(4000, 3000)); // experimental
+			setPreferredSize(new Dimension(4000, 3000)); // experimental
 			// pack();
 
 		}
@@ -5943,14 +6068,30 @@ public class DrawFBP extends JFrame
 
 			// Paint background if we're opaque.
 			// super.paintComponent(g);
+			//Graphics2D g2 = osg;
+			//osg = (Graphics2D) g;
+			
 			int w = getWidth();
+			int h = getHeight();
 			if (this.isOpaque()) {
 				// g.setColor(getBackground());
 				osg.setColor(Color.WHITE);
-				int h = getHeight();
+				//int h = getHeight();
+				//osg.fillRect(0, 0, (int) (w / scalingFactor),
+				//		(int) (h / scalingFactor - 0));
+				//http://www.java2s.com/Tutorial/Java/0240__Swing/AJPanelwithatexturedbackground.htm
+				//BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
+				BufferedImage image = loadImage("texture3.jpg");
+				//osg.drawImage(image, 0, 0, this);
+				 
+				Paint p = osg.getPaint();
+				TexturePaint tp = new TexturePaint(image, new Rectangle(0, 0, 16, 16));				
+				osg.setPaint(tp);	
 				osg.fillRect(0, 0, (int) (w / scalingFactor),
-						(int) (h / scalingFactor - 0));
-			}
+						(int) (h / scalingFactor));
+				osg.setPaint(p);
+				 
+				}
 
 			int i = jtp.getSelectedIndex();
 
@@ -6010,46 +6151,21 @@ public class DrawFBP extends JFrame
 
 			diagDesc.setText(s);   
 			
-			/*
-		
-			if (comparing) {
-				Color col = osg.getColor();
-				osg.setColor(lb);
-				int cSize = 80;
-				int x = w - cSize / 2;
-				int y = cSize / 2;
-				
-				osg.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
-				osg.fillOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
-				osg.setColor(col);
-				osg.setFont(fontg);
-				FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
-				
-				String[] s1 = new String[]{"waiting", "to", "compare"};
-				y -= 10;
-				
-				for (int j = 0; j < s1.length; j++) {					
-					byte[] str2 = s1[j].getBytes();
-					int xx = 2 + metrics.bytesWidth(str2, 0, s1[j].length());
-					osg.drawString(s1[j], x - xx / 2, y); 
-					y += 15;
-				}
-			}
 			
-			*/
 
 			Graphics2D g2d = (Graphics2D) g;  
 
-			//g2d.scale(scalingFactor, scalingFactor);
+			g2d.scale(scalingFactor, scalingFactor);
 			//osg.scale(scalingFactor, scalingFactor);
 
 			// g2d.translate(xTranslate, yTranslate);
 
 			// Now copy that off-screen image onto the screen
 			//g2d.drawImage(buffer, 0, 0, null);   
-			g2d.scale(scalingFactor, scalingFactor);
-			//g2d.scale(.8, .8);
-			g.drawImage(buffer, 0, 0, null);   
+			//g2d.scale(scalingFactor, scalingFactor);
+						
+			g2d.drawImage(buffer, 0, 0, null);   
+			//osg = g2d;
 			
 		}
  

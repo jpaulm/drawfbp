@@ -964,7 +964,7 @@ public class MyFileChooser extends JDialog
 			String t) {
 		if (current == null)
 			return null;
-		Enumeration<TreeNode> e = current.children();
+		Enumeration<TreeNode> e = (Enumeration<TreeNode>) current.children();
 		while (e.hasMoreElements()) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
 			Object obj = node.getUserObject();
