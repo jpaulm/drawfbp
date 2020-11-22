@@ -959,7 +959,7 @@ public class MyFileChooser extends JDialog
 		return top;
 	}
 
-	
+	@SuppressWarnings("unchecked")
 	private DefaultMutableTreeNode findChild(DefaultMutableTreeNode current,
 			String t) {
 		if (current == null)
