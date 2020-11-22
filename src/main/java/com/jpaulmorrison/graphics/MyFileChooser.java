@@ -959,12 +959,13 @@ public class MyFileChooser extends JDialog
 		return top;
 	}
 
+	
 	@SuppressWarnings("unchecked")
 	private DefaultMutableTreeNode findChild(DefaultMutableTreeNode current,
 			String t) {
 		if (current == null)
 			return null;
-		Enumeration<TreeNode> e = (Enumeration<TreeNode>) current.children();
+		Enumeration<TreeNode> e = current.children();
 		while (e.hasMoreElements()) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
 			Object obj = node.getUserObject();
