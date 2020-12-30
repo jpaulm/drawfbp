@@ -1,20 +1,15 @@
-
 buildscript {  
     repositories {
         mavenCentral()       
     }
      
     dependencies {
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"      
-        //classpath 'com.github.rholder:gradle-one-jar:1.0.4'          
-     
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"     
     }
 }
 
 
 apply plugin: 'io.codearte.nexus-staging'
-
-
 
 allprojects {
 apply plugin: 'java'
@@ -29,15 +24,32 @@ gradle.projectsEvaluated {
         options.compilerArgs << "-Xlint:unchecked"
     }
 }
-   
 }
 
+dependencies {
+  annotationProcessor "org.apache.logging.log4j:log4j-core:[2.11,2.12)"   
+}
+/* 
+allprojects { project -> 
+     dependencyLocking {
+        lockAllConfigurations()
+     }
+     task resolveAndLockAll {
+     doFirst {
+        assert gradle.startParameter.writeDependencyLocks
+     }
+     doLast {
+       configurations.findAll() {
+          it.canBeResolved
+         }.each {it.println()
+         it.resolve()}
+     }
+     }
+}
+*/
 version = '2.20.17'
 
 group = 'com.jpaulmorrison'
-
-
-              
 
 description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and will generate JavaFBP or C#FBP networks.'
 
@@ -81,7 +93,7 @@ jar {
       
        
     //baseName = project.name + '-all'
-    archiveBaseName = project.name
+    //archiveBaseName = project.name
     from sourceSets.main.output       
       
     dependsOn configurations.compileClasspath
@@ -141,7 +153,9 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            version = '2.20.17'
+            //version = '2.20.17'
+            version = project.version
+            
             from components.java
            
                   
@@ -231,3 +245,5 @@ javadoc {
 }
 
 } 
+
+ 
