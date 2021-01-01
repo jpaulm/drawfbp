@@ -227,8 +227,8 @@ public class Block implements ActionListener {
 
 		String name = null;
 
-		if (diag.diagLang != null && (diag.diagLang.label.equals("Java")
-				|| diag.diagLang.label.equals("C#"))) {
+		//if (diag.diagLang != null && (diag.diagLang.label.equals("Java")
+		//		|| diag.diagLang.label.equals("C#"))) {
 
 			if (javaComp != null) {
 				// driver.locateJavaFBPJarFile(false);
@@ -272,7 +272,7 @@ public class Block implements ActionListener {
 						x + name.length() * driver.gFontWidth + 20,
 						cy - height / 2, y + 40);
 			}
-		}
+	//	}
 		if (codeFileName != null) {
 			Font fontsave = g.getFont();
 			g.setFont(driver.fontf);
@@ -1487,9 +1487,9 @@ public class Block implements ActionListener {
 					menuItem3.addActionListener(this);
 					diag.jpm.add(menuItem3);
 						
-					menuItem1.setEnabled(diag.diagLang != null && 							
-						(diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#")));
-					menuItem2.setEnabled(menuItem1.isEnabled());
+					//menuItem1.setEnabled(diag.diagLang != null && 							
+					//	(diag.diagLang.label.equals("Java") || diag.diagLang.label.equals("C#")));
+					//menuItem2.setEnabled(menuItem1.isEnabled());
 					menuItem3.setEnabled(diag.diagLang != null && 							
 							diag.diagLang.label.equals("Java")); 
 											

@@ -1464,8 +1464,10 @@ public class CodeManager implements ActionListener {
 				s = makeUniqueDesc(s);
 				String t = cleanComp(block);
 				data += comma + q(s) + ":{ \"component\" :" + q(t)
-						+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
-						+ block.cy + "}}";
+				//		+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
+				//		+ block.cy + "}"
+						;
+				data += "}";
 				comma = "\n,";
 
 				descArray.put(Integer.valueOf(block.id), s);
@@ -1500,7 +1502,7 @@ public class CodeManager implements ActionListener {
 
 			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 
-			driver.jf.repaint();
+			//driver.jf.repaint();
 			if (!(from instanceof ProcessBlock) && !(from instanceof IIPBlock)
 					|| !(to instanceof ProcessBlock))
 				continue;

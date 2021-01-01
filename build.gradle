@@ -47,7 +47,7 @@ allprojects { project ->
      }
 }
 */
-version = '2.20.17'
+version = '2.21.0'
 
 group = 'com.jpaulmorrison'
 
@@ -153,7 +153,7 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            //version = '2.20.17'
+            //version = '2.21.0'
             version = project.version
             
             from components.java
