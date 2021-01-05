@@ -59,9 +59,9 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 					
 				}
 
-				if (driver.curDiag != null && driver.curDiag.diagLang != null
-						&& driver.curDiag.diagLang != driver.currLang) {
-					driver.changeLanguage(driver.curDiag.diagLang);
+				if (driver.curDiag != null && driver.curDiag.diagNotn != null
+						&& driver.curDiag.diagNotn != driver.currNotn) {
+					driver.changeLanguage(driver.curDiag.diagNotn);
 				}
 
 			}

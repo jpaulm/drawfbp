@@ -87,14 +87,13 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$ExeFilter
  com.jpaulmorrison.graphics.DrawFBP$FBPFilter
  com.jpaulmorrison.graphics.DrawFBP$FileChooserParm
- com.jpaulmorrison.graphics.DrawFBP$GenLang
  com.jpaulmorrison.graphics.DrawFBP$ImageFilter
  com.jpaulmorrison.graphics.DrawFBP$JSONFilter
  com.jpaulmorrison.graphics.DrawFBP$JarFileFilter
  com.jpaulmorrison.graphics.DrawFBP$JavaClassFilter
  com.jpaulmorrison.graphics.DrawFBP$JavaFileFilter
  com.jpaulmorrison.graphics.DrawFBP$JavaGenFilter
- com.jpaulmorrison.graphics.DrawFBP$Lang
+ com.jpaulmorrison.graphics.DrawFBP$Notation
  com.jpaulmorrison.graphics.DrawFBP$RunTask
  com.jpaulmorrison.graphics.DrawFBP$SelectionArea
  com.jpaulmorrison.graphics.DrawFBP$Side

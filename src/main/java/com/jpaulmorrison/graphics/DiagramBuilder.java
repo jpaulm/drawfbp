@@ -63,7 +63,8 @@ public class DiagramBuilder {
 
 		//diag.clickToGrid = true;
 		//driver.grid.setSelected(diag.clickToGrid);
-
+		
+		
 		while (true) { // skip blanks, CRs or tabs
 			if (!(bp.tb('o')))				
 			    break;
@@ -214,11 +215,11 @@ public class DiagramBuilder {
 							//	diag.title = saveData;
 							//}
 
-						else if (endtag.equals("complang")) {
+						else if (endtag.equals("diagnotn")) {
 								if (saveData.equals("NoFlo"))
 									saveData = "JSON";   // transitional! 
-								diag.diagLang = driver
-										.findGLFromLabel(saveData);
+								diag.diagNotn = driver
+										.findNotnFromLabel(saveData);
 							}
 
 						//else if (endtag.equals("generatedCodeFileName")) {
@@ -476,15 +477,15 @@ public class DiagramBuilder {
 		//for (Block b : diag.blocks.values()) {
 		//	b.checkArrows();
 		//}
-		if (diag.diagLang == null) {
-			diag.diagLang = driver.currLang;
+		if (diag.diagNotn == null) {
+			diag.diagNotn = driver.currNotn;
 			//diag.changed = true;
 		} 
 		else {
-			driver.saveProp("defaultCompLang", diag.diagLang.label);
+			driver.saveProp("defaultNotation", diag.diagNotn.label);
 			//driver.saveProperties();
 		}
-		driver.jtf.setText("Diagram Language: " + diag.diagLang.showLangs());
+		driver.jtf.setText("Diagram Notation: " + diag.diagNotn.label);
 		frame.repaint();
 	}
 
@@ -497,7 +498,8 @@ public class DiagramBuilder {
 		//fl1.put("drawfbp_file", "LinkedList");
 		fl1.put("net", "LinkedList");
 		fl1.put("desc", "*");
-		fl1.put("complang", "*");
+		fl1.put("complang", "*");   // deprecated
+		fl1.put("diagnotn", "*");
 		fl1.put("clicktogrid", "*");  // moved to driver
 		fl1.put("sortbydate", "*");   // moved to driver
 		fl1.put("genCodeFileName", "*"); //deprecated

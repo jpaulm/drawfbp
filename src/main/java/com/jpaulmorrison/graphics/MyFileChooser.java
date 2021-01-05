@@ -183,7 +183,10 @@ public class MyFileChooser extends JDialog
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 
-		driver.filterOptions[0] = fCP.title;
+		String s = "." + driver.currNotn.extn;
+		if (fCP == driver.curDiag.fCParm[Diagram.CLASS])
+			s = fCP.fileExt;
+		driver.filterOptions[0] = driver.currNotn.lang + " (" + s + ")";
 		cBox = new MyComboBox(driver.filterOptions);
 		cBox.setMaximumRowCount(2);
 		cBox.addMouseListener(this);
@@ -759,8 +762,10 @@ public class MyFileChooser extends JDialog
 						File fx = new File(fs);
 						if (!fx.exists())
 							continue;
-						if (!fx.isDirectory() /* && (!(fn.startsWith("."))) */
-								&& (fCP.filter.accept(fx) || driver.allFiles))
+						if (fx.isDirectory())
+							continue;
+								
+						if (fCP.filter.accept(fx) || driver.allFiles) 
 							ll2.add(entry.toString()); // non-directories go
 														// into ll2,
 						// which is

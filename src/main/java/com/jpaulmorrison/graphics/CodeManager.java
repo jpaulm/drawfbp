@@ -10,7 +10,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
-import com.jpaulmorrison.graphics.DrawFBP.GenLang;
+import com.jpaulmorrison.graphics.DrawFBP.Notation;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -45,7 +45,7 @@ public class CodeManager implements ActionListener {
 	JPanel panel;
 	JScrollPane scrollPane;
 
-	// GenLang compLang;
+
 	HashMap<Integer, String> descArray = new HashMap<Integer, String>();
 	// HashMap<Integer, String> cdescArray = new HashMap<Integer, String>();
 	// int type;
@@ -53,7 +53,7 @@ public class CodeManager implements ActionListener {
 	boolean SAVE_AS = true;
 	//FileChooserParm[] saveFCPArr;
 	//String langLabel;
-	GenLang gl = null;
+	Notation gl = null;
 	String upPort = null;;
 	String dnPort = null;
 	//StyledDocument doc = null;
@@ -72,7 +72,7 @@ public class CodeManager implements ActionListener {
 	CodeManager(Diagram d, boolean create) {
 		this.create = create;
 		diag = d;
-		gl = diag.diagLang;
+		gl = diag.diagNotn;
 		driver = d.driver;
 		d.cm = this;
 		closeAction = new CloseAction();
@@ -111,15 +111,15 @@ public class CodeManager implements ActionListener {
 		String curDir = diag.diagFile.getParentFile().getAbsolutePath();
 		driver.saveProp("currentDiagramDir", curDir);
 
-		String component = (gl.label.equals("Java"))
+		String component = (gl.lang.equals("Java"))
 				? "component"
 				: "Component";
 		// String connect = (gl.label.equals("Java")) ? "connect" : "Connect";
-		String initialize = (gl.label.equals("Java"))
+		String initialize = (gl.lang.equals("Java"))
 				? "initialize"
 				: "Initialize";
-		String _port = (gl.label.equals("Java")) ? "port" : "Port";
-		String sDO = (gl.label.equals("Java"))
+		String _port = (gl.lang.equals("Java")) ? "port" : "Port";
+		String sDO = (gl.lang.equals("Java"))
 				? "setDropOldest()"
 				: "SetDropOldest()";
 		
@@ -166,7 +166,7 @@ public class CodeManager implements ActionListener {
 		clsName = w.substring(j + 1);
 		
 			
-		if (gl.label.equals("Java")) {
+		if (gl.lang.equals("Java")) {
 			packageName = driver.properties.get("currentPackageName");
 		}
 		/*
@@ -187,14 +187,14 @@ public class CodeManager implements ActionListener {
 		*/
 		
 		String[] contents;
-		if (gl.label.equals("JSON")) {
+		if (gl.lang.equals("JSON")) {
 			contents = new String[1];
 			contents[0] = generateJSON();
 			styles[0] = normalStyle;
 		} else {
 			contents = new String[20];  
 			int k = 0;
-			if (gl.label.equals("Java")) {
+			if (gl.lang.equals("Java")) {
 				//if (packageName != null) {
 					contents[0] = "package ";
 					contents[1] = packageName;
@@ -214,11 +214,11 @@ public class CodeManager implements ActionListener {
 				k = 3;
 			}
 
-			if (gl.label.equals("Java"))
+			if (gl.lang.equals("Java"))
 				contents[k + 0] = "import com.jpaulmorrison.fbp.core.engine.*; \n";
 
 			if (ext.equals("SubNet"))
-				contents[k + 1] = genMetadata(gl.label) + "\n";
+				contents[k + 1] = genMetadata(gl.lang) + "\n";
 			else
 				contents[k + 1] = "";
 
@@ -226,13 +226,13 @@ public class CodeManager implements ActionListener {
 			
 			contents[k + 3] = clsName;
 			
-			if (gl.label.equals("Java"))
+			if (gl.lang.equals("Java"))
 				contents[k + 4] = " extends ";
 			else
 				contents[k + 4] = " : ";
 			contents[k + 5] = ext;
 			
-			if (gl.label.equals("Java"))
+			if (gl.lang.equals("Java"))
 				contents[k + 6] = " {\nString description = ";
 			else
 				contents[k + 6] = " {\nstring description = ";
@@ -241,7 +241,7 @@ public class CodeManager implements ActionListener {
 				diag.desc = "(no description)";
 			contents[k + 7] = "\"" + diag.desc + "\"";
 			
-			if (gl.label.equals("Java"))
+			if (gl.lang.equals("Java"))
 				contents[k + 8] = ";\nprotected void define() { \n";
 			else
 				contents[k + 8] = ";\npublic override void Define() { \n";
@@ -283,7 +283,7 @@ public class CodeManager implements ActionListener {
 					error = true;
 					
 										 
-					if (block.javaComp == null) {
+					if (block.component == null) {
 						MyOptionPane.showMessageDialog(driver,
 								"Class name missing for '" + s + "' - diagram needs to be updated",
 								MyOptionPane.WARNING_MESSAGE);
@@ -302,7 +302,7 @@ public class CodeManager implements ActionListener {
 					if (!block.multiplex){
 						if (!block.visible)
 							s += "(invisible)";
-						code += "  " + genComp(s, c, gl.label) + "; \n";  						
+						code += "  " + genComp(s, c, gl.lang) + "; \n";  						
 					}
 					else {
 						if (block.mpxfactor == null) {
@@ -332,7 +332,7 @@ public class CodeManager implements ActionListener {
 						// code += component + "(\"" + s + ":\" + i, " + c +
 						// "); ";
 
-						code += "  " + genCompMpx(s, c, gl.label) + "; ";
+						code += "  " + genCompMpx(s, c, gl.lang) + "; ";
 						if (c.equals("????")) {
 							code += "       // <=== fill in component name";
 						}
@@ -368,7 +368,7 @@ public class CodeManager implements ActionListener {
 					//if (t.toLowerCase().endsWith(".class"))
 					//	t = t.substring(0, t.length() - 6);
 
-					code += "  " + genComp(s, t, gl.label) + "; \n";
+					code += "  " + genComp(s, t, gl.lang) + "; \n";
 					code += "  " + initialize + "(\"" + eb.desc + "\", " + component + "(\""
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
 					descArray.put(Integer.valueOf(block.id), s);
@@ -430,12 +430,14 @@ public class CodeManager implements ActionListener {
 
 					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 						String proc = to.desc;
+						dnPort += "???";
 						MyOptionPane.showMessageDialog(driver,
 								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
 					if (checkDupPort(upPort, from)) {
 						String proc = from.desc;
+						upPort += "???";
 						MyOptionPane.showMessageDialog(driver,
 								"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
@@ -475,6 +477,7 @@ public class CodeManager implements ActionListener {
 							&& to instanceof ProcessBlock) {
 					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 						String proc = to.desc;
+						dnPort += "???";
 						MyOptionPane.showMessageDialog(driver,
 								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
@@ -510,7 +513,7 @@ public class CodeManager implements ActionListener {
 				if (i > -1)
 					s = s.substring(0, i);
 				code += "} \n";
-				if (gl.label.equals("Java"))
+				if (gl.lang.equals("Java"))
 					code += "public static void main(String[] argv) throws Exception  { \n"
 							+ "  new " + s + "().go(); \n";
 				else
@@ -597,7 +600,7 @@ public class CodeManager implements ActionListener {
 	}
 
 	String genConnect(Arrow arrow) {
-		String connect = (gl.label.equals("Java")) ? "connect" : "Connect";
+		String connect = (gl.lang.equals("Java")) ? "connect" : "Connect";
 		if (arrow.dropOldest) {
 			connect = "Connection c" + arrow.id + " = " + connect;  
 		}
@@ -616,7 +619,7 @@ public class CodeManager implements ActionListener {
 	
 	
 
-	String displayDoc(File filex, GenLang gl, String fileString) {
+	String displayDoc(File filex, Notation gl, String fileString) {
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		
@@ -644,7 +647,7 @@ public class CodeManager implements ActionListener {
 				clsName = clsName.substring(0, i);
 			driver.jf.setTitle("Displayed Code: " + file.getName());
 		} else
-			driver.jf.setTitle("Displayed Code: " + clsName + "." + gl.suggExtn);
+			driver.jf.setTitle("Displayed Code: " + clsName + "." + gl.extn);
 
 		
 		//driver.depDialog = driver.jf;
@@ -780,7 +783,7 @@ public class CodeManager implements ActionListener {
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
 	
 	
-		for (int j = 1; j < lines + 1; j++) {
+		for (int j = 1; j < lines + 2; j++) {
 			String num = String.format("%8s", j) + "\n";
 			try {				
 				doc2.insertString(doc2.getLength(), num, baseStyle);				
@@ -1139,7 +1142,7 @@ public class CodeManager implements ActionListener {
 		else 
 			pkg = pkg.replace(".", "/");
 		//String dir = "current" + driver.currLang.label + "NetworkDir";
-		String dir = diag.diagLang.netDirProp;
+		String dir = diag.diagNotn.netDirProp;
 		String fn = driver.properties.get(dir);
 		
 		if (fn == null)							
@@ -1159,9 +1162,9 @@ public class CodeManager implements ActionListener {
 		if (!(fn.endsWith("/")))
 			fn += "/";
 		if (!(pkg.equals("") ))
-			suggName = fn + pkg + "/" + suggName +  "." + gl.suggExtn;			
+			suggName = fn + pkg + "/" + suggName +  "." + gl.extn;			
 		else
-			suggName = fn + suggName +  "." + gl.suggExtn;	
+			suggName = fn + suggName +  "." + gl.extn;	
 		
 		File x = null;
 		if (!saveType)
@@ -1179,8 +1182,10 @@ public class CodeManager implements ActionListener {
 			// diag.changeCompLang();
 			return false;
 		}
-		fileString = checkMain(file, fileString);
-		fileString = checkPackage(file, fileString);
+		if (gl.lang == "Java") {
+			fileString = checkMain(file, fileString);
+			fileString = checkPackage(file, fileString);
+		}
 		
 		//if(packageNameChanged) {
 		
@@ -1201,16 +1206,18 @@ public class CodeManager implements ActionListener {
 				// diag.changeCompLang();
 				return false;
 			}
+			else
+				driver.jf.dispose();
 
-			MyOptionPane.showMessageDialog(driver.jf,
-					"File " + file.getName() + " (re)saved");
+			//MyOptionPane.showMessageDialog(driver.jf,
+			//		"File " + file.getName() + " saved");
 			
 			docText.repaint();
 						
 		//}
 		
 		// genCodeFileName = file.getAbsolutePath();
-		driver.saveProp(diag.diagLang.netDirProp, file.getParent());
+		driver.saveProp(diag.diagNotn.netDirProp, file.getParent());
 		//saveProperties();
 		doc.changed = false;
 		driver.jf.repaint();
@@ -1522,6 +1529,7 @@ public class CodeManager implements ActionListener {
 			if (from instanceof IIPBlock) {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 					String proc = to.desc;
+					dnPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
@@ -1550,7 +1558,7 @@ public class CodeManager implements ActionListener {
 		// diag.targetLang = "FBP";
 		//FileChooserParm saveFCP = diag.fCParm[DrawFBP.NETWORK];
 		// gl = diag.diagLang;
-		gl = driver.findGLFromLabel("FBP");
+		gl = driver.findNotnFromLabel("FBP");
 		fbpMode = true;
 		
 		//diag.fCParm[DrawFBP.NETWORK] = diag.fCParm[DrawFBP.FBP];
@@ -1657,12 +1665,14 @@ public class CodeManager implements ActionListener {
 					&& to instanceof ProcessBlock) {
 				if (!a2.endsAtLine && checkDupPort(dnPort, to)) {
 					String proc = to.desc;
+					dnPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 				if (checkDupPort(upPort, from)) {
 					String proc = from.desc;
+					upPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
@@ -1686,6 +1696,7 @@ public class CodeManager implements ActionListener {
 				if (from instanceof IIPBlock && to instanceof ProcessBlock) {
 				if (checkDupPort(dnPort, to)) {
 					String proc = to.desc;
+					dnPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;

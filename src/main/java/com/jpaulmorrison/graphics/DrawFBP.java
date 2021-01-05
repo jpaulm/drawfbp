@@ -117,7 +117,7 @@ public class DrawFBP extends JFrame
 	Font fontg = null;
 
 	float defaultFontSize;
-	GenLang currLang;
+	Notation currNotn = null;
 
 	double scalingFactor;
 	// int xTranslate = 0; // 400;
@@ -163,7 +163,7 @@ public class DrawFBP extends JFrame
 
 	int curx, cury;
 
-	GenLang genLangs[];
+	Notation notations[];
 
 	//FileChooserParm[] fCPArray = new FileChooserParm[10];
 
@@ -376,12 +376,14 @@ public class DrawFBP extends JFrame
 		diagDesc = new JLabel("  ");
 		grid = new JCheckBox("Grid");
 
-		genLangs = new GenLang[]{
-				new GenLang("Java", "java", new JavaFileFilter()),
-				new GenLang("C#", "cs", new CsharpFileFilter()),
-				new GenLang("JSON", "json", new JSONFilter()),
-				new GenLang("FBP", "fbp", new FBPFilter())};
+		 
+		notations = new Notation[]{
+				new Notation("JavaFBP", "java", new JavaFileFilter(), "Java"),
+				new Notation("C#FBP", "cs", new CsharpFileFilter(), "C#"),
+				new Notation("JSON", "js", new JSONFilter(), "JSON"),
+				new Notation("FBP", "fbp", new FBPFilter(), "FBP")};
 
+		/*
 		Lang lang0[] = new Lang[]{new Lang("Java", "java")
 				// , new Lang("Groovy", "groovy"), new Lang("Scala", "scala")
 		};
@@ -396,8 +398,10 @@ public class DrawFBP extends JFrame
 		Lang lang3[] = new Lang[]{new Lang("FBP", "fbp")};
 		genLangs[3].langs = lang3;
 
+		*/
 		
-		
+		currNotn = driver
+				.findNotnFromLabel("JavaFBP");
 
 		createAndShowGUI();
 		} catch (NullPointerException e)
@@ -505,15 +509,15 @@ public class DrawFBP extends JFrame
 
 		saveProp("defaultFontSize", dfs);
 
-		String dcl = properties.get("defaultCompLang");
+		String dcl = properties.get("defaultNotation");
 		
 		if (dcl == null) {
-			currLang = findGLFromLabel("Java");
+			currNotn = findNotnFromLabel("JavaFBP");
 			saveProperties();
 		} else {
 			if (dcl.equals("NoFlo")) // transitional!
 				dcl = "JSON";
-			currLang = findGLFromLabel(dcl);
+			currNotn = findNotnFromLabel(dcl);
 		}
 		
 		String sBD = properties.get("sortbydate");
@@ -982,15 +986,15 @@ public class DrawFBP extends JFrame
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
-		JMenu gnMenu = new JMenu("Select Diagram Language...");
+		JMenu gnMenu = new JMenu("Select Network Notation...");
 		fileMenu.add(gnMenu);
-		int j = genLangs.length;
+		int j = notations.length;
 		gMenu = new JMenuItem[j];
 
 		int k = 0;
 		for (int i = 0; i < j; i++) {
 			//if (!(genLangs[i].label.equals("FBP"))) {
-				gMenu[k] = new JMenuItem(genLangs[i].label);
+				gMenu[k] = new JMenuItem(notations[i].label);
 				gnMenu.add(gMenu[k]);
 				gMenu[k].addActionListener(this);
 				k++;
@@ -1002,7 +1006,7 @@ public class DrawFBP extends JFrame
        
 		String s = "Generate ";
 		if (curDiag != null)
-			s += curDiag.diagLang.label + " ";
+			s += curDiag.diagNotn.label + " ";
 		s += "Network";
 		gNMenuItem = new JMenuItem(s);
 		fileMenu.add(gNMenuItem);
@@ -1045,21 +1049,21 @@ public class DrawFBP extends JFrame
 
 		menuItem1 = new JMenuItem("Locate JavaFBP Jar File");
 
-		menuItem1.setEnabled(currLang != null && currLang.label.equals("Java"));
+		menuItem1.setEnabled(currNotn != null && currNotn.lang.equals("Java"));
 		fileMenu.add(menuItem1);
 		menuItem1.addActionListener(this);
 
 		menuItem2j = new JMenuItem("Add Additional Jar File");
-		menuItem2j.setEnabled(currLang != null && currLang.label.equals("Java"));
+		menuItem2j.setEnabled(currNotn != null && currNotn.lang.equals("Java"));
 		fileMenu.add(menuItem2j);
 		menuItem2j.addActionListener(this);
 		
 		menuItem2c = new JMenuItem("Add Additional Dll File");
-		menuItem2c.setEnabled(currLang != null && currLang.label.equals("C#"));
+		menuItem2c.setEnabled(currNotn != null && currNotn.lang.equals("C#"));
 		fileMenu.add(menuItem2c);
 		menuItem2c.addActionListener(this);
 		
-		String lib = currLang.label.equals("Java") ? "Jar" : "Dll";
+		String lib = currNotn.lang.equals("Java") ? "Jar" : "Dll";
 		menuItem = new JMenuItem("Remove Additional " + lib + " Files");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1153,7 +1157,7 @@ public class DrawFBP extends JFrame
 		box0.add(jfv);
 		menuBar.add(box0);
 
-		jtf.setText("Diagram Language: " + currLang.showLangs());
+		jtf.setText("Diagram Notation: " + currNotn.label);
 		jtf.setFont(fontg);
 		jtf.setEditable(false);
 
@@ -1210,6 +1214,8 @@ public class DrawFBP extends JFrame
 		//diag.tabNum = i;
 		curDiag = diag;
 		
+		diag.diagNotn = currNotn;
+		
 		diag.title = "(untitled)";
 		diag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
@@ -1235,16 +1241,16 @@ public class DrawFBP extends JFrame
 				/*"Select component from class directory", */ ".class",
 				new JavaClassFilter(), "Class files");
 		
-		diag.fCParm[Diagram.PROCESS] = new  FileChooserParm("Process", diag.diagLang.srcDirProp, /* "Select "
+		diag.fCParm[Diagram.PROCESS] = new  FileChooserParm("Process", diag.diagNotn.srcDirProp, /* "Select "
 				+ diag.diagLang.showLangs() + " component from directory", */
-				diag.diagLang.suggExtn, diag.diagLang.filter, "Components: "
-						+ diag.diagLang.showLangs() + " " + diag.diagLang.showSuffixes());
+				diag.diagNotn.extn, diag.diagNotn.filter, "Components: "
+						+ diag.diagNotn.lang + " " + diag.diagNotn.extn);
 		
 		diag.fCParm[Diagram.NETWORK] = new  FileChooserParm("Code",
-				diag.diagLang.netDirProp,
+				diag.diagNotn.netDirProp,
 				/*"Specify file name for code", */
-				"." + diag.diagLang.suggExtn, diag.diagLang.filter,
-				diag.diagLang.showLangs());	
+				"." + diag.diagNotn.extn, diag.diagNotn.filter,
+				diag.diagNotn.lang);	
 		
 		diag.fCParm[Diagram.DLL] = new  FileChooserParm("C# .dll file",
 				"dllFileDir",
@@ -1321,20 +1327,20 @@ public class DrawFBP extends JFrame
 		// if (curDiag.compLang == null) {
 		for (int j = 0; j < gMenu.length; j++) {
 			if (e.getSource() == gMenu[j]) {
-				GenLang gl = genLangs[j];
+				Notation gl = notations[j];
 
-				currLang = gl;
+				currNotn = gl;
 
-				saveProp("defaultCompLang", currLang.label);
+				saveProp("defaultNotation", currNotn.label);
 				saveProperties();
-				if (curDiag != null && curDiag.diagLang != currLang) {
-					curDiag.diagLang = currLang;
+				if (curDiag != null && curDiag.diagNotn != currNotn) {
+					curDiag.diagNotn = currNotn;
 					curDiag.changed = true;
 				}
 				changeLanguage(gl);
 
 				MyOptionPane.showMessageDialog(this,
-						"Language group changed to " + currLang.showLangs()+ "\nNote: some File and Block-related options will have changed");
+						"Notation changed to " + currNotn.label + "\nNote: some File and Block-related options will have changed");
 				repaint();
 
 				return;
@@ -1372,7 +1378,7 @@ public class DrawFBP extends JFrame
 		if (s.equals("Display Source Code")) {
 
 			File cFile = null;			
-			GenLang gl = curDiag.diagLang;
+			Notation gl = curDiag.diagNotn;
 									
 			//MyOptionPane.showMessageDialog(this, "Select a source file", MyOptionPane.INFORMATION_MESSAGE);
 
@@ -1485,7 +1491,7 @@ public class DrawFBP extends JFrame
 		
 
 		if (s.equals("Clear Language Association")) {
-			curDiag.diagLang = null;
+			curDiag.diagNotn = null;
 			curDiag.changed = true;
 			jtf.setText("");
 
@@ -1515,7 +1521,7 @@ public class DrawFBP extends JFrame
 			jarFiles.clear();
 			dllFiles.clear();
 			String lib;
-			if (currLang.label.equals("Java")) {
+			if (currNotn.lang.equals("Java")) {
 				properties.remove("additionalJarFiles");
 				lib = "Jar";
 			}
@@ -2093,43 +2099,46 @@ public class DrawFBP extends JFrame
 		}
 	}
 
-	void changeLanguage(GenLang gl) {
+	void changeLanguage(Notation gl) {
 
-		curDiag.diagLang = gl;
-		saveProp("defaultCompLang", gl.label);
-		currLang = gl;
-		jtf.setText("Diagram Language: " + gl.showLangs());
+		curDiag.diagNotn = gl;
+		saveProp("defaultNotation", gl.label);
+		currNotn = gl;
+		jtf.setText("Diagram Notation: " + gl.label);
 
 		jtf.repaint();
 
-		menuItem1.setEnabled(currLang.label.equals("Java"));
-		menuItem2j.setEnabled(currLang.label.equals("Java"));
-		menuItem2c.setEnabled(currLang.label.equals("C#"));
-		// compMenu.setEnabled(currLang.label.equals("Java"));
-		// runMenu.setEnabled(currLang.label.equals("Java"));
+		menuItem1.setEnabled(currNotn.lang.equals("Java"));
+		menuItem2j.setEnabled(currNotn.lang.equals("Java"));
+		menuItem2c.setEnabled(currNotn.lang.equals("C#"));
 
 		fileMenu.remove(gNMenuItem);
 
 		String u = "Generate ";
 		if (curDiag != null)
-			u += curDiag.diagLang.label + " ";
+			u += curDiag.diagNotn.label + " ";
 		u += "Network";
 		gNMenuItem = new JMenuItem(u);
 		gNMenuItem.addActionListener(this);
 		fileMenu.add(gNMenuItem, 7);
-		filterOptions[0] = gl.showLangs();
+		filterOptions[0] = gl.lang;  
 
 		curDiag.fCParm[Diagram.PROCESS] = new  FileChooserParm("Process",
 				gl.srcDirProp,
 				/*"Select " + gl.showLangs() + " component from directory", */
-				gl.suggExtn, gl.filter,
-				"Components: " + gl.showLangs() + " " + gl.showSuffixes());
+				gl.extn, gl.filter,
+				"Components: " + gl.lang + " " + gl.extn);
 
 		curDiag.fCParm[Diagram.NETWORK] = new  FileChooserParm("Code",
-				gl.netDirProp,/* "Specify file name for code", */ "." + gl.suggExtn,
-				gl.filter, gl.showLangs());
+				gl.netDirProp,/* "Specify file name for code", */ "." + gl.extn,
+				gl.filter, gl.lang);
 
 		repaint();
+		
+		for (Block b: curDiag.blocks.values()) {
+			b.component = null;
+			b.fullClassName = null;
+		}
 
 	}
 
@@ -2273,8 +2282,8 @@ public class DrawFBP extends JFrame
 		propertyDescriptions.put("Font for code", "fixedFont");
 		propertyDescriptions.put("Font for text", "generalFont");
 		propertyDescriptions.put("Default font size", "defaultFontSize");
-		propertyDescriptions.put("Default component language",
-				"defaultCompLang");
+		propertyDescriptions.put("Default notation",
+				"defaultNotation");
 		propertyDescriptions.put("JavaFBP jar file", "javaFBPJarFile");
 		//propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
 		propertyDescriptions.put("Additional Jar Files",
@@ -2369,11 +2378,11 @@ public class DrawFBP extends JFrame
 			if (v == null || v.equals(properties.get(q)))
 				v = "";
 			
-			if (q.equals("defaultCompLang")) {
+			if (q.equals("defaultNotation")) {
 				if (!(u.equals("(null)"))) {
-					u = findGLFromLabel(u).showLangs();
+					u = findNotnFromLabel(u).label;
 					if (!(v.equals("")))
-						v = findGLFromLabel(v).showLangs();
+						v = findNotnFromLabel(v).label;
 				}
 				continue;
 			}
@@ -2604,25 +2613,25 @@ public class DrawFBP extends JFrame
 		foundBlock = null;
 		//drawToolTip = false;
 		blockSelForDragging = null;
-		if (curDiag.diagLang != null)
-			changeLanguage(curDiag.diagLang);
+		if (curDiag.diagNotn != null)
+			changeLanguage(curDiag.diagNotn);
 
 		fname = file.getName();
 		curDiag.diagFile = file;
 
 		// jtp.setSelectedIndex(curDiag.tabNum);
-		GenLang gl = null;
+		Notation gl = null;
 
 		String suff = getSuffix(fname);
 
 		if (suff.equals("fbp")) {
-			gl = findGLFromLabel("FBP");
+			gl = findNotnFromLang("FBP");
 			CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE);  // does fbp have a Display form?
 			cm.displayDoc(file, gl, null);
 			return file;
 		}
 		if (!(suff.equals("drw"))  && !(suff.equals("dr~"))) {
-			gl = findGLFromLanguage(suff);
+			gl = findNotnFromLang(suff);
 			CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE);  // do.
 			cm.displayDoc(file, gl, null);
 			return file;
@@ -3040,14 +3049,14 @@ public class DrawFBP extends JFrame
 	void compileCode() {
 
 		File cFile = null;
-		GenLang gl = curDiag.diagLang;
+		Notation gl = curDiag.diagNotn;
 		Process proc = null;
 		//String program = "";
 		//interrupt = false;
 		//String cMsg = null;
-		if (!(currLang.label.equals("Java")) && !(currLang.label.equals("C#"))) {
+		if (!(currNotn.lang.equals("Java")) && !(currNotn.lang.equals("C#"))) {
 			MyOptionPane.showMessageDialog(this,
-					"Language not supported: " + currLang.label,
+					"Language not supported: " + currNotn.lang,
 					MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -3102,7 +3111,7 @@ public class DrawFBP extends JFrame
 			saveProp(gl.netDirProp, srcDir);
 		  
 		
-		if (currLang.label.equals("Java")) {	
+		if (currNotn.lang.equals("Java")) {	
 			String fNPkg = "";
 			int k = srcDir.indexOf("/src/");
 			if (k == -1) {
@@ -3682,7 +3691,7 @@ public class DrawFBP extends JFrame
 		//Process proc = null;
 		//interrupt = false;
 		
-		if (currLang.label.equals("Java")) {
+		if (currNotn.lang.equals("Java")) {
 
 			String ss = properties.get("currentClassDir");
 			String clsDir = null;
@@ -3892,10 +3901,10 @@ public class DrawFBP extends JFrame
 
 		else {
 
-			if (!(currLang.label.equals("C#"))) {
+			if (!(currNotn.lang.equals("C#"))) {
 
 				MyOptionPane.showMessageDialog(this,
-						"Language not supported: " + currLang.label,
+						"Language not supported: " + currNotn.lang,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -4999,21 +5008,20 @@ public class DrawFBP extends JFrame
 		return p2;
 	}
 
-	GenLang findGLFromLabel(String s) {
-		for (int i = 0; i < genLangs.length; i++)
-			if (genLangs[i].label.equals(s))
-				return genLangs[i];
+	Notation findNotnFromLabel(String s) {
+		for (int i = 0; i < notations.length; i++)
+			if (notations[i].label.equals(s))
+				return notations[i];
 		return null;
 	}
 
-	GenLang findGLFromLanguage(String s) {
-		for (int i = 0; i < genLangs.length; i++)
-			for (int j = 0; j < genLangs[i].langs.length; j++)
-				if (genLangs[i].langs[j].extn.equals(s))
-					return genLangs[i];
+	Notation findNotnFromLang(String s) {
+		for (int i = 0; i < notations.length; i++)
+			if (notations[i].lang.equals(s))
+				return notations[i];
 		return null;
 	}
-
+	
 	URL[] buildUrls(File f) {
 		LinkedList<URL> ll = new LinkedList<URL>();
 		URL[] urls = null;
@@ -5370,7 +5378,7 @@ public class DrawFBP extends JFrame
 	    return aRunnable;
 
 	}
-
+/*
 	public class Lang {
 		String language; // this is the language...
 		String extn; // extension - excluding period
@@ -5379,27 +5387,29 @@ public class DrawFBP extends JFrame
 			extn = ex;
 		}
 	}
-
-	public class GenLang {
-		// this class really refers more to a VM than a language... (ex. that
-		// fbp notation is treated as a language)
+*/
+	public class Notation {
+		// this class really refers more to a VM than a language... 
 		String label;
 		// String genCodeFileName;
-		String suggExtn; // excluding period - suggested extension when
+		String extn; // excluding period - suggested extension when
 							// generating code...
 		String srcDirProp; // DrawFBP property specifying source directory
 		String netDirProp; // DrawFBP property specifying source directory for
 							// net definition
 		FileFilter filter;
+		
+		String lang;
 
-		Lang[] langs; // each entry has a language name, and an extension -
+		//Lang[] langs; // each entry has a language name, and an extension -
 						// excluding periods
-		GenLang(String lan, String se, FileFilter f) {
-			label = lan;
-			suggExtn = se;
-			srcDirProp = "current" + label + "SourceDir";
-			netDirProp = "current" + label + "NetworkDir";
-			if (label.equals("C#")) {
+		Notation(String vm, String se, FileFilter f, String lan) {
+			label = vm;
+			extn = se;
+			lang = lan;
+			srcDirProp = "current" + lang + "SourceDir";
+			netDirProp = "current" + lang + "NetworkDir";
+			if (lang.equals("C#")) {
 				srcDirProp = "currentCsharpSourceDir";
 				netDirProp = "currentCsharpNetworkDir"; // xml does not seem to
 														// like #'s
@@ -5408,10 +5418,12 @@ public class DrawFBP extends JFrame
 
 		}
 
+		/*
 		String showLangs() {
 			String s = "";
-			if (langs.length == 1)
+			//if (langs.length == 1)
 				s = langs[0].language;
+				 
 			else {
 
 				s = "(";
@@ -5422,6 +5434,7 @@ public class DrawFBP extends JFrame
 				}
 				s += ")";
 			}
+			 
 			return s;
 		}
 
@@ -5434,6 +5447,7 @@ public class DrawFBP extends JFrame
 			}
 			return s + ")";
 		}
+		*/
 	}
 
 	
@@ -5594,15 +5608,13 @@ public class DrawFBP extends JFrame
 		public boolean accept(File f) {
 
 			String s = f.getName().toLowerCase();
-			return s.toLowerCase().endsWith(".java")
-					|| s.toLowerCase().endsWith(".scala")
-					|| s.toLowerCase().endsWith(".groovy") || f.isDirectory();
+			return s.toLowerCase().endsWith(".java") || f.isDirectory();
 
 		}
 
 		@Override
 		public String getDescription() {
-			return "Java source files (*.java, *.scala, *.groovy)";
+			return "Java source files (*.java)";
 		}
 
 	}
@@ -5640,28 +5652,17 @@ public class DrawFBP extends JFrame
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".json")
+			return f.getName().toLowerCase().endsWith(".js")
 					|| f.isDirectory();
 
 		}
 
 		@Override
 		public String getDescription() {
-			return "JSON source files (*.json)";
+			return "JSON source files (*.js)";
 		}
 	}
-	/*
-	 * public class NoFloGenFilter extends FileFilter {
-	 * 
-	 * @Override public boolean accept(File f) {
-	 * 
-	 * return f.getName().toLowerCase().endsWith(".json") || f.isDirectory();
-	 * 
-	 * }
-	 * 
-	 * @Override public String getDescription() { return
-	 * "NoFlo source files (*.json)"; } }
-	 */
+	
 	public class FBPFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {

@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 
 import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
-import com.jpaulmorrison.graphics.DrawFBP.GenLang;
+import com.jpaulmorrison.graphics.DrawFBP.Notation;
 import com.jpaulmorrison.graphics.DrawFBP.Side;
 
 public class Diagram {
@@ -38,7 +38,7 @@ public class Diagram {
 
 	String desc;  // description at bottom
 
-	GenLang diagLang;
+	Notation diagNotn;
 	
 	//double scalingFactor;
 
@@ -101,7 +101,7 @@ public class Diagram {
 		//doc = new DefaultStyledDocument(sc);   
 		
 		//file = null;
-		diagLang = driver.currLang;	
+		diagNotn = driver.currNotn;	
 		
 		fCParm = new FileChooserParm[10];
 		//motherBlock = null;
@@ -454,8 +454,8 @@ public class Diagram {
 		// if (title != null)
 		// fileString += "<title>" + title + "</title> ";
 
-		if (diagLang != null)
-			fileString += "<complang>" + diagLang.label + "</complang>\n ";
+		if (diagNotn != null)
+			fileString += "<diagnotn>" + diagNotn.label + "</diagnotn>\n ";
 
 		// if (genCodeFileName != null)
 		// fileString += "<genCodeFileName>" + genCodeFileName
