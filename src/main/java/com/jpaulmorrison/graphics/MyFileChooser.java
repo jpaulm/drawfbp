@@ -44,6 +44,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import com.jpaulmorrison.graphics.DrawFBP.Lang;
+
 
 public class MyFileChooser extends JDialog 
 		implements
@@ -129,16 +131,17 @@ public class MyFileChooser extends JDialog
 	ParentAction parentAction;
 	NewFolderAction newFolderAction;
 
-	DrawFBP.FileChooserParm fCP;
+	//DrawFBP.FileChooserParm fCP;
+	Lang lang;
 	
 	String chooserTitle;
 
 	public ClickListener clickListener;
 
-	public MyFileChooser(DrawFBP driver, File f, DrawFBP.FileChooserParm fcp, String chooserTitle) {
+	public MyFileChooser(DrawFBP driver, File f, Lang lang, String chooserTitle) {
 		
 
-		this.fCP = fcp;
+		this.lang = lang;
 		this.chooserTitle = chooserTitle; 
 		clickListener = new ClickListener();
 
@@ -161,14 +164,10 @@ public class MyFileChooser extends JDialog
 	int showOpenDialog(final boolean saveas, final boolean saving) {
 
 		dialog = new JDialog(driver, Dialog.ModalityType.APPLICATION_MODAL);
-		// dialog.setUndecorated(false);
 		
-		//Dimension dim = driver.getSize();
-		//dialog.setMaximumSize(new Dimension(dim.width - 100, dim.height - 60));
-
 		this.saveAs = saveas;
 		this.saving = saving;
-
+		
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				dialog.dispose();
@@ -183,10 +182,8 @@ public class MyFileChooser extends JDialog
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 
-		String s = "." + driver.currNotn.extn;
-		if (fCP == driver.curDiag.fCParm[Diagram.CLASS])
-			s = fCP.fileExt;
-		driver.filterOptions[0] = driver.currNotn.lang + " (" + s + ")";
+		driver.filterOptions[0] = lang.filter.getDescription();
+		
 		cBox = new MyComboBox(driver.filterOptions);
 		cBox.setMaximumRowCount(2);
 		cBox.addMouseListener(this);
@@ -249,7 +246,7 @@ public class MyFileChooser extends JDialog
 
 			//dialog.setTitle(fCP.prompt);
 			dialog.setTitle(chooserTitle);
-			if (fCP == driver.curDiag.fCParm[Diagram.CLASS])
+			if (lang == driver.langs[DrawFBP.CLASS])
 				listShowingJarFile = listHead;
 		//}
 
@@ -765,7 +762,7 @@ public class MyFileChooser extends JDialog
 						if (fx.isDirectory())
 							continue;
 								
-						if (fCP.filter.accept(fx) || driver.allFiles) 
+						if (lang.filter.accept(fx) || driver.allFiles) 
 							ll2.add(entry.toString()); // non-directories go
 														// into ll2,
 						// which is
@@ -980,20 +977,21 @@ public class MyFileChooser extends JDialog
 		return null;
 	}
 
-final boolean SAVEAS = true;
+	final boolean SAVEAS = true;
 
+	
 	@SuppressWarnings("unchecked")
 	LinkedList<String> buildListFromJSON(String fileName) {
 		int level = 0;
 		File f = new File(fileName);
 		String fileString;
 		LinkedList<String> ll = new LinkedList<String>();
-		if (null == (fileString = driver.readFile(f  /*, !SAVEAS */))) {
+		if (null == (fileString = driver.readFile(f  ))) {
 			MyOptionPane.showMessageDialog(driver,	"Unable to read file " + f.getName(),
 					MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		Integer errNo = /*new Integer(0);*/  Integer.valueOf(0);
+		Integer errNo =   Integer.valueOf(0);
 		BabelParser2 bp = new BabelParser2(fileString, errNo);
 		String label = null;
 		String operand = null;
@@ -1080,10 +1078,11 @@ final boolean SAVEAS = true;
 				HashMap<String, Object> m = (HashMap<String, Object>) hm.get(k);
 				for (String k2 : m.keySet()) {
 					if (k2.equals("graphs")
-							&& fCP == driver.curDiag.fCParm[Diagram.DIAGRAM]
+							&& driver.currNotn.lang == driver.langs[DrawFBP.DIAGRAM]
 							|| k2.equals("components")
-									&& fCP == driver.curDiag.fCParm[Diagram.NETWORK]
-							|| fCP == driver.curDiag.fCParm[Diagram.PROCESS]) {
+								//	&& driver.currNotn.lang == driver.langs[DrawFBP.NETWORK]
+						//	|| driver.currNotn.lang == driver.langs[DrawFBP.PROCESS]) 
+							) {
 						HashMap<String, Object> m2 = (HashMap<String, Object>) m
 								.get(k2);
 						for (Object v : m2.values()) {
@@ -1103,7 +1102,7 @@ final boolean SAVEAS = true;
 
 		return ll;
 	}
-
+	
 	/*
 	LinkedList<String> sortByName(LinkedList<String> from) {
 		if (from.isEmpty()) {
@@ -1874,7 +1873,7 @@ final boolean SAVEAS = true;
 													
 							// add appropriate extension							
 
-							f = new File(f.getAbsolutePath() +  fCP.fileExt);  
+							f = new File(f.getAbsolutePath() +  lang.ext);  
 							
 							s = f.getName();
 
@@ -1934,7 +1933,7 @@ final boolean SAVEAS = true;
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
 				// if (filter instanceof DrawFBP.JarFileFilter)
-				if (fCP == driver.curDiag.fCParm[Diagram.JARFILE]
+				if (lang == driver.langs[DrawFBP.JARFILE]
 						/* || fCP == driver.curDiag.fCParm[Diagram.JHELP] */) {
 					processOK();
 					return;

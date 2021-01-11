@@ -10,6 +10,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
+import com.jpaulmorrison.graphics.DrawFBP.Lang;
 import com.jpaulmorrison.graphics.DrawFBP.Notation;
 
 import java.awt.*;
@@ -44,6 +45,8 @@ public class CodeManager implements ActionListener {
 	LinkedList<String> counterList = new LinkedList<String>();
 	JPanel panel;
 	JScrollPane scrollPane;
+	
+	Lang lang; 
 
 
 	HashMap<Integer, String> descArray = new HashMap<Integer, String>();
@@ -53,7 +56,7 @@ public class CodeManager implements ActionListener {
 	boolean SAVE_AS = true;
 	//FileChooserParm[] saveFCPArr;
 	//String langLabel;
-	Notation gl = null;
+	Notation notn = null;
 	String upPort = null;;
 	String dnPort = null;
 	//StyledDocument doc = null;
@@ -72,12 +75,11 @@ public class CodeManager implements ActionListener {
 	CodeManager(Diagram d, boolean create) {
 		this.create = create;
 		diag = d;
-		gl = diag.diagNotn;
 		driver = d.driver;
+		notn = driver.currNotn;
 		d.cm = this;
 		closeAction = new CloseAction();
-		
-		
+		lang = driver.currNotn.lang;	
 		
 		sc = new StyleContext();	
 		//doc = new DefaultStyledDocument(); 
@@ -100,7 +102,7 @@ public class CodeManager implements ActionListener {
 		fbpMode = false;
 		//langLabel = diag.diagLang.label;
 		//gl = diag.diagLang;
-		if (gl.label.equals("FBP")) {
+		if (notn == driver.notations[DrawFBP.FBP_NOTN]) {  
 			genFbpCode();
 			return true;
 		}		
@@ -111,15 +113,15 @@ public class CodeManager implements ActionListener {
 		String curDir = diag.diagFile.getParentFile().getAbsolutePath();
 		driver.saveProp("currentDiagramDir", curDir);
 
-		String component = (gl.lang.equals("Java"))
+		String component = (notn.lang == driver.langs[DrawFBP.JAVA])
 				? "component"
 				: "Component";
 		// String connect = (gl.label.equals("Java")) ? "connect" : "Connect";
-		String initialize = (gl.lang.equals("Java"))
+		String initialize = (notn.lang == driver.langs[DrawFBP.JAVA])
 				? "initialize"
 				: "Initialize";
-		String _port = (gl.lang.equals("Java")) ? "port" : "Port";
-		String sDO = (gl.lang.equals("Java"))
+		String _port = (notn.lang == driver.langs[DrawFBP.JAVA]) ? "port" : "Port";
+		String sDO = (notn.lang == driver.langs[DrawFBP.JAVA])
 				? "setDropOldest()"
 				: "SetDropOldest()";
 		
@@ -166,9 +168,9 @@ public class CodeManager implements ActionListener {
 		clsName = w.substring(j + 1);
 		
 			
-		if (gl.lang.equals("Java")) {
+		if (notn.lang == driver.langs[DrawFBP.JAVA])  
 			packageName = driver.properties.get("currentPackageName");
-		}
+		 
 		/*
 			if (packageName == null || packageName.equals("") || packageName.equals("null")
 					|| packageName.equals("(null)")) {
@@ -187,14 +189,14 @@ public class CodeManager implements ActionListener {
 		*/
 		
 		String[] contents;
-		if (gl.lang.equals("JSON")) {
+		if (notn == driver.notations[DrawFBP.JSON]) {
 			contents = new String[1];
 			contents[0] = generateJSON();
 			styles[0] = normalStyle;
 		} else {
 			contents = new String[20];  
 			int k = 0;
-			if (gl.lang.equals("Java")) {
+			if (notn.lang == driver.langs[DrawFBP.JAVA]) {
 				//if (packageName != null) {
 					contents[0] = "package ";
 					contents[1] = packageName;
@@ -214,11 +216,11 @@ public class CodeManager implements ActionListener {
 				k = 3;
 			}
 
-			if (gl.lang.equals("Java"))
+			if (notn.lang == driver.langs[DrawFBP.JAVA])
 				contents[k + 0] = "import com.jpaulmorrison.fbp.core.engine.*; \n";
 
-			if (ext.equals("SubNet"))
-				contents[k + 1] = genMetadata(gl.lang) + "\n";
+			if (ext.equals("SubNet"))    
+				contents[k + 1] = genMetadata(notn.lang.label) + "\n";
 			else
 				contents[k + 1] = "";
 
@@ -226,13 +228,13 @@ public class CodeManager implements ActionListener {
 			
 			contents[k + 3] = clsName;
 			
-			if (gl.lang.equals("Java"))
+			if (notn.lang == driver.langs[DrawFBP.JAVA])
 				contents[k + 4] = " extends ";
 			else
 				contents[k + 4] = " : ";
 			contents[k + 5] = ext;
 			
-			if (gl.lang.equals("Java"))
+			if (notn.lang == driver.langs[DrawFBP.JAVA])
 				contents[k + 6] = " {\nString description = ";
 			else
 				contents[k + 6] = " {\nstring description = ";
@@ -241,7 +243,7 @@ public class CodeManager implements ActionListener {
 				diag.desc = "(no description)";
 			contents[k + 7] = "\"" + diag.desc + "\"";
 			
-			if (gl.lang.equals("Java"))
+			if (notn.lang == driver.langs[DrawFBP.JAVA])
 				contents[k + 8] = ";\nprotected void define() { \n";
 			else
 				contents[k + 8] = ";\npublic override void Define() { \n";
@@ -302,7 +304,7 @@ public class CodeManager implements ActionListener {
 					if (!block.multiplex){
 						if (!block.visible)
 							s += "(invisible)";
-						code += "  " + genComp(s, c, gl.lang) + "; \n";  						
+						code += "  " + genComp(s, c) + "; \n";  						
 					}
 					else {
 						if (block.mpxfactor == null) {
@@ -332,7 +334,7 @@ public class CodeManager implements ActionListener {
 						// code += component + "(\"" + s + ":\" + i, " + c +
 						// "); ";
 
-						code += "  " + genCompMpx(s, c, gl.lang) + "; ";
+						code += "  " + genCompMpx(s, c) + "; ";
 						if (c.equals("????")) {
 							code += "       // <=== fill in component name";
 						}
@@ -368,7 +370,7 @@ public class CodeManager implements ActionListener {
 					//if (t.toLowerCase().endsWith(".class"))
 					//	t = t.substring(0, t.length() - 6);
 
-					code += "  " + genComp(s, t, gl.lang) + "; \n";
+					code += "  " + genComp(s, t) + "; \n";
 					code += "  " + initialize + "(\"" + eb.desc + "\", " + component + "(\""
 							+ s + "\"), " + _port + "(\"NAME\")); \n";
 					descArray.put(Integer.valueOf(block.id), s);
@@ -507,13 +509,13 @@ public class CodeManager implements ActionListener {
 				}
 			}
 
-			if (ext.equals("Network")) {
+			if (ext.equals("Network")) {   
 				String s = diag.title;
 				i = s.indexOf(".");
 				if (i > -1)
 					s = s.substring(0, i);
 				code += "} \n";
-				if (gl.lang.equals("Java"))
+				if (notn.lang == driver.langs[DrawFBP.JAVA])
 					code += "public static void main(String[] argv) throws Exception  { \n"
 							+ "  new " + s + "().go(); \n";
 				else
@@ -567,7 +569,7 @@ public class CodeManager implements ActionListener {
 
 		//displayDoc(null, gl, null);
 		try {
-			displayDoc(null, gl, doc.getText(0,  doc.getLength()));
+			displayDoc(null, notn, doc.getText(0,  doc.getLength()));
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -579,11 +581,11 @@ public class CodeManager implements ActionListener {
 		return true;
 	}
 
-	String genComp(String name, String className, String lang) {
+	String genComp(String name, String className /*, String lang */) {
 		if (className == null)
 			className = "????";
 		
-		if (lang.equals("Java")) {
+		if (lang == driver.langs[DrawFBP.JAVA]) {
 			//if (!(className.equals("\"Invalid class\"")))
 			if (!(className.endsWith(".class")))
 				className += ".class";
@@ -600,14 +602,14 @@ public class CodeManager implements ActionListener {
 	}
 
 	String genConnect(Arrow arrow) {
-		String connect = (gl.lang.equals("Java")) ? "connect" : "Connect";
+		String connect = (notn.lang == driver.langs[DrawFBP.JAVA]) ? "connect" : "Connect";
 		if (arrow.dropOldest) {
 			connect = "Connection c" + arrow.id + " = " + connect;  
 		}
 		return connect;
 	}
 
-	String genCompMpx(String name, String className, String lang) {
+	String genCompMpx(String name, String className) {
 		if (className == null)
 			className = "????";
 		if (lang.equals("Java"))
@@ -619,7 +621,7 @@ public class CodeManager implements ActionListener {
 	
 	
 
-	String displayDoc(File filex, Notation gl, String fileString) {
+	String displayDoc(File filex, Notation notn, String fileString) {
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		
@@ -647,7 +649,7 @@ public class CodeManager implements ActionListener {
 				clsName = clsName.substring(0, i);
 			driver.jf.setTitle("Displayed Code: " + file.getName());
 		} else
-			driver.jf.setTitle("Displayed Code: " + clsName + "." + gl.extn);
+			driver.jf.setTitle("Displayed Code: " + clsName + "." + notn.lang.ext);
 
 		
 		//driver.depDialog = driver.jf;
@@ -1142,7 +1144,7 @@ public class CodeManager implements ActionListener {
 		else 
 			pkg = pkg.replace(".", "/");
 		//String dir = "current" + driver.currLang.label + "NetworkDir";
-		String dir = diag.diagNotn.netDirProp;
+		String dir = driver.currNotn.netDirProp;
 		String fn = driver.properties.get(dir);
 		
 		if (fn == null)							
@@ -1162,15 +1164,15 @@ public class CodeManager implements ActionListener {
 		if (!(fn.endsWith("/")))
 			fn += "/";
 		if (!(pkg.equals("") ))
-			suggName = fn + pkg + "/" + suggName +  "." + gl.extn;			
+			suggName = fn + pkg + "/" + suggName +  "." + driver.currNotn.lang.ext;			
 		else
-			suggName = fn + suggName +  "." + gl.extn;	
+			suggName = fn + suggName +  "." + driver.currNotn.lang.ext;	
 		
 		File x = null;
 		if (!saveType)
 			x = file;
 			
-		File file = diag.genSave(x, diag.fCParm[Diagram.NETWORK], fileString, 
+		File file = diag.genSave(x, driver.currNotn.lang, fileString, 
 		        new File(suggName), driver.jf);
 		
 		
@@ -1182,7 +1184,7 @@ public class CodeManager implements ActionListener {
 			// diag.changeCompLang();
 			return false;
 		}
-		if (gl.lang == "Java") {
+		if (notn.lang == driver.langs[DrawFBP.JAVA]) {
 			fileString = checkMain(file, fileString);
 			fileString = checkPackage(file, fileString);
 		}
@@ -1217,7 +1219,7 @@ public class CodeManager implements ActionListener {
 		//}
 		
 		// genCodeFileName = file.getAbsolutePath();
-		driver.saveProp(diag.diagNotn.netDirProp, file.getParent());
+		driver.saveProp(driver.currNotn.netDirProp, file.getParent());
 		//saveProperties();
 		doc.changed = false;
 		driver.jf.repaint();
@@ -1342,7 +1344,7 @@ public class CodeManager implements ActionListener {
 						*/
 						//docText.setText(doc); 
 						//driver.jf.dispose();
-						displayDoc(null, gl, fileString);
+						displayDoc(null, notn, fileString);
 						//driver.writeFile(file,  fileString);
 						//driver.saveProp("currentPackageName", pkg);
 						doc.changed = false; 
@@ -1558,7 +1560,7 @@ public class CodeManager implements ActionListener {
 		// diag.targetLang = "FBP";
 		//FileChooserParm saveFCP = diag.fCParm[DrawFBP.NETWORK];
 		// gl = diag.diagLang;
-		gl = driver.findNotnFromLabel("FBP");
+		//notn = driver.findNotnFromLabel("FBP");
 		fbpMode = true;
 		
 		//diag.fCParm[DrawFBP.NETWORK] = diag.fCParm[DrawFBP.FBP];

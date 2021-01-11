@@ -215,11 +215,11 @@ public class DiagramBuilder {
 							//	diag.title = saveData;
 							//}
 
-						else if (endtag.equals("diagnotn")) {
-								if (saveData.equals("NoFlo"))
-									saveData = "JSON";   // transitional! 
-								diag.diagNotn = driver
-										.findNotnFromLabel(saveData);
+						else if (endtag.equals("notation")) {
+								//if (saveData.equals("NoFlo"))
+								//	saveData = "JSON";   // transitional! 
+								 driver.currNotn = driver
+								 		.findNotnFromLabel(saveData);
 							}
 
 						//else if (endtag.equals("generatedCodeFileName")) {
@@ -477,15 +477,15 @@ public class DiagramBuilder {
 		//for (Block b : diag.blocks.values()) {
 		//	b.checkArrows();
 		//}
-		if (diag.diagNotn == null) {
-			diag.diagNotn = driver.currNotn;
+		//if (diag.diagNotn == null) {
+		//	diag.diagNotn = driver.currNotn;
 			//diag.changed = true;
-		} 
-		else {
-			driver.saveProp("defaultNotation", diag.diagNotn.label);
+		//} 
+		//else {
+			driver.saveProp("defaultNotation", driver.currNotn.label);
 			//driver.saveProperties();
-		}
-		driver.jtf.setText("Diagram Notation: " + diag.diagNotn.label);
+		//}
+		driver.jtf.setText("Diagram Notation: " + driver.currNotn.label);
 		frame.repaint();
 	}
 
@@ -499,7 +499,8 @@ public class DiagramBuilder {
 		fl1.put("net", "LinkedList");
 		fl1.put("desc", "*");
 		fl1.put("complang", "*");   // deprecated
-		fl1.put("diagnotn", "*");
+		fl1.put("diagnotn", "*");   // deprecated
+		fl1.put("notation", "*");
 		fl1.put("clicktogrid", "*");  // moved to driver
 		fl1.put("sortbydate", "*");   // moved to driver
 		fl1.put("genCodeFileName", "*"); //deprecated

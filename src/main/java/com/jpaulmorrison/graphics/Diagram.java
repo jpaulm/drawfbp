@@ -15,8 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 
-import com.jpaulmorrison.graphics.DrawFBP.FileChooserParm;
-import com.jpaulmorrison.graphics.DrawFBP.Notation;
+import com.jpaulmorrison.graphics.DrawFBP.Lang;
 import com.jpaulmorrison.graphics.DrawFBP.Side;
 
 public class Diagram {
@@ -31,6 +30,8 @@ public class Diagram {
 	//String suggFile = null;
 
 	DrawFBP driver = null;
+	
+	Lang lang;
 	//int tabNum = -1;
 	DrawFBP.SelectionArea area; 	
 
@@ -38,7 +39,7 @@ public class Diagram {
 
 	String desc;  // description at bottom
 
-	Notation diagNotn;
+	//Notation diagNotn;
 	
 	//double scalingFactor;
 
@@ -73,6 +74,8 @@ public class Diagram {
 	
 	JPopupMenu jpm;
 	//String targetLang;
+	
+	/*
 	public static int DIAGRAM = 0;
 	public static int IMAGE = 1;	
 	//public static int JHELP = 2;
@@ -83,8 +86,8 @@ public class Diagram {
 	public static int DLL = 6; 
 	public static int EXE = 7;   
 	public static int FBP = 8;    
-	
-	FileChooserParm[] fCParm;
+*/	
+	//FileChooserParm[] fCParm;
 	//int tabNum;   // index in driver.jtp
 	
 	CodeManager cm = null;
@@ -101,9 +104,9 @@ public class Diagram {
 		//doc = new DefaultStyledDocument(sc);   
 		
 		//file = null;
-		diagNotn = driver.currNotn;	
+		//diagNotn = driver.currNotn;	
 		
-		fCParm = new FileChooserParm[10];
+		//fCParm = new FileChooserParm[10];
 		//motherBlock = null;
 		//String cTG = driver.properties.get("clicktogrid");
 		//if (cTG == null) {
@@ -117,12 +120,12 @@ public class Diagram {
 		
 	/* General save function */
 	
-	public File genSave(File file, FileChooserParm fCP, Object contents, JFrame jf) { 
-		return genSave(file, fCP, contents, null, jf);  
+	public File genSave(File file, Lang lang, Object contents, JFrame jf) { 
+		return genSave(file, lang, contents, null, jf);  
 	}
 	 
 
-	public File genSave(File file, FileChooserParm fCP, Object contents, File suggFile, JFrame jf) {  
+	public File genSave(File file, Lang lang, Object contents, File suggFile, JFrame jf) {  
 
 	//  contents only used for (generated) java files, and images 
 		
@@ -135,11 +138,11 @@ public class Diagram {
 		
 		//if (diagFile == null)    
 		//	saveAs = true;
-
+		
 		if (saveAs) {
 			
 					
-			String s = driver.properties.get(fCP.propertyName);  
+			String s = driver.properties.get(driver.currNotn.lang.propertyName);  
 			if (s == null) 
 				s = System.getProperty("user.home");			 
 
@@ -156,10 +159,10 @@ public class Diagram {
 				suggestedFileName = suggFile.getAbsolutePath();
 			else
 				if (saveAs && title != null && !(title.equals("(untitled)")))
-					suggestedFileName = s + "/" + title + fCP.fileExt;
+					suggestedFileName = s + "/" + title + lang.ext;
 			
 
-			MyFileChooser fc = new MyFileChooser(driver, f, fCP, "Save File");
+			MyFileChooser fc = new MyFileChooser(driver, f, lang, "Save File");
 
 			fc.setSuggestedName(suggestedFileName);
 			//}
@@ -212,27 +215,27 @@ public class Diagram {
 
 					String suff = driver.getSuffix(s);
 					if (suff == null)
-						newFile = new File(s + fCP.fileExt);
+						newFile = new File(s + lang.ext);
 					else {
 						
-						if (!fCP.filter.accept(new File(s))) {    
+						if (!lang.filter.accept(new File(s))) {    
 							
 							int answer = MyOptionPane.showConfirmDialog(jf, 
 									"\"" + suff + "\" not valid suffix for " +
-								            fCP.title + " files - change suffix?", "Change suffix?",
+								            driver.currNotn.label + " files - change suffix?", "Change suffix?",
 									MyOptionPane.YES_NO_CANCEL_OPTION);
 							if (answer == MyOptionPane.CANCEL_OPTION)
 								return null;
 							if (answer == MyOptionPane.YES_OPTION)
 								newFile = new File(s.substring(0,    
 									s.lastIndexOf(suff))                              
-									+ fCP.fileExt.substring(1));                    
+									+ lang.ext.substring(1));                    
 						}
 					}
 				}
 
 				  //newFile.getParentFile().mkdirs();
-				  driver.saveProp(fCP.propertyName, newFile.getParentFile().getAbsolutePath());
+				  driver.saveProp(lang.propertyName, newFile.getParentFile().getAbsolutePath());
 			}
 		 
 
@@ -243,7 +246,7 @@ public class Diagram {
 			
 		}
 		//if (!(contents instanceof BufferedImage))
-		if (!(fCP == fCParm[IMAGE]))
+		if (!(lang == driver.langs[DrawFBP.IMAGE]))
 			fileString = (String) contents;	
 		
 		// finished choosing file - compare file name against package in code, if any!
@@ -292,7 +295,7 @@ public class Diagram {
 			}
 		}
 	}
-		if (fCP.fileExt.equals(".drw")) {	
+		if (lang.ext.equals("drw")) {	
 			fileString = driver.readFile(file /*, saveAs*/); // read previous version
 			diagFile = file;
 
@@ -305,7 +308,7 @@ public class Diagram {
 			}
 		}
 		
-		if (fCP == fCParm[IMAGE]) {
+		if (lang == driver.langs[DrawFBP.IMAGE]) {
 			Path path = file.toPath();
 			try {
 				Files.deleteIfExists(path);
@@ -325,7 +328,7 @@ public class Diagram {
 			
 			// if not image
 			
-			if (fCP.fileExt.equals(".drw")) {
+			if (lang.ext.equals("drw")) {
 
 				//fileString = driver.readFile(file /*, saveAs*/); // read previous version
 				diagFile = file;
@@ -346,11 +349,12 @@ public class Diagram {
 
 			// return diagFile;
 		}
-		String w = fCP.name;
-		if (motherBlock!= null) {
+		//String w = fCP.name;
+		String w = file.getName();
+		//if (motherBlock!= null) {
 			//motherBlock.subnetFileName = file.getPath();
-			w = "Subnet";    
-		}
+		//	w = "Subnet";    
+		//}
 		
 		//suggFile = null;
 		MyOptionPane.showMessageDialog(jf, w + " saved: " + file.getName());
@@ -399,7 +403,7 @@ public class Diagram {
 
 			// User clicked YES.
 
-			file = genSave(diagFile, fCParm[DIAGRAM], null, driver);
+			file = genSave(diagFile, driver.langs[DrawFBP.DIAGRAM], null, driver);
 			if (file == null) {
 				MyOptionPane.showMessageDialog(driver, "File not saved");
 				answer = MyOptionPane.CANCEL_OPTION;
@@ -454,8 +458,8 @@ public class Diagram {
 		// if (title != null)
 		// fileString += "<title>" + title + "</title> ";
 
-		if (diagNotn != null)
-			fileString += "<diagnotn>" + diagNotn.label + "</diagnotn>\n ";
+		if (driver.currNotn != null)
+			fileString += "<notation>" + driver.currNotn.label + "</notation>\n ";
 
 		// if (genCodeFileName != null)
 		// fileString += "<genCodeFileName>" + genCodeFileName
@@ -757,7 +761,7 @@ public class Diagram {
 				driver, "Subnet created - please assign .drw file and save",
 				"Name and save subnet", MyOptionPane.YES_NO_CANCEL_OPTION)) {
 						
-			file = sbnDiag.genSave(null, fCParm[Diagram.DIAGRAM], null, driver);
+			file = sbnDiag.genSave(null, driver.langs[DrawFBP.DIAGRAM], null, driver);
 			
 			if (file != null) {
 				
