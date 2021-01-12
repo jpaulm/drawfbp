@@ -1644,8 +1644,8 @@ public class Block implements ActionListener {
 			try {
 				if (driver.currNotn == driver.notations[DrawFBP.JAVA_FBP])
 					selectJavaClass();
-				//else
-				//	selectNonJavaClass();   
+				else
+					selectNonJavaClass();   
 			} catch (MalformedURLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

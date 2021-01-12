@@ -1252,32 +1252,6 @@ langs = new Lang[12];
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
 		
-		/*	
-		diag.fCParm[Diagram.DIAGRAM] = diagFCParm;
-
-		diag.fCParm[Diagram.IMAGE] = new FileChooserParm("Image", "currentImageDir",
-				 langs[5], "Diagrams (*.png)");	
-		
-		diag.fCParm[Diagram.FBP] = new  FileChooserParm("Generated FBP code",
-				"currentFBPNetworkDir", langs[3], "fbp notation");
-	
-		diag.fCParm[Diagram.JARFILE] = new  FileChooserParm("Jar file", "javaFBPJarFile",
-				langs[6], "Jar files");
-
-		diag.fCParm[Diagram.CLASS] = new  FileChooserParm("Class", "currentClassDir",
-				langs[7], "Class files");
-
-		diag.fCParm[Diagram.PROCESS] = new  FileChooserParm("Process", diag.diagNotn.srcDirProp, 
-				langs[8], "Components: " + diag.diagNotn.lang + " " + diag.diagNotn.lang.ext);
-
-		diag.fCParm[Diagram.NETWORK] = new  FileChooserParm("Code", diag.diagNotn.netDirProp, 
-				langs[9], diag.diagNotn.lang);	
-
-		diag.fCParm[Diagram.DLL] = new  FileChooserParm("C# .dll file", "dllFileDir", langs[10], ".dll");	
-
-		diag.fCParm[Diagram.EXE] = new FileChooserParm("C# Executable", "exeDir", langs[11], ".exe");	
-*/
-		 	
 				
 		repaint();
 
@@ -2129,7 +2103,7 @@ langs = new Lang[12];
 		fileMenu.remove(7);
 
 		String u = "Generate ";
-		if (curDiag != null)
+		//if (curDiag != null)
 			u += currNotn.label + " ";
 		u += "Network";
 		gNMenuItem = new JMenuItem(u);
@@ -2157,6 +2131,8 @@ langs = new Lang[12];
 		for (Block b: curDiag.blocks.values()) {
 			b.component = null;
 			b.fullClassName = null;
+			b.codeFileName = null;
+			b.subnetFileName = null;
 		}
 
 		repaint();

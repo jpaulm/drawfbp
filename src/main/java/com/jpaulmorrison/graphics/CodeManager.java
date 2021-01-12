@@ -1407,10 +1407,13 @@ public class CodeManager implements ActionListener {
 	}
 
 	String generateJSON() {
+		
+		// see https://noflojs.org/documentation/graphs/#json
+		
 		String data;
 		data = "{\n\"properties\": {\n\"name\": ";
 		data += q(diag.title) + "\n},\n";
-		data += "\"processes\": {\n";
+		data += "\"processes\": [\n";
 		portNames = new HashSet<String>();
 		blocklist = new HashMap<String, Integer>();
 
@@ -1418,8 +1421,8 @@ public class CodeManager implements ActionListener {
 		for (Block block : diag.blocks.values()) {
 			// String s = "";
 			if (block instanceof ProcessBlock && block.desc == null) {
-				MyOptionPane.showMessageDialog(driver.jf,
-						"One or more missing block descriptions", MyOptionPane.WARNING_MESSAGE);
+				MyOptionPane.showMessageDialog(driver.jf, "One or more missing block descriptions",
+						MyOptionPane.WARNING_MESSAGE);
 				// error = true;
 				return null;
 			}
@@ -1433,8 +1436,7 @@ public class CodeManager implements ActionListener {
 						t = "SubInSS";
 					else
 						t = "SubIn";
-				} else
-					if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+				} else if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					s = "SUBOUT";
 					if (eb.substreamSensitive)
 						t = "SubOutSS";
@@ -1445,37 +1447,27 @@ public class CodeManager implements ActionListener {
 					t = "SubOI";
 				}
 				s = makeUniqueDesc(s); // and make it unique
-				
-				//if (t.toLowerCase().endsWith(".class"))
-				//	t = t.substring(0, t.length() - 6);
 
 				data += comma + q(s) + ":{ \"component\" :" + q(t)
-				+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
-				+ block.cy + "}}";
+				// + ", \"display\": { \"x\":" + block.cx + ", \"y\":"
+				// + block.cy + "}"
+				;
+				data += "}";
 				comma = "\n,";
-				//code += "  " + initialize + "(\"" + eb.description + "\", " + component + "(\""
-				//		+ s + "\"), " + _port + "(\"NAME\")); \n";
-				data += "\"data\":" + q(s) + ",\n";
-			//} else
-				//data += "\"src\": {\n \"process\" :" + q(fromDesc)
-					//	+ ",\n\"port\":" + q(upPort) + "\n},";
 
-			data += "\"tgt\": {\n \"process\" :" + q(s) + ",\n\"port\":"
-					+ q(dnPort) + "}\n}";
-			comma = "\n,";
-		//}
-		data += "\n]\n}";
 				descArray.put(Integer.valueOf(block.id), s);
 			}
+			// data += "\n]\n}";
+			// descArray.put(Integer.valueOf(block.id), s);
 
 			if (block instanceof ProcessBlock) {
 				String s = driver.cleanDesc(block, false);
 				s = makeUniqueDesc(s);
 				String t = cleanComp(block);
 				data += comma + q(s) + ":{ \"component\" :" + q(t)
-				//		+ ", \"display\": { \"x\":" + block.cx + ", \"y\":"
-				//		+ block.cy + "}"
-						;
+				// + ", \"display\": { \"x\":" + block.cx + ", \"y\":"
+				// + block.cy + "}"
+				;
 				data += "}";
 				comma = "\n,";
 
@@ -1486,7 +1478,7 @@ public class CodeManager implements ActionListener {
 				descArray.put(Integer.valueOf(block.id), block.desc);
 			}
 		}
-		data += "\n},\n \"connections\": [\n";
+		data += "\n],\n \"connections\": [\n";
 		comma = "";
 		for (Arrow arrow : diag.arrows.values()) {
 			// generate a connection or initialize
@@ -1494,14 +1486,14 @@ public class CodeManager implements ActionListener {
 			Arrow a2 = arrow.findLastArrowInChain();
 			Block to = diag.blocks.get(Integer.valueOf(a2.toId));
 			if (to == null) {
-				MyOptionPane.showMessageDialog(driver.jf,
-						"Downstream block not found: from " + from.desc, MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.showMessageDialog(driver.jf, "Downstream block not found: from " + from.desc,
+						MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
-			if (from == null || to == null || from instanceof FileBlock
-					|| from instanceof ReportBlock
-					|| from instanceof LegendBlock || to instanceof FileBlock
-					|| to instanceof ReportBlock || to instanceof LegendBlock)
+			if (from == null || to == null || from instanceof FileBlock || from instanceof ReportBlock
+					|| from instanceof LegendBlock || from instanceof PersonBlock || from instanceof Enclosure
+					|| to instanceof FileBlock || to instanceof ReportBlock || to instanceof LegendBlock
+					|| to instanceof PersonBlock || to instanceof Enclosure)
 				continue;
 
 			if (!getPortNames(arrow))
@@ -1511,12 +1503,9 @@ public class CodeManager implements ActionListener {
 
 			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 
-			//driver.jf.repaint();
-			if (!(from instanceof ProcessBlock) && !(from instanceof IIPBlock)
-					|| !(to instanceof ProcessBlock))
-				continue;
+			// driver.jf.repaint();
 
-			data += comma + "{ ";
+			data += comma;
 			// String upPort = arrow.upStreamPort;
 			// String dnPort = a2.downStreamPort;
 			if (upPort != null) {
@@ -1532,17 +1521,27 @@ public class CodeManager implements ActionListener {
 				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
 					String proc = to.desc;
 					dnPort += "???";
-					MyOptionPane.showMessageDialog(driver.jf,
-							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
+					MyOptionPane.showMessageDialog(driver.jf, "Duplicate port name: " + proc + "." + dnPort,
+							MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
-				data += "\"data\":" + q(fromDesc) + ",\n";
-			} else
-				data += "\"src\": {\n \"process\" :" + q(fromDesc)
-						+ ",\n\"port\":" + q(upPort) + "\n},";
+				data += "{\"data\":" + q(fromDesc) + ",\n";
+			} else { // assume process
+				data += "{";
+				data += "\"src\": {\n \"process\" :" + q(fromDesc) + ",\n\"port\":" + q(upPort) + "}\n,";
+			}
 
-			data += "\"tgt\": {\n \"process\" :" + q(toDesc) + ",\n\"port\":"
-					+ q(dnPort) + "}\n}";
+			data += "\"tgt\": {\n \"process\" :" + q(toDesc) + ",\n\"port\":" + q(dnPort) + "}\n}";
+			comma = "\n,";
+			if (from instanceof ExtPortBlock) {
+
+				data += comma + "{" + "\"data\":" + "\"IN\"" + ",\n";
+				data += "\"tgt\": {\n \"process\" :" + q(fromDesc) + ",\n\"port\":" + "\"NAME\"" + "}\n}";
+			}
+			if (to instanceof ExtPortBlock) {
+				data += comma + "{" + "\"data\":" + "\"OUT\"" + ",\n";
+				data += "\"tgt\": {\n \"process\" :" + q(toDesc) + ",\n\"port\":" + "\"NAME\"" + "}\n}";
+			}
 			comma = "\n,";
 		}
 		data += "\n]\n}";
@@ -1645,7 +1644,7 @@ public class CodeManager implements ActionListener {
 			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 			// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
-			driver.jf.repaint();
+			//driver.jf.repaint();
 
 			if (!(from instanceof IIPBlock)) {
 				upPort = a2.upStreamPort;
@@ -1739,7 +1738,7 @@ public class CodeManager implements ActionListener {
 
 		//nsLabel.setText(doc.changed ? "Changed" : " ");
 
-		driver.jf.repaint();
+		//driver.jf.repaint();
 		// driver.jframe.update(jdriver.osg);
 
 		
@@ -1772,7 +1771,7 @@ public class CodeManager implements ActionListener {
 			if (c == null) {
 				MyOptionPane.showMessageDialog(driver.jf,
 						"Missing full class name for: " + b.desc, MyOptionPane.ERROR_MESSAGE);
-			 
+				c = "invalid class";
 				error = true;
 			}
 		}
