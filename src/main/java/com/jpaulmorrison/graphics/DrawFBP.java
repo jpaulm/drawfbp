@@ -1033,7 +1033,7 @@ langs = new Lang[12];
 		fileMenu.addSeparator();
        
 		String s = "Generate ";
-		if (curDiag != null)
+		//if (curDiag != null)
 			s += currNotn.label + " ";
 		s += "Network";
 		gNMenuItem = new JMenuItem(s);
