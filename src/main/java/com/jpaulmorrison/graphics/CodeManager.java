@@ -569,7 +569,7 @@ public class CodeManager implements ActionListener {
 
 		//displayDoc(null, gl, null);
 		try {
-			displayDoc(null, notn, doc.getText(0,  doc.getLength()));
+			displayDoc(null, lang, doc.getText(0,  doc.getLength()));
 		} catch (BadLocationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -621,7 +621,7 @@ public class CodeManager implements ActionListener {
 	
 	
 
-	String displayDoc(File filex, Notation notn, String fileString) {
+	String displayDoc(File filex, Lang lang, String fileString) {
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		
@@ -1014,7 +1014,7 @@ public class CodeManager implements ActionListener {
 					doc.setCharacterAttributes(i, j - i, baseStyle, false); // Gray
 				}
 			 
-				if (doc.getText(i, clsName.length()).equals(clsName))
+				if (clsName != null && doc.getText(i, clsName.length()).equals(clsName))
 					doc.setCharacterAttributes(i, clsName.length(), packageNameStyle,
 							false); // Magenta
 				 
@@ -1344,7 +1344,7 @@ public class CodeManager implements ActionListener {
 						*/
 						//docText.setText(doc); 
 						//driver.jf.dispose();
-						displayDoc(null, notn, fileString);
+						displayDoc(null, lang, fileString);
 						//driver.writeFile(file,  fileString);
 						//driver.saveProp("currentPackageName", pkg);
 						doc.changed = false; 
@@ -1719,6 +1719,7 @@ public class CodeManager implements ActionListener {
 			code += "\n";
 		}
 		
+		 
 		// insert string data
 		try {
 			doc.insertString(doc.getLength(), code, baseStyle);
@@ -1736,12 +1737,22 @@ public class CodeManager implements ActionListener {
 
 		generated = true;
 
-		//nsLabel.setText(doc.changed ? "Changed" : " ");
+		 nsLabel.setText(doc.changed ? "Changed" : " ");
+		 nsLabel.repaint();
 
-		//driver.jf.repaint();
-		// driver.jframe.update(jdriver.osg);
+			//displayDoc(null, gl, null);
+			try {
+				displayDoc(null, lang, doc.getText(0,  doc.getLength()));
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		
+		 driver.jf.repaint();
+		// driver.jframe.update(jdriver.osg);
+
+		 
 
 		return true;
 

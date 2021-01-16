@@ -215,12 +215,12 @@ public class DiagramBuilder {
 							//	diag.title = saveData;
 							//}
 
-						else if (endtag.equals("notation")) {
+						//else if (endtag.equals("notation")) {
 								//if (saveData.equals("NoFlo"))
 								//	saveData = "JSON";   // transitional! 
-								 driver.currNotn = driver
-								 		.findNotnFromLabel(saveData);
-							}
+						//		 driver.currNotn = driver
+						//		 		.findNotnFromLabel(saveData);
+						//	}
 
 						//else if (endtag.equals("generatedCodeFileName")) {
 								// diag.generatedCodeFileName = saveData; //

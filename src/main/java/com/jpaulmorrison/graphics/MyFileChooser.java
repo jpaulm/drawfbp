@@ -70,7 +70,7 @@ public class MyFileChooser extends JDialog
 	JList<String> list = null;
 	String listHead = null;
 	String listShowingJarFile = null;
-	boolean inJarTree = false;
+	boolean inTree = false;
 	JScrollPane listView = null;
 	JPanel panel = null;
 	int result = CANCEL_OPTION;
@@ -137,6 +137,8 @@ public class MyFileChooser extends JDialog
 	String chooserTitle;
 
 	public ClickListener clickListener;
+	
+	DefaultMutableTreeNode fbpJsonTree = null;
 
 	public MyFileChooser(DrawFBP driver, File f, Lang lang, String chooserTitle) {
 		
@@ -618,7 +620,7 @@ public class MyFileChooser extends JDialog
 
 		LinkedList<String> ll = new LinkedList<String>();
 		LinkedList<String> ll2 = null;
-		inJarTree = false;
+		inTree = false;
 		String s = listHead;
 
 		// String x = t_dirName.getText();
@@ -626,8 +628,8 @@ public class MyFileChooser extends JDialog
 
 		String t = null;
 		File f = new File(listHead);
-		if (s.toLowerCase().endsWith("package.json")) {
-			ll2 = buildListFromJSON(s);
+		if (s.toLowerCase().endsWith("fbp.json")) {
+			//ll2 = driver.buildTreeFromJsonList(s);
 
 			// fullNodeName = s;
 			// showFileNames();
@@ -649,13 +651,13 @@ public class MyFileChooser extends JDialog
 					ll.add("Folder does not exist or is not directory");
 				// return;
 			} else {
-				inJarTree = true;
+				inTree = true;
 			}
 
 			// else {
 			// return;
 
-			if (!inJarTree) {
+			if (!inTree) {
 				if (listHead.equals(listShowingJarFile)) {
 					String v = "";
 					t = driver.javaFBPJarFile;
@@ -961,6 +963,66 @@ public class MyFileChooser extends JDialog
 		return top;
 	}
 
+	/*
+	 * Build tree of nodes (DefaultMutableTreeNode) using contents of jar file
+	
+
+	public final DefaultMutableTreeNode buildFbpJsonTree(DefaultMutableTreeNode fbpJsonTree) {
+		Enumeration<?> entries;
+		JarFile jarFile;
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode();
+		DefaultMutableTreeNode next;
+
+		try {
+			File jFile = new File(jarFileName);
+			jarFile = new JarFile(jFile);
+
+			entries = jarFile.entries();
+
+			while (entries.hasMoreElements()) {
+				JarEntry entry = (JarEntry) entries.nextElement();
+				//System.out.println(entry);
+			
+					String s = entry.getName();
+					if (s.toLowerCase().endsWith(".class")) {
+
+						next = top;
+						DefaultMutableTreeNode child;
+						while (true) {
+							int i = s.indexOf("/");
+							String t;
+							if (i == -1) {
+								child = new DefaultMutableTreeNode(s);
+								//System.out.println(s);
+								next.add(child);
+								break;
+							} else {
+								t = s.substring(0, i);
+								if (null == (child = findChild(next, t))) {
+									child = new DefaultMutableTreeNode(t);
+									//System.out.println(t);
+									next.add(child);
+								}
+								s = s.substring(i + 1);
+								next = child;
+							}
+						}
+					}
+			
+			}
+			jarFile.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		return top;
+		
+	
+	}
+	 
+	*/
 	
 	@SuppressWarnings("unchecked")
 	private DefaultMutableTreeNode findChild(DefaultMutableTreeNode current,
@@ -980,128 +1042,7 @@ public class MyFileChooser extends JDialog
 	final boolean SAVEAS = true;
 
 	
-	@SuppressWarnings("unchecked")
-	LinkedList<String> buildListFromJSON(String fileName) {
-		int level = 0;
-		File f = new File(fileName);
-		String fileString;
-		LinkedList<String> ll = new LinkedList<String>();
-		if (null == (fileString = driver.readFile(f  ))) {
-			MyOptionPane.showMessageDialog(driver,	"Unable to read file " + f.getName(),
-					MyOptionPane.ERROR_MESSAGE);
-			return null;
-		}
-		Integer errNo =   Integer.valueOf(0);
-		BabelParser2 bp = new BabelParser2(fileString, errNo);
-		String label = null;
-		String operand = null;
-		HashMap<String, Object> hm = new HashMap<String, Object>();
-		// Stack<String> lStack = new Stack<String>();
-		Stack<HashMap<String, Object>> hmStack = new Stack<HashMap<String, Object>>();
-
-		// we will ignore the array structure for now...
-
-		while (true) {
-			if (!bp.tb('o'))
-				break;
-		}
-
-		do {
-			if (bp.tc('#', 'o')) { // assuming #-sign only in col.1
-				while (true) {
-					if (bp.tc('\r', 'o'))
-						break;
-					if (bp.tc('\n', 'o'))
-						break;
-					bp.tu('o');
-				}
-				continue;
-			}
-
-			if (bp.tc('[', 'o')) {
-				level++;
-				continue;
-			}
-			if (bp.tc('{', 'o')) {
-				level++;
-				if (label != null) {
-					HashMap<String, Object> hm2 = new HashMap<String, Object>();
-					hm.put(label, hm2);
-					hmStack.push(hm);
-					hm = hm2;
-					label = null;
-				}
-				continue;
-			}
-			if (bp.tc(']', 'o')) {
-				level--;
-				continue;
-			}
-			if (bp.tc('}', 'o')) {
-				level--;
-				if (level > 0)
-					hm = hmStack.pop();
-				continue;
-			}
-
-			if (bp.tc(':', 'o')) {
-				label = operand;
-				continue;
-			}
-			if (bp.tc('"', 'o')) {
-				while (true) {
-					if (bp.tc('"', 'o'))
-						break;
-					if (bp.tc('\\', 'o')) {
-						if (!(bp.tc('"')))
-							bp.w('\\');
-						continue;
-					}
-					bp.tu();
-				}
-				operand = new String(bp.getOutStr());
-				bp.eraseOutput();
-				if (label != null) {
-					hm.put(label, operand);
-					label = null;
-				}
-				continue;
-			}
-
-			if (!(bp.tu('o'))) // tu only returns false at end of string
-				break; // skip next character
-
-		} while (level > 0);
-
-		for (String k : hm.keySet()) {
-			if (k.equals("noflo")) {
-				HashMap<String, Object> m = (HashMap<String, Object>) hm.get(k);
-				for (String k2 : m.keySet()) {
-					if (k2.equals("graphs")
-							&& driver.currNotn.lang == driver.langs[DrawFBP.DIAGRAM]
-							|| k2.equals("components")
-								//	&& driver.currNotn.lang == driver.langs[DrawFBP.NETWORK]
-						//	|| driver.currNotn.lang == driver.langs[DrawFBP.PROCESS]) 
-							) {
-						HashMap<String, Object> m2 = (HashMap<String, Object>) m
-								.get(k2);
-						for (Object v : m2.values()) {
-							ll.add((String) v);
-						}
-					}
-				}
-			}
-		}
-
-		if (ll.isEmpty()) {
-			MyOptionPane.showMessageDialog(driver,
-					"No components or graphs in file: " + f.getName(),
-					MyOptionPane.ERROR_MESSAGE);
-			// return null;
-		}
-
-		return ll;
-	}
+	
 	
 	/*
 	LinkedList<String> sortByName(LinkedList<String> from) {
@@ -1156,7 +1097,7 @@ public class MyFileChooser extends JDialog
 		for (String s : from) {
 			//File f = new File(listHead + "/" + s); 
 			
-			if (!inJarTree) {
+			if (!inTree) {
 				String s2 = (new File(s)).getName();
 
 				File f = new File(s);
@@ -1181,7 +1122,7 @@ public class MyFileChooser extends JDialog
 		}
 			
 				
-		if (!inJarTree && driver.sortByDate)
+		if (!inTree && driver.sortByDate)
 			Collections.sort(ll, compDate);
 		else
 			Collections.sort(ll, compName);
@@ -1239,7 +1180,7 @@ public class MyFileChooser extends JDialog
 			//if (driver.sortByDate) {
 			//	jp.add(Box.createHorizontalGlue());				
 			//}
-			if (!inJarTree) {
+			if (!inTree) {
 				jp.add(date, BorderLayout.WEST);
 				jp.add(Box.createHorizontalStrut(20));
 				//jp.add(Box.createRigidArea(new Dimension(20, 0)));
@@ -1295,13 +1236,13 @@ public class MyFileChooser extends JDialog
 			if (s == null)
 				name.setBackground(vLightBlue);
 
-			else if (s.indexOf(".jar@") > -1 || inJarTree)
+			else if (s.indexOf(".jar@") > -1 || inTree)
 				name.setBackground(goldenRod);
 			else
 				name.setBackground(vLightBlue);
 
 			if (isSelected) {
-				if (s.indexOf(".jar@") > -1 || inJarTree)
+				if (s.indexOf(".jar@") > -1 || inTree)
 					name.setBackground(bisque);
 				else
 					name.setBackground(lightBlue);
@@ -1318,13 +1259,13 @@ public class MyFileChooser extends JDialog
 			date.setText(blanks);
 			if (s != null && s.charAt(0) != ' ') {
 				
-				if (!inJarTree)
+				if (!inTree)
 					date.setIcon(icon);
 				else
 					name.setIcon(icon);
 				int i = s.indexOf("@");
 				
-				if (inJarTree) {
+				if (inTree) {
 					name.setText(s);
 					date.setText(blanks);
 				}
@@ -1811,8 +1752,8 @@ public class MyFileChooser extends JDialog
 			}
 			*/
 
-			butNF.setEnabled(!inJarTree /*&& saveAs */);
-			butDel.setEnabled(!inJarTree);
+			butNF.setEnabled(!inTree /*&& saveAs */);
+			butDel.setEnabled(!inTree);
 
 			if (!((selComp instanceof JList) || selComp == t_fileName))
 				return;
@@ -1866,7 +1807,7 @@ public class MyFileChooser extends JDialog
 						s2 = t_dirName.getText() + "/" + s;
 					File f = new File(s2);
 
-					if (!inJarTree) {
+					if (!inTree) {
 					if (!f.exists()) {
 						//if (-1 == s.indexOf(".")) {
 						if (null == driver.getSuffix(s)) {	
@@ -1929,20 +1870,27 @@ public class MyFileChooser extends JDialog
 			
 			File f = null;
 
-			if (s.toLowerCase().endsWith(".jar")) {
+			if (s.toLowerCase().endsWith(".jar") ||
+					s.toLowerCase().endsWith("fbp.json")) {
 				butNF.setEnabled(false);
 				butDel.setEnabled(false);
-				// if (filter instanceof DrawFBP.JarFileFilter)
-				if (lang == driver.langs[DrawFBP.JARFILE]
-						/* || fCP == driver.curDiag.fCParm[Diagram.JHELP] */) {
+				
+				if (lang == driver.langs[DrawFBP.JARFILE]) {
 					processOK();
 					return;
 				}
 
-				jarTree = buildJarFileTree(s);
-				inJarTree = true;
-				butNF.setEnabled(!inJarTree /*&& saveAs */);
-				butDel.setEnabled(!inJarTree);
+				if (s.toLowerCase().endsWith(".jar")) {
+					jarTree = buildJarFileTree(s);
+					inTree = true;
+				}
+				
+				//if (s.toLowerCase().endsWith("fbp.json")) {
+				//	fbpJsonStr = buildFbpJsonTree(s);
+				//}
+				
+				butNF.setEnabled(!inTree /*&& saveAs */);
+				butDel.setEnabled(!inTree);
 				currentNode = jarTree;
 				t_fileName.setText("");
 
@@ -1957,7 +1905,7 @@ public class MyFileChooser extends JDialog
 
 				showList();
 
-			} else if (!inJarTree) {
+			} else if (!inTree) {
 
 				if (s.equals(""))
 					f = new File(listHead);
@@ -1980,7 +1928,7 @@ public class MyFileChooser extends JDialog
 					}
 				}
 				if (f.isDirectory()
-						|| f.getName().toLowerCase().endsWith("package.json")) {
+						|| f.getName().toLowerCase().endsWith("fbp.json")) {
 
 					listHead = f.getAbsolutePath();
 					showListHead();
@@ -2083,7 +2031,7 @@ public class MyFileChooser extends JDialog
 		public void actionPerformed(ActionEvent e) {
 			t_fileName.setText("");
 
-			if (!inJarTree) {
+			if (!inTree) {
 				listHead = (new File(listHead)).getParent();
 				if (listHead == null)
 					listHead = System.getProperty("user.home");
@@ -2094,7 +2042,7 @@ public class MyFileChooser extends JDialog
 			} else {
 				String u = (String) currentNode.getUserObject();
 				if (u == null) {
-					inJarTree = false;
+					inTree = false;
 					currentNode = null;
 				} else {
 
@@ -2107,13 +2055,13 @@ public class MyFileChooser extends JDialog
 					listHead = u;
 					
 				}
-				if (!inJarTree) {
+				if (!inTree) {
 					listHead = listShowingJarFile;
 
 				}
 			}
-			butNF.setEnabled(!inJarTree /* && saveAs */);
-			butDel.setEnabled(!inJarTree);
+			butNF.setEnabled(!inTree /* && saveAs */);
+			butDel.setEnabled(!inTree);
 			// if (selComp instanceof MyButton) {
 			butParent.setSelected(false);
 			t_fileName.setText((new File(listHead)).getName()+ "/");
@@ -2417,7 +2365,7 @@ l.setFont(driver.fontg);
 				//selComp = t_fileName;        
 				
 				String v = list.getSelectedValue();
-				if (!inJarTree) {
+				if (!inTree) {
 					selComp = t_fileName;        
 					w = t_dirName.getText();
 					int j = v.indexOf("@");
@@ -2435,7 +2383,7 @@ l.setFont(driver.fontg);
 					return;
 					
 				}
-				if (inJarTree) {
+				if (inTree) {
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 					return;
 				}
@@ -2470,7 +2418,7 @@ public void oneClick() {
 		
 		//t_fileName.setText(t);
 		
-		if (!inJarTree) {
+		if (!inTree) {
 			String t2 = t;
 			if (!t.equals("")) {
 				if (!t.endsWith(".jar")) {

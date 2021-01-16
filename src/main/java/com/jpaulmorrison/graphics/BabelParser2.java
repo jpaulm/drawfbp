@@ -60,9 +60,11 @@ public class BabelParser2 {
 	 * @return java.lang.String
 	 */
 	public String getOutStr() {
-		String sym = null;
+		String sym = "";
 		if (outputIndex > 0) {
 			try {
+				//System.out.println("\"" + (new String(output)).substring(0, 60) + "\"");
+				//System.out.println(outputIndex); 
 				sym = new String(output, 0, outputIndex);
 			} catch (NullPointerException r) {
 				System.out.println("RuntimeException:" + r);

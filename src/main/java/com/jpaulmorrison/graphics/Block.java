@@ -2423,7 +2423,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		// diag.changeCompLang();
 		CodeManager cm = new CodeManager(diag, driver.CODEMGRCREATE);
-		cm.displayDoc(new File(t), driver.currNotn, null);
+		cm.displayDoc(new File(t), driver.currNotn.lang, null);
 
 	}
 
