@@ -31,9 +31,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Stack;
 import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -74,6 +72,8 @@ public class MyFileChooser extends JDialog
 	JScrollPane listView = null;
 	JPanel panel = null;
 	int result = CANCEL_OPTION;
+	
+	DefaultMutableTreeNode fbpJsonTree = new DefaultMutableTreeNode();
 
 	DrawFBP driver = null;
 	MyButton butParent = new MyButton(null, "parent");
@@ -138,7 +138,7 @@ public class MyFileChooser extends JDialog
 
 	public ClickListener clickListener;
 	
-	DefaultMutableTreeNode fbpJsonTree = null;
+	//DefaultMutableTreeNode fbpJsonTree = null;
 
 	public MyFileChooser(DrawFBP driver, File f, Lang lang, String chooserTitle) {
 		
@@ -603,6 +603,7 @@ public class MyFileChooser extends JDialog
 		listHead = listHead.replace("/",  File.separator);		
 		t_dirName.setText(listHead);
 	}
+	
 	void getSelectedFile(String[] s) {
 
 		s[0] = DrawFBP.makeAbsFileName(t_fileName.getText(),
@@ -784,7 +785,7 @@ public class MyFileChooser extends JDialog
 
 			} else {
 				
-				// must be in jar tree
+				// must be in tree
 				
 				
 				if (currentNode == null)
@@ -803,11 +804,12 @@ public class MyFileChooser extends JDialog
 					while (e.hasMoreElements()) {
 						DefaultMutableTreeNode node = (DefaultMutableTreeNode) (e.nextElement());
 						t = (String) node.getUserObject();
-						ll2.add((String) t);
+						if (t != null)
+							ll2.add((String) t);
 					}
-					ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll
-											// in
-					// sorted order
+					ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll - sorted
+					//ll.addAll(ll2); // add elements of ll2 to end of ll - don't sort!
+											
 				} else {
 
 					selComp = t_fileName;
@@ -963,66 +965,136 @@ public class MyFileChooser extends JDialog
 		return top;
 	}
 
-	/*
-	 * Build tree of nodes (DefaultMutableTreeNode) using contents of jar file
+
 	
-
-	public final DefaultMutableTreeNode buildFbpJsonTree(DefaultMutableTreeNode fbpJsonTree) {
-		Enumeration<?> entries;
-		JarFile jarFile;
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode();
-		DefaultMutableTreeNode next;
-
-		try {
-			File jFile = new File(jarFileName);
-			jarFile = new JarFile(jFile);
-
-			entries = jarFile.entries();
-
-			while (entries.hasMoreElements()) {
-				JarEntry entry = (JarEntry) entries.nextElement();
-				//System.out.println(entry);
-			
-					String s = entry.getName();
-					if (s.toLowerCase().endsWith(".class")) {
-
-						next = top;
-						DefaultMutableTreeNode child;
-						while (true) {
-							int i = s.indexOf("/");
-							String t;
-							if (i == -1) {
-								child = new DefaultMutableTreeNode(s);
-								//System.out.println(s);
-								next.add(child);
-								break;
-							} else {
-								t = s.substring(0, i);
-								if (null == (child = findChild(next, t))) {
-									child = new DefaultMutableTreeNode(t);
-									//System.out.println(t);
-									next.add(child);
-								}
-								s = s.substring(i + 1);
-								next = child;
-							}
-						}
-					}
-			
-			}
-			jarFile.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-
-		}
-		return top;
+	void buildListFromJSON(String fileName) {
+		File f = new File(fileName);
+		String fileString;
 		
-	
+		DefaultMutableTreeNode currentListNode = new DefaultMutableTreeNode(fbpJsonTree);
+			
+		if (null == (fileString = driver.readFile(f))) {
+			MyOptionPane.showMessageDialog(driver,	"Unable to read file " + f.getName(),
+					MyOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		Integer errNo =   Integer.valueOf(0);
+		BabelParser2 bp = new BabelParser2(fileString, errNo);
+		
+		String label = null;
+		String operand = null;
+		//String data = null;
+		String first = null;
+		String second= null;
+		boolean compList = false;
+		int levelNo = 0;
+		int levels[] = new int[100];
+		
+		while (true) {
+			if (!bp.tb('o'))
+				break;
+		}
+
+		while (true) {
+			if (bp.tc('#', 'o')) { // assuming #-sign only in col.1
+				while (true) {
+					if (bp.tc('\r', 'o'))
+						break;
+					if (bp.tc('\n', 'o'))
+						break;
+					bp.tu('o');
+				}
+				continue;
+			}
+
+			if (bp.tc('[', 'o')) {  //start of array
+				
+				//System.out.println(label + ":" + "Array");	
+				levelNo++;
+				levels[levelNo] = 0;
+				//if (label.equals("components") || compList) {
+					//compList = true;
+					if (bp.tc(']', 'o'))  
+						continue;
+					DefaultMutableTreeNode currentNode =  new DefaultMutableTreeNode();
+					currentListNode.add(currentNode);
+					//if (label == null)
+					//	label = "No entries";
+					currentNode.setUserObject(label);
+					currentListNode = currentNode;	
+					label = null;
+				//}
+				continue;
+			}
+			if (bp.tc('{', 'o')) {  // start of object				
+				//System.out.println("Object");	
+				levels[levelNo]++;
+				//levelNo++;
+				continue;
+			}
+			if (bp.tc(']', 'o')) {  // end of array
+				//System.out.println("End array");
+				levelNo--;
+				currentListNode = (DefaultMutableTreeNode) currentListNode.getParent();			
+				continue;
+			}
+			if (bp.tc('}', 'o')) {  // end of object
+				//levelNo--;
+				//System.out.println("End of Object");
+				
+				continue;
+			}
+
+			if (bp.tc('"', 'o')) {
+				while (true) {
+					if (bp.tc('"', 'o'))
+						break;
+					if (bp.tc('\\', 'o')) {
+						if (!(bp.tc('"')))
+							bp.w('\\');
+						continue;
+					}
+					bp.tu();
+				}
+				operand = new String(bp.getOutStr());
+				
+				if (bp.tc(':', 'o')) {
+					if (operand.equals("components"))  
+						compList = true;					
+					first = new String(operand);
+				}
+				else  {
+					second = new String(operand);
+					if (first.equals("path"))  
+						label = second /* + "(" + levels[levelNo] + ")" */;	
+					
+					if (first.equals("source") && compList) {
+						//if (tree == null)
+						DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();
+						currentListNode.add(newNode);
+						newNode.setUserObject(label);
+						newNode = null;
+					}
+				}			
+					
+				bp.eraseOutput();
+				continue;
+			}
+
+			if (!(bp.tu('o'))) // tu only returns false at end of string
+				break; // skip next character
+
+		} 
+		
+		//if (ll.isEmpty()) {
+		//	MyOptionPane.showMessageDialog(driver,
+		//			"No components in file: " + f.getName(),
+		//			MyOptionPane.ERROR_MESSAGE);
+			// return null;
+		//}
+		fbpJsonTree = currentListNode;
+		return;
 	}
-	 
-	*/
 	
 	@SuppressWarnings("unchecked")
 	private DefaultMutableTreeNode findChild(DefaultMutableTreeNode current,
@@ -1040,55 +1112,8 @@ public class MyFileChooser extends JDialog
 	}
 
 	final boolean SAVEAS = true;
-
 	
 	
-	
-	/*
-	LinkedList<String> sortByName(LinkedList<String> from) {
-		if (from.isEmpty()) {
-			return new LinkedList<String>(); // return empty list
-
-		}
-
-		LinkedList<String> ll = from;
-		LinkedList<String> lkl = new LinkedList<String>();
-		while (true) {
-			try {
-				String low = ll.getFirst();
-
-				int i = 0;
-				int low_i = 0;
-				for (String s : ll) {
-
-					if (i > 0 && s.compareToIgnoreCase(low) < 0) {
-
-						low = s;
-						low_i = i;
-					}
-
-					i++;
-				}
-				File f = new File(listHead + "/" + low); 				
-				Path path = f.toPath();
-				String curDate = Files.getLastModifiedTime(path).toString();
-				low += "!" + curDate;
-				lkl.add(low);
-
-				ll.remove(low_i);
-			}
-
-			catch (NoSuchElementException e) {
-				return lkl;
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-	}
-	*/
 	LinkedList<String> mySort(LinkedList<String> from) {
 		
 		// Collections.sort sorts in place - that's OK!		
@@ -1121,7 +1146,6 @@ public class MyFileChooser extends JDialog
 				ll.add(s);		 
 		}
 			
-				
 		if (!inTree && driver.sortByDate)
 			Collections.sort(ll, compDate);
 		else
@@ -1824,7 +1848,7 @@ public class MyFileChooser extends JDialog
 							repaint();
 						} 
 						 
-						if (!f.exists()) {
+				//		if (!f.exists()) {
 					 /*
 					 	if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					 
@@ -1842,7 +1866,7 @@ public class MyFileChooser extends JDialog
 								MyOptionPane.showMessageDialog(driver, f.getAbsolutePath() + " does not exist - use New Diagram or Save As");
 								return;
 								*/
-							}
+						//	}
 						 
 					//	}
 						
@@ -1868,7 +1892,7 @@ public class MyFileChooser extends JDialog
 			}
 
 			
-			File f = null;
+			//File f = null;
 
 			if (s.toLowerCase().endsWith(".jar") ||
 					s.toLowerCase().endsWith("fbp.json")) {
@@ -1885,20 +1909,29 @@ public class MyFileChooser extends JDialog
 					inTree = true;
 				}
 				
-				//if (s.toLowerCase().endsWith("fbp.json")) {
-				//	fbpJsonStr = buildFbpJsonTree(s);
-				//}
+				String s2 = "";
+				if (!s.endsWith(".jar") || -1 == s.indexOf("/"))
+					s2 = t_dirName.getText() + "/" + s;
+				//File f = new File(s2);
+				inTree = true;
+				if (s.toLowerCase().endsWith("fbp.json")) {
+					//processOK();
+					buildListFromJSON(s2);				
+				}
 				
 				butNF.setEnabled(!inTree /*&& saveAs */);
 				butDel.setEnabled(!inTree);
-				currentNode = jarTree;
+				if (driver.currNotn == driver.notations[DrawFBP.JSON])
+					currentNode = fbpJsonTree;
+				else	
+					currentNode = jarTree;
 				t_fileName.setText("");
 
-				if (0 >= currentNode.getChildCount()) {
-					MyOptionPane.showMessageDialog(driver,
-							"Error in jar file", MyOptionPane.ERROR_MESSAGE);
-					return;
-				}
+				//if (0 >= currentNode.getChildCount()) {
+				//	MyOptionPane.showMessageDialog(driver,
+				//			"Error in jar file", MyOptionPane.ERROR_MESSAGE);
+				//	return;
+				//}
 
 				listHead = s + "!";   //?????????????
 				showListHead();
@@ -1907,6 +1940,7 @@ public class MyFileChooser extends JDialog
 
 			} else if (!inTree) {
 
+				File f = null;
 				if (s.equals(""))
 					f = new File(listHead);
 				else {
@@ -1938,11 +1972,18 @@ public class MyFileChooser extends JDialog
 				} else
 					processOK();
 				
-			} else { // inJarTree
+			} else { // inTree
 				
 				String w = list.getSelectedValue();
-				
-				currentNode = findChild(currentNode, w);
+				int k = w.lastIndexOf(".");
+				if (k > -1) {
+					String suff = w.substring(k + 1);
+					if (suff.equals(driver.currNotn.lang.ext))  
+						processOK();	
+				}
+				//else {
+				//String suff = w.substring(k + 1);
+				currentNode = findChild(currentNode, w);  
 				if (currentNode == null)
 					return;
 				if (currentNode.getChildCount() > 0) {
@@ -1951,10 +1992,11 @@ public class MyFileChooser extends JDialog
 					showListHead();
 					// panel.remove(listView);
 					showList();
-				} else
+				} 
+				else
 					// if (!saveAs)
 					processOK();
-
+				//}
 			}
 
 			// }

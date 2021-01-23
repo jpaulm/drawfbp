@@ -2025,8 +2025,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		//javaComp = null;
 		
 		component = null;
+		
 
-		String t = driver.properties.get("srcDir");
+		String t = driver.properties.get("currentClassDir");
 		if (t == null)
 			t = System.getProperty("user.home");
 		/*
@@ -2050,19 +2051,18 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			String res = driver.getSelFile(fc);
 
-				// we are looking in local class hierarchy (not a jar file)
 				String fs = res;
 				//injar = false;
 
 				//if (fs.endsWith("jar"))
 				//	cFile = new File(driver.javaFBPJarFile); 
 				//else {
-					cFile = new File(fs);
-					if (cFile == null || !(cFile.exists())) {
-						MyOptionPane.showMessageDialog(driver,
-								"Unable to find file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
-						return;
-					}
+				cFile = new File(fs);
+				//if (cFile == null || !(cFile.exists())) {
+				//	MyOptionPane.showMessageDialog(driver,
+				//			"Unable to find file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
+				//	return;
+				//}
 				//}
 
 				//boolean classFound;
@@ -2077,7 +2077,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				
 				String currentClassDir = w;
 			    if (currentClassDir != null)
-			    	driver.saveProp("srcDir",
+			    	driver.saveProp("currentClassDir",
 			    			currentClassDir); 
 				
 				

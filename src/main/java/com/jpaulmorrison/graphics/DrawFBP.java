@@ -55,6 +55,7 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleContext;
+import javax.swing.tree.DefaultMutableTreeNode;
 public class DrawFBP extends JFrame
 		implements
 			ActionListener,
@@ -266,6 +267,9 @@ public class DrawFBP extends JFrame
 	//JFrame popup2 = null;
 	JFrame popup = null;
 	//JFrame depDialog = null;
+	
+	//DefaultMutableTreeNode fbpJsonTree = null;
+	
 
 	static enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
@@ -317,7 +321,7 @@ public class DrawFBP extends JFrame
 	
 	boolean clickToGrid = true;
 	
-	LinkedList<String> fbpJsonLl = null;
+	//LinkedList<String> fbpJsonLl = null;
 	
 	final boolean CODEMGRCREATE = true;
 	
@@ -370,7 +374,7 @@ langs = new Lang[12];
 		
 		langs[JAVA] = new Lang("Java", "java", new JavaFileFilter(), "currentJavaFBPDir");
 		langs[CSHARP] = new Lang("C#", "cs", new CsharpFileFilter(), "currentCsharpFBPDir");
-		langs[JS] = new Lang("JS", "js", new JSONFilter(), "currentJSDir");
+		langs[JS] = new Lang("JS", "js", new JSFilter(), "currentJSDir");
 		langs[FBP] = new Lang("FBP", "fbp", new FBPFilter(), "currentFBPNetworkDir");				
 		langs[DIAGRAM] = new Lang(null, "drw", new DiagramFilter(), "currentDiagramDir"); //y
 		langs[IMAGE] = new Lang(null, "png", new ImageFilter(), "currentImageDir");				
@@ -2138,166 +2142,10 @@ langs = new Lang[12];
 			b.subnetFileName = null;
 		}
 
-		if (currNotn == notations[DrawFBP.FBP_NOTN]) {
-			//String fbpJsonLocation = "C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\docs\\fbp.json";
-			//fbpJsonLl = buildListFromJSON(fbpJsonLocation); 
-		}
 		
 		repaint();
 	}
 
-	@SuppressWarnings("unchecked")
-	LinkedList<String> buildListFromJSON(String fileName) {
-		int level = 0;
-		File f = new File(fileName);
-		String fileString;
-		LinkedList<String> ll = new LinkedList<String>();
-		int[] indexes = new int[100];
-	
-		if (null == (fileString = driver.readFile(f  ))) {
-			MyOptionPane.showMessageDialog(driver,	"Unable to read file " + f.getName(),
-					MyOptionPane.ERROR_MESSAGE);
-			return null;
-		}
-		Integer errNo =   Integer.valueOf(0);
-		BabelParser2 bp = new BabelParser2(fileString, errNo);
-		//String value = null;
-		String label = null;
-		String operand = null;
-		HashMap<String, Object> hm = new HashMap<String, Object>();
-		// Stack<String> lStack = new Stack<String>();
-		Stack<HashMap<String, Object>> hmStack = new Stack<HashMap<String, Object>>();
-
-		// we will ignore the array structure for now...
-
-		while (true) {
-			if (!bp.tb('o'))
-				break;
-		}
-
-		do {
-			if (bp.tc('#', 'o')) { // assuming #-sign only in col.1
-				while (true) {
-					if (bp.tc('\r', 'o'))
-						break;
-					if (bp.tc('\n', 'o'))
-						break;
-					bp.tu('o');
-				}
-				continue;
-			}
-
-			if (bp.tc('[', 'o')) {  //start of array
-				level++;
-				System.out.println(label + ":" + "Array");
-				//System.out.println("array");
-				if (label != null) {
-					HashMap<String, Object> hm2 = new HashMap<String, Object>();
-					hm.put(label, hm2);
-					hmStack.push(hm);
-					hm = hm2;
-					label = null;
-				}
-				continue;
-			}
-			if (bp.tc('{', 'o')) {  // start of list
-				level++;
-				//System.out.println(label + ":" + "List");
-				if (label == null) {
-					HashMap<String, Object> hm2 = new HashMap<String, Object>();
-					hm.put(label, hm2);
-					hmStack.push(hm);
-					hm = hm2;
-					label = null;
-					indexes[level] = 0;
-				}
-				else
-					indexes[level] ++;
-				continue;
-			}
-			if (bp.tc(']', 'o')) {  // end of array
-				//System.out.println("/array");
-				level--;
-				if (level > 0  && !hmStack.isEmpty())
-					hm = hmStack.pop();
-				continue;
-			}
-			if (bp.tc('}', 'o')) {  // end of list
-				level--;
-				//System.out.println("/list");
-				if (level > 0  && !hmStack.isEmpty())
-					hm = hmStack.pop();
-				continue;
-			}
-
-			//if (bp.tc(':', 'o')) {
-			//	value = operand;
-			//	continue;
-			///}
-			if (bp.tc('"', 'o')) {
-				while (true) {
-					if (bp.tc('"', 'o'))
-						break;
-					if (bp.tc('\\', 'o')) {
-						if (!(bp.tc('"')))
-							bp.w('\\');
-						continue;
-					}
-					bp.tu();
-				}
-				operand = new String(bp.getOutStr());
-				if (bp.tc(':', 'o')) {
-					label = new String(operand);
-					operand = null;
-					//bp.eraseOutput();
-				}
-				else  {
-					//if (operand == null || operand.length() == 0) 
-					//	operand = "List or array";				
-					System.out.println(label + ":" + operand);
-					if (label != null && level > 0) {
-						hm.put(label, operand);
-						label = null;
-					}
-					else
-						hm.put(indexes[level++] + "", operand);
-				}
-				bp.eraseOutput();
-				continue;
-			}
-
-			if (!(bp.tu('o'))) // tu only returns false at end of string
-				break; // skip next character
-
-		} while (level > 0);
-
-		for (String k : hm.keySet()) {
-			if (k != null && k.equals("modules")) {
-				HashMap<String, Object> m =  (HashMap<String, Object>) hm.get(k);
-			       
-				for (String k2 : m.keySet()) {
-					if (k2 != null && k2.equals("components")) {
-						HashMap<String, Object> m2 = (HashMap<String, Object>) m
-								.get(k2);
-						
-						for (Object v : m2.values()) {
-							if (v instanceof String)
-								ll.add((String) v);
-						}
-					}
-				}
-			}
-		}
-
-		if (ll.isEmpty()) {
-			MyOptionPane.showMessageDialog(driver,
-					"No components in file: " + f.getName(),
-					MyOptionPane.ERROR_MESSAGE);
-			// return null;
-		}
-
-		return ll;
-	}
 	
 	// editType is false if no edit; true if block type determines type
 	
@@ -5798,18 +5646,20 @@ langs = new Lang[12];
 		}
 	}
 
-	public class JSONFilter extends FileFilter {
+	public class JSFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
 			return f.getName().toLowerCase().endsWith(".js")
+					|| f.getName().toLowerCase().endsWith(".coffee")
+					|| f.getName().toLowerCase().endsWith(".json")	
 					|| f.isDirectory();
 
 		}
 
 		@Override
 		public String getDescription() {
-			return "JSON source files (*.js)";
+			return "JSON source files (*.js, *.coffee or *.json)";
 		}
 	}
 	

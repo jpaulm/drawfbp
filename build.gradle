@@ -47,7 +47,7 @@ allprojects { project ->
      }
 }
 */
-version = '2.21.1'
+version = '2.21.2'
 
 group = 'com.jpaulmorrison'
 
@@ -108,7 +108,7 @@ jar {
     exclude('math/geom2s/**')
     exclude('math/utils/**')
     exclude('math/package/html')
-    exclude('com/seisw/util/geom/**')
+    exclude('com/seisw/**')
    
 }
 
@@ -153,7 +153,6 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            //version = '2.21.1'
             version = project.version
             
             from components.java
