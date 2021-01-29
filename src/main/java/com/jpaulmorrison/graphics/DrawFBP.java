@@ -16,7 +16,7 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import java.awt.Image; 
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -37,6 +37,8 @@ import javax.swing.event.*;
 import java.util.*;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.*;
@@ -56,20 +58,16 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleContext;
 import javax.swing.tree.DefaultMutableTreeNode;
-public class DrawFBP extends JFrame
-		implements
-			ActionListener,
-			ComponentListener, 
-			ChangeListener,
-			MouseListener
-			{
+import javax.swing.tree.TreeNode;
+
+public class DrawFBP extends JFrame implements ActionListener, ComponentListener, ChangeListener, MouseListener {
 
 	static final long serialVersionUID = 111L;
-	//private static final DrawFBP DrawFBP = null;
+	// private static final DrawFBP DrawFBP = null;
 	DrawFBP driver = this;
 
 	JLabel diagDesc;
-	
+
 	JFrame jf = null;
 
 	JTextField jfl = null;
@@ -79,10 +77,10 @@ public class DrawFBP extends JFrame
 	JLabel scaleLab;
 
 	Diagram curDiag = null;
-	
+
 	File currentImageDir = null;
 
-	//JFrame this;
+	// JFrame this;
 
 	Block blockSelForDragging = null;
 
@@ -106,7 +104,7 @@ public class DrawFBP extends JFrame
 	JTabbedPaneWithCloseIcons jtp;
 
 	String javaFBPJarFile = null;
-	//String jhallJarFile = null;
+	// String jhallJarFile = null;
 
 	Block selBlockM = null; // used only when mousing over
 	Block selBlock = null; // permanent select
@@ -148,17 +146,17 @@ public class DrawFBP extends JFrame
 
 	String blockType = Block.Types.PROCESS_BLOCK;
 
-	FoundPointB edgePoint = null; // this controls display of detection areas while mouse moving 
-	
+	FoundPointB edgePoint = null; // this controls display of detection areas while mouse moving
+
 	FoundPointB fpArrowRoot = null; // this is used to draw blue circle where
 									// arrows can start
-	FoundPointB fpArrowEndB = null;  
-								
+	FoundPointB fpArrowEndB = null;
+
 	FoundPointA fpArrowEndA = null;
-	 
+
 	Arrow currentArrow = null;
 	Block foundBlock;
-	
+
 	URLClassLoader myURLClassLoader = null;
 
 	int curx, cury;
@@ -166,15 +164,15 @@ public class DrawFBP extends JFrame
 	Notation notations[];
 	Lang langs[];
 
-	//FileChooserParm[] fCPArray = new FileChooserParm[10];
+	// FileChooserParm[] fCPArray = new FileChooserParm[10];
 
 	JCheckBox grid;
 
 	boolean leftButton;
-	
-	boolean sortByDate;  // remember across invocations of MyFileChooser
-	
-	int zWS;                   // zone width scaled
+
+	boolean sortByDate; // remember across invocations of MyFileChooser
+
+	int zWS; // zone width scaled
 
 	static final int gridUnitSize = 4; // can be static - try for now
 
@@ -184,12 +182,11 @@ public class DrawFBP extends JFrame
 	static final double FORCE_HORIZONTAL = 0.05; // can be static as this is a
 													// slope
 	static final int zoneWidth = 8;
-	
+
 	static final int CREATE = 1;
 	static final int MODIFY = 2;
-	 
 
-	//public static final String Side = null;
+	// public static final String Side = null;
 
 	static enum Corner {
 		NONE, TOPLEFT, BOTTOMLEFT, TOPRIGHT, BOTTOMRIGHT
@@ -214,21 +211,19 @@ public class DrawFBP extends JFrame
 
 	// "Subnet" is not a separate block type (it is a variant of "Process")
 
-	String blockNames[] = {"Process", "Initial IP", "Enclosure", "Subnet",
-			"ExtPorts: In", "... Out", "... Out/In", "Legend", "File", "Person",
-			"Report"};
+	String blockNames[] = { "Process", "Initial IP", "Enclosure", "Subnet", "ExtPorts: In", "... Out", "... Out/In",
+			"Legend", "File", "Person", "Report" };
 
-	String blockTypes[] = {Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK,
-			Block.Types.ENCL_BLOCK, Block.Types.PROCESS_BLOCK,
-			Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
-			Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK,
-			Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
-			Block.Types.REPORT_BLOCK};
+	String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
+			Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
+			Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
+			Block.Types.REPORT_BLOCK };
 
-	//HashMap<String, String> jarFiles = new HashMap<String, String>();  // does not contain JavaFBP jar file
-	Set<String> jarFiles = new HashSet<String>();  // does not contain JavaFBP jar file
-	//HashMap<String, String> dllFiles = new HashMap<String, String>();
-	Set<String> dllFiles = new HashSet<String>();  
+	// HashMap<String, String> jarFiles = new HashMap<String, String>(); // does not
+	// contain JavaFBP jar file
+	Set<String> jarFiles = new HashSet<String>(); // does not contain JavaFBP jar file
+	// HashMap<String, String> dllFiles = new HashMap<String, String>();
+	Set<String> dllFiles = new HashSet<String>();
 
 	// JPopupMenu curPopup = null; // currently active popup menu
 
@@ -244,10 +239,11 @@ public class DrawFBP extends JFrame
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
 	JMenuItem menuItem1 = new JMenuItem("Locate JavaFBP Jar File");
-	JMenuItem menuItem2j = new JMenuItem("Add Additional Jar File");	
-	JMenuItem menuItem2c = new JMenuItem("Add Additional Dll File");
+	JMenuItem menuItem2 = new JMenuItem("Add Additional Jar File");
 	JMenuItem compMenu = null;
 	JMenuItem runMenu = null;
+
+	String fbpJsonFile = null;
 
 	JTextField jtf = new JTextField();
 
@@ -264,12 +260,11 @@ public class DrawFBP extends JFrame
 												// actually)
 	static Color grey = new Color(170, 244, 255); // sort of bluish grey (?)
 	// JFrame popup = null;
-	//JFrame popup2 = null;
+	// JFrame popup2 = null;
 	JFrame popup = null;
-	//JFrame depDialog = null;
-	
-	//DefaultMutableTreeNode fbpJsonTree = null;
-	
+	// JFrame depDialog = null;
+
+	DefaultMutableTreeNode fbpJsonTree = new DefaultMutableTreeNode();
 
 	static enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
@@ -277,7 +272,7 @@ public class DrawFBP extends JFrame
 	// static boolean READFILE = true;
 
 	Cursor defaultCursor = null;
-	//boolean use_drag_icon = false;
+	// boolean use_drag_icon = false;
 
 	JLabel zoom = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
@@ -286,129 +281,105 @@ public class DrawFBP extends JFrame
 	JRadioButton[] but = new JRadioButton[11];
 	Box box21 = null;
 
-	//Timer ttStartTimer = null;
-	//Timer ttEndTimer = null;
-	//boolean drawToolTip = false;
+	// Timer ttStartTimer = null;
+	// Timer ttEndTimer = null;
+	// boolean drawToolTip = false;
 	boolean gotDllReminder = false;
-	
-	//FileChooserParm diagFCParm = null;
-	String[] filterOptions = {"", "All (*.*)"};
-	//volatile boolean finished = false;
-	//String clsDir = null;
+
+	// FileChooserParm diagFCParm = null;
+	String[] filterOptions = { "", "All (*.*)" };
+	// volatile boolean finished = false;
+	// String clsDir = null;
 	String progName = null;
 	String output = "";
 	String error = "";
 	String exeDir = null;
-	
+
 	String[] pBCmdArray = null;
 	String pBDir = null;
-	
-	Point headMark;  // used for arrows
+
+	Point headMark; // used for arrows
 	Point tailMark;
 
 	int moveX;
 	int moveY;
-	
-	//Arrow detArr = null;
-	//int detArrSegNo;
-	
+
+	// Arrow detArr = null;
+	// int detArrSegNo;
+
 	boolean tabCloseOK = true;
-	
-	//boolean comparing = false;
+
+	// boolean comparing = false;
 	JFrame mmFrame = new JFrame();
-	
+
 	JSlider zoomControl = null;
-	
+
 	boolean clickToGrid = true;
-	
-	//LinkedList<String> fbpJsonLl = null;
-	
+
+	// LinkedList<String> fbpJsonLl = null;
+
 	final boolean CODEMGRCREATE = true;
+
 	
-	// list of notations
-	public static final int JAVA_FBP = 0;
-	public static final int CSHARP_FBP = 1;
-	public static final int JSON = 2;
-	public static final int FBP_NOTN = 3;
-	
-	// list of "languages"
-	public static final int JAVA = 0;
-	public static final int CSHARP = 1;
-	public static final int JS = 2;
-	public static final int FBP = 3;    
-	public static final int DIAGRAM = 4;
-	public static final int IMAGE = 5;	
-	public static final int JARFILE = 6;   
-	public static final int CLASS = 7;   
-	//public static final int PROCESS = 8;   
-	//public static final int NETWORK = 9;   
-	public static final int DLL = 8; 
-	public static final int EXE = 9;   
-	
-	 
 	DrawFBP(String[] args) {
-		
+
 		properties = new HashMap<String, String>();
 		startProperties = new HashMap<String, String>();
 		readPropertiesFile();
 		if (args.length == 1) {
 			diagramName = args[0];
 			diagramName = diagramName.replace("\\", "/");
-			if (diagramName.indexOf("/") == -1){
-				final String dir = System.getProperty("user.dir");				
+			if (diagramName.indexOf("/") == -1) {
+				final String dir = System.getProperty("user.dir");
 				diagramName = dir + "/" + diagramName;
 			}
-			//System.out.println("Diagram: " + diagramName );
+			// System.out.println("Diagram: " + diagramName );
 			File f = new File(diagramName);
 			if (!f.exists())
-			//	System.out.println("Diagram: " + diagramName + "can't be found" );
+				// System.out.println("Diagram: " + diagramName + "can't be found" );
 				diagramName = null;
-		}
-		else {
+		} else {
 			diagramName = properties.get("currentDiagram");
 		}
-				
+
 		frameInit();
-		
-langs = new Lang[12];  
-		
-		langs[JAVA] = new Lang("Java", "java", new JavaFileFilter(), "currentJavaFBPDir");
-		langs[CSHARP] = new Lang("C#", "cs", new CsharpFileFilter(), "currentCsharpFBPDir");
-		langs[JS] = new Lang("JS", "js", new JSFilter(), "currentJSDir");
-		langs[FBP] = new Lang("FBP", "fbp", new FBPFilter(), "currentFBPNetworkDir");				
-		langs[DIAGRAM] = new Lang(null, "drw", new DiagramFilter(), "currentDiagramDir"); //y
-		langs[IMAGE] = new Lang(null, "png", new ImageFilter(), "currentImageDir");				
-		langs[JARFILE] = new Lang(null, "jar", new JarFileFilter(), "javaFBPJarFile");				
-		langs[CLASS] = new Lang(null, "class", new JavaClassFilter(), "currentClassDir");
-		//langs[PROCESS] = new Lang(null, "proc", null, currNotn.srcDirProp);
-		//langs[NETWORK] = new Lang(null, "netwk", null, currNotn.netDirProp);
-		langs[DLL] = new Lang(null, "dll", new DllFilter(), "dllFileDir");
-		langs[EXE] = new Lang(null, "exe", new ExeFilter(), "exeDir");
-		
+
+		langs = new Lang[11];
+
+		langs[Lang.JAVA] = new Lang("Java", "java", new JavaFileFilter(), "currentJavaFBPDir");
+		langs[Lang.CSHARP] = new Lang("C#", "cs", new CsharpFileFilter(), "currentCsharpFBPDir");
+		langs[Lang.JS] = new Lang("JS", "js", new JSFilter(), "currentJSDir");
+		langs[Lang.FBP] = new Lang("FBP", "fbp", new FBPFilter(), "currentFBPNetworkDir");
+		langs[Lang.DIAGRAM] = new Lang(null, "drw", new DiagramFilter(), "currentDiagramDir"); // y
+		langs[Lang.IMAGE] = new Lang(null, "png", new ImageFilter(), "currentImageDir");
+		langs[Lang.JARFILE] = new Lang(null, "jar", new JarFileFilter(), "javaFBPJarFile");
+		langs[Lang.CLASS] = new Lang(null, "class", new JavaClassFilter(), "currentClassDir");
+		langs[Lang.FBPJSON] = new Lang(null, "js", new JSFilter(), "currentJSDir");
+		langs[Lang.DLL] = new Lang(null, "dll", new DllFilter(), "dllFileDir");
+		langs[Lang.EXE] = new Lang(null, "exe", new ExeFilter(), "exeDir");
+
 		notations = new Notation[4];
-		notations[JAVA_FBP] = new Notation("JavaFBP", langs[JAVA]);
-		notations[CSHARP_FBP] = new Notation("C#FBP", langs[CSHARP]);
-		notations[JSON] = new Notation("JSON", langs[JS]);
-		notations[FBP_NOTN] = new Notation("FBP", langs[FBP]);
-							
-		currNotn = notations[JAVA_FBP];
-		//saveProp("defaultNotation", currNotn.label);
-		//langs[PROCESS] = new Lang(null, "proc", null, currNotn.srcDirProp);
-		//langs[NETWORK] = new Lang(null, "network", null, currNotn.netDirProp);
-		
+		notations[Notation.JAVA_FBP] = new Notation("JavaFBP", langs[Lang.JAVA]);
+		notations[Notation.CSHARP_FBP] = new Notation("C#FBP", langs[Lang.CSHARP]);
+		notations[Notation.JSON] = new Notation("JSON", langs[Lang.JS]);
+		notations[Notation.FBP] = new Notation("FBP", langs[Lang.FBP]);
+
+		currNotn = notations[Notation.JAVA_FBP];
+		// saveProp("defaultNotation", currNotn.label);
+		// langs[Lang.PROCESS] = new Lang(null, "proc", null, currNotn.srcDirProp);
+		// langs[Lang.NETWORK] = new Lang(null, "network", null, currNotn.netDirProp);
+
 		fileMenu = new JMenu(" File ");
 		editMenu = new JMenu(" Diagram ");
 		helpMenu = new JMenu(" Help ");
-		
-		
-				
-		scalingFactor = 1.0d;  
-		
+
+		scalingFactor = 1.0d;
+
 		String sF = properties.get("scalingfactor");
 		if (sF != null)
 			scalingFactor = Double.valueOf(sF);
-		
-		zoomControl = new JSlider(SwingConstants.VERTICAL, 60, 200, (int)(scalingFactor * 100));
+
+		zoomControl = new JSlider(SwingConstants.VERTICAL, 60, 200, (int) (scalingFactor * 100));
 		zoomControl.setPreferredSize(new Dimension(40, 200));
 		zoomControl.setMajorTickSpacing(20);
 		// zoomControl.setMinorTickSpacing(10);
@@ -421,64 +392,61 @@ langs = new Lang[12];
 		zoomControl.getInputMap().put(escapeKS, "CLOSE");
 		zoomControl.getActionMap().put("CLOSE", escapeAction);
 
-		
 		zoomControl.setValue((int) (scalingFactor * 100));
-		//String scale = (int) js.getValue() + "%";
+		// String scale = (int) js.getValue() + "%";
 		String scale = (int) (scalingFactor * 100) + "%";
 		scaleLab = new JLabel();
 		scaleLab.setText(scale);
-	
-		zWS = (int) Math.round(zoneWidth * scalingFactor);
-		
-		try {		
 
-		diagDesc = new JLabel("  ");
-		grid = new JCheckBox("Grid");	
-				
-		
-		
-		
-		createAndShowGUI();
-		} catch (NullPointerException e)
-		{   e.printStackTrace();
+		zWS = (int) Math.round(zoneWidth * scalingFactor);
+
+		try {
+
+			diagDesc = new JLabel("  ");
+			grid = new JCheckBox("Grid");
+
+			createAndShowGUI();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 			saveProperties();
 		}
-		
-		
+
 	}
 
 	/**
-	 * Create the GUI and show it. For thread safety, this method should be
-	 * invoked from the event-dispatching thread.
+	 * Create the GUI and show it. For thread safety, this method should be invoked
+	 * from the event-dispatching thread.
 	 */
 	private void createAndShowGUI() {
 
 		// Create and set up the window.
-		
-		//readPropertiesFile();
+
+		// readPropertiesFile();
 
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
 
-		//this = this;
+		// this = this;
 		setTitle("DrawFBP Diagram Generator");
 		// SwingUtilities.updateComponentTreeUI(this);
 		// this = new JFrame("DrawFBP Diagram Generator");
 		setUndecorated(false); // can't change size of JFrame title,
-										// though!
+								// though!
 		defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 		setCursor(defaultCursor);
-		
+
 		applyOrientation(this);
 
 		int w = (int) dim.getWidth();
 		int h = (int) dim.getHeight();
+		
+		setPreferredSize(new Dimension(w, h));
 		// maxX = (int) (w * .8);
 		// maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);  
+		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		// osg = buffer.createGraphics();
 		osg = (Graphics2D) buffer.getGraphics();
-		//osg = (Graphics2D) getGraphics();
+		// osg = (Graphics2D) getGraphics();
 		// setVisible(true);
 
 		// osg = (Graphics2D) getGraphics();
@@ -494,44 +462,38 @@ langs = new Lang[12];
 
 		// osg.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 		// RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		//diagFCParm = new FileChooserParm("Diagram", "currentDiagramDir",
-		//	 langs[4], "Diagrams (*.drw)");	
 
-		RenderingHints rh = new RenderingHints(
-				RenderingHints.KEY_TEXT_ANTIALIASING,
+		// diagFCParm = new FileChooserParm("Diagram", "currentDiagramDir",
+		// langs[Lang.4], "Diagrams (*.drw)");
+
+		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-		rh.put(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
-		rh.put(RenderingHints.KEY_STROKE_CONTROL,
-				RenderingHints.VALUE_STROKE_NORMALIZE);
-		rh.put(RenderingHints.KEY_RENDERING,
-				RenderingHints.VALUE_RENDER_QUALITY);
-		rh.put(RenderingHints.KEY_DITHERING,
-				RenderingHints.VALUE_DITHER_ENABLE);
-		rh.put(RenderingHints.KEY_FRACTIONALMETRICS,
-				RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
+		rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+		rh.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
 		osg.setRenderingHints(rh);
 
-		//readPropertiesFile();
+		// readPropertiesFile();
 
 		saveProp("versionNo", "v" + VersionAndTimestamp.getVersion());
-		//saveProp("date", VersionAndTimestamp.getDate());
-		
-		//LocalDateTime date = LocalDateTime.now();
-		//DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+		// saveProp("date", VersionAndTimestamp.getDate());
 
-		//String formattedDate = formatter.format(date); 
+		// LocalDateTime date = LocalDateTime.now();
+		// DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+
+		// String formattedDate = formatter.format(date);
 		LocalDateTime a = LocalDateTime.from(ZonedDateTime.now());
 		saveProp("date", a.toString());
 
-		if (null == (generalFont = properties.get("generalFont"))){
+		if (null == (generalFont = properties.get("generalFont"))) {
 			generalFont = "Arial";
 			saveProp("generalFont", generalFont);
 		}
-		if (null == (fixedFont = properties.get("fixedFont"))){
+		if (null == (fixedFont = properties.get("fixedFont"))) {
 			fixedFont = "Courier";
-			saveProp("fixedFont", fixedFont); 
+			saveProp("fixedFont", fixedFont);
 		}
 
 		String dfs = properties.get("defaultFontSize");
@@ -544,43 +506,43 @@ langs = new Lang[12];
 		saveProp("defaultFontSize", dfs);
 
 		String dn = properties.get("defaultNotation");
-		
+
 		if (dn == null) {
-			currNotn = notations[JAVA_FBP];  // JavaFBP
-			//saveProperties();
+			currNotn = notations[Notation.JAVA_FBP]; // JavaFBP
+			// saveProperties();
 		} else {
 			if (dn.equals("NoFlo")) // transitional!
 				dn = "JSON";
-			currNotn = findNotnFromLabel(dn); 			
+			currNotn = findNotnFromLabel(dn);
 		}
 		saveProp("defaultNotation", currNotn.label);
-		
+
 		String sBD = properties.get("sortbydate");
 		if (sBD == null) {
 			sortByDate = false;
-		    saveProp("sortbydate", "false");
-		} else 
+			saveProp("sortbydate", "false");
+		} else
 			sortByDate = Boolean.getBoolean(sBD);
 
-		//Iterator<String> entries = jarFiles.iterator();
+		// Iterator<String> entries = jarFiles.iterator();
 		String z = "";
 		String cma = "";
 
-		//while (entries.hasNext()) {
-		//	String thisEntry = entries.next();
-		for (String thisEntry: jarFiles) {
+		// while (entries.hasNext()) {
+		// String thisEntry = entries.next();
+		for (String thisEntry : jarFiles) {
 			z += cma + thisEntry;
 			cma = ";";
 		}
 		saveProp("additionalJarFiles", z);
-		
-		//entries = dllFiles.iterator();
+
+		// entries = dllFiles.iterator();
 		z = "";
 		cma = "";
 
-		//while (entries.hasNext()) {
-		//	String thisEntry = entries.next();
-		for (String thisEntry: dllFiles) {
+		// while (entries.hasNext()) {
+		// String thisEntry = entries.next();
+		for (String thisEntry : dllFiles) {
 			z += cma + thisEntry;
 			cma = ";";
 		}
@@ -606,8 +568,7 @@ langs = new Lang[12];
 
 		jfl = new JTextField("");
 
-		jfl.setText(
-				"Fixed font: " + fixedFont + "; general font: " + generalFont);
+		jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 
 		jfs = new JTextField("");
 
@@ -618,7 +579,7 @@ langs = new Lang[12];
 		jfv.setText("Ver: " + VersionAndTimestamp.getVersion());
 
 		jtp = new JTabbedPaneWithCloseIcons(this);
-		//int i = jtp.getTabCount(); 
+		// int i = jtp.getTabCount();
 
 		jtp.setForeground(Color.BLACK);
 		jtp.setBackground(Color.WHITE);
@@ -630,8 +591,7 @@ langs = new Lang[12];
 			setIconImage(image);
 
 		} else {
-			MyOptionPane.showMessageDialog(this,
-					"Couldn't find file: DrawFBP-logo-small.png",
+			MyOptionPane.showMessageDialog(this, "Couldn't find file: DrawFBP-logo-small.png",
 					MyOptionPane.ERROR_MESSAGE);
 			// return null;
 		}
@@ -652,10 +612,9 @@ langs = new Lang[12];
 
 		});
 
-		//jtp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-		//		.put(escapeKS, "CLOSE");
-		jtp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-				.put(escapeKS, "CLOSE");
+		// jtp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+		// .put(escapeKS, "CLOSE");
+		jtp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKS, "CLOSE");
 
 		jtp.getActionMap().put("CLOSE", escapeAction);
 
@@ -673,7 +632,7 @@ langs = new Lang[12];
 			y = Integer.parseInt(t);
 		Point p = new Point(x, y);
 		setLocation(p);
-		
+
 		t = properties.get("width");
 		if (t != null)
 			w2 = Integer.parseInt(t);
@@ -686,33 +645,35 @@ langs = new Lang[12];
 		// repaint();
 		// Display the window.
 		pack();
-		
+
 		sortByDate = false;
 		t = properties.get("sortbydate");
 		if (t != null)
 			sortByDate = Boolean.parseBoolean(t);
+
+		t = properties.get("clicktogrid");
+		if (t == null)
+			clickToGrid = true;
+		else
+			clickToGrid = Boolean.valueOf(t);
+
+		grid.setSelected(clickToGrid);
 		
-		t = driver.properties.get("clicktogrid");
-		if (t == null)  
-			clickToGrid = true; 
-		else 
-		 	clickToGrid = Boolean.valueOf(t);
-		
-		driver.grid.setSelected(clickToGrid);		
-		
+		fbpJsonFile = properties.get("fbpJsonFile");
+
 		setVisible(true);
 		addComponentListener(this);
-		
+
 		repaint();
 
 		// wDiff = getWidth() - curDiag.area.getWidth();
 		// hDiff = getHeight() - curDiag.area.getHeight();
 
-				
-		//if (diagramName == null) {          // See if a parameter was passed to the jar file....
-		//	diagramName = properties.get("currentDiagram");
-		//	System.out.println(diagramName);
-		//}
+		// if (diagramName == null) { // See if a parameter was passed to the jar
+		// file....
+		// diagramName = properties.get("currentDiagram");
+		// System.out.println(diagramName);
+		// }
 
 		boolean small = (diagramName) == null ? false : true;
 
@@ -720,21 +681,19 @@ langs = new Lang[12];
 			new SplashWindow(3000, this, small); // display
 		// for 3.0 secs, or until mouse is moved
 
-		//if (diagramName != null) {
-		//	actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-		//			"Open " + diagramName));
-		//}
-		//if (diagramName == null) {
-		//	getNewDiag();
-		//	curDiag.desc = "Click anywhere on selection area";
+		// if (diagramName != null) {
+		// actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
+		// "Open " + diagramName));
 		// }
-		//else  
-		if (diagramName != null)  
-				actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-						"Open " + diagramName));
-		
+		// if (diagramName == null) {
+		// getNewDiag();
+		// curDiag.desc = "Click anywhere on selection area";
+		// }
+		// else
+		if (diagramName != null)
+			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Open " + diagramName));
 
-		//createMenuBar();	
+		// createMenuBar();
 		repaint();
 
 	}
@@ -743,56 +702,33 @@ langs = new Lang[12];
 
 		buildPropDescTable();
 
-		if (diagramName == null) 
+		if (diagramName == null)
 			diagramName = properties.get("currentDiagram");
 
 		/*
-
-		MouseListener mouseListener = new MouseAdapter() {
-
-			public void mouseClicked(MouseEvent e) {
-
-				int i = jtp.indexAtLocation(e.getX(), e.getY());
-				if (i == -1)
-					return;
-				ButtonTabComponent b = (ButtonTabComponent) jtp
-						.getTabComponentAt(i);
-				if (b == null || b.diag == null)
-					return;
-				Diagram diag = b.diag;
-
-				if (diag == null) {
-					getNewDiag();
-					// diag = new Diagram(driver);
-					// b.diag = diag;
-				}
-				// curDiag = diag;
-				else {
-					//if (i == -1 ) {
-					//	 MyOptionPane.showMessageDialog(driver,
-					//				 "No diagram selected",
-					//				  MyOptionPane.WARNING_MESSAGE);
-					//}
-					//else 
-						if (comparing) {
-							comparing = false;
-							compare(i);
-							return;
-						}
-						else
-							jtp.setSelectedIndex(i);
-					repaint();
-				}
-
-				repaint();
-
-			}
-		};
-*/
+		 * 
+		 * MouseListener mouseListener = new MouseAdapter() {
+		 * 
+		 * public void mouseClicked(MouseEvent e) {
+		 * 
+		 * int i = jtp.indexAtLocation(e.getX(), e.getY()); if (i == -1) return;
+		 * ButtonTabComponent b = (ButtonTabComponent) jtp .getTabComponentAt(i); if (b
+		 * == null || b.diag == null) return; Diagram diag = b.diag;
+		 * 
+		 * if (diag == null) { getNewDiag(); // diag = new Diagram(driver); // b.diag =
+		 * diag; } // curDiag = diag; else { //if (i == -1 ) { //
+		 * MyOptionPane.showMessageDialog(driver, // "No diagram selected", //
+		 * MyOptionPane.WARNING_MESSAGE); //} //else if (comparing) { comparing = false;
+		 * compare(i); return; } else jtp.setSelectedIndex(i); repaint(); }
+		 * 
+		 * repaint();
+		 * 
+		 * } };
+		 */
 		getNewDiag();
 		curDiag.desc = "Click anywhere on selection area";
-		
-		//jtp.addMouseListener(mouseListener);
+
+		// jtp.addMouseListener(mouseListener);
 		jtp.addMouseListener(this);
 
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -801,21 +737,16 @@ langs = new Lang[12];
 
 		Box box4 = new Box(BoxLayout.X_AXIS);
 		box1.add(box4);
-/*
-		int sf = (int) Math.round(100.0 * scalingFactor); 
-		zoomControl = new JSlider(JSlider.VERTICAL, 60, 200, sf);
-		zoomControl.setPreferredSize(new Dimension(40, 200));
-		zoomControl.setMajorTickSpacing(20);
-		// zoomControl.setMinorTickSpacing(10);
-		zoomControl.setPaintTicks(true);
-		zoomControl.setSnapToTicks(true);
-		zoomControl.setPaintLabels(false);
-		zoomControl.setPaintTrack(true);
-		zoomControl.setVisible(true);
-		zoomControl.addChangeListener(this);
-		zoomControl.getInputMap().put(escapeKS, "CLOSE");
-		zoomControl.getActionMap().put("CLOSE", escapeAction);
-*/
+		/*
+		 * int sf = (int) Math.round(100.0 * scalingFactor); zoomControl = new
+		 * JSlider(JSlider.VERTICAL, 60, 200, sf); zoomControl.setPreferredSize(new
+		 * Dimension(40, 200)); zoomControl.setMajorTickSpacing(20); //
+		 * zoomControl.setMinorTickSpacing(10); zoomControl.setPaintTicks(true);
+		 * zoomControl.setSnapToTicks(true); zoomControl.setPaintLabels(false);
+		 * zoomControl.setPaintTrack(true); zoomControl.setVisible(true);
+		 * zoomControl.addChangeListener(this); zoomControl.getInputMap().put(escapeKS,
+		 * "CLOSE"); zoomControl.getActionMap().put("CLOSE", escapeAction);
+		 */
 		// zoomControl.setBackground(Color.WHITE);
 		Box box45 = new Box(BoxLayout.Y_AXIS);
 		Box box46 = new Box(BoxLayout.X_AXIS);
@@ -828,7 +759,7 @@ langs = new Lang[12];
 
 		box6.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		//scaleLab = new JLabel();
+		// scaleLab = new JLabel();
 		box61.add(scaleLab);
 		box61.add(Box.createRigidArea(new Dimension(5, 0)));
 
@@ -839,10 +770,10 @@ langs = new Lang[12];
 		box6.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		scaleLab.setForeground(Color.BLUE);
-		//String scale = "100%";
-		//scaleLab.setText(scale);
-		
-		driver.saveProp("scalingfactor", Double.toString(scalingFactor));
+		// String scale = "100%";
+		// scaleLab.setText(scale);
+
+		saveProp("scalingfactor", Double.toString(scalingFactor));
 
 		box6.add(Box.createRigidArea(new Dimension(0, 10)));
 		box6.add(box61);
@@ -874,7 +805,7 @@ langs = new Lang[12];
 		box4.add(Box.createRigidArea(new Dimension(50, 0)));
 		// jtp.setBackground(Color.WHITE);
 		// Align the left edges of the components.
-		//curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
+		// curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diagDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
 		// label.setLabelFor(area);
 		box1.add(diagDesc);
@@ -971,14 +902,13 @@ langs = new Lang[12];
 		closedPawCursor = null;
 
 		image = loadImage("closed_paw.gif");
-		closedPawCursor = tk.createCustomCursor(image, new Point(15, 15),
-				"Paw");
+		closedPawCursor = tk.createCustomCursor(image, new Point(15, 15), "Paw");
 
 		image = loadImage("drag_icon.gif");
 		drag_icon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
 		
 		
-        }
+	}
 
 	public JMenuBar createMenuBar() {
 
@@ -1000,24 +930,20 @@ langs = new Lang[12];
 		// a group of JMenuItems
 		JMenuItem menuItem = new JMenuItem("Open Diagram");
 		// menu.setMnemonic(KeyEvent.VK_D);
-		menuItem.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.ALT_MASK));
 
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Save");
-		menuItem.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Save as...");
-		menuItem.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("New Diagram");
-		menuItem.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
@@ -1028,82 +954,89 @@ langs = new Lang[12];
 
 		int k = 0;
 		for (int i = 0; i < j; i++) {
-			//if (!(genLangs[i].label.equals("FBP"))) {
-				gMenu[k] = new JMenuItem(notations[i].label);
-				gnMenu.add(gMenu[k]);
-				gMenu[k].addActionListener(this);
-				k++;
-			//}
+			// if (!(genlangs[Lang.i].label.equals("FBP"))) {
+			gMenu[k] = new JMenuItem(notations[i].label);
+			gnMenu.add(gMenu[k]);
+			gMenu[k].addActionListener(this);
+			k++;
+			// }
 		}
 
-		
 		fileMenu.addSeparator();
-       
+
 		String s = "Generate ";
-		//if (curDiag != null)
+		// if (curDiag != null)
 		s += currNotn.label + " ";
 		s += "Network";
 		gNMenuItem = new JMenuItem(s);
 		fileMenu.add(gNMenuItem);
 		gNMenuItem.addActionListener(this);
- 
+
 		menuItem = new JMenuItem("Display Source Code");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		
-		fileMenu.addSeparator();
-		
-				
-		compMenu = new JMenuItem("Compile Code");
-		// compMenu.setEnabled(currLang != null &&
-		// currLang.label.equals("Java"));
-		compMenu.setMnemonic(KeyEvent.VK_C);
-		compMenu.setBorderPainted(true);
-		fileMenu.add(compMenu);
-		compMenu.addActionListener(this);
-
-		runMenu = new JMenuItem("Run Code");
-		// runMenu.setEnabled(currLang != null &&
-		// currLang.label.equals("Java"));
-		runMenu.setMnemonic(KeyEvent.VK_R);
-		runMenu.setBorderPainted(true);
-		fileMenu.add(runMenu);
-		runMenu.addActionListener(this);
-
-		//fileMenu.addSeparator();
-		//menuItem = new JMenuItem("Compare Diagrams");
-		//fileMenu.add(menuItem);
-		//menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
+
+		if (currNotn.lang == langs[Lang.JAVA] || currNotn.lang == langs[Lang.CSHARP]) {
+			compMenu = new JMenuItem("Compile Code");
+			// compMenu.setEnabled(currLang != null &&
+			// currLang.label.equals("Java"));
+			compMenu.setMnemonic(KeyEvent.VK_C);
+			compMenu.setBorderPainted(true);
+			fileMenu.add(compMenu);
+			compMenu.addActionListener(this);
+
+			runMenu = new JMenuItem("Run Code");
+			// runMenu.setEnabled(currLang != null &&
+			// currLang.label.equals("Java"));
+			runMenu.setMnemonic(KeyEvent.VK_R);
+			runMenu.setBorderPainted(true);
+			fileMenu.add(runMenu);
+			runMenu.addActionListener(this);
+
+			// fileMenu.addSeparator();
+			// menuItem = new JMenuItem("Compare Diagrams");
+			// fileMenu.add(menuItem);
+			// menuItem.addActionListener(this);
+
+			fileMenu.addSeparator();
+		}
 
 		menuItem1 = new JMenuItem("Locate JavaFBP Jar File");
-
-		//menuItem1.setEnabled(currNotn != null && currnotn.lang == driver.langs[DrawFBP.JAVA]);
-		fileMenu.add(menuItem1);
-		menuItem1.addActionListener(this);
-
-		menuItem2j = new JMenuItem("Add Additional Jar File");
-		//menuItem2j.setEnabled(currNotn != null && currnotn.lang == driver.langs[DrawFBP.JAVA]);
-		fileMenu.add(menuItem2j);
-		menuItem2j.addActionListener(this);
 		
-		menuItem2c = new JMenuItem("Add Additional Dll File");
-		//menuItem2c.setEnabled(currNotn != null && currNotn.lang.equals("C#"));
-		fileMenu.add(menuItem2c);
-		menuItem2c.addActionListener(this);
+		if (currNotn.lang == langs[Lang.JAVA] || currNotn == notations[Notation.JSON]) {
 		
-		String lib = currNotn.lang == driver.langs[DrawFBP.JAVA] ? "Jar" : "Dll";
-		menuItem = new JMenuItem("Remove Additional " + lib + " Files");
-		fileMenu.add(menuItem);
-		menuItem.addActionListener(this);
+			fileMenu.add(menuItem1);
+			menuItem1.addActionListener(this);
+		}
+		
+		if (currNotn.lang == langs[Lang.JAVA]) {					
+			menuItem2 = new JMenuItem("Add Additional Jar File");
+			fileMenu.add(menuItem2);
+			menuItem2.addActionListener(this);
+			
+			menuItem = new JMenuItem("Remove Additional " + "Jar" + " Files");
+			fileMenu.add(menuItem);
+			menuItem.addActionListener(this);
+			
+		} else if (currNotn.lang == langs[Lang.CSHARP]) {
+			menuItem2 = new JMenuItem("Add Additional Dll File");
+			// menuItem2c.setEnabled(currNotn != null && currNotn.lang.equals("C#"));
+			fileMenu.add(menuItem2);
+			menuItem2.addActionListener(this);
+			
+			menuItem = new JMenuItem("Remove Additional " + "Dll" + " Files");
+			fileMenu.add(menuItem);
+			menuItem.addActionListener(this);
+		}
 
 		fileMenu.addSeparator();
-		//menuItem = new JMenuItem("Locate DrawFBP Help File");
-		//fileMenu.add(menuItem);
-		//menuItem.addActionListener(this);
+		// menuItem = new JMenuItem("Locate DrawFBP Help File");
+		// fileMenu.add(menuItem);
+		// menuItem.addActionListener(this);
 		// }
-		fileMenu.addSeparator();
+		//fileMenu.addSeparator();
 
 		menuItem = new JMenuItem("Change Fonts");
 		fileMenu.add(menuItem);
@@ -1114,8 +1047,7 @@ langs = new Lang[12];
 
 		fileMenu.addSeparator();
 		menuItem = new JMenuItem("Print");
-		menuItem.setAccelerator(
-				KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
@@ -1127,11 +1059,11 @@ langs = new Lang[12];
 		menuItem = new JMenuItem("Close Diagram");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		
-		//String u = "Generate " + currNotn.label + " " + "Network";
-		//gNMenuItem = new JMenuItem(u);
-		//gNMenuItem.addActionListener(this);
-		//fileMenu.add(gNMenuItem, 7);
+
+		// String u = "Generate " + currNotn.label + " " + "Network";
+		// gNMenuItem = new JMenuItem(u);
+		// gNMenuItem.addActionListener(this);
+		// fileMenu.add(gNMenuItem, 7);
 
 		// editMenu = new JMenu(" Edit ");
 		editMenu.setMnemonic(KeyEvent.VK_E);
@@ -1215,61 +1147,58 @@ langs = new Lang[12];
 		menuItem = new JMenuItem("About");
 		helpMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		menuBar.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-				.put(escapeKS, "CLOSE");
+		menuBar.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
 
 		menuBar.getActionMap().put("CLOSE", escapeAction);
 		menuBar.setVisible(true);
-		
+
 		setNotation(currNotn);
-			 	
-		//repaint();
+
+		// repaint();
 
 		return menuBar;
 	}
 
 	// sets curDiag
-	
+
 	Diagram getNewDiag() {
 		Diagram diag = new Diagram(this);
 		SelectionArea sa = getNewArea();
 		diag.area = sa;
 		int i = jtp.getTabCount(); // get count *before* adding new sa & label
 		jtp.add(sa, new JLabel());
-		
+
 		String s = diagramName;
 		if (s == null || s.endsWith(".drw")) {
 			curDiag.area.addMouseListener(curDiag.area);
 			curDiag.area.addMouseMotionListener(curDiag.area);
 		}
-		
-		//int j = jtp.getTabCount();  // for debugging
+
+		// int j = jtp.getTabCount(); // for debugging
 		// System.out.println("new tab");
 		ButtonTabComponent b = new ButtonTabComponent(jtp, this);
-		jtp.setTabComponentAt(i, b);		
+		jtp.setTabComponentAt(i, b);
 		jtp.setSelectedIndex(i);
 		b.diag = diag;
-		//diag.tabNum = i;
+		// diag.tabNum = i;
 		curDiag = diag;
-		
-		//diag.diagNotn = currNotn;
-		
+
+		// diag.diagNotn = currNotn;
+
 		diag.title = "(untitled)";
 		diag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
-		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();	
-		
-				
+		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();
+
 		repaint();
 
 		return diag;
 	}
 
-	
 	public void actionPerformed(ActionEvent e) {
-		
-		//comparing = false;
-		
+
+		// comparing = false;
+
 		if (e.getSource() == jfl) {
 			changeFonts();
 			return;
@@ -1307,11 +1236,11 @@ langs = new Lang[12];
 		}
 		if (s.equals("New Diagram")) {
 
-			//int i = jtp.getTabCount();
-			//if (i > 1 || curDiag.diagFile != null || curDiag.changed)
+			// int i = jtp.getTabCount();
+			// if (i > 1 || curDiag.diagFile != null || curDiag.changed)
 			getNewDiag();
 
-			//jtp.setSelectedIndex(curDiag.tabNum);
+			// jtp.setSelectedIndex(curDiag.tabNum);
 
 			repaint();
 
@@ -1324,14 +1253,12 @@ langs = new Lang[12];
 			if (e.getSource() == gMenu[j]) {
 				Notation currNotn = notations[j];
 
-				
-				
 				curDiag.changed = true;
-				
+
 				setNotation(currNotn);
 
-				MyOptionPane.showMessageDialog(this,
-						"Notation changed to " + currNotn.label + "\nNote: some File and Block-related options will have changed");
+				MyOptionPane.showMessageDialog(this, "Notation changed to " + currNotn.label
+						+ "\nNote: some File and Block-related options will have changed");
 				repaint();
 
 				return;
@@ -1339,26 +1266,22 @@ langs = new Lang[12];
 		}
 
 		// }
-		
-		
 
 		if (s.startsWith("Generate ")) {
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(this, "No components specified",
-						MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.showMessageDialog(this, "No components specified", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			if (curDiag.title == null || curDiag.title.equals("(untitled)")) {
 
-				MyOptionPane.showMessageDialog(this,
-						"Untitled diagram - please do Save first",
+				MyOptionPane.showMessageDialog(this, "Untitled diagram - please do Save first",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-			//properties.get(gl.netDirProp);
-			
+			// properties.get(gl.netDirProp);
+
 			CodeManager mc = new CodeManager(curDiag, CODEMGRCREATE);
 			mc.genCode();
 
@@ -1368,39 +1291,35 @@ langs = new Lang[12];
 
 		if (s.equals("Display Source Code")) {
 
-			File cFile = null;			
-			
-									
-			//MyOptionPane.showMessageDialog(this, "Select a source file", MyOptionPane.INFORMATION_MESSAGE);
+			File cFile = null;
 
-			
+			// MyOptionPane.showMessageDialog(this, "Select a source file",
+			// MyOptionPane.INFORMATION_MESSAGE);
+
 			String ss = properties.get(currNotn.netDirProp);
-			//File f = curDiag.diagFile;
-			
-			//String name = f.getName();
+			// File f = curDiag.diagFile;
+
+			// String name = f.getName();
 
 			if (ss == null)
 				ss = System.getProperty("user.home");
 
 			File file = new File(ss);
-			MyFileChooser fc = new MyFileChooser(this, file, currNotn.lang,
-					"Display Source Code");
-			
-			
+			MyFileChooser fc = new MyFileChooser(this, file, currNotn.lang, "Display Source Code");
+
 			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				cFile = new File(getSelFile(fc));
 			}
-			 
+
 			if (cFile == null || !(cFile.exists()))
 				return;
 
-			
 			CodeManager cm = new CodeManager(curDiag, !CODEMGRCREATE);
 			cm.doc.changed = false;
-			
+
 			cm.displayDoc(cFile, currNotn.lang, null);
 
 			repaint();
@@ -1418,76 +1337,70 @@ langs = new Lang[12];
 		}
 
 		if (s.equals("Compare Diagrams")) {
-			
+
 			if (curDiag == null || curDiag.diagFile == null) {
-				MyOptionPane.showMessageDialog(driver, "No diagram selected",
-						MyOptionPane.INFORMATION_MESSAGE);
+				MyOptionPane.showMessageDialog(driver, "No diagram selected", MyOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
-			
-			int result = MyOptionPane.showConfirmDialog(driver, 
+
+			int result = MyOptionPane.showConfirmDialog(driver,
 					"Select diagram to compare against current diagram: " + curDiag.diagFile.getName(),
-					"Select diagram to compare against",  MyOptionPane.OK_CANCEL_OPTION);	
-			
-			if (result != MyOptionPane.OK_OPTION)			
+					"Select diagram to compare against", MyOptionPane.OK_CANCEL_OPTION);
+
+			if (result != MyOptionPane.OK_OPTION)
 				return;
-			
-			
-			File f = curDiag.diagFile;			
-			
-			MyFileChooser fc = new MyFileChooser(this, f, langs[DrawFBP.DIAGRAM],
-					"Select compare diagram");			
-			
+
+			File f = curDiag.diagFile;
+
+			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.DIAGRAM], "Select compare diagram");
+
 			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
 
 			File cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				cFile = new File(getSelFile(fc));
 			}
-			 
+
 			if (cFile == null || !(cFile.exists()))
 				return;
-			
+
 			Diagram sd = curDiag;
-			
+
 			openAction(cFile.getAbsolutePath());
-			
+
 			curDiag = sd;
-			 
+
 			int i = getFileTabNo(cFile.getAbsolutePath());
 			if (i == -1)
 				return;
-			compare(i);   
+			compare(i);
 			repaint();
 			return;
 		}
-		
+
 		if (s.equals("Clear Visible Indicators")) {
-						
+
 			for (Block bl : curDiag.blocks.values()) {
 				bl.compareFlag = null;
 			}
-			
-			//for (Arrow ar : curDiag.arrows.values()) {
-			//	ar.compareFlag = null;
-			//}
-			
-			//if (mmFrame != null)
-			//	mmFrame.dispose();	
-			
-					
-			
+
+			// for (Arrow ar : curDiag.arrows.values()) {
+			// ar.compareFlag = null;
+			// }
+
+			// if (mmFrame != null)
+			// mmFrame.dispose();
+
 			return;
 		}
-		
 
-		//if (s.equals("Clear Language Association")) {
-		//	currNotn = null;
-		//	curDiag.changed = true;
-		//	jtf.setText("");
+		// if (s.equals("Clear Language Association")) {
+		// currNotn = null;
+		// curDiag.changed = true;
+		// jtf.setText("");
 
-			// curDiag.changeCompLang();
-		//}
+		// curDiag.changeCompLang();
+		// }
 
 		// }
 		if (s.equals("Locate JavaFBP Jar File")) {
@@ -1496,40 +1409,47 @@ langs = new Lang[12];
 			return;
 		}
 
+		if (s.equals("Locate fbp.json File")) {
+
+			//int res = MyOptionPane.showConfirmDialog(this, "Locate or change location of fbp.json file?",
+			//		"Locate fbp.json file", MyOptionPane.YES_NO_OPTION);
+			//if (res == MyOptionPane.YES_OPTION)			
+				locateFbpJsonFile(true);
+			return;
+		}
+
 		if (s.equals("Add Additional Jar File")) {
 
 			addAdditionalJarFile();
 			return;
 		}
-		
+
 		if (s.equals("Add Additional Dll File")) {
 
 			addAdditionalDllFile();
 			return;
 		}
-		
+
 		if (s.startsWith("Remove Additional ")) {
 			jarFiles.clear();
 			dllFiles.clear();
 			String lib;
-			if (currNotn.lang == driver.langs[DrawFBP.JAVA]) {
+			if (currNotn.lang == langs[Lang.JAVA]) {
 				properties.remove("additionalJarFiles");
 				lib = "Jar";
-			}
-			else {
+			} else {
 				properties.remove("additionalDllFiles");
 				lib = "Dll";
 			}
-			MyOptionPane.showMessageDialog(driver,
-					"References to additional " + lib + " files removed (not deleted)",
+			MyOptionPane.showMessageDialog(driver, "References to additional " + lib + " files removed (not deleted)",
 					MyOptionPane.INFORMATION_MESSAGE);
 		}
-		
-		//if (s.equals("Locate DrawFBP Help File")) {
 
-		//	locateJhallJarFile(true);
-		//	return;
-		//}
+		// if (s.equals("Locate DrawFBP Help File")) {
+
+		// locateJhallJarFile(true);
+		// return;
+		// }
 
 		if (s.equals("Change Fonts")) {
 			changeFonts();
@@ -1547,8 +1467,7 @@ langs = new Lang[12];
 			w1 = curDiag.area.getWidth();
 			h1 = curDiag.area.getHeight();
 			Rectangle rect = new Rectangle(x1, y1, w1, h1);
-			PrintableDocument pd = new PrintableDocument(getContentPane(),
-					this);
+			PrintableDocument pd = new PrintableDocument(getContentPane(), this);
 
 			// PrintableDocument.printComponent(getContentPane());
 			pd.setRectangle(rect); // doesn't seem to make a difference!
@@ -1562,7 +1481,7 @@ langs = new Lang[12];
 		if (s.equals("Toggle Click to Grid")) {
 			clickToGrid = !clickToGrid;
 			grid.setSelected(clickToGrid);
-			driver.saveProp("clicktogrid",Boolean.toString(clickToGrid));
+			saveProp("clicktogrid", Boolean.toString(clickToGrid));
 			return;
 
 		}
@@ -1582,7 +1501,7 @@ langs = new Lang[12];
 				w = f.getParent();
 			}
 			// w = f.getAbsolutePath();
-			
+
 			openAction(w);
 
 			return;
@@ -1590,88 +1509,84 @@ langs = new Lang[12];
 
 		if (s.equals("Create Image")) {
 
-			if (curDiag == null || curDiag.title == null
-					|| curDiag.blocks.isEmpty()) {
+			if (curDiag == null || curDiag.title == null || curDiag.blocks.isEmpty()) {
 				MyOptionPane.showMessageDialog(driver,
 						"Unable to export image for empty or unsaved diagram - please do save first",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
 
 			// crop
 			int x, w, y, h;
-			
+
 			int bottom_border_height = 60;
-			
+
 			x = curDiag.minX;
 			x = Math.max(1, x);
 			w = curDiag.maxX - x;
-			
-			y = curDiag.minY - 40;                
-			y = Math.max(1, y);			
-			h = curDiag.maxY - y; 
+
+			y = curDiag.minY - 40;
+			y = Math.max(1, y);
+			h = curDiag.maxY - y;
 
 			int aw = curDiag.area.getWidth();
 			int ah = curDiag.area.getHeight();
 			w = Math.min(aw, w);
 			h = Math.min(ah, h + bottom_border_height);
-			
-			y = Math.max(0, y);  			
-		
+
+			y = Math.max(0, y);
+
 			// adjust x, y, w, h to avoid RasterFormatException
-			
-			x = Math.max(x,  buffer.getMinX());
-			y = Math.max(y,  buffer.getMinY());
+
+			x = Math.max(x, buffer.getMinX());
+			y = Math.max(y, buffer.getMinY());
 			w = Math.min(w, buffer.getWidth());
-			h = Math.min(h, buffer.getHeight());			
-			
-			BufferedImage buffer2 = buffer.getSubimage(x, y, w, h);	
-			//BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-			
-			//Font f = fontg.deriveFont(Font.ITALIC, 18.0f);  // description a bit large - try using fontg + 10
-			
+			h = Math.min(h, buffer.getHeight());
+
+			BufferedImage buffer2 = buffer.getSubimage(x, y, w, h);
+			// BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+
+			// Font f = fontg.deriveFont(Font.ITALIC, 18.0f); // description a bit large -
+			// try using fontg + 10
+
 			// Now we build a strip containing the diagram description
-			
-			//Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+
+			// Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 			Font f = fontg;
-			
+
 			FontMetrics metrics = getFontMetrics(f);
 			int width = 0;
 			String t = curDiag.desc;
-			if (t != null)
-			{
+			if (t != null) {
 				byte[] str = t.getBytes();
 				width = metrics.bytesWidth(str, 0, t.length());
 			}
-			
-			w = Math.max(w, width);			
-						
-			//width = Math.max(width + 40, buffer2.getWidth());
+
+			w = Math.max(w, width);
+
+			// width = Math.max(width + 40, buffer2.getWidth());
 			width = Math.max(w + 40, buffer2.getWidth());
-			
-						
+
 			BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
 					BufferedImage.TYPE_INT_ARGB);
-			 
+
 			Graphics g = combined.getGraphics();
-			
+
 			g.setColor(Color.WHITE);
 
 			g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 			int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
 			g.drawImage(buffer2, x2, 0, null);
 			// g.drawImage(buffer, 0, 0, null);
-			
-			//g.fillRect(0, max_h, max_w, 80);
-			///g.fillRect(0, combined.getHeight(), combined.getWidth(), bottom_border_height);
 
-			
-			
+			// g.fillRect(0, max_h, max_w, 80);
+			/// g.fillRect(0, combined.getHeight(), combined.getWidth(),
+			// bottom_border_height);
+
 			if (curDiag.desc != null && !curDiag.desc.trim().equals("")) {
 				Color col = g.getColor();
 				g.setColor(Color.BLUE);
-				
+
 				Font f2 = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 
 				g.setFont(f2);
@@ -1684,36 +1599,31 @@ langs = new Lang[12];
 					byte[] str = t.getBytes();
 					width = metrics.bytesWidth(str, 0, t.length());
 					int sy = (bottom_border_height - metrics.getHeight()) / 2;
-					g.drawString(t, x - width / 2, buffer2.getHeight() + bottom_border_height - sy); 
+					g.drawString(t, x - width / 2, buffer2.getHeight() + bottom_border_height - sy);
 				}
 
 				g.setColor(col);
 			}
-		 
-			//BufferedImage image = combined;
-					
-			showImage(combined, curDiag.diagFile.getName(), true); 
+
+			// BufferedImage image = combined;
+
+			showImage(combined, curDiag.diagFile.getName(), true);
 			return;
 			/*
-			
-			//curDiag.fCParm[Diagram.IMAGE].prompt = curDiag.fCParm[Diagram.IMAGE].prompt.substring(0, i) + ": " + fn;					
-			
-			file = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], combined);
-			// file = curDiag.genSave(null, fCPArray[IMAGE], buffer2);
-			if (file == null) {
-				MyOptionPane.showMessageDialog(this, "File not saved");
-				// curDiag.imageFile = null;
-				g.dispose();
-				return;
-			}
-
-			// ImageIcon image = new ImageIcon(combined);
-			// curDiag.imageFile = file;
-			Date date = new Date();
-			//Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			file.setLastModified(date.getTime());
-			return;
-			*/
+			 * 
+			 * //curDiag.fCParm[Diagram.IMAGE].prompt =
+			 * curDiag.fCParm[Diagram.IMAGE].prompt.substring(0, i) + ": " + fn;
+			 * 
+			 * file = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], combined); //
+			 * file = curDiag.genSave(null, fCPArray[IMAGE], buffer2); if (file == null) {
+			 * MyOptionPane.showMessageDialog(this, "File not saved"); // curDiag.imageFile
+			 * = null; g.dispose(); return; }
+			 * 
+			 * // ImageIcon image = new ImageIcon(combined); // curDiag.imageFile = file;
+			 * Date date = new Date(); //Calendar calendar =
+			 * Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			 * file.setLastModified(date.getTime()); return;
+			 */
 		}
 
 		if (s.equals("Show Image")) {
@@ -1726,16 +1636,13 @@ langs = new Lang[12];
 			else
 				currentImageDir = new File(ss);
 
-			MyFileChooser fc = new MyFileChooser(this,currentImageDir,
-					langs[DrawFBP.IMAGE], "Show Image");
+			MyFileChooser fc = new MyFileChooser(this, currentImageDir, langs[Lang.IMAGE], "Show Image");
 
 			File f = curDiag.diagFile;
 			if (f != null) {
 				int i = curDiag.diagFile.getName().indexOf(".drw");
 				if (i > -1) {
-					ss += "/"
-							+ curDiag.diagFile.getName().substring(0, i)
-							+ langs[DrawFBP.IMAGE].ext;
+					ss += "/" + curDiag.diagFile.getName().substring(0, i) + langs[Lang.IMAGE].ext;
 					fc.setSuggestedName(ss);
 				}
 			}
@@ -1754,7 +1661,6 @@ langs = new Lang[12];
 				return;
 			// }
 
-			
 			BufferedImage image = null;
 			try {
 				image = ImageIO.read(fFile);
@@ -1762,9 +1668,8 @@ langs = new Lang[12];
 				MyOptionPane.showMessageDialog(this, "Could not get image: " + fFile.getAbsolutePath(),
 						MyOptionPane.ERROR_MESSAGE);
 				return;
- 
+
 			}
-			
 
 			currentImageDir = new File(fFile.getParent());
 			saveProp("currentImageDir", fFile.getParent());
@@ -1774,13 +1679,14 @@ langs = new Lang[12];
 
 			String name = fFile.getName();
 			showImage(image, name, false);
-			
+
 			return;
 		}
 
 		if (s.equals("Close Diagram")) {
-			if (closeTab(false));
-				return;
+			if (closeTab(false))
+				;
+			return;
 		}
 		if (s.equals("Launch Help")) {
 
@@ -1792,11 +1698,11 @@ langs = new Lang[12];
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		
-	        jHelpViewer = new JHelp(hs);
-			
+
+			jHelpViewer = new JHelp(hs);
+
 			// Create a new dialog screen
-			//popup2 = new JFrame(this);
+			// popup2 = new JFrame(this);
 			popup = new JFrame();
 			popup.setTitle("DrawFBP Help");
 			popup.setIconImage(favicon.getImage());
@@ -1814,9 +1720,7 @@ langs = new Lang[12];
 
 				}
 			});
-			jHelpViewer
-					.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-					.put(escapeKS, "CLOSE");
+			jHelpViewer.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
 
 			jHelpViewer.getActionMap().put("CLOSE", escapeAction);
 
@@ -1832,14 +1736,13 @@ langs = new Lang[12];
 			Point p = getLocation();
 			int x_off = 100;
 			int y_off = 100;
-			popup.setPreferredSize(
-					new Dimension(dim.width, dim.height));
-			
+			popup.setPreferredSize(new Dimension(dim.width, dim.height));
+
 			popup.pack();
-			
-			//popup2.setPreferredSize(
-			//		new Dimension(dim.width, dim.height - y_off));
-			
+
+			// popup2.setPreferredSize(
+			// new Dimension(dim.width, dim.height - y_off));
+
 			popup.setLocation(p.x + x_off, p.y + y_off);
 			return;
 		}
@@ -1863,10 +1766,8 @@ langs = new Lang[12];
 			String sp2 = "       ".substring(0, 14 - i);
 
 			ta.setText("****************************************************\n"
-					+ "*                                                  *\n"
-					+ "*             DrawFBP v" + v + "      " + sp1
-					+ "               *\n"
-					+ "*                                                  *\n"
+					+ "*                                                  *\n" + "*             DrawFBP v" + v
+					+ "      " + sp1 + "               *\n" + "*                                                  *\n"
 					+ "*    Authors: J.Paul Rodker Morrison, Canada,      *\n"
 					+ "*             Bob Corrick, UK                      *\n"
 					+ "*                                                  *\n"
@@ -1874,10 +1775,8 @@ langs = new Lang[12];
 					+ "*                                                  *\n"
 					+ "*    FBP web site:                                 *\n"
 					+ "*      https://jpaulm.github.io/fbp/index.html     *\n"
-					+ "*                                                  *\n"
-					+ "*               (" + dt + ")            " + sp2
-					+ "       *\n"
-					+ "*                                                  *\n"
+					+ "*                                                  *\n" + "*               (" + dt
+					+ ")            " + sp2 + "       *\n" + "*                                                  *\n"
 					+ "****************************************************\n");
 
 			ta.setFont(f);
@@ -1913,9 +1812,8 @@ langs = new Lang[12];
 		if (s.equals("Edit Description")) { // Title of diagram
 			// as a whole
 
-			String ans = (String) MyOptionPane.showInputDialog(this,
-					"Enter or change text", "Modify diagram description",
-					MyOptionPane.PLAIN_MESSAGE, null, null, curDiag.desc);
+			String ans = (String) MyOptionPane.showInputDialog(this, "Enter or change text",
+					"Modify diagram description", MyOptionPane.PLAIN_MESSAGE, null, null, curDiag.desc);
 
 			if (ans != null/* && ans.length() > 0 */) {
 				curDiag.desc = ans;
@@ -1941,10 +1839,10 @@ langs = new Lang[12];
 			// }
 			// newItemMenu.setVisible(true);
 
-			Block blk = createBlock(blockType, x, y, curDiag, true); 
+			Block blk = createBlock(blockType, x, y, curDiag, true);
 			if (null != blk) {
-				//if (!blk.editDescription(CREATE))
-				//	return;;
+				// if (!blk.editDescription(CREATE))
+				// return;;
 				curDiag.changed = true;
 				blk.buildSides();
 			}
@@ -1956,13 +1854,12 @@ langs = new Lang[12];
 			Block b = selBlock;
 
 			if (b == null) {
-				MyOptionPane.showMessageDialog(this, "Block not selected",
-						MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.showMessageDialog(this, "Block not selected", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			curDiag = b.diag;
 			b.buildBlockPopupMenu();
-			//use_drag_icon = false;
+			// use_drag_icon = false;
 			curDiag.jpm.show(this, x + 100, y + 100);
 			repaint();
 			return;
@@ -1971,8 +1868,7 @@ langs = new Lang[12];
 		if (s.equals("Arrow-related Actions")) {
 			Arrow a = selArrow;
 			if (a == null) {
-				MyOptionPane.showMessageDialog(this, "Arrow not selected",
-						MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.showMessageDialog(this, "Arrow not selected", MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			a.buildArrowPopupMenu();
@@ -1986,8 +1882,9 @@ langs = new Lang[12];
 
 		repaint();
 	}
+
 	void showImage(final BufferedImage image, String title, final boolean save) {
-		//JFrame popup = new JFrame((Frame) null);		
+		// JFrame popup = new JFrame((Frame) null);
 		final JFrame iFrame = new JFrame();
 		iFrame.setTitle(title);
 		iFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1997,53 +1894,51 @@ langs = new Lang[12];
 			}
 
 		});
-		
+
 		JLabel jLabel = new JLabel(new ImageIcon(image));
-				
+
 		iFrame.add(jLabel);
-		
-	   
-	    
+
 		iFrame.setLocation(new Point(200, 200));
-		
+
 		iFrame.pack();
 		iFrame.setVisible(true);
-		//iFrame.setAlwaysOnTop(false);
-		
+		// iFrame.setAlwaysOnTop(false);
+
 		iFrame.repaint();
 		repaint();
-		}
-	
+	}
+
 	void askAboutSavingImage(Image img, JFrame jd, boolean save) {
 		if (!save) {
 			jd.dispose();
 			return;
 		}
-		int answer = MyOptionPane.showConfirmDialog(driver, "Save image?",
-				"Save image", MyOptionPane.YES_NO_CANCEL_OPTION);
+		int answer = MyOptionPane.showConfirmDialog(driver, "Save image?", "Save image",
+				MyOptionPane.YES_NO_CANCEL_OPTION);
 
-		//boolean b = false;
-		//final boolean SAVE_AS = true;
+		// boolean b = false;
+		// final boolean SAVE_AS = true;
 		if (answer == MyOptionPane.YES_OPTION) {
 			// User clicked YES.
-			File f = curDiag.genSave(null, langs[DrawFBP.IMAGE], img, null);
+			File f = curDiag.genSave(null, langs[Lang.IMAGE], img, null);
 			// diag.diagLang = gl;
 			Date date = new Date();
-			//Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			if (f!= null)
+			// Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			if (f != null)
 				f.setLastModified(date.getTime());
 			jd.dispose();
 			return;
 		}
 
-		if (answer == MyOptionPane.NO_OPTION){
-		// diag.diagLang = gl;
+		if (answer == MyOptionPane.NO_OPTION) {
+			// diag.diagLang = gl;
 			jd.dispose();
 		}
-			return;
-		 
+		return;
+
 	}
-		 
+
 	void setBlkType(String s) {
 
 		if (s.equals("none")) {
@@ -2092,65 +1987,65 @@ langs = new Lang[12];
 
 	void setNotation(Notation notn) {
 
-		//curDiag.diagNotn = notn;
-		//saveProp("defaultNotation", notn.label);
+		// curDiag.diagNotn = notn;
+		// saveProp("defaultNotation", notn.label);
 		currNotn = notn;
 		jtf.setText("Diagram Notation: " + notn.label);
-		
-	
-
 		jtf.repaint();
 
-		menuItem1.setEnabled(currNotn.lang == langs[DrawFBP.JAVA]);
-		menuItem2j.setEnabled(currNotn.lang == langs[DrawFBP.JAVA]);
-		menuItem2c.setEnabled(currNotn.lang == langs[DrawFBP.CSHARP]);
+		if (currNotn.lang == langs[Lang.JAVA])
+			menuItem1.setText("Locate JavaFBP Jar File");
+		if (currNotn == notations[Notation.JSON])
+			menuItem1.setText("Locate fbp.json File");
 
+		boolean b = false;
+
+		menuItem1.setEnabled(b || (currNotn.lang == langs[Lang.JAVA]));
+		menuItem1.setEnabled(b || (currNotn == notations[Notation.JSON]));
 		
-		//fileMenu.remove(gNMenuItem);
-		fileMenu.remove(7);
+		if (currNotn.lang == langs[Lang.JAVA])
+			menuItem2.setText("Add Additional Jar File");
+		if (currNotn.lang == langs[Lang.CSHARP])
+			menuItem2.setText("Add Additional Dll File");
+		
+		b = false;
+		menuItem2.setEnabled(b || currNotn.lang == langs[Lang.JAVA]);
+		menuItem2.setEnabled(b || currNotn.lang == langs[Lang.CSHARP]);
+		
+		// fileMenu.remove(gNMenuItem);
+		//fileMenu.remove(7);
 
 		String u = "Generate ";
-		//if (curDiag != null)
+		// if (curDiag != null)
 		u += currNotn.label + " ";
 		u += "Network";
-		gNMenuItem = new JMenuItem(u);
+		gNMenuItem.setText(u);
 		gNMenuItem.addActionListener(this);
-		fileMenu.add(gNMenuItem, 7);
-		
-		
-		filterOptions[0] = currNotn.lang.filter.getDescription();  
-		
+		//fileMenu.add(gNMenuItem, 7);
+
+		filterOptions[0] = currNotn.lang.filter.getDescription();
+
 		saveProp("defaultNotation", currNotn.label);
 		saveProperties();
 
-		/*
-		curDiag.fCParm[Diagram.PROCESS] = new  FileChooserParm("Process",
-				gl.srcDirProp,
-				langs[8],
-				"Components: " + gl.lang + " " + gl.extn);
+		// too early!
+		
+		//if (currNotn == notations[Notation.N_JSON] && fbpJsonFile == null)
+		//	locateFbpJsonFile(true);
 
-		curDiag.fCParm[Diagram.NETWORK] = new  FileChooserParm("Code",
-				gl.netDirProp, langs[9], "Network");
-		*/
-		
-		
-		
-		for (Block b: curDiag.blocks.values()) {
-			b.component = null;
-			b.fullClassName = null;
-			b.codeFileName = null;
-			b.subnetFileName = null;
+		for (Block bk : curDiag.blocks.values()) {
+			bk.component = null;
+			bk.fullClassName = null;
+			bk.codeFileName = null;
+			bk.subnetFileName = null;
 		}
 
-		
 		repaint();
 	}
 
-	
 	// editType is false if no edit; true if block type determines type
-	
-	Block createBlock(String blkType, int xa, int ya, Diagram diag,
-			boolean editType) {
+
+	Block createBlock(String blkType, int xa, int ya, Diagram diag, boolean editType) {
 		Block block = null;
 		boolean oneLine = false;
 		String title = "";
@@ -2159,11 +2054,10 @@ langs = new Lang[12];
 			block.isSubnet = willBeSubnet;
 		}
 
-		else if (blkType.equals(Block.Types.EXTPORT_IN_BLOCK)
-				|| blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
+		else if (blkType.equals(Block.Types.EXTPORT_IN_BLOCK) || blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
 				|| blkType.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
 			oneLine = true;
-			title = "External Port";			
+			title = "External Port";
 			block = new ExtPortBlock(diag);
 		}
 
@@ -2175,10 +2069,10 @@ langs = new Lang[12];
 		else if (blkType.equals(Block.Types.IIP_BLOCK)) {
 			oneLine = true;
 			title = "IIP";
-			block = new IIPBlock(diag);		
-			//IIPBlock ib = (IIPBlock) block;
-			//block.width = ib.width;
-			//block.width = 60;  // default
+			block = new IIPBlock(diag);
+			// IIPBlock ib = (IIPBlock) block;
+			// block.width = ib.width;
+			// block.width = 60; // default
 		}
 
 		else if (blkType.equals(Block.Types.LEGEND_BLOCK)) {
@@ -2204,8 +2098,7 @@ langs = new Lang[12];
 		else if (blkType.equals(Block.Types.REPORT_BLOCK)) {
 			title = "Report";
 			block = new ReportBlock(diag);
-		}
-		else
+		} else
 			return null;
 
 		block.type = blkType;
@@ -2218,17 +2111,16 @@ langs = new Lang[12];
 		if (editType) {
 			if (oneLine) {
 				if (blkType != Block.Types.ENCL_BLOCK) {
-					//String d = "Enter description";
+					// String d = "Enter description";
 					String d = "Enter " + title + " text";
-					String ans = (String) MyOptionPane.showInputDialog(this,
-							"Enter text", d, MyOptionPane.PLAIN_MESSAGE, null,
-							null, block.desc);
+					String ans = (String) MyOptionPane.showInputDialog(this, "Enter text", d,
+							MyOptionPane.PLAIN_MESSAGE, null, null, block.desc);
 
 					if (ans == null)
 						return null;
 
 					else
-						block.desc = ans;			
+						block.desc = ans;
 				}
 			} else if (!block.editDescription(CREATE))
 				return null;
@@ -2261,50 +2153,32 @@ langs = new Lang[12];
 		propertyDescriptions.put("Click To Grid", "clicktogrid");
 		propertyDescriptions.put("Scaling Factor", "scalingfactor");
 		propertyDescriptions.put("Sort By Date", "sortbydate");
-		propertyDescriptions.put("Current C# source code directory",
-				"currentCsharpSourceDir");
-		propertyDescriptions.put("Current C# network code directory",
-				"currentCsharpNetworkDir");
-		propertyDescriptions.put("Current component class directory",
-				"currentClassDir");
-		propertyDescriptions.put("Source file directory",
-				"srcDirProp");
-		propertyDescriptions.put("Source file directory",
-				"srcDir");
-		propertyDescriptions.put("Network directory",
-				"netDirProp");
-		propertyDescriptions.put("Current diagram directory",
-				"currentDiagramDir");
+		propertyDescriptions.put("Current C# source code directory", "currentCsharpSourceDir");
+		propertyDescriptions.put("Current C# network code directory", "currentCsharpNetworkDir");
+		propertyDescriptions.put("Current component class directory", "currentClassDir");
+		propertyDescriptions.put("Source file directory", "srcDirProp");
+		propertyDescriptions.put("Source file directory", "srcDir");
+		propertyDescriptions.put("Network directory", "netDirProp");
+		propertyDescriptions.put("Current diagram directory", "currentDiagramDir");
 		propertyDescriptions.put("Current diagram", "currentDiagram");
 		propertyDescriptions.put("Current image directory", "currentImageDir");
-		propertyDescriptions.put("Current Java source code directory",
-				"currentSourceDir");
-		propertyDescriptions.put("Current Java source code directory",
-				"currentJavaSourceDir");
-		propertyDescriptions.put("Current Java network code directory",
-				"currentJavaNetworkDir");
-		propertyDescriptions.put("Current NoFlo source code directory",
-				"currentNoFloSourceDir");
-		propertyDescriptions.put("Current NoFlo network code directory",
-				"currentNoFloNetworkDir");
-		propertyDescriptions.put("Current .fbp notation directory",
-				"currentFBPNetworkDir");
+		propertyDescriptions.put("Current Java source code directory", "currentSourceDir");
+		propertyDescriptions.put("Current Java source code directory", "currentJavaSourceDir");
+		propertyDescriptions.put("Current Java network code directory", "currentJavaNetworkDir");
+		propertyDescriptions.put("Current NoFlo source code directory", "currentNoFloSourceDir");
+		propertyDescriptions.put("Current NoFlo network code directory", "currentNoFloNetworkDir");
+		propertyDescriptions.put("Current .fbp notation directory", "currentFBPNetworkDir");
 		propertyDescriptions.put("Current package name", "currentPackageName");
 		propertyDescriptions.put("Font for code", "fixedFont");
 		propertyDescriptions.put("Font for text", "generalFont");
 		propertyDescriptions.put("Default font size", "defaultFontSize");
-		propertyDescriptions.put("Default notation",
-				"defaultNotation");
+		propertyDescriptions.put("Default notation", "defaultNotation");
 		propertyDescriptions.put("JavaFBP jar file", "javaFBPJarFile");
-		//propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
-		propertyDescriptions.put("Additional Jar Files",
-				"additionalJarFiles");
-		propertyDescriptions.put("Additional Dll Files",
-				"additionalDllFiles");
-		propertyDescriptions.put("Current folder for .exe files",
-				"exeDir");
-		propertyDescriptions.put("Current folder for .dll files",
-				"dllDir");
+		// propertyDescriptions.put("DrawFBP Help jar file", "jhallJarFile");
+		propertyDescriptions.put("Additional Jar Files", "additionalJarFiles");
+		propertyDescriptions.put("Additional Dll Files", "additionalDllFiles");
+		propertyDescriptions.put("Current folder for .exe files", "exeDir");
+		propertyDescriptions.put("Current folder for .dll files", "dllDir");
 
 	}
 
@@ -2318,8 +2192,7 @@ langs = new Lang[12];
 
 		jf.setTitle("List of DrawFBP Properties");
 		JPanel panel = new JPanel(new GridBagLayout());
-		JScrollPane jsp = new JScrollPane(panel,				
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		JScrollPane jsp = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		jf.setFocusable(true);
@@ -2333,12 +2206,12 @@ langs = new Lang[12];
 			}
 		});
 
-		//jf.setLocation(50, 50);
+		// jf.setLocation(50, 50);
 		panel.setBackground(Color.GRAY);
-		//panel.setLocation(getX() + 50, getY() + 50);
-		//panel.setLocation(50, 50);
+		// panel.setLocation(getX() + 50, getY() + 50);
+		// panel.setLocation(50, 50);
 		panel.setSize(1200, 800);
-		//jsp.setLocation(50, 50);
+		// jsp.setLocation(50, 50);
 
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -2364,12 +2237,11 @@ langs = new Lang[12];
 		tft[3].setFont(fontg);
 
 		displayRow(gbc, gbl, tft, panel, Color.BLUE);
-		
+
 		tft[0].setFont(fontg);
 		tft[1].setFont(fontg);
 		tft[2].setFont(fontf);
 		tft[3].setFont(fontf);
-
 
 		for (String p : propertyDescriptions.keySet()) {
 			tft[0] = new JTextField(p);
@@ -2377,90 +2249,82 @@ langs = new Lang[12];
 			tft[1] = new JTextField(q);
 			String u = properties.get(q);
 			String w = "";
-			//System.out.println(p + " " + q);
+			// System.out.println(p + " " + q);
 			int i;
 			if (u == null)
 				u = "";
 			w = u;
 			String v = startProperties.get(q);
-			//if (v == null)
-			//	v = "(null)";
-			//else 
+			// if (v == null)
+			// v = "(null)";
+			// else
 			if (v == null || v.equals(properties.get(q)))
 				v = "";
 			/*
-			if (q.equals("defaultNotation")) {
-				if (!(u.equals("(null)"))) {
-					u = findNotnFromLabel(u).label;
-					if (!(v.equals("")))
-						v = findNotnFromLabel(v).label;
-				}
-				continue;
-			}
-			*/
-			
-			if (q.equals("additionalJarFiles") ||
-					q.equals("additionalDllFiles")) {
-				 
-					
-			boolean done = false;
-			//boolean first = true;
+			 * if (q.equals("defaultNotation")) { if (!(u.equals("(null)"))) { u =
+			 * findNotnFromLabel(u).label; if (!(v.equals(""))) v =
+			 * findNotnFromLabel(v).label; } continue; }
+			 */
 
-			while (!done) {
+			if (q.equals("additionalJarFiles") || q.equals("additionalDllFiles")) {
 
-				v = "";
-				if (u == null)
-					u = "(null)";
+				boolean done = false;
+				// boolean first = true;
 
-				else {
-					
-						//first = false;
-						//done = false;
-					
-					if ((i = w.indexOf(";")) > -1) {
-						u = w.substring(0, i);
-						w = w.substring(i + 1);  // remainder
-						//if (!done) {
+				while (!done) {
+
+					v = "";
+					if (u == null)
+						u = "(null)";
+
+					else {
+
+						// first = false;
+						// done = false;
+
+						if ((i = w.indexOf(";")) > -1) {
+							u = w.substring(0, i);
+							w = w.substring(i + 1); // remainder
+							// if (!done) {
 							tft[2] = new JTextField(u);
 							tft[3] = new JTextField(v);
 
-							//tft[0].setFont(fontg);
-							//tft[1].setFont(fontg);
-							//tft[2].setFont(fontf);
-							//tft[3].setFont(fontf);
+							// tft[0].setFont(fontg);
+							// tft[1].setFont(fontg);
+							// tft[2].setFont(fontf);
+							// tft[3].setFont(fontf);
 
 							displayRow(gbc, gbl, tft, panel, Color.BLACK);
 							tft[0] = new JTextField("");
 							tft[1] = new JTextField("");
-						//}
-							
-						//done = false;
-					} else {
-						u = w;
-						done = true;
+							// }
+
+							// done = false;
+						} else {
+							u = w;
+							done = true;
+						}
+
 					}
-
-					
+					// if (done)
+					// break;
 				}
-				//if (done)
-				//	break;
 			}
-			}	
-				tft[2] = new JTextField(u);
-				tft[3] = new JTextField(v);
+			tft[2] = new JTextField(u);
+			tft[3] = new JTextField(v);
 
-				//tft[0].setFont(fontg);
-				//tft[1].setFont(fontg);
-				//tft[2].setFont(fontf);
-				//tft[3].setFont(fontf);
+			// tft[0].setFont(fontg);
+			// tft[1].setFont(fontg);
+			// tft[2].setFont(fontf);
+			// tft[3].setFont(fontf);
 
-				displayRow(gbc, gbl, tft, panel, Color.BLACK);
+			displayRow(gbc, gbl, tft, panel, Color.BLACK);
 
-				//if (done)
-				//	break;
-				tft[0] = new JTextField("");
-				tft[1] = new JTextField("");
-		 
+			// if (done)
+			// break;
+			tft[0] = new JTextField("");
+			tft[1] = new JTextField("");
+
 		}
 
 		// jsp.add(panel);
@@ -2468,7 +2332,7 @@ langs = new Lang[12];
 		jf.pack();
 		Point p = getLocation();
 		jf.setLocation(p.x + 50, p.y + 50);
-		//jf.setLocation(100, 100);
+		// jf.setLocation(100, 100);
 		// int height = 200 + properties.size() * 40;
 		jf.setSize(1200, 800);
 		// jsp.setVisible(true);
@@ -2486,8 +2350,7 @@ langs = new Lang[12];
 
 		SelectionArea sa = new SelectionArea();
 		sa.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
-		sa.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-				.put(escapeKS, "CLOSE");
+		sa.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
 		sa.getInputMap().put(escapeKS, "CLOSE");
 
 		sa.getActionMap().put("CLOSE", escapeAction);
@@ -2514,27 +2377,25 @@ langs = new Lang[12];
 				s = System.getProperty("user.home");
 			File f2 = new File(s);
 			if (!f2.exists()) {
-				MyOptionPane.showMessageDialog(this,
-						"Directory '" + s + "' does not exist - reselect",
+				MyOptionPane.showMessageDialog(this, "Directory '" + s + "' does not exist - reselect",
 						MyOptionPane.ERROR_MESSAGE);
 				// return null;
 				f2 = new File(".");
 			}
 
-			MyFileChooser fc = new MyFileChooser(this, f2, langs[DIAGRAM], "Open Diagram");
+			MyFileChooser fc = new MyFileChooser(this, f2, langs[Lang.DIAGRAM], "Open Diagram");
 
 			int returnVal = fc.showOpenDialog();
 
-			if (returnVal == MyFileChooser.APPROVE_OPTION)  
-				 file = new File(getSelFile(fc));		//xxx	 
+			if (returnVal == MyFileChooser.APPROVE_OPTION)
+				file = new File(getSelFile(fc)); // xxx
 
 			if (file == null)
 				return file;
 		}
 
 		if (file.isDirectory()) {
-			MyOptionPane.showMessageDialog(this,
-					"File is directory: " + file.getAbsolutePath());
+			MyOptionPane.showMessageDialog(this, "File is directory: " + file.getAbsolutePath());
 			return null;
 		}
 
@@ -2544,25 +2405,21 @@ langs = new Lang[12];
 			file = new File(name);
 		}
 		if (!(file.exists())) {
-			MyOptionPane.showMessageDialog(this,
-					"File does not exist: " + file.getName(),
-					MyOptionPane.ERROR_MESSAGE);
+			MyOptionPane.showMessageDialog(this, "File does not exist: " + file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return file;
 		}
 
-		if (null == (fileString = readFile(file /*, !SAVEAS */))) {
-			MyOptionPane.showMessageDialog(this,
-					"Unable to read file: " + file.getName(),
-					MyOptionPane.ERROR_MESSAGE);
+		if (null == (fileString = readFile(file /* , !SAVEAS */))) {
+			MyOptionPane.showMessageDialog(this, "Unable to read file: " + file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 
 		File currentDiagramDir = file.getParentFile();
 		saveProp("currentDiagramDir", currentDiagramDir.getAbsolutePath());
-		
+
 		diagramName = file.getAbsolutePath();
 		saveProp("currentDiagram", diagramName);
-		
+
 		String s = diagramName;
 		curDiag.area.removeMouseListener(curDiag.area);
 		curDiag.area.removeMouseMotionListener(curDiag.area);
@@ -2570,8 +2427,7 @@ langs = new Lang[12];
 			curDiag.area.addMouseListener(curDiag.area);
 			curDiag.area.addMouseMotionListener(curDiag.area);
 		}
-		
-		
+
 		ButtonTabComponent b = null;
 
 		int i = getFileTabNo(file.getAbsolutePath());
@@ -2585,32 +2441,30 @@ langs = new Lang[12];
 			// diagFile = b.diag.diagFile;
 			return file;
 		}
- 
-		 
+
 		// if last slot has title == (untitled) and is not changed, reuse it
-		
-		boolean found = false;   
+
+		boolean found = false;
 		int j = jtp.getTabCount() - 1;
 		if (j > -1) {
 			b = (ButtonTabComponent) jtp.getTabComponentAt(j);
 			if (b != null && b.diag != null) {
 				Diagram d = b.diag;
 				if (d.title.equals("(untitled)") && !d.changed) {
-					curDiag = d;					
-					jtp.setSelectedIndex(j);					
-					found = true;					
+					curDiag = d;
+					jtp.setSelectedIndex(j);
+					found = true;
 				}
 			}
 		}
-		 
+
 		if (!found)
 			getNewDiag();
 		curDiag.title = file.getName();
-		
+
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
-			curDiag.title = curDiag.title.substring(0,
-					curDiag.title.length() - 4);
-		
+			curDiag.title = curDiag.title.substring(0, curDiag.title.length() - 4);
+
 		curDiag.blocks.clear();
 		curDiag.arrows.clear();
 		curDiag.desc = " ";
@@ -2623,47 +2477,45 @@ langs = new Lang[12];
 		fpArrowRoot = null;
 		currentArrow = null;
 		foundBlock = null;
-		//drawToolTip = false;
+		// drawToolTip = false;
 		blockSelForDragging = null;
-		//if (curDiag.diagNotn != null)
-		//	changeLanguage(curDiag.diagNotn);
+		// if (curDiag.diagNotn != null)
+		// changeLanguage(curDiag.diagNotn);
 
 		fname = file.getName();
 		curDiag.diagFile = file;
 
 		// jtp.setSelectedIndex(curDiag.tabNum);
-		//Notation notn = null;
+		// Notation notn = null;
 
 		String suff = getSuffix(fname);
 
-		//Notation notn = null;
+		// Notation notn = null;
 		if (!(suff.equals("drw") || suff.equals("dr~"))) {
 			Lang lang = findLangFromSuff(suff);
-			CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE);  // does fbp have a Display form?
+			CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE); // does fbp have a Display form?
 			cm.displayDoc(file, lang, null);
 			return file;
 		}
-		//if (!(suff.equals("drw"))  && !(suff.equals("dr~"))) {
-		//	notn = findNotnFromLang(suff);
-		//	CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE);  // do.
-		//	cm.displayDoc(file, notn, null);
-		//	return file;
-		//}
+		// if (!(suff.equals("drw")) && !(suff.equals("dr~"))) {
+		// notn = findNotnFromLang(suff);
+		// CodeManager cm = new CodeManager(curDiag, CODEMGRCREATE); // do.
+		// cm.displayDoc(file, notn, null);
+		// return file;
+		// }
 
 		curDiag.title = fname;
-		
 
 		setTitle("Diagram: " + curDiag.title);
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
-			curDiag.title = curDiag.title.substring(0,
-					curDiag.title.length() - 4);
+			curDiag.title = curDiag.title.substring(0, curDiag.title.length() - 4);
 		// curDiag.tabNum = i;
 		// jtp.setSelectedIndex(curDiag.tabNum);
 		repaint();
 		return file;
 	}
-	
-	public String readFile(File file /*, boolean saveAs */) {
+
+	public String readFile(File file /* , boolean saveAs */) {
 		StringBuffer fileBuffer;
 		String fileString = null;
 		int i;
@@ -2680,57 +2532,55 @@ langs = new Lang[12];
 
 				fileString = fileBuffer.toString();
 			} catch (IOException e) {
-				MyOptionPane.showMessageDialog(this, "I/O Exception: "
-						+ file.getName(), MyOptionPane.ERROR_MESSAGE);
-				//fileString = "";
+				MyOptionPane.showMessageDialog(this, "I/O Exception: " + file.getName(), MyOptionPane.ERROR_MESSAGE);
+				// fileString = "";
 			}
 
 		} catch (FileNotFoundException e) {
-			//if (!saveAs)
-			//	MyOptionPane.showMessageDialog(this, "File not found: "  
-			//		+ file.getName(), MyOptionPane.ERROR_MESSAGE);
+			// if (!saveAs)
+			// MyOptionPane.showMessageDialog(this, "File not found: "
+			// + file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		} catch (IOException e) {
-			MyOptionPane.showMessageDialog(this, "I/O Exception 2: "
-					+ file.getName(), MyOptionPane.ERROR_MESSAGE);
+			MyOptionPane.showMessageDialog(this, "I/O Exception 2: " + file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
 		}
 		return fileString;
 	} // readFile
-	
+
 	// returns index of found tab; -1 if none
-	
+
 	int getFileTabNo(String fileName) {
-		//int k = jtp.getSelectedIndex();
-		
+		// int k = jtp.getSelectedIndex();
+
 		int j = jtp.getTabCount();
 		for (int i = 0; i < j; i++) {
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null)
 				continue;
 			Diagram d = b.diag;
 			if (d == null)
 				continue;
-			//if (i == k) 
-			//	continue;
+			// if (i == k)
+			// continue;
 			File f = d.diagFile;
 			if (f != null) {
 
 				String t = f.getAbsolutePath();
-				String u = fileName.replace("\\",  "/");
-				t = t.replace("\\",  "/");
+				String u = fileName.replace("\\", "/");
+				t = t.replace("\\", "/");
 				if (t.endsWith(u)) {
 					return i;
 				}
 			}
-			//if (d.title != null && fileName.endsWith(d.title))
-			//	return i;
+			// if (d.title != null && fileName.endsWith(d.title))
+			// return i;
 		}
 		return -1;
 	}
+
 	String getSuffix(String s) {
-		String s2 = s.replace("\\",  "/");
+		String s2 = s.replace("\\", "/");
 		int i = s.lastIndexOf("/");
 		if (i > -1)
 			s2 = s.substring(0, i + 1);
@@ -2740,16 +2590,16 @@ langs = new Lang[12];
 		else
 			return s2.substring(j + 1);
 	}
-	
+
 	void saveAction(boolean saveAs) {
 
-		//File file = null;
-		//if (curDiag.diagFile == null)
-		//	saveAs = true;
-		//if (!saveAs)
+		// File file = null;
+		// if (curDiag.diagFile == null)
+		// saveAs = true;
+		// if (!saveAs)
 		File file = (!saveAs) ? curDiag.diagFile : null;
 
-		file = curDiag.genSave(file, langs[DrawFBP.DIAGRAM], null, driver);  
+		file = curDiag.genSave(file, langs[Lang.DIAGRAM], null, driver);
 
 		int i = jtp.getSelectedIndex();
 		if (file == null) {
@@ -2762,15 +2612,12 @@ langs = new Lang[12];
 
 		curDiag.title = file.getName();
 		curDiag.diagFile = file;
-		
 
 		File currentDiagramDir = file.getParentFile();
 		setTitle("Diagram: " + curDiag.title);
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
-			curDiag.title = curDiag.title.substring(0,
-					curDiag.title.length() - 4);
-		saveProp("currentDiagramDir",
-				currentDiagramDir.getAbsolutePath());
+			curDiag.title = curDiag.title.substring(0, curDiag.title.length() - 4);
+		saveProp("currentDiagramDir", currentDiagramDir.getAbsolutePath());
 		saveProperties();
 
 		curDiag.changed = false;
@@ -2778,17 +2625,16 @@ langs = new Lang[12];
 	}
 
 	/**
-	 * Use a BufferedWriter, which is wrapped around an OutputStreamWriter,
-	 * which in turn is wrapped around a FileOutputStream, to write the string
-	 * data to the given file.
+	 * Use a BufferedWriter, which is wrapped around an OutputStreamWriter, which in
+	 * turn is wrapped around a FileOutputStream, to write the string data to the
+	 * given file.
 	 */
 
 	public boolean writeFile(File file, String fileString) {
 		if (file == null || fileString == null)
 			return false;
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(file), "UTF-8"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 			out.write(fileString);
 			out.flush();
 			out.close();
@@ -2799,8 +2645,7 @@ langs = new Lang[12];
 
 		return true;
 	} // writeFile
-	
-	
+
 	static String makeAbsFileName(String current, String parent) {
 		if (current.equals(""))
 			return parent;
@@ -2810,12 +2655,12 @@ langs = new Lang[12];
 			return current;
 
 		String cur = current.replace('\\', '/');
-		
+
 		if (parent == null)
 			return current;
 		String par = parent.replace('\\', '/');
-		//if (par.endsWith("/"))
-		//	par = par.substring(0, par.length() - 1);	
+		// if (par.endsWith("/"))
+		// par = par.substring(0, par.length() - 1);
 
 		int k = 0;
 		int m = 0;
@@ -2845,9 +2690,8 @@ langs = new Lang[12];
 		}
 		return par + "/" + cur.substring(k);
 	}
-	
-	public static BufferedImage readImageFromFile(File file)
-			throws IOException {
+
+	public static BufferedImage readImageFromFile(File file) throws IOException {
 		return ImageIO.read(file);
 	}
 
@@ -2865,8 +2709,7 @@ langs = new Lang[12];
 			saveProp("generalFont", generalFont);
 			saveProperties();
 
-			jfl.setText("Fixed font: " + fixedFont + "; general font: "
-					+ generalFont);
+			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);
 			adjustFonts();
 			repaint();
@@ -2878,8 +2721,7 @@ langs = new Lang[12];
 			saveProp("fixedFont", fixedFont);
 			saveProperties();
 
-			jfl.setText("Fixed font: " + fixedFont + "; general font: "
-					+ generalFont);
+			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
 			adjustFonts();
 			repaint();
@@ -2890,20 +2732,19 @@ langs = new Lang[12];
 		return;
 	}
 
-	
 	void redrawVarBlocks() {
-		for (Block b: curDiag.blocks.values()){
-			if (b.type.equals(Block.Types.IIP_BLOCK) ||
-					b.type.equals(Block.Types.LEGEND_BLOCK)){
-				SwingUtilities.invokeLater(new Runnable(){
-			        public void run(){
-			            curDiag.area.repaint();
-			        }
-			    });
+		for (Block b : curDiag.blocks.values()) {
+			if (b.type.equals(Block.Types.IIP_BLOCK) || b.type.equals(Block.Types.LEGEND_BLOCK)) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						curDiag.area.repaint();
+					}
+				});
 			}
-			
+
 		}
 	}
+
 	void chooseFonts(MyFontChooser fontChooser) {
 
 		fontChooser.buildFontLists();
@@ -2922,22 +2763,19 @@ langs = new Lang[12];
 
 	private void changeFontSize() {
 
-		//Float[] selectionValues = {new Float(10), new Float(12), new Float(14),
-		//		new Float(16), new Float(18), new Float(20), new Float(22)};
+		// Float[] selectionValues = {new Float(10), new Float(12), new Float(14),
+		// new Float(16), new Float(18), new Float(20), new Float(22)};
 		Float[] selectionValues = new Float[7];
-		for (int i = 0; i < selectionValues.length; i++ ) {
+		for (int i = 0; i < selectionValues.length; i++) {
 			selectionValues[i] = Float.valueOf(i * 2.0f + 10);
 		}
 		int j = 0;
 		for (int i = 0; i < selectionValues.length; i++) {
-			if (Float.compare(selectionValues[i].floatValue(),
-					defaultFontSize) == 0)
+			if (Float.compare(selectionValues[i].floatValue(), defaultFontSize) == 0)
 				j = i;
 		}
-		Float fs = (Float) MyOptionPane.showInputDialog(this,
-				"Font size dialog", "Select a font size",
-				MyOptionPane.PLAIN_MESSAGE, null, selectionValues,
-				selectionValues[j]);
+		Float fs = (Float) MyOptionPane.showInputDialog(this, "Font size dialog", "Select a font size",
+				MyOptionPane.PLAIN_MESSAGE, null, selectionValues, selectionValues[j]);
 		if (fs == null)
 			return;
 
@@ -2962,8 +2800,7 @@ langs = new Lang[12];
 
 		int j = jtp.getTabCount();
 		for (int i = 0; i < j; i++) {
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
 			b.label.setFont(fontf);
@@ -3002,7 +2839,7 @@ langs = new Lang[12];
 		}
 
 		UIDefaults def = UIManager.getLookAndFeelDefaults();
-		 
+
 		final FontUIResource res = new FontUIResource(fontg);
 		for (Enumeration<Object> e = def.keys(); e.hasMoreElements();) {
 			Object item = e.nextElement();
@@ -3030,8 +2867,8 @@ langs = new Lang[12];
 		// arrow.draw(osg);
 		// }
 
-		//if (depDialog != null)
-		//	depDialog.setFont(fontf);
+		// if (depDialog != null)
+		// depDialog.setFont(fontf);
 
 		/*
 		 * for (Object item : ht.keySet()) { UIManager.put(item, fontg); //
@@ -3047,263 +2884,239 @@ langs = new Lang[12];
 	}
 
 	final boolean SAVEAS = true;
-	
+
 	void compileCode() {
 
 		File cFile = null;
-		//Notation notn = curDiag.diagNotn;
+		// Notation notn = curDiag.diagNotn;
 		Process proc = null;
-		//String program = "";
-		//interrupt = false;
-		//String cMsg = null;
-		if (!(currNotn.lang == driver.langs[DrawFBP.JAVA]) && 
-				!(currNotn.lang == driver.langs[DrawFBP.CSHARP])) {
-			MyOptionPane.showMessageDialog(this,
-					"Language not supported: " + currNotn.lang,
+		// String program = "";
+		// interrupt = false;
+		// String cMsg = null;
+		if (!(currNotn.lang == langs[Lang.JAVA]) && !(currNotn.lang == langs[Lang.CSHARP])) {
+			MyOptionPane.showMessageDialog(this, "Language not supported: " + currNotn.lang,
 					MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		 
-		//if (curDiag.changed) {
-		//	cMsg = "Select a " + currLang.label + " source file - if diagram has changed, \n   invoke 'File/Generate " + currLang.label + " Network' first";
-			
-		//}
-		 
-		//cMsg = "Select  a " + currLang.label + " source file";
-		
-		//MyOptionPane.showMessageDialog(this, cMsg, MyOptionPane.INFORMATION_MESSAGE);
-		
-		//if (currLang.label.equals("Java")) {
-			String ss = properties.get(currNotn.netDirProp);
-			String srcDir = null;
-			if (ss == null)
+
+		// if (curDiag.changed) {
+		// cMsg = "Select a " + currLang.label + " source file - if diagram has changed,
+		// \n invoke 'File/Generate " + currLang.label + " Network' first";
+
+		// }
+
+		// cMsg = "Select a " + currLang.label + " source file";
+
+		// MyOptionPane.showMessageDialog(this, cMsg, MyOptionPane.INFORMATION_MESSAGE);
+
+		// if (currLang.label.equals("Java")) {
+		String ss = properties.get(currNotn.netDirProp);
+		String srcDir = null;
+		if (ss == null)
+			srcDir = System.getProperty("user.home");
+		else {
+			ss = ss.replace("\\", "/");
+			String st = ss.substring(ss.lastIndexOf("/") + 1);
+			if (0 < st.lastIndexOf("."))
 				srcDir = System.getProperty("user.home");
-			else {
-				ss = ss.replace("\\", "/");
-				String st = ss.substring(ss.lastIndexOf("/") + 1); 
-				if (0 < st.lastIndexOf(".")) 
-					srcDir = System.getProperty("user.home");
-				else
-					srcDir = ss;
-			}
+			else
+				srcDir = ss;
+		}
 
-			MyFileChooser fc = new MyFileChooser(this, new File(srcDir),
-					currNotn.lang, "Compile Network");
+		MyFileChooser fc = new MyFileChooser(this, new File(srcDir), currNotn.lang, "Compile Network");
 
-			int returnVal = fc.showOpenDialog();
+		int returnVal = fc.showOpenDialog();
 
-			cFile = null;
-			if (returnVal == MyFileChooser.APPROVE_OPTION) {
-				cFile = new File(getSelFile(fc));
-			}
-			// }
-			if (cFile == null || !(cFile.exists())) {
-				
-				MyOptionPane.showMessageDialog(this, "No file selected or file does not exist", MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			
-			srcDir = cFile.getAbsolutePath();
-			srcDir = srcDir.replace('\\', '/');
-			
-			int j = srcDir.lastIndexOf("/");
-			progName = srcDir.substring(j + 1);
-			srcDir = srcDir.substring(0, j);
-			//String clsDir = srcDir;
-			//(new File(srcDir)).mkdirs();
-			saveProp(currNotn.netDirProp, srcDir);
-		  
-		
-		if (currNotn.lang == driver.langs[DrawFBP.JAVA]) {	
+		cFile = null;
+		if (returnVal == MyFileChooser.APPROVE_OPTION) {
+			cFile = new File(getSelFile(fc));
+		}
+		// }
+		if (cFile == null || !(cFile.exists())) {
+
+			MyOptionPane.showMessageDialog(this, "No file selected or file does not exist", MyOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		srcDir = cFile.getAbsolutePath();
+		srcDir = srcDir.replace('\\', '/');
+
+		int j = srcDir.lastIndexOf("/");
+		progName = srcDir.substring(j + 1);
+		srcDir = srcDir.substring(0, j);
+		// String clsDir = srcDir;
+		// (new File(srcDir)).mkdirs();
+		saveProp(currNotn.netDirProp, srcDir);
+
+		if (currNotn.lang == langs[Lang.JAVA]) {
 			String fNPkg = "";
 			int k = srcDir.indexOf("/src/");
 			if (k == -1) {
 				k = srcDir.length() - 4;
-				if (!(srcDir.substring(k).equals("/src"))) {  // folder name starting with "src" would not work!
+				if (!(srcDir.substring(k).equals("/src"))) { // folder name starting with "src" would not work!
 					MyOptionPane.showMessageDialog(this,
-						"File name '" + srcDir + "' - file name should contain 'src' - cannot compile",
-						MyOptionPane.ERROR_MESSAGE);
+							"File name '" + srcDir + "' - file name should contain 'src' - cannot compile",
+							MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
 			}
-			
-			if (j >= k + 5){
-				//fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
+
+			if (j >= k + 5) {
+				// fNPkg = cFile.getAbsolutePath().substring(k + 5, j)/* + "/" */ ;
 				String fileString = readFile(cFile);
 				fNPkg = getPackageFromCode(fileString);
-				
-				//if (null == packageName) {
-				//}
-				//}
-				if (fNPkg != null) 
+
+				// if (null == packageName) {
+				// }
+				// }
+				if (fNPkg != null)
 					fNPkg = fNPkg.replace(".", "/");
 			}
 			String clsDir = srcDir.replace("/src", "/bin");
-			//srcDir = srcDir.substring(0, k + 4); // drop after src
-			//clsDir = clsDir.substring(0, k + 4); // drop after bin
-				
-			
-			//(new File(clsDir)).mkdir();
-			
+			// srcDir = srcDir.substring(0, k + 4); // drop after src
+			// clsDir = clsDir.substring(0, k + 4); // drop after bin
+
+			// (new File(clsDir)).mkdir();
+
 			saveProp("currentClassDir", clsDir);
-			//clsDir = clsDir.substring(0, k + 4); 
+			// clsDir = clsDir.substring(0, k + 4);
 
 			File fd = new File(clsDir);
 
 			fd.mkdirs();
-			
-			if (fd == null || !fd.exists()) {				    
-				MyOptionPane.showMessageDialog(this,
-					"'bin' directory does not exist - " + clsDir,
-					MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			
-			saveProp("currentClassDir", clsDir);
-			/*
-			if (!(fNPkg.equals(""))) {
-				fd = new File(clsDir + "/" + fNPkg);
-				fd.mkdirs();
-				if (fd == null || !fd.exists()) {
-				MyOptionPane.showMessageDialog(this,
-						"Directory '" + clsDir + "/" + fNPkg + "' does not exist",
+
+			if (fd == null || !fd.exists()) {
+				MyOptionPane.showMessageDialog(this, "'bin' directory does not exist - " + clsDir,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
-				
 			}
-			}
-			
-			*/
+
+			saveProp("currentClassDir", clsDir);
+			/*
+			 * if (!(fNPkg.equals(""))) { fd = new File(clsDir + "/" + fNPkg); fd.mkdirs();
+			 * if (fd == null || !fd.exists()) { MyOptionPane.showMessageDialog(this,
+			 * "Directory '" + clsDir + "/" + fNPkg + "' does not exist",
+			 * MyOptionPane.ERROR_MESSAGE); return;
+			 * 
+			 * } }
+			 * 
+			 */
 
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
 
-			
 			proc = null;
-			
+
 			String delim = null;
-			if (System.getProperty("os.name").startsWith("Windows"))  
+			if (System.getProperty("os.name").startsWith("Windows"))
 				delim = ";";
 			else
 				delim = ":";
-			
-					 
-			
-			srcDir = srcDir.replace("\\",  "/");
-			// clsDir = clsDir.replace("\\",  "/");
-			
+
+			srcDir = srcDir.replace("\\", "/");
+			// clsDir = clsDir.replace("\\", "/");
+
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
-				MyOptionPane.showMessageDialog(this,
-						"Missing JAVA_HOME environment variable",
+				MyOptionPane.showMessageDialog(this, "Missing JAVA_HOME environment variable",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if (-1 == jh.indexOf("jdk")){
+			if (-1 == jh.indexOf("jdk")) {
 				MyOptionPane.showMessageDialog(this,
 						"To do Java compiles, JAVA_HOME environment variable must point at JDK",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+
 			String javac = null;
-			if (System.getProperty("os.name").startsWith("Windows"))  
-			    javac = jh + "/bin/javac.exe";
+			if (System.getProperty("os.name").startsWith("Windows"))
+				javac = jh + "/bin/javac.exe";
 			else
-			    javac = jh + "/bin/javac";
-			
+				javac = jh + "/bin/javac";
+
 			// Switch to JavaCompiler javac = ToolProvider.getSystemJavaCompiler();
-			
-			//if (fNPkg != null && !(fNPkg.trim().equals("")))
-			//	srcDir += "/" + fNPkg;
-			
-			
-			srcDir = srcDir.replace("\\",  "/");
+
+			// if (fNPkg != null && !(fNPkg.trim().equals("")))
+			// srcDir += "/" + fNPkg;
+
+			srcDir = srcDir.replace("\\", "/");
 			clsDir = srcDir.replace("/src", "/bin");
-			
+
 			int m = clsDir.indexOf(fNPkg);
 			if (m == -1)
 				m = clsDir.indexOf("bin/") + 4;
-			String clsDirTr = clsDir.substring(0, m);		
-			
-			(new File(clsDirTr)).mkdirs(); 
-			
-			String jf = "\"" + javaFBPJarFile; 
+			String clsDirTr = clsDir.substring(0, m);
+
+			(new File(clsDirTr)).mkdirs();
+
+			String jf = "\"" + javaFBPJarFile;
 			for (String jfv : jarFiles) {
 				jf += delim + jfv;
 			}
 			jf += delim + clsDirTr;
-			jf += delim + ".\"";	
-			
+			jf += delim + ".\"";
+
 			String w = srcDir + "/" + progName;
-			List<String> params = Arrays.asList("\"" + javac + "\"", 
-					//"-verbose",
-					"-cp", jf, 
-					"-d", "\"" + clsDirTr + "\"",					 
-					"\"" + w + "\""); 
-			
+			List<String> params = Arrays.asList("\"" + javac + "\"",
+					// "-verbose",
+					"-cp", jf, "-d", "\"" + clsDirTr + "\"", "\"" + w + "\"");
+
 			ProcessBuilder pb = new ProcessBuilder(params);
-						
+
 			pb.directory(new File(clsDir));
 
-			pb.redirectErrorStream(true);			
-			
+			pb.redirectErrorStream(true);
+
 			output = "";
-			
-			//new WaitWindow(this); // display "Processing..." message
+
+			// new WaitWindow(this); // display "Processing..." message
 
 			// int i = 0;
 			String err = "";
-			
+
 			try {
 				proc = pb.start();
 
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(proc.getInputStream()));
+				BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					//System.out.println(line);
+					// System.out.println(line);
 					output += "<br>" + line;
-					//System.out.flush();
+					// System.out.flush();
 				}
 			} catch (Exception e) {
 				err = analyzeCatch(e);
 				if (!err.equals(""))
 					proc = null;
-			} 
-			
+			}
+
 			if (proc == null) {
 				MyOptionPane.showMessageDialog(this, "Compile process failed", MyOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			
+
 			if (srcDir.endsWith("/"))
 				srcDir = srcDir.substring(0, srcDir.length() - 1);
-			
-			
-			String fontFamily = fontf.getFamily(); 
-			String s = "<html><body style=\"font-family: " + fontFamily + 
-					"\"> <p>Compile output for " + "\"" + srcDir + "/" + progName + "\"<br>" +
-					err + /* output + */ "<br>" +
-			"Jar files: <br> ";
-			s += "&nbsp;&nbsp;" + javaFBPJarFile + "<br>"; 
-			if (jarFiles != null) {				
+
+			String fontFamily = fontf.getFamily();
+			String s = "<html><body style=\"font-family: " + fontFamily + "\"> <p>Compile output for " + "\"" + srcDir
+					+ "/" + progName + "\"<br>" + err + /* output + */ "<br>" + "Jar files: <br> ";
+			s += "&nbsp;&nbsp;" + javaFBPJarFile + "<br>";
+			if (jarFiles != null) {
 				for (String jfv : jarFiles) {
 					s += "&nbsp;&nbsp;" + jfv + "<br>";
-				}				
+				}
 			}
-			
+
 			s += "<br><br>";
 			String cls = progName;
 			if (progName.endsWith(".java"))
 				cls = progName.substring(0, progName.length() - 5);
-			
-			s += 
-			"Source dir: " + srcDir + "<br>" +
-			"Class dir: " + clsDir + "<br>" +
-			"File name: " + srcDir + "/" + progName + "<br>" + 
-			"Class file name: " + clsDir +  "/" +  cls + ".class";
-			
+
+			s += "Source dir: " + srcDir + "<br>" + "Class dir: " + clsDir + "<br>" + "File name: " + srcDir + "/"
+					+ progName + "<br>" + "Class file name: " + clsDir + "/" + cls + ".class";
+
 			try {
 				proc.waitFor();
 			} catch (InterruptedException e1) {
@@ -3312,31 +3125,25 @@ langs = new Lang[12];
 			}
 
 			s += "<br><br>";
-			
+
 			int u = proc.exitValue();
-			
+
 			if (u == 0) {
-				s += "Program compiled and linked - \"" + srcDir + "/" + progName +"\"<br>" + 
-						"&nbsp;&nbsp;&nbsp;into - \"" + clsDir   + "/"  
-						+ progName.substring(0,
-								progName.length() - 5)
+				s += "Program compiled and linked - \"" + srcDir + "/" + progName + "\"<br>"
+						+ "&nbsp;&nbsp;&nbsp;into - \"" + clsDir + "/" + progName.substring(0, progName.length() - 5)
 						+ ".class\"";
-				saveProp("currentClassDir", clsDir)  ;
-			}
-			else {
-				s += "Program compile failed, rc: " + u + " - \"" + srcDir + "/" + progName + "\"<br>" +
-						"&nbsp;&nbsp;&nbsp;errcode: " + err + "<br>"	+	
-				         output;
+				saveProp("currentClassDir", clsDir);
+			} else {
+				s += "Program compile failed, rc: " + u + " - \"" + srcDir + "/" + progName + "\"<br>"
+						+ "&nbsp;&nbsp;&nbsp;errcode: " + err + "<br>" + output;
 			}
 			s += "</html>";
 
 			// JFrame jf2 = new JFrame();
-			JDialog jf2 = new JDialog(this,
-					Dialog.ModalityType.APPLICATION_MODAL);
+			JDialog jf2 = new JDialog(this, Dialog.ModalityType.APPLICATION_MODAL);
 			// JDialog jf2 = new JDialog(this);
 			// jf2.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-			JEditorPane jep = new JEditorPane(/* "text/plain", */ "text/html",
-					" ");
+			JEditorPane jep = new JEditorPane(/* "text/plain", */ "text/html", " ");
 			jep.setEditable(false);
 			JScrollPane jsp = new JScrollPane(jep);
 			jf2.add(jsp);
@@ -3344,7 +3151,7 @@ langs = new Lang[12];
 			// jf2.setVisible(true);
 			jf2.setTitle("Compile Output");
 			jep.setText(s);
-			
+
 			jf2.setLocation(200, 200);
 			jf2.setSize(800, 500);
 			// jf2.setAlwaysOnTop(true);
@@ -3360,58 +3167,46 @@ langs = new Lang[12];
 			// interrupt = true;
 
 			proc.destroy();
-			//u = proc.exitValue();
-				
-				//if (fNPkg != null && !(fNPkg.trim().equals("")))			 
-				//	clsDir += "/" + fNPkg;
-				
-			 /* 
-				if (u == 0)
-					MyOptionPane.showMessageDialog(this,
-							"Program compiled - " + srcDir + "/" + progName
-									+ "\n" + "   into - " + clsDir   + "/"  
-									+ progName.substring(0,
-											progName.length() - 5)
-									+ ".class",
-							MyOptionPane.INFORMATION_MESSAGE);
-				else
-					MyOptionPane.showMessageDialog(this,
-							"<html>Program compile failed, rc: " + u + " - " + srcDir
-									+ "/" + progName + "<br>" +
-									output + "</html>",
-							MyOptionPane.WARNING_MESSAGE);
-				
-				*/
-			  
+			// u = proc.exitValue();
+
+			// if (fNPkg != null && !(fNPkg.trim().equals("")))
+			// clsDir += "/" + fNPkg;
+
+			/*
+			 * if (u == 0) MyOptionPane.showMessageDialog(this, "Program compiled - " +
+			 * srcDir + "/" + progName + "\n" + "   into - " + clsDir + "/" +
+			 * progName.substring(0, progName.length() - 5) + ".class",
+			 * MyOptionPane.INFORMATION_MESSAGE); else MyOptionPane.showMessageDialog(this,
+			 * "<html>Program compile failed, rc: " + u + " - " + srcDir + "/" + progName +
+			 * "<br>" + output + "</html>", MyOptionPane.WARNING_MESSAGE);
+			 * 
+			 */
+
 		}
 
 		else {
-			
-			//  Must be C#
 
-			//if (!(currLang.label.equals("C#"))) {
+			// Must be C#
 
-			
+			// if (!(currLang.label.equals("C#"))) {
+
 			// Start of C# part...
 
 			srcDir = properties.get("currentCsharpNetworkDir");
-			
-			
+
 			ss = cFile.getAbsolutePath();
 			if (!(ss.endsWith(".cs"))) {
-				MyOptionPane.showMessageDialog(this,
-						"C# program " + ss + " must end in '.cs'",
+				MyOptionPane.showMessageDialog(this, "C# program " + ss + " must end in '.cs'",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			ss = ss.replace('\\', '/');
 			ss = ss.replace("/", File.separator);
-			
-			String progString = readFile(cFile /*new File(ss), !SAVEAS */);
+
+			String progString = readFile(cFile /* new File(ss), !SAVEAS */);
 			if (progString == null) {
-				MyOptionPane.showMessageDialog(this,
-						"Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.showMessageDialog(this, "Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			String t = "";
@@ -3419,13 +3214,12 @@ langs = new Lang[12];
 			int i = ss.lastIndexOf(File.separator);
 			srcDir = ss.substring(0, i);
 			int k = progString.indexOf("namespace ");
-			if (k > -1) {				
+			if (k > -1) {
 				k += 10; // skip over "namespace"
 				int ks = k;
 
 				while (true) {
-					if (progString.substring(k, k + 1).equals(" ")
-							|| progString.substring(k, k + 1).equals("{")
+					if (progString.substring(k, k + 1).equals(" ") || progString.substring(k, k + 1).equals("{")
 							|| progString.substring(k, k + 1).equals("\r")
 							|| progString.substring(k, k + 1).equals("\n"))
 						break;
@@ -3433,34 +3227,29 @@ langs = new Lang[12];
 				}
 
 				v = progString.substring(ks, k); // get name of
-																// namespace
+													// namespace
 				v = v.replace(".", "/");
-				
+
 			}
-			 
-			
-			
-			//String trunc = ss.substring(0, ss.lastIndexOf("/"));
+
+			// String trunc = ss.substring(0, ss.lastIndexOf("/"));
 			String trunc = srcDir;
 			String progName = ss.substring(ss.lastIndexOf(File.separator) + 1);
-			
-			
+
 			File f = new File(trunc);
 			f.mkdirs();
-			//if (f == null || !f.exists()) {				
-			//	MyOptionPane.showMessageDialog(this,
-			//			"'bin' directory does not exist - " + f.getAbsolutePath(),
-			//			MyOptionPane.ERROR_MESSAGE);
-			//	return;
-		    //}
-			
-			saveProp("currentCsharpNetworkDir",
-					trunc);
-			
-								
+			// if (f == null || !f.exists()) {
+			// MyOptionPane.showMessageDialog(this,
+			// "'bin' directory does not exist - " + f.getAbsolutePath(),
+			// MyOptionPane.ERROR_MESSAGE);
+			// return;
+			// }
+
+			saveProp("currentCsharpNetworkDir", trunc);
+
 			ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "cd '" + trunc + "' && dir");
 			try {
-				proc = pb.start();			
+				proc = pb.start();
 				proc.waitFor();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -3469,112 +3258,106 @@ langs = new Lang[12];
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			String target = /*trunc + "/" + */ "bin/Debug";  //  we've done a cd, so we don't need trunc
-			
+
+			String target = /* trunc + "/" + */ "bin/Debug"; // we've done a cd, so we don't need trunc
+
 			File f2 = new File(target);
 			f2.mkdirs();
-			if (f2 == null || !f2.exists()) {				
-				MyOptionPane.showMessageDialog(this,
-						"'bin' directory does not exist - " + f2.getAbsolutePath(),
+			if (f2 == null || !f2.exists()) {
+				MyOptionPane.showMessageDialog(this, "'bin' directory does not exist - " + f2.getAbsolutePath(),
 						MyOptionPane.ERROR_MESSAGE);
 				return;
-		}
-			
-			//MyOptionPane.showMessageDialog(this,
-			//		"Starting compile - " + ss,
-			//      MyOptionPane.INFORMATION_MESSAGE);
+			}
+
+			// MyOptionPane.showMessageDialog(this,
+			// "Starting compile - " + ss,
+			// MyOptionPane.INFORMATION_MESSAGE);
 
 			proc = null;
 			progName = progName.substring(0, progName.length() - 3); // drop .cs
-			
+
 			String z = properties.get("additionalDllFiles");
 			boolean gotDlls = -1 < z.indexOf("FBPLib.dll") && -1 < z.indexOf("FBPVerbs.dll");
-					
+
 			List<String> cmdList = new ArrayList<String>();
-            cmdList.add("csc");
-            cmdList.add("-t:exe");
-            t = t.replace("\\", "/");
-            t = t.replace("/", ".");
-            //if (v.equals(""))
-            //cmdList.add("-main:" + progName);
-            //else
-            //cmdList.add("-main:" + v + "." + progName);
-            //progName = progName.substring(0, progName.length() - 3);  // drop the .cs
-            cmdList.add("-out:" + target + "/" + v + ".exe");
-            exeDir = trunc + File.separator + target;
-            			
-			if (!gotDlls  && !gotDllReminder) {
+			cmdList.add("csc");
+			cmdList.add("-t:exe");
+			t = t.replace("\\", "/");
+			t = t.replace("/", ".");
+			// if (v.equals(""))
+			// cmdList.add("-main:" + progName);
+			// else
+			// cmdList.add("-main:" + v + "." + progName);
+			// progName = progName.substring(0, progName.length() - 3); // drop the .cs
+			cmdList.add("-out:" + target + "/" + v + ".exe");
+			exeDir = trunc + File.separator + target;
+
+			if (!gotDlls && !gotDllReminder) {
 				MyOptionPane.showMessageDialog(this,
 						"If you are using FBP, you will need a FBPLib dll and a FBPVerbs dll - use File/Add Additional Dll File for each one",
 						MyOptionPane.WARNING_MESSAGE);
 				gotDllReminder = true;
 				return;
 			}
-			
-			else {
-				//Iterator<String> entries = dllFiles.iterator();
-				//z = "";
-				//String cma = "";
 
-				 
-				//String w = "";
+			else {
+				// Iterator<String> entries = dllFiles.iterator();
+				// z = "";
+				// String cma = "";
+
+				// String w = "";
 				String libs = "";
 				String cma = "";
-				//while (entries.hasNext()) {
-				//	String thisEntry = entries.next();
-				for (String thisEntry: dllFiles) {
+				// while (entries.hasNext()) {
+				// String thisEntry = entries.next();
+				for (String thisEntry : dllFiles) {
 					if (!(new File(thisEntry).exists())) {
-						MyOptionPane.showMessageDialog(this,
-								"Dll file does not exist: " + thisEntry,
+						MyOptionPane.showMessageDialog(this, "Dll file does not exist: " + thisEntry,
 								MyOptionPane.WARNING_MESSAGE);
 						return;
 					}
-					//z += "\"/r:" + thisEntry.getValue() + "\" ";
-					//cma = ";";
+					// z += "\"/r:" + thisEntry.getValue() + "\" ";
+					// cma = ";";
 					String w = thisEntry;
 					w = w.replace("\\", "/");
 					j = w.indexOf("bin/Debug");
 					libs += cma + w.substring(0, j);
 					cma = ",";
 					cmdList.add("-lib:" + libs);
-					
-					
+
 				}
-				//entries = dllFiles.iterator();
-				//while (entries.hasNext()) {					 
-				//	String thisEntry = entries.next();
-				for(String thisEntry: dllFiles) {
+				// entries = dllFiles.iterator();
+				// while (entries.hasNext()) {
+				// String thisEntry = entries.next();
+				for (String thisEntry : dllFiles) {
 					String w = thisEntry;
 					w = w.replace("\\", "/");
 					j = w.indexOf("bin/Debug");
 					cmdList.add("-r:" + w.substring(j));
 				}
-				 
-				
-			}					
-			//String w = "\"" + trunc + "/" + "*.cs\"";
-			ss = ss.replace("\\",  "/");
-			cmdList.add(/*trunc + "/" +   */ "*.cs");			
-			
-			/* ProcessBuilder*/ pb = new ProcessBuilder(cmdList);
+
+			}
+			// String w = "\"" + trunc + "/" + "*.cs\"";
+			ss = ss.replace("\\", "/");
+			cmdList.add(/* trunc + "/" + */ "*.cs");
+
+			/* ProcessBuilder */ pb = new ProcessBuilder(cmdList);
 
 			pb.directory(new File(trunc));
-			
+
 			pb.redirectErrorStream(true);
-			//MyOptionPane.showMessageDialog(this,
-			//		"Compiling program - " + srcDir + "/" + v + progName,
-			//		MyOptionPane.INFORMATION_MESSAGE);
-			
-			//new WaitWindow(this); // display "Processing..." message
-			 
+			// MyOptionPane.showMessageDialog(this,
+			// "Compiling program - " + srcDir + "/" + v + progName,
+			// MyOptionPane.INFORMATION_MESSAGE);
+
+			// new WaitWindow(this); // display "Processing..." message
+
 			String err = "";
 			output = "";
 			try {
 				proc = pb.start();
 
-				BufferedReader br = new BufferedReader(
-						new InputStreamReader(proc.getInputStream()));
+				BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
 					output += line + "<br>";
@@ -3583,38 +3366,36 @@ langs = new Lang[12];
 				err = analyzeCatch(e);
 				if (!err.equals(""))
 					proc = null;
-			} 
+			}
 
 			if (proc == null) {
 				MyOptionPane.showMessageDialog(this, "Compile process failed", MyOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			
-			//interrupt = true;
-			//program = v + "/" + progName + ".cs";
+
+			// interrupt = true;
+			// program = v + "/" + progName + ".cs";
 			int u = 0;
-			//if (!(output.equals("")) || !(err.equals(""))) {
-			//	MyOptionPane
-			//			.showMessageDialog(this,
-			//					"<html>Compile output for " + target + "/" + v + ".exe <br>" +
-			//							err + "<br>" + output + "</html>",
-			//					MyOptionPane.ERROR_MESSAGE);
-				//return;
-			//} 
-			
+			// if (!(output.equals("")) || !(err.equals(""))) {
+			// MyOptionPane
+			// .showMessageDialog(this,
+			// "<html>Compile output for " + target + "/" + v + ".exe <br>" +
+			// err + "<br>" + output + "</html>",
+			// MyOptionPane.ERROR_MESSAGE);
+			// return;
+			// }
+
 			try {
 				proc.waitFor();
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			String fontFamily = fontf.getFamily(); 
-			String s = "<html><body style=\"font-family: " + fontFamily + 
-					"\"> <p> Compile output for " + "\"" + srcDir + "/" + progName + ".cs\"<br>" +
-					err + /* output + */ "<br>";
-			
-			
-			if (dllFiles != null) {			
+			String fontFamily = fontf.getFamily();
+			String s = "<html><body style=\"font-family: " + fontFamily + "\"> <p> Compile output for " + "\"" + srcDir
+					+ "/" + progName + ".cs\"<br>" + err + /* output + */ "<br>";
+
+			if (dllFiles != null) {
 				s += "Dll files: <br>";
 				for (String dlv : dllFiles) {
 					s += "&nbsp;&nbsp;&nbsp; \"" + dlv + "\"<br>";
@@ -3622,31 +3403,25 @@ langs = new Lang[12];
 				s += "<br>";
 			}
 			exeDir = exeDir.replace("/", File.separator);
-			s += "Source dir: \"" + srcDir + "\"<br>" + "Exe dir: \"" + exeDir
-					+ "\"<br>" + "File name: \"" + srcDir + File.separator + "*"
-					+ ".cs\"<br>" + "Output file: \"" + exeDir + File.separator
-					+ v + ".exe\"";
+			s += "Source dir: \"" + srcDir + "\"<br>" + "Exe dir: \"" + exeDir + "\"<br>" + "File name: \"" + srcDir
+					+ File.separator + "*" + ".cs\"<br>" + "Output file: \"" + exeDir + File.separator + v + ".exe\"";
 
 			s += "<br><br>";
-			
+
 			u = proc.exitValue();
-			
+
 			if (u == 0) {
-				s += "Programs compiled and linked - \"" + trunc + "/"
-						+ "*.cs\"<br>" + "&nbsp;&nbsp;&nbsp;into - \"" +  trunc + "/bin/Debug/" + v + ".exe\"";
-				saveProp("exeDir", trunc)  ;
-			}
-			else {
-				s += "Program compile failed, rc: " + u + " - \"" + trunc + "/*.cs\"" + "<br>" +
-						"&nbsp;&nbsp;&nbsp;errcode: " + err + "<br>"	+	
-				         output;
+				s += "Programs compiled and linked - \"" + trunc + "/" + "*.cs\"<br>" + "&nbsp;&nbsp;&nbsp;into - \""
+						+ trunc + "/bin/Debug/" + v + ".exe\"";
+				saveProp("exeDir", trunc);
+			} else {
+				s += "Program compile failed, rc: " + u + " - \"" + trunc + "/*.cs\"" + "<br>"
+						+ "&nbsp;&nbsp;&nbsp;errcode: " + err + "<br>" + output;
 			}
 			s += "</html>";
 			// JFrame jf2 = new JFrame();
-			JDialog jf2 = new JDialog(this,
-					Dialog.ModalityType.APPLICATION_MODAL);
-			JEditorPane jep = new JEditorPane(/* "text/plain", */ "text/html",
-					" ");
+			JDialog jf2 = new JDialog(this, Dialog.ModalityType.APPLICATION_MODAL);
+			JEditorPane jep = new JEditorPane(/* "text/plain", */ "text/html", " ");
 			jep.setEditable(false);
 			JScrollPane jsp = new JScrollPane(jep);
 			jf2.add(jsp);
@@ -3663,38 +3438,38 @@ langs = new Lang[12];
 			jf2.pack();
 			jf2.setVisible(true);
 
-			//proc.destroy();
+			// proc.destroy();
 
-			//u = proc.exitValue();
-			
-			//if (u == 0) {
+			// u = proc.exitValue();
 
-				//MyOptionPane.showMessageDialog(this,
-				//		"Programs compiled and linked - " + trunc + "/"
-				//				+ "*.cs\n" + "   into - " +  trunc + "/bin/Debug/" + v + ".exe",
-				//		MyOptionPane.INFORMATION_MESSAGE);
-			//	saveProp("exeDir", trunc)  ;
-			//}
-			//else
-			//	MyOptionPane.showMessageDialog(this,
-			//			"<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
-			//			"errcode: " + err + "<br>"	+	
-			//	         output + "</html>" ,
-			//			MyOptionPane.WARNING_MESSAGE);
+			// if (u == 0) {
+
+			// MyOptionPane.showMessageDialog(this,
+			// "Programs compiled and linked - " + trunc + "/"
+			// + "*.cs\n" + " into - " + trunc + "/bin/Debug/" + v + ".exe",
+			// MyOptionPane.INFORMATION_MESSAGE);
+			// saveProp("exeDir", trunc) ;
+			// }
+			// else
+			// MyOptionPane.showMessageDialog(this,
+			// "<html>Program compile failed, rc: " + u + " - " + trunc + "/*.cs" + "<br>" +
+			// "errcode: " + err + "<br>" +
+			// output + "</html>" ,
+			// MyOptionPane.WARNING_MESSAGE);
 			proc.destroy();
-			 
+
 		}
-		
+
 	}
 
 	void runCode() {
 
-		File cFile = null;  
-		//program = "";
-		//Process proc = null;
-		//interrupt = false;
-		
-		if (currNotn.lang == driver.langs[DrawFBP.JAVA]) {
+		File cFile = null;
+		// program = "";
+		// Process proc = null;
+		// interrupt = false;
+
+		if (currNotn.lang == langs[Lang.JAVA]) {
 
 			String ss = properties.get("currentClassDir");
 			String clsDir = null;
@@ -3703,13 +3478,13 @@ langs = new Lang[12];
 			else
 				clsDir = ss;
 
-			//String savePrompt = curDiag.fCParm[Diagram.CLASS].prompt;
-			//curDiag.fCParm[Diagram.CLASS].prompt = "Select program to be run from class directory or jar file";
-			MyFileChooser fc = new MyFileChooser(this, new File(clsDir), langs[DrawFBP.CLASS],
-					"Run Java Network");
+			// String savePrompt = curDiag.fCParm[Diagram.CLASS].prompt;
+			// curDiag.fCParm[Diagram.CLASS].prompt = "Select program to be run from class
+			// directory or jar file";
+			MyFileChooser fc = new MyFileChooser(this, new File(clsDir), langs[Lang.CLASS], "Run Java Network");
 
 			int returnVal = fc.showOpenDialog();
-			//curDiag.fCParm[Diagram.CLASS].prompt = savePrompt;
+			// curDiag.fCParm[Diagram.CLASS].prompt = savePrompt;
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -3718,82 +3493,72 @@ langs = new Lang[12];
 			}
 			// }
 			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(this, "No file selected or file does not exist", MyOptionPane.ERROR_MESSAGE);
+				MyOptionPane.showMessageDialog(this, "No file selected or file does not exist",
+						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			// if (currLang.label.equals("Java")) {
 			if (!(ss.endsWith(".class"))) {
-				MyOptionPane.showMessageDialog(this,
-						"Executable " + ss + " must end in '.class'",
+				MyOptionPane.showMessageDialog(this, "Executable " + ss + " must end in '.class'",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			ss = ss.replace('\\', '/');
 			int j = ss.lastIndexOf("/");
-			
+
 			saveProp("currentClassDir", ss.substring(0, j));
 
 			progName = ss.substring(j + 1);
 
 			// if (currLang.label.equals("Java"))
-			
-			
+
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
-			
+
 			Class<?> cls = null;
 
 			/*
-			URL[] urls = buildUrls(ssPlus);
-
-			URLClassLoader loader = null;
-			Class<?> cls = null;
-			if (urls != null) {
-
-				// Create a new class loader with the directory
-				loader = new URLClassLoader(urls,
-						this.getClass().getClassLoader());
-
-				//try {
-					// cls = loader.loadClass(thisCls);
-				//	cls = loader.loadClass(progName);
-				//} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-				//	e1.printStackTrace();
-				//}
-			}
-			*/
+			 * URL[] urls = buildUrls(ssPlus);
+			 * 
+			 * URLClassLoader loader = null; Class<?> cls = null; if (urls != null) {
+			 * 
+			 * // Create a new class loader with the directory loader = new
+			 * URLClassLoader(urls, this.getClass().getClassLoader());
+			 * 
+			 * //try { // cls = loader.loadClass(thisCls); // cls =
+			 * loader.loadClass(progName); //} catch (ClassNotFoundException e1) { // TODO
+			 * Auto-generated catch block // e1.printStackTrace(); //} }
+			 */
 
 			int k = ss.indexOf("/bin");
 			String t = "";
 			if (k > -1) {
 				String st = ss.replace("/bin", "/src");
-				st = st.replace(".class",  ".java");
+				st = st.replace(".class", ".java");
 				File f = new File(st);
 				String stc = readFile(f);
-				
+
 				String pkg = getPackageFromCode(stc);
-				pkg = pkg.replace(".",  "/");
-				
+				pkg = pkg.replace(".", "/");
+
 				j = ss.indexOf(pkg);
 				t = cFile.getAbsolutePath().substring(j);
 				t = t.replace("\\", "/");
-				int n = t.lastIndexOf("/");				
+				int n = t.lastIndexOf("/");
 				t = t.substring(0, n);
-				String u = ss.substring(0, j); 				
+				String u = ss.substring(0, j);
 
 				clsDir = u; // drop before package
 			}
 
 			ss = ss.substring(0, ss.length() - 6); // drop .class suffix
-			//clsDir.mkdirs(); 
-			if (clsDir == null || !(new File(clsDir)).exists()) {				
-			MyOptionPane.showMessageDialog(this,
-							"Run class directory does not exist - " + clsDir,
-							MyOptionPane.ERROR_MESSAGE);
-					return;
+			// clsDir.mkdirs();
+			if (clsDir == null || !(new File(clsDir)).exists()) {
+				MyOptionPane.showMessageDialog(this, "Run class directory does not exist - " + clsDir,
+						MyOptionPane.ERROR_MESSAGE);
+				return;
 			}
 			saveProp("currentClassDir", clsDir);
 
@@ -3801,20 +3566,18 @@ langs = new Lang[12];
 			if (!(t.equals("")))
 				progName = t.replace("\\", "/") + "/" + progName;
 			progName = progName.replace("/", ".");
-			
-			 
+
 			if (javaFBPJarFile == null)
 				locateJavaFBPJarFile(false);
 
 			URL[] urls = buildUrls(new File(clsDir));
 
 			URLClassLoader loader = null;
-			//Class<?> cls = null;
+			// Class<?> cls = null;
 			if (urls != null) {
 
 				// Create a new class loader with the directory
-				loader = new URLClassLoader(urls,
-						this.getClass().getClassLoader());
+				loader = new URLClassLoader(urls, this.getClass().getClassLoader());
 
 				try {
 					// cls = loader.loadClass(thisCls);
@@ -3826,10 +3589,9 @@ langs = new Lang[12];
 			}
 			// Class<?> cls = null;
 			// cls = loader.loaderClass(thisCls);
-             
+
 			if (cls == null) {
-				MyOptionPane.showMessageDialog(this,
-						"Class not generated for program " + progName ,
+				MyOptionPane.showMessageDialog(this, "Class not generated for program " + progName,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
@@ -3838,14 +3600,11 @@ langs = new Lang[12];
 				meth = cls.getMethod("main", String[].class);
 			} catch (NoSuchMethodException e2) {
 				meth = null;
-				MyOptionPane.showMessageDialog(this,
-						"Program \"" + progName + "\" has no 'main' method",
+				MyOptionPane.showMessageDialog(this, "Program \"" + progName + "\" has no 'main' method",
 						MyOptionPane.ERROR_MESSAGE);
-			}
-			catch (SecurityException e2) {
+			} catch (SecurityException e2) {
 				meth = null;
-				MyOptionPane.showMessageDialog(this,
-						"Program \"" + progName + "\" has no 'main' method",
+				MyOptionPane.showMessageDialog(this, "Program \"" + progName + "\" has no 'main' method",
 						MyOptionPane.ERROR_MESSAGE);
 			}
 			if (meth == null) {
@@ -3855,72 +3614,62 @@ langs = new Lang[12];
 
 			// if(javaFBPJarFile == null)
 			// locateJavaFBPJarFile();
-			
+
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
-				MyOptionPane.showMessageDialog(/*this */ driver,
-						"Missing JAVA_HOME environment variable",
+				MyOptionPane.showMessageDialog(/* this */ driver, "Missing JAVA_HOME environment variable",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")){
-				MyOptionPane.showMessageDialog(/*this */ driver,
+			if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")) {
+				MyOptionPane.showMessageDialog(/* this */ driver,
 						"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			String java = jh + "/bin/java";
 			String delim = "";
-			if (System.getProperty("os.name").startsWith("Windows"))  
+			if (System.getProperty("os.name").startsWith("Windows"))
 				delim = ";";
 			else
 				delim = ":";
-			
-			String jf = "\"" + javaFBPJarFile; 
+
+			String jf = "\"" + javaFBPJarFile;
 			for (String jfv : jarFiles) {
-				jfv = jfv.replace("\\",  "/");
+				jfv = jfv.replace("\\", "/");
 				jf += delim + jfv;
 			}
-			
-			String progName2 = progName.substring(0, progName.lastIndexOf("."));  // drop program name
+
+			String progName2 = progName.substring(0, progName.lastIndexOf(".")); // drop program name
 			jf += delim + clsDir + progName2.replace(".", "/");
-			pBCmdArray = new String[] {
-					java, "-cp", 
-					jf + ";.\"", "-Xdiag",
-					"\"" + progName + "\""	
-			};
-			
-			//int m = clsDir.indexOf("/bin");
-			//pBDir = clsDir.substring(0, m + 4) + "/";
+			pBCmdArray = new String[] { java, "-cp", jf + ";.\"", "-Xdiag", "\"" + progName + "\"" };
+
+			// int m = clsDir.indexOf("/bin");
+			// pBDir = clsDir.substring(0, m + 4) + "/";
 			pBDir = clsDir;
 
 			Thread runthr = new Thread(new RunTask());
 			runthr.start();
-			
-					
-			// program = clsDir + "/" + progName;  
-					//+ ".class";
+
+			// program = clsDir + "/" + progName;
+			// + ".class";
 		}
 
 		else {
 
-			if (currNotn.lang != langs[CSHARP]) {
+			if (currNotn.lang != langs[Lang.CSHARP]) {
 
-				MyOptionPane.showMessageDialog(this,
-						"Language not supported: " + currNotn.lang,
+				MyOptionPane.showMessageDialog(this, "Language not supported: " + currNotn.lang,
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-				
-			
 			exeDir = properties.get("exeDir");
 			if (exeDir == null)
 				exeDir = System.getProperty("user.home");
 
-			//ProcessBuilder pb = null;
-			MyFileChooser fc = new MyFileChooser(this,new File(exeDir),
-					langs[DrawFBP.EXE], "Run EXE File");
+			// ProcessBuilder pb = null;
+			MyFileChooser fc = new MyFileChooser(this, new File(exeDir), langs[Lang.EXE], "Run EXE File");
 
 			int returnVal = fc.showOpenDialog();
 
@@ -3931,48 +3680,46 @@ langs = new Lang[12];
 			}
 
 			if (!(exeFile.endsWith(".exe"))) {
-				MyOptionPane.showMessageDialog(this,
-						"Executable " + exeFile + " must end in '.exe'",
+				MyOptionPane.showMessageDialog(this, "Executable " + exeFile + " must end in '.exe'",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
-			exeFile = exeFile.replace("\\",  "/");
+			exeFile = exeFile.replace("\\", "/");
 			int k = exeFile.lastIndexOf("bin/Debug/");
 			exeDir = exeFile.substring(0, k + 10);
-			
+
 			saveProp("exeDir", exeDir);
 
-			//exeFile = exeFile.replace("\\",  "/");
-			
-			//List<String> cmdList = new ArrayList<String>();			
-			
-			//cmdList.add("\"" + exeFile + "\"");
-			//cmdList.add(exeFile);
-						
-			progName = exeFile.substring(exeFile.lastIndexOf("/") + 1);
-			
-			///ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
+			// exeFile = exeFile.replace("\\", "/");
 
-			///pb.directory(new File(pBDir));
-			
+			// List<String> cmdList = new ArrayList<String>();
+
+			// cmdList.add("\"" + exeFile + "\"");
+			// cmdList.add(exeFile);
+
+			progName = exeFile.substring(exeFile.lastIndexOf("/") + 1);
+
+			/// ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
+
+			/// pb.directory(new File(pBDir));
+
 			pBCmdArray = new String[1];
 			pBCmdArray[0] = exeFile;
-			
+
 			pBDir = exeDir;
-			
-		
+
 			Thread runthr = new Thread(new RunTask());
 			runthr.start();
 		}
 	}
-	
-	String getPackageFromCode(String data){
+
+	String getPackageFromCode(String data) {
 		String pkg = null;
-		//int lineNo = 0;
+		// int lineNo = 0;
 		int errNo = 0;
 		BabelParser2 bp = new BabelParser2(data, errNo);
-		
+
 		while (true) {
 			while (true) {
 				if (!bp.tb('o'))
@@ -4030,243 +3777,216 @@ langs = new Lang[12];
 		pkg = bp.getOutStr();
 		if (pkg != null)
 			pkg = pkg.trim();
-		return pkg;		
+		return pkg;
 	}
-	
+
 	String analyzeCatch(Exception e) {
 		String err = "";
-		
-		 if (e instanceof NullPointerException) 
-			err = "Null Pointer Exception"; 
-		
-		 if (e instanceof IOException) 
-			err = "I/O Exception"; 				
-				
-		if (e instanceof IndexOutOfBoundsException) 
-			err = "Index Out Of Bounds Exception"; 				
-				
-		if (e instanceof SecurityException) 
+
+		if (e instanceof NullPointerException)
+			err = "Null Pointer Exception";
+
+		if (e instanceof IOException)
+			err = "I/O Exception";
+
+		if (e instanceof IndexOutOfBoundsException)
+			err = "Index Out Of Bounds Exception";
+
+		if (e instanceof SecurityException)
 			err = "Security Exception";
-		
+
 		err += ": " + e.getMessage();
 
 		e.printStackTrace();
 
 		return err;
 	}
-	
 
-	
 	void compare(int tabNo) {
-		
-		//comparing = false;
+
+		// comparing = false;
 		LinkedList<String> mismatches = new LinkedList<String>();
-		
+
 		int i = tabNo;
 		if (i == -1) {
-			//comparing = false;
+			// comparing = false;
 			return;
 		}
-		
+
 		ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 		if (b == null || b.diag == null) {
-			//comparing = false;
+			// comparing = false;
 			return;
 		}
-		//curDiag = b.diag;
+		// curDiag = b.diag;
 		Diagram oldDiag = b.diag;
-		
+
 		Diagram newDiag = curDiag;
-			
-		//Diagram oldDiag = null;
-		
+
+		// Diagram oldDiag = null;
+
 		File f = newDiag.diagFile;
 		if (f == null) {
-			//comparing = false;
+			// comparing = false;
 			return;
 		}
-		
 
-		int result = MyOptionPane.showConfirmDialog(driver, 
-				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + 
-				oldDiag.diagFile.getAbsolutePath() ,
-				"Comparing",  MyOptionPane.OK_CANCEL_OPTION);	
-		
+		int result = MyOptionPane.showConfirmDialog(driver,
+				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + oldDiag.diagFile.getAbsolutePath(),
+				"Comparing", MyOptionPane.OK_CANCEL_OPTION);
+
 		if (result != MyOptionPane.OK_OPTION)
 			return;
-	
+
 		if (!strEqu(oldDiag.desc, newDiag.desc)) {
-			String cd = new String("Diagram descriptions different: \n" +					
-					"   This value:   " + newDiag.desc + "\n" +
-			        "   Other value: " + oldDiag.desc + "\n\n"); 
-		
+			String cd = new String("Diagram descriptions different: \n" + "   This value:   " + newDiag.desc + "\n"
+					+ "   Other value: " + oldDiag.desc + "\n\n");
+
 			mismatches.add(cd);
 		}
 
 		for (Block nb : newDiag.blocks.values()) {
 			nb.compareFlag = null;
-			
+
 			for (Block ob : oldDiag.blocks.values()) {
-				if (strEqu(nb.desc, ob.desc)) {				
-					
+				if (strEqu(nb.desc, ob.desc)) {
+
 					ob.compareFlag = "N";
 					nb.compareFlag = "N";
-					
-					if ((Math.abs(ob.cx - nb.cx) > 10)
-							|| (Math.abs(ob.cy - nb.cy) > 10))						
+
+					if ((Math.abs(ob.cx - nb.cx) > 10) || (Math.abs(ob.cy - nb.cy) > 10))
 						nb.compareFlag = "M";
-					
-					if (!(strEqu(nb.type, ob.type)))  {
+
+					if (!(strEqu(nb.type, ob.type))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Block Type for '" + cleanDesc(nb, false) + ": " +  nb.type + "\n" +
-							 	"   Other value: " + ob.type + "\n\n"));
-					}					
-										
-					if (!(strEqu(nb.fullClassName, ob.fullClassName)))	{							
-						nb.compareFlag = "C";						
-						mismatches.add(new String("This Full Class Name for '" + cleanDesc(nb, false) + 
-								": \n                      " + 	nb.fullClassName + "\n" +
-								 	"   Other value: " + ob.fullClassName + "\n\n"));
-						
+						mismatches.add(new String("This Block Type for '" + cleanDesc(nb, false) + ": " + nb.type + "\n"
+								+ "   Other value: " + ob.type + "\n\n"));
 					}
-					if (!(strEqu(nb.codeFileName, ob.codeFileName)))	{							
+
+					if (!(strEqu(nb.fullClassName, ob.fullClassName))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Code File Name for '" + cleanDesc(nb, false) + ": " + nb.codeFileName + "\n" +
-							 	"   Other value: " + ob.codeFileName + "\n\n"));
+						mismatches.add(new String(
+								"This Full Class Name for '" + cleanDesc(nb, false) + ": \n                      "
+										+ nb.fullClassName + "\n" + "   Other value: " + ob.fullClassName + "\n\n"));
+
 					}
-					if (!(strEqu(nb.subnetFileName, ob.subnetFileName))) {								
+					if (!(strEqu(nb.codeFileName, ob.codeFileName))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Subnet File Name for '" + cleanDesc(nb, false) + ": " + nb.subnetFileName + "\n" +
-							 	"   Other value: " + ob.subnetFileName + "\n\n"));
+						mismatches.add(new String("This Code File Name for '" + cleanDesc(nb, false) + ": "
+								+ nb.codeFileName + "\n" + "   Other value: " + ob.codeFileName + "\n\n"));
+					}
+					if (!(strEqu(nb.subnetFileName, ob.subnetFileName))) {
+						nb.compareFlag = "C";
+						mismatches.add(new String("This Subnet File Name for '" + cleanDesc(nb, false) + ": "
+								+ nb.subnetFileName + "\n" + "   Other value: " + ob.subnetFileName + "\n\n"));
 					}
 					if (nb.isSubnet != ob.isSubnet) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Subnet flag for '" + cleanDesc(nb, false) + ": " + nb.isSubnet + "\n" +
-							 	"   Other value: " + ob.isSubnet + "\n\n"));
+						mismatches.add(new String("This Subnet flag for '" + cleanDesc(nb, false) + ": " + nb.isSubnet
+								+ "\n" + "   Other value: " + ob.isSubnet + "\n\n"));
 					}
-														
+
 					break;
-					}
-					
-				}	
-			 
+				}
+
+			}
+
 			if (nb.compareFlag == null) {
 				nb.compareFlag = "A";
-				String ce = new String("Block with name '" + driver.cleanDesc(nb, false) + "' added to this diagram\n\n"); 
-			
+				String ce = new String(
+						"Block with name '" + cleanDesc(nb, false) + "' added to this diagram\n\n");
+
 				mismatches.add(ce);
 			}
-		
+
 		}
-		 
+
 		for (Block ob : oldDiag.blocks.values()) {
 			if (ob.compareFlag == null) {
 				ob.compareFlag = "O";
-				String ce = new String("Block with name '" + driver.cleanDesc(ob, false) + "' omitted from this diagram\n\n"); 
-			
+				String ce = new String(
+						"Block with name '" + cleanDesc(ob, false) + "' omitted from this diagram\n\n");
+
 				mismatches.add(ce);
-			}
-			else 
+			} else
 				ob.compareFlag = null;
 		}
-	 
+
 		for (Block nb : newDiag.blocks.values()) {
-			if (nb.compareFlag != null  && nb.compareFlag.equals("N")) 
-				nb.compareFlag = null;			
-		} 
-		
-		/*
-		for (Arrow arr : newDiag.arrows.values()) {
-			 
-			for (Arrow a : oldDiag.arrows.values()) {
-				//if ((a.fromX == arr.fromX)
-				//		&& (a.fromY == arr.fromY)
-				//		&& (a.toX == arr.toX) 
-				//		&& (a.toY == arr.toY)) 
-				if (a.id == arr.id)	{
-					// probably same line - now check for diffs
-					if (a.fromId != arr.fromId ||
-					   a.toId != arr.toId ||
-							   a.dropOldest != arr.dropOldest ||
-									   a.capacity != arr.capacity ||
-					   !(strEqu(a.upStreamPort, arr.upStreamPort)) ||
-					   !(strEqu(a.downStreamPort, arr.downStreamPort)))
-						arr.compareFlag = "C";							    	
-					break;
-				}
-			} 
-			
-			if (arr.compareFlag != null)
-				continue;
-			
-			
-			Arrow a2 = oldDiag.arrows.get(new Integer(arr.id));
-			if (a2 == null ||
-					a2.fromX != arr.fromX ||
-					a2.toX != arr.toX ||
-					a2.fromY != arr.fromY ||
-					a2.toY != arr.toY)
-				arr.compareFlag = "A";			
+			if (nb.compareFlag != null && nb.compareFlag.equals("N"))
+				nb.compareFlag = null;
 		}
-		*/
-  
-	
+
+		/*
+		 * for (Arrow arr : newDiag.arrows.values()) {
+		 * 
+		 * for (Arrow a : oldDiag.arrows.values()) { //if ((a.fromX == arr.fromX) // &&
+		 * (a.fromY == arr.fromY) // && (a.toX == arr.toX) // && (a.toY == arr.toY)) if
+		 * (a.id == arr.id) { // probably same line - now check for diffs if (a.fromId
+		 * != arr.fromId || a.toId != arr.toId || a.dropOldest != arr.dropOldest ||
+		 * a.capacity != arr.capacity || !(strEqu(a.upStreamPort, arr.upStreamPort)) ||
+		 * !(strEqu(a.downStreamPort, arr.downStreamPort))) arr.compareFlag = "C";
+		 * break; } }
+		 * 
+		 * if (arr.compareFlag != null) continue;
+		 * 
+		 * 
+		 * Arrow a2 = oldDiag.arrows.get(new Integer(arr.id)); if (a2 == null ||
+		 * a2.fromX != arr.fromX || a2.toX != arr.toX || a2.fromY != arr.fromY || a2.toY
+		 * != arr.toY) arr.compareFlag = "A"; }
+		 */
+
 		int j = getFileTabNo(newDiag.diagFile.getAbsolutePath());
 		if (-1 != j) {
 			b = (ButtonTabComponent) jtp.getTabComponentAt(j);
 			if (b == null || b.diag == null) {
-				//comparing = false;
+				// comparing = false;
 				return;
 			}
 			// curDiag = b.diag; (redundant)
 			// curDiag.tabNum = i;
 			jtp.setSelectedIndex(j);
-			 
-		}
-		
-		 
-		 
 
-			
+		}
+
 		if (mismatches == null || mismatches.isEmpty()) {
 			curDiag = newDiag;
 			return;
 		}
 		if (mmFrame != null)
 			mmFrame.dispose();
-		
-		mmFrame = new JFrame();	
-	
+
+		mmFrame = new JFrame();
+
 		mmFrame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				mmFrame = null;
 			}
 		});
-		
+
 		BufferedImage image = loadImage("DrawFBP-logo-small.png");
 		mmFrame.setIconImage(image);
-		
+
 		mmFrame.setLocation(500, 500);
 		mmFrame.setForeground(Color.WHITE);
-		mmFrame.setTitle("Differences between " + newDiag.diagFile.getName() + 
-				" and " + oldDiag.diagFile.getName());
+		mmFrame.setTitle("Differences between " + newDiag.diagFile.getName() + " and " + oldDiag.diagFile.getName());
 		JTextPane pane = new JTextPane();
 		JScrollPane sp = new JScrollPane(pane);
-		StyleContext sc = new StyleContext();	
+		StyleContext sc = new StyleContext();
 		Style defaultStyle = sc.getStyle(StyleContext.DEFAULT_STYLE);
-		//Style baseStyle = sc.addStyle(null, defaultStyle);
+		// Style baseStyle = sc.addStyle(null, defaultStyle);
 		Style hdgStyle = sc.addStyle(null, defaultStyle);
-		//StyleConstants.setItalic(hdgStyle, true);
-		//StyleConstants.setAlignment(hdgStyle, StyleConstants.ALIGN_CENTER);
+		// StyleConstants.setItalic(hdgStyle, true);
+		// StyleConstants.setAlignment(hdgStyle, StyleConstants.ALIGN_CENTER);
 		MyDocument doc = new MyDocument(sc);
-		
+
 		sp.setViewportView(pane);
 		pane.setStyledDocument(doc);
-		//pane.setPreferredSize(new Dimension(800, 300));
-		//sp.add(pane);
+		// pane.setPreferredSize(new Dimension(800, 300));
+		// sp.add(pane);
 		pane.setPreferredSize(new Dimension(800, 400));
 		mmFrame.add(sp, BorderLayout.CENTER);
-		 
+
 		try {
 			doc.insertString(0, "This diagram: ", hdgStyle);
 			doc.insertString(doc.getLength(), newDiag.diagFile.getAbsolutePath(), defaultStyle);
@@ -4277,30 +3997,29 @@ langs = new Lang[12];
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	 
-		for (String s: mismatches) { 
+
+		for (String s : mismatches) {
 			try {
 				doc.insertString(doc.getLength(), s, defaultStyle);
 			} catch (BadLocationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			}
 		}
-		
+
 		mmFrame.pack();
 		mmFrame.setVisible(true);
 		pane.repaint();
 		sp.repaint();
 		mmFrame.repaint();
-		
+
 		curDiag = newDiag;
-		//oldDiag.changed = false;
-		//newDiag.changed = false;
-		//repaint();
-		//comparing = false;
+		// oldDiag.changed = false;
+		// newDiag.changed = false;
+		// repaint();
+		// comparing = false;
 	}
 
-	
 	String cleanDesc(Block b, boolean fbpMode) {
 
 		String t = b.desc;
@@ -4335,28 +4054,28 @@ langs = new Lang[12];
 
 		t = t.replace('\u0007', '_');
 
-		//	return makeUniqueDesc(t); // and make it unique
+		// return makeUniqueDesc(t); // and make it unique
 		return t;
 
 	}
 	// Compare two strings, checking for null first
-	
-	boolean strEqu (String a, String b) {
+
+	boolean strEqu(String a, String b) {
 		if (a == null)
 			return b == null;
 		if (b == null)
 			return a == null;
-		
+
 		return (a.trim().equals(b.trim()));
-		
-		}
-	
+
+	}
+
 	// 'between' checks that the value val is >= lim1 and <= lim2 - or the
 	// inverse
 
 	static boolean between(int val, int lim1, int lim2) {
 		boolean res;
-		if (lim1 < lim2) 
+		if (lim1 < lim2)
 			res = val >= lim1 && val <= lim2;
 		else
 			res = val >= lim2 && val <= lim1;
@@ -4367,8 +4086,7 @@ langs = new Lang[12];
 
 		if (propertiesFile == null) {
 			String uh = System.getProperty("user.home");
-			propertiesFile = new File(
-					uh + "/" + "DrawFBPProperties.xml");
+			propertiesFile = new File(uh + "/" + "DrawFBPProperties.xml");
 
 		}
 		BufferedReader in = null;
@@ -4396,7 +4114,7 @@ langs = new Lang[12];
 			int j = s.indexOf(">");
 			if (i > -1 && j > -1 && j > i + 1) {
 				String key = s.substring(i + 1, j);
-				s = s.substring(j + 1);  // value
+				s = s.substring(j + 1); // value
 				int k = s.indexOf("<");
 				String u = "";
 				if (k > 0) {
@@ -4404,39 +4122,39 @@ langs = new Lang[12];
 						s = s.substring(0, k).trim();
 						key = key.replace("\\", "/");
 						if (-1 == key.indexOf("/")) // compensate for old bug (key and value were reversed)!
-							//saveProp(key, s);
-						    properties.put(key, s); 
+							// saveProp(key, s);
+							properties.put(key, s);
 					} else {
 						// additionalJar/DllFiles
-						Set<String> set = key.equals("additionalJarFiles")? jarFiles: dllFiles;
+						Set<String> set = key.equals("additionalJarFiles") ? jarFiles : dllFiles;
 						s = s.substring(0, k).trim();
 						while (true) {
 							int m = s.indexOf(";");
 							if (m == -1) {
 								u = s;
-								//int n = u.indexOf(":");
+								// int n = u.indexOf(":");
 
-								//if (n == -1)
-								//	break;
+								// if (n == -1)
+								// break;
 
-								//saveProp("addnl_jf_" + u.substring(0, n),  
-								// 		u.substring(n + 1));
-								//list.put(u.substring(0, n),
-								//		u.substring(n + 1));
+								// saveProp("addnl_jf_" + u.substring(0, n),
+								// u.substring(n + 1));
+								// list.put(u.substring(0, n),
+								// u.substring(n + 1));
 								set.add(u);
 								break;
 							} else {
 								u = s.substring(0, m);
 								s = s.substring(m + 1);
-								//int n = u.indexOf(":");
+								// int n = u.indexOf(":");
 
-								//if (n == -1)
-								//	break;
+								// if (n == -1)
+								// break;
 
-								//saveProp("addnl_jf_" + u.substring(0, n),
-								// 		u.substring(n + 1));
-								//list.put(u.substring(0, n),
-								//		u.substring(n + 1));
+								// saveProp("addnl_jf_" + u.substring(0, n),
+								// u.substring(n + 1));
+								// list.put(u.substring(0, n),
+								// u.substring(n + 1));
 								set.add(u);
 							}
 						}
@@ -4448,13 +4166,13 @@ langs = new Lang[12];
 		}
 
 		try {
-			
+
 			in.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return true;
 
 	}
@@ -4467,9 +4185,8 @@ langs = new Lang[12];
 			out.write("<?xml version=\"1.0\"?> \n");
 			out.write("<properties> \n");
 			for (String k : properties.keySet()) {
-				if (k.startsWith("addnl_jf_") ||
-						 k.startsWith("additionalJarFiles") ||
-						 k.startsWith("additionalDllFiles"))
+				if (k.startsWith("addnl_jf_") || k.startsWith("additionalJarFiles")
+						|| k.startsWith("additionalDllFiles"))
 					continue;
 				if (k.equals("currentPackageName")) {
 					String t = properties.get(k);
@@ -4480,38 +4197,38 @@ langs = new Lang[12];
 				String s = "<" + k + ">" + t + "</" + k + "> \n";
 				out.write(s);
 			}
-			
-			//Iterator<String> entries = jarFiles.iterator();
+
+			// Iterator<String> entries = jarFiles.iterator();
 			String z = "";
 			String cma = "";
 
-			//while (entries.hasNext()) {
-			//	String thisEntry = entries.next();
-			for(String thisEntry: jarFiles) {
+			// while (entries.hasNext()) {
+			// String thisEntry = entries.next();
+			for (String thisEntry : jarFiles) {
 				if (!thisEntry.equals("")) {
-				 z += cma + thisEntry;
-				 cma = ";";
+					z += cma + thisEntry;
+					cma = ";";
 				}
 
 			}
 			String s = "<additionalJarFiles> " + z + "</additionalJarFiles> \n";
 			out.write(s);
-			
-			//entries = dllFiles.iterator();
+
+			// entries = dllFiles.iterator();
 			z = "";
 			cma = "";
 
-			//while (entries.hasNext()) {
-			//	String thisEntry = entries.next();
-			for(String thisEntry: dllFiles) {	
+			// while (entries.hasNext()) {
+			// String thisEntry = entries.next();
+			for (String thisEntry : dllFiles) {
 				if (!thisEntry.equals("")) {
-				 z += cma + thisEntry;
-				 cma = ";";
+					z += cma + thisEntry;
+					cma = ";";
 				}
 
 			}
 			s = "<additionalDllFiles> " + z + "</additionalDllFiles> \n";
-			
+
 			out.write(s);
 			out.write("</properties> \n");
 			// Close the BufferedWriter
@@ -4525,7 +4242,6 @@ langs = new Lang[12];
 		}
 	}
 
-	
 	String getSelFile(MyFileChooser fc) {
 		String[] sa = new String[1];
 		fc.getSelectedFile(sa); // getSelectedFile puts result in sa[0]
@@ -4535,42 +4251,40 @@ langs = new Lang[12];
 	boolean locateJavaFBPJarFile(boolean checkLocation) {
 
 		// setting of checkLocation doesn't matter if javaFBPJarFile is null!
-		
+
 		String s = properties.get("javaFBPJarFile");
 		javaFBPJarFile = s;
 
 		boolean findJar = false;
 		if (checkLocation || s == null)
 			findJar = true;
-		
-		if (findJar) {
-			if (s == null) {
-				MyOptionPane.showMessageDialog(this,
-						"To access Java classes - continue to File Chooser to locate JavaFBP jar file",
-						MyOptionPane.WARNING_MESSAGE);	
-			} else {
-				MyOptionPane.showMessageDialog(this,
-						"JavaFBP jar file location: " + s,
-						MyOptionPane.INFORMATION_MESSAGE);			
 
-			int res = MyOptionPane.showConfirmDialog(this,					
-					"Change JavaFBP jar file location?",
-					"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION);	
-			if (res != MyOptionPane.YES_OPTION)
-				return true;
+		if (findJar) {
+			if (s != null) {
+				// MyOptionPane.showMessageDialog(this,
+				// "To access Java classes - File Chooser will be presented to locate JavaFBP
+				// jar file",
+				// MyOptionPane.WARNING_MESSAGE);
+				// } else {
+				MyOptionPane.showMessageDialog(this, "JavaFBP jar file location: " + s,
+						MyOptionPane.INFORMATION_MESSAGE);
+
+				int res = MyOptionPane.showConfirmDialog(this, "Change JavaFBP jar file location?",
+						"Change JavaFBP jar file", MyOptionPane.YES_NO_OPTION);
+				if (res != MyOptionPane.YES_OPTION)
+					return true;
 			}
 
-			//MyOptionPane.showMessageDialog(this,
-			//		"Use File Chooser to locate JavaFBP jar file",
-			//		MyOptionPane.WARNING_MESSAGE);
+			// MyOptionPane.showMessageDialog(this,
+			// "Use File Chooser to locate JavaFBP jar file",
+			// MyOptionPane.WARNING_MESSAGE);
 
 			File f = new File(System.getProperty("user.home"));
 
 			// else
 			// f = (new File(s)).getParentFile();
 
-			MyFileChooser fc = new MyFileChooser(this, f, langs[DrawFBP.JARFILE],
-					"Locate JavaFBP Jar File");
+			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.JARFILE], "Locate JavaFBP Jar File");
 
 			int returnVal = fc.showOpenDialog();
 
@@ -4578,26 +4292,20 @@ langs = new Lang[12];
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				cFile = new File(getSelFile(fc));
 				if (cFile == null || !(cFile.exists())) {
-					MyOptionPane.showMessageDialog(this,
-							"Unable to read JavaFBP jar file "
-									+ cFile.getName(),
+					MyOptionPane.showMessageDialog(this, "Unable to read JavaFBP jar file " + cFile.getName(),
 							MyOptionPane.ERROR_MESSAGE);
 					return false;
 				}
 				// diag.currentDir = new File(cFile.getParent());
 				javaFBPJarFile = cFile.getAbsolutePath();
 				saveProp("javaFBPJarFile", javaFBPJarFile);
-				
-				
 
 				saveProperties();
-				MyOptionPane.showMessageDialog(this,
-						"JavaFBP jar file location: " + cFile.getAbsolutePath(),
+				MyOptionPane.showMessageDialog(this, "JavaFBP jar file location: " + cFile.getAbsolutePath(),
 						MyOptionPane.INFORMATION_MESSAGE);
 				// jarFiles.put("JavaFBP Jar File", cFile.getAbsolutePath());
 				for (int i = 0; i < jtp.getTabCount(); i++) {
-					ButtonTabComponent b = (ButtonTabComponent) jtp
-							.getTabComponentAt(i);
+					ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 					if (b == null || b.diag == null)
 						return false;
 
@@ -4609,66 +4317,326 @@ langs = new Lang[12];
 						bk.getClassInfo(bk.fullClassName);
 					}
 				}
-				
+
 			}
-			
+
 		}
-		
+
 		return true;
 	}
 
-	
-	
+	void locateFbpJsonFile(boolean checkLocation) {
+
+		// setting of checkLocation doesn't matter if javaFBPJarFile is null!
+
+		String s = properties.get("fbpJsonFile");
+		fbpJsonFile = s;
+
+		boolean findFile = false;
+		// if (s != null && s.equals("fbp.json not needed"))
+		// return;
+		if (checkLocation || s == null)
+			findFile = true;
+
+		if (findFile) {
+
+			if (s == null) {
+				//int res = MyOptionPane.showConfirmDialog(this, "Locate fbp.json file?", "Locate fbp.json file",
+				//		MyOptionPane.YES_NO_OPTION);
+				//if (res != MyOptionPane.YES_OPTION)
+				//	return;
+
+			} else {
+			int res = MyOptionPane.showConfirmDialog(this, "Change fbp.json file location?",
+						"Change fbp.json file location", MyOptionPane.YES_NO_OPTION);
+				if (res != MyOptionPane.YES_OPTION)
+					return;
+			}
+
+			File f = new File(System.getProperty("user.home"));
+
+			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.FBPJSON], "Locate fbp.json File");
+
+			int returnVal = fc.showOpenDialog();
+
+			File cFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+				cFile = new File(getSelFile(fc));
+				if (cFile == null || !(cFile.exists())) {
+					MyOptionPane.showMessageDialog(this, "Unable to read fbp.json file " + cFile.getName(),
+							MyOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				// diag.currentDir = new File(cFile.getParent());
+				fbpJsonFile = cFile.getAbsolutePath();
+				saveProp("fbpJsonFile", fbpJsonFile);
+
+				saveProperties();
+				MyOptionPane.showMessageDialog(this, "fbp.json file location: " + cFile.getAbsolutePath(),
+						MyOptionPane.INFORMATION_MESSAGE);
+
+				/*
+				 * for (int i = 0; i < jtp.getTabCount(); i++) { ButtonTabComponent b =
+				 * (ButtonTabComponent) jtp .getTabComponentAt(i); if (b == null || b.diag ==
+				 * null) return false;
+				 * 
+				 * Diagram d = b.diag; if (d == null) continue;
+				 * 
+				 * for (Block bk : d.blocks.values()) { bk.getClassInfo(bk.fullClassName); } }
+				 */
+
+			}
+
+		}
+
+		// buildFbpJsonTree(fbpJsonFile);
+
+		return;
+	}
+
+	/*
+	 * Build tree of nodes (DefaultMutableTreeNode) using contents of jar file
+	 */
+
+	public final DefaultMutableTreeNode buildJarFileTree(String jarFileName) {
+		Enumeration<?> entries;
+		JarFile jarFile;
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode();
+		DefaultMutableTreeNode next;
+
+		try {
+			File jFile = new File(jarFileName);
+			jarFile = new JarFile(jFile);
+
+			entries = jarFile.entries();
+
+			while (entries.hasMoreElements()) {
+				JarEntry entry = (JarEntry) entries.nextElement();
+				// System.out.println(entry);
+
+				String s = entry.getName();
+				if (s.toLowerCase().endsWith(".class")) {
+
+					next = top;
+					DefaultMutableTreeNode child;
+					while (true) {
+						int i = s.indexOf("/");
+						String t;
+						if (i == -1) {
+							child = new DefaultMutableTreeNode(s);
+							// System.out.println(s);
+							next.add(child);
+							break;
+						} else {
+							t = s.substring(0, i);
+							if (null == (child = findChild(next, t))) {
+								child = new DefaultMutableTreeNode(t);
+								// System.out.println(t);
+								next.add(child);
+							}
+							s = s.substring(i + 1);
+							next = child;
+						}
+					}
+				}
+
+			}
+			jarFile.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		return top;
+	}
+
+	/*
+	 * Build tree of nodes (DefaultMutableTreeNode) using contents of fbp.json
+	 */
+
+	void buildFbpJsonTree(String fileName) {
+		File f = new File(fileName);
+		String fileString;
+
+		DefaultMutableTreeNode currentListNode = new DefaultMutableTreeNode(fbpJsonTree);
+
+		if (null == (fileString = readFile(f))) {
+			MyOptionPane.showMessageDialog(driver, "Unable to read file " + f.getName(), MyOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		Integer errNo = Integer.valueOf(0);
+		BabelParser2 bp = new BabelParser2(fileString, errNo);
+
+		String label = null;
+		String operand = null;
+		// String data = null;
+		String first = null;
+		String second = null;
+		boolean compList = false;
+		int levelNo = 0;
+		int levels[] = new int[100];
+
+		while (true) {
+			if (!bp.tb('o'))
+				break;
+		}
+
+		while (true) {
+			if (bp.tc('#', 'o')) { // assuming #-sign only in col.1
+				while (true) {
+					if (bp.tc('\r', 'o'))
+						break;
+					if (bp.tc('\n', 'o'))
+						break;
+					bp.tu('o');
+				}
+				continue;
+			}
+
+			if (bp.tc('[', 'o')) { // start of array
+
+				// System.out.println(label + ":" + "Array");
+				levelNo++;
+				levels[levelNo] = 0;
+				// if (label.equals("components") || compList) {
+				// compList = true;
+				if (bp.tc(']', 'o'))
+					continue;
+				DefaultMutableTreeNode currentNode = new DefaultMutableTreeNode();
+				currentListNode.add(currentNode);
+				// if (label == null)
+				// label = "No entries";
+				currentNode.setUserObject(label);
+				currentListNode = currentNode;
+				label = null;
+				// }
+				continue;
+			}
+			if (bp.tc('{', 'o')) { // start of object
+				// System.out.println("Object");
+				levels[levelNo]++;
+				// levelNo++;
+				continue;
+			}
+			if (bp.tc(']', 'o')) { // end of array
+				// System.out.println("End array");
+				levelNo--;
+				currentListNode = (DefaultMutableTreeNode) currentListNode.getParent();
+				continue;
+			}
+			if (bp.tc('}', 'o')) { // end of object
+				// levelNo--;
+				// System.out.println("End of Object");
+
+				continue;
+			}
+
+			if (bp.tc('"', 'o')) {
+				while (true) {
+					if (bp.tc('"', 'o'))
+						break;
+					if (bp.tc('\\', 'o')) {
+						if (!(bp.tc('"')))
+							bp.w('\\');
+						continue;
+					}
+					bp.tu();
+				}
+				operand = new String(bp.getOutStr());
+
+				if (bp.tc(':', 'o')) {
+					if (operand.equals("components"))
+						compList = true;
+					first = new String(operand);
+				} else {
+					second = new String(operand);
+					if (first.equals("path"))
+						label = second /* + "(" + levels[levelNo] + ")" */;
+
+					if (first.equals("source") && compList) {
+						// if (tree == null)
+						DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();
+						currentListNode.add(newNode);
+						newNode.setUserObject(label);
+						newNode = null;
+					}
+				}
+
+				bp.eraseOutput();
+				continue;
+			}
+
+			if (!(bp.tu('o'))) // tu only returns false at end of string
+				break; // skip next character
+
+		}
+
+		// if (ll.isEmpty()) {
+		// MyOptionPane.showMessageDialog(driver,
+		// "No components in file: " + f.getName(),
+		// MyOptionPane.ERROR_MESSAGE);
+		// return null;
+		// }
+		fbpJsonTree = currentListNode;
+		return;
+	}
+
+	@SuppressWarnings("unchecked")
+	DefaultMutableTreeNode findChild(DefaultMutableTreeNode current, String t) {
+		if (current == null)
+			return null;
+		Enumeration<TreeNode> e = current.children();
+		while (e.hasMoreElements()) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
+			Object obj = node.getUserObject();
+			if (t.equals((String) obj))
+				return node;
+		}
+		return null;
+	}
+
 	boolean addAdditionalJarFile() {
 
 		/*
-		String ans = (String) MyOptionPane.showInputDialog(this,
-				"Enter Description of jar file being added",
-				"Enter Description", MyOptionPane.PLAIN_MESSAGE, null, null,
-				null);
-		if (ans == null || ans.equals("")) {
-			MyOptionPane.showMessageDialog(this, "No description entered",
-					MyOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		*/
-	
-		
+		 * String ans = (String) MyOptionPane.showInputDialog(this,
+		 * "Enter Description of jar file being added", "Enter Description",
+		 * MyOptionPane.PLAIN_MESSAGE, null, null, null); if (ans == null ||
+		 * ans.equals("")) { MyOptionPane.showMessageDialog(this,
+		 * "No description entered", MyOptionPane.ERROR_MESSAGE); return false; }
+		 */
+
 		File f = new File(System.getProperty("user.home"));
-		
-				
-		//curDiag.fCParm[Diagram.JARFILE].prompt = "Select jar file";
-		//MyFileChooser fc = new MyFileChooser(this,f, curDiag.fCParm[Diagram.JARFILE]);	
-		MyFileChooser fc = new MyFileChooser(this, f, langs[DrawFBP.JARFILE],
-				"Add Jar File");
+
+		// curDiag.fCParm[Diagram.JARFILE].prompt = "Select jar file";
+		// MyFileChooser fc = new MyFileChooser(this,f,
+		// curDiag.fCParm[Diagram.JARFILE]);
+		MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.JARFILE], "Add Jar File");
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(this,
-						"Unable to read additional jar file " + cFile.getName(),
+				MyOptionPane.showMessageDialog(this, "Unable to read additional jar file " + cFile.getName(),
 						MyOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 
 			jarFiles.add(cFile.getAbsolutePath());
 
-			
-			//Iterator<String> entries = jarFiles.iterator();
+			// Iterator<String> entries = jarFiles.iterator();
 			String t = "";
 			String cma = "";
 
-			//while (entries.hasNext()) {
-				//String thisEntry = (String) entries.next();
-			for (String thisEntry:jarFiles) {
+			// while (entries.hasNext()) {
+			// String thisEntry = (String) entries.next();
+			for (String thisEntry : jarFiles) {
 				t += cma + thisEntry;
 				cma = ";";
 
 			}
 			saveProp("additionalJarFiles", t);
-			MyOptionPane.showMessageDialog(this,
-					"Additional jar file added: " + cFile.getName(),
+			MyOptionPane.showMessageDialog(this, "Additional jar file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			saveProperties();
@@ -4676,19 +4644,15 @@ langs = new Lang[12];
 		}
 		return true;
 	}
-	
+
 	boolean addAdditionalDllFile() {
 
 		/*
-		String ans = (String) MyOptionPane.showInputDialog(this,
-				"Enter Description of dll file being added",
-				"Enter Description", MyOptionPane.PLAIN_MESSAGE, null, null,
-				null);
-		if (ans == null || ans.equals("")) {
-			MyOptionPane.showMessageDialog(this, "No description entered",
-					MyOptionPane.ERROR_MESSAGE);
-			return false;
-		}
+		 * String ans = (String) MyOptionPane.showInputDialog(this,
+		 * "Enter Description of dll file being added", "Enter Description",
+		 * MyOptionPane.PLAIN_MESSAGE, null, null, null); if (ans == null ||
+		 * ans.equals("")) { MyOptionPane.showMessageDialog(this,
+		 * "No description entered", MyOptionPane.ERROR_MESSAGE); return false; }
 		 */
 		String s = properties.get("dllFileDir");
 		File f = null;
@@ -4696,44 +4660,40 @@ langs = new Lang[12];
 			f = new File(System.getProperty("user.home"));
 		else
 			f = (new File(s)).getParentFile();
-		MyFileChooser fc = new MyFileChooser(this,f, langs[DLL],
-				"Add DLL File");
+		MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.DLL], "Add DLL File");
 
-		//curDiag.fCParm[Diagram.DLL].prompt = "Select dll name";
+		// curDiag.fCParm[Diagram.DLL].prompt = "Select dll name";
 		int returnVal = fc.showOpenDialog();
 		File cFile = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			cFile = new File(getSelFile(fc));
 			if (cFile == null || !(cFile.exists())) {
-				MyOptionPane.showMessageDialog(this,
-						"Unable to read additional dll file " + cFile.getName(),
+				MyOptionPane.showMessageDialog(this, "Unable to read additional dll file " + cFile.getName(),
 						MyOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 
 			dllFiles.add(cFile.getAbsolutePath());
 
-		
-			//Iterator entries = dllFiles.iterator();
+			// Iterator entries = dllFiles.iterator();
 			String t = "";
 			String cma = "";
 
-			//while (entries.hasNext()) {
-			
-			//	String thisEntry = (String) entries.next();
-			for (String thisEntry: dllFiles) {
+			// while (entries.hasNext()) {
+
+			// String thisEntry = (String) entries.next();
+			for (String thisEntry : dllFiles) {
 
 				t += cma + thisEntry;
 				cma = ";";
 
 			}
-			
+
 			saveProp("additionalDllFiles", t);
-			
+
 			String u = cFile.getParent();
 			saveProp("dllFileDir", u);
-			MyOptionPane.showMessageDialog(this,
-					"Additional dll file added: " + cFile.getName(),
+			MyOptionPane.showMessageDialog(this, "Additional dll file added: " + cFile.getName(),
 					MyOptionPane.INFORMATION_MESSAGE);
 
 			saveProperties();
@@ -4742,19 +4702,17 @@ langs = new Lang[12];
 		return true;
 	}
 
-	
-	
-	void saveProp(String s, String t){
-		properties.put(s, t); 
+	void saveProp(String s, String t) {
+		properties.put(s, t);
 		saveProperties();
 	}
-	
-	void saveProperties() {		
+
+	void saveProperties() {
 		writePropertiesFile();
 	}
-	
+
 	boolean closeTab(boolean terminate) {
-	
+
 		closeTabAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 		if (!tabCloseOK)
 			return false;
@@ -4767,9 +4725,7 @@ langs = new Lang[12];
 		return true;
 	}
 
-	
-	void displayRow(GridBagConstraints gbc, GridBagLayout gbl, JTextField[] tf,
-			JPanel panel, Color col) {
+	void displayRow(GridBagConstraints gbc, GridBagLayout gbl, JTextField[] tf, JPanel panel, Color col) {
 		gbc.gridx = 0;
 		gbc.weightx = 0.25;
 		for (int i = 0; i < 4; i++) {
@@ -4798,10 +4754,10 @@ langs = new Lang[12];
 	 * String zipname = "FBPSamples.zip"; InputStream is =
 	 * this.getClass().getClassLoader() .getResourceAsStream(zipname);
 	 * 
-	 * String zfn = System.getProperty("user.home") + "/" + zipname;
-	 * File f = new File(zfn); String s = f.getParent(); if (f.exists())
-	 * f.delete(); if (s != null) (new File(s)).mkdirs(); try {
-	 * copyInputStream(is, new FileOutputStream(f)); } catch (IOException e) {
+	 * String zfn = System.getProperty("user.home") + "/" + zipname; File f = new
+	 * File(zfn); String s = f.getParent(); if (f.exists()) f.delete(); if (s !=
+	 * null) (new File(s)).mkdirs(); try { copyInputStream(is, new
+	 * FileOutputStream(f)); } catch (IOException e) {
 	 * 
 	 * }
 	 * 
@@ -4820,54 +4776,34 @@ langs = new Lang[12];
 	 * (new File(entry.getName())).mkdirs(); } else {
 	 * System.out.println("Extracting file: " + entry.getName()); f = new
 	 * File(entry.getName()); if (f.exists()) f.delete();
-	 * copyInputStream(zipFile.getInputStream(entry), new FileOutputStream(f));
-	 * } }
+	 * copyInputStream(zipFile.getInputStream(entry), new FileOutputStream(f)); } }
 	 * 
 	 * zipFile.close(); } catch (IOException ioe) {
-	 * System.err.println("Unhandled exception:"); ioe.printStackTrace();
-	 * return; } }
+	 * System.err.println("Unhandled exception:"); ioe.printStackTrace(); return; }
+	 * }
 	 * 
 	 */
 
 	/*
-	void checkCompatibility(Arrow a) {
-		Arrow a2 = a.findLastArrowInChain();
-		Block from = curDiag.blocks.get(new Integer(a.fromId));
-		Block to = curDiag.blocks.get(new Integer(a2.toId));
-		// String downPort = a2.downStreamPort;
-		a.checkStatus = Status.UNCHECKED;
-		if (!(from instanceof ProcessBlock) || !(to instanceof ProcessBlock))
-			return;
-		if (a.upStreamPort == null || a.upStreamPort.equals(""))
-			return;
-		if (a2.downStreamPort == null || a2.downStreamPort.equals(""))
-			return;
-		if (a.upStreamPort.equals("*") || a2.downStreamPort.equals("*")) {
-			a.checkStatus = Status.COMPATIBLE;
-			return;
-		}
-		if (from.outputPortAttrs == null || to.inputPortAttrs == null)
-			return;
-		AOutPort ao = from.outputPortAttrs.get(from.stem(a.upStreamPort));
-		if (ao == null)
-			return;
-		AInPort ai = to.inputPortAttrs.get(to.stem(a2.downStreamPort));
-		if (ai == null)
-			return;
-		if (ai.type.isAssignableFrom(ao.type) || ao.type == Object.class) // Object
-			// class
-			// is
-			// default
-			a.checkStatus = Status.COMPATIBLE;
-		else
-			a.checkStatus = Status.INCOMPATIBLE;
-	}
-	
-	*/
+	 * void checkCompatibility(Arrow a) { Arrow a2 = a.findLastArrowInChain(); Block
+	 * from = curDiag.blocks.get(new Integer(a.fromId)); Block to =
+	 * curDiag.blocks.get(new Integer(a2.toId)); // String downPort =
+	 * a2.downStreamPort; a.checkStatus = Status.UNCHECKED; if (!(from instanceof
+	 * ProcessBlock) || !(to instanceof ProcessBlock)) return; if (a.upStreamPort ==
+	 * null || a.upStreamPort.equals("")) return; if (a2.downStreamPort == null ||
+	 * a2.downStreamPort.equals("")) return; if (a.upStreamPort.equals("*") ||
+	 * a2.downStreamPort.equals("*")) { a.checkStatus = Status.COMPATIBLE; return; }
+	 * if (from.outputPortAttrs == null || to.inputPortAttrs == null) return;
+	 * AOutPort ao = from.outputPortAttrs.get(from.stem(a.upStreamPort)); if (ao ==
+	 * null) return; AInPort ai = to.inputPortAttrs.get(to.stem(a2.downStreamPort));
+	 * if (ai == null) return; if (ai.type.isAssignableFrom(ao.type) || ao.type ==
+	 * Object.class) // Object // class // is // default a.checkStatus =
+	 * Status.COMPATIBLE; else a.checkStatus = Status.INCOMPATIBLE; }
+	 * 
+	 */
 
 	boolean pointInLine(Point2D p, int fx, int fy, int tx, int ty) {
-		Line2D line = new Line2D((double) fx, (double) fy, (double) tx,
-				(double) ty);
+		Line2D line = new Line2D((double) fx, (double) fy, (double) tx, (double) ty);
 		double d = 0.0;
 		try {
 			d = line.distance(p);
@@ -4881,34 +4817,33 @@ langs = new Lang[12];
 	/**
 	 * Test if point (xp, yp) is "near" line defined by arrow
 	 */
-	
+
 	boolean nearpln(int xp, int yp, Arrow arr) {
 
-				
-		int x1 = arr.fromX;  
+		int x1 = arr.fromX;
 		int y1 = arr.fromY;
 		int x2 = 0;
 		int y2 = 0;
 		int seg = 0;
 		Point2D p = new Point2D(xp, yp);
-		Line2D line; 
+		Line2D line;
 		double d = 0.0;
 		boolean res = false;
 		arr.highlightedSeg = -1;
-		
+
 		if (arr.shapeList == null)
 			return false;
-		
-		Block b = curDiag.blocks.get(Integer.valueOf(arr.fromId));	
+
+		Block b = curDiag.blocks.get(Integer.valueOf(arr.fromId));
 		if (b == null || b.contains(new Point(xp, yp)))
 			return false;
-		
-		if (arr.bends != null) { 
-			for (Bend bend: arr.bends) {
+
+		if (arr.bends != null) {
+			for (Bend bend : arr.bends) {
 				x2 = bend.x;
 				y2 = bend.y;
-				
-				line = new Line2D(x1, y1, x2, y2);				
+
+				line = new Line2D(x1, y1, x2, y2);
 				try {
 					d = line.distance(p);
 				} catch (DegeneratedLine2DException e) {
@@ -4920,17 +4855,17 @@ langs = new Lang[12];
 				}
 				x1 = x2;
 				y1 = y2;
-				
-				seg ++;
+
+				seg++;
 			}
-			
+
 		}
-		
+
 		x2 = arr.toX;
-		y2 = arr.toY;	
-		
+		y2 = arr.toY;
+
 		if (!res) {
-			
+
 			line = new Line2D(x1, y1, x2, y2);
 			try {
 				d = line.distance(p);
@@ -4941,35 +4876,32 @@ langs = new Lang[12];
 				return false;
 
 		}
-		//boolean res = false;
-		
-		//System.out.println(d);
-		
-		//if (d >= 40.0) {
-		//	detArr = null;
-		//	detArrSegNo = -1;
-		//	arr.highlightedSeg = -1;
-		//}
-		//else {
-		//	detArr = arr;
-		//	detArrSegNo = segNo;
-			
-		
-			if (arr.shapeList == null || arr.shapeList.size() <= seg)
-				return false;
-		
-			Shape sh = arr.shapeList.get(seg);
-			
-			arr.highlightedSeg = seg;
-			
-			
-			res = sh.contains(xp, yp);
-		//}
-		
+		// boolean res = false;
+
+		// System.out.println(d);
+
+		// if (d >= 40.0) {
+		// detArr = null;
+		// detArrSegNo = -1;
+		// arr.highlightedSeg = -1;
+		// }
+		// else {
+		// detArr = arr;
+		// detArrSegNo = segNo;
+
+		if (arr.shapeList == null || arr.shapeList.size() <= seg)
+			return false;
+
+		Shape sh = arr.shapeList.get(seg);
+
+		arr.highlightedSeg = seg;
+
+		res = sh.contains(xp, yp);
+		// }
+
 		return res;
 	}
 
-	
 	void displayAlignmentLines(Block block) {
 
 		if (!(block instanceof ProcessBlock))
@@ -4980,8 +4912,7 @@ langs = new Lang[12];
 			if (!(b instanceof ProcessBlock))
 				continue;
 			int y = b.cy + b.height / 2;
-			if (b != block
-					&& between(block.cy + block.height / 2, y - 6, y + 6)) {
+			if (b != block && between(block.cy + block.height / 2, y - 6, y + 6)) {
 				block.hNeighbour = b;
 				break;
 			}
@@ -4991,8 +4922,7 @@ langs = new Lang[12];
 			if (!(b instanceof ProcessBlock))
 				continue;
 			int x = b.cx - b.width / 2;
-			if (b != block
-					&& between(block.cx - block.width / 2, x - 6, x + 6)) {
+			if (b != block && between(block.cx - block.width / 2, x - 6, x + 6)) {
 				block.vNeighbour = b;
 				break;
 			}
@@ -5002,15 +4932,12 @@ langs = new Lang[12];
 	Point2D gridAlign(Point2D p) {
 		Point2D p2 = p;
 		if (clickToGrid) {
-			int x = ((int) (p.x() + gridUnitSize / 2) / gridUnitSize)
-					* gridUnitSize;
-			int y = ((int) (p.y() + gridUnitSize / 2) / gridUnitSize)
-					* gridUnitSize;
+			int x = ((int) (p.x() + gridUnitSize / 2) / gridUnitSize) * gridUnitSize;
+			int y = ((int) (p.y() + gridUnitSize / 2) / gridUnitSize) * gridUnitSize;
 			p2 = new Point2D(x, y);
 		}
 		return p2;
 	}
-	 
 
 	Notation findNotnFromLabel(String s) {
 		for (int i = 0; i < notations.length; i++)
@@ -5019,25 +4946,24 @@ langs = new Lang[12];
 		return null;
 	}
 
-	
-	//Notation findNotnFromLang(String suff) {
-	//	for (int i = 0; i < notations.length; i++)
-	//		if (notations[i].lang.ext.equals(suff))
-	//			return notations[i];
-	//	return null;
-	//}
-	
+	// Notation findNotnFromLang(String suff) {
+	// for (int i = 0; i < notations.length; i++)
+	// if (notations[Notation.i].lang.ext.equals(suff))
+	// return notations[Notation.i];
+	// return null;
+	// }
+
 	Lang findLangFromSuff(String suff) {
 		for (int i = 0; i < langs.length; i++)
 			if (langs[i].ext.equals(suff))
 				return langs[i];
 		return null;
 	}
-	
+
 	URL[] buildUrls(File f) {
 		LinkedList<URL> ll = new LinkedList<URL>();
 		URL[] urls = null;
-		
+
 		if (javaFBPJarFile == null)
 			locateJavaFBPJarFile(false);
 		String sh = null;
@@ -5055,22 +4981,20 @@ langs = new Lang[12];
 					ll.add(f2.toURI().toURL());
 			}
 
-			String clsDir = properties.get("currentClassDir")
-					+ "/";
-			int m = clsDir.indexOf("bin/"); 
+			String clsDir = properties.get("currentClassDir") + "/";
+			int m = clsDir.indexOf("bin/");
 			sh = clsDir.substring(0, m + 4);
-			
-			//if (null != sh) {				 
-				f2 = new File(sh);
-				if (!(f2.equals(f)))
-					ll.add(f2.toURI().toURL());
-			//}
+
+			// if (null != sh) {
+			f2 = new File(sh);
+			if (!(f2.equals(f)))
+				ll.add(f2.toURI().toURL());
+			// }
 
 			urls = ll.toArray(new URL[ll.size()]);
 
 		} catch (MalformedURLException e) {
-			MyOptionPane.showMessageDialog(this, "Malformed URL: " + f,
-					MyOptionPane.ERROR_MESSAGE);
+			MyOptionPane.showMessageDialog(this, "Malformed URL: " + f, MyOptionPane.ERROR_MESSAGE);
 			// e.printStackTrace();
 			// javaClass = null;
 			urls = null;
@@ -5079,6 +5003,7 @@ langs = new Lang[12];
 
 		return urls;
 	}
+
 	static public void applyOrientation(Component c) {
 		c.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
@@ -5097,62 +5022,61 @@ langs = new Lang[12];
 		}
 	}
 
-	
-    // "touches" changed to test if point (x, y) is within one of the side rectangles...
-	
+	// "touches" changed to test if point (x, y) is within one of the side
+	// rectangles...
+
 	// gives result Side or null (touches - yes/no)
 
 	/* static */ Side touches(Block b, int x, int y) {
 		Side side = null;
-		
-		//System.out.println("Trytouch " + b + " " + x + " " + y); 
-		
-		if (b.leftRect != null && b.leftRect.contains(x, y))	
+
+		// System.out.println("Trytouch " + b + " " + x + " " + y);
+
+		if (b.leftRect != null && b.leftRect.contains(x, y))
 			side = Side.LEFT;
-		 
+
 		else if (b.topRect != null && b.topRect.contains(x, y))
 			side = Side.TOP;
-		 
+
 		else if (b.rightRect != null && b.rightRect.contains(x, y))
 			side = Side.RIGHT;
-		 
+
 		else if (b.botRect != null && b.botRect.contains(x, y))
 			side = Side.BOTTOM;
-		
+
 //		if (side != null)
 //			System.out.println("Touches " + b + " " + (side != null) + " " + x + " " + y); 
-		//else
-		//	System.out.println("Touches " + b + "no side " +  " " + x + " " + y); 
+		// else
+		// System.out.println("Touches " + b + "no side " + " " + x + " " + y);
 
 		return side;
 	}
 
-	
 	public void blueCircs(Graphics g) {
-		if (fpArrowRoot != null) { 
+		if (fpArrowRoot != null) {
 			drawBlueCircle(g, fpArrowRoot.x, fpArrowRoot.y);
 			repaint();
 		}
 
 		if (fpArrowEndB != null && currentArrow != null /* && currentArrow.toX > -1 */) {
-			drawBlueCircle(g, fpArrowEndB.x, fpArrowEndB.y);		
+			drawBlueCircle(g, fpArrowEndB.x, fpArrowEndB.y);
 			repaint();
 		}
-		
-		if (fpArrowEndA != null && currentArrow != null){			
-			drawBlueCircle(g, fpArrowEndA.x, fpArrowEndA.y);		
+
+		if (fpArrowEndA != null && currentArrow != null) {
+			drawBlueCircle(g, fpArrowEndA.x, fpArrowEndA.y);
 			repaint();
 		}
 	}
 
 	void drawBlueCircle(Graphics g, int x, int y) {
-		
+
 		int cSize = zWS - 2;
-		
+
 		Color col = g.getColor();
 
 		g.setColor(Color.BLUE);
-		g.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize); 
+		g.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
 
 		g.setColor(col);
 	}
@@ -5161,14 +5085,14 @@ langs = new Lang[12];
 		final int squSize = 8;
 		Color col = g.getColor();
 		g.setColor(Color.BLACK);
-		g.drawRect(x - squSize / 2, y - squSize / 2, squSize, squSize);		
+		g.drawRect(x - squSize / 2, y - squSize / 2, squSize, squSize);
 		g.setColor(col);
 	}
-	
-	public void drawRedCircle(Graphics g, int x, int y) {		 
+
+	public void drawRedCircle(Graphics g, int x, int y) {
 		Color col = g.getColor();
 		g.setColor(Color.RED);
-		g.drawOval(x - 5, y - 5, 10,  10);
+		g.drawOval(x - 5, y - 5, 10, 10);
 		g.setColor(col);
 	}
 
@@ -5183,7 +5107,7 @@ langs = new Lang[12];
 	}
 
 	public void componentResized(ComponentEvent e) {
-		 
+
 		Dimension dim = this.getSize();
 		Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
 		int no = but.length;
@@ -5192,16 +5116,16 @@ langs = new Lang[12];
 			but[j].setMaximumSize(dim2);
 			box21.add(but[j]);
 		}
-		//(getGraphics()).drawImage(buffer, 0, 0, null); 
-		//System.out.println("Resized");
-			 
+		// (getGraphics()).drawImage(buffer, 0, 0, null);
+		// System.out.println("Resized");
+
 	}
 
 	public void componentShown(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	public void stateChanged(ChangeEvent e) {
 		Object source = e.getSource();
 		if (source instanceof JSlider && scaleLab != null) {
@@ -5210,8 +5134,8 @@ langs = new Lang[12];
 			// oldH = getSize().height;
 			if (!(js).getValueIsAdjusting()) {
 				scalingFactor = ((double) js.getValue()) / 100.0;
-				driver.saveProp("scalingfactor",Double.toString(scalingFactor));
-				//zWS = (int) Math.round(zoneWidth * scalingFactor);
+				saveProp("scalingfactor", Double.toString(scalingFactor));
+				// zWS = (int) Math.round(zoneWidth * scalingFactor);
 				String scale = (int) js.getValue() + "%";
 				scaleLab.setText(scale);
 				// pack();
@@ -5219,152 +5143,104 @@ langs = new Lang[12];
 				// repaint();
 			}
 		}
-		
-		
+
 	}
-	
+
 	/*
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		int i = -1;
-		//if (comparing) {
-			Object source = e.getSource();
-			if (source == jtp) {
-				Point p = new Point(e.getX(), e.getY());
-				for (i = 0; i < jtp.getTabCount(); i++) {
-					if (jtp.getTabComponentAt(i).getBounds().contains(p)) {
-						//jtp.setSelectedIndex(i);
-						break;
-					}
-				}
+	 * @Override public void mouseClicked(MouseEvent e) { int i = -1; //if
+	 * (comparing) { Object source = e.getSource(); if (source == jtp) { Point p =
+	 * new Point(e.getX(), e.getY()); for (i = 0; i < jtp.getTabCount(); i++) { if
+	 * (jtp.getTabComponentAt(i).getBounds().contains(p)) {
+	 * //jtp.setSelectedIndex(i); break; } } } // comparing = false; //}
+	 * //repaint(); if (i == -1 ) { MyOptionPane.showMessageDialog(driver,
+	 * "No diagram selected", MyOptionPane.WARNING_MESSAGE); } else if (comparing) {
+	 * comparing = false; jtp.removeMouseListener(this); compare(i); } else
+	 * jtp.setSelectedIndex(i); repaint(); }
+	 * 
+	 * 
+	 * @Override public void mouseEntered(MouseEvent e) { // TODO Auto-generated
+	 * method stub
+	 * 
+	 * }
+	 * 
+	 * @Override public void mouseExited(MouseEvent e) { // TODO Auto-generated
+	 * method stub
+	 * 
+	 * }
+	 * 
+	 * @Override public void mousePressed(MouseEvent e) { // TODO Auto-generated
+	 * method stub
+	 * 
+	 * }
+	 */
+
+	public BufferedImage loadImage(String fileName) {
+		BufferedImage image = null;
+
+		// see
+		// https://stackoverflow.com/questions/14089146/file-loading-by-getclass-getresource
+		URL url = null;
+		try {
+			url = getClass().getResource("/" + fileName);
+			if (url != null)
+				image = ImageIO.read(url);
+			else {
+				MyOptionPane.showMessageDialog(this, "Missing icon: " + fileName, MyOptionPane.ERROR_MESSAGE);
+				image = new BufferedImage(6, 6, BufferedImage.TYPE_INT_RGB);
 			}
-		//	comparing = false;
-		//}
-		//repaint();
-		if (i == -1 ) {
-			 MyOptionPane.showMessageDialog(driver,
-						 "No diagram selected",
-						  MyOptionPane.WARNING_MESSAGE);
+
+			// image = ImageIO.read(DrawFBP.class.getResourceAsStream("/" + fileName));
+		} catch (MalformedURLException mue) {
+			System.err.println("url: " + mue.getMessage() + ": " + url);
+		} catch (IllegalArgumentException iae) {
+			System.err.println("arg: " + iae.getMessage() + ": " + url);
+		} catch (IOException ioe) {
+			System.err.println("read: " + ioe.getMessage() + ": " + url);
 		}
-		else 
-			if (comparing) {
-				comparing = false;
-				jtp.removeMouseListener(this);
-				compare(i);
-			}
-			else
-				jtp.setSelectedIndex(i);
-		repaint();
+		// if(image == null)
+		// {
+		// image = new BufferedImage(6, 6, BufferedImage.TYPE_INT_RGB);
+		// }
+		return image;
 	}
-	 
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	*/
-		  
-	 public BufferedImage loadImage(String fileName)
-	    {
-		    BufferedImage image = null;
-	        
-		    // see https://stackoverflow.com/questions/14089146/file-loading-by-getclass-getresource
-		    URL url = null;
-	        try
-	        {
-	           url = getClass().getResource("/" + fileName);
-	           if (url != null) 	          
-	        	   image = ImageIO.read(url);
-	           else {
-	        	   MyOptionPane.showMessageDialog(this, "Missing icon: " + fileName, MyOptionPane.ERROR_MESSAGE);
-	        	   image = new BufferedImage(6, 6, BufferedImage.TYPE_INT_RGB);
-	           }
-	            
-	           //image = ImageIO.read(DrawFBP.class.getResourceAsStream("/" + fileName));
-	        }
-	        catch(MalformedURLException mue)
-	        {
-	            System.err.println("url: " + mue.getMessage() + ": " + url);
-	        }
-	        catch(IllegalArgumentException iae)
-	        {
-	            System.err.println("arg: " + iae.getMessage() + ": " + url);
-	        }
-	        catch(IOException ioe)
-	        {
-	            System.err.println("read: " + ioe.getMessage() + ": " + url);
-	        }
-	        //if(image == null)
-	        //{
-	        //    image = new BufferedImage(6, 6, BufferedImage.TYPE_INT_RGB);
-	        //}
-	        return image;
-	    }
 
 	public static void main(final String[] args) {
 
-		
-			Runnable myRunnable = createRunnable(args);
+		Runnable myRunnable = createRunnable(args);
 
-		
-			SwingUtilities.invokeLater(myRunnable);
-			
-			
-			/*
-			SwingUtilities.invokeLater(new Runnable(args) {
-			        public void run(args) {
-			            
-			String[] runArgs = args;
-			
-			String laf = UIManager.getSystemLookAndFeelClassName();
-			
+		SwingUtilities.invokeLater(myRunnable);
 
-			System.setProperty("apple.laf.useScreenMenuBar", "true");
+		/*
+		 * SwingUtilities.invokeLater(new Runnable(args) { public void run(args) {
+		 * 
+		 * String[] runArgs = args;
+		 * 
+		 * String laf = UIManager.getSystemLookAndFeelClassName();
+		 * 
+		 * 
+		 * System.setProperty("apple.laf.useScreenMenuBar", "true");
+		 * 
+		 * try { UIManager.setLookAndFeel(laf); } catch (ClassNotFoundException e1) {
+		 * e1.printStackTrace(); } catch (InstantiationException e1) {
+		 * e1.printStackTrace(); } catch (IllegalAccessException e1) {
+		 * e1.printStackTrace(); } catch (UnsupportedLookAndFeelException e1) {
+		 * e1.printStackTrace(); }
+		 * 
+		 * setDefaultLookAndFeelDecorated(true);
+		 * 
+		 * DrawFBP _mf= new DrawFBP(runArgs); _mf.setVisible(true);
+		 * System.out.println(runArgs); } });
+		 */
 
-			try {
-				UIManager.setLookAndFeel(laf);
-			} catch (ClassNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (InstantiationException e1) {
-				e1.printStackTrace();
-			} catch (IllegalAccessException e1) {
-				e1.printStackTrace();
-			} catch (UnsupportedLookAndFeelException e1) {
-				e1.printStackTrace();
-			}
-
-			setDefaultLookAndFeelDecorated(true);
-
-			DrawFBP _mf= new DrawFBP(runArgs);
-			_mf.setVisible(true);
-			System.out.println(runArgs); 
-			        }
-					   });
-					   */
-			
 	}
-	
-	private static Runnable createRunnable(final String[] paramStr){
 
-	    Runnable aRunnable = new Runnable(){
-	        public void run(){
-	        	String[] runArgs = paramStr;
-				
+	private static Runnable createRunnable(final String[] paramStr) {
+
+		Runnable aRunnable = new Runnable() {
+			public void run() {
+				String[] runArgs = paramStr;
+
 				String laf = UIManager.getSystemLookAndFeelClassName();
-				
 
 				System.setProperty("apple.laf.useScreenMenuBar", "true");
 
@@ -5382,65 +5258,75 @@ langs = new Lang[12];
 
 				setDefaultLookAndFeelDecorated(true);
 
-				DrawFBP _mf= new DrawFBP(runArgs);
+				DrawFBP _mf = new DrawFBP(runArgs);
 				_mf.setVisible(true);
-				//System.out.println(runArgs); 
-				
-	        }
-	    };
+				// System.out.println(runArgs);
 
-	    return aRunnable;
+			}
+		};
+
+		return aRunnable;
 
 	}
-/*
-	public class Lang {
-		String language; // this is the language...
-		String extn; // extension - excluding period
-		Lang(String lan, String ex) {
-			language = lan;
-			extn = ex;
-		}
-	}
-*/
+
+	/*
+	 * public class Lang { String language; // this is the language... String extn;
+	 * // extension - excluding period Lang(String lan, String ex) { language = lan;
+	 * extn = ex; } }
+	 */
 	public class Notation {
 		// this class refers the network notation
 		String label;
-		
-		//String extn; // excluding period - moved to Lang object
-		
+
 		String srcDirProp; // DrawFBP property specifying source directory
 		String netDirProp; // DrawFBP property specifying source directory for
 							// net definition
-		//FileFilter filter;  // moved to Lang
-		
-		Lang lang;   //  programming language used
+		// FileFilter filter; // moved to Lang
 
-		//Lang[] langs; // each entry has a language name, and an extension -
-						// excluding periods
+		Lang lang; // programming language used
+
+		// list of notations
+				public static final int JAVA_FBP = 0;
+				public static final int CSHARP_FBP = 1;
+				public static final int JSON = 2;
+				public static final int FBP = 3;
+				
 		Notation(String vm, Lang lan) {
-			label = vm;
-			//extn = se;
+			label = vm;		
 			lang = lan;
-			srcDirProp = "current" + lang + "SourceDir";
-			netDirProp = "current" + lang + "NetworkDir";
+			srcDirProp = "current" + lang.label + "SourceDir";
+			netDirProp = "current" + lang.label + "NetworkDir";
 			if (lang.label.equals("C#")) {
 				srcDirProp = "currentCsharpSourceDir";
 				netDirProp = "currentCsharpNetworkDir"; // xml does not seem to
 														// like #'s
 			}
-			//filter = f;
 		}
 
-		
 	}
 
 	public class Lang {
-		// this class refers the language used for notation		
+		// this class refers the language used for notation
 		String label;
-		String ext;      // extension - without period 
+		String ext; // extension - without period
 		FileFilter filter;
 		String propertyName;
-				
+		
+		// list of "languages"
+		public static final int JAVA = 0;
+		public static final int CSHARP = 1;
+		public static final int JS = 2;
+		public static final int FBP = 3;
+		public static final int DIAGRAM = 4;
+		public static final int IMAGE = 5;
+		public static final int JARFILE = 6;
+		public static final int FBPJSON = 7;
+		public static final int CLASS = 8;
+		// public static final int PROCESS = 8;
+		// public static final int NETWORK = 9;
+		public static final int DLL = 9;
+		public static final int EXE = 10;
+
 		Lang(String lab, String extn, FileFilter filt, String dir) {
 			label = lab;
 			ext = extn;
@@ -5454,12 +5340,11 @@ langs = new Lang[12];
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
-			
+
 			int openDiags = 0;
-			
+
 			for (int i = jtp.getTabCount() - 1; i > -1; i--) {
-				ButtonTabComponent b = (ButtonTabComponent) jtp
-						.getTabComponentAt(i);
+				ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 				jtp.setSelectedIndex(i);
 				if (b == null || b.diag == null)
 					return;
@@ -5468,17 +5353,15 @@ langs = new Lang[12];
 				if (diag != null && diag.changed) {
 					if (!closeTab(true)) {
 						openDiags++;
-						break;  // return true if tab closed
+						break; // return true if tab closed
 					}
 				}
 			}
-			
-			
+
 			if (tabCloseOK) {
 
 				for (int i = jtp.getTabCount() - 1; i > -1; i--) {
-					ButtonTabComponent b = (ButtonTabComponent) jtp
-							.getTabComponentAt(i);
+					ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 					jtp.setSelectedIndex(i);
 					if (b == null || b.diag == null)
 						return;
@@ -5493,7 +5376,7 @@ langs = new Lang[12];
 						}
 				}
 			}
-			
+
 			if (curDiag != null && curDiag.diagFile != null) {
 				saveProp("currentDiagram", curDiag.diagFile.getAbsolutePath());
 				saveProp("currentDiagramDir", curDiag.diagFile.getParent());
@@ -5504,24 +5387,23 @@ langs = new Lang[12];
 			saveProp("width", getWidth() + "");
 			saveProp("height", getHeight() + "");
 			saveProp("sortbydate", sortByDate + "");
-			
-			saveProperties();
-			
 
-			
-			//if (jtp.getTabCount() == 0) {
-			if (openDiags == 0) {	
+			saveProperties();
+
+			// if (jtp.getTabCount() == 0) {
+			if (openDiags == 0) {
 				dispose();
 				System.exit(0);
 			}
 		}
 	}
+
 	public class CloseTabAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
-			
+
 			tabCloseOK = true;
 
 			int j = jtp.getTabCount();
@@ -5531,15 +5413,13 @@ langs = new Lang[12];
 			int i = jtp.getSelectedIndex();
 			if (i == -1) // don't know which to delete...
 				return;
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
 			Diagram diag = b.diag;
 
 			if (diag != null) {
-				if (diag.changed && 
-						diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION){
+				if (diag.changed && diag.askAboutSaving() == MyOptionPane.CANCEL_OPTION) {
 					tabCloseOK = false;
 					return;
 				}
@@ -5547,32 +5427,26 @@ langs = new Lang[12];
 
 			if (i < jtp.getTabCount())
 				jtp.remove(i);
-			
-			//curDiag = null;  
+
+			// curDiag = null;
 			if (jtp.getTabCount() > 0) {
-			b = (ButtonTabComponent) jtp
-					.getTabComponentAt(0);
-			if (b == null || b.diag == null)
-				return;
-			diag = b.diag;
-			curDiag = diag;
-			if (diag.diagFile != null)
-				saveProp("currentDiagram", diag.diagFile.getAbsolutePath());
-			//properties.remove("currentDiagram");
+				b = (ButtonTabComponent) jtp.getTabComponentAt(0);
+				if (b == null || b.diag == null)
+					return;
+				diag = b.diag;
+				curDiag = diag;
+				if (diag.diagFile != null)
+					saveProp("currentDiagram", diag.diagFile.getAbsolutePath());
+				// properties.remove("currentDiagram");
 			}
-			
-						
-			
-			
+
 			for (Arrow ar : curDiag.arrows.values()) {
 				ar.compareFlag = null;
 			}
-			
+
 			if (mmFrame != null)
-				mmFrame.dispose();	
-			
-			
-			
+				mmFrame.dispose();
+
 			repaint();
 		}
 	}
@@ -5597,9 +5471,8 @@ langs = new Lang[12];
 			}
 
 			closeAppAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
-				}
-			}
-				
+		}
+	}
 
 	public class JavaFileFilter extends FileFilter {
 		@Override
@@ -5616,6 +5489,7 @@ langs = new Lang[12];
 		}
 
 	}
+
 	public class JavaGenFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
@@ -5650,10 +5524,8 @@ langs = new Lang[12];
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".js")
-					|| f.getName().toLowerCase().endsWith(".coffee")
-					|| f.getName().toLowerCase().endsWith(".json")	
-					|| f.isDirectory();
+			return f.getName().toLowerCase().endsWith(".js") || f.getName().toLowerCase().endsWith(".coffee")
+					|| f.getName().toLowerCase().endsWith(".json") || f.isDirectory();
 
 		}
 
@@ -5662,7 +5534,7 @@ langs = new Lang[12];
 			return "JSON source files (*.js, *.coffee or *.json)";
 		}
 	}
-	
+
 	public class FBPFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
@@ -5684,8 +5556,7 @@ langs = new Lang[12];
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".class")
-					|| f.isDirectory();
+			return f.getName().toLowerCase().endsWith(".class") || f.isDirectory();
 
 		}
 
@@ -5700,14 +5571,11 @@ langs = new Lang[12];
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".drw")
-					|| f.getName().toLowerCase().endsWith(".dr~")
-					|| f.getName().toLowerCase().endsWith(".fbp")
-					|| f.getName().toLowerCase().endsWith("fbp.json")
+			return f.getName().toLowerCase().endsWith(".drw") || f.getName().toLowerCase().endsWith(".dr~")
+					|| f.getName().toLowerCase().endsWith(".fbp") || f.getName().toLowerCase().endsWith("fbp.json")
 					// fbp.json added to remind us that this is like a
 					// directory
-					|| f.getName().toLowerCase().endsWith(".json")
-					|| f.isDirectory();
+					|| f.getName().toLowerCase().endsWith(".json") || f.isDirectory();
 
 		}
 
@@ -5722,8 +5590,7 @@ langs = new Lang[12];
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".jar")
-					|| f.isDirectory();
+			return f.getName().toLowerCase().endsWith(".jar") || f.isDirectory();
 
 		}
 
@@ -5733,15 +5600,14 @@ langs = new Lang[12];
 		}
 
 	}
+
 	// Filter for images
 	public class ImageFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".png")
-					|| f.getName().toLowerCase().endsWith(".jpg")
-					|| f.getName().toLowerCase().endsWith(".bmp")
-					|| f.isDirectory();
+			return f.getName().toLowerCase().endsWith(".png") || f.getName().toLowerCase().endsWith(".jpg")
+					|| f.getName().toLowerCase().endsWith(".bmp") || f.isDirectory();
 		}
 
 		@Override
@@ -5750,144 +5616,135 @@ langs = new Lang[12];
 		}
 
 	}
-	
+
 	// Filter for .dll files
-			public class DllFilter extends FileFilter {
-				@Override
-				public boolean accept(File f) {
+	public class DllFilter extends FileFilter {
+		@Override
+		public boolean accept(File f) {
 
-					return f.getName().toLowerCase().endsWith(".dll")
-							|| f.isDirectory();
-				}
+			return f.getName().toLowerCase().endsWith(".dll") || f.isDirectory();
+		}
 
-				@Override
-				public String getDescription() {
-					return ".dll files (*.dll)";
-				}
+		@Override
+		public String getDescription() {
+			return ".dll files (*.dll)";
+		}
 
-			}
+	}
 
 	// Filter for .exe files
-		public class ExeFilter extends FileFilter {
-			@Override
-			public boolean accept(File f) {
+	public class ExeFilter extends FileFilter {
+		@Override
+		public boolean accept(File f) {
 
-				return f.getName().toLowerCase().endsWith(".exe")
-						|| f.isDirectory();
-			}
-
-			@Override
-			public String getDescription() {
-				return ".exe files (*.exe)";
-			}
-
+			return f.getName().toLowerCase().endsWith(".exe") || f.isDirectory();
 		}
+
+		@Override
+		public String getDescription() {
+			return ".exe files (*.exe)";
+		}
+
+	}
 
 	public class FileChooserParm {
 		// int index;
 		String name;
 		String propertyName;
 		Lang lang;
-		//String prompt;
-		//String fileExt;
-		//FileFilter filter;
+		// String prompt;
+		// String fileExt;
+		// FileFilter filter;
 		String title;
 
 		FileChooserParm(/* int n, */ String x, String a, Lang lan, String e) {
 			// index = n;
-			
+
 			name = x;
 			propertyName = a;
 			lang = lan;
-			//prompt = b;
-			//fileExt = c;
-			//filter = d;
+			// prompt = b;
+			// fileExt = c;
+			// filter = d;
 			title = e;
 		}
 	}
 
 	public class RunTask extends Thread {
 		public void run() {
-			
-				ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
 
-				pb.directory(new File(pBDir));
+			ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
 
-				output = "";
-				pb.redirectErrorStream(true);
-				
-				error = ""; 
-				
-				Process proc = null;
-				
-				try {
-					proc = pb.start();
-					
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(proc.getInputStream()));
-					String line;
-					while ((line = br.readLine()) != null) {
-						output += line + "<br>";
-					}
-				} catch (NullPointerException npe) {
-					error = "Null Pointer Exception"; 
-					proc = null;
-					//return;
-				} catch (IOException ioe) {
-					error = "I/O Exception"; 
-					proc = null;
-					//return;
-				} catch (IndexOutOfBoundsException iobe) {
-					error = "Index Out Of Bounds Exception"; 
-					proc = null;
-					//return;
-				} catch (SecurityException se) {
-					error = "Security Exception"; 
-					proc = null;
-					//return;			 
-				} 
-				
-				
-				if (proc == null) 
-					return;
-				
-				try {
-					proc.waitFor();
-				} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-					e1.printStackTrace();
+			pb.directory(new File(pBDir));
+
+			output = "";
+			pb.redirectErrorStream(true);
+
+			error = "";
+
+			Process proc = null;
+
+			try {
+				proc = pb.start();
+
+				BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+				String line;
+				while ((line = br.readLine()) != null) {
+					output += line + "<br>";
 				}
+			} catch (NullPointerException npe) {
+				error = "Null Pointer Exception";
+				proc = null;
+				// return;
+			} catch (IOException ioe) {
+				error = "I/O Exception";
+				proc = null;
+				// return;
+			} catch (IndexOutOfBoundsException iobe) {
+				error = "Index Out Of Bounds Exception";
+				proc = null;
+				// return;
+			} catch (SecurityException se) {
+				error = "Security Exception";
+				proc = null;
+				// return;
+			}
 
-				int u = proc.exitValue(); 
-				proc.destroy();
-				
-				//if (proc == null)
-				//	return;
-				
-				//int u = proc.exitValue(); 
-				if (u == 0)
-					MyOptionPane.showMessageDialog(driver,
-							"Program completed - " + progName,
-							MyOptionPane.INFORMATION_MESSAGE);
-				else
-					MyOptionPane.showMessageDialog(driver,
-							"Program test failed, rc: " + u + " - " + progName,
-							MyOptionPane.WARNING_MESSAGE);
+			if (proc == null)
+				return;
 
-				if (!(error.equals("")))  
-					MyOptionPane.showMessageDialog(driver,
-							"<html>Program error - " + pBDir + progName + "<br>" +
-							error + "</html>",
-							MyOptionPane.ERROR_MESSAGE);
-					 
-				if (!(output.equals("")))
+			try {
+				proc.waitFor();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			int u = proc.exitValue();
+			proc.destroy();
+
+			// if (proc == null)
+			// return;
+
+			// int u = proc.exitValue();
+			if (u == 0)
+				MyOptionPane.showMessageDialog(driver, "Program completed - " + progName,
+						MyOptionPane.INFORMATION_MESSAGE);
+			else
+				MyOptionPane.showMessageDialog(driver, "Program test failed, rc: " + u + " - " + progName,
+						MyOptionPane.WARNING_MESSAGE);
+
+			if (!(error.equals("")))
 				MyOptionPane.showMessageDialog(driver,
-						"<html>Program output - " + pBDir + progName + "<br>" +
-						output +  "</html>",
+						"<html>Program error - " + pBDir + progName + "<br>" + error + "</html>",
+						MyOptionPane.ERROR_MESSAGE);
+
+			if (!(output.equals("")))
+				MyOptionPane.showMessageDialog(driver,
+						"<html>Program output - " + pBDir + progName + "<br>" + output + "</html>",
 						MyOptionPane.INFORMATION_MESSAGE);
 		}
 	}
-
 
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
@@ -5898,13 +5755,10 @@ langs = new Lang[12];
 			setOpaque(true);
 
 			/*
-			String s = diagramName;
-			if (s == null || s.endsWith(".drw")) {
-			   addMouseListener(this);
-			   addMouseMotionListener(this);
-			}
-			
-			*/
+			 * String s = diagramName; if (s == null || s.endsWith(".drw")) {
+			 * addMouseListener(this); addMouseMotionListener(this); }
+			 * 
+			 */
 			// setFont(fontg);
 
 			setBackground(Color.WHITE);
@@ -5919,29 +5773,22 @@ langs = new Lang[12];
 			Block to = curDiag.blocks.get(Integer.valueOf(a.toId));
 			Arrow a2 = a.findLastArrowInChain();
 			to = curDiag.blocks.get(Integer.valueOf(a2.toId));
-			if (from != null
-					&& (from instanceof ProcessBlock
-							|| from instanceof ExtPortBlock)
-					&& (a2.endsAtBlock && to != null
-							&& (to instanceof ProcessBlock
-									|| to instanceof ExtPortBlock))) {
+			if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock)
+					&& (a2.endsAtBlock && to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock))) {
 				if (a.upStreamPort == null || a.upStreamPort.trim().equals(""))
 					a.upStreamPort = "OUT";
 
-				if (a2.downStreamPort == null
-						|| a2.downStreamPort.trim().equals(""))
+				if (a2.downStreamPort == null || a2.downStreamPort.trim().equals(""))
 					a2.downStreamPort = "IN";
 			}
 
-			if (from instanceof IIPBlock && a2.endsAtBlock && to != null
-					&& to instanceof ProcessBlock) {
-				if (a2.downStreamPort == null
-						|| a2.downStreamPort.trim().equals(""))
+			if (from instanceof IIPBlock && a2.endsAtBlock && to != null && to instanceof ProcessBlock) {
+				if (a2.downStreamPort == null || a2.downStreamPort.trim().equals(""))
 					a2.downStreamPort = "IN";
 			}
 
 		}
- 
+
 		public void paintComponent(Graphics g) {
 
 			// Paint background if we're opaque.
@@ -5951,17 +5798,15 @@ langs = new Lang[12];
 				// g.setColor(getBackground());
 				osg.setColor(Color.WHITE);
 				int h = getHeight();
-				osg.fillRect(0, 0, (int) (w / scalingFactor),
-						(int) (h / scalingFactor - 0));
+				osg.fillRect(0, 0, (int) (w / scalingFactor), (int) (h / scalingFactor - 0));
 			}
 
 			int i = jtp.getSelectedIndex();
 
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
-			
+
 			Diagram diag = b.diag;
 
 			// if (curDiag != diag) {
@@ -5983,24 +5828,23 @@ langs = new Lang[12];
 					block.draw(osg);
 			}
 
-			
-			
-			//if (diag.diagFile != null)
-			//	System.out.println(diag.diagFile.getAbsolutePath() + " " + diag.arrows.size());
+			// if (diag.diagFile != null)
+			// System.out.println(diag.diagFile.getAbsolutePath() + " " +
+			// diag.arrows.size());
 			for (Arrow arrow : diag.arrows.values()) {
-			//	if (diag.diagFile != null)
-			//		System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
+				// if (diag.diagFile != null)
+				// System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
 				arrow.draw(osg);
-				//System.out.println("arrow-draw");
+				// System.out.println("arrow-draw");
 			}
 
-			if (driver.tailMark != null)  				
-				drawRedCircle(osg, driver.tailMark.x, driver.tailMark.y);		
-			
-			if (driver.headMark != null)  				
-				drawRedCircle(osg, driver.headMark.x, driver.headMark.y);	
-			
-			driver.blueCircs(osg);
+			if (tailMark != null)
+				drawRedCircle(osg, tailMark.x, tailMark.y);
+
+			if (headMark != null)
+				drawRedCircle(osg, headMark.x, headMark.y);
+
+			blueCircs(osg);
 
 			String s = diag.desc;
 			if (s != null) {
@@ -6011,79 +5855,67 @@ langs = new Lang[12];
 			// else
 			// s = "(no description)";
 
-			diagDesc.setText(s);   
-			
+			diagDesc.setText(s);
+
 			/*
-		
-			if (comparing) {
-				Color col = osg.getColor();
-				osg.setColor(lb);
-				int cSize = 80;
-				int x = w - cSize / 2;
-				int y = cSize / 2;
-				
-				osg.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
-				osg.fillOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
-				osg.setColor(col);
-				osg.setFont(fontg);
-				FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
-				
-				String[] s1 = new String[]{"waiting", "to", "compare"};
-				y -= 10;
-				
-				for (int j = 0; j < s1.length; j++) {					
-					byte[] str2 = s1[j].getBytes();
-					int xx = 2 + metrics.bytesWidth(str2, 0, s1[j].length());
-					osg.drawString(s1[j], x - xx / 2, y); 
-					y += 15;
-				}
-			}
-			
-			*/
+			 * 
+			 * if (comparing) { Color col = osg.getColor(); osg.setColor(lb); int cSize =
+			 * 80; int x = w - cSize / 2; int y = cSize / 2;
+			 * 
+			 * osg.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize); osg.fillOval(x -
+			 * cSize / 2, y - cSize / 2, cSize, cSize); osg.setColor(col);
+			 * osg.setFont(fontg); FontMetrics metrics =
+			 * driver.osg.getFontMetrics(driver.fontg);
+			 * 
+			 * String[] s1 = new String[]{"waiting", "to", "compare"}; y -= 10;
+			 * 
+			 * for (int j = 0; j < s1.length; j++) { byte[] str2 = s1[j].getBytes(); int xx
+			 * = 2 + metrics.bytesWidth(str2, 0, s1[j].length()); osg.drawString(s1[j], x -
+			 * xx / 2, y); y += 15; } }
+			 * 
+			 */
 
-			Graphics2D g2d = (Graphics2D) g;  
+			Graphics2D g2d = (Graphics2D) g;
 
-			//g2d.scale(scalingFactor, scalingFactor);
-			//osg.scale(scalingFactor, scalingFactor);
+			// g2d.scale(scalingFactor, scalingFactor);
+			// osg.scale(scalingFactor, scalingFactor);
 
 			// g2d.translate(xTranslate, yTranslate);
 
 			// Now copy that off-screen image onto the screen
-			//g2d.drawImage(buffer, 0, 0, null);   
+			// g2d.drawImage(buffer, 0, 0, null);
 			g2d.scale(scalingFactor, scalingFactor);
-			//g2d.scale(.8, .8);
-			g.drawImage(buffer, 0, 0, null);   
-			
+			// g2d.scale(.8, .8);
+			g.drawImage(buffer, 0, 0, null);
+
 		}
- 
+
 		FoundPointB findBlockEdge(int x, int y, String type) {
 
 			FoundPointB fpB = null;
 			for (Block block : curDiag.blocks.values()) {
-				
+
 				// test whether to even look at block...
 				if (type.equals("D")) {
-					//System.out.println("horiz " + x + " " + (block.leftEdge - zWS / 2) + "-" +
-					//		(block.rgtEdge + zWS / 2));
-					//System.out.println("vert " + y + " " + (block.topEdge - zWS / 2) + "-" +
-					//		(block.botEdge + zWS / 2));
+					// System.out.println("horiz " + x + " " + (block.leftEdge - zWS / 2) + "-" +
+					// (block.rgtEdge + zWS / 2));
+					// System.out.println("vert " + y + " " + (block.topEdge - zWS / 2) + "-" +
+					// (block.botEdge + zWS / 2));
 				}
-				
-				if (!(between(x, block.leftEdge - zWS / 2,
-						block.rgtEdge + zWS / 2)))
+
+				if (!(between(x, block.leftEdge - zWS / 2, block.rgtEdge + zWS / 2)))
 					continue;
 
-				if (!(between(y, block.topEdge - zWS / 2,
-						block.botEdge + zWS / 2)))
+				if (!(between(y, block.topEdge - zWS / 2, block.botEdge + zWS / 2)))
 					continue;
 
 				/* look for block edge touching xa and ya */
-				//if (type.equals("D"))
-				//System.out.println("calltouch " + x + " " + y);       
+				// if (type.equals("D"))
+				// System.out.println("calltouch " + x + " " + y);
 				Side side = touches(block, x, y);
 				if (side == null)
-					continue;	
-				
+					continue;
+
 				fpB = new FoundPointB(x, y, side, block);
 
 				if (side == Side.LEFT)
@@ -6095,12 +5927,11 @@ langs = new Lang[12];
 				else if (side == Side.BOTTOM)
 					fpB.y = block.botEdge;
 
-				//fpB.block = block;  // set in FoundPointB constructor
-				
+				// fpB.block = block; // set in FoundPointB constructor
+
 				break;
 			}
 
-			
 			return fpB;
 		}
 
@@ -6114,32 +5945,32 @@ langs = new Lang[12];
 				if (arrow.toId == -1)
 					continue;
 
-				//int x1 = arrow.fromX;
-				//int y1 = arrow.fromY;
+				// int x1 = arrow.fromX;
+				// int y1 = arrow.fromY;
 				int segNo = 0;
-				//int x2, y2;
+				// int x2, y2;
 
 				if (arrow.bends != null) {
 					for (Bend bend : arrow.bends) {
-						//x2 = bend.x;
-						//y2 = bend.y;
-						
+						// x2 = bend.x;
+						// y2 = bend.y;
+
 						if (nearpln(x, y, arrow)) {
 							segNo = arrow.highlightedSeg;
 							fpA = new FoundPointA(x, y, arrow, segNo);
 							return fpA;
 						}
 
-						//x1 = x2;
-						//y1 = y2;
+						// x1 = x2;
+						// y1 = y2;
 						segNo++;
 					}
 				}
 
-				//x2 = arrow.toX;
-				//y2 = arrow.toY;
-				
-				if (nearpln(x, y, arrow)) {	
+				// x2 = arrow.toX;
+				// y2 = arrow.toY;
+
+				if (nearpln(x, y, arrow)) {
 					segNo = arrow.highlightedSeg;
 					fpA = new FoundPointA(x, y, arrow, segNo);
 					return fpA;
@@ -6147,6 +5978,7 @@ langs = new Lang[12];
 			}
 			return null;
 		}
+
 		void adjustArrowsEndingAtLine(Arrow arrow) {
 			for (Arrow arr : curDiag.arrows.values()) {
 				if (!arr.endsAtLine)
@@ -6188,8 +6020,7 @@ langs = new Lang[12];
 				Point2D point = new Point2D((double) xp, (double) yp);
 
 				// StraightLine2D perp = line.perpendicular(point);
-				StraightLine2D open = new StraightLine2D(xp, yp, arr.toX - xp,
-						arr.toY - yp);
+				StraightLine2D open = new StraightLine2D(xp, yp, arr.toX - xp, arr.toY - yp);
 				point = line.intersection(open);
 				if (point != null) {
 					arr.toX = (int) point.x();
@@ -6199,29 +6030,25 @@ langs = new Lang[12];
 				adjustArrowsEndingAtLine(arr); // call recursively
 			}
 		}
-		
-		
-		 
 
 		public void mouseMoved(MouseEvent e) {
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
-			//drawToolTip = false;
-			//fpArrowRoot = null;
+			// drawToolTip = false;
+			// fpArrowRoot = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
 			edgePoint = null;
-			
-			//detArr = null;
-			//detArrSegNo = -1;
-								
+
+			// detArr = null;
+			// detArrSegNo = -1;
+
 			repaint();
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
-			
+
 			curDiag = b.diag;
 
 			int x = (int) Math.round(e.getX() / scalingFactor);
@@ -6241,11 +6068,11 @@ langs = new Lang[12];
 			p = gridAlign(p);
 			xa = (int) p.x();
 			ya = (int) p.y();
-			
+
 			moveX = xa;
 			moveY = ya;
-			
-			//System.out.println("M: " + xa + "," + ya);
+
+			// System.out.println("M: " + xa + "," + ya);
 			if (enclSelForArrow != null) {
 				enclSelForArrow.corner = Corner.NONE;
 				enclSelForArrow = null;
@@ -6262,29 +6089,25 @@ langs = new Lang[12];
 					Enclosure enc = (Enclosure) block;
 
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
-							&& between(ya, block.topEdge - 6,
-									block.topEdge + 6)) {
+							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.TOPLEFT;
 						break;
 					}
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
-							&& between(ya, block.botEdge - 6,
-									block.botEdge + 6)) {
+							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.BOTTOMLEFT;
 						break;
 					}
 					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
-							&& between(ya, block.topEdge - 6,
-									block.topEdge + 6)) {
+							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.TOPRIGHT;
 						break;
 					}
 					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
-							&& between(ya, block.botEdge - 6,
-									block.botEdge + 6)) {
+							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.BOTTOMRIGHT;
 						break;
@@ -6293,47 +6116,42 @@ langs = new Lang[12];
 
 				// logic to change cursor to drag_icon
 				int hh = gFontHeight;
-				boolean udi;                                      // Use Drag Icon
+				boolean udi; // Use Drag Icon
 				if (block.type.equals(Block.Types.ENCL_BLOCK)) {
-					udi = between(xa, block.leftEdge + block.width / 5,
-							block.rgtEdge - block.width / 5)
-							&& between(ya, block.topEdge - hh,
-									block.topEdge + hh / 2);
+					udi = between(xa, block.leftEdge + block.width / 5, block.rgtEdge - block.width / 5)
+							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2);
 				} else {
-					
-					udi = between(xa, block.leftEdge + zWS * 3 / 4,
-							block.rgtEdge - zWS * 3 / 4)
-							&& between(ya, block.topEdge + zWS * 3 / 2,
-									block.botEdge - zWS * 3 / 2);
+
+					udi = between(xa, block.leftEdge + zWS * 3 / 4, block.rgtEdge - zWS * 3 / 4)
+							&& between(ya, block.topEdge + zWS * 3 / 2, block.botEdge - zWS * 3 / 2);
 				}
 
 				if (udi) {
 					selBlockM = block; // mousing select
-					//if (!use_drag_icon) {
-						if (curDiag.jpm == null && !panSwitch)
-							setCursor(drag_icon);
-						//use_drag_icon = true;						
-					//}
+					// if (!use_drag_icon) {
+					if (curDiag.jpm == null && !panSwitch)
+						setCursor(drag_icon);
+					// use_drag_icon = true;
+					// }
 
 					break;
 				}
 
 			}
-			
-			//setCursor(defaultCursor);  // experimental!
-			
+
+			// setCursor(defaultCursor); // experimental!
+
 			if (selBlockM == null) {
-				//if (use_drag_icon)
-				//	use_drag_icon = false;
+				// if (use_drag_icon)
+				// use_drag_icon = false;
 
 				if (!panSwitch)
 					setCursor(defaultCursor);
 			}
 			// curDiag.foundBlock = null;
 
-			if (currentArrow != null && 
-					(Math.abs(currentArrow.fromX - xa) > 10 ||
-					Math.abs(currentArrow.fromY - ya) > 10)) {
+			if (currentArrow != null
+					&& (Math.abs(currentArrow.fromX - xa) > 10 || Math.abs(currentArrow.fromY - ya) > 10)) {
 				edgePoint = findBlockEdge(xa, ya, "M");
 				if (edgePoint != null) {
 					xa = edgePoint.x;
@@ -6342,21 +6160,20 @@ langs = new Lang[12];
 					repaint();
 				}
 			}
-			
+
 			if (currentArrow == null) {
 				edgePoint = findBlockEdge(xa, ya, "M");
 				if (edgePoint != null) {
-					//fpArrowRoot = edgePoint;
+					// fpArrowRoot = edgePoint;
 					xa = edgePoint.x;
 					ya = edgePoint.y;
 					selBlockM = edgePoint.block;
 				}
-				
+
 			}
-			
-			
+
 			colourArrows(xa, ya);
-				
+
 			repaint();
 		}
 
@@ -6370,11 +6187,10 @@ langs = new Lang[12];
 		/*
 		 * The following mouse actions are supported:
 		 * 
-		 * - click on block - highlights block - double-click on block - brings
-		 * up popup menu if not subnet - brings up subnet if subnet - press on
-		 * side of block starts arrow - release on side of block starts or ends
-		 * arrow - click on arrow - brings up popup menu - press on block -
-		 * starts drag
+		 * - click on block - highlights block - double-click on block - brings up popup
+		 * menu if not subnet - brings up subnet if subnet - press on side of block
+		 * starts arrow - release on side of block starts or ends arrow - click on arrow
+		 * - brings up popup menu - press on block - starts drag
 		 * 
 		 */
 
@@ -6383,19 +6199,17 @@ langs = new Lang[12];
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
 			curDiag = b.diag;
-			
-			//detArr = null;
-			//detArrSegNo = 0;
+
+			// detArr = null;
+			// detArrSegNo = 0;
 			repaint();
 
-			//Side side = null;
-			leftButton = (e.getModifiersEx()
-					& InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK;
+			// Side side = null;
+			leftButton = (e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK;
 			int x = e.getX();
 			x = (int) Math.round(x / scalingFactor);
 			int y = e.getY();
@@ -6418,9 +6232,7 @@ langs = new Lang[12];
 				// Rectangle r = curDiag.area.getBounds();
 				Dimension d = curDiag.area.getSize();
 				// if (r.contains(x, y)) {
-				if (x >= curDiag.area.getX()
-						&& x <= curDiag.area.getX() + d.width
-						&& y >= curDiag.area.getY()
+				if (x >= curDiag.area.getX() && x <= curDiag.area.getX() + d.width && y >= curDiag.area.getY()
 						&& y <= curDiag.area.getY() + d.height) {
 					setCursor(closedPawCursor);
 					panX = xa;
@@ -6444,7 +6256,7 @@ langs = new Lang[12];
 			repaint();
 
 			// look for side or corner of an enclosure
-			for (Block block : curDiag.blocks.values()) {				
+			for (Block block : curDiag.blocks.values()) {
 				block.buildSides();
 				block.adjEdgeRects();
 				block.calcEdges();
@@ -6452,10 +6264,8 @@ langs = new Lang[12];
 					Enclosure enc = (Enclosure) block;
 					/* test for a hit within the rectangle at top */
 					int hh = gFontHeight;
-					if (between(xa, block.leftEdge + block.width / 5,
-							block.rgtEdge - block.width / 5)
-							&& between(ya, block.topEdge - hh,
-									block.topEdge + hh / 2)) {
+					if (between(xa, block.leftEdge + block.width / 5, block.rgtEdge - block.width / 5)
+							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2)) {
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
 						blockSelForDragging = block;
@@ -6464,29 +6274,25 @@ langs = new Lang[12];
 
 					/* now handle stretching at the corners */
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
-							&& between(ya, block.topEdge - 6,
-									block.topEdge + 6)) {
+							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						blockSelForDragging = enc;
 						enc.corner = Corner.TOPLEFT;
 						break;
 					}
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
-							&& between(ya, block.botEdge - 6,
-									block.botEdge + 6)) {
+							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						blockSelForDragging = enc;
 						enc.corner = Corner.BOTTOMLEFT;
 						break;
 					}
 					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
-							&& between(ya, block.topEdge - 6,
-									block.topEdge + 6)) {
+							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						blockSelForDragging = enc;
 						enc.corner = Corner.TOPRIGHT;
 						break;
 					}
 					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
-							&& between(ya, block.botEdge - 6,
-									block.botEdge + 6)) {
+							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						blockSelForDragging = enc;
 						enc.corner = Corner.BOTTOMRIGHT;
 						break;
@@ -6494,13 +6300,13 @@ langs = new Lang[12];
 
 				} else { // not enclosure
 					/*
-					 * the following leaves a strip around the outside of each
-					 * block that cannot be used for dragging!
+					 * the following leaves a strip around the outside of each block that cannot be
+					 * used for dragging!
 					 */
 					Rectangle rect = new Rectangle(block.leftEdge + zWS * 3 / 4, block.topEdge + zWS * 3 / 4,
 							block.width - zWS * 3 / 2, block.height - zWS * 3 / 2);
 					if (rect.contains(xa, ya)) {
-					
+
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
 						blockSelForDragging = block;
@@ -6514,18 +6320,17 @@ langs = new Lang[12];
 					repaint();
 					return;
 				}
-				edgePoint = findBlockEdge(xa, ya, "P");  
-				if (edgePoint != null)  {
+				edgePoint = findBlockEdge(xa, ya, "P");
+				if (edgePoint != null) {
 					xa = edgePoint.x;
 					ya = edgePoint.y;
-					//fpArrowRoot = edgePoint;
+					// fpArrowRoot = edgePoint;
 					repaint();
-				}				 
-		
+				}
+
 			}
 
-			if (blockSelForDragging != null
-					&& blockSelForDragging instanceof Enclosure) {
+			if (blockSelForDragging != null && blockSelForDragging instanceof Enclosure) {
 				ox = blockSelForDragging.cx;
 				oy = blockSelForDragging.cy;
 				ow = blockSelForDragging.width;
@@ -6534,10 +6339,9 @@ langs = new Lang[12];
 				return;
 			}
 
-			
 			// if no currentArrow, but there is a found block, start an arrow
-			//if (currentArrow == null && foundBlock != null
-			//		&& arrowEndForDragging == null) {
+			// if (currentArrow == null && foundBlock != null
+			// && arrowEndForDragging == null) {
 			if (currentArrow == null) {
 				fpArrowRoot = edgePoint;
 				if (fpArrowRoot != null) {
@@ -6552,11 +6356,9 @@ langs = new Lang[12];
 					// int id = fpArrowRoot.block.id;
 					// arrow.fromId = foundBlock.id;
 					arrow.fromId = fpArrowRoot.block.id;
-					Block fromBlock = curDiag.blocks
-							.get(Integer.valueOf(arrow.fromId));
+					Block fromBlock = curDiag.blocks.get(Integer.valueOf(arrow.fromId));
 					if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
-							|| fromBlock.type
-									.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+							|| fromBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
 						arrow.upStreamPort = "OUT";
 					// arrow.fromId = -1;
 					currentArrow = arrow;
@@ -6570,34 +6372,30 @@ langs = new Lang[12];
 
 				}
 			}
-			 
-			   else {
+
+			else {
 				Arrow arrow = currentArrow;
 				if (tailMark != null || headMark != null) {
 					arrowEndForDragging = arrow;
 				}
 			}
-			 
+
 			repaint();
 		}
 
 		public void mouseDragged(MouseEvent e) {
-			
+
 			fpArrowRoot = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
-			//edgePoint = null;
-
-			
-
+			// edgePoint = null;
 
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
-						
+
 			repaint();
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
 			curDiag = b.diag;
@@ -6610,7 +6408,7 @@ langs = new Lang[12];
 			p = gridAlign(p);
 			xa = (int) p.x();
 			ya = (int) p.y();
-			//System.out.println("D: " + xa + "," + ya);
+			// System.out.println("D: " + xa + "," + ya);
 			if (e.getClickCount() == 2) {
 
 				// blockSelForDragging = null;
@@ -6655,14 +6453,14 @@ langs = new Lang[12];
 					arr.fromId = -1;
 					arr.fromX = xa;
 					arr.fromY = ya;
-					tailMark.x = xa;    
+					tailMark.x = xa;
 					tailMark.y = ya;
 					curDiag.changed = true;
 					currentArrow = arr;
 					repaint();
 					return;
-					
-				} else if (headMark != null){
+
+				} else if (headMark != null) {
 					arr.toId = -1;
 					arr.toX = xa;
 					arr.toY = ya;
@@ -6673,9 +6471,9 @@ langs = new Lang[12];
 					repaint();
 					return;
 				}
-				//curDiag.changed = true;
-				//repaint();
-				//return;
+				// curDiag.changed = true;
+				// repaint();
+				// return;
 			}
 
 			if (bendForDragging != null) {
@@ -6690,51 +6488,49 @@ langs = new Lang[12];
 
 			if (blockSelForDragging != null) {
 				if (blockSelForDragging instanceof Enclosure) {
-				Enclosure enc = (Enclosure) blockSelForDragging;
-				
-				if (enc.corner == Corner.TOPLEFT) {
-					enc.width = ox + ow / 2 - xa;  // ox is value of cx when dragging started
-					enc.height = oy + oh / 2 - ya;  // oy is value of cy when dragging started
-					enc.cx = xa + enc.width / 2;   // ow is value of width when dragging started
-					enc.cy = ya + enc.height / 2;  // oh is value of height when dragging started
-					
+					Enclosure enc = (Enclosure) blockSelForDragging;
+
+					if (enc.corner == Corner.TOPLEFT) {
+						enc.width = ox + ow / 2 - xa; // ox is value of cx when dragging started
+						enc.height = oy + oh / 2 - ya; // oy is value of cy when dragging started
+						enc.cx = xa + enc.width / 2; // ow is value of width when dragging started
+						enc.cy = ya + enc.height / 2; // oh is value of height when dragging started
+
+					}
+					if (enc.corner == Corner.BOTTOMLEFT) {
+						enc.width = ox + ow / 2 - xa;
+						enc.height = ya - (oy - oh / 2);
+						enc.cx = xa + enc.width / 2;
+						enc.cy = ya - enc.height / 2;
+
+					}
+					if (enc.corner == Corner.TOPRIGHT) {
+						enc.width = xa - (ox - ow / 2);
+						enc.height = oy + oh / 2 - ya;
+						enc.cx = xa - enc.width / 2;
+						enc.cy = ya + enc.height / 2;
+
+					}
+					if (enc.corner == Corner.BOTTOMRIGHT) {
+						enc.width = xa - (ox - ow / 2);
+						enc.height = ya - (oy - oh / 2);
+						enc.cx = xa - enc.width / 2;
+						enc.cy = ya - enc.height / 2;
+
+					}
+					// enc.buildSides();
+					// enc.adjEdgeRects();
+					enc.calcEdges();
+					if (enc.corner != Corner.NONE) {
+						curDiag.changed = true;
+						// enc.corner = Corner.NONE;
+						repaint();
+						return;
+					}
+
 				}
-				if (enc.corner == Corner.BOTTOMLEFT) {
-					enc.width = ox + ow / 2 - xa;
-					enc.height = ya - (oy - oh / 2);
-					enc.cx = xa + enc.width / 2;
-					enc.cy = ya - enc.height / 2;
-					
-				}
-				if (enc.corner == Corner.TOPRIGHT) {
-					enc.width = xa - (ox - ow / 2);
-					enc.height = oy + oh / 2 - ya;
-					enc.cx = xa - enc.width / 2;
-					enc.cy = ya + enc.height / 2;
-					
-				}
-				if (enc.corner == Corner.BOTTOMRIGHT) {
-					enc.width = xa - (ox - ow / 2);
-					enc.height = ya - (oy - oh / 2);
-					enc.cx = xa - enc.width / 2;
-					enc.cy = ya - enc.height / 2;
-					
-				}
-				//enc.buildSides();				
-				//enc.adjEdgeRects();
-				enc.calcEdges();
-				if (enc.corner != Corner.NONE) {   
-					curDiag.changed = true;
-					//enc.corner = Corner.NONE;
-					repaint();
-					return;
-				}
-				
-				}
-				
-			
-				if (clickToGrid && Math.abs(xa - oldx) < 6
-						&& Math.abs(ya - oldy) < 6 || // do not respond
+
+				if (clickToGrid && Math.abs(xa - oldx) < 6 && Math.abs(ya - oldy) < 6 || // do not respond
 						Math.abs(xa - oldx) > 200 || // to small twitches
 						Math.abs(ya - oldy) > 200) // or big twitches!
 					return;
@@ -6761,17 +6557,17 @@ langs = new Lang[12];
 				int y_inc = ya - oldy;
 				block.cx += x_inc;
 				block.cy += y_inc;
-				block.topRect.x += x_inc; 		
+				block.topRect.x += x_inc;
 				block.topRect.y += y_inc;
 				if (block.botRect != null) {
-					block.botRect.x += x_inc; 
-					block.botRect.y += y_inc; 
+					block.botRect.x += x_inc;
+					block.botRect.y += y_inc;
 				}
-				block.leftRect.x += x_inc; 
-				block.leftRect.y += y_inc; 
-				block.rightRect.x += x_inc; 
-				block.rightRect.y += y_inc; 
-				
+				block.leftRect.x += x_inc;
+				block.leftRect.y += y_inc;
+				block.rightRect.x += x_inc;
+				block.rightRect.y += y_inc;
+
 				block.buildSides();
 				block.calcEdges();
 				block.adjEdgeRects();
@@ -6818,11 +6614,10 @@ langs = new Lang[12];
 				// block.calcEdges();
 			}
 
-			if (currentArrow != null) {  // this ensures the line stays visible
-					//Math.abs(currentArrow.fromX - xa) > zWS &&  // pick arbitrary figure!
-					//Math.abs(currentArrow.fromY - ya) > zWS) { 
+			if (currentArrow != null) { // this ensures the line stays visible
+				// Math.abs(currentArrow.fromX - xa) > zWS && // pick arbitrary figure!
+				// Math.abs(currentArrow.fromY - ya) > zWS) {
 
-				
 				currentArrow.toId = -1;
 				currentArrow.toX = xa;
 				currentArrow.toY = ya;
@@ -6831,49 +6626,47 @@ langs = new Lang[12];
 				fpArrowEndB = null;
 				currentArrow.endsAtBlock = false;
 				currentArrow.endsAtLine = false;
-				 
-				if (Math.abs(currentArrow.fromX - xa) > 10 ||  // pick arbitrary figure!
-					Math.abs(currentArrow.fromY - ya) > 10) {
-					//System.out.println("dragging " + xa + " " + ya);
-				//FoundPointB fpB = findBlockEdge(xa, ya);	
-				edgePoint = findBlockEdge(xa, ya, "D");  
-				if (edgePoint != null)  {
-					xa = edgePoint.x;
-					ya = edgePoint.y;
-					repaint();
+
+				if (Math.abs(currentArrow.fromX - xa) > 10 || // pick arbitrary figure!
+						Math.abs(currentArrow.fromY - ya) > 10) {
+					// System.out.println("dragging " + xa + " " + ya);
+					// FoundPointB fpB = findBlockEdge(xa, ya);
+					edgePoint = findBlockEdge(xa, ya, "D");
+					if (edgePoint != null) {
+						xa = edgePoint.x;
+						ya = edgePoint.y;
+						repaint();
+					}
+
 				}
-				
-				
-				}
-				 
+
 			}
 			colourArrows(xa, ya);
-			
+
 			repaint();
 		}
 
 		public void mouseReleased(MouseEvent e) {
 
-			//comparing = false;
+			// comparing = false;
 			// Arrow foundArrow = null;
-			//Block foundBlock = null;
+			// Block foundBlock = null;
 			edgePoint = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
-			
+
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
-			ButtonTabComponent b = (ButtonTabComponent) jtp
-					.getTabComponentAt(i);
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
 			curDiag = b.diag;
-			
-			//detArr = null;
-			//detArrSegNo = 0;
+
+			// detArr = null;
+			// detArrSegNo = 0;
 			repaint();
-			
+
 			if (curDiag.jpm != null) {
 				curDiag.jpm.setVisible(false);
 				curDiag.jpm = null;
@@ -6881,21 +6674,20 @@ langs = new Lang[12];
 				return;
 			}
 
-			
 			int x = (int) e.getX();
 			int y = (int) e.getY();
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
 
-			//Side side = null;
+			// Side side = null;
 			Point2D p2 = new Point2D(x, y);
 			p2 = gridAlign(p2);
 			xa = (int) p2.x();
 			ya = (int) p2.y();
-			
-			//System.out.println("R: " + xa + "," + ya);
-			
+
+			// System.out.println("R: " + xa + "," + ya);
+
 			if (curDiag.area.contains(xa, ya) && panSwitch) {
 				setCursor(openPawCursor);
 				repaint();
@@ -6906,9 +6698,7 @@ langs = new Lang[12];
 			// xa = curx; // used for bend dragging
 			// ya = cury;
 			// }
-			
-			
-			
+
 			if (e.getClickCount() == 2 || !leftButton) {
 				// enclSelForDragging = null;
 				// arrowEndForDragging = null;
@@ -6918,48 +6708,41 @@ langs = new Lang[12];
 					selBlock = blockSelForDragging;
 					// this tests if mouse has moved (approximately) - ignore
 					// small twitches and also big jumps!
-					if (between(mousePressedX, (int)(x - 6 * scalingFactor),
-							(int)(x + 6 * scalingFactor))
-							&& between(mousePressedY, (int)(y - 6 * scalingFactor),
-									(int)(y + 6 * scalingFactor))
-							|| Math.abs(mousePressedX - x) > 100
-							|| Math.abs(mousePressedY - y) > 100) {
+					if (between(mousePressedX, (int) (x - 6 * scalingFactor), (int) (x + 6 * scalingFactor))
+							&& between(mousePressedY, (int) (y - 6 * scalingFactor), (int) (y + 6 * scalingFactor))
+							|| Math.abs(mousePressedX - x) > 100 || Math.abs(mousePressedY - y) > 100) {
 
 						// if it was a small move, or a big jump, just get
 						// subnet, or display options
 
 						if (leftButton && blockSelForDragging.isSubnet) {
 							if (blockSelForDragging.subnetFileName == null) {
-								MyOptionPane.showMessageDialog(driver,
-										"No subnet diagram assigned",
+								MyOptionPane.showMessageDialog(driver, "No subnet diagram assigned",
 										MyOptionPane.INFORMATION_MESSAGE);
 							} else {
-								
+
 								String name = blockSelForDragging.subnetFileName;
-								//String dir = properties.get("currentDiagramDir");
-								//MyOptionPane.showMessageDialog(null,
-								//		"Subnet OK - subnet diagram assigned",
-								//		MyOptionPane.INFORMATION_MESSAGE);
-								
+								// String dir = properties.get("currentDiagramDir");
+								// MyOptionPane.showMessageDialog(null,
+								// "Subnet OK - subnet diagram assigned",
+								// MyOptionPane.INFORMATION_MESSAGE);
+
 								int k = getFileTabNo(name);
 								if (k != -1) {
 									jtp.setSelectedIndex(k);
 									return;
 								}
-								
-								
-								File df = openAction(name);  
+
+								File df = openAction(name);
 								if (df == null)
 									return;
 
-								
-								
 								curDiag.diagFile = df;
 								curDiag.desc = df.getName();
 								curDiag.title = df.getName();
-								
+
 								curDiag.changed = false;
-								return;  
+								return;
 							}
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
@@ -6971,8 +6754,8 @@ langs = new Lang[12];
 							curDiag.jpm.show(this, xa + 100, ya + 100);
 
 						}
-						
-					} 
+
+					}
 					repaint();
 					// return;
 				}
@@ -6981,102 +6764,93 @@ langs = new Lang[12];
 
 			if (arrowEndForDragging != null) {
 
-				//currentArrow = null;
+				// currentArrow = null;
 
 				foundBlock = null;
 				// curDiag.changed = true;
 				Arrow arr = arrowEndForDragging;
 
 				// try to anchor arrow tail or head!
-				
+
 				for (Block block : curDiag.blocks.values()) {
 					if (tailMark != null) {
 						arr.fromId = -1;
 						if (null != touches(block, tailMark.x, tailMark.y)) {
 							arr.fromId = block.id;
 							foundBlock = block;
-						 
+
 							arrowEndForDragging = null;
 							currentArrow = null;
-							//currentArrow = null;
-							//arr.tailMark = null;
+							// currentArrow = null;
+							// arr.tailMark = null;
 							tailMark = null;
-							//break;
+							// break;
 							currentArrow = null;
 							edgePoint = null;
-						 
+
 							repaint();
 							return;
-						} 
-						
+						}
+
 					}
-					
+
 					if (headMark != null) {
 						arr.toId = -1;
 						if (null != touches(block, headMark.x, headMark.y)) {
 							arr.toId = block.id;
 							foundBlock = block;
 							arr.endsAtBlock = true;
-							arr.endsAtLine = false;							
-							//break;
-							headMark = null;							
+							arr.endsAtLine = false;
+							// break;
+							headMark = null;
 							currentArrow = null;
 							edgePoint = null;
 							repaint();
 							return;
-						} 
+						}
 					}
 				}
-				
-				
+
 				// if headmarked and no block found, try to detect an arrow...
-				
+
 				if (headMark != null && foundBlock == null) {
 					FoundPointA fpA;
 					if (null != (fpA = findArrow(arr.toX, arr.toY))) {
 						arr.toId = fpA.arrow.id;
 						arr.endsAtBlock = false;
 						arr.endsAtLine = true;
-						
+
 						// currentArrow.toId = arr.id;
 
 						arr.toX = fpA.x;
 						arr.toY = fpA.y;
 						arrowEndForDragging = null;
 						currentArrow = null;
-						headMark = null;			
+						headMark = null;
 						edgePoint = null;
 						repaint();
 						return;
 					}
-					
+
 					arr.toId = -1;
-						//arr.toX = -1;
-						//if (arr.bends == null)
-						//	arr.bends = new LinkedList<Bend>();
-						//arr.bends.add(new Bend(arr.toX, arr.toY)); 
+					// arr.toX = -1;
+					// if (arr.bends == null)
+					// arr.bends = new LinkedList<Bend>();
+					// arr.bends.add(new Bend(arr.toX, arr.toY));
 					arr.toX = xa;
 					arr.toY = ya;
 					Arrow arr2 = currentArrow;
 					arrowEndForDragging = arr2;
-					headMark = null;              
-					
+					headMark = null;
+
 				}
-				
-				
-				
+
 				curDiag.changed = true;
-				 
+
 				/*
-				if (tailMark != null || headMark != null ) {
-					tailMark = null;
-					//headMark = null;
-					//currentArrow = null;
-					edgePoint = null;
-					repaint();
-					return;
-				}
-				*/
+				 * if (tailMark != null || headMark != null ) { tailMark = null; //headMark =
+				 * null; //currentArrow = null; edgePoint = null; repaint(); return; }
+				 */
 				repaint();
 			}
 
@@ -7119,8 +6893,7 @@ langs = new Lang[12];
 						arrow.fromX += blockSelForDragging.cx - savex;
 						arrow.fromY += blockSelForDragging.cy - savey;
 					}
-					if (arrow.toId == blockSelForDragging.id
-							&& !arrow.endsAtLine) {
+					if (arrow.toId == blockSelForDragging.id && !arrow.endsAtLine) {
 						arrow.toX += blockSelForDragging.cx - savex;
 						arrow.toY += blockSelForDragging.cy - savey;
 					}
@@ -7140,8 +6913,8 @@ langs = new Lang[12];
 				setCursor(defaultCursor);
 				repaint();
 				return;
-			} 
-			
+			}
+
 			if (blockSelForDragging != null && blockSelForDragging instanceof Enclosure) {
 				((Enclosure) blockSelForDragging).corner = Corner.NONE;
 				blockSelForDragging = null;
@@ -7150,8 +6923,7 @@ langs = new Lang[12];
 				repaint();
 				return;
 			}
-		 
-		
+
 			foundBlock = null;
 			if (currentArrow == null) {
 
@@ -7164,16 +6936,16 @@ langs = new Lang[12];
 				if (fpA != null && fpA.arrow != null) {
 					currentArrow = fpA.arrow;
 					fpArrowEndA = fpA;
-					}
+				}
 
 				selArrow = currentArrow;
 
-				if (currentArrow != null) {                    
+				if (currentArrow != null) {
 					// Arrow arr = foundArrow;
 					// arr.fromId = curDiag.foundBlock.id;
 					if (currentArrow.endsAtLine || currentArrow.endsAtBlock) {
 						curDiag = currentArrow.diag;
-						currentArrow.buildArrowPopupMenu();           
+						currentArrow.buildArrowPopupMenu();
 
 						// currentArrow.lastX = xa;
 						// currentArrow.lastY = ya;
@@ -7195,10 +6967,8 @@ langs = new Lang[12];
 				for (Block block : curDiag.blocks.values()) {
 					block.calcEdges();
 					if (!(block instanceof Enclosure)) {
-						if (between(xa, block.cx - block.width / 4,
-								block.cx + block.width / 4)
-								&& between(ya, block.cy - block.height / 4,
-										block.cy + block.height / 4)) {
+						if (between(xa, block.cx - block.width / 4, block.cx + block.width / 4)
+								&& between(ya, block.cy - block.height / 4, block.cy + block.height / 4)) {
 							foundBlock = block;
 							selBlock = block;
 							selArrow = null;
@@ -7209,8 +6979,7 @@ langs = new Lang[12];
 					} else { // if it is an enclosure block
 
 						int hh = gFontHeight;
-						if (between(xa,
-								block.cx - block.width / 2 + block.width / 5,
+						if (between(xa, block.cx - block.width / 2 + block.width / 5,
 								block.cx + block.width / 2 - block.width / 5)
 								&& between(ya, block.cy - block.height / 2 - hh,
 										block.cy - block.height / 2 + hh / 2)) {
@@ -7236,64 +7005,53 @@ langs = new Lang[12];
 					if (null != createBlock(blockType, xa, ya, curDiag, true))
 						curDiag.changed = true;
 				repaint();
-				
+
 				return;
 			}
 
-			
 			edgePoint = findBlockEdge(xa, ya, "R");
-			//foundBlock = null;
-			
+			// foundBlock = null;
+
 			if (edgePoint != null) {
 				foundBlock = edgePoint.block;
-				//side = fpB.side;
+				// side = fpB.side;
 				fpArrowEndB = edgePoint;
 			}
 
 			if (foundBlock != null // && leftButton
 			) {
-				
-				if (between(currentArrow.fromX, x - zWS / 2,
-						x + zWS / 2)
-						&& between(currentArrow.fromY, y - zWS / 2,
-								y + zWS / 2))
+
+				if (between(currentArrow.fromX, x - zWS / 2, x + zWS / 2)
+						&& between(currentArrow.fromY, y - zWS / 2, y + zWS / 2))
 					return;
 
-				 
-				  if (foundBlock.id == currentArrow.fromId) {
-				 
-				  if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(this,
-				        "Connecting arrow to originating block is deadlock-prone - do anyway?",
-				        "Allow?", MyOptionPane.YES_NO_OPTION)) { 
-					  Integer aid = Integer.valueOf(currentArrow.id); 
-					  curDiag.arrows.remove(aid);
-				      foundBlock = null; 
-				      currentArrow = null;				 
-				      repaint();  
-				      return; 
-				      } 
-				  }
-				   
-				
+				if (foundBlock.id == currentArrow.fromId) {
+
+					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(this,
+							"Connecting arrow to originating block is deadlock-prone - do anyway?", "Allow?",
+							MyOptionPane.YES_NO_OPTION)) {
+						Integer aid = Integer.valueOf(currentArrow.id);
+						curDiag.arrows.remove(aid);
+						foundBlock = null;
+						currentArrow = null;
+						repaint();
+						return;
+					}
+				}
+
 				boolean OK = true;
-				Block from = curDiag.blocks
-						.get(Integer.valueOf(currentArrow.fromId));
-				if ((foundBlock instanceof ProcessBlock
-						|| foundBlock instanceof ExtPortBlock)
+				Block from = curDiag.blocks.get(Integer.valueOf(currentArrow.fromId));
+				if ((foundBlock instanceof ProcessBlock || foundBlock instanceof ExtPortBlock)
 						&& !(from instanceof IIPBlock)) {
 					if (edgePoint.side == Side.BOTTOM) {
-						int answer = MyOptionPane.showConfirmDialog(this,
-								"Connect arrow to bottom of block?",
-								"Please choose one",
-								MyOptionPane.YES_NO_OPTION);
+						int answer = MyOptionPane.showConfirmDialog(this, "Connect arrow to bottom of block?",
+								"Please choose one", MyOptionPane.YES_NO_OPTION);
 						if (answer != MyOptionPane.YES_OPTION)
 							OK = false;
 					}
 					if (edgePoint.side == Side.RIGHT) {
-						int answer = MyOptionPane.showConfirmDialog(this,
-								"Connect arrow to righthand side?",
-								"Please choose one",
-								MyOptionPane.YES_NO_OPTION);
+						int answer = MyOptionPane.showConfirmDialog(this, "Connect arrow to righthand side?",
+								"Please choose one", MyOptionPane.YES_NO_OPTION);
 						if (answer != MyOptionPane.YES_OPTION)
 							OK = false;
 					}
@@ -7336,8 +7094,7 @@ langs = new Lang[12];
 
 				a.toX = xa;
 				a.toY = ya;
-				
-				
+
 				defaultPortNames(a);
 
 				from = curDiag.blocks.get(Integer.valueOf(a.fromId));
@@ -7352,23 +7109,18 @@ langs = new Lang[12];
 					// .showMessageDialog(this,
 					// "Direction of arrow has been reversed");
 				}
-				if (from instanceof ExtPortBlock && (from.type
-						.equals(Block.Types.EXTPORT_OUT_BLOCK)
-						|| from.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
-								&& a2.fromX < from.cx))
+				if (from instanceof ExtPortBlock && (from.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
+						|| from.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK) && a2.fromX < from.cx))
 					error = true;
-				else if (to instanceof ExtPortBlock && (to.type
-						.equals(Block.Types.EXTPORT_IN_BLOCK)
-						|| to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)
-								&& a2.toX > to.cx))
+				else if (to instanceof ExtPortBlock && (to.type.equals(Block.Types.EXTPORT_IN_BLOCK)
+						|| to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK) && a2.toX > to.cx))
 					error = true;
 
 				if (!a2.checkSides())
 					error = true;
 
 				if (error) {
-					MyOptionPane.showMessageDialog(this,
-							"Arrow attached to one or both wrong side(s) of blocks",
+					MyOptionPane.showMessageDialog(this, "Arrow attached to one or both wrong side(s) of blocks",
 							MyOptionPane.WARNING_MESSAGE);
 					Integer aid = Integer.valueOf(a2.id);
 					curDiag.arrows.remove(aid);
@@ -7376,14 +7128,13 @@ langs = new Lang[12];
 					curDiag.changed = true;
 					// checkCompatibility(a);
 				}
-				
-				from.displayPortInfo(); 
 
-				to.displayPortInfo(); 
-				
-				//Block toBlock = curDiag.blocks.get(new Integer(a2.toId));
-				if (to.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
-						|| to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+				from.displayPortInfo();
+
+				to.displayPortInfo();
+
+				// Block toBlock = curDiag.blocks.get(new Integer(a2.toId));
+				if (to.type.equals(Block.Types.EXTPORT_OUT_BLOCK) || to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
 					a2.downStreamPort = "IN";
 				foundBlock = null;
 
@@ -7393,10 +7144,10 @@ langs = new Lang[12];
 				repaint();
 				return;
 			}
-			
+
 			// currentDiag.foundBlock must be null
 			// see if we can end an arrow on a line or line segment
-			
+
 			if (currentArrow != null && foundBlock == null) {
 
 				Arrow foundArrow = null;
@@ -7427,17 +7178,15 @@ langs = new Lang[12];
 
 					defaultPortNames(foundArrow);
 
-					Block from = curDiag.blocks
-							.get(Integer.valueOf(currentArrow.fromId));
+					Block from = curDiag.blocks.get(Integer.valueOf(currentArrow.fromId));
 					Block to = curDiag.blocks.get(Integer.valueOf(foundArrow.toId));
 					Arrow a2 = foundArrow.findLastArrowInChain();
 					to = curDiag.blocks.get(Integer.valueOf(a2.toId));
 
 					if (to == from) {
-						if (MyOptionPane.NO_OPTION == MyOptionPane
-								.showConfirmDialog(this,
-										"Connecting arrow to originating block is deadlock-prone - do anyway?",
-										"Allow?", MyOptionPane.YES_NO_OPTION)) {
+						if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(this,
+								"Connecting arrow to originating block is deadlock-prone - do anyway?", "Allow?",
+								MyOptionPane.YES_NO_OPTION)) {
 							Integer aid = Integer.valueOf(currentArrow.id);
 							curDiag.arrows.remove(aid);
 							foundBlock = null;
@@ -7450,16 +7199,10 @@ langs = new Lang[12];
 					}
 
 					boolean error = true;
-					if (from instanceof ExtPortBlock
-							&& from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))
-						MyOptionPane.showMessageDialog(this,
-								"Arrow in wrong direction",
-								MyOptionPane.ERROR_MESSAGE);
-					else if (to instanceof ExtPortBlock
-							&& to.type.equals(Block.Types.EXTPORT_IN_BLOCK))
-						MyOptionPane.showMessageDialog(this,
-								"Arrow in wrong direction",
-								MyOptionPane.ERROR_MESSAGE);
+					if (from instanceof ExtPortBlock && from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))
+						MyOptionPane.showMessageDialog(this, "Arrow in wrong direction", MyOptionPane.ERROR_MESSAGE);
+					else if (to instanceof ExtPortBlock && to.type.equals(Block.Types.EXTPORT_IN_BLOCK))
+						MyOptionPane.showMessageDialog(this, "Arrow in wrong direction", MyOptionPane.ERROR_MESSAGE);
 					else
 						error = false;
 					if (error) {
@@ -7471,13 +7214,11 @@ langs = new Lang[12];
 						// checkCompatibility(curDiag.currentArrow);
 
 						/*
-						 * if (to != null) { if (side == Side.TOP)
-						 * curDiag.currentArrow.toY = to.cy - to.height / 2;
-						 * else if (side == Side.BOTTOM)
-						 * curDiag.currentArrow.toY = to.cy + to.height / 2;
-						 * else if (side == Side.LEFT) curDiag.currentArrow.toX
-						 * = to.cx - to.width / 2; else if (side == Side.RIGHT)
-						 * curDiag.currentArrow.toX = to.cx + to.width / 2; }
+						 * if (to != null) { if (side == Side.TOP) curDiag.currentArrow.toY = to.cy -
+						 * to.height / 2; else if (side == Side.BOTTOM) curDiag.currentArrow.toY = to.cy
+						 * + to.height / 2; else if (side == Side.LEFT) curDiag.currentArrow.toX = to.cx
+						 * - to.width / 2; else if (side == Side.RIGHT) curDiag.currentArrow.toX = to.cx
+						 * + to.width / 2; }
 						 */
 					}
 
@@ -7492,27 +7233,24 @@ langs = new Lang[12];
 				// have a
 				// bend
 
-				
+				// if (currentArrow != null) {
 
-				//if (currentArrow != null) {
-					
-					if (!(between(xa, currentArrow.toX - zWS / 2,   // what is this?!
-							currentArrow.toX + zWS / 2)
-							&& between(ya, currentArrow.toY - zWS / 2,
-									currentArrow.toY + zWS / 2))) {
-						// curDiag.currentArrow.toX = xa;
-						// curDiag.currentArrow.toY = ya;
-						// }
-						// else {
-						Integer aid = Integer.valueOf(currentArrow.id);
-						curDiag.arrows.remove(aid);
-						foundBlock = null;
-						currentArrow = null;
-						repaint();
-						return;
-					}
-					// repaint();
-				//}
+				if (!(between(xa, currentArrow.toX - zWS / 2, // what is this?!
+						currentArrow.toX + zWS / 2)
+						&& between(ya, currentArrow.toY - zWS / 2, currentArrow.toY + zWS / 2))) {
+					// curDiag.currentArrow.toX = xa;
+					// curDiag.currentArrow.toY = ya;
+					// }
+					// else {
+					Integer aid = Integer.valueOf(currentArrow.id);
+					curDiag.arrows.remove(aid);
+					foundBlock = null;
+					currentArrow = null;
+					repaint();
+					return;
+				}
+				// repaint();
+				// }
 
 				if (currentArrow.bends == null) {
 					currentArrow.bends = new LinkedList<Bend>();
@@ -7531,9 +7269,9 @@ langs = new Lang[12];
 					if (Math.abs(s) > FORCE_VERTICAL) // force vertical
 						xa = currentArrow.lastX;
 				}
-				
-				currentArrow.createBend(xa, ya);  
-			
+
+				currentArrow.createBend(xa, ya);
+
 				currentArrow.lastX = x;
 				currentArrow.lastY = y;
 				currentArrow.toX = x;
@@ -7546,51 +7284,47 @@ langs = new Lang[12];
 
 		}
 
-		
-		
 		public void mouseClicked(MouseEvent arg0) {
-			
+
 		}
-		
+
 		@SuppressWarnings("unused")
 		void colourArrows(int x, int y) {
-			
-			// following loop is just to colour arrows - x and y are the position of the cursor
-			
-						for (Arrow arr : curDiag.arrows.values()) {
-							int seg = 0;
-							if (arr.bends != null){
-								for (Bend bend: arr.bends) {
-									if (nearpln(x, y, arr)) {
-										seg = arr.highlightedSeg;
-										break;
-									}
-									seg ++;
-								}					
-							}	
-							
-							if (nearpln(x, y, arr)) {
-								seg = arr.highlightedSeg;
-									break;	
-							}
+
+			// following loop is just to colour arrows - x and y are the position of the
+			// cursor
+
+			for (Arrow arr : curDiag.arrows.values()) {
+				int seg = 0;
+				if (arr.bends != null) {
+					for (Bend bend : arr.bends) {
+						if (nearpln(x, y, arr)) {
+							seg = arr.highlightedSeg;
+							break;
 						}
+						seg++;
+					}
+				}
+
+				if (nearpln(x, y, arr)) {
+					seg = arr.highlightedSeg;
+					break;
+				}
+			}
 		}
 
 	}
 
-
-	
-
-	//@Override
+	// @Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseClicked(MouseEvent e) {
 		int i = jtp.indexAtLocation(e.getX(), e.getY());
 		if (i > -1) {
-			
+
 			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b != null && b.diag != null) {
 
@@ -7601,29 +7335,26 @@ langs = new Lang[12];
 
 				jtp.setSelectedIndex(i);
 			}
-			
+
 		}
-		
+
 		repaint();
 
 	}
 
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
-
-
-

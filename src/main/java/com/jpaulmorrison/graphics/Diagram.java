@@ -246,7 +246,7 @@ public class Diagram {
 			
 		}
 		//if (!(contents instanceof BufferedImage))
-		if (!(lang == driver.langs[DrawFBP.IMAGE]))
+		if (!(lang == driver.langs[Lang.IMAGE]))
 			fileString = (String) contents;	
 		
 		// finished choosing file - compare file name against package in code, if any!
@@ -308,7 +308,7 @@ public class Diagram {
 			}
 		}
 		
-		if (lang == driver.langs[DrawFBP.IMAGE]) {
+		if (lang == driver.langs[Lang.IMAGE]) {
 			Path path = file.toPath();
 			try {
 				Files.deleteIfExists(path);
@@ -403,7 +403,7 @@ public class Diagram {
 
 			// User clicked YES.
 
-			file = genSave(diagFile, driver.langs[DrawFBP.DIAGRAM], null, driver);
+			file = genSave(diagFile, driver.langs[Lang.DIAGRAM], null, driver);
 			if (file == null) {
 				MyOptionPane.showMessageDialog(driver, "File not saved");
 				answer = MyOptionPane.CANCEL_OPTION;
@@ -761,7 +761,7 @@ public class Diagram {
 				driver, "Subnet created - please assign .drw file and save",
 				"Name and save subnet", MyOptionPane.YES_NO_CANCEL_OPTION)) {
 						
-			file = sbnDiag.genSave(null, driver.langs[DrawFBP.DIAGRAM], null, driver);
+			file = sbnDiag.genSave(null, driver.langs[Lang.DIAGRAM], null, driver);
 			
 			if (file != null) {
 				

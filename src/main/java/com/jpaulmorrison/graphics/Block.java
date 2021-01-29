@@ -259,7 +259,7 @@ public class Block implements ActionListener {
 				Font fontsave = g.getFont();
 				g.setFont(driver.fontf);
 				int x;
-				if (driver.currNotn == driver.notations[DrawFBP.JAVA_FBP]) {  // JavaFBP
+				if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP]) {  // JavaFBP
 					//if (compareFlag == null || !compareFlag.equals("D"))
 					name = "Class not found or out of date - rechoose comp/subnet";
 					x = cx - name.length() * driver.gFontWidth / 2;
@@ -268,7 +268,7 @@ public class Block implements ActionListener {
 					y += driver.gFontHeight;
 				}
 				name = fullClassName;
-				if (driver.currNotn == driver.notations[DrawFBP.JAVA_FBP])    // JavaFBP
+				if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP])    // JavaFBP
 					g.setColor(Color.RED);
 				else {
 					g.setColor(Color.BLUE);
@@ -564,7 +564,7 @@ public class Block implements ActionListener {
 			w = w.replace("\\",  File.separator);
 			w = w.replace("/",  File.separator);
 		}
-		if (driver.currNotn.lang == driver.langs[DrawFBP.JAVA] && w != null){
+		if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] && w != null){
 			if (!fullClassName.endsWith(".class"))  
 				fullClassName += ".class";
 			else
@@ -1463,8 +1463,8 @@ public class Block implements ActionListener {
 
 					else 
 						if (driver.currNotn != null && 							
-								(driver.currNotn.lang == driver.langs[DrawFBP.JAVA] || 
-										driver.currNotn.lang == driver.langs[DrawFBP.CSHARP]));					
+								(driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] || 
+										driver.currNotn.lang == driver.langs[DrawFBP.Lang.CSHARP]));					
 						{
 
 							menuItem = new JMenuItem("Choose Source Code");
@@ -1502,7 +1502,7 @@ public class Block implements ActionListener {
 					diag.jpm.add(menuItem3);
 						
 					menuItem3.setEnabled(driver.currNotn != null && 							
-							driver.currNotn.lang == driver.langs[DrawFBP.JAVA]); 
+							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 											
 					diag.jpm.addSeparator();
 					menuItem = new JMenuItem(
@@ -1614,7 +1614,7 @@ public class Block implements ActionListener {
 		if (s.equals("Choose Source Code")) {
 			selectSourceCode();
 			
-			if (driver.currNotn.lang != driver.langs[DrawFBP.JAVA])
+			if (driver.currNotn.lang != driver.langs[DrawFBP.Lang.JAVA])
 			try {
 				selectNonJavaClass();
 			} catch (MalformedURLException e1) {
@@ -1642,7 +1642,7 @@ public class Block implements ActionListener {
 		if (s.equals("Choose Component/Subnet Class")) {			
 			
 			try {
-				if (driver.currNotn == driver.notations[DrawFBP.JAVA_FBP])
+				if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 					selectJavaClass();
 				else
 					selectNonJavaClass();   
@@ -1701,7 +1701,7 @@ public class Block implements ActionListener {
 			}
 
 			String s2 = fullClassName;
-			if (driver.currNotn == driver.notations[DrawFBP.JAVA_FBP]) {  // JavaFBP { 				
+			if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP]) {  // JavaFBP { 				
 				if	((component == null) != (fullClassName == null)) {
 					MyOptionPane.showMessageDialog(driver,
 							"One of class name and full class name is null, but the other isn't:\n"
@@ -1962,10 +1962,12 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		String dFN = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			dFN = driver.getSelFile(fc);
-			String suff = driver.currNotn.lang.ext;
-			if (!(dFN.endsWith(suff)))
-				dFN += suff;
-			driver.curDiag.changed = true;
+			if (dFN != null) {
+				File f = new File(dFN); 
+				if (!driver.currNotn.lang.filter.accept(f))						
+					dFN += driver.currNotn.lang.ext;
+				driver.curDiag.changed = true;
+			}
 			
 			
 			subnetFileName = dFN;
@@ -2007,9 +2009,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 	void selectNonJavaClass() throws MalformedURLException {
 
-		//String oldFullClassName = fullClassName;
-		
-/*
+		//if (driver.currNotn == driver.notations[DrawFBP.Notation.N_JSON]) 
+		//	driver.locateFbpJsonFile(false);			 
 		if (component != null) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver,
@@ -2021,23 +2022,13 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// javaClass = null;
 			// fullClassName = null;
 		}
-*/
-		//javaComp = null;
-		
+
 		component = null;
 		
-
 		String t = driver.properties.get("currentClassDir");
 		if (t == null)
 			t = System.getProperty("user.home");
-		/*
-		DrawFBP.FileChooserParm fcp = diag.fCParm[Diagram.CLASS];
-		DrawFBP.FileChooserParm fcpx = driver.new FileChooserParm(fcp.name, fcp.propertyName, 
-				fcp.fileExt, fcp.filter, fcp.title);
-		fcpx.fileExt = driver.currNotn.extn;
-		fcpx.filter = driver.currNotn.filter;
-		fcpx.title = driver.currNotn.label;
-*/
+	
 		MyFileChooser fc = new MyFileChooser(driver, new File(t), driver.currNotn.lang,
 				/*fcpx, */
 				"Select Component");
@@ -2145,7 +2136,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		if (t == null)
 			t = System.getProperty("user.home");
 
-		MyFileChooser fc = new MyFileChooser(driver,new File(t), driver.langs[DrawFBP.CLASS],
+		MyFileChooser fc = new MyFileChooser(driver,new File(t), driver.langs[DrawFBP.Lang.CLASS],
 				"Select Java Class");
 
 		int returnVal = fc.showOpenDialog();
@@ -2350,7 +2341,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			}
 		 
 
-		if (!(notn.lang == driver.langs[DrawFBP.JAVA]) && component != null) {
+		if (!(notn.lang == driver.langs[DrawFBP.Lang.JAVA]) && component != null) {
 			if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
 					driver,
 					"You have selected a non-Java language and there is a Java class associated with this block - go ahead?",
