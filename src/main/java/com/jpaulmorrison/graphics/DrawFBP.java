@@ -1285,6 +1285,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			CodeManager mc = new CodeManager(curDiag, CODEMGRCREATE);
 			mc.genCode();
 
+			//((java.awt.AWTEvent) e).consume();
 			return;
 
 		}
@@ -2020,7 +2021,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		u += currNotn.label + " ";
 		u += "Network";
 		gNMenuItem.setText(u);
-		gNMenuItem.addActionListener(this);
+		//gNMenuItem.addActionListener(this);
 		//fileMenu.add(gNMenuItem, 7);
 
 		filterOptions[0] = currNotn.lang.filter.getDescription();
@@ -4458,9 +4459,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	void buildFbpJsonTree(String fileName) {
 		File f = new File(fileName);
 		String fileString;
-
-		DefaultMutableTreeNode currentListNode = new DefaultMutableTreeNode(fbpJsonTree);
-
+		
 		if (null == (fileString = readFile(f))) {
 			MyOptionPane.showMessageDialog(driver, "Unable to read file " + f.getName(), MyOptionPane.ERROR_MESSAGE);
 			return;
@@ -4473,9 +4472,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// String data = null;
 		String first = null;
 		String second = null;
-		boolean compList = false;
+		//boolean compList = true;
 		int levelNo = 0;
-		int levels[] = new int[100];
+		
+		//DefaultMutableTreeNode currentNode  = null;
+		DefaultMutableTreeNode nodes[] = new DefaultMutableTreeNode[100];
 
 		while (true) {
 			if (!bp.tb('o'))
@@ -4494,41 +4495,49 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				continue;
 			}
 
-			if (bp.tc('[', 'o')) { // start of array
-
-				// System.out.println(label + ":" + "Array");
-				levelNo++;
-				levels[levelNo] = 0;
-				// if (label.equals("components") || compList) {
-				// compList = true;
-				if (bp.tc(']', 'o'))
+			if (bp.tc('[', 'o')) { // start of array			
+										
+				if (bp.tc(']', 'o'))  // empty array
 					continue;
-				DefaultMutableTreeNode currentNode = new DefaultMutableTreeNode();
-				currentListNode.add(currentNode);
-				// if (label == null)
-				// label = "No entries";
-				currentNode.setUserObject(label);
-				currentListNode = currentNode;
-				label = null;
-				// }
+				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();	
+				//if (label == null) 
+				//	label = "list";
+				newNode.setUserObject(new String(first));
+				//System.out.println("[" + levelNo + " " + label);
+				nodes[levelNo] = newNode;
+				DefaultMutableTreeNode node = null;
+				if (levelNo > 0) {
+					node = nodes[levelNo - 1]; 
+					node.add(newNode);
+				}
+				//currentNode = newNode;
+				levelNo++;	
 				continue;
 			}
 			if (bp.tc('{', 'o')) { // start of object
-				// System.out.println("Object");
-				levels[levelNo]++;
-				// levelNo++;
+				
+				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();
+				newNode.setUserObject(new String("group"));
+				//System.out.println("{" + levelNo + " " + label);
+				if (levelNo == 0)
+					fbpJsonTree = newNode;
+				
+				nodes[levelNo] = newNode;
+				DefaultMutableTreeNode node = null;
+				if (levelNo > 0) {
+					node = nodes[levelNo - 1]; 
+					node.add(newNode);
+				}
+				//currentNode = newNode;
+				levelNo++;	
 				continue;
 			}
-			if (bp.tc(']', 'o')) { // end of array
-				// System.out.println("End array");
+			if (bp.tc(']', 'o')) { // end of array	
 				levelNo--;
-				currentListNode = (DefaultMutableTreeNode) currentListNode.getParent();
 				continue;
 			}
 			if (bp.tc('}', 'o')) { // end of object
-				// levelNo--;
-				// System.out.println("End of Object");
-
+				levelNo--;
 				continue;
 			}
 
@@ -4546,20 +4555,27 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				operand = new String(bp.getOutStr());
 
 				if (bp.tc(':', 'o')) {
-					if (operand.equals("components"))
-						compList = true;
 					first = new String(operand);
 				} else {
 					second = new String(operand);
-					if (first.equals("path"))
-						label = second /* + "(" + levels[levelNo] + ")" */;
-
-					if (first.equals("source") && compList) {
-						// if (tree == null)
-						DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();
-						currentListNode.add(newNode);
-						newNode.setUserObject(label);
-						newNode = null;
+					if (first.equals("path")) {
+						if (levelNo > 0) {
+							DefaultMutableTreeNode node = nodes[levelNo - 1];
+							//if (label != null)
+							node.setUserObject(new String(second));
+							//System.out.println((levelNo - 1) + " " + second);
+							//label = null;
+						}
+					}
+					if (first.equals("description")) {						
+						label = new String(second);
+					}
+					if (first.equals("runtime")) {						
+						label = new String(label + ":" + second);
+						if (levelNo > 0) {
+							DefaultMutableTreeNode node = nodes[levelNo - 1]; 
+							node.setUserObject(new String(label));
+						}
 					}
 				}
 
@@ -4578,7 +4594,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// MyOptionPane.ERROR_MESSAGE);
 		// return null;
 		// }
-		fbpJsonTree = currentListNode;
+		
 		return;
 	}
 

@@ -159,7 +159,7 @@ public class Diagram {
 				suggestedFileName = suggFile.getAbsolutePath();
 			else
 				if (saveAs && title != null && !(title.equals("(untitled)")))
-					suggestedFileName = s + "/" + title + lang.ext;
+					suggestedFileName = s + "/" + title + "." + lang.ext;
 			
 
 			MyFileChooser fc = new MyFileChooser(driver, f, lang, "Save File");
@@ -215,7 +215,7 @@ public class Diagram {
 
 					String suff = driver.getSuffix(s);
 					if (suff == null)
-						newFile = new File(s + lang.ext);
+						newFile = new File(s + "." + lang.ext);
 					else {
 						
 						if (!lang.filter.accept(new File(s))) {    
@@ -229,7 +229,7 @@ public class Diagram {
 							if (answer == MyOptionPane.YES_OPTION)
 								newFile = new File(s.substring(0,    
 									s.lastIndexOf(suff))                              
-									+ lang.ext.substring(1));                    
+									+ lang.ext);                    
 						}
 					}
 				}

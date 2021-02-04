@@ -65,7 +65,7 @@ public class MyFileChooser extends JDialog
 	// JFrame frame;
 	JList<String> list = null;
 	String listHead = null;
-	String listShowingJarFile = null;
+	String listShowingSpecHdr = null;
 	boolean inTree = false;
 	JScrollPane listView = null;
 	JPanel panel = null;
@@ -219,8 +219,8 @@ public class MyFileChooser extends JDialog
 		order.add(butCancel);
 
 		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
-				driver.fbpJsonFile != null) 	
-			driver.buildFbpJsonTree(driver.fbpJsonFile);	
+				driver.fbpJsonFile != null && driver.fbpJsonTree == null) 	
+			driver.buildFbpJsonTree(driver.fbpJsonFile);	 
 		
 		t_fileName.setEditable(true);
 		t_fileName.setEnabled(true);
@@ -253,8 +253,11 @@ public class MyFileChooser extends JDialog
 
 			//dialog.setTitle(fCP.prompt);
 			dialog.setTitle(chooserTitle);
-			if (lang == driver.langs[Lang.CLASS])
-				listShowingJarFile = listHead;
+			if (lang == driver.langs[DrawFBP.Lang.CLASS])
+				listShowingSpecHdr = listHead;
+			if (lang == driver.langs[DrawFBP.Lang.JS] || 
+					driver.currNotn == driver.notations[DrawFBP.Notation.JSON])
+				listShowingSpecHdr = listHead;
 		//}
 
 		enterAction = new EnterAction();
@@ -611,9 +614,42 @@ public class MyFileChooser extends JDialog
 	}
 	
 	void getSelectedFile(String[] s) {
+		
+		String t = t_fileName.getText();
+		String u = t_dirName.getText();
+		
+		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON]) {
+			u = u.replace("\\",  "/");
+			while (true) {	
+				int i = t.indexOf("/modules");
+				if (i > -1) {
+					t = t.substring(0, i) + t.substring(i + 8);
+					continue;
+				}
+				i = u.indexOf("/components");
+				if (i > -1) {
+					t = t.substring(0, i) + t.substring(i + 11);
+					continue;
+				}
+				break;
+			}
+			
+			while (true) {
+				int i = u.indexOf("/modules");
+				if (i > -1) {
+					u = u.substring(0, i) + u.substring(i + 8);
+					continue;
+				}
+				i = u.indexOf("/components");
+				if (i > -1) {
+					u = u.substring(0, i) + u.substring(i + 11);
+					continue;
+				}
+				break;
+			}
+		}
 
-		s[0] = DrawFBP.makeAbsFileName(t_fileName.getText(),
-				t_dirName.getText());
+		s[0] = DrawFBP.makeAbsFileName(t, u);
 		dialog.dispose();
 		return;
 	}
@@ -635,7 +671,8 @@ public class MyFileChooser extends JDialog
 
 		String t = null;
 		File f = new File(listHead);
-		if (s.toLowerCase().endsWith("fbp.json")) {
+		//if (s.toLowerCase().endsWith("fbp.json")) {
+		if (0 == 1)	{
 			//ll2 = driver.buildTreeFromJsonList(s);
 			inTree = true;
 			currentNode = driver.fbpJsonTree;
@@ -670,14 +707,14 @@ public class MyFileChooser extends JDialog
 			t = null;
 			
 			if (!inTree) {
-				if (listHead.equals(listShowingJarFile)) {
+				if (listHead.equals(listShowingSpecHdr)) {    
 					String v = "";
 					if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] && 
 							driver.fbpJsonTree != null) {
 						t = driver.fbpJsonFile;
-						inTree = true;
-						currentNode = driver.fbpJsonTree;
-						return;
+						//inTree = true;
+						//currentNode = driver.fbpJsonTree;
+						//return;
 					}
 					else
 						t = driver.javaFBPJarFile;
@@ -697,22 +734,24 @@ public class MyFileChooser extends JDialog
 							v = v.substring(0, i);
 						v = v.replace("T", " ");
 						ll.add(t + "@" + v);
-					}
-					for (String u : driver.jarFiles) {
-						if (new File(u).exists()) {
-							try {
-								File f2 = new File(u);
-								v = Files.getLastModifiedTime(f2.toPath())
-										.toString();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+					}					
+				 
+					if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP]) {
+						for (String u : driver.jarFiles) {
+							if (new File(u).exists()) {
+								try {
+									File f2 = new File(u);
+									v = Files.getLastModifiedTime(f2.toPath()).toString();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								int i = v.lastIndexOf(".");
+								if (i > -1)
+									v = v.substring(0, i);
+								v = v.replace("T", " ");
+								ll.add(u + "@" + v);
 							}
-							int i = v.lastIndexOf(".");
-							if (i > -1)
-								v = v.substring(0, i);
-							v = v.replace("T", " ");
-							ll.add(u + "@" + v);
 						}
 					}
 				}
@@ -837,12 +876,18 @@ public class MyFileChooser extends JDialog
 			}
 			
 			
-			if (ll.size() == 0)
-				ll.add("No files match criteria");
+			if (ll.size() == 0)  {
+				//ll.add("No files match criteria");
+				MyOptionPane.showMessageDialog(driver,
+						"No files match criteria",
+						MyOptionPane.INFORMATION_MESSAGE);
+				//t_suggName.setEditable(true);
+			}
+			//else {
 
 			Object[] oa = ll.toArray();
 
-			int k = 0;
+			//int k = 0;
 
 			nodeNames = new String[oa.length];
 			for (int j = 0; j < oa.length; j++) {
@@ -851,8 +896,8 @@ public class MyFileChooser extends JDialog
 									// one test!
 					continue;
 				nodeNames[j] = (String) oa[j];
-				if (nodeNames[j].endsWith(".jar"))
-					k = k + 1; // get rid of spurious "unused" message
+				//if (nodeNames[j].endsWith(".jar"))
+				//	k = k + 1; // get rid of spurious "unused" message
 			}
 
 			list = new JList<String>(nodeNames);
@@ -907,8 +952,8 @@ public class MyFileChooser extends JDialog
 					list.setSelectedIndex(0);    // select first row - will trigger list selection handler valueChanged
 				}
 			});
+		//}
 		}
-
 		// dialog.pack();
 		panel.validate();
 		repaint();
@@ -964,11 +1009,13 @@ public class MyFileChooser extends JDialog
 			} else
 				ll.add(s);		 
 		}
-			
-		if (!inTree && driver.sortByDate)
-			Collections.sort(ll, compDate);
-		else
-			Collections.sort(ll, compName);
+		
+		if (driver.currNotn != driver.notations[DrawFBP.Notation.JSON]) {
+			if (!inTree && driver.sortByDate)
+				Collections.sort(ll, compDate);
+			else
+				Collections.sort(ll, compName);
+		}
 		
 		return ll;
 		
@@ -1622,7 +1669,7 @@ public class MyFileChooser extends JDialog
 				int i = s.indexOf("@");
 				if (i > -1)
 					s = s.substring(0, i);  // drop date, if any
-				File f = new File(t_dirName + "/" + s);
+				File f = new File(t_dirName.getText() + "/" + s);
 				if (f.exists())
 					if (f.isDirectory()) {
 						String w = f.getAbsolutePath();
@@ -1646,7 +1693,9 @@ public class MyFileChooser extends JDialog
 					String s2 = s;
 					//System.out.println("Show file name: " + s2);
 					s = s.replace("\\", "/");
- 					if (!s.endsWith(".jar") || -1 == s.indexOf("/"))
+ 					if (!s.endsWith(".jar") &&
+ 							!s.endsWith("fbp.json") ||
+ 							-1 == s.indexOf("/"))
 						s2 = t_dirName.getText() + "/" + s;
 					File f = new File(s2);
 
@@ -1657,7 +1706,7 @@ public class MyFileChooser extends JDialog
 													
 							// add appropriate extension							
 
-							f = new File(f.getAbsolutePath() +  lang.ext);  
+							f = new File(f.getAbsolutePath() +  "." + lang.ext);  
 							
 							s = f.getName();
 
@@ -1798,10 +1847,12 @@ public class MyFileChooser extends JDialog
 				//int k = w.lastIndexOf(".");
 				//if (k > -1) {
 				//	String suff = w.substring(k + 1);
-				//	if (suff.equals(driver.currNotn.lang.ext))  
-				File f = new File(w);
-				if (f != null && driver.currNotn.lang.filter.accept(f))						
-					processOK();	
+				//	if (suff.equals(driver.currNotn.lang.ext)) 
+				if (w != null) {
+					File f = new File(w);
+					if (f != null && driver.currNotn.lang.filter.accept(f))						
+						processOK();	
+				}
 				//}
 				//else {
 				//String suff = w.substring(k + 1);
@@ -1920,7 +1971,7 @@ public class MyFileChooser extends JDialog
 					
 				}
 				if (!inTree) {
-					listHead = listShowingJarFile;
+					listHead = listShowingSpecHdr;
 
 				}
 			}
@@ -2187,7 +2238,7 @@ l.setFont(driver.fontg);
 
 		//	firstClick(lastEvent);
 		//}
-
+/*
 		public void firstClick(MouseEvent e) {
 			//System.out.println("First click");
 
@@ -2210,7 +2261,7 @@ l.setFont(driver.fontg);
 			oneClick();
 			
 		}
-		
+		*/
 		public void secondClick(MouseEvent e) {
 			
 			int n;
@@ -2285,7 +2336,7 @@ public void oneClick() {
 		if (!inTree) {
 			String t2 = t;
 			if (!t.equals("")) {
-				if (!t.endsWith(".jar")) {
+				if (!t.endsWith(".jar") && !t.endsWith("fbp.json")) {
 					t2 = t_dirName.getText() + "/" + t;
 					File f = new File(t2);
 					 

@@ -1788,8 +1788,29 @@ public class CodeManager implements ActionListener {
 		if (!error) {
 			
 			int i = c.indexOf("!");
-			if (i > -1 && i < c.length() - 1) {				
-					c = c.substring(i + 1);				
+			if (i > -1 && i < c.length() - 1)  			
+					c = c.substring(i + 1);	
+			i = 0;
+			if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON]) {
+				c = c.replace("\\",  "/");
+				while (true) {
+					i = c.indexOf("/list");
+					if (i > -1) {
+						c = c.substring(0, i) + c.substring(i + 5);
+						continue;
+					}
+					i = c.indexOf("/group");
+					if (i > -1) {
+						c = c.substring(0, i) + c.substring(i + 6);
+						continue;
+					}
+					i = c.indexOf("/components");
+					if (i > -1) {
+						c = c.substring(0, i) + c.substring(i + 11);
+						continue;
+					}
+					break;
+				}
 			}
 			
 		}
