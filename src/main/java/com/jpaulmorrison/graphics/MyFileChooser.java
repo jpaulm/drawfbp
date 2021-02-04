@@ -623,12 +623,20 @@ public class MyFileChooser extends JDialog
 			while (true) {	
 				int i = t.indexOf("/modules");
 				if (i > -1) {
-					t = t.substring(0, i) + t.substring(i + 8);
+					String t2 = t.substring(0, i);					
+					if (i + 8 >= t.length()) {
+						String v = t.substring(i + 8);
+						t = t2 + v;
+					}
 					continue;
 				}
-				i = u.indexOf("/components");
+				i = t.indexOf("/components");
 				if (i > -1) {
-					t = t.substring(0, i) + t.substring(i + 11);
+					String t2= t.substring(0, i);
+					if (i + 11 >= t.length()) {
+						String v = t.substring(i + 11);
+						t = t2 + v;
+					}
 					continue;
 				}
 				break;
@@ -637,12 +645,20 @@ public class MyFileChooser extends JDialog
 			while (true) {
 				int i = u.indexOf("/modules");
 				if (i > -1) {
-					u = u.substring(0, i) + u.substring(i + 8);
+					String u2 = u.substring(0, i);
+					if (i + 8 >= u.length()) {
+						String v = u.substring(i + 8);
+						u = u2 + v;
+					}
 					continue;
 				}
 				i = u.indexOf("/components");
 				if (i > -1) {
-					u = u.substring(0, i) + u.substring(i + 11);
+					String u2 = u.substring(0, i);
+					if (i + 11>= u.length()) {
+						String v = u.substring(i + 11);
+						u = u2 + v;
+					}
 					continue;
 				}
 				break;
