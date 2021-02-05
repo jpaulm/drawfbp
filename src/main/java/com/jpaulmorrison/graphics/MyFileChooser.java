@@ -618,6 +618,7 @@ public class MyFileChooser extends JDialog
 		String t = t_fileName.getText();
 		String u = t_dirName.getText();
 		
+		/*
 		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON]) {
 			u = u.replace("\\",  "/");
 			while (true) {	
@@ -672,7 +673,8 @@ public class MyFileChooser extends JDialog
 				break;
 			}
 		}
-
+*/
+		
 		s[0] = DrawFBP.makeAbsFileName(t, u);
 		dialog.dispose();
 		return;

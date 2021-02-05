@@ -4496,7 +4496,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 			if (bp.tc('[', 'o')) { // start of array			
-										
+				/*						
 				if (bp.tc(']', 'o'))  // empty array
 					continue;
 				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();	
@@ -4512,6 +4512,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 				//currentNode = newNode;
 				levelNo++;	
+				*/
 				continue;
 			}
 			if (bp.tc('{', 'o')) { // start of object
@@ -4533,7 +4534,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				continue;
 			}
 			if (bp.tc(']', 'o')) { // end of array	
-				levelNo--;
+				//levelNo--;
 				continue;
 			}
 			if (bp.tc('}', 'o')) { // end of object
