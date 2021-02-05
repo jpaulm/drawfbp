@@ -628,6 +628,8 @@ public class MyFileChooser extends JDialog
 						String v = t.substring(i + 8);
 						t = t2 + v;
 					}
+					else
+						t = t2;
 					continue;
 				}
 				i = t.indexOf("/components");
@@ -637,6 +639,8 @@ public class MyFileChooser extends JDialog
 						String v = t.substring(i + 11);
 						t = t2 + v;
 					}
+					else
+						t = t2;
 					continue;
 				}
 				break;
@@ -650,6 +654,8 @@ public class MyFileChooser extends JDialog
 						String v = u.substring(i + 8);
 						u = u2 + v;
 					}
+					else
+						u = u2;
 					continue;
 				}
 				i = u.indexOf("/components");
@@ -659,6 +665,8 @@ public class MyFileChooser extends JDialog
 						String v = u.substring(i + 11);
 						u = u2 + v;
 					}
+					else
+						u = u2;
 					continue;
 				}
 				break;
