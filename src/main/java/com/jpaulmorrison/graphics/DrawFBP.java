@@ -354,7 +354,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		langs[Lang.IMAGE] = new Lang(null, "png", new ImageFilter(), "currentImageDir");
 		langs[Lang.JARFILE] = new Lang(null, "jar", new JarFileFilter(), "javaFBPJarFile");
 		langs[Lang.CLASS] = new Lang(null, "class", new JavaClassFilter(), "currentClassDir");
-		langs[Lang.FBPJSON] = new Lang(null, "js", new JSFilter(), "currentJSDir");
+		langs[Lang.FBP_JSON] = new Lang(null, "js", new JSFilter(), "currentJSDir");
 		langs[Lang.DLL] = new Lang(null, "dll", new DllFilter(), "dllFileDir");
 		langs[Lang.EXE] = new Lang(null, "exe", new ExeFilter(), "exeDir");
 
@@ -4356,7 +4356,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			File f = new File(System.getProperty("user.home"));
 
-			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.FBPJSON], "Locate fbp.json File");
+			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.FBP_JSON], "Locate fbp.json File");
 
 			int returnVal = fc.showOpenDialog();
 
@@ -5336,7 +5336,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		public static final int DIAGRAM = 4;
 		public static final int IMAGE = 5;
 		public static final int JARFILE = 6;
-		public static final int FBPJSON = 7;
+		public static final int FBP_JSON = 7;
 		public static final int CLASS = 8;
 		// public static final int PROCESS = 8;
 		// public static final int NETWORK = 9;

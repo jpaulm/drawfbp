@@ -1648,8 +1648,20 @@ public class Block implements ActionListener {
 			try {
 				if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 					selectJavaClass();
-				else
+				else {
+					if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
+							driver.fbpJsonFile == null) {
+						int res = MyOptionPane.showConfirmDialog(driver, "Do you want to locate fbp.json file?",
+							"Locate fbp.json file", MyOptionPane.YES_NO_OPTION);
+						if (res == MyOptionPane.YES_OPTION)			
+							driver.locateFbpJsonFile(true);
+						else {
+							driver.fbpJsonFile = "#";
+							driver.saveProp("fbpJsonFile", driver.fbpJsonFile);
+						}
+					}
 					selectNonJavaClass();   
+				}
 			} catch (MalformedURLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

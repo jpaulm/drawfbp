@@ -167,7 +167,7 @@ public class MyFileChooser extends JDialog
 	int showOpenDialog(final boolean saveas, final boolean saving) {
 		
 		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
-				lang != driver.langs[DrawFBP.Lang.FBPJSON] &&
+				lang != driver.langs[DrawFBP.Lang.FBP_JSON] &&
 				driver.fbpJsonFile == null)  {
 			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(driver,
 					"Do you want to use fbp.json - if so, exit and execute File/Locate fbp.json File first", 
@@ -219,7 +219,7 @@ public class MyFileChooser extends JDialog
 		order.add(butCancel);
 
 		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
-				driver.fbpJsonFile != null && driver.fbpJsonTree == null) 	
+				driver.fbpJsonFile != null && !(driver.fbpJsonFile.equals("#")) && driver.fbpJsonTree == null) 	
 			driver.buildFbpJsonTree(driver.fbpJsonFile);	 
 		
 		t_fileName.setEditable(true);
@@ -1784,7 +1784,7 @@ public class MyFileChooser extends JDialog
 				butDel.setEnabled(false);
 				
 				if (lang == driver.langs[DrawFBP.Lang.JARFILE] || 
-						lang == driver.langs[DrawFBP.Lang.FBPJSON]) {
+						lang == driver.langs[DrawFBP.Lang.FBP_JSON]) {
 					processOK();
 					return;
 				}
