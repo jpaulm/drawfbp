@@ -624,7 +624,7 @@ public class MyFileChooser extends JDialog
 				int i = t.indexOf("/modules");
 				if (i > -1) {
 					String t2 = t.substring(0, i);					
-					if (i + 8 >= t.length()) {
+					if (i + 8 < t.length()) {
 						String v = t.substring(i + 8);
 						t = t2 + v;
 					}
@@ -633,7 +633,7 @@ public class MyFileChooser extends JDialog
 				i = t.indexOf("/components");
 				if (i > -1) {
 					String t2= t.substring(0, i);
-					if (i + 11 >= t.length()) {
+					if (i + 11 < t.length()) {
 						String v = t.substring(i + 11);
 						t = t2 + v;
 					}
@@ -646,7 +646,7 @@ public class MyFileChooser extends JDialog
 				int i = u.indexOf("/modules");
 				if (i > -1) {
 					String u2 = u.substring(0, i);
-					if (i + 8 >= u.length()) {
+					if (i + 8 < u.length()) {
 						String v = u.substring(i + 8);
 						u = u2 + v;
 					}
@@ -655,7 +655,7 @@ public class MyFileChooser extends JDialog
 				i = u.indexOf("/components");
 				if (i > -1) {
 					String u2 = u.substring(0, i);
-					if (i + 11>= u.length()) {
+					if (i + 11 < u.length()) {
 						String v = u.substring(i + 11);
 						u = u2 + v;
 					}
