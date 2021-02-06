@@ -1706,16 +1706,14 @@ public class CodeManager implements ActionListener {
 
 			if (from instanceof ExtPortBlock) {
 				code += cma + fromDesc + " OUT -> " + dnPort + " " + toDesc;
-				code +=  "\n";
 				code += cma + "'" + from.desc + "' -> NAME " + fromDesc; 
 
 			} else if (to instanceof ExtPortBlock) {
 				code += cma + fromDesc + " " + upPort + " -> IN " + toDesc;
-				code +=  "\n";
 				code += cma + "'" + to.desc + "' -> NAME " + toDesc;
 			}
-			cma = ", ";
-			code += "\n";
+			cma = ",\n";
+			//code += "\n";
 		}
 		
 		 

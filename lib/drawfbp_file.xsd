@@ -28,7 +28,8 @@
                                     <xs:element name="multiplex" type="xs:boolean" minOccurs="0"/> 
                                     <xs:element name="codefilename" type="xs:string" minOccurs="0"/>
                                     <xs:element name="diagramfilename" type="xs:string" minOccurs="0"/>
-                                    <xs:element name="blockclassname" type="xs:string" minOccurs="0"/>   
+                                    <xs:element name="blockclassname" type="xs:string" minOccurs="0"/>  
+                                    <xs:element name="compname" type="xs:string" minOccurs="0"/>   
                                     <xs:element name="mpxfactor" type="xs:integer" minOccurs="0" />  
                                     <xs:element name="issubnet" type="xs:boolean" minOccurs="0"/>
                                     <xs:element name="substreamsensitive" type="xs:boolean" minOccurs="0"/>

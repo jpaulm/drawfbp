@@ -505,6 +505,12 @@ public class Block implements ActionListener {
 			//		diag.diagFile.getAbsolutePath());
 			s += "<codefilename>" + codeFileName + "</codefilename> ";
 		}
+		if (compName != null) {
+			String t = compName;
+			//if (t.toLowerCase().endsWith(".class"))  // change to keep .class
+			//	t = t.substring(0, t.length() - 6);
+			s += "<compname>" + t + "</compname> ";
+		}
 		if (fullClassName != null) {
 			String t = fullClassName;
 			//if (t.toLowerCase().endsWith(".class"))  // change to keep .class
@@ -568,6 +574,8 @@ public class Block implements ActionListener {
 			w = w.replace("\\",  File.separator);
 			w = w.replace("/",  File.separator);
 		}
+		compName = item.get("compname");
+				
 		if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] && w != null){
 			if (!fullClassName.endsWith(".class"))  
 				fullClassName += ".class";
@@ -2038,11 +2046,12 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					"Change class", MyOptionPane.YES_NO_OPTION)) {
 				return;
 			}
+			compName = null;  
 			// javaClass = null;
-			// fullClassName = null;
+			fullClassName = null;
 		}
 
-		compName = null;
+		
 		
 		String t = driver.properties.get("currentClassDir");
 		if (t == null)

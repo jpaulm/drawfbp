@@ -522,7 +522,7 @@ public class DiagramBuilder {
 		fl3.put("description", "*");
 		fl3.put("codefilename", "*");
 		fl3.put("diagramfilename", "*");
-		fl3.put("compname", "*"); // deprecated
+		fl3.put("compname", "*"); 
 		fl3.put("blockclassname", "*");
 		fl3.put("type", "*");
 		fl3.put("width", "*");

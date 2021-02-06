@@ -618,63 +618,6 @@ public class MyFileChooser extends JDialog
 		String t = t_fileName.getText();
 		String u = t_dirName.getText();
 		
-		/*
-		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON]) {
-			u = u.replace("\\",  "/");
-			while (true) {	
-				int i = t.indexOf("/modules");
-				if (i > -1) {
-					String t2 = t.substring(0, i);					
-					if (i + 8 < t.length()) {
-						String v = t.substring(i + 8);
-						t = t2 + v;
-					}
-					else
-						t = t2;
-					continue;
-				}
-				i = t.indexOf("/components");
-				if (i > -1) {
-					String t2= t.substring(0, i);
-					if (i + 11 < t.length()) {
-						String v = t.substring(i + 11);
-						t = t2 + v;
-					}
-					else
-						t = t2;
-					continue;
-				}
-				break;
-			}
-			
-			while (true) {
-				int i = u.indexOf("/modules");
-				if (i > -1) {
-					String u2 = u.substring(0, i);
-					if (i + 8 < u.length()) {
-						String v = u.substring(i + 8);
-						u = u2 + v;
-					}
-					else
-						u = u2;
-					continue;
-				}
-				i = u.indexOf("/components");
-				if (i > -1) {
-					String u2 = u.substring(0, i);
-					if (i + 11 < u.length()) {
-						String v = u.substring(i + 11);
-						u = u2 + v;
-					}
-					else
-						u = u2;
-					continue;
-				}
-				break;
-			}
-		}
-*/
-		
 		s[0] = DrawFBP.makeAbsFileName(t, u);
 		dialog.dispose();
 		return;
@@ -697,17 +640,7 @@ public class MyFileChooser extends JDialog
 
 		String t = null;
 		File f = new File(listHead);
-		//if (s.toLowerCase().endsWith("fbp.json")) {
-		if (0 == 1)	{
-			//ll2 = driver.buildTreeFromJsonList(s);
-			inTree = true;
-			currentNode = driver.fbpJsonTree;
-			
-
-			// fullNodeName = s;
-			// showFileNames();
-		} else {
-			if (-1 == s.indexOf("!")) { // if fullNodeName is NOT a
+		if (-1 == s.indexOf("!")) { // if fullNodeName is NOT a
 										// file
 										// within a jar file or fbp.json...
 
@@ -979,7 +912,7 @@ public class MyFileChooser extends JDialog
 				}
 			});
 		//}
-		}
+		//}
 		// dialog.pack();
 		panel.validate();
 		repaint();
@@ -1674,18 +1607,17 @@ public class MyFileChooser extends JDialog
 			if (!((selComp instanceof JList) || selComp == t_fileName))
 				return;
 
-			String s = t_fileName.getText();  
+			String s = t_fileName.getText();
 
 			// if (s == null || s.equals("")) {
 
 			if (selComp instanceof JList) {
-				t_fileName.setText("");	
+				t_fileName.setText("");
 
 				rowNo = list.getSelectedIndex();
 				if (nodeNames.length == 0 || rowNo == -1) {
 					if (!saving) {
-						MyOptionPane.showMessageDialog(driver,
-								"Empty directory or no entry selected",
+						MyOptionPane.showMessageDialog(driver, "Empty directory or no entry selected",
 								MyOptionPane.ERROR_MESSAGE);
 					}
 					return;
@@ -1694,87 +1626,75 @@ public class MyFileChooser extends JDialog
 				s = nodeNames[rowNo];
 				int i = s.indexOf("@");
 				if (i > -1)
-					s = s.substring(0, i);  // drop date, if any
+					s = s.substring(0, i); // drop date, if any
 				File f = new File(t_dirName.getText() + "/" + s);
 				if (f.exists())
 					if (f.isDirectory()) {
 						String w = f.getAbsolutePath();
-						w = w.replace("\\",  File.separator);
-						w = w.replace("/",  File.separator);
+						w = w.replace("\\", File.separator);
+						w = w.replace("/", File.separator);
 						t_dirName.setText(w);
 						showList();
-				}
-					else {
-						//s = s.replace("\\",  File.separator);
-						//s = s.replace("/",  File.separator);
+					} else {
+						// s = s.replace("\\", File.separator);
+						// s = s.replace("/", File.separator);
 						t_fileName.setText(s);
-						enterAction.actionPerformed(new ActionEvent(e, 0, ""));  // recursive!  probably doesn't get control!
+						enterAction.actionPerformed(new ActionEvent(e, 0, "")); // recursive! probably doesn't get
+																				// control!
 					}
-				 
-				} else {
+
+			} else {
 				if (selComp == t_fileName) {
 					s = t_fileName.getText();
 					if (s.endsWith("/"))
 						s = s.substring(0, s.length() - 1);
 					String s2 = s;
-					//System.out.println("Show file name: " + s2);
+					// System.out.println("Show file name: " + s2);
 					s = s.replace("\\", "/");
- 					if (!s.endsWith(".jar") &&
- 							!s.endsWith("fbp.json") ||
- 							-1 == s.indexOf("/"))
+					if (!s.endsWith(".jar") && !s.endsWith("fbp.json") || -1 == s.indexOf("/"))
 						s2 = t_dirName.getText() + "/" + s;
 					File f = new File(s2);
 
 					if (!inTree) {
-					if (!f.exists()) {
-						//if (-1 == s.indexOf(".")) {
-						if (null == driver.getSuffix(s)) {	
-													
-							// add appropriate extension							
+						if (!f.exists()) {
+							// if (-1 == s.indexOf(".")) {
+							if (null == driver.getSuffix(s)) {
 
-							f = new File(f.getAbsolutePath() +  "." + lang.ext);  
-							
-							s = f.getName();
+								// add appropriate extension
 
-							//s = s.replace("\\",  File.separator);
-							//s = s.replace("/",  File.separator);
-							t_fileName.setText(s);
-							repaint();
-						} 
-						 
-				//		if (!f.exists()) {
-					 /*
-					 	if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
-					 
-									driver,
-									"Create new file: " + f.getAbsolutePath() + "?", 
-									"Confirm create", MyOptionPane.YES_NO_OPTION)) {
-								try {
-									f.createNewFile();
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-							} else {
-							 
-								MyOptionPane.showMessageDialog(driver, f.getAbsolutePath() + " does not exist - use New Diagram or Save As");
-								return;
-								*/
-						//	}
-						 
-					//	}
-						
-						 
-						} 
-					/* else   
-						if (selComp == t_dirName) {
-						listHead = t_dirName.getText();
-						showList();
-					}
-					*/
+								f = new File(f.getAbsolutePath() + "." + lang.ext);
+
+								s = f.getName();
+
+								// s = s.replace("\\", File.separator);
+								// s = s.replace("/", File.separator);
+								t_fileName.setText(s);
+								repaint();
+							}
+
+							// if (!f.exists()) {
+							/*
+							 * if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
+							 * 
+							 * driver, "Create new file: " + f.getAbsolutePath() + "?", "Confirm create",
+							 * MyOptionPane.YES_NO_OPTION)) { try { f.createNewFile(); } catch (IOException
+							 * e1) { // TODO Auto-generated catch block e1.printStackTrace(); } } else {
+							 * 
+							 * MyOptionPane.showMessageDialog(driver, f.getAbsolutePath() +
+							 * " does not exist - use New Diagram or Save As"); return;
+							 */
+							// }
+
+							// }
+
+						}
+						/*
+						 * else if (selComp == t_dirName) { listHead = t_dirName.getText(); showList();
+						 * }
+						 */
 					}
 				}
-				}
+			}
 				 
 			repaint();
 			// }
@@ -1876,17 +1796,20 @@ public class MyFileChooser extends JDialog
 				//	if (suff.equals(driver.currNotn.lang.ext)) 
 				if (w != null) {
 					File f = new File(w);
-					if (f != null && driver.currNotn.lang.filter.accept(f))						
+					if (driver.currNotn.lang.filter.accept(f))						
 						processOK();	
 				}
-				//}
-				//else {
-				//String suff = w.substring(k + 1);
+				
 				currentNode = driver.findChild(currentNode, w);  
 				if (currentNode == null)
 					return;
 				if (currentNode.getChildCount() > 0) {
-					listHead = listHead + "/" + s;
+					if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
+							!(w.equals("components")) && !(w.equals("modules")))
+						if (listHead.endsWith("!"))
+							listHead += s;
+						else
+							listHead += "/" + s;
 					//listHead = s;
 					showListHead();
 					// panel.remove(listView);
@@ -2328,7 +2251,7 @@ l.setFont(driver.fontg);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 					return;
 				}
-				else {  // folder name AND not injartree
+				else {  // folder name AND not in tree
 						w += "/" + v;
 						File f2 = new File(w);
 						if (!f2.exists())
