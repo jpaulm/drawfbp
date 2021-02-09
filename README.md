@@ -11,6 +11,8 @@ It will shortly be available from Maven (shield below).  If you click on the Mav
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
+**Note:**  `fbp.json` on v2.21.2 does not download correctly:  please do a copy and paste from https://github.com/jpaulm/drawfbp/blob/master/docs/fbp.json ...  This file will be moved to `bin\main\resources\` as of v2.21.3 .
+
 
 Sample DrawFBP network
 ---
