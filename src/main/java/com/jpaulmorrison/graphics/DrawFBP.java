@@ -4562,7 +4562,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					second = new String(operand);
 					if (first == null) {
 						MyOptionPane.showMessageDialog(this,
-								"Operand \"" + second + "\" not preceded by colon in fbp.json file", MyOptionPane.ERROR_MESSAGE);
+								"Operand \"" + second + "\" not preceded by colon in fbp.json file\n" +
+						        "    Incorrect file format?", MyOptionPane.ERROR_MESSAGE);
 						return;
 					}
 					if (first.equals("path")) {

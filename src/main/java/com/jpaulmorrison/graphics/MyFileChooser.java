@@ -219,7 +219,7 @@ public class MyFileChooser extends JDialog
 		order.add(butCancel);
 
 		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] && 
-				driver.currNotn.lang != driver.langs[DrawFBP.Lang.FBP_JSON] &&
+				lang != driver.langs[DrawFBP.Lang.FBP_JSON] &&
 				driver.fbpJsonFile != null && !(driver.fbpJsonFile.equals("#")) && driver.fbpJsonTree == null) 	
 			driver.buildFbpJsonTree(driver.fbpJsonFile);	 
 		
@@ -1797,7 +1797,7 @@ public class MyFileChooser extends JDialog
 				//	if (suff.equals(driver.currNotn.lang.ext)) 
 				if (w != null) {
 					File f = new File(w);
-					if (driver.currNotn.lang.filter.accept(f))						
+					if (lang.filter.accept(f))						
 						processOK();	
 				}
 				
