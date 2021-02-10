@@ -4456,6 +4456,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	 * Build tree of nodes (DefaultMutableTreeNode) using contents of fbp.json
 	 */
 
+	
 	void buildFbpJsonTree(String fileName) {
 		File f = new File(fileName);
 		String fileString;
@@ -4559,6 +4560,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					first = new String(operand);
 				} else {
 					second = new String(operand);
+					if (first == null) {
+						MyOptionPane.showMessageDialog(this,
+								"Operand \"" + second + "\" not preceded by colon in fbp.json file", MyOptionPane.ERROR_MESSAGE);
+						return;
+					}
 					if (first.equals("path")) {
 						if (levelNo > 0) {
 							DefaultMutableTreeNode node = nodes[levelNo - 1];

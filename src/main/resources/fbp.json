@@ -1,0 +1,817 @@
+{
+  "main": {
+    "name": "main",
+    "path": "graphs/main.fbp",
+    "source": "graphs/main.fbp",
+    "elementary": false
+  },
+  "version": 1,
+  "modules": [
+    {
+      "name": "ui",
+      "description": "NoFlo Development Environment",
+      "runtime": "noflo",
+      "base": "",
+      "components": [
+        {
+          "name": "BlobToEntry",
+          "path": "components/BlobToEntry.js",
+          "source": "components/BlobToEntry.js",
+          "elementary": true
+        },
+        {
+          "name": "CheckGistExists",
+          "path": "components/CheckGistExists.js",
+          "source": "components/CheckGistExists.js",
+          "elementary": true
+        },
+        {
+          "name": "CheckRepoExists",
+          "path": "components/CheckRepoExists.js",
+          "source": "components/CheckRepoExists.js",
+          "elementary": true
+        },
+        {
+          "name": "CheckSyncState",
+          "path": "components/CheckSyncState.js",
+          "source": "components/CheckSyncState.js",
+          "elementary": true
+        },
+        {
+          "name": "CheckTokenGrant",
+          "path": "components/CheckTokenGrant.js",
+          "source": "components/CheckTokenGrant.js",
+          "elementary": true
+        },
+        {
+          "name": "CleanAction",
+          "path": "components/CleanAction.js",
+          "source": "components/CleanAction.js",
+          "elementary": true
+        },
+        {
+          "name": "CleanProject",
+          "path": "components/CleanProject.js",
+          "source": "components/CleanProject.js",
+          "elementary": true
+        },
+        {
+          "name": "ClearUserData",
+          "path": "components/ClearUserData.js",
+          "source": "components/ClearUserData.js",
+          "elementary": true
+        },
+        {
+          "name": "CollectInitialData",
+          "path": "components/CollectInitialData.js",
+          "source": "components/CollectInitialData.js",
+          "elementary": true
+        },
+        {
+          "name": "CreateCommit",
+          "path": "components/CreateCommit.js",
+          "source": "components/CreateCommit.js",
+          "elementary": true
+        },
+        {
+          "name": "CreateContext",
+          "path": "components/CreateContext.js",
+          "source": "components/CreateContext.js",
+          "elementary": true
+        },
+        {
+          "name": "CreateEmptyContext",
+          "path": "components/CreateEmptyContext.js",
+          "source": "components/CreateEmptyContext.js",
+          "elementary": true
+        },
+        {
+          "name": "CreateLoadingContext",
+          "path": "components/CreateLoadingContext.js",
+          "source": "components/CreateLoadingContext.js",
+          "elementary": true
+        },
+        {
+          "name": "CreateTree",
+          "path": "components/CreateTree.js",
+          "source": "components/CreateTree.js",
+          "elementary": true
+        },
+        {
+          "name": "DatabaseReady",
+          "path": "components/DatabaseReady.js",
+          "source": "components/DatabaseReady.js",
+          "elementary": true
+        },
+        {
+          "name": "DispatchAction",
+          "path": "components/DispatchAction.js",
+          "source": "components/DispatchAction.js",
+          "elementary": true
+        },
+        {
+          "name": "EnsureId",
+          "path": "components/EnsureId.js",
+          "source": "components/EnsureId.js",
+          "elementary": true
+        },
+        {
+          "name": "EnsureLocalRuntimes",
+          "path": "components/EnsureLocalRuntimes.js",
+          "source": "components/EnsureLocalRuntimes.js",
+          "elementary": true
+        },
+        {
+          "name": "ErrorToContext",
+          "path": "components/ErrorToContext.js",
+          "source": "components/ErrorToContext.js",
+          "elementary": true
+        },
+        {
+          "name": "ExchangeGrantToken",
+          "path": "components/ExchangeGrantToken.js",
+          "source": "components/ExchangeGrantToken.js",
+          "elementary": true
+        },
+        {
+          "name": "FindNodesInGraph",
+          "path": "components/FindNodesInGraph.js",
+          "source": "components/FindNodesInGraph.js",
+          "elementary": true
+        },
+        {
+          "name": "GetActionValues",
+          "path": "components/GetActionValues.js",
+          "source": "components/GetActionValues.js",
+          "elementary": true
+        },
+        {
+          "name": "GetBlob",
+          "path": "components/GetBlob.js",
+          "source": "components/GetBlob.js",
+          "elementary": true
+        },
+        {
+          "name": "GetReference",
+          "path": "components/GetReference.js",
+          "source": "components/GetReference.js",
+          "elementary": true
+        },
+        {
+          "name": "GetRemoteProjects",
+          "path": "components/GetRemoteProjects.js",
+          "source": "components/GetRemoteProjects.js",
+          "elementary": true
+        },
+        {
+          "name": "GetRemoteRuntimes",
+          "path": "components/GetRemoteRuntimes.js",
+          "source": "components/GetRemoteRuntimes.js",
+          "elementary": true
+        },
+        {
+          "name": "GetRemoteUser",
+          "path": "components/GetRemoteUser.js",
+          "source": "components/GetRemoteUser.js",
+          "elementary": true
+        },
+        {
+          "name": "GetUrl",
+          "path": "components/GetUrl.js",
+          "source": "components/GetUrl.js",
+          "elementary": true
+        },
+        {
+          "name": "GetUserToken",
+          "path": "components/GetUserToken.js",
+          "source": "components/GetUserToken.js",
+          "elementary": true
+        },
+        {
+          "name": "GistToProject",
+          "path": "components/GistToProject.js",
+          "source": "components/GistToProject.js",
+          "elementary": true
+        },
+        {
+          "name": "HasActionRuntime",
+          "path": "components/HasActionRuntime.js",
+          "source": "components/HasActionRuntime.js",
+          "elementary": true
+        },
+        {
+          "name": "ListenRuntime",
+          "path": "components/ListenRuntime.js",
+          "source": "components/ListenRuntime.js",
+          "elementary": true
+        },
+        {
+          "name": "LoadTests",
+          "path": "components/LoadTests.js",
+          "source": "components/LoadTests.js",
+          "elementary": true
+        },
+        {
+          "name": "LoadUserData",
+          "path": "components/LoadUserData.js",
+          "source": "components/LoadUserData.js",
+          "elementary": true
+        },
+        {
+          "name": "LoggingMiddleware",
+          "path": "components/LoggingMiddleware.js",
+          "source": "components/LoggingMiddleware.js",
+          "elementary": true
+        },
+        {
+          "name": "LoginOAuth",
+          "path": "components/LoginOAuth.js",
+          "source": "components/LoginOAuth.js",
+          "elementary": true
+        },
+        {
+          "name": "MapStateToProps",
+          "path": "components/MapStateToProps.js",
+          "source": "components/MapStateToProps.js",
+          "elementary": true
+        },
+        {
+          "name": "OpenLiveMode",
+          "path": "components/OpenLiveMode.js",
+          "source": "components/OpenLiveMode.js",
+          "elementary": true
+        },
+        {
+          "name": "OpenNewProject",
+          "path": "components/OpenNewProject.js",
+          "source": "components/OpenNewProject.js",
+          "elementary": true
+        },
+        {
+          "name": "OpenProject",
+          "path": "components/OpenProject.js",
+          "source": "components/OpenProject.js",
+          "elementary": true
+        },
+        {
+          "name": "OpenProjectMode",
+          "path": "components/OpenProjectMode.js",
+          "source": "components/OpenProjectMode.js",
+          "elementary": true
+        },
+        {
+          "name": "PopulateProjectRuntime",
+          "path": "components/PopulateProjectRuntime.js",
+          "source": "components/PopulateProjectRuntime.js",
+          "elementary": true
+        },
+        {
+          "name": "PopulateRuntimeData",
+          "path": "components/PopulateRuntimeData.js",
+          "source": "components/PopulateRuntimeData.js",
+          "elementary": true
+        },
+        {
+          "name": "PreparePulls",
+          "path": "components/PreparePulls.js",
+          "source": "components/PreparePulls.js",
+          "elementary": true
+        },
+        {
+          "name": "PreparePush",
+          "path": "components/PreparePush.js",
+          "source": "components/PreparePush.js",
+          "elementary": true
+        },
+        {
+          "name": "ReconnectRuntime",
+          "path": "components/ReconnectRuntime.js",
+          "source": "components/ReconnectRuntime.js",
+          "elementary": true
+        },
+        {
+          "name": "RefreshRemoteUser",
+          "path": "components/RefreshRemoteUser.js",
+          "source": "components/RefreshRemoteUser.js",
+          "elementary": true
+        },
+        {
+          "name": "RemoveRemoteProject",
+          "path": "components/RemoveRemoteProject.js",
+          "source": "components/RemoveRemoteProject.js",
+          "elementary": true
+        },
+        {
+          "name": "RemoveRemoteRuntime",
+          "path": "components/RemoveRemoteRuntime.js",
+          "source": "components/RemoveRemoteRuntime.js",
+          "elementary": true
+        },
+        {
+          "name": "Router",
+          "path": "components/Router.js",
+          "source": "components/Router.js",
+          "elementary": true
+        },
+        {
+          "name": "RunTests",
+          "path": "components/RunTests.js",
+          "source": "components/RunTests.js",
+          "elementary": true
+        },
+        {
+          "name": "RuntimeReducer",
+          "path": "components/RuntimeReducer.js",
+          "source": "components/RuntimeReducer.js",
+          "elementary": true
+        },
+        {
+          "name": "RuntimeToProject",
+          "path": "components/RuntimeToProject.js",
+          "source": "components/RuntimeToProject.js",
+          "elementary": true
+        },
+        {
+          "name": "SearchGraphNodeToContext",
+          "path": "components/SearchGraphNodeToContext.js",
+          "source": "components/SearchGraphNodeToContext.js",
+          "elementary": true
+        },
+        {
+          "name": "SendComponentChanges",
+          "path": "components/SendComponentChanges.js",
+          "source": "components/SendComponentChanges.js",
+          "elementary": true
+        },
+        {
+          "name": "SendCurrentHash",
+          "path": "components/SendCurrentHash.js",
+          "source": "components/SendCurrentHash.js",
+          "elementary": true
+        },
+        {
+          "name": "SendEdges",
+          "path": "components/SendEdges.js",
+          "source": "components/SendEdges.js",
+          "elementary": true
+        },
+        {
+          "name": "SendGraphChanges",
+          "path": "components/SendGraphChanges.js",
+          "source": "components/SendGraphChanges.js",
+          "elementary": true
+        },
+        {
+          "name": "SendNewGraph",
+          "path": "components/SendNewGraph.js",
+          "source": "components/SendNewGraph.js",
+          "elementary": true
+        },
+        {
+          "name": "SendSubgraph",
+          "path": "components/SendSubgraph.js",
+          "source": "components/SendSubgraph.js",
+          "elementary": true
+        },
+        {
+          "name": "SetAction",
+          "path": "components/SetAction.js",
+          "source": "components/SetAction.js",
+          "elementary": true
+        },
+        {
+          "name": "SetToContext",
+          "path": "components/SetToContext.js",
+          "source": "components/SetToContext.js",
+          "elementary": true
+        },
+        {
+          "name": "SetUrl",
+          "path": "components/SetUrl.js",
+          "source": "components/SetUrl.js",
+          "elementary": true
+        },
+        {
+          "name": "SetUrlHash",
+          "path": "components/SetUrlHash.js",
+          "source": "components/SetUrlHash.js",
+          "elementary": true
+        },
+        {
+          "name": "StartNetwork",
+          "path": "components/StartNetwork.js",
+          "source": "components/StartNetwork.js",
+          "elementary": true
+        },
+        {
+          "name": "State",
+          "path": "components/State.js",
+          "source": "components/State.js",
+          "elementary": true
+        },
+        {
+          "name": "StopNetwork",
+          "path": "components/StopNetwork.js",
+          "source": "components/StopNetwork.js",
+          "elementary": true
+        },
+        {
+          "name": "StorageReducer",
+          "path": "components/StorageReducer.js",
+          "source": "components/StorageReducer.js",
+          "elementary": true
+        },
+        {
+          "name": "Store",
+          "path": "components/Store.js",
+          "source": "components/Store.js",
+          "elementary": true
+        },
+        {
+          "name": "StoreRemoteProject",
+          "path": "components/StoreRemoteProject.js",
+          "source": "components/StoreRemoteProject.js",
+          "elementary": true
+        },
+        {
+          "name": "StoreRemoteRuntime",
+          "path": "components/StoreRemoteRuntime.js",
+          "source": "components/StoreRemoteRuntime.js",
+          "elementary": true
+        },
+        {
+          "name": "StoreUser",
+          "path": "components/StoreUser.js",
+          "source": "components/StoreUser.js",
+          "elementary": true
+        },
+        {
+          "name": "StoreUserPreferences",
+          "path": "components/StoreUserPreferences.js",
+          "source": "components/StoreUserPreferences.js",
+          "elementary": true
+        },
+        {
+          "name": "UpdateFromTree",
+          "path": "components/UpdateFromTree.js",
+          "source": "components/UpdateFromTree.js",
+          "elementary": true
+        },
+        {
+          "name": "UpdateReference",
+          "path": "components/UpdateReference.js",
+          "source": "components/UpdateReference.js",
+          "elementary": true
+        },
+        {
+          "name": "Save",
+          "path": "graphs/Save.fbp",
+          "source": "graphs/Save.fbp",
+          "elementary": false
+        },
+        {
+          "name": "SaveData",
+          "path": "graphs/SaveData.fbp",
+          "source": "graphs/SaveData.fbp",
+          "elementary": false
+        }
+      ]
+    },
+    {
+      "name": "ui",
+      "description": "NoFlo Development Environment",
+      "runtime": "noflo-browser",
+      "base": "",
+      "components": [
+        {
+          "name": "GetRuntimeClient",
+          "path": "components/GetRuntimeClient.js",
+          "source": "components/GetRuntimeClient.js",
+          "elementary": true
+        },
+        {
+          "name": "MigrateLocalStorage",
+          "path": "components/MigrateLocalStorage.js",
+          "source": "components/MigrateLocalStorage.js",
+          "elementary": true
+        },
+        {
+          "name": "ContextReducer",
+          "path": "graphs/ContextReducer.fbp",
+          "source": "graphs/ContextReducer.fbp",
+          "elementary": false
+        },
+        {
+          "name": "Delete",
+          "path": "graphs/Delete.fbp",
+          "source": "graphs/Delete.fbp",
+          "elementary": false
+        },
+        {
+          "name": "DeleteData",
+          "path": "graphs/DeleteData.fbp",
+          "source": "graphs/DeleteData.fbp",
+          "elementary": false
+        },
+        {
+          "name": "GithubMiddleware",
+          "path": "graphs/GithubMiddleware.fbp",
+          "source": "graphs/GithubMiddleware.fbp",
+          "elementary": false
+        },
+        {
+          "name": "GithubReducer",
+          "path": "graphs/GithubReducer.fbp",
+          "source": "graphs/GithubReducer.fbp",
+          "elementary": false
+        },
+        {
+          "name": "GithubSynchronization",
+          "path": "graphs/GithubSynchronization.fbp",
+          "source": "graphs/GithubSynchronization.fbp",
+          "elementary": false
+        },
+        {
+          "name": "Load",
+          "path": "graphs/Load.fbp",
+          "source": "graphs/Load.fbp",
+          "elementary": false
+        },
+        {
+          "name": "LoadData",
+          "path": "graphs/LoadData.fbp",
+          "source": "graphs/LoadData.fbp",
+          "elementary": false
+        },
+        {
+          "name": "PrepareStorage",
+          "path": "graphs/PrepareStorage.fbp",
+          "source": "graphs/PrepareStorage.fbp",
+          "elementary": false
+        },
+        {
+          "name": "RegistryMiddleware",
+          "path": "graphs/RegistryMiddleware.fbp",
+          "source": "graphs/RegistryMiddleware.fbp",
+          "elementary": false
+        },
+        {
+          "name": "RegistryReducer",
+          "path": "graphs/RegistryReducer.fbp",
+          "source": "graphs/RegistryReducer.fbp",
+          "elementary": false
+        },
+        {
+          "name": "RuntimeMiddleware",
+          "path": "graphs/RuntimeMiddleware.fbp",
+          "source": "graphs/RuntimeMiddleware.fbp",
+          "elementary": false
+        },
+        {
+          "name": "StorageMiddleware",
+          "path": "graphs/StorageMiddleware.fbp",
+          "source": "graphs/StorageMiddleware.fbp",
+          "elementary": false
+        },
+        {
+          "name": "UrlMiddleware",
+          "path": "graphs/UrlMiddleware.fbp",
+          "source": "graphs/UrlMiddleware.fbp",
+          "elementary": false
+        },
+        {
+          "name": "UserMiddleware",
+          "path": "graphs/UserMiddleware.fbp",
+          "source": "graphs/UserMiddleware.fbp",
+          "elementary": false
+        },
+        {
+          "name": "UserReducer",
+          "path": "graphs/UserReducer.fbp",
+          "source": "graphs/UserReducer.fbp",
+          "elementary": false
+        },
+        {
+          "name": "main",
+          "path": "graphs/main.fbp",
+          "source": "graphs/main.fbp",
+          "elementary": false
+        }
+      ]
+    },
+    {
+      "name": "core",
+      "description": "NoFlo Essentials",
+      "runtime": "noflo",
+      "base": "node_modules/noflo-core",
+      "components": [
+        {
+          "name": "Kick",
+          "path": "node_modules/noflo-core/components/Kick.js",
+          "source": "node_modules/noflo-core/components/Kick.js",
+          "elementary": true
+        },
+        {
+          "name": "Merge",
+          "path": "node_modules/noflo-core/components/Merge.js",
+          "source": "node_modules/noflo-core/components/Merge.js",
+          "elementary": true
+        },
+        {
+          "name": "Output",
+          "path": "node_modules/noflo-core/components/Output.js",
+          "source": "node_modules/noflo-core/components/Output.js",
+          "elementary": true
+        },
+        {
+          "name": "Repeat",
+          "path": "node_modules/noflo-core/components/Repeat.js",
+          "source": "node_modules/noflo-core/components/Repeat.js",
+          "elementary": true
+        },
+        {
+          "name": "RepeatAsync",
+          "path": "node_modules/noflo-core/components/RepeatAsync.js",
+          "source": "node_modules/noflo-core/components/RepeatAsync.js",
+          "elementary": true
+        },
+        {
+          "name": "SendNext",
+          "path": "node_modules/noflo-core/components/SendNext.js",
+          "source": "node_modules/noflo-core/components/SendNext.js",
+          "elementary": true
+        },
+        {
+          "name": "Split",
+          "path": "node_modules/noflo-core/components/Split.js",
+          "source": "node_modules/noflo-core/components/Split.js",
+          "elementary": true
+        }
+      ]
+    },
+    {
+      "name": "flow",
+      "description": "Flow Control for NoFlo",
+      "runtime": "noflo",
+      "base": "node_modules/noflo-flow",
+      "icon": "random",
+      "components": [
+        {
+          "name": "Race",
+          "path": "node_modules/noflo-flow/components/Race.coffee",
+          "source": "node_modules/noflo-flow/components/Race.coffee",
+          "elementary": true
+        }
+      ]
+    },
+    {
+      "name": "graph",
+      "description": "NoFlo components for NoFlo Graph manipulation",
+      "runtime": "noflo",
+      "base": "node_modules/noflo-graph",
+      "components": [
+        {
+          "name": "LoadJson",
+          "path": "node_modules/noflo-graph/components/LoadJson.coffee",
+          "source": "node_modules/noflo-graph/components/LoadJson.coffee",
+          "elementary": true
+        }
+      ]
+    },
+    {
+      "name": "indexeddb",
+      "description": "IndexedDB components for NoFlo",
+      "runtime": "noflo",
+      "base": "node_modules/noflo-indexeddb",
+      "icon": "database",
+      "components": [
+        {
+          "name": "BeginTransaction",
+          "path": "node_modules/noflo-indexeddb/components/BeginTransaction.coffee",
+          "source": "node_modules/noflo-indexeddb/components/BeginTransaction.coffee",
+          "elementary": true
+        },
+        {
+          "name": "CreateIndex",
+          "path": "node_modules/noflo-indexeddb/components/CreateIndex.coffee",
+          "source": "node_modules/noflo-indexeddb/components/CreateIndex.coffee",
+          "elementary": true
+        },
+        {
+          "name": "CreateStore",
+          "path": "node_modules/noflo-indexeddb/components/CreateStore.coffee",
+          "source": "node_modules/noflo-indexeddb/components/CreateStore.coffee",
+          "elementary": true
+        },
+        {
+          "name": "Delete",
+          "path": "node_modules/noflo-indexeddb/components/Delete.coffee",
+          "source": "node_modules/noflo-indexeddb/components/Delete.coffee",
+          "elementary": true
+        },
+        {
+          "name": "GetStore",
+          "path": "node_modules/noflo-indexeddb/components/GetStore.coffee",
+          "source": "node_modules/noflo-indexeddb/components/GetStore.coffee",
+          "elementary": true
+        },
+        {
+          "name": "Open",
+          "path": "node_modules/noflo-indexeddb/components/Open.coffee",
+          "source": "node_modules/noflo-indexeddb/components/Open.coffee",
+          "elementary": true
+        },
+        {
+          "name": "Put",
+          "path": "node_modules/noflo-indexeddb/components/Put.coffee",
+          "source": "node_modules/noflo-indexeddb/components/Put.coffee",
+          "elementary": true
+        },
+        {
+          "name": "Query",
+          "path": "node_modules/noflo-indexeddb/components/Query.coffee",
+          "source": "node_modules/noflo-indexeddb/components/Query.coffee",
+          "elementary": true
+        },
+        {
+          "name": "UpgradeRouter",
+          "path": "node_modules/noflo-indexeddb/components/UpgradeRouter.coffee",
+          "source": "node_modules/noflo-indexeddb/components/UpgradeRouter.coffee",
+          "elementary": true
+        }
+      ]
+    },
+    {
+      "name": "interaction",
+      "description": "User interaction components for NoFlo",
+      "runtime": "noflo-browser",
+      "base": "node_modules/noflo-interaction",
+      "components": [
+        {
+          "name": "ListenHash",
+          "path": "node_modules/noflo-interaction/components/ListenHash.coffee",
+          "source": "node_modules/noflo-interaction/components/ListenHash.coffee",
+          "elementary": true
+        },
+        {
+          "name": "ListenResize",
+          "path": "node_modules/noflo-interaction/components/ListenResize.coffee",
+          "source": "node_modules/noflo-interaction/components/ListenResize.coffee",
+          "elementary": true
+        }
+      ]
+    },
+    {
+      "name": "objects",
+      "description": "Object Utilities for NoFlo",
+      "runtime": "noflo",
+      "base": "node_modules/noflo-objects",
+      "icon": "list",
+      "components": [
+        {
+          "name": "CallMethod",
+          "path": "node_modules/noflo-objects/components/CallMethod.js",
+          "source": "node_modules/noflo-objects/components/CallMethod.js",
+          "elementary": true
+        },
+        {
+          "name": "CreateObject",
+          "path": "node_modules/noflo-objects/components/CreateObject.js",
+          "source": "node_modules/noflo-objects/components/CreateObject.js",
+          "elementary": true
+        },
+        {
+          "name": "GetObjectKey",
+          "path": "node_modules/noflo-objects/components/GetObjectKey.js",
+          "source": "node_modules/noflo-objects/components/GetObjectKey.js",
+          "elementary": true
+        }
+      ]
+    },
+    {
+      "name": "polymer",
+      "description": "Polymer wrapper component for NoFlo",
+      "runtime": "noflo",
+      "noflo": {
+        "loader": "lib/ComponentLoader"
+      },
+      "base": "node_modules/noflo-polymer",
+      "components": []
+    },
+    {
+      "name": "strings",
+      "description": "String Utilities for NoFlo",
+      "runtime": "noflo",
+      "base": "node_modules/noflo-strings",
+      "icon": "font",
+      "components": [
+        {
+          "name": "SendString",
+          "path": "node_modules/noflo-strings/components/SendString.coffee",
+          "source": "node_modules/noflo-strings/components/SendString.coffee",
+          "elementary": true
+        }
+      ]
+    }
+  ]
+}

@@ -218,7 +218,8 @@ public class MyFileChooser extends JDialog
 		order.add(butDel);
 		order.add(butCancel);
 
-		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
+		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] && 
+				driver.currNotn.lang != driver.langs[DrawFBP.Lang.FBP_JSON] &&
 				driver.fbpJsonFile != null && !(driver.fbpJsonFile.equals("#")) && driver.fbpJsonTree == null) 	
 			driver.buildFbpJsonTree(driver.fbpJsonFile);	 
 		
