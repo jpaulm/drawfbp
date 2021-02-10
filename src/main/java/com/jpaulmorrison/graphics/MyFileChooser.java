@@ -220,7 +220,8 @@ public class MyFileChooser extends JDialog
 
 		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] && 
 				lang != driver.langs[DrawFBP.Lang.FBP_JSON] &&
-				driver.fbpJsonFile != null && !(driver.fbpJsonFile.equals("#")) && driver.fbpJsonTree == null) 	
+				driver.fbpJsonFile != null && !(driver.fbpJsonFile.equals("#")) && 
+				driver.fbpJsonTree == null) 	
 			driver.buildFbpJsonTree(driver.fbpJsonFile);	 
 		
 		t_fileName.setEditable(true);
