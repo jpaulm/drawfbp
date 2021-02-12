@@ -7,7 +7,7 @@ General web site on Flow-Based Programming: https://jpaulm.github.io/fbp/ .
 
 Latest release is `v2.21.3`: the jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-2.21.3.jar` - can be obtained from the Releases folder (click on `tags`, then `Releases`), or from `build/libs`.  
 
-**Note: The last few releases have some bugs (as of Feb. 11, 2021) - mainly in the JavaFBP "Choose Class/Subnet function" - these will hopefully be fixed in the next few days...  Please revert to v2.20.9 of DrawFBP for the time being if you are working with JavaFBP.**
+**Note: The last few releases have some bugs (as of Feb. 11, 2021) - mainly in the JavaFBP "Choose Class/Subnet function" - these will hopefully be fixed in the next few days...  Please revert to v2.20.17 of DrawFBP for the time being if you are working with JavaFBP.**
 
 The previous version is on Maven (shield below).  If you click on the Maven shield below to obtain DrawFBP, select `Download` and `jar`.  
 
