@@ -482,7 +482,7 @@ public class DiagramBuilder {
 			//diag.changed = true;
 		//} 
 		//else {
-			driver.saveProp("defaultNotation", driver.currNotn.label);
+			//driver.saveProp("defaultNotation", driver.currNotn.label);
 			//driver.saveProperties();
 		//}
 		driver.jtf.setText("Diagram Notation: " + driver.currNotn.label);

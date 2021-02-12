@@ -648,7 +648,7 @@ public class Block implements ActionListener {
 			//if (driver.tryFindJarFile) {
 				if (!driver.locateJavaFBPJarFile(false)) {
 					MyOptionPane.showMessageDialog(driver,
-							"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
+							"JavaFBP jar file not found - try Locate JavaFBP jar File", MyOptionPane.ERROR_MESSAGE);
 					return;
 				} 
 				component = loadJavaClass(fullClassName); 
@@ -680,7 +680,13 @@ public class Block implements ActionListener {
 		
 		File f = new File(fn);	
 		fn = fn.replace("\\", "/");
-		driver.locateJavaFBPJarFile(false);
+		if (!driver.locateJavaFBPJarFile(false)) {
+			MyOptionPane.showMessageDialog(driver,
+					"JavaFBP jar file not found", MyOptionPane.ERROR_MESSAGE);
+			// e.printStackTrace();
+			retClass = null;
+		}
+			 
 		driver.javaFBPJarFile = driver.javaFBPJarFile.replace("\\",  "/");
 		//if (!(driver.jarFiles.containsValue(fn)) && 
 		//		!(fn.equals(driver.javaFBPJarFile))
@@ -1502,18 +1508,18 @@ public class Block implements ActionListener {
 
 					
 					diag.jpm.addSeparator();
-					JMenuItem menuItem1 = new JMenuItem(
+					JMenuItem menuItem1b = new JMenuItem(
 								"Choose Component/Subnet Class");  
-					menuItem1.addActionListener(this);
-					diag.jpm.add(menuItem1);					
-					JMenuItem menuItem2 = new JMenuItem("Display Full Class Name");
-					menuItem2.addActionListener(this);
-					diag.jpm.add(menuItem2);
-					JMenuItem menuItem3 = new JMenuItem("Display Description and Port Info");
-					menuItem3.addActionListener(this);
-					diag.jpm.add(menuItem3);
+					menuItem1b.addActionListener(this);
+					diag.jpm.add(menuItem1b);					
+					JMenuItem menuItem2b = new JMenuItem("Display Full Class Name");
+					menuItem2b.addActionListener(this);
+					diag.jpm.add(menuItem2b);
+					JMenuItem menuItem3b = new JMenuItem("Display Description and Port Info");
+					menuItem3b.addActionListener(this);
+					diag.jpm.add(menuItem3b);
 						
-					menuItem3.setEnabled(driver.currNotn != null && 							
+					menuItem3b.setEnabled(driver.currNotn != null && 							
 							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 											
 					diag.jpm.addSeparator();
@@ -2070,19 +2076,19 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			String res = driver.getSelFile(fc);
 
 				String fs = res;
-				//injar = false;
-
+				boolean injar = true;
 				//if (fs.endsWith("jar"))
 				//	cFile = new File(driver.javaFBPJarFile); 
-				//else {
-				//cFile = new File(fs);
-				//if (cFile == null || !(cFile.exists())) {
-				//	MyOptionPane.showMessageDialog(driver,
-				//			"Unable to find file " + cFile.getName(), MyOptionPane.ERROR_MESSAGE);
-				//	return;
-				//}
-				//}
-
+				//else 
+				if (-1 == fs.indexOf("!")) {
+					injar = false;
+					cFile = new File(fs);
+					if (cFile == null || !(cFile.exists())) {
+						MyOptionPane.showMessageDialog(driver, "Unable to find file " + cFile.getName(),
+								MyOptionPane.ERROR_MESSAGE);
+						return;
+					}
+				}
 				//boolean classFound;
 				//File fp = null;
 
@@ -2094,7 +2100,6 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				int k = v2.lastIndexOf("/");
 				if (!inTree) {					
 					String w = v2.substring(0, k);
-
 					String currentClassDir = w;
 					if (currentClassDir != null)
 						driver.saveProp("currentClassDir", currentClassDir);
@@ -2150,7 +2155,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		//javaComp = null;
 		if (!driver.locateJavaFBPJarFile(false)) {
 			MyOptionPane.showMessageDialog(driver,
-					"JavaFBP jar file not found - try Locate JavaFBP Jar File", MyOptionPane.ERROR_MESSAGE);
+					"JavaFBP jar file not found - try Locate JavaFBP jar File", MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
@@ -2171,12 +2176,12 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			String res = driver.getSelFile(fc);
 
 			int i = res.indexOf("!");  
-			if (i > -1) { 
+			if (i > -1) {   // meaning we are stepping through jar file
 				String res2 = res.substring(i + 2); // ! will be followed by
 													// slash
 				res2 = res2.replace("\\",  "/");
 				res2 = res2.replace('/', '.');
-
+				
 				File f = new File(res.substring(0, i));
 
 				if (res2.endsWith(".class"))
@@ -2190,11 +2195,11 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				if (urls == null)
 					tempComp = null;
 				else {
+					
 					// Create a new class loader with the directory
 					myURLClassLoader = new URLClassLoader(urls, driver.getClass()
 							.getClassLoader());
-					try {
-						
+					try {						
 						tempComp = myURLClassLoader.loadClass(res2);
 					} catch (ClassNotFoundException e2) {
 						tempComp = null;

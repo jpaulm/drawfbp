@@ -1806,12 +1806,13 @@ public class MyFileChooser extends JDialog
 				if (currentNode == null)
 					return;
 				if (currentNode.getChildCount() > 0) {
+					String vv = "/" + s;
 					if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
-							!(w.equals("components")) && !(w.equals("modules")))
-						if (listHead.endsWith("!"))
-							listHead += s;
-						else
-							listHead += "/" + s;
+							!(w.equals("components")) && !(w.equals("modules")) &&
+							listHead.endsWith("!"))  
+							vv = s;		
+					listHead += vv;
+				
 					//listHead = s;
 					showListHead();
 					// panel.remove(listView);
@@ -2253,7 +2254,7 @@ l.setFont(driver.fontg);
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 					return;
 				}
-				else {  // folder name AND not in tree
+				//else {  // folder name AND not in tree
 						w += "/" + v;
 						File f2 = new File(w);
 						if (!f2.exists())
@@ -2267,7 +2268,7 @@ l.setFont(driver.fontg);
 						listHead = w;
 						showList();
 					 
-				}
+			//	}
 			}
 			repaint();
 		}

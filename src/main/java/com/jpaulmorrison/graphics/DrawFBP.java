@@ -238,8 +238,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
-	JMenuItem menuItem1 = new JMenuItem("Locate JavaFBP Jar File");
-	JMenuItem menuItem2 = new JMenuItem("Add Additional Jar File");
+	JMenuItem menuItem1 = new JMenuItem();
+	JMenuItem menuItem2 = new JMenuItem();
+	JMenuItem menuItem3 = new JMenuItem();
 	JMenuItem compMenu = null;
 	JMenuItem runMenu = null;
 
@@ -354,7 +355,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		langs[Lang.IMAGE] = new Lang(null, "png", new ImageFilter(), "currentImageDir");
 		langs[Lang.JARFILE] = new Lang(null, "jar", new JarFileFilter(), "javaFBPJarFile");
 		langs[Lang.CLASS] = new Lang(null, "class", new JavaClassFilter(), "currentClassDir");
-		langs[Lang.FBP_JSON] = new Lang(null, "js", new JSFilter(), "currentJSDir");
+		langs[Lang.FBP_JSON] = new Lang(null, "json", new JSONFilter(), "currentJSDir");
 		langs[Lang.DLL] = new Lang(null, "dll", new DllFilter(), "dllFileDir");
 		langs[Lang.EXE] = new Lang(null, "exe", new ExeFilter(), "exeDir");
 
@@ -364,7 +365,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		notations[Notation.JSON] = new Notation("JSON", langs[Lang.JS]);
 		notations[Notation.FBP] = new Notation("FBP", langs[Lang.FBP]);
 
-		currNotn = notations[Notation.JAVA_FBP];
+		
 		// saveProp("defaultNotation", currNotn.label);
 		// langs[Lang.PROCESS] = new Lang(null, "proc", null, currNotn.srcDirProp);
 		// langs[Lang.NETWORK] = new Lang(null, "network", null, currNotn.netDirProp);
@@ -372,6 +373,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fileMenu = new JMenu(" File ");
 		editMenu = new JMenu(" Diagram ");
 		helpMenu = new JMenu(" Help ");
+		
+		currNotn = findNotnFromLabel(properties.get("defaultNotation")); 
+		if (currNotn == null)
+			currNotn = notations[Notation.JAVA_FBP];
+		//setNotation(currNotn);
 
 		scalingFactor = 1.0d;
 
@@ -660,6 +666,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		grid.setSelected(clickToGrid);
 		
 		fbpJsonFile = properties.get("fbpJsonFile");
+		
+		
 
 		setVisible(true);
 		addComponentListener(this);
@@ -692,8 +700,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// else
 		if (diagramName != null)
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Open " + diagramName));
-
-		// createMenuBar();
+	
+		
 		repaint();
 
 	}
@@ -864,7 +872,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// box21.add(Box.createRigidArea(new Dimension(10,0)));
 		// box21.add(Box.createHorizontalStrut(10));
-		adjustFonts();
+		//adjustFonts();
 
 		but[0].setSelected(true); // "Process"
 
@@ -907,6 +915,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		image = loadImage("drag_icon.gif");
 		drag_icon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
 		
+		menuBar = createMenuBar();
+		setJMenuBar(menuBar);
+		
+		setNotation(currNotn);
+		adjustFonts();
 		
 	}
 
@@ -1002,35 +1015,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			fileMenu.addSeparator();
 		}
-
-		menuItem1 = new JMenuItem("Locate JavaFBP Jar File");
 		
-		if (currNotn.lang == langs[Lang.JAVA] || currNotn == notations[Notation.JSON]) {
+		fileMenu.add(menuItem1);
+		fileMenu.add(menuItem2);
+		fileMenu.add(menuItem3);
 		
-			fileMenu.add(menuItem1);
-			menuItem1.addActionListener(this);
-		}
+		modMenuItems();
 		
-		if (currNotn.lang == langs[Lang.JAVA]) {					
-			menuItem2 = new JMenuItem("Add Additional Jar File");
-			fileMenu.add(menuItem2);
-			menuItem2.addActionListener(this);
-			
-			menuItem = new JMenuItem("Remove Additional " + "Jar" + " Files");
-			fileMenu.add(menuItem);
-			menuItem.addActionListener(this);
-			
-		} else if (currNotn.lang == langs[Lang.CSHARP]) {
-			menuItem2 = new JMenuItem("Add Additional Dll File");
-			// menuItem2c.setEnabled(currNotn != null && currNotn.lang.equals("C#"));
-			fileMenu.add(menuItem2);
-			menuItem2.addActionListener(this);
-			
-			menuItem = new JMenuItem("Remove Additional " + "Dll" + " Files");
-			fileMenu.add(menuItem);
-			menuItem.addActionListener(this);
-		}
-
+		
 		fileMenu.addSeparator();
 		// menuItem = new JMenuItem("Locate DrawFBP Help File");
 		// fileMenu.add(menuItem);
@@ -1152,12 +1144,66 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuBar.getActionMap().put("CLOSE", escapeAction);
 		menuBar.setVisible(true);
 
-		setNotation(currNotn);
+		//setNotation(currNotn);
 
 		// repaint();
 
 		return menuBar;
 	}
+	
+	void modMenuItems() {
+	//fileMenu.remove(menuItem1);
+	//fileMenu.remove(menuItem2);
+	//fileMenu.remove(menuItem3);
+		
+	menuItem1.setEnabled(false);
+	menuItem2.setEnabled(false);
+	menuItem3.setEnabled(false);
+	
+	menuItem1.removeActionListener(this);
+	menuItem2.removeActionListener(this);
+	menuItem3.removeActionListener(this);
+	
+	if (currNotn.lang == langs[Lang.JAVA]) {
+		menuItem1.setText("Locate JavaFBP jar file");
+		//fileMenu.add(menuItem1);
+		menuItem1.setEnabled(true);
+		menuItem1.addActionListener(this);
+	}
+	
+	if (currNotn == notations[Notation.JSON]) {
+		menuItem1.setText("Locate fbp.json file");
+		//fileMenu.add(menuItem1);
+		menuItem1.setEnabled(true);
+		menuItem1.addActionListener(this);
+	}
+
+	if (currNotn.lang == langs[Lang.JAVA]) {
+		menuItem2.setText("Add Additional Jar File");
+		//fileMenu.add(menuItem2);
+		menuItem2.setEnabled(true);
+		menuItem2.addActionListener(this);
+
+		menuItem3.setText("Remove Additional " + "Jar" + " Files");
+		//fileMenu.add(menuItem3);
+		menuItem3.setEnabled(true);
+		menuItem3.addActionListener(this);
+
+	}  
+	if (currNotn.lang == langs[Lang.CSHARP]) {
+		menuItem2.setText("Add Additional Dll File");
+		// menuItem2c.setEnabled(currNotn != null && currNotn.lang.equals("C#"));
+		//fileMenu.add(menuItem2);
+		menuItem2.setEnabled(true);
+		menuItem2.addActionListener(this);
+
+		menuItem3.setText("Remove Additional " + "Dll" + " Files");
+		//fileMenu.add(menuItem3);
+		menuItem3.setEnabled(true);
+		menuItem3.addActionListener(this);
+	}
+	
+}
 
 	// sets curDiag
 
@@ -1404,13 +1450,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// }
 
 		// }
-		if (s.equals("Locate JavaFBP Jar File")) {
+		if (s.equals("Locate JavaFBP jar file")) {
 
 			locateJavaFBPJarFile(true);
 			return;
 		}
 
-		if (s.equals("Locate fbp.json File")) {
+		if (s.equals("Locate fbp.json file")) {
 
 			//int res = MyOptionPane.showConfirmDialog(this, "Locate or change location of fbp.json file?",
 			//		"Locate fbp.json file", MyOptionPane.YES_NO_OPTION);
@@ -1994,29 +2040,35 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		jtf.setText("Diagram Notation: " + notn.label);
 		jtf.repaint();
 
+		/*
+		menuItem1.setEnabled(true); 
 		if (currNotn.lang == langs[Lang.JAVA])
 			menuItem1.setText("Locate JavaFBP Jar File");
-		if (currNotn == notations[Notation.JSON])
+		else if (currNotn == notations[Notation.JSON])
 			menuItem1.setText("Locate fbp.json File");
+		else 
+			menuItem1.setEnabled(false);
 
-		boolean b = false;
-
-		menuItem1.setEnabled(b || (currNotn.lang == langs[Lang.JAVA]));
-		menuItem1.setEnabled(b || (currNotn == notations[Notation.JSON]));
-		
+		menuItem2.setEnabled(true);
 		if (currNotn.lang == langs[Lang.JAVA])
 			menuItem2.setText("Add Additional Jar File");
-		if (currNotn.lang == langs[Lang.CSHARP])
+		else if (currNotn.lang == langs[Lang.CSHARP])
 			menuItem2.setText("Add Additional Dll File");
+		else
+			menuItem2.setEnabled(false);
 		
-		b = false;
-		menuItem2.setEnabled(b || currNotn.lang == langs[Lang.JAVA]);
-		menuItem2.setEnabled(b || currNotn.lang == langs[Lang.CSHARP]);
-		
-		// fileMenu.remove(gNMenuItem);
-		//fileMenu.remove(7);
+		*/
+		modMenuItems();
 
-		String u = "Generate ";
+		filterOptions[0] = currNotn.lang.filter.getDescription();
+
+		saveProp("defaultNotation", currNotn.label);
+		saveProperties();
+	//menuBar = createMenuBar(); 
+
+		//setJMenuBar(menuBar);
+		
+		String u = "Generate "; 
 		// if (curDiag != null)
 		u += currNotn.label + " ";
 		u += "Network";
@@ -2024,21 +2076,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//gNMenuItem.addActionListener(this);
 		//fileMenu.add(gNMenuItem, 7);
 
-		filterOptions[0] = currNotn.lang.filter.getDescription();
-
-		saveProp("defaultNotation", currNotn.label);
-		saveProperties();
-
-		// too early!
-		
-		//if (currNotn == notations[Notation.N_JSON] && fbpJsonFile == null)
-		//	locateFbpJsonFile(true);
-
 		for (Block bk : curDiag.blocks.values()) {
 			bk.component = null;
 			bk.fullClassName = null;
 			bk.codeFileName = null;
 			bk.subnetFileName = null;
+			bk.compName = null;
 		}
 
 		repaint();
@@ -2877,9 +2920,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		 */
 		// UIManager.put("Button.select", slateGray1);
 
-		menuBar = createMenuBar();
+		//menuBar = createMenuBar();
 
-		setJMenuBar(menuBar);
+		//setJMenuBar(menuBar);
 
 		repaint();
 	}
@@ -4285,7 +4328,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// else
 			// f = (new File(s)).getParentFile();
 
-			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.JARFILE], "Locate JavaFBP Jar File");
+			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.JARFILE], "Locate JavaFBP jar file");
 
 			int returnVal = fc.showOpenDialog();
 
@@ -5548,14 +5591,30 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".js") || f.getName().toLowerCase().endsWith(".coffee")
-					|| f.getName().toLowerCase().endsWith(".json") || f.isDirectory();
+			return f.getName().toLowerCase().endsWith(".js") || 
+					f.getName().toLowerCase().endsWith(".coffee") ||
+					f.isDirectory();
 
 		}
 
 		@Override
 		public String getDescription() {
-			return "JSON source files (*.js, *.coffee or *.json)";
+			return "JS source files (*.js or *.coffee)";
+		}
+	}
+	
+	public class JSONFilter extends FileFilter {
+		@Override
+		public boolean accept(File f) {
+
+			return f.getName().toLowerCase().endsWith(".json") || 
+					f.isDirectory();
+
+		}
+
+		@Override
+		public String getDescription() {
+			return "JSON source files (*.json)";
 		}
 	}
 
