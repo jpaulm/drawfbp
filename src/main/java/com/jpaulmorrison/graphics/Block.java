@@ -67,7 +67,7 @@ public class Block implements ActionListener {
 	int ROWSIZE = 5;
 	String codeFileName;
 	
-	HashMap<String, Integer> portlist;
+	//HashMap<String, Integer> portlist;
 	JDialog portInfo = null;
 	Point ptInfoLoc = null;
 	
@@ -77,7 +77,7 @@ public class Block implements ActionListener {
 	Rectangle leftRect = null;
 	Rectangle topRect = null;
 	Rectangle botRect = null;
-	Rectangle rightRect = null;
+	Rectangle rightRect = null;	
 
 	static public class Types {
 		static String PROCESS_BLOCK = "B";
@@ -104,6 +104,8 @@ public class Block implements ActionListener {
 		fullClassName = null;
 		d.maxBlockNo ++;
 		id = d.maxBlockNo;
+		
+		
 		//buildSides();
 
 	}
@@ -1086,6 +1088,15 @@ public class Block implements ActionListener {
 		return opt;
 	}
 
+	/* 
+	boolean isDupPort(String port) {
+		String s = port;
+		if (portNames.contains(s))
+			return true;
+		portNames.add(s);
+		return false;
+	}
+	*/ 
 	
 	void displayPortInfo() {
 		if (fullClassName == null)
@@ -1505,8 +1516,10 @@ public class Block implements ActionListener {
 					menuItem = new JMenuItem("Clear Multiplexing Factor");
 					menuItem.addActionListener(this);
 					diag.jpm.add(menuItem);
-
-					
+					diag.jpm.addSeparator();
+					menuItem = new JMenuItem("Remove Logger");
+					menuItem.addActionListener(this);
+					diag.jpm.add(menuItem);					
 					diag.jpm.addSeparator();
 					JMenuItem menuItem1b = new JMenuItem(
 								"Choose Component/Subnet Class");  
@@ -1657,6 +1670,11 @@ public class Block implements ActionListener {
 			return;
 		}
 
+		if (s.equals("Remove Logger")) {
+			removeLogger();
+			return;
+		}
+		
 		if (s.equals("Choose Component/Subnet Class")) {			
 			
 			try {
@@ -2076,12 +2094,12 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			String res = driver.getSelFile(fc);
 
 				String fs = res;
-				boolean injar = true;
+				//boolean injar = true;
 				//if (fs.endsWith("jar"))
 				//	cFile = new File(driver.javaFBPJarFile); 
 				//else 
 				if (-1 == fs.indexOf("!")) {
-					injar = false;
+					//injar = false;
 					cFile = new File(fs);
 					if (cFile == null || !(cFile.exists())) {
 						MyOptionPane.showMessageDialog(driver, "Unable to find file " + cFile.getName(),
@@ -2425,6 +2443,10 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			}
 		}
 
+	}
+	
+	void removeLogger() {
+		//xxxxxxxxxxxxxxx
 	}
 
 	void showCode() {

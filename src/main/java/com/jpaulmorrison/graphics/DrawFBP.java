@@ -229,6 +229,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	// String scale;
 	// boolean tryFindJarFile = true;
+	
+	
+	
 	boolean willBeSubnet = false;
 
 	JMenuBar menuBar = null;
@@ -351,7 +354,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		langs[Lang.CSHARP] = new Lang("C#", "cs", new CsharpFileFilter(), "currentCsharpFBPDir");
 		langs[Lang.JS] = new Lang("JS", "js", new JSFilter(), "currentJSDir");
 		langs[Lang.FBP] = new Lang("FBP", "fbp", new FBPFilter(), "currentFBPNetworkDir");
-		langs[Lang.DIAGRAM] = new Lang(null, "drw", new DiagramFilter(), "currentDiagramDir"); // y
+		langs[Lang.DIAGRAM] = new Lang("Diagram", "drw", new DiagramFilter(), "currentDiagramDir"); // y
 		langs[Lang.IMAGE] = new Lang(null, "png", new ImageFilter(), "currentImageDir");
 		langs[Lang.JARFILE] = new Lang(null, "jar", new JarFileFilter(), "javaFBPJarFile");
 		langs[Lang.CLASS] = new Lang(null, "class", new JavaClassFilter(), "currentClassDir");
@@ -645,6 +648,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		t = properties.get("height");
 		if (t != null)
 			h2 = Integer.parseInt(t);
+		
+		
 
 		Dimension dim2 = new Dimension(w2, h2);
 		setPreferredSize(dim2);
@@ -4125,6 +4130,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			res = val >= lim2 && val <= lim1;
 		return res;
 	}
+	
+	
 
 	boolean readPropertiesFile() {
 
@@ -5088,6 +5095,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 		}
 	}
+	
+	
 
 	// "touches" changed to test if point (x, y) is within one of the side
 	// rectangles...
@@ -6718,6 +6727,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (edgePoint != null) {
 						xa = edgePoint.x;
 						ya = edgePoint.y;
+						currentArrow.toId = -2; 
 						repaint();
 					}
 
@@ -7340,8 +7350,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 				x = xa;
 				y = ya;
-				currentArrow.endX2 = x;
-				currentArrow.endY2 = y;
+				//currentArrow.endX2 = x;
+				//currentArrow.endY2 = y;
 
 				if (xa != currentArrow.lastX) {
 					double s = ya - currentArrow.lastY;

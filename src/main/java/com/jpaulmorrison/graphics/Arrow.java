@@ -1,6 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,7 +12,7 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
-
+import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 
 import math.geom2d.*;
@@ -36,7 +37,7 @@ public class Arrow implements ActionListener {
 	String type = "";  // "I" will result in an external input port; "O" -> external output port
 	String upStreamPort, downStreamPort;
 	//String uspMod;   //  upstream port after lowercasing
-	String dspMod;   // downStreamPort after lowercasing 
+	//String dspMod;   // downStreamPort after lowercasing 
 	//DrawFBP.Side fromSide, toSide;
 	boolean deleteOnSave = false;
 	static Color FOREST_GREEN = new Color(34, 139, 34);
@@ -46,7 +47,7 @@ public class Arrow implements ActionListener {
 	//Point tailMark;
 	boolean dropOldest;
 	int capacity;
-	int endX2, endY2;
+	//int endX2, endY2;
 	Arrow copy;   // this field and orig are set by Enclosure "excise" function 
 	Arrow orig;   //                              do.
 	//String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
@@ -82,7 +83,7 @@ public class Arrow implements ActionListener {
 		diag = d;
 		driver = d.driver;		
 		capacity = -1;
-		endX2 = endY2 = -1;
+		//endX2 = endY2 = -1;
 		  
 		
 	}
@@ -240,8 +241,11 @@ public class Arrow implements ActionListener {
 			   return;
 		}
 		
-		
-		
+		if (toId == -2) {
+			drawCircle(g, toX, toY, Color.BLUE, 8); 
+			return;
+		}
+					
 		if (endsAtBlock) {
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock  /* from instanceof Enclosure */   
 					|| from instanceof IIPBlock ) && to != null && (to instanceof ProcessBlock
@@ -478,7 +482,7 @@ public class Arrow implements ActionListener {
 		toX = Integer.parseInt(s);
 		s = item.get("toy").trim();
 		toY = Integer.parseInt(s);
-		upStreamPort = item.get("upstreamport");
+		upStreamPort = item.get("upstreamport");		
 		downStreamPort = item.get("downstreamport");
 				
 		s = item.get("endsatline");		
@@ -501,9 +505,15 @@ public class Arrow implements ActionListener {
 		
 		s = item.get("fromid").trim();
 		fromId = Integer.parseInt(s);
+		
+		//diag.portNames.add(upStreamPort + ":" + fromId);   
 
 		s = item.get("toid").trim();
 		toId = Integer.parseInt(s);
+		
+		//if (endsAtBlock)
+		//	diag.portNames.add(downStreamPort + ":" + toId);   
+		
 		s = item.get("id");
 		if (s == null)
 			id = 0;
@@ -577,7 +587,10 @@ public class Arrow implements ActionListener {
 		menuItem = new JMenuItem("Toggle DropOldest");
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
-
+		diag.jpm.addSeparator();
+		menuItem = new JMenuItem("Add Logger");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
 		diag.jpm.addSeparator();
 		menuItem = new JMenuItem("Drag Tail");
 		menuItem.addActionListener(this);
@@ -631,7 +644,7 @@ public class Arrow implements ActionListener {
 						found = true;					
 				}
 				if (found) {
-					String proc = driver.curDiag.blocks.get(fromId).desc;
+					String proc = diag.blocks.get(fromId).desc;
 					MyOptionPane.showMessageDialog(driver,
 							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
 					upStreamPort = "";
@@ -674,7 +687,7 @@ public class Arrow implements ActionListener {
 						found = true;
 				}
 				if (found) {
-					String proc = driver.curDiag.blocks.get(toId).desc;
+					String proc = diag.blocks.get(toId).desc;
 					MyOptionPane.showMessageDialog(driver,
 							"Duplicate port name: " + proc + "." + ans, MyOptionPane.WARNING_MESSAGE);
 					arr.downStreamPort = "";
@@ -749,7 +762,14 @@ public class Arrow implements ActionListener {
 			diag.changed = true;
 			return;
 			
-		}  if (s.equals("Drag Tail")) {
+		}  if (s.equals("Add Logger")) {
+			//tailMarked = true;
+			addLogger();			
+			driver.repaint();
+			diag.changed = true;
+			return;
+
+		} if (s.equals("Drag Tail")) {
 			//tailMarked = true;
 			driver.tailMark = new Point(fromX, fromY);
 			driver.arrowEndForDragging = this;
@@ -889,7 +909,113 @@ public class Arrow implements ActionListener {
 		return ((x1 - b.x) * (x1 - b.x) + (y1 - b.y) * (y1 - b.y)) < 6 * 6;
 	}
 	
-	
+	void addLogger() {
+		
+		if (bends != null) {
+			MyOptionPane.showMessageDialog(driver, "Logger can only be added to straight line arrow");
+			return;
+		}
+		ProcessBlock p = new ProcessBlock(diag);
+		p.cx = (fromX + toX) / 2;
+		p.cy = (fromY + toY) / 2;
+		
+		Integer i = Integer.valueOf(id);
+		
+		p.desc = "Logger";
+		//diag.maxBlockNo++;
+		int pid = p.id;
+		diag.blocks.put(Integer.valueOf(pid), p);
+		
+		p.buildSides();
+		p.calcEdges();
+		p.adjEdgeRects();
+		
+		// test if arrow crosses left and right sides
+		
+		Line2D.Float arrow = new Line2D.Float(fromX, fromY, toX, toY);
+		Line2D.Float line = new Line2D.Float(p.cx - p.width / 2, p.cy - p.height / 2, // left edge
+				p.cx - p.width / 2, p.cy + p.height / 2);
+		int hh = 0;
+		int ww = 0;
+		float sl = 0f;
+		boolean lr = true;
+		if (arrow.intersectsLine(line)) {
+			// what if slope infinite?!
+			sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
+			hh = (int) ((p.width/ 2) * sl);
+		}
+		
+		else {
+			
+			/**********************************************************************************
+			 * If the arrow is exactly vertical, 'sl' involves a divide by 0, so it is infinity
+			 * In the next statement 'ww' involves a divide by infinity, so by Java rules, it
+			 *   will have a value of zero.  Works!  
+			 *********************************************************************************/
+			
+			line = new Line2D.Float(p.cx - p.width / 2, p.cy + p.height / 2, // bottom edge
+					p.cx + p.width / 2, p.cy + p.height / 2);
+			sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
+			ww = (int) ((p.height / 2) / sl);
+			lr = false;
+		}
+		
+		Arrow aL = new Arrow(diag);
+		aL.fromX = fromX;		
+		aL.fromY = fromY;
+		int xSign = 1;
+		int ySign = 1;
+		if (lr) {
+			if (toX < fromX) {
+				xSign = -1;
+			}
+			aL.toX = p.cx - xSign * p.width / 2;
+			aL.toY = p.cy - xSign * hh;
+		}
+		else {
+			if (toY < fromY) {
+				ySign = -1;
+			}
+			aL.toX = p.cx - ySign * ww;
+			aL.toY = p.cy - ySign * p.height / 2;						
+		}
+		aL.endsAtBlock = true;
+		//diag.maxArrowNo++;
+		aL.fromId = fromId;
+		aL.toId = pid;
+		aL.downStreamPort = "IN";
+		int aid = (++diag.maxArrowNo);  
+		aL.id = aid;
+		diag.arrows.put(Integer.valueOf(aid), aL);
+		
+		Arrow aR = new Arrow(diag);
+		if (lr) {
+			aR.fromX = p.cx + xSign * p.width / 2;
+			aR.fromY = p.cy + xSign * hh;
+		}
+		else {			
+			aR.fromX = p.cx + ySign * ww;
+			aR.fromY = p.cy + ySign * p.height / 2;
+		}
+		aR.toX = toX;
+		aR.toY = toY;
+		aR.endsAtBlock = true;
+		//diag.maxArrowNo++;
+		aR.fromId = pid;
+		aR.toId = toId;
+		aR.upStreamPort  = "OUT";
+		aid = (++diag.maxArrowNo);
+		aR.id = aid;
+		diag.arrows.put(Integer.valueOf(aid), aR);
+		
+		//diag.arrows.remove(i);   
+		diag.delArrow(this);  
+
+		diag.changed = true;
+		driver.selArrow = null;
+		driver.currentArrow = null;
+		driver.repaint();
+	}
 
 	Arrow findLastArrowInChain() {
 		if (endsAtBlock)  
@@ -1089,7 +1215,6 @@ class Arrowhead {
 			// toX/toY is tip of arrow and fx/fy is a point on the line -
 			// fx/fy is used to determine direction & angle
 
-			//AffineTransform at = AffineTransform.getTranslateInstance(toX, toY);
 			int b = 9;
 			double theta = Math.toRadians(20);
 			// The idea of using a GeneralPath is so we can
@@ -1114,22 +1239,7 @@ class Arrowhead {
 			path.lineTo(x2, y2);
 			path.closePath();
 
-			/*
-			// theta is in radians
-			double s, t;
-			s = toY - fy; // calculate slopes.
-			t = toX - fx;
-			if (t != 0) {
-				s = s / t;
-				theta = Math.atan(s);
-				if (t < 0)
-					theta += Math.PI;
-			} else if (s < 0)
-				theta = -(Math.PI / 2);
-			else
-				theta = Math.PI / 2;
-			*/
-
+			
 			AffineTransform at = AffineTransform.getTranslateInstance(toX, toY);
 			if (toX == fx)   // vertical line
 				if (fy > toY)

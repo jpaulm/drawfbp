@@ -71,6 +71,7 @@ following:</p>
   </li>
   <li style="color: rgb(0, 153, 0);">"Toggle Downstream Port Automatic/Normal"</li>
   <li style="color: rgb(0, 153, 0);">"Toggle DropOldest"</li>
+  <li style="color: rgb(0, 153, 0);">"Add Logger"</li>
 <li style="color: rgb(0, 153, 0);">"Drag Base"</li>
 <li style="color: rgb(0, 153, 0);">"Drag Head"</li>
 <li style="color: rgb(0, 153, 0);">"Drag New or Existing Bend"</li>
@@ -98,6 +99,11 @@ specified a port name for that function.</i>  No receive is required to process 
 <p>This sets a connection attribute which drops the oldest IP on the connection if it would suspend the upstream (sending) 
 process.  DrawFBP displays this kind of connection with a zigzag line. </p>
 <p>This can be useful in cases where one does not need every measurement in a series.</p> 
+<h3 style="color: rgb(0, 0, 153);">Add Logger</h3>
+<p>Selecting this function adds a block onto the arrow, with a process name of "Logger".  The user can select any 
+component to assign to this block - either off-the-shelf, or custom.</p>
+<p>It can be deleted by using the "Remove Logger" function on the Logger block - this will 
+rebuild the arrow that was separated by the Logger block.</p>
 <h3 style="color: rgb(0, 0, 153);">Drag Functions</h3>
 <p>The three drag functions allow you to move, respectively, the tail or head of the selected arrow, 
 or to insert or move a bend in the line.  

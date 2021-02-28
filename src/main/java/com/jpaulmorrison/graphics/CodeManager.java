@@ -1,8 +1,6 @@
 package com.jpaulmorrison.graphics;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.io.*;
 
 import javax.swing.*;
@@ -23,7 +21,7 @@ import java.awt.image.BufferedImage;
 public class CodeManager implements ActionListener {
 
 	DrawFBP driver;
-	HashSet<String> portNames;
+	
 	HashMap<String, Integer> blocklist;
 	// HashMap<String, Integer> portlist;
 	Style baseStyle, normalStyle, packageNameStyle, errorStyle,
@@ -141,7 +139,7 @@ public class CodeManager implements ActionListener {
 		String code = "";
 
 		// boolean error = false;
-		portNames = new HashSet<String>();
+		//portNames = new HashSet<String>();
 		blocklist = new HashMap<String, Integer>();
 
 		ext = "Network";
@@ -430,20 +428,22 @@ public class CodeManager implements ActionListener {
 				if (from instanceof ProcessBlock
 						&& to instanceof ProcessBlock) {
 
-					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+					/*
+					if (!arrow.endsAtLine && driver.isDupPort(dnPort, to)) {
 						String proc = to.desc;
 						dnPort += "???";
 						MyOptionPane.showMessageDialog(driver,
 								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
-					if (checkDupPort(upPort, from)) {
+					if (driver.isDupPort(upPort, from)) {
 						String proc = from.desc;
 						upPort += "???";
 						MyOptionPane.showMessageDialog(driver,
 								"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
+					*/
 					if (from.multiplex) {
 						code += "for (int i = 0; i < " + compress(fromDesc)
 								+ "_count; i++)\n";
@@ -477,13 +477,15 @@ public class CodeManager implements ActionListener {
 				else
 					if (from instanceof IIPBlock
 							&& to instanceof ProcessBlock) {
-					if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+					/*
+					if (!arrow.endsAtLine && driver.isDupPort(dnPort, to)) {
 						String proc = to.desc;
 						dnPort += "???";
 						MyOptionPane.showMessageDialog(driver,
 								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 						error = true;
 					}
+					*/
 
 					code += "  " + initialize + "(" + q(fromDesc) + ", " + component
 							+ "(\"" + toDesc + "\"), " + _port + "(" + q(dnPort)
@@ -876,6 +878,8 @@ public class CodeManager implements ActionListener {
 
 	}
 
+	/*
+	 * 
 	String makeUniquePort(String s, Block b) {
 		Integer i;
 		String t = s;
@@ -891,8 +895,10 @@ public class CodeManager implements ActionListener {
 		return t;
 
 	}
+	
+	 
 
-	boolean checkDupPort(String port, Block bl) {
+	boolean isDupPort(String port, Block bl) {
 		// return false if no duplication
 		String s = port + ":" + bl.id;
 		if (portNames.contains(s))
@@ -900,6 +906,8 @@ public class CodeManager implements ActionListener {
 		portNames.add(s);
 		return false;
 	}
+	
+	*/
 
 	void setStyles(StyleContext sc) {
 
@@ -1413,7 +1421,7 @@ public class CodeManager implements ActionListener {
 		data = "{\n\"properties\": {\n\"name\": ";
 		data += q(diag.title) + "\n},\n";
 		data += "\"processes\": [\n";
-		portNames = new HashSet<String>();
+		//portNames = new HashSet<String>();
 		blocklist = new HashMap<String, Integer>();
 
 		String comma = "";
@@ -1507,6 +1515,7 @@ public class CodeManager implements ActionListener {
 			data += comma;
 			// String upPort = arrow.upStreamPort;
 			// String dnPort = a2.downStreamPort;
+			/*
 			if (upPort != null) {
 				upPort = upPort.toLowerCase();
 				upPort = makeUniquePort(upPort, from);
@@ -1514,16 +1523,19 @@ public class CodeManager implements ActionListener {
 			dnPort = dnPort.toLowerCase();
 			if (a2.dspMod == null)
 				a2.dspMod = makeUniquePort(dnPort, to);
+			*/
 			// upPort = arrow.uspMod;
-			dnPort = a2.dspMod;
+			//dnPort = a2.dspMod;
 			if (from instanceof IIPBlock) {
-				if (!arrow.endsAtLine && checkDupPort(dnPort, to)) {
+				/*
+				if (!arrow.endsAtLine && driver.isDupPort(dnPort, to)) {
 					String proc = to.desc;
 					dnPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf, "Duplicate port name: " + proc + "." + dnPort,
 							MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
+				*/
 				data += "{\"data\":" + q(fromDesc) + ",\n";
 			} else { // assume process
 				data += "{";
@@ -1552,7 +1564,7 @@ public class CodeManager implements ActionListener {
 		String code = "";
 		String cma = "";
 		// generated = false;
-		portNames = new HashSet<String>();
+		//portNames = new HashSet<String>();
 		blocklist = new HashMap<String, Integer>();
 		// portlist = new HashMap<String, Integer>();
 		// diag.targetLang = "FBP";
@@ -1649,34 +1661,38 @@ public class CodeManager implements ActionListener {
 				upPort = a2.upStreamPort;
 				upPort = upPort.replaceAll("-", "\\\\-");
 				upPort = upPort.replaceAll("\\.", "\\\\.");
-				upPort = makeUniquePort(upPort, from);
+				//upPort = makeUniquePort(upPort, from);
 			}
 
 			dnPort = a2.downStreamPort;
 			// dnPort = dnPort.toLowerCase();
 
-			if (a2.dspMod == null)
-				a2.dspMod = makeUniquePort(dnPort, to);
+			//a2.dspMod = dnPort;
 
-			dnPort = a2.dspMod.replaceAll("-", "\\\\-");
+			//if (a2.dspMod == null)
+			//	a2.dspMod = makeUniquePort(dnPort, to);
+
+			dnPort = dnPort.replaceAll("-", "\\\\-");
 			dnPort = dnPort.replaceAll("\\.", "\\\\.");
 
 			if (from instanceof ProcessBlock
 					&& to instanceof ProcessBlock) {
-				if (!a2.endsAtLine && checkDupPort(dnPort, to)) {
+				/*
+				if (!a2.endsAtLine && driver.isDupPort(dnPort, to)) {
 					String proc = to.desc;
 					dnPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
-				if (checkDupPort(upPort, from)) {
+				if (driver.isDupPort(upPort, from)) {
 					String proc = from.desc;
 					upPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
+				*/
 
 				if (from.multiplex) {
 
@@ -1694,13 +1710,15 @@ public class CodeManager implements ActionListener {
 							+ " " + toDesc;
 			} else
 				if (from instanceof IIPBlock && to instanceof ProcessBlock) {
-				if (checkDupPort(dnPort, to)) {
+				/*
+				if (driver.isDupPort(dnPort, to)) {
 					String proc = to.desc;
 					dnPort += "???";
 					MyOptionPane.showMessageDialog(driver.jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
+				*/
 				code += cma + "'" + fromDesc + "' -> " + dnPort + " " + toDesc;
 			}
 
@@ -1857,38 +1875,32 @@ public class CodeManager implements ActionListener {
 
 	*/
 	boolean getPortNames(Arrow arrow) {
+		
 		Block from = diag.blocks.get(Integer.valueOf(arrow.fromId));
 		Arrow a2 = arrow.findLastArrowInChain();
 		Block to = diag.blocks.get(Integer.valueOf(a2.toId));
-		String z;
-
+		boolean z;
+		
 		if (from instanceof ProcessBlock) {
 			upPort = arrow.upStreamPort;
 			while (true) {
-				if (upPort != null && !(upPort.equals(""))) {
-					z = validatePortName(upPort);
-					if (z != null) {
-						upPort = z;
+				if (upPort != null && !(upPort.trim().equals(""))) {
+					z = diag.validatePortName(upPort);
+					//z = z && !from.isDupPort(upPort);
+					if (z) {
+						// upPort = z;
 						break;
 					}
-					if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-							driver.jf, "Invalid port name: " + upPort,
-							"Invalid output port name - try again?",
-							MyOptionPane.YES_NO_OPTION)) {
-						// ok = false;
-						upPort = "????";
+
+					String ans = (String) MyOptionPane.showInputDialog(driver.jf,
+							"Invalid or duplicate output port from " + "\"" + from.desc + "\"",
+							"Please correct port name", MyOptionPane.PLAIN_MESSAGE, null, null, upPort);
+					if (ans != null/* && ans.length() > 0 */) {
+						upPort = ans.trim();
+						diag.changed = true;
 						break;
 					}
 				}
-				
-				upPort = (String) MyOptionPane.showInputDialog(driver.jf,
-						"Output port from " + "\"" + from.desc + "\"",
-						"Please enter port name");
-				//if (upPort == null)
-				//	return false;
-				diag.changed = true;
-				break;
-
 			}
 
 			arrow.upStreamPort = upPort;
@@ -1897,29 +1909,24 @@ public class CodeManager implements ActionListener {
 
 		dnPort = a2.downStreamPort;
 		while (true) {
-			if (dnPort != null && !(dnPort.equals(""))) {
-				z = validatePortName(dnPort);
-				if (z != null) {
-					dnPort = z;
+			if (dnPort != null && !(dnPort.trim().equals(""))) {
+				z = diag.validatePortName(dnPort);
+				//z = z && !to.isDupPort(dnPort);
+				if (z) {
+					//dnPort = z;
 					break;
 				}
-				if (MyOptionPane.NO_OPTION == MyOptionPane.showConfirmDialog(
-						driver.jf, "Invalid port name: " + dnPort,
-						"Invalid input port name - try again?",
-						MyOptionPane.YES_NO_OPTION)) {
-					// ok = false;
-					dnPort = "????";
-					break;
+				
+				String ans = (String) MyOptionPane.showInputDialog(driver.jf,
+						"Invalid or duplicate input port to " + "\"" + to.desc + "\"",
+						"Please correct port name",
+						MyOptionPane.PLAIN_MESSAGE, null, null, dnPort);
+				if (ans != null/* && ans.length() > 0*/) {
+					dnPort = ans.trim();
+					diag.changed = true;
 				}
+			
 			}
-			dnPort = (String) MyOptionPane.showInputDialog(driver.jf,
-					"Input port to " + "\"" + to.desc + "\"",
-					"Please enter port name for arrow from " + from.desc);
-			//if (dnPort == null)
-			//	return false;
-			diag.changed = true;
-			break;
-
 		}
 
 		a2.downStreamPort = dnPort;
@@ -1927,26 +1934,7 @@ public class CodeManager implements ActionListener {
 		return true;
 	}
 
-	String validatePortName(String s) {
-		if (s == null || s.equals("") || s.equals("????"))
-			return null;
-		if (s.equals("*")) 
-			return s;
-		Pattern p = Pattern.compile("[a-zA-Z][\\d\\-\\_\\.\\[\\]a-zA-Z]*"); // Allow
-																			// hyphen
-																			// (for
-																			// Humberto),
-																			// period
-																			// (for
-																			// Tom),
-																			// underscore
-		// and square brackets
-		Matcher ma = p.matcher(s);
-		if (!ma.matches())
-			return null;
-		else
-			return s;
-	}
+	
 	
 	public class MyDocListener1 implements DocumentListener {
 		

@@ -8,8 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -69,7 +72,7 @@ public class Diagram {
 	//boolean findArrowCrossing = false;
 	//Enclosure cEncl = null;
 	
-
+	//HashSet<String> portNames = null;
 	//String genCodeFileName;
 	
 	JPopupMenu jpm;
@@ -100,22 +103,8 @@ public class Diagram {
 		arrows = new ConcurrentHashMap<Integer, Arrow>();
 		//clickToGrid = true;
 		parent = null;
-		//StyleContext sc = new StyleContext();
-		//doc = new DefaultStyledDocument(sc);   
+		//portNames = new HashSet<String> ();
 		
-		//file = null;
-		//diagNotn = driver.currNotn;	
-		
-		//fCParm = new FileChooserParm[10];
-		//motherBlock = null;
-		//String cTG = driver.properties.get("clicktogrid");
-		//if (cTG == null) {
-		//	clickToGrid = true;
-		//	driver.saveProp("clicktogrid", "true");
-		//} else 
-		//	clickToGrid = Boolean.valueOf(cTG);
-		
-		//driver.grid.setSelected(clickToGrid);
 	}			
 		
 	/* General save function */
@@ -349,12 +338,12 @@ public class Diagram {
 
 			// return diagFile;
 		}
-		//String w = fCP.name;
-		String w = file.getName();
-		//if (motherBlock!= null) {
-			//motherBlock.subnetFileName = file.getPath();
-		//	w = "Subnet";    
-		//}
+		String w = lang.label;
+		//String w = file.getName();
+		if (motherBlock!= null) {
+			motherBlock.subnetFileName = file.getPath();
+			w = "Subnet";    
+		}
 		
 		//suggFile = null;
 		MyOptionPane.showMessageDialog(jf, w + " saved: " + file.getName());
@@ -504,7 +493,26 @@ public class Diagram {
 		return fileString;
 	}
 
-	
+	boolean validatePortName(String s) {
+		if (s == null || s.equals("") || s.equals("????"))
+			return false;
+		if (s.equals("*")) 
+			return true;
+		Pattern p = Pattern.compile("[a-zA-Z][\\d\\-\\_\\.\\[\\]a-zA-Z]*"); // Allow
+																			// hyphen
+																			// (for
+																			// Humberto),
+																			// period
+																			// (for
+																			// Tom),
+																			// underscore
+		// and square brackets
+		Matcher ma = p.matcher(s);
+		//if (!ma.matches())
+		//	return false;
+		//else
+			return ma.matches();
+	}
 	
 	
 	void delArrow(Arrow arrow) {
