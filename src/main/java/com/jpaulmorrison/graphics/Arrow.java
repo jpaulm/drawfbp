@@ -910,10 +910,12 @@ public class Arrow implements ActionListener {
 	}
 	
 	void addLogger() {
-		
+		int toX = this.toX;
+		int toY = this.toY;
 		if (bends != null) {
-			MyOptionPane.showMessageDialog(driver, "Logger can only be added to straight line arrow");
-			return;
+			Bend b = bends.getFirst();
+			toX = b.x;
+			toY = b.y;
 		}
 		ProcessBlock p = new ProcessBlock(diag);
 		p.cx = (fromX + toX) / 2;
@@ -963,6 +965,7 @@ public class Arrow implements ActionListener {
 		Arrow aL = new Arrow(diag);
 		aL.fromX = fromX;		
 		aL.fromY = fromY;
+		aL.upStreamPort = this.upStreamPort;
 		int xSign = 1;
 		int ySign = 1;
 		if (lr) {
@@ -988,7 +991,9 @@ public class Arrow implements ActionListener {
 		aL.id = aid;
 		diag.arrows.put(Integer.valueOf(aid), aL);
 		
-		Arrow aR = new Arrow(diag);
+		// take old arrow; start it at new rectangle, and change fromId to refer to new rectangle 
+		//Arrow aR = new Arrow(diag);
+		Arrow aR = this;
 		if (lr) {
 			aR.fromX = p.cx + xSign * p.width / 2;
 			aR.fromY = p.cy + xSign * hh;
@@ -997,19 +1002,19 @@ public class Arrow implements ActionListener {
 			aR.fromX = p.cx + ySign * ww;
 			aR.fromY = p.cy + ySign * p.height / 2;
 		}
-		aR.toX = toX;
-		aR.toY = toY;
-		aR.endsAtBlock = true;
+		//aR.toX = toX;
+		//aR.toY = toY;
+		//aR.endsAtBlock = true;
 		//diag.maxArrowNo++;
 		aR.fromId = pid;
-		aR.toId = toId;
+		//aR.toId = toId;
 		aR.upStreamPort  = "OUT";
-		aid = (++diag.maxArrowNo);
-		aR.id = aid;
-		diag.arrows.put(Integer.valueOf(aid), aR);
+		//aid = (++diag.maxArrowNo);
+		//aR.id = aid;
+		//diag.arrows.put(Integer.valueOf(aid), aR);
 		
 		//diag.arrows.remove(i);   
-		diag.delArrow(this);  
+		//diag.delArrow(this);  
 
 		diag.changed = true;
 		driver.selArrow = null;

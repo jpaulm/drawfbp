@@ -2448,12 +2448,9 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 	void removeLogger() {  	
 	    int fromX = -1;
 	    int fromY = -1;
-	    int toX = -1;
-	    int toY = -1;
 	    int fromId = -1;
-	    int toId = -1;
 	    String uPN = "";
-	    String dPN = "";
+	    Arrow a2 = null;
 		for (Arrow arr: diag.arrows.values()) {
 			if (arr.toId == id) {
 				fromX = arr.fromX;
@@ -2463,28 +2460,15 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			}
 			
 			else if (arr.fromId == id) {
-				toX = arr.toX;
-				toY = arr.toY;
-				toId = arr.toId;
-				dPN = arr.downStreamPort;
+				a2 = arr;
 			}				
 		}
-		if (fromX != -1) {
+		if (a2 != null) {	
+			a2.upStreamPort = uPN;
+			a2.fromX = fromX;
+			a2.fromY = fromY;
+			a2.fromId = fromId;				
 			diag.delBlock(this, false);
-			Arrow arr = new Arrow(diag);
-			arr.endsAtBlock = true;
-			//diag.maxArrowNo++;
-			arr.fromId = fromId;
-			arr.toId = toId;
-			arr.upStreamPort = uPN;
-			arr.downStreamPort = dPN;
-			arr.fromX = fromX;
-			arr.fromY = fromY;
-			arr.toX = toX;
-			arr.toY = toY;
-			int aid = (++diag.maxArrowNo);  
-			arr.id = aid;
-			diag.arrows.put(Integer.valueOf(aid), arr);			
 		}
 	}
 
