@@ -935,18 +935,18 @@ public class Arrow implements ActionListener {
 		// test if arrow crosses left and right sides
 		
 		Line2D.Float arrow = new Line2D.Float(fromX, fromY, toX, toY);
-		Line2D.Float line = new Line2D.Float(p.cx - p.width / 2, p.cy - p.height / 2, // left edge
+		Line2D.Float left = new Line2D.Float(p.cx - p.width / 2, p.cy - p.height / 2, // left edge
 				p.cx - p.width / 2, p.cy + p.height / 2);
+		Line2D.Float bot = new Line2D.Float(p.cx - p.width / 2, p.cy + p.height / 2, // bottom edge
+				p.cx + p.width / 2, p.cy + p.height / 2);
 		int hh = 0;
 		int ww = 0;
 		float sl = 0f;
 		boolean lr = true;
-		if (arrow.intersectsLine(line)) {
-			// what if slope infinite?!
+		if (arrow.intersectsLine(left)) {
 			sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
 			hh = (int) ((p.width/ 2) * sl);
-		}
-		
+		}		
 		else {
 			
 			/**********************************************************************************
@@ -955,13 +955,16 @@ public class Arrow implements ActionListener {
 			 *   will have a value of zero.  Works!  
 			 *********************************************************************************/
 			
-			line = new Line2D.Float(p.cx - p.width / 2, p.cy + p.height / 2, // bottom edge
-					p.cx + p.width / 2, p.cy + p.height / 2);
-			sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
-			ww = (int) ((p.height / 2) / sl);
-			lr = false;
+			if (arrow.intersectsLine(bot)) {
+				sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
+				ww = (int) ((p.height / 2) / sl);
+				lr = false;
+			}
+			else {
+				MyOptionPane.showMessageDialog(driver,"Not enough room between blocks", MyOptionPane.WARNING_MESSAGE);
+				return;
+			}
 		}
-		
 		Arrow aL = new Arrow(diag);
 		aL.fromX = fromX;		
 		aL.fromY = fromY;
@@ -969,16 +972,14 @@ public class Arrow implements ActionListener {
 		int xSign = 1;
 		int ySign = 1;
 		if (lr) {
-			if (toX < fromX) {
-				xSign = -1;
-			}
+			if (toX < fromX)  
+				xSign = -1;			 
 			aL.toX = p.cx - xSign * p.width / 2;
 			aL.toY = p.cy - xSign * hh;
 		}
 		else {
-			if (toY < fromY) {
-				ySign = -1;
-			}
+			if (toY < fromY)  
+				ySign = -1;			 
 			aL.toX = p.cx - ySign * ww;
 			aL.toY = p.cy - ySign * p.height / 2;						
 		}
