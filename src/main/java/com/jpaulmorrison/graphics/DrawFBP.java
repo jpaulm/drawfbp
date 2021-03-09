@@ -236,7 +236,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	JMenuBar menuBar = null;
 	JMenu fileMenu = null;
-	JMenu editMenu = null;
+	JMenu diagMenu = null;
 	JMenu helpMenu = null;
 
 	JMenuItem gNMenuItem = null;
@@ -374,7 +374,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// langs[Lang.NETWORK] = new Lang(null, "network", null, currNotn.netDirProp);
 
 		fileMenu = new JMenu(" File ");
-		editMenu = new JMenu(" Diagram ");
+		diagMenu = new JMenu(" Diagram ");
 		helpMenu = new JMenu(" Help ");
 		
 		currNotn = findNotnFromLabel(properties.get("defaultNotation")); 
@@ -443,7 +443,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 								// though!
 		defaultCursor = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
 		setCursor(defaultCursor);
-
+		//JScrollPane jsp = new JScrollPane(null, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		//		JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		//getContentPane().add(jsp);
 		applyOrientation(this);
 
 		int w = (int) dim.getWidth();
@@ -942,7 +944,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fileMenu.setMnemonic(KeyEvent.VK_F);
 		// fileMenu.setSelected(true);
 		fileMenu.setBorderPainted(true);
-		// fileMenu.setFont(fontg);
+		fileMenu.setFont(fontg);
+		diagMenu.setFont(fontg);
+		helpMenu.setFont(fontg);
 		menuBar.add(fileMenu);
 
 		// a group of JMenuItems
@@ -1056,6 +1060,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuItem = new JMenuItem("Close Diagram");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		
+		int ct = fileMenu.getItemCount(); 		
+		for (int i = 0; i < ct; i++) {
+			JMenuItem jmi = fileMenu.getItem(i);
+			if (jmi instanceof JMenuItem)
+				jmi.setFont(fontg);			
+		}
 
 		// String u = "Generate " + currNotn.label + " " + "Network";
 		// gNMenuItem = new JMenuItem(u);
@@ -1063,38 +1074,45 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// fileMenu.add(gNMenuItem, 7);
 
 		// editMenu = new JMenu(" Edit ");
-		editMenu.setMnemonic(KeyEvent.VK_E);
+		diagMenu.setMnemonic(KeyEvent.VK_E);
 		// editMenu.setFont(fontg);
-		menuBar.add(editMenu);
-		editMenu.setBorderPainted(true);
+		menuBar.add(diagMenu);
+		diagMenu.setBorderPainted(true);
 
 		menuItem = new JMenuItem("Edit Description");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("New Block");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		editMenu.addSeparator();
+		diagMenu.addSeparator();
 		menuItem = new JMenuItem("Create Image");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Show Image");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		editMenu.addSeparator();
+		diagMenu.addSeparator();
 		menuItem = new JMenuItem("Compare Diagrams");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Clear Visible Indicators");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		editMenu.addSeparator();
+		diagMenu.addSeparator();
 		menuItem = new JMenuItem("Block-related Actions");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Arrow-related Actions");
-		editMenu.add(menuItem);
+		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
+		
+		ct = diagMenu.getItemCount();  
+		for (int i = 0; i< ct; i++) {
+			JMenuItem jmi = diagMenu.getItem(i);
+			if (jmi instanceof JMenuItem)
+				jmi.setFont(fontg);
+		}
 
 		// JMenu helpMenu = new JMenu(" Help ");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
@@ -1149,9 +1167,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuBar.getActionMap().put("CLOSE", escapeAction);
 		menuBar.setVisible(true);
 
-		//setNotation(currNotn);
-
-		// repaint();
+		ct = helpMenu.getItemCount();  
+		for (int i = 0; i< ct; i++) {
+			JMenuItem jmi = helpMenu.getItem(i);
+			if (jmi instanceof JMenuItem)
+				jmi.setFont(fontg);
+		}
 
 		return menuBar;
 	}
@@ -1391,11 +1412,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (s.equals("Compare Diagrams")) {
 
 			if (curDiag == null || curDiag.diagFile == null) {
-				MyOptionPane.showMessageDialog(driver, "No diagram selected", MyOptionPane.INFORMATION_MESSAGE);
+				MyOptionPane.showMessageDialog(this, "No diagram selected", MyOptionPane.INFORMATION_MESSAGE);
 				return;
 			}
 
-			int result = MyOptionPane.showConfirmDialog(driver,
+			int result = MyOptionPane.showConfirmDialog(this,
 					"Select diagram to compare against current diagram: " + curDiag.diagFile.getName(),
 					"Select diagram to compare against", MyOptionPane.OK_CANCEL_OPTION);
 
@@ -1493,7 +1514,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				properties.remove("additionalDllFiles");
 				lib = "Dll";
 			}
-			MyOptionPane.showMessageDialog(driver, "References to additional " + lib + " files removed (not deleted)",
+			MyOptionPane.showMessageDialog(this, "References to additional " + lib + " files removed (not deleted)",
 					MyOptionPane.INFORMATION_MESSAGE);
 		}
 
@@ -1562,7 +1583,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (s.equals("Create Image")) {
 
 			if (curDiag == null || curDiag.title == null || curDiag.blocks.isEmpty()) {
-				MyOptionPane.showMessageDialog(driver,
+				MyOptionPane.showMessageDialog(this,
 						"Unable to export image for empty or unsaved diagram - please do save first",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -1832,7 +1853,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					+ "****************************************************\n");
 
 			ta.setFont(f);
-			final JDialog popup = new JDialog(driver, Dialog.ModalityType.APPLICATION_MODAL);
+			final JDialog popup = new JDialog(this, Dialog.ModalityType.APPLICATION_MODAL);
 			popup.add(ta, BorderLayout.CENTER);
 			Point p = getLocation();
 			// popup.setPreferredSize(new Dimension(60,20));
@@ -1887,7 +1908,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		if (s.equals("New Block")) {
 			// if (newItemMenu == null) {
-			// newItemMenu = buildNewItemMenu(driver);
+			// newItemMenu = buildNewItemMenu(this);
 			// }
 			// newItemMenu.setVisible(true);
 
@@ -1966,7 +1987,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			jd.dispose();
 			return;
 		}
-		int answer = MyOptionPane.showConfirmDialog(driver, "Save image?", "Save image",
+		int answer = MyOptionPane.showConfirmDialog(this, "Save image?", "Save image",
 				MyOptionPane.YES_NO_CANCEL_OPTION);
 
 		// boolean b = false;
@@ -2519,8 +2540,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		curDiag.desc = " ";
 
 		DiagramBuilder.buildDiag(fileString, this, curDiag);
-		// driver.jtp.setRequestFocusEnabled(true);
-		// driver.jtp.requestFocusInWindow();
+		// jtp.setRequestFocusEnabled(true);
+		// jtp.requestFocusInWindow();
 		fpArrowEndA = null;
 		fpArrowEndB = null;
 		fpArrowRoot = null;
@@ -2648,7 +2669,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// if (!saveAs)
 		File file = (!saveAs) ? curDiag.diagFile : null;
 
-		file = curDiag.genSave(file, langs[Lang.DIAGRAM], null, driver);
+		file = curDiag.genSave(file, langs[Lang.DIAGRAM], null, this);
 
 		int i = jtp.getSelectedIndex();
 		if (file == null) {
@@ -2832,9 +2853,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fontg = fontg.deriveFont(fs);
 		fontf = fontf.deriveFont(fs);
 		jfs.setText("Font Size: " + defaultFontSize);
-		adjustFonts();
-		// repaint();
 		saveProp("defaultFontSize", Float.toString(defaultFontSize));
+		adjustFonts();
+		// repaint();		
 		saveProperties();
 		MyOptionPane.showMessageDialog(this, "Font size changed");
 		repaint();
@@ -2842,9 +2863,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	void adjustFonts() {
-		fileMenu = new JMenu(" File ");
-		editMenu = new JMenu(" Diagram ");
-		helpMenu = new JMenu(" Help ");
+		//fileMenu = new JMenu(" File ");
+		//diagMenu = new JMenu(" Diagram ");
+		//helpMenu = new JMenu(" Help ");
 		// runMenu = new JMenu(" Run ");
 
 		int j = jtp.getTabCount();
@@ -2855,8 +2876,22 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			b.label.setFont(fontf);
 		}
 		jtp.repaint();
-
-		// osg.setFont(fontg);
+		String dfs = properties.get("defaultFontSize");
+		if (dfs == null) {
+			defaultFontSize = 14.0f;
+			dfs = "14.0";
+		} else
+			defaultFontSize = Float.parseFloat(dfs);
+		
+		saveProp("defaultFontSize", dfs);
+		
+		fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);
+		fontg = fontg.deriveFont(defaultFontSize);
+		
+		fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
+		fontf = fontf.deriveFont(defaultFontSize);
+		
+		osg.setFont(fontg);
 		jfl.setFont(fontg);
 		jfs.setFont(fontg);
 		jfv.setFont(fontg);
@@ -2868,10 +2903,31 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		grid.setFont(fontg);
 		scaleLab.setFont(fontg);
 		fileMenu.setFont(fontg);
-		editMenu.setFont(fontg);
+		diagMenu.setFont(fontg);
 		helpMenu.setFont(fontg);
 		// runMenu.setFont(fontg);
 		diagDesc.setFont(fontg);
+		
+		int ct = fileMenu.getItemCount(); 		
+		for (int i = 0; i < ct; i++) {
+			JMenuItem jmi = fileMenu.getItem(i);
+			if (jmi instanceof JMenuItem)
+				jmi.setFont(fontg);			
+		}
+		
+		ct = diagMenu.getItemCount(); 		
+		for (int i = 0; i < ct; i++) {
+			JMenuItem jmi = fileMenu.getItem(i);
+			if (jmi instanceof JMenuItem)
+				jmi.setFont(fontg);			
+		}
+		
+		ct = helpMenu.getItemCount(); 		
+		for (int i = 0; i < ct; i++) {
+			JMenuItem jmi = fileMenu.getItem(i);
+			if (jmi instanceof JMenuItem)
+				jmi.setFont(fontg);			
+		}
 
 		for (int i = 0; i < but.length; i++) {
 			but[i].setFont(fontg);
@@ -2930,6 +2986,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//setJMenuBar(menuBar);
 
 		repaint();
+		validate();
 	}
 
 	final boolean SAVEAS = true;
@@ -3626,7 +3683,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (urls != null) {
 
 				// Create a new class loader with the directory
-				loader = new URLClassLoader(urls, this.getClass().getClassLoader());
+				loader = new URLClassLoader(urls, getClass().getClassLoader());
 
 				try {
 					// cls = loader.loadClass(thisCls);
@@ -3666,12 +3723,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			String jh = System.getenv("JAVA_HOME");
 			if (jh == null) {
-				MyOptionPane.showMessageDialog(/* this */ driver, "Missing JAVA_HOME environment variable",
+				MyOptionPane.showMessageDialog(/* this */ this, "Missing JAVA_HOME environment variable",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
 			if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")) {
-				MyOptionPane.showMessageDialog(/* this */ driver,
+				MyOptionPane.showMessageDialog(/* this */ this,
 						"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
 						MyOptionPane.ERROR_MESSAGE);
 				return;
@@ -3880,7 +3937,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return;
 		}
 
-		int result = MyOptionPane.showConfirmDialog(driver,
+		int result = MyOptionPane.showConfirmDialog(this,
 				"Comparing " + newDiag.diagFile.getAbsolutePath() + " against " + oldDiag.diagFile.getAbsolutePath(),
 				"Comparing", MyOptionPane.OK_CANCEL_OPTION);
 
@@ -4512,7 +4569,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		String fileString;
 		
 		if (null == (fileString = readFile(f))) {
-			MyOptionPane.showMessageDialog(driver, "Unable to read file " + f.getName(), MyOptionPane.ERROR_MESSAGE);
+			MyOptionPane.showMessageDialog(this, "Unable to read file " + f.getName(), MyOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		Integer errNo = Integer.valueOf(0);
@@ -4647,7 +4704,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 		// if (ll.isEmpty()) {
-		// MyOptionPane.showMessageDialog(driver,
+		// MyOptionPane.showMessageDialog(this,
 		// "No components in file: " + f.getName(),
 		// MyOptionPane.ERROR_MESSAGE);
 		// return null;
@@ -5184,7 +5241,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	public void componentResized(ComponentEvent e) {
 
-		Dimension dim = this.getSize();
+		Dimension dim = getSize();
 		Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
 		int no = but.length;
 		for (int j = 0; j < no; j++) {
@@ -5228,7 +5285,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	 * new Point(e.getX(), e.getY()); for (i = 0; i < jtp.getTabCount(); i++) { if
 	 * (jtp.getTabComponentAt(i).getBounds().contains(p)) {
 	 * //jtp.setSelectedIndex(i); break; } } } // comparing = false; //}
-	 * //repaint(); if (i == -1 ) { MyOptionPane.showMessageDialog(driver,
+	 * //repaint(); if (i == -1 ) { MyOptionPane.showMessageDialog(this,
 	 * "No diagram selected", MyOptionPane.WARNING_MESSAGE); } else if (comparing) {
 	 * comparing = false; jtp.removeMouseListener(this); compare(i); } else
 	 * jtp.setSelectedIndex(i); repaint(); }
@@ -5886,7 +5943,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// Paint background if we're opaque.
 			// super.paintComponent(g);
 			int w = getWidth();
-			if (this.isOpaque()) {
+			if (isOpaque()) {
 				// g.setColor(getBackground());
 				osg.setColor(Color.WHITE);
 				int h = getHeight();
@@ -5957,7 +6014,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			 * osg.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize); osg.fillOval(x -
 			 * cSize / 2, y - cSize / 2, cSize, cSize); osg.setColor(col);
 			 * osg.setFont(fontg); FontMetrics metrics =
-			 * driver.osg.getFontMetrics(driver.fontg);
+			 * this.osg.getFontMetrics(this.fontg);
 			 * 
 			 * String[] s1 = new String[]{"waiting", "to", "compare"}; y -= 10;
 			 * 
@@ -5976,7 +6033,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			// Now copy that off-screen image onto the screen
 			// g2d.drawImage(buffer, 0, 0, null);
-			g2d.scale(scalingFactor, scalingFactor);
+			g2d.scale(scalingFactor, scalingFactor);  
 			// g2d.scale(.8, .8);
 			g.drawImage(buffer, 0, 0, null);
 
@@ -6810,7 +6867,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 						if (leftButton && blockSelForDragging.isSubnet) {
 							if (blockSelForDragging.subnetFileName == null) {
-								MyOptionPane.showMessageDialog(driver, "No subnet diagram assigned",
+								MyOptionPane.showMessageDialog(this, "No subnet diagram assigned",
 										MyOptionPane.INFORMATION_MESSAGE);
 							} else {
 
@@ -6840,7 +6897,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						} else {
 							blockSelForDragging.buildBlockPopupMenu();
 							// if (this == null)
-							// curDiag = new Diagram(driver);
+							// curDiag = new Diagram(this);
 
 							curDiag = blockSelForDragging.diag;
 

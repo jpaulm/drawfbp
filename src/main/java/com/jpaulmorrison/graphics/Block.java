@@ -1531,7 +1531,9 @@ public class Block implements ActionListener {
 					JMenuItem menuItem3b = new JMenuItem("Display Description and Port Info");
 					menuItem3b.addActionListener(this);
 					diag.jpm.add(menuItem3b);
-						
+					
+					//menuItem1b.setEnabled(driver.currNotn != null && 							
+					//		driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 					menuItem3b.setEnabled(driver.currNotn != null && 							
 							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 											
