@@ -1532,8 +1532,8 @@ public class Block implements ActionListener {
 					menuItem3b.addActionListener(this);
 					diag.jpm.add(menuItem3b);
 					
-					//menuItem1b.setEnabled(driver.currNotn != null && 							
-					//		driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
+					menuItem1b.setEnabled(driver.currNotn != null && 							
+							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 					menuItem3b.setEnabled(driver.currNotn != null && 							
 							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 											
@@ -1645,15 +1645,25 @@ public class Block implements ActionListener {
 
 		
 		if (s.equals("Choose Source Code")) {
-			selectSourceCode();
-			
-			if (driver.currNotn.lang != driver.langs[DrawFBP.Lang.JAVA])
+			// selectSourceCode();
+			if (codeFileName != null) {
+				if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(driver,
+						"Block already associated with source code (" + codeFileName
+								+ ") - change it?",
+						"Change source code", MyOptionPane.YES_NO_OPTION))
+					return;
+				}
+			 
 			try {
-				selectNonJavaClass();
+				if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA])
+					selectSourceCode();
+				else
+					// try {
+					selectNonJavaSource();
 			} catch (MalformedURLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}      
+			}
 			diag.changed = true;
 			return;
 		}
@@ -1694,7 +1704,7 @@ public class Block implements ActionListener {
 							driver.saveProp("fbpJsonFile", driver.fbpJsonFile);
 						}
 					}
-					selectNonJavaClass();   
+					selectNonJavaSource();   
 				}
 			} catch (MalformedURLException e1) {
 				// TODO Auto-generated catch block
@@ -2059,7 +2069,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		driver.repaint();
 	}
 
-	void selectNonJavaClass() throws MalformedURLException {
+	void selectNonJavaSource() throws MalformedURLException {
 
 		//if (driver.currNotn == driver.notations[DrawFBP.Notation.N_JSON]) 
 		//	driver.locateFbpJsonFile(false);		
@@ -2399,7 +2409,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				return;
 			}
 		}
-
+/*
 		String ans = (String) MyOptionPane.showInputDialog(driver,
 				"Edit arbitrary string or browse (enter # to browse)",
 				"Enter/change source code name", MyOptionPane.PLAIN_MESSAGE,
@@ -2413,6 +2423,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		 
 
 		if (codeFileName.equals("#")) {
+			*/
+		 
 
 			String t = driver.properties.get(notn.srcDirProp);
 			if (t == null)
@@ -2443,7 +2455,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				}
 
 			}
-		}
+		//}
 
 	}
 	

@@ -591,7 +591,7 @@ public class MyFileChooser extends JDialog
 		int x_off = 100;
 		int y_off = 100;
 		dialog.setPreferredSize(
-				new Dimension(dim.width - x_off - 50, dim.height - y_off - 50));
+				new Dimension(1000, dim.height - y_off - 50));
 		//dialog.setPreferredSize(new Dimension(1000, 700));
 		dialog.pack();
 		dialog.setLocation(p.x + x_off, p.y + y_off);
