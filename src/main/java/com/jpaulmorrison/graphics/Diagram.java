@@ -131,7 +131,7 @@ public class Diagram {
 		if (saveAs) {
 			
 					
-			String s = driver.properties.get(driver.currNotn.lang.propertyName);  
+			String s = driver.properties.get(lang.propertyName);  
 			if (s == null) 
 				s = System.getProperty("user.home");			 
 
@@ -211,7 +211,7 @@ public class Diagram {
 							
 							int answer = MyOptionPane.showConfirmDialog(jf, 
 									"\"" + suff + "\" not valid suffix for " +
-								            driver.currNotn.label + " files - change suffix?", "Change suffix?",
+								            lang.label + " files - change suffix?", "Change suffix?",
 									MyOptionPane.YES_NO_CANCEL_OPTION);
 							if (answer == MyOptionPane.CANCEL_OPTION)
 								return null;

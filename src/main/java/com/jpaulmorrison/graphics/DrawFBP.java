@@ -2684,6 +2684,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		curDiag.diagFile = file;
 
 		File currentDiagramDir = file.getParentFile();
+	
 		setTitle("Diagram: " + curDiag.title);
 		if (curDiag.title.toLowerCase().endsWith(".drw"))
 			curDiag.title = curDiag.title.substring(0, curDiag.title.length() - 4);
@@ -4231,7 +4232,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						key = key.replace("\\", "/");
 						if (-1 == key.indexOf("/")) // compensate for old bug (key and value were reversed)!
 							// saveProp(key, s);
-							properties.put(key, s);
+							//if (key.equals("currentDiagramDir"))
+							//	properties.put(key, s);
+							//else
+								properties.put(key, s);
 					} else {
 						// additionalJar/DllFiles
 						Set<String> set = key.equals("additionalJarFiles") ? jarFiles : dllFiles;

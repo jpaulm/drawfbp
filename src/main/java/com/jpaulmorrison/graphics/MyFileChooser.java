@@ -838,10 +838,10 @@ public class MyFileChooser extends JDialog
 			
 			
 			if (ll.size() == 0)  {
-				//ll.add("No files match criteria");
-				MyOptionPane.showMessageDialog(driver,
-						"No files match criteria",
-						MyOptionPane.INFORMATION_MESSAGE);
+				ll.add("No files in directory with specified extension");
+				//MyOptionPane.showMessageDialog(driver,
+				//		"No files in directory with specified extension",
+				//		MyOptionPane.INFORMATION_MESSAGE);
 				//t_suggName.setEditable(true);
 			}
 			//else {
