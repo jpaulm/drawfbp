@@ -1099,6 +1099,8 @@ public class Block implements ActionListener {
 	*/ 
 	
 	void displayPortInfo() {
+		if (driver.currNotn.lang != driver.langs[DrawFBP.Lang.JAVA])
+			return;
 		if (fullClassName == null)
 			return;
 		if (portInfo != null) {
@@ -1163,8 +1165,13 @@ public class Block implements ActionListener {
 		
 		
 		int i = fullClassName.indexOf("!");
-		String s1 = fullClassName.substring(0, i); 
-		String s2 = fullClassName.substring(i + 1); 
+		String s1 = fullClassName;
+		String s2 = "";
+		if (i > -1) {		 
+			s1 = fullClassName.substring(0, i); 
+			s2 = fullClassName.substring(i + 1); 
+		}
+		
 		gbc.gridy = 1;
 		JTextField tf0 = new JTextField(" " + s1 + " ");
 		tf0.setEditable(false);

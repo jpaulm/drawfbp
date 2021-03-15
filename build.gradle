@@ -47,7 +47,7 @@ allprojects { project ->
      }
 }
 */
-version = '2.21.4'
+version = '2.21.5'
 
 group = 'com.jpaulmorrison'
 
@@ -109,7 +109,6 @@ jar {
     exclude('math/utils/**')
     exclude('math/package/html')
     exclude('com/seisw/**')
-   
 }
 
 

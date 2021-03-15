@@ -1,7 +1,6 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -15,7 +14,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
 
-import math.geom2d.*;
+import math.geom2d.Point2D;
 
 import java.util.*;
 
@@ -921,7 +920,7 @@ public class Arrow implements ActionListener {
 		p.cx = (fromX + toX) / 2;
 		p.cy = (fromY + toY) / 2;
 		
-		Integer i = Integer.valueOf(id);
+		//Integer i = Integer.valueOf(id);
 		
 		p.desc = "Logger";
 		//diag.maxBlockNo++;
@@ -1098,7 +1097,7 @@ public class Arrow implements ActionListener {
 		
 		GeneralPath path = new GeneralPath();
 		double x, y;
-		final int aDW = driver.zWS + 4; // arrow Detect Width - same as detect edge size + 4
+		final int aDW = driver.zWS + 2; // arrow Detect Width - same as detect edge size + 2
 		x = tx - fx;
 		y = ty - fy;
 		double hypoSqu = (double) (x * x) + (double) (y * y);
@@ -1116,16 +1115,6 @@ public class Arrow implements ActionListener {
 
 		shapeList.add(sh);		
 	 	
-		/* 
-		  
-		if (this == driver.detArr && segNo == driver.detArrSegNo) {
-			Color col = g.getColor();
-			g.setColor(ltBlue);  
-			//g.setColor(Color.BLUE);  
-			((Graphics2D)g).fill(sh);				
-			g.setColor(col);	
-		}
-		*/  
 		
 	}
 				
