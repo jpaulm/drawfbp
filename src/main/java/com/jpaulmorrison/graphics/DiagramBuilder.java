@@ -500,7 +500,7 @@ public class DiagramBuilder {
 		fl1.put("desc", "*");
 		fl1.put("complang", "*");   // deprecated
 		fl1.put("diagnotn", "*");   // deprecated
-		fl1.put("notation", "*");
+		fl1.put("notation", "*");   // moved to driver level
 		fl1.put("clicktogrid", "*");  // moved to driver
 		fl1.put("sortbydate", "*");   // moved to driver
 		fl1.put("genCodeFileName", "*"); //deprecated

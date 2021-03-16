@@ -591,6 +591,10 @@ public class Arrow implements ActionListener {
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
 		diag.jpm.addSeparator();
+		menuItem = new JMenuItem("Redraw Arrow");
+		menuItem.addActionListener(this);
+		diag.jpm.add(menuItem);
+		diag.jpm.addSeparator();
 		menuItem = new JMenuItem("Drag Tail");
 		menuItem.addActionListener(this);
 		diag.jpm.add(menuItem);
@@ -768,6 +772,29 @@ public class Arrow implements ActionListener {
 			diag.changed = true;
 			return;
 
+		} if (s.equals("Redraw Arrow")) {
+			diag.oldArrow = this;
+			diag.arrows.remove(Integer.valueOf(id));
+			return;
+			/*
+			Arrow arr = new Arrow(diag);
+			
+			// try reusing id
+			
+			//int aid = (++diag.maxArrowNo);  
+			//arr.id = aid;
+			//diag.arrows.put(Integer.valueOf(arr.id), arr);
+			
+			arr.id = id;
+			//diag.arrows.replace(Integer.valueOf(id), this, arr);
+			arr.upStreamPort = this.upStreamPort;
+			arr.downStreamPort = this.downStreamPort;
+			arr.capacity = this.capacity;
+			//driver.currentArrow = arr;
+			//diag.delArrow(this);
+			return;
+			*/
+			
 		} if (s.equals("Drag Tail")) {
 			//tailMarked = true;
 			driver.tailMark = new Point(fromX, fromY);
@@ -828,7 +855,9 @@ public class Arrow implements ActionListener {
 			if (MyOptionPane.YES_OPTION == MyOptionPane.showConfirmDialog(
 					driver, "Do you want to delete this arrow?", "Delete arrow",
 					 MyOptionPane.YES_NO_OPTION)) {
-				diag.delArrow(this);
+				diag.delTouchingArrows(this);
+				Integer aid = Integer.valueOf(id);
+				diag.arrows.remove(aid);
 
 				diag.changed = true;
 				driver.selArrow = null;

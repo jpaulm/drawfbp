@@ -7248,6 +7248,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				a.toX = xa;
 				a.toY = ya;
+				
+				if (curDiag.oldArrow != null) {
+					a.upStreamPort = curDiag.oldArrow.upStreamPort;
+					a.downStreamPort = curDiag.oldArrow.downStreamPort;
+					a.capacity = curDiag.oldArrow.capacity;
+					curDiag.oldArrow = null;
+				}
 
 				defaultPortNames(a);
 

@@ -53,45 +53,19 @@ public class Diagram {
 	int maxBlockNo = 0;
 
 	int maxArrowNo = 0;
+	
+	Arrow oldArrow = null;
 
 	int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
 
 	int maxX = 0, maxY = 0;
 
-	//Block foundBlock;
-
-	//boolean clickToGrid;
-
-	//int xa, ya;
 	
 	Block parent = null;
 
-	// File imageFile = null;
-
-	//boolean findArrowCrossing = false;
-	//Enclosure cEncl = null;
-	
-	//HashSet<String> portNames = null;
-	//String genCodeFileName;
-	
+		
 	JPopupMenu jpm;
-	//String targetLang;
-	
-	/*
-	public static int DIAGRAM = 0;
-	public static int IMAGE = 1;	
-	//public static int JHELP = 2;
-	public static int JARFILE = 2;   
-	public static int CLASS = 3;   
-	public static int PROCESS = 4;   
-	public static int NETWORK = 5;   
-	public static int DLL = 6; 
-	public static int EXE = 7;   
-	public static int FBP = 8;    
-*/	
-	//FileChooserParm[] fCParm;
-	//int tabNum;   // index in driver.jtp
-	
+		
 	CodeManager cm = null;
 	Block motherBlock = null;
 	
@@ -446,8 +420,8 @@ public class Diagram {
 		// if (title != null)
 		// fileString += "<title>" + title + "</title> ";
 
-		if (driver.currNotn != null)
-			fileString += "<notation>" + driver.currNotn.label + "</notation>\n ";
+		//if (driver.currNotn != null)
+		//	fileString += "<notation>" + driver.currNotn.label + "</notation>\n ";
 
 		// if (genCodeFileName != null)
 		// fileString += "<genCodeFileName>" + genCodeFileName
@@ -514,8 +488,8 @@ public class Diagram {
 	}
 	
 	
-	void delArrow(Arrow arrow) {
-		//LinkedList<Arrow> ll = new LinkedList<Arrow>();
+	void delTouchingArrows(Arrow arrow) {
+		 
 		// go down list looking for arrows which end at this arrow
 		
 		for (Arrow arr : arrows.values()) {
@@ -526,8 +500,8 @@ public class Diagram {
 			}
 		}			
 				
-		Integer aid = Integer.valueOf(arrow.id);
-		arrows.remove(aid);
+		//Integer aid = Integer.valueOf(arrow.id);
+		//arrows.remove(aid);
 	}
 
 	void delBlock(Block block, boolean choose) {
@@ -542,12 +516,18 @@ public class Diagram {
 		// go down list repeatedly - until no more arrows to remove
 		 
 		for (Arrow arrow : arrows.values()) {
-			if (arrow.fromId == block.id) 
-				delArrow(arrow);
+			if (arrow.fromId == block.id) {
+				delTouchingArrows(arrow);
+				Integer aid = Integer.valueOf(arrow.id);
+				arrows.remove(aid);
+			}
 			
 			if (arrow.endsAtBlock) {
-				if (arrow.toId == block.id) 
-					delArrow(arrow);	
+				if (arrow.toId == block.id) {
+					delTouchingArrows(arrow);
+					Integer aid = Integer.valueOf(arrow.id);
+					arrows.remove(aid);
+				}
 			}			
 		}
 
