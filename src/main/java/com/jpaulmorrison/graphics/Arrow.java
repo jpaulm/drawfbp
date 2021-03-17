@@ -774,6 +774,7 @@ public class Arrow implements ActionListener {
 
 		} if (s.equals("Redraw Arrow")) {
 			diag.oldArrow = this;
+			diag.delTouchingArrows(this);
 			diag.arrows.remove(Integer.valueOf(id));
 			return;
 			/*
@@ -791,7 +792,7 @@ public class Arrow implements ActionListener {
 			arr.downStreamPort = this.downStreamPort;
 			arr.capacity = this.capacity;
 			//driver.currentArrow = arr;
-			//diag.delArrow(this);
+			
 			return;
 			*/
 			
