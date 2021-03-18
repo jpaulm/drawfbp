@@ -283,7 +283,7 @@ public class CodeManager implements ActionListener {
 					error = true;
 					
 										 
-					if (block.component == null) {
+					if (block.component == null  && block.compName == null) {
 						MyOptionPane.showMessageDialog(driver,
 								"Class name missing for '" + s + "' - diagram needs to be updated",
 								MyOptionPane.WARNING_MESSAGE);
@@ -596,8 +596,10 @@ public class CodeManager implements ActionListener {
 		else {
 			className.replace("\\",  "/");
 			int i = className.lastIndexOf("/");
-			int j = className.lastIndexOf("."); 
-			i = Math.max(i, j);
+			if (lang != driver.langs[Lang.CSHARP]) {
+				int j = className.lastIndexOf("."); 
+				i = Math.max(i, j);
+			}
 			className = className.substring(i + 1);
 			return "Component(\"" + name + "\", typeof(" + className + "))";
 		}
