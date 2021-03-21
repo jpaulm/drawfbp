@@ -208,9 +208,10 @@ public class CodeManager implements ActionListener {
 				//	k = 3;
 				//}
 			} else {
-				contents[0] = "using System;\nusing System.IO;\nusing FBPLIB;\nusing Components;\nnamespace Xxxxxxxxxx{";
+				contents[0] = "using System;\nusing System.IO;\nusing FBPLib;\nusing Components;\n";
 				contents[1] = " ";
-				contents[2] = " //change namespace name if desired\n";  
+				//contents[2] = " //change namespace name if desired\n";  
+				contents[2] = " ";
 				k = 3;
 			}
 
@@ -291,8 +292,8 @@ public class CodeManager implements ActionListener {
 
 					} else {
 						c = cleanComp(block);
-						//if (c.toLowerCase().endsWith(".class"))
-						//	c = c.substring(0, c.length() - 6);
+						if (lang == driver.langs[DrawFBP.Lang.CSHARP] && c.toLowerCase().endsWith(".cs"))
+							c = c.substring(0, c.length() - 3);						
 					}
 					
 					 
@@ -521,7 +522,7 @@ public class CodeManager implements ActionListener {
 					code += "public static void main(String[] argv) throws Exception  { \n"
 							+ "  new " + s + "().go(); \n";
 				else
-					code += "internal static void main(String[] argv) { \n"
+					code += "internal static void Main(String[] argv) { \n"
 							+ "  new " + s + "().Go();\n }\n";
 			}
 
@@ -533,9 +534,9 @@ public class CodeManager implements ActionListener {
 
 			sno++;
 
-			contents[sno] = "}\n";
-			styles[sno] = normalStyle;
-			sno++;
+			//contents[sno] = "}\n";
+			//styles[sno] = normalStyle;
+			//sno++;
 
 			if (error) {
 				contents[sno] = "\n /* Errors in generated code - they must be corrected for your program to run - \n\n"

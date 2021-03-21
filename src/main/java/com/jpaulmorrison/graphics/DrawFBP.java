@@ -288,7 +288,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	// Timer ttStartTimer = null;
 	// Timer ttEndTimer = null;
 	// boolean drawToolTip = false;
-	boolean gotDllReminder = false;
+	//boolean gotDllReminder = false;
 
 	// FileChooserParm diagFCParm = null;
 	String[] filterOptions = { "", "All (*.*)" };
@@ -3318,8 +3318,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			String t = "";
 			String v = "";
+			 
 			int i = ss.lastIndexOf(File.separator);
 			srcDir = ss.substring(0, i);
+			j = ss.lastIndexOf(".cs");
+			v = ss.substring(i + 1, j);
+			
+			
+			/*
 			int k = progString.indexOf("namespace ");
 			if (k > -1) {
 				k += 10; // skip over "namespace"
@@ -3338,7 +3344,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				v = v.replace(".", "/");
 
 			}
-
+*/
 			// String trunc = ss.substring(0, ss.lastIndexOf("/"));
 			String trunc = srcDir;
 			String progName = ss.substring(ss.lastIndexOf(File.separator) + 1);
@@ -3391,64 +3397,60 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			cmdList.add("-t:exe");
 			t = t.replace("\\", "/");
 			t = t.replace("/", ".");
-			// if (v.equals(""))
-			// cmdList.add("-main:" + progName);
-			// else
-			// cmdList.add("-main:" + v + "." + progName);
-			// progName = progName.substring(0, progName.length() - 3); // drop the .cs
-			cmdList.add("-out:" + target + "/" + v + ".exe");
+			
+			cmdList.add("-out:\"" + target + "/" + v + ".exe\"");
 			exeDir = trunc + File.separator + target;
 
-			if (!gotDlls && !gotDllReminder) {
+			if (!gotDlls /*&& !gotDllReminder */) {
 				MyOptionPane.showMessageDialog(this,
 						"If you are using FBP, you will need a FBPLib dll and a FBPVerbs dll - use File/Add Additional Dll File for each one",
 						MyOptionPane.WARNING_MESSAGE);
-				gotDllReminder = true;
+				//gotDllReminder = true;
 				return;
 			}
 
-			else {
+			//else {
 				// Iterator<String> entries = dllFiles.iterator();
 				// z = "";
 				// String cma = "";
 
 				// String w = "";
 				String libs = "";
-				String cma = "";
-				// while (entries.hasNext()) {
-				// String thisEntry = entries.next();
+				 
+				String cma = "";				
 				for (String thisEntry : dllFiles) {
 					if (!(new File(thisEntry).exists())) {
 						MyOptionPane.showMessageDialog(this, "Dll file does not exist: " + thisEntry,
 								MyOptionPane.WARNING_MESSAGE);
 						return;
 					}
-					// z += "\"/r:" + thisEntry.getValue() + "\" ";
-					// cma = ";";
+					
 					String w = thisEntry;
 					w = w.replace("\\", "/");
 					j = w.indexOf("bin/Debug");
-					libs += cma + w.substring(0, j);
+					libs += cma + "\"" + w.substring(0, j) + "\"";
 					cma = ",";
-					cmdList.add("-lib:" + libs);
-
 				}
-				// entries = dllFiles.iterator();
-				// while (entries.hasNext()) {
-				// String thisEntry = entries.next();
+				cmdList.add("-lib:" + libs);
+				 
+				
 				for (String thisEntry : dllFiles) {
 					String w = thisEntry;
 					w = w.replace("\\", "/");
 					j = w.indexOf("bin/Debug");
-					cmdList.add("-r:" + w.substring(j));
+					//cmdList.add("-r:\"" + w.substring(j) + "\"");
+					cmdList.add("-r:\"" + thisEntry + "\"");
 				}
-
-			}
+					  
+			//}
 			// String w = "\"" + trunc + "/" + "*.cs\"";
 			ss = ss.replace("\\", "/");
 			cmdList.add(/* trunc + "/" + */ "*.cs");
+			
+			for (String s: cmdList) 
+				System.out.println(s);
 
-			/* ProcessBuilder */ pb = new ProcessBuilder(cmdList);
+			pb = new ProcessBuilder(cmdList);
 
 			pb.directory(new File(trunc));
 
@@ -4244,29 +4246,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							int m = s.indexOf(";");
 							if (m == -1) {
 								u = s;
-								// int n = u.indexOf(":");
-
-								// if (n == -1)
-								// break;
-
-								// saveProp("addnl_jf_" + u.substring(0, n),
-								// u.substring(n + 1));
-								// list.put(u.substring(0, n),
-								// u.substring(n + 1));
 								set.add(u);
 								break;
 							} else {
 								u = s.substring(0, m);
 								s = s.substring(m + 1);
-								// int n = u.indexOf(":");
-
-								// if (n == -1)
-								// break;
-
-								// saveProp("addnl_jf_" + u.substring(0, n),
-								// u.substring(n + 1));
-								// list.put(u.substring(0, n),
-								// u.substring(n + 1));
 								set.add(u);
 							}
 						}
