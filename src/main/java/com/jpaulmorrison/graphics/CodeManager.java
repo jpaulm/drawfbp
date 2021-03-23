@@ -208,7 +208,7 @@ public class CodeManager implements ActionListener {
 				//	k = 3;
 				//}
 			} else {
-				contents[0] = "using System;\nusing System.IO;\nusing FBPLib;\nusing Components;\n";
+				contents[0] = "using System;\nusing System.IO;\nusing Lib;\nusing Components;\n";
 				contents[1] = " ";
 				//contents[2] = " //change namespace name if desired\n";  
 				contents[2] = " ";
@@ -292,8 +292,8 @@ public class CodeManager implements ActionListener {
 
 					} else {
 						c = cleanComp(block);
-						if (lang == driver.langs[DrawFBP.Lang.CSHARP] && c.toLowerCase().endsWith(".cs"))
-							c = c.substring(0, c.length() - 3);						
+						if (lang == driver.langs[DrawFBP.Lang.CSHARP] && c.toLowerCase().endsWith(lang.ext))
+							c = c.substring(0, c.length() - lang.ext.length() - 1);						
 					}
 					
 					 

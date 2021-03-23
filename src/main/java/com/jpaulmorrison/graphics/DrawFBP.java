@@ -3316,7 +3316,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				MyOptionPane.showMessageDialog(this, "Program not found: " + ss, MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			String t = "";
+			//String t = "";
 			String v = "";
 			 
 			int i = ss.lastIndexOf(File.separator);
@@ -3360,7 +3360,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			saveProp("currentCsharpNetworkDir", trunc);
 
-			ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "cd '" + trunc + "' && dir");
+			//ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "cd '" + trunc + "' && dir");
+			ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "cd '" + trunc + "'");
 			try {
 				proc = pb.start();
 				proc.waitFor();
@@ -3372,6 +3373,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				e.printStackTrace();
 			}
 
+			System.out.println("cd : " + trunc);
 			String target = /* trunc + "/" + */ "bin/Debug"; // we've done a cd, so we don't need trunc
 
 			File f2 = new File(target);
@@ -3395,10 +3397,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			List<String> cmdList = new ArrayList<String>();
 			cmdList.add("csc");
 			cmdList.add("-t:exe");
-			t = t.replace("\\", "/");
-			t = t.replace("/", ".");
-			
-			cmdList.add("-out:\"" + target + "/" + v + ".exe\"");
+			//t = t.replace("\\", "/");
+			//t = t.replace("/", ".");
+			target = target.replace("/", "\\");
+			cmdList.add("-out:\"" + target + "\\" + v + ".exe\"");
 			exeDir = trunc + File.separator + target;
 
 			if (!gotDlls /*&& !gotDllReminder */) {
@@ -3415,8 +3417,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// String cma = "";
 
 				// String w = "";
-				String libs = "";
-				 
+			/*
+				String libs = "";				 
 				String cma = "";				
 				for (String thisEntry : dllFiles) {
 					if (!(new File(thisEntry).exists())) {
@@ -3426,13 +3428,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					
 					String w = thisEntry;
-					w = w.replace("\\", "/");
-					j = w.indexOf("bin/Debug");
+					//w = w.replace("\\", "/");
+					w = w.replace("/", "\\");
+					j = w.indexOf("bin\\Debug");
 					libs += cma + "\"" + w.substring(0, j) + "\"";
 					cma = ",";
 				}
 				cmdList.add("-lib:" + libs);
-				 
+				*/ 
 				
 				for (String thisEntry : dllFiles) {
 					String w = thisEntry;
@@ -5829,6 +5832,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				while ((line = br.readLine()) != null) {
 					output += line + "<br>";
 				}
+				
 			} catch (NullPointerException npe) {
 				error = "Null Pointer Exception";
 				proc = null;
