@@ -27,29 +27,8 @@ com/jpaulmorrison/graphics/Enclosure.java
  com.jpaulmorrison.graphics.Enclosure
 com/jpaulmorrison/graphics/ExtPortBlock.java
  com.jpaulmorrison.graphics.ExtPortBlock
-com/jpaulmorrison/graphics/MyFileChooser.java
- com.jpaulmorrison.graphics.MyFileChooser
- com.jpaulmorrison.graphics.MyFileChooser$1
- com.jpaulmorrison.graphics.MyFileChooser$2
- com.jpaulmorrison.graphics.MyFileChooser$3
- com.jpaulmorrison.graphics.MyFileChooser$4
- com.jpaulmorrison.graphics.MyFileChooser$5
- com.jpaulmorrison.graphics.MyFileChooser$CancelAction
- com.jpaulmorrison.graphics.MyFileChooser$ClickListener
- com.jpaulmorrison.graphics.MyFileChooser$ComboBoxRenderer
- com.jpaulmorrison.graphics.MyFileChooser$DeleteAction
- com.jpaulmorrison.graphics.MyFileChooser$EnterAction
- com.jpaulmorrison.graphics.MyFileChooser$FindAction
- com.jpaulmorrison.graphics.MyFileChooser$ListRenderer
- com.jpaulmorrison.graphics.MyFileChooser$MyButton
- com.jpaulmorrison.graphics.MyFileChooser$MyComboBox
- com.jpaulmorrison.graphics.MyFileChooser$MyTextField
- com.jpaulmorrison.graphics.MyFileChooser$MyTextField$1
- com.jpaulmorrison.graphics.MyFileChooser$MyTraversalPolicy
- com.jpaulmorrison.graphics.MyFileChooser$NewFolderAction
- com.jpaulmorrison.graphics.MyFileChooser$ParentAction
- com.jpaulmorrison.graphics.MyFileChooser$SharedListSelectionHandler
- com.jpaulmorrison.graphics.MyFileChooser$SuggAction
+com/jpaulmorrison/graphics/VersionAndTimestamp.java
+ com.jpaulmorrison.graphics.VersionAndTimestamp
 com/jpaulmorrison/graphics/MyFontChooser.java
  com.jpaulmorrison.graphics.MyFontChooser
  com.jpaulmorrison.graphics.MyFontChooser$1
@@ -85,14 +64,6 @@ com/jpaulmorrison/graphics/Arrow.java
  com.jpaulmorrison.graphics.Arrow$ZigzagStroke
 com/jpaulmorrison/graphics/FoundPointB.java
  com.jpaulmorrison.graphics.FoundPointB
-com/jpaulmorrison/graphics/BabelParser2.java
- com.jpaulmorrison.graphics.BabelParser2
-com/jpaulmorrison/graphics/ProcessBlock.java
- com.jpaulmorrison.graphics.ProcessBlock
-com/jpaulmorrison/graphics/Bend.java
- com.jpaulmorrison.graphics.Bend
-com/jpaulmorrison/graphics/FileBlock.java
- com.jpaulmorrison.graphics.FileBlock
 com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP
  com.jpaulmorrison.graphics.DrawFBP$1
@@ -115,7 +86,6 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$EscapeAction
  com.jpaulmorrison.graphics.DrawFBP$ExeFilter
  com.jpaulmorrison.graphics.DrawFBP$FBPFilter
- com.jpaulmorrison.graphics.DrawFBP$FileChooserParm
  com.jpaulmorrison.graphics.DrawFBP$ImageFilter
  com.jpaulmorrison.graphics.DrawFBP$JSFilter
  com.jpaulmorrison.graphics.DrawFBP$JSONFilter
@@ -128,5 +98,34 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$RunTask
  com.jpaulmorrison.graphics.DrawFBP$SelectionArea
  com.jpaulmorrison.graphics.DrawFBP$Side
-com/jpaulmorrison/graphics/VersionAndTimestamp.java
- com.jpaulmorrison.graphics.VersionAndTimestamp
+com/jpaulmorrison/graphics/ProcessBlock.java
+ com.jpaulmorrison.graphics.ProcessBlock
+com/jpaulmorrison/graphics/Bend.java
+ com.jpaulmorrison.graphics.Bend
+com/jpaulmorrison/graphics/FileBlock.java
+ com.jpaulmorrison.graphics.FileBlock
+com/jpaulmorrison/graphics/MyFileChooser.java
+ com.jpaulmorrison.graphics.MyFileChooser
+ com.jpaulmorrison.graphics.MyFileChooser$1
+ com.jpaulmorrison.graphics.MyFileChooser$2
+ com.jpaulmorrison.graphics.MyFileChooser$3
+ com.jpaulmorrison.graphics.MyFileChooser$4
+ com.jpaulmorrison.graphics.MyFileChooser$5
+ com.jpaulmorrison.graphics.MyFileChooser$CancelAction
+ com.jpaulmorrison.graphics.MyFileChooser$ClickListener
+ com.jpaulmorrison.graphics.MyFileChooser$ComboBoxRenderer
+ com.jpaulmorrison.graphics.MyFileChooser$DeleteAction
+ com.jpaulmorrison.graphics.MyFileChooser$EnterAction
+ com.jpaulmorrison.graphics.MyFileChooser$FindAction
+ com.jpaulmorrison.graphics.MyFileChooser$ListRenderer
+ com.jpaulmorrison.graphics.MyFileChooser$MyButton
+ com.jpaulmorrison.graphics.MyFileChooser$MyComboBox
+ com.jpaulmorrison.graphics.MyFileChooser$MyTextField
+ com.jpaulmorrison.graphics.MyFileChooser$MyTextField$1
+ com.jpaulmorrison.graphics.MyFileChooser$MyTraversalPolicy
+ com.jpaulmorrison.graphics.MyFileChooser$NewFolderAction
+ com.jpaulmorrison.graphics.MyFileChooser$ParentAction
+ com.jpaulmorrison.graphics.MyFileChooser$SharedListSelectionHandler
+ com.jpaulmorrison.graphics.MyFileChooser$SuggAction
+com/jpaulmorrison/graphics/BabelParser2.java
+ com.jpaulmorrison.graphics.BabelParser2

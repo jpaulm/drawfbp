@@ -355,10 +355,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		langs[Lang.JS] = new Lang("JS", "js", new JSFilter(), "currentJSDir");
 		langs[Lang.FBP] = new Lang("FBP", "fbp", new FBPFilter(), "currentFBPNetworkDir");
 		langs[Lang.DIAGRAM] = new Lang("Diagram", "drw", new DiagramFilter(), "currentDiagramDir"); // y
-		langs[Lang.IMAGE] = new Lang(null, "png", new ImageFilter(), "currentImageDir");
-		langs[Lang.JARFILE] = new Lang(null, "jar", new JarFileFilter(), "javaFBPJarFile");
-		langs[Lang.CLASS] = new Lang(null, "class", new JavaClassFilter(), "currentClassDir");
-		langs[Lang.FBP_JSON] = new Lang(null, "json", new JSONFilter(), "currentJSDir");
+		langs[Lang.IMAGE] = new Lang("Image", "png", new ImageFilter(), "currentImageDir");
+		langs[Lang.JARFILE] = new Lang("Jar File", "jar", new JarFileFilter(), "javaFBPJarFile");
+		langs[Lang.CLASS] = new Lang("Class", "class", new JavaClassFilter(), "currentClassDir");
+		langs[Lang.FBP_JSON] = new Lang("JSON", "json", new JSONFilter(), "currentJSDir");
 		langs[Lang.DLL] = new Lang(null, "dll", new DllFilter(), "dllFileDir");
 		langs[Lang.EXE] = new Lang(null, "exe", new ExeFilter(), "exeDir");
 
@@ -2928,6 +2928,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			JMenuItem jmi = fileMenu.getItem(i);
 			if (jmi instanceof JMenuItem)
 				jmi.setFont(fontg);			
+		}
+		
+		for (int i = 0; i < gMenu.length; i++) {
+			gMenu[i].setFont(fontg);
 		}
 
 		for (int i = 0; i < but.length; i++) {
@@ -5786,6 +5790,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 	}
+	/*
 
 	public class FileChooserParm {
 		// int index;
@@ -5797,7 +5802,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// FileFilter filter;
 		String title;
 
-		FileChooserParm(/* int n, */ String x, String a, Lang lan, String e) {
+		FileChooserParm( String x, String a, Lang lan, String e) {
 			// index = n;
 
 			name = x;
@@ -5809,7 +5814,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			title = e;
 		}
 	}
-
+*/
 	public class RunTask extends Thread {
 		public void run() {
 
