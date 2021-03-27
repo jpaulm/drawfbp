@@ -3362,6 +3362,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			saveProp("currentCsharpNetworkDir", trunc);
 
+			/*
 			//ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "cd '" + trunc + "' && dir");
 			ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "cd '" + trunc + "'");
 			try {
@@ -3375,8 +3376,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				e.printStackTrace();
 			}
 
+			*/
 			//System.out.println("cd : " + trunc);
-			String target = /* trunc + "/" + */ "bin/Debug"; // we've done a cd, so we don't need trunc
+			String target =  trunc + File.separator +  "bin\\Debug"; // we've done a cd, so we don't need trunc
 
 			File f2 = new File(target);
 			f2.mkdirs();
@@ -3455,7 +3457,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			//for (String s: cmdList) 
 			//	System.out.println(s);
 
-			pb = new ProcessBuilder(cmdList);
+			ProcessBuilder pb = new ProcessBuilder(cmdList);
 			for (int m = 0; m < cmdList.size(); m++)
 				System.out.println(cmdList.get(m));
 
