@@ -35,7 +35,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import java.util.*;
-
+import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -51,6 +51,7 @@ import javax.help.HelpSetException;
 import javax.help.JHelp;
 import javax.imageio.ImageIO;
 
+import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
@@ -3329,7 +3330,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			v = ss.substring(i + 1, j);
 			
 			
-			/*
+			
 			int k = progString.indexOf("namespace ");
 			if (k > -1) {
 				k += 10; // skip over "namespace"
@@ -3348,7 +3349,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				v = v.replace(".", "/");
 
 			}
-*/
+
 			// String trunc = ss.substring(0, ss.lastIndexOf("/"));
 			String trunc = srcDir;
 			String progName = ss.substring(ss.lastIndexOf(File.separator) + 1);
@@ -3377,7 +3378,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				e.printStackTrace();
 			}
 
-			System.out.println("cd : " + trunc);
+			//System.out.println("cd : " + trunc);
 			String target = /* trunc + "/" + */ "bin/Debug"; // we've done a cd, so we don't need trunc
 
 			File f2 = new File(target);
@@ -3452,10 +3453,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			//}
 			// String w = "\"" + trunc + "/" + "*.cs\"";
 			ss = ss.replace("\\", "/");
-			cmdList.add(/* trunc + "/" + */ "*.cs");
+			cmdList.add(/* trunc + "/" + */ progName + ".cs");
 			
-			for (String s: cmdList) 
-				System.out.println(s);
+			//for (String s: cmdList) 
+			//	System.out.println(s);
 
 			pb = new ProcessBuilder(cmdList);
 
@@ -3764,8 +3765,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// pBDir = clsDir.substring(0, m + 4) + "/";
 			pBDir = clsDir;
 
-			Thread runthr = new Thread(new RunTask());
-			runthr.start();
+			//Thread runthr = new Thread(new RunTask());
+			//runthr.start();
+			run();
 
 			// program = clsDir + "/" + progName;
 			// + ".class";
@@ -3825,11 +3827,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			pBDir = exeDir;
 
-			Thread runthr = new Thread(new RunTask());
-			runthr.start();
+			//Thread runthr = new Thread(new RunTask());
+			//runthr.start();
+			run();
+			
 		}
 	}
 
+	
+	
+	
 	String getPackageFromCode(String data) {
 		String pkg = null;
 		// int lineNo = 0;
@@ -5396,12 +5403,25 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return aRunnable;
 
 	}
+/*
+	class TimeOutTask extends TimerTask {
+	    private Thread t;
+	    private Timer timer;
 
-	/*
-	 * public class Lang { String language; // this is the language... String extn;
-	 * // extension - excluding period Lang(String lan, String ex) { language = lan;
-	 * extn = ex; } }
-	 */
+	    TimeOutTask(Thread t, Timer timer){
+	        this.t = t;
+	        this.timer = timer;
+	    }
+	 
+	    public void run() {
+	        if (t != null && t.isAlive()) {
+	            t.interrupt();
+	            timer.cancel();
+	        }
+	    }
+	}
+	*/
+	
 	public class Notation {
 		// this class refers the network notation
 		String label;
@@ -5815,11 +5835,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 */
-	public class RunTask extends Thread {
+	//public class RunTask extends Thread {
 		public void run() {
+			
+			//Thread thr = Thread.currentThread();
+			
+			//Timer timer = new Timer();
+			//timer.schedule(new TimeOutTask(thr, timer), 2000);  // time out after 2 secs
 
 			ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
-
+			
 			pb.directory(new File(pBDir));
 
 			output = "";
@@ -5828,15 +5853,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			error = "";
 
 			Process proc = null;
+			//File log = new File(progName + File.separator + "log.txt");
+			//pb.redirectOutput(Redirect.appendTo(log));
+						
+			 
 
+			int u = 0;
 			try {
-				proc = pb.start();
-
-				BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-				String line;
-				while ((line = br.readLine()) != null) {
-					output += line + "<br>";
-				}
+				proc = pb.start();				
+				
+				//proc.waitFor();
 				
 			} catch (NullPointerException npe) {
 				error = "Null Pointer Exception";
@@ -5846,7 +5872,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				error = "I/O Exception";
 				proc = null;
 				// return;
-			} catch (IndexOutOfBoundsException iobe) {
+			}  catch (IndexOutOfBoundsException iobe) {
 				error = "Index Out Of Bounds Exception";
 				proc = null;
 				// return;
@@ -5855,24 +5881,66 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				proc = null;
 				// return;
 			}
-
+				
 			if (proc == null)
-				return;
+				return;	
 
+			/*
+			OutputStream os = proc.getOutputStream();
+			try {
+				os.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+			} finally {
+
+			}
+			*/
+			
+			InputStream is = proc.getInputStream(); 
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+			    String line = null;
+
+			    while ((line = reader.readLine()) != null) {
+			         output += line;
+			         System.out.println(line);
+			    }
+			    try {
+			    	is.close();
+			    } catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			    } catch (IOException ex) {
+			        // Process IOException
+			    } finally {
+			    	u = proc.exitValue();			    	
+					try {
+						is.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
+			        proc.destroy();
+			    }
+			
+		 	 
 			try {
 				proc.waitFor();
-			} catch (InterruptedException e1) {
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				e.printStackTrace();
 			}
 
-			int u = proc.exitValue();
-			proc.destroy();
-
-			// if (proc == null)
-			// return;
-
-			// int u = proc.exitValue();
+		 
+		
+			
+			//String lp = log.getAbsolutePath();
+			//System.out.println(lp);		
+			
+		
 			if (u == 0)
 				MyOptionPane.showMessageDialog(driver, "Program completed - " + progName,
 						MyOptionPane.INFORMATION_MESSAGE);
@@ -5885,12 +5953,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						"<html>Program error - " + pBDir + progName + "<br>" + error + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 
-			if (!(output.equals("")))
-				MyOptionPane.showMessageDialog(driver,
-						"<html>Program output - " + pBDir + progName + "<br>" + output + "</html>",
-						MyOptionPane.INFORMATION_MESSAGE);
+			//if (!(output.equals("")))
+			//	MyOptionPane.showMessageDialog(driver,
+			//			"<html>Program output - " + pBDir + progName + "<br>" + output + "</html>",
+			//			MyOptionPane.INFORMATION_MESSAGE);
 		}
-	}
+	//}
 
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;

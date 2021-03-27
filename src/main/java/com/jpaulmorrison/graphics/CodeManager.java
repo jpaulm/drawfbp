@@ -209,9 +209,9 @@ public class CodeManager implements ActionListener {
 				//}
 			} else {
 				contents[0] = "using System;\nusing System.IO;\nusing Lib;\nusing Components;\n";
-				contents[1] = " ";
-				//contents[2] = " //change namespace name if desired\n";  
-				contents[2] = " ";
+				contents[1] = "namespace " + diag.title + " {";
+				contents[2] = " //change namespace name if desired\n";  
+				
 				k = 3;
 			}
 
@@ -534,9 +534,9 @@ public class CodeManager implements ActionListener {
 
 			sno++;
 
-			//contents[sno] = "}\n";
-			//styles[sno] = normalStyle;
-			//sno++;
+			contents[sno] = "}\n";
+			styles[sno] = normalStyle;
+			sno++;
 
 			if (error) {
 				contents[sno] = "\n /* Errors in generated code - they must be corrected for your program to run - \n\n"
