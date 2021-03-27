@@ -24,6 +24,9 @@ Here is a simple diagram built using DrawFBP, courtesy of Bob Corrick, showing p
 
 ![FilterByFirstValue](https://github.com/jpaulm/drawfbp/blob/master/docs/FilterByFirstValue.png "Simple Network Diagram")
 
+Running DrawFBP
+---
+
 To run from the command line, do a `cd` to wherever you have stored your DrawFBP jar file, and enter:
 
 <code>java -jar drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
@@ -119,9 +122,9 @@ In addition, there are six Youtube videos about DrawFBP, illustrating a number o
 
 In addition, the Excise function has changed a little, so the interaction will not be exactly as shown in the video (video #5)
               
-Running DrawFBP
+Running DrawFBP (2)
 ----
-DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  The combination is called a "fat jar" file - before v2.18.1, the jar name contained `all-`; from v2.18.1 on, the `all-` has been dropped.  You can download DrawFBP from Maven (search for DrawFBP).  
+DrawFBP can be executed directly by executing its jar file, but, as of v2.15.10, it needs the 2D geometry jar file.  The combination is called a "fat jar" file - before v2.18.1, the jar name contained `all-`; from v2.18.1 on, the `all-` has been dropped.  
 
 DrawFBP requires Java 1.7 or later.
 
