@@ -32,12 +32,14 @@ If you have downloaded the whole DrawFBP project, you can position to your DrawF
 
 <code>java -jar build\libs\drawfbp-x.y.z.jar</code>   where `x.y.z` is the version number. 
 
-In either case, this command may be followed with the location of a `.drw` file, as of `v2.20.10`, e.g.
+<!-- In either case, this command may be followed with the location of a `.drw` file, as of `v2.20.10`, e.g.
 
     cd ....GitHub\drawfbp
     java -jar build\libs\drawfbp-x.y.z.jar C:\Users\Paul\Documents\GitHub\drawfbp\Testing.drw
 
 You can also associate your copy of the DrawFBP jar file permanently with all occurrences of the `.drw` extension (using Windows facilities).
+
+-->
 
 Description
 -----------
