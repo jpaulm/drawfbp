@@ -35,7 +35,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import java.util.*;
-import java.util.Timer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -50,8 +49,6 @@ import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.help.JHelp;
 import javax.imageio.ImageIO;
-
-import java.lang.ProcessBuilder.Redirect;
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
@@ -3459,6 +3456,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			//	System.out.println(s);
 
 			pb = new ProcessBuilder(cmdList);
+			for (int m = 0; m < cmdList.size(); m++)
+				System.out.println(cmdList.get(m));
 
 			pb.directory(new File(trunc));
 
