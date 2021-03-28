@@ -26,10 +26,10 @@ public class MyOptionPane {
 	static int WARNING_MESSAGE = JOptionPane.WARNING_MESSAGE;
 	static int ERROR_MESSAGE = JOptionPane.ERROR_MESSAGE;
 	
-	static Object showInputDialog(Component f,  Object message, String title, int messageType, Icon ico,
+	static Object showInputDialog(Component f,  Object message, String title, int msgType, Icon ico,
 			 Object[] options, Object initialValue) {
 		 
-		 JOptionPane pane = new JOptionPane(message, messageType, OK_CANCEL_OPTION, ico,
+		 JOptionPane pane = new JOptionPane(message, msgType, OK_CANCEL_OPTION, ico,
 				  options, initialValue);
 		
 		//JScrollPane jsp = new JScrollPane();
@@ -79,9 +79,9 @@ public class MyOptionPane {
 	//-------------------------------------------
 	 
 	
-	static void showMessageDialog(Component f,  Object message, String s, int i, ImageIcon ico) {
+	static void showMessageDialog(Component f,  Object message, String s, int msgType, ImageIcon ico) {
 		
-		JOptionPane pane = new JOptionPane(message, i, DEFAULT_OPTION, ico);
+		JOptionPane pane = new JOptionPane(message, msgType, DEFAULT_OPTION, ico);
 		 
 	     
 	    // JScrollPane jsp = new JScrollPane();
@@ -104,8 +104,8 @@ public class MyOptionPane {
 	
 	
 	
-	static void showMessageDialog(Component f,  String message, int messageType) {
-		showMessageDialog(f, message, null, messageType, null);
+	static void showMessageDialog(Component f,  String message, int msgType) {
+		showMessageDialog(f, message, null, msgType, null);
 	}
 	 
 	static void showMessageDialog(Component f,  String message) {
@@ -114,9 +114,9 @@ public class MyOptionPane {
 	//------------------------------------------------------------
 	 
 	
-	static int showConfirmDialog(Component f,  Object message, String title, int optionType, int messageType) {
+	static int showConfirmDialog(Component f,  Object message, String title, int optionType, int msgType) {
 		
-		JOptionPane pane = new JOptionPane(message, messageType, optionType);		 
+		JOptionPane pane = new JOptionPane(message, msgType, optionType);		 
 	 	 
 	     JDialog dialog = pane.createDialog((Component) f, title);
 	     dialog.setModal(true);

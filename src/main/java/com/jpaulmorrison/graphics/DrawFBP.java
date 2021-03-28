@@ -1023,9 +1023,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			fileMenu.addSeparator();
 		}
 		
-		fileMenu.add(menuItem1);
-		fileMenu.add(menuItem2);
-		fileMenu.add(menuItem3);
+		if (currNotn.lang == langs[Lang.JAVA] || currNotn == notations[Notation.JSON])  
+			fileMenu.add(menuItem1);
+		
+		if (currNotn.lang == langs[Lang.JAVA] || currNotn.lang == langs[Lang.CSHARP])  {
+			fileMenu.add(menuItem2);		
+			fileMenu.add(menuItem3);
+		}
 		
 		modMenuItems();
 		
@@ -3161,6 +3165,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			String jf = "\"" + javaFBPJarFile;
 			for (String jfv : jarFiles) {
+				if (!(new File(jfv).exists())) {
+					MyOptionPane.showMessageDialog(driver,
+							"Jar file does not exist: " + jfv, MyOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				jf += delim + jfv;
 			}
 			jf += delim + clsDirTr;
@@ -3403,9 +3412,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			cmdList.add("-t:exe");
 			//t = t.replace("\\", "/");
 			//t = t.replace("/", ".");
-			target = target.replace("/", "\\");
-			cmdList.add("-out:\"" + target + "\\" + v + ".exe\"");
-			exeDir = trunc + File.separator + target;
+			target = target.replace("/", File.separator);
+			cmdList.add("-out:\"" + target + File.separator + v + ".exe\"");
+			//exeDir = trunc + File.separator + target;
+			exeDir = target;
 
 			if (!gotDlls /*&& !gotDllReminder */) {
 				MyOptionPane.showMessageDialog(this,
@@ -3415,39 +3425,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			}
 
-			//else {
-				// Iterator<String> entries = dllFiles.iterator();
-				// z = "";
-				// String cma = "";
-
-				// String w = "";
-			/*
-				String libs = "";				 
-				String cma = "";				
-				for (String thisEntry : dllFiles) {
-					if (!(new File(thisEntry).exists())) {
-						MyOptionPane.showMessageDialog(this, "Dll file does not exist: " + thisEntry,
-								MyOptionPane.WARNING_MESSAGE);
-						return;
-					}
 					
-					String w = thisEntry;
-					//w = w.replace("\\", "/");
-					w = w.replace("/", "\\");
-					j = w.indexOf("bin\\Debug");
-					libs += cma + "\"" + w.substring(0, j) + "\"";
-					cma = ",";
+			for (String thisEntry : dllFiles) {
+				String w = thisEntry;
+				if (!(new File(w).exists())) {
+					MyOptionPane.showMessageDialog(driver, "Dll file does not exist: " + w, MyOptionPane.ERROR_MESSAGE);
+					return;
 				}
-				cmdList.add("-lib:" + libs);
-				*/ 
-				
-				for (String thisEntry : dllFiles) {
-					String w = thisEntry;
-					w = w.replace("\\", "/");
-					j = w.indexOf("bin/Debug");
-					//cmdList.add("-r:\"" + w.substring(j) + "\"");
-					cmdList.add("-r:\"" + thisEntry + "\"");
-				}
+				w = w.replace("\\", "/");
+				j = w.indexOf("bin/Debug");
+				// cmdList.add("-r:\"" + w.substring(j) + "\"");
+				cmdList.add("-r:\"" + thisEntry + "\"");
+			}
 					  
 			//}
 			// String w = "\"" + trunc + "/" + "*.cs\"";
@@ -3522,7 +3511,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			exeDir = exeDir.replace("/", File.separator);
 			s += "Source dir: \"" + srcDir + "\"<br>" + "Exe dir: \"" + exeDir + "\"<br>" + "File name: \"" + srcDir
-					+ File.separator + "*" + ".cs\"<br>" + "Output file: \"" + exeDir + File.separator + v + ".exe\"";
+					+ File.separator + progName + ".cs\"<br>" + "Output file: \"" + exeDir + File.separator + v + ".exe\"";
 
 			s += "<br><br>";
 
@@ -4261,12 +4250,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							int m = s.indexOf(";");
 							if (m == -1) {
 								u = s;
-								set.add(u);
+								if (!u.equals(""))
+									set.add(u);
 								break;
 							} else {
 								u = s.substring(0, m);
 								s = s.substring(m + 1);
-								set.add(u);
+								if (!u.equals(""))
+									set.add(u);
 							}
 						}
 					}
@@ -5839,7 +5830,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	public class RunTask extends Thread {
 		public void run() {
 			
-			Thread thr = Thread.currentThread();
+			//Thread thr = Thread.currentThread();
 			
 			//Timer timer = new Timer();
 			//timer.schedule(new TimeOutTask(thr, timer), 2000);  // time out after 2 secs
