@@ -104,11 +104,11 @@ public class MyOptionPane {
 	
 	
 	
-	static void showMessageDialog(Component f,  String message, int msgType) {
+	static void showMessageDialog(Component f,  Object message, int msgType) {
 		showMessageDialog(f, message, null, msgType, null);
 	}
 	 
-	static void showMessageDialog(Component f,  String message) {
+	static void showMessageDialog(Component f,  Object message) {
 		showMessageDialog(f, message, null, PLAIN_MESSAGE, null);
 	}
 	//------------------------------------------------------------

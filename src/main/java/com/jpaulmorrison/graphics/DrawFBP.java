@@ -5899,7 +5899,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			    while ((line = reader.readLine()) != null) {
 			         output += line + "\n";
-			         System.out.println(line);
+			         //System.out.println(line);
 			         // see https://stackoverflow.com/questions/4886293/socket-input-stream-hangs-on-final-read-best-way-to-handle-this/4886747
 			         if (driver.currNotn.lang == langs[Lang.CSHARP] && line.startsWith("Counts: C:")  && -1 < line.indexOf(", DO: "))
 			        	 break;
@@ -5957,10 +5957,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						"<html>Program error - " + pBDir + progName + "<br/>" + error + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 
-			if (!(output.equals("")))
-				MyOptionPane.showMessageDialog(driver,
-						"<html>Program output from: " + pBDir + progName + "<br/>\n" + output + "</html>",
-						MyOptionPane.INFORMATION_MESSAGE);
+			if (!(output.equals(""))) {
+				//String msg = "<html>Program output from: " + pBDir + progName + "<br/>\n" + output + "</html>";
+				JTextArea jta = new JTextArea(output);
+				
+				Dimension dim = driver.getPreferredSize();
+				//Dimension dim2 = jta.getPreferredScrollableViewportSize();
+				JScrollPane jsp = new JScrollPane(jta);
+				jsp.setPreferredSize(dim);
+				MyOptionPane.showMessageDialog(driver, jsp, MyOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 	}
 
