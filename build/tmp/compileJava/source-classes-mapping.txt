@@ -95,6 +95,7 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$JavaGenFilter
  com.jpaulmorrison.graphics.DrawFBP$Lang
  com.jpaulmorrison.graphics.DrawFBP$Notation
+ com.jpaulmorrison.graphics.DrawFBP$RunTask
  com.jpaulmorrison.graphics.DrawFBP$SelectionArea
  com.jpaulmorrison.graphics.DrawFBP$Side
 com/jpaulmorrison/graphics/ProcessBlock.java

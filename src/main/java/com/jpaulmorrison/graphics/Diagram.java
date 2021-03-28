@@ -104,7 +104,7 @@ public class Diagram {
 		if (saveAs) {
 			
 					
-			String s = driver.properties.get(lang.propertyName);  
+			String s = driver.properties.get(lang.propertyName);  			
 			if (s == null) 
 				s = System.getProperty("user.home");			 
 
@@ -197,7 +197,7 @@ public class Diagram {
 				}
 
 				  //newFile.getParentFile().mkdirs();
-				  driver.saveProp(lang.propertyName, newFile.getParentFile().getAbsolutePath());
+				  driver.saveProp(lang.propertyName, newFile.getParentFile().getAbsolutePath());				  
 			}
 		 
 

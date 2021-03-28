@@ -3766,9 +3766,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// pBDir = clsDir.substring(0, m + 4) + "/";
 			pBDir = clsDir;
 
-			//Thread runthr = new Thread(new RunTask());
-			//runthr.start();
-			run();
+			Thread runthr = new Thread(new RunTask());
+			runthr.start();
+			//run();
 
 			// program = clsDir + "/" + progName;
 			// + ".class";
@@ -3828,9 +3828,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			pBDir = exeDir;
 
-			//Thread runthr = new Thread(new RunTask());
-			//runthr.start();
-			run();
+			Thread runthr = new Thread(new RunTask());
+			runthr.start();
+			//run();
 			
 		}
 	}
@@ -5836,14 +5836,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 */
-	//public class RunTask extends Thread {
+	public class RunTask extends Thread {
 		public void run() {
 			
-			//Thread thr = Thread.currentThread();
+			Thread thr = Thread.currentThread();
 			
 			//Timer timer = new Timer();
 			//timer.schedule(new TimeOutTask(thr, timer), 2000);  // time out after 2 secs
-
+			
+			//Thread haltedHook = new Thread(() -> thr.interrupt());
+			//Runtime.getRuntime().addShutdownHook(haltedHook);
+			
 			ProcessBuilder pb = new ProcessBuilder(pBCmdArray);
 			
 			pb.directory(new File(pBDir));
@@ -5904,27 +5907,36 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			    String line = null;
 
 			    while ((line = reader.readLine()) != null) {
-			         output += line;
+			         output += line + "\n";
 			         System.out.println(line);
+			         // see https://stackoverflow.com/questions/4886293/socket-input-stream-hangs-on-final-read-best-way-to-handle-this/4886747
+			         if (driver.currNotn.lang == langs[Lang.CSHARP] && line.startsWith("Counts: C:")  && -1 < line.indexOf(", DO: "))
+			        	 break;
 			    }
+			    /*
 			    try {
 			    	is.close();
 			    } catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+			    */
+			    
 			    } catch (IOException ex) {
 			        // Process IOException
-			    } finally {
-			    	u = proc.exitValue();			    	
+			    }  finally {
+			    	proc.destroy();
+			    	//u = proc.exitValue();
+			    	u = 0;  // fudge!
+			    	/*
 					try {
 						is.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}					
-			        proc.destroy();
+					}		
+					*/
+			        //proc.destroy();
 			    }
 			
 		 	 
@@ -5951,15 +5963,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			if (!(error.equals("")))
 				MyOptionPane.showMessageDialog(driver,
-						"<html>Program error - " + pBDir + progName + "<br>" + error + "</html>",
+						"<html>Program error - " + pBDir + progName + "<br/>" + error + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 
-			//if (!(output.equals("")))
-			//	MyOptionPane.showMessageDialog(driver,
-			//			"<html>Program output - " + pBDir + progName + "<br>" + output + "</html>",
-			//			MyOptionPane.INFORMATION_MESSAGE);
+			if (!(output.equals("")))
+				MyOptionPane.showMessageDialog(driver,
+						"<html>Program output from: " + pBDir + progName + "<br/>\n" + output + "</html>",
+						MyOptionPane.INFORMATION_MESSAGE);
 		}
-	//}
+	}
 
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
