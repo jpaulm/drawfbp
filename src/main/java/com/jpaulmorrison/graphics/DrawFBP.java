@@ -3518,11 +3518,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			u = proc.exitValue();
 
 			if (u == 0) {
-				s += "Programs compiled and linked - \"" + trunc + "/" + "*.cs\"<br>" + "&nbsp;&nbsp;&nbsp;into - \""
+				s += "Programs compiled and linked - \"" + trunc + File.separator +
+						progName + ".cs\"<br>" + "&nbsp;&nbsp;&nbsp;into - \""
 						+ trunc + "/bin/Debug/" + v + ".exe\"";
 				saveProp("exeDir", trunc);
 			} else {
-				s += "Program compile failed, rc: " + u + " - \"" + trunc + "/*.cs\"" + "<br>"
+				s += "Program compile failed, rc: " + u + " - \"" + trunc + File.separator +
+						progName + ".cs\"<br>"
 						+ "&nbsp;&nbsp;&nbsp;errcode: " + err + "<br>" + output;
 			}
 			s += "</html>";
