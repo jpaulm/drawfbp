@@ -131,6 +131,7 @@ public class MyFileChooser extends JDialog
 
 	//DrawFBP.FileChooserParm fCP;
 	Lang lang;
+	String[] strArray = null;
 	
 	String chooserTitle;
 
@@ -164,7 +165,7 @@ public class MyFileChooser extends JDialog
 		
 	}
 
-	int showOpenDialog(final boolean saveas, final boolean saving) {
+	int showOpenDialog(final boolean saveas, final boolean saving, String[] sa) {
 		
 		if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
 				lang != driver.langs[DrawFBP.Lang.FBP_JSON] &&
@@ -180,6 +181,7 @@ public class MyFileChooser extends JDialog
 		
 		this.saveAs = saveas;
 		this.saving = saving;
+		this.strArray = sa;
 		
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -195,12 +197,14 @@ public class MyFileChooser extends JDialog
 		panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 
-		driver.filterOptions[0] = lang.filter.getDescription();
-		
-		cBox = new MyComboBox(driver.filterOptions);
-		cBox.setMaximumRowCount(2);
-		cBox.addMouseListener(this);
-		cBox.setSelectedIndex(driver.allFiles ? 1 : 0);
+		cBox = new MyComboBox(new String[0]);
+		if (lang.filter != null) {
+			driver.filterOptions[0] = lang.filter.getDescription();		
+			cBox = new MyComboBox(driver.filterOptions);
+			cBox.setMaximumRowCount(2);
+			cBox.addMouseListener(this);
+			cBox.setSelectedIndex(driver.allFiles ? 1 : 0);
+		}
 
 		order = new Vector<Component>(10);
 		//order.add(t_dirName);
@@ -245,22 +249,14 @@ public class MyFileChooser extends JDialog
 		// comp = new MyFileCompare();
 		renderer = new ListRenderer(driver);
 
-		//if (fCP == driver.diagFCParm)
-		//	dialog.setTitle(s);
-		//else {
-			//if (fCP == driver.curDiag.fCParm[Diagram.NETWORK]) {
-				//String w = driver.curDiag.diagFile.getAbsolutePath();
-				//fCP.prompt = "Specify file name";
-			//}
-
-			//dialog.setTitle(fCP.prompt);
+		
 			dialog.setTitle(chooserTitle);
 			if (lang == driver.langs[DrawFBP.Lang.CLASS])
 				listShowingSpecHdr = listHead;
 			if (lang == driver.langs[DrawFBP.Lang.JS] || 
 					driver.currNotn == driver.notations[DrawFBP.Notation.JSON])
 				listShowingSpecHdr = listHead;
-		//}
+		
 
 		enterAction = new EnterAction();
 		suggAction = new SuggAction();
@@ -449,7 +445,9 @@ public class MyFileChooser extends JDialog
 		c.gridy = 1;
 		c.gridwidth = 1;
 
-		JLabel lab2 = new JLabel("Files of type:");
+		JLabel lab2 = new JLabel();
+		if (!lang.label.equals("Print"))
+			lab2.setText("Files of type:");
 		lab2.setFont(driver.fontg);
 		gridbag.setConstraints(lab2, c);
 		pan2.add(lab2);
@@ -460,12 +458,14 @@ public class MyFileChooser extends JDialog
 		gridbag.setConstraints(lab8, c);
 		pan2.add(lab8);
 
-		c.gridx = 2;
-		c.weightx = 1.0;
-		c.gridwidth = 3;
-		gridbag.setConstraints(cBox, c);
-		pan2.add(cBox);
-		cBox.addActionListener(this);
+		if (!lang.label.equals("Print")) {
+			c.gridx = 2;
+			c.weightx = 1.0;
+			c.gridwidth = 3;
+			gridbag.setConstraints(cBox, c);
+			pan2.add(cBox);
+			cBox.addActionListener(this);
+		}
 
 		c.gridx = 5;
 		c.weightx = 0.0;
@@ -606,7 +606,11 @@ public class MyFileChooser extends JDialog
 		return result;
 	}
 	int showOpenDialog() {
-		return showOpenDialog(false, false);
+		return showOpenDialog(false, false, null);
+	}
+	
+	int showOpenDialog(String[] sa) {
+		return showOpenDialog(false, false, sa);
 	}
 
 	void showListHead() {
@@ -629,6 +633,9 @@ public class MyFileChooser extends JDialog
 		suggestedName = s;
 	}
 
+	int getRowNo() {
+		return rowNo;
+	}
 	@SuppressWarnings("unchecked")
 	private void showList() {
 
@@ -784,8 +791,10 @@ public class MyFileChooser extends JDialog
 							continue;
 						if (fx.isDirectory())
 							continue;
-								
-						if (lang.filter.accept(fx) || driver.allFiles) 
+						
+						//String ss = lang.label;
+						if (lang.label.equals("Print") ||
+							lang.filter.accept(fx) || driver.allFiles) 
 							ll2.add(entry.toString()); // non-directories go
 														// into ll2,
 						// which is
@@ -850,15 +859,25 @@ public class MyFileChooser extends JDialog
 
 			//int k = 0;
 
-			nodeNames = new String[oa.length];
+			if (strArray != null) {
+				nodeNames = strArray;
+				oa = strArray;
+			}
+			else
+				nodeNames = new String[oa.length];    
+			int k = 0;
+			int j2 = 0;
 			for (int j = 0; j < oa.length; j++) {
-				if (oa[j] == null) // not sure where null came from, but it
-									// crashed
-									// one test!
-					continue;
-				nodeNames[j] = (String) oa[j];
-				//if (nodeNames[j].endsWith(".jar"))
-				//	k = k + 1; // get rid of spurious "unused" message
+				if (oa[j] != null) {					
+					nodeNames[k] = (String) oa[j];	
+					j2 = j;
+					k ++;
+				}
+			}
+			
+			
+			for (int j = j2 + 1; j < oa.length; j++) {
+				nodeNames[j] = "";
 			}
 
 			list = new JList<String>(nodeNames);
@@ -1225,7 +1244,8 @@ public class MyFileChooser extends JDialog
 		//}
          
 		//t_fileName.setBackground(Color.WHITE);
-		cBox.repaint();
+		if (!lang.label.equals("Print"))
+			cBox.repaint();
 
 		//if (selComp instanceof MyButton) {  // if previous selComp referred to button...
 		//	((MyButton) selComp).setSelected(false);
@@ -1313,7 +1333,8 @@ public class MyFileChooser extends JDialog
 				
 		if (e.getKeyCode() == KeyEvent.VK_TAB) {
 		
-			cBox.repaint();
+			if (!lang.label.equals("Print"))
+				cBox.repaint();
 			
 
 			if (selComp == cBox)
@@ -2169,7 +2190,8 @@ l.setFont(driver.fontg);
 		public void mouseClicked(MouseEvent e)
 
 		{
-
+			
+			
 			//System.out.println("Click count: " + e.getClickCount());
 			if (e.getClickCount() > 2)
 				return;
@@ -2230,6 +2252,11 @@ l.setFont(driver.fontg);
 			String w = null;
 			if (rowNo == n) {
 				//selComp = t_fileName;        
+				if (lang.label.equals("Print")) {
+					// selected printer number is in rowNo
+					enterAction.actionPerformed(new ActionEvent(e, 0, "" + rowNo));
+					return;
+				}
 				
 				String v = list.getSelectedValue();
 				if (!inTree) {

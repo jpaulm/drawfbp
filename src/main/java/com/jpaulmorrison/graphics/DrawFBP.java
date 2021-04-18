@@ -49,6 +49,22 @@ import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.help.JHelp;
 import javax.imageio.ImageIO;
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
+import javax.print.attribute.standard.Media;
+import javax.print.attribute.standard.MediaSize;
+import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.OrientationRequested;
+import javax.print.attribute.standard.Sides;
+
 import java.lang.reflect.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.FontUIResource;
@@ -346,7 +362,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		frameInit();
 
-		langs = new Lang[11];
+		langs = new Lang[12];
 
 		langs[Lang.JAVA] = new Lang("Java", "java", new JavaFileFilter(), "currentJavaFBPDir");
 		langs[Lang.CSHARP] = new Lang("C#", "cs", new CsharpFileFilter(), "currentCsharpFBPDir");
@@ -359,6 +375,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		langs[Lang.FBP_JSON] = new Lang("JSON", "json", new JSONFilter(), "currentJSDir");
 		langs[Lang.DLL] = new Lang(null, "dll", new DllFilter(), "dllFileDir");
 		langs[Lang.EXE] = new Lang(null, "exe", new ExeFilter(), "exeDir");
+		langs[Lang.PRINT] = new Lang("Print", null, null, null);
 
 		notations = new Notation[4];
 		notations[Notation.JAVA_FBP] = new Notation("JavaFBP", langs[Lang.JAVA]);
@@ -1049,11 +1066,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuItem.addActionListener(this);
 
 		fileMenu.addSeparator();
-		menuItem = new JMenuItem("Print");
+		menuItem = new JMenuItem("Show Image");
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
+		
+		menuItem = new JMenuItem("Print Image");
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
+		
 		menuItem = new JMenuItem("Display Properties");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1091,9 +1113,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuItem = new JMenuItem("Create Image");
 		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		menuItem = new JMenuItem("Show Image");
-		diagMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		//menuItem = new JMenuItem("Show Image");
+		//diagMenu.add(menuItem);
+		//menuItem.addActionListener(this);
+		//fileMenu.addSeparator();
+		//menuItem = new JMenuItem("Print Image");
+		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
+		//diagMenu.add(menuItem);
+		//menuItem.addActionListener(this);
 		diagMenu.addSeparator();
 		menuItem = new JMenuItem("Compare Diagrams");
 		diagMenu.add(menuItem);
@@ -1382,7 +1409,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			File file = new File(ss);
 			MyFileChooser fc = new MyFileChooser(this, file, currNotn.lang, "Display Source Code");
 
-			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
+			int returnVal = fc.showOpenDialog(); // force NOT saveAs
 
 			cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -1429,7 +1456,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			MyFileChooser fc = new MyFileChooser(this, f, langs[Lang.DIAGRAM], "Select compare diagram");
 
-			int returnVal = fc.showOpenDialog(false, false); // force NOT saveAs
+			int returnVal = fc.showOpenDialog(); // force NOT saveAs
 
 			File cFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -1534,21 +1561,139 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			changeFontSize();
 		}
 
-		if (s.equals("Print")) {
-			int x1, w1, y1, h1;
+		if (s.equals("Print Image")) {
 
-			x1 = curDiag.area.getX();
-			y1 = curDiag.area.getY();
-			w1 = curDiag.area.getWidth();
-			h1 = curDiag.area.getHeight();
-			Rectangle rect = new Rectangle(x1, y1, w1, h1);
-			PrintableDocument pd = new PrintableDocument(getContentPane(), this);
+			File fFile = null;
 
-			// PrintableDocument.printComponent(getContentPane());
-			pd.setRectangle(rect); // doesn't seem to make a difference!
-			pd.print();
+			String ss = properties.get("currentImageDir");
+			if (ss == null)
+				currentImageDir = new File(System.getProperty("user.home"));
+			else
+				currentImageDir = new File(ss);
+
+			MyFileChooser fc = new MyFileChooser(this, currentImageDir, langs[Lang.IMAGE], "Print Image");
+
+			File f = curDiag.diagFile;
+			if (f != null) {
+				int i = curDiag.diagFile.getName().indexOf(".drw");
+				if (i > -1) {
+					ss += "/" + curDiag.diagFile.getName().substring(0, i) + langs[Lang.IMAGE].ext;
+					fc.setSuggestedName(ss);
+				}
+			}
+
+			int returnVal = fc.showOpenDialog(true, true,null); // set to saveAs
+
+			String fileStr = null;
+			fFile = null;
+			if (returnVal == MyFileChooser.APPROVE_OPTION) {
+				fileStr = getSelFile(fc);
+				fFile = new File(fileStr);
+			}
+
+			if (fFile == null)
+				return;
+
+			if (!(fFile.exists()))
+				return;
+
+			BufferedImage image = null;
+			try {
+				image = ImageIO.read(fFile);
+			} catch (IOException e1) {
+				MyOptionPane.showMessageDialog(this, "Could not get image: " + fFile.getAbsolutePath(),
+						MyOptionPane.ERROR_MESSAGE);
+				return;
+
+			}
+
+			currentImageDir = new File(fFile.getParent());
+			saveProp("currentImageDir", fFile.getParent());
+			saveProperties();
+
+			// curDiag.imageFile = fFile;
+
+			//String name = fFile.getName();
+			// showImage(image, name, false);
+
+			// return;
+			// }
+
+			/*
+			 * int x1, w1, y1, h1;
+			 * 
+			 * x1 = curDiag.area.getX(); y1 = curDiag.area.getY(); w1 =
+			 * curDiag.area.getWidth(); h1 = curDiag.area.getHeight(); Rectangle rect = new
+			 * Rectangle(x1, y1, w1, h1);
+			 * 
+			 * Graphics g = getGraphics(); g.setColor(Color.BLUE); g.fillRect(x1, y1, w1,
+			 * h1); g.drawRect(x1, y1, w1, h1); repaint(); PrintableDocument pd = new
+			 * PrintableDocument(getContentPane(), this);
+			 * 
+			 * // PrintableDocument.printComponent(getContentPane()); pd.setRectangle(rect);
+			 * // doesn't seem to make a difference! pd.print();
+			 * 
+			 */
+
+			// https://stackoverflow.com/questions/11680927/printing-string-to-a-printer-using-java
+
+			FileInputStream imagestream = null;
+			try {
+				imagestream = new FileInputStream(fileStr);
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			DocFlavor doc = null;
+			if (fileStr.endsWith(".jpg") || fileStr.endsWith(".jpeg"))
+				doc = DocFlavor.INPUT_STREAM.JPEG;
+			else if (fileStr.endsWith(".png"))
+				doc = DocFlavor.INPUT_STREAM.PNG;
+			else {
+				MyOptionPane.showMessageDialog(this, "Image format must be 'jpg' or 'png': " + fileStr,		 
+					MyOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+			aset.add(new Copies(1));
+			// aset.add(MediaSizeName.NA_5X7);
+			aset.add(Sides.ONE_SIDED);
+			aset.add(OrientationRequested.LANDSCAPE);
+			Doc document = new SimpleDoc(imagestream, doc, null);
+			// DocPrintJob job = service.createPrintJob();
+
+			
+			PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
+			String[] sa = new String[services.length];
+			for (int i = 0; i < services.length; i++) {
+				//System.out.println("Service: " + services[i].getName());
+				sa[i] = services[i].getName();
+			}
+						
+			MyFileChooser fc2 = new MyFileChooser(driver, null, langs[Lang.PRINT], "Choose Print Service");
+			
+			int ret = fc2.showOpenDialog(sa);
+
+			if (ret == MyFileChooser.CANCEL_OPTION)
+				return;
+			if (ret != MyFileChooser.APPROVE_OPTION) {
+				return;
+			}
+			
+			int svc =  fc2.getRowNo();
+			
+			DocPrintJob job = services[svc].createPrintJob();
+			try {
+				job.print(document, aset);
+			} catch (PrintException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return;
 		}
+		
 		if (s.equals("Display Properties")) {
 			displayProperties();
 		}
@@ -1584,7 +1729,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		if (s.equals("Create Image")) {
 
-			if (curDiag == null || curDiag.title == null || curDiag.blocks.isEmpty()) {
+			if (curDiag == null || curDiag.title == null || curDiag.title.trim().equals("") ||
+					curDiag.title.trim().equals("(untitled)") || 
+					curDiag.blocks.isEmpty()) {
 				MyOptionPane.showMessageDialog(this,
 						"Unable to export image for empty or unsaved diagram - please do save first",
 						MyOptionPane.ERROR_MESSAGE);
@@ -1619,54 +1766,58 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			h = Math.min(h, buffer.getHeight());
 
 			BufferedImage buffer2 = buffer.getSubimage(x, y, w, h);
-			// BufferedImage buffer2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 
-			// Font f = fontg.deriveFont(Font.ITALIC, 18.0f); // description a bit large -
-			// try using fontg + 10
+			Font f = fontf.deriveFont(Font.PLAIN, fontf.getSize() + 4f);   
+			
+			Graphics g = buffer2.getGraphics();
+			Color col = g.getColor();
+			g.setColor(Color.BLACK);
+			g.setFont(f);
+			FontMetrics metrics = getFontMetrics(f);
+			y = buffer2.getMinY() + 20 ;
+			String t = curDiag.diagFile.getName();
+			
+			x = 0;
+			
+			g.drawString(t, x, y);
+			g.setColor(col);
 
 			// Now we build a strip containing the diagram description
 
-			// Font f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
-			Font f = fontg;
+			f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
+			g.setFont(f);
 
-			FontMetrics metrics = getFontMetrics(f);
+			metrics = getFontMetrics(f);
 			int width = 0;
-			String t = curDiag.desc;
+			t = curDiag.desc;
 			if (t != null) {
 				byte[] str = t.getBytes();
 				width = metrics.bytesWidth(str, 0, t.length());
 			}
 
 			w = Math.max(w, width);
-
-			// width = Math.max(width + 40, buffer2.getWidth());
+			
 			width = Math.max(w + 40, buffer2.getWidth());
 
 			BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
 					BufferedImage.TYPE_INT_ARGB);
 
-			Graphics g = combined.getGraphics();
+			g = combined.getGraphics();
 
 			g.setColor(Color.WHITE);
 
 			g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 			int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
 			g.drawImage(buffer2, x2, 0, null);
-			// g.drawImage(buffer, 0, 0, null);
-
-			// g.fillRect(0, max_h, max_w, 80);
-			/// g.fillRect(0, combined.getHeight(), combined.getWidth(),
-			// bottom_border_height);
-
+			
 			if (curDiag.desc != null && !curDiag.desc.trim().equals("")) {
-				Color col = g.getColor();
+				col = g.getColor();
 				g.setColor(Color.BLUE);
 
 				Font f2 = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
 
 				g.setFont(f2);
 				x = combined.getWidth() / 2;
-				// x = buffer2.getWidth() / 2;
 				metrics = g.getFontMetrics(f);
 				t = curDiag.desc;
 				width = 0;
@@ -1680,9 +1831,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				g.setColor(col);
 			}
 
-			// BufferedImage image = combined;
+		
+			// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
 
-			showImage(combined, curDiag.diagFile.getName(), true);
+			showImage(combined, curDiag.diagFile.getName(), true);	
+			
 			return;
 			/*
 			 * 
@@ -1722,7 +1875,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 			}
 
-			int returnVal = fc.showOpenDialog(true, true); // set to saveAs
+			int returnVal = fc.showOpenDialog(true, true, null); // set to saveAs
 
 			// fFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
@@ -1959,32 +2112,33 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	void showImage(final BufferedImage image, String title, final boolean save) {
-		// JFrame popup = new JFrame((Frame) null);
-		final JFrame iFrame = new JFrame();
-		iFrame.setTitle(title);
-		iFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		iFrame.addWindowListener(new WindowAdapter() {
+		
+		//final JDialog dialog = new JDialog();	
+		final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.DOCUMENT_MODAL);
+		//iFrame.setTitle(title);
+		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
-				askAboutSavingImage(image, iFrame, save);
+				askAboutSavingImage(image, dialog, save);
 			}
 
 		});
 
 		JLabel jLabel = new JLabel(new ImageIcon(image));
+		
+		dialog.add(jLabel);
 
-		iFrame.add(jLabel);
+		dialog.setLocation(new Point(200, 200));
 
-		iFrame.setLocation(new Point(200, 200));
-
-		iFrame.pack();
-		iFrame.setVisible(true);
+		dialog.pack();
+		dialog.setVisible(true);
 		// iFrame.setAlwaysOnTop(false);
 
-		iFrame.repaint();
+		dialog.repaint();
 		repaint();
 	}
 
-	void askAboutSavingImage(Image img, JFrame jd, boolean save) {
+	void askAboutSavingImage(Image img, JDialog jd, boolean save) {
 		if (!save) {
 			jd.dispose();
 			return;
@@ -5464,10 +5618,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		public static final int JARFILE = 6;
 		public static final int FBP_JSON = 7;
 		public static final int CLASS = 8;
-		// public static final int PROCESS = 8;
-		// public static final int NETWORK = 9;
 		public static final int DLL = 9;
 		public static final int EXE = 10;
+		public static final int PRINT = 11;
 
 		Lang(String lab, String extn, FileFilter filt, String dir) {
 			label = lab;

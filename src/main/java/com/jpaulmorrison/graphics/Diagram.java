@@ -131,7 +131,7 @@ public class Diagram {
 			//else
 			//	fc = new MyFileChooser(driver,f, fCP);
 
-			int returnVal = fc.showOpenDialog(saveAs, true);
+			int returnVal = fc.showOpenDialog(saveAs, true, null);
 
 			if (returnVal == MyFileChooser.CANCEL_OPTION)
 				return null;
