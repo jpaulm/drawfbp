@@ -59,8 +59,6 @@ import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.standard.Copies;
-import javax.print.attribute.standard.Media;
-import javax.print.attribute.standard.MediaSize;
 import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.Sides;
@@ -1577,7 +1575,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (f != null) {
 				int i = curDiag.diagFile.getName().indexOf(".drw");
 				if (i > -1) {
-					ss += "/" + curDiag.diagFile.getName().substring(0, i) + langs[Lang.IMAGE].ext;
+					ss += "/" + curDiag.diagFile.getName().substring(0, i) + "." + langs[Lang.IMAGE].ext;
 					fc.setSuggestedName(ss);
 				}
 			}
@@ -1611,32 +1609,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			saveProp("currentImageDir", fFile.getParent());
 			saveProperties();
 
-			// curDiag.imageFile = fFile;
-
-			//String name = fFile.getName();
-			// showImage(image, name, false);
-
-			// return;
-			// }
-
-			/*
-			 * int x1, w1, y1, h1;
-			 * 
-			 * x1 = curDiag.area.getX(); y1 = curDiag.area.getY(); w1 =
-			 * curDiag.area.getWidth(); h1 = curDiag.area.getHeight(); Rectangle rect = new
-			 * Rectangle(x1, y1, w1, h1);
-			 * 
-			 * Graphics g = getGraphics(); g.setColor(Color.BLUE); g.fillRect(x1, y1, w1,
-			 * h1); g.drawRect(x1, y1, w1, h1); repaint(); PrintableDocument pd = new
-			 * PrintableDocument(getContentPane(), this);
-			 * 
-			 * // PrintableDocument.printComponent(getContentPane()); pd.setRectangle(rect);
-			 * // doesn't seem to make a difference! pd.print();
-			 * 
-			 */
-
-			// https://stackoverflow.com/questions/11680927/printing-string-to-a-printer-using-java
-
+			
 			FileInputStream imagestream = null;
 			try {
 				imagestream = new FileInputStream(fileStr);
@@ -1659,10 +1632,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 			aset.add(new Copies(1));
 			// aset.add(MediaSizeName.NA_5X7);
+			aset.add(MediaSizeName.NA_8X10);
 			aset.add(Sides.ONE_SIDED);
 			aset.add(OrientationRequested.LANDSCAPE);
 			Doc document = new SimpleDoc(imagestream, doc, null);
-			// DocPrintJob job = service.createPrintJob();
 
 			
 			PrintService[] services = PrintServiceLookup.lookupPrintServices(null, null);
@@ -1737,104 +1710,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
-			// crop
-			int x, w, y, h;
-
-			int bottom_border_height = 60;
-
-			x = curDiag.minX;
-			x = Math.max(1, x);
-			w = curDiag.maxX - x;
-
-			y = curDiag.minY - 40;
-			y = Math.max(1, y);
-			h = curDiag.maxY - y;
-
-			int aw = curDiag.area.getWidth();
-			int ah = curDiag.area.getHeight();
-			w = Math.min(aw, w);
-			h = Math.min(ah, h + bottom_border_height);
-
-			y = Math.max(0, y);
-
-			// adjust x, y, w, h to avoid RasterFormatException
-
-			x = Math.max(x, buffer.getMinX());
-			y = Math.max(y, buffer.getMinY());
-			w = Math.min(w, buffer.getWidth());
-			h = Math.min(h, buffer.getHeight());
-
-			BufferedImage buffer2 = buffer.getSubimage(x, y, w, h);
-
-			Font f = fontf.deriveFont(Font.PLAIN, fontf.getSize() + 4f);   
 			
-			Graphics g = buffer2.getGraphics();
-			Color col = g.getColor();
-			g.setColor(Color.BLACK);
-			g.setFont(f);
-			FontMetrics metrics = getFontMetrics(f);
-			y = buffer2.getMinY() + 20 ;
-			String t = curDiag.diagFile.getName();
+			curDiag.createImage();
+
 			
-			x = 0;
-			
-			g.drawString(t, x, y);
-			g.setColor(col);
-
-			// Now we build a strip containing the diagram description
-
-			f = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
-			g.setFont(f);
-
-			metrics = getFontMetrics(f);
-			int width = 0;
-			t = curDiag.desc;
-			if (t != null) {
-				byte[] str = t.getBytes();
-				width = metrics.bytesWidth(str, 0, t.length());
-			}
-
-			w = Math.max(w, width);
-			
-			width = Math.max(w + 40, buffer2.getWidth());
-
-			BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
-					BufferedImage.TYPE_INT_ARGB);
-
-			g = combined.getGraphics();
-
-			g.setColor(Color.WHITE);
-
-			g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
-			int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
-			g.drawImage(buffer2, x2, 0, null);
-			
-			if (curDiag.desc != null && !curDiag.desc.trim().equals("")) {
-				col = g.getColor();
-				g.setColor(Color.BLUE);
-
-				Font f2 = fontg.deriveFont(Font.ITALIC, (float) (fontg.getSize() + 10));
-
-				g.setFont(f2);
-				x = combined.getWidth() / 2;
-				metrics = g.getFontMetrics(f);
-				t = curDiag.desc;
-				width = 0;
-				if (t != null) {
-					byte[] str = t.getBytes();
-					width = metrics.bytesWidth(str, 0, t.length());
-					int sy = (bottom_border_height - metrics.getHeight()) / 2;
-					g.drawString(t, x - width / 2, buffer2.getHeight() + bottom_border_height - sy);
-				}
-
-				g.setColor(col);
-			}
-
-		
-			// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
-
-			showImage(combined, curDiag.diagFile.getName(), true);	
 			
 			return;
 			/*
@@ -1870,7 +1749,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (f != null) {
 				int i = curDiag.diagFile.getName().indexOf(".drw");
 				if (i > -1) {
-					ss += "/" + curDiag.diagFile.getName().substring(0, i) + langs[Lang.IMAGE].ext;
+					ss += "/" + curDiag.diagFile.getName().substring(0, i) + "." + langs[Lang.IMAGE].ext;
 					fc.setSuggestedName(ss);
 				}
 			}
@@ -5918,12 +5797,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		public boolean accept(File f) {
 
 			return f.getName().toLowerCase().endsWith(".png") || f.getName().toLowerCase().endsWith(".jpg")
-					|| f.getName().toLowerCase().endsWith(".bmp") || f.isDirectory();
+					/* || f.getName().toLowerCase().endsWith(".bmp") */ || f.isDirectory();
 		}
 
 		@Override
 		public String getDescription() {
-			return "Images (*.png, *.jpg, *.bmp)";
+			return "Images (*.png, *.jpg)";
 		}
 
 	}

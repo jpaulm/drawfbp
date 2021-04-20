@@ -1,6 +1,10 @@
 package com.jpaulmorrison.graphics;
 
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
@@ -8,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -792,6 +798,124 @@ public class Diagram {
 			sbnDiag.changed = false; 
 			driver.closeTab(false);   // close selected tab
 		}
+	}
+	
+	void createImage() {
+		// crop
+					int x, w, y, h;
+
+					int bottom_border_height = 60;
+
+					x = minX;
+					x = Math.max(1, x);
+					w = maxX - x;
+
+					y = minY - 40;
+					y = Math.max(1, y);
+					h = maxY - y;
+
+					int aw = area.getWidth();
+					int ah = area.getHeight();
+					w = Math.min(aw, w);
+					h = Math.min(ah, h + bottom_border_height);
+
+					y = Math.max(0, y);
+
+					// adjust x, y, w, h to avoid RasterFormatException
+
+					x = Math.max(x, driver.buffer.getMinX());
+					y = Math.max(y, driver.buffer.getMinY());
+					w = Math.min(w, driver.buffer.getWidth());
+					h = Math.min(h, driver.buffer.getHeight());
+
+					BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
+
+					Font f = driver.fontf.deriveFont(Font.PLAIN, driver.fontf.getSize() + 4f);   
+					
+					Graphics g = buffer2.getGraphics();
+					Color col = g.getColor();
+					g.setColor(Color.BLACK);
+					g.setFont(f);
+					FontMetrics metrics = g.getFontMetrics(f);
+					y = buffer2.getMinY() + 20 ;
+					String t = diagFile.getName();		
+					x = 0;					
+					g.drawString(t, x, y);
+					
+					Font f2 = driver.fontf.deriveFont(Font.BOLD);
+					g.setFont(f2);
+					x = w - 100;
+					ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+					t = utc.toString();
+					int i = t.indexOf("T");
+					t = t.substring(0, i);
+					byte[] str = t.getBytes();
+					int width = metrics.bytesWidth(str, 0, str.length);
+					x = w - width;
+					g.drawString(t, x, y);
+					
+					g.setColor(col);
+
+					// Now we build a strip containing the diagram description
+
+					f = driver.fontg.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10));
+					g.setFont(f);
+
+					metrics = g.getFontMetrics(f);
+					width = 0;
+					//t = desc;
+					if (desc != null) {
+						str = desc.getBytes();
+						width = metrics.bytesWidth(str, 0, desc.length());
+					}
+
+					w = Math.max(w, width);
+					
+					width = Math.max(w + 40, buffer2.getWidth());
+
+					BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
+							BufferedImage.TYPE_INT_ARGB);
+
+					g = combined.getGraphics();
+
+					g.setColor(Color.WHITE);
+
+					g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
+					int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
+					g.drawImage(buffer2, x2, 0, null);
+					
+					if (desc != null && !desc.trim().equals("")) {
+						col = g.getColor();
+						g.setColor(Color.BLUE);
+
+						f2 = driver.fontg.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10));
+
+						g.setFont(f2);
+						x = combined.getWidth() / 2;
+						metrics = g.getFontMetrics(f);
+						 
+						width = 0;
+						int sy = (bottom_border_height - metrics.getHeight()) / 2;
+						y = buffer2.getHeight() + bottom_border_height - sy;
+						
+						if (desc != null) {
+							str = desc.getBytes();
+							width = metrics.bytesWidth(str, 0, desc.length());
+							//int sy = (bottom_border_height - metrics.getHeight()) / 2;
+							//y = buffer2.getHeight() + bottom_border_height - sy;
+							g.drawString(desc, x - width / 2, y);
+						}
+
+						
+						//g.setColor(Color.BLACK);
+						
+						g.setColor(col);
+					}
+
+				
+					// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
+
+					driver.showImage(combined, diagFile.getName(), true);	
 	}
 
 	void findEnclosedBlocksAndArrows(Enclosure enc) {
