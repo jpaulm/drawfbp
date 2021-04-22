@@ -1562,12 +1562,11 @@ public class Block implements ActionListener {
 			}
 			diag.jpm.addSeparator();
 		}
-		if (this instanceof Enclosure) {
-		//	menuItem = new JMenuItem("Toggle Colour");
-		//	diag.jpm.add(menuItem);
-		//	menuItem.addActionListener(this);
-		} else {
+		if (!(this instanceof Enclosure)) {
 			menuItem = new JMenuItem("Toggle Visible/Invisible");
+			diag.jpm.add(menuItem);
+			menuItem.addActionListener(this);		 
+			menuItem = new JMenuItem("Switch off Selected Status");
 			diag.jpm.add(menuItem);
 			menuItem.addActionListener(this);
 		}
@@ -1575,8 +1574,6 @@ public class Block implements ActionListener {
 		menuItem = new JMenuItem("Delete");
 		diag.jpm.add(menuItem);
 		menuItem.addActionListener(this);
-		
-		
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -1916,6 +1913,13 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			driver.repaint();
 			return;
 		}
+		if (s.equals("Switch off Selected Status")) {			
+			driver.selBlock = null;			
+			diag.changed = true;
+			driver.repaint();
+			return;
+		}
+		
 		if (s.equals("Toggle Colour")) {
 			Enclosure enc = (Enclosure) this;
 			enc.coloured = !enc.coloured;

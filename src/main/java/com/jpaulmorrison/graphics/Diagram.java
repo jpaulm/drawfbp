@@ -837,7 +837,8 @@ public class Diagram {
 					g.setColor(Color.BLACK);
 					g.setFont(f);
 					FontMetrics metrics = g.getFontMetrics(f);
-					y = buffer2.getMinY() + 20 ;
+					y = /* buffer2.getMinY() + */ 20;
+					
 					String t = diagFile.getName();		
 					x = 0;					
 					g.drawString(t, x, y);
@@ -847,11 +848,14 @@ public class Diagram {
 					x = w - 100;
 					ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
 					t = utc.toString();
-					int i = t.indexOf("T");
-					t = t.substring(0, i);
+					int i = t.indexOf(":");
+					int j = t.substring(i + 1).indexOf(":");
+					t = t.substring(0, i + j + 1);
+					t = t.replace("T",  " ");
+					t += " (UTC)";
 					byte[] str = t.getBytes();
 					int width = metrics.bytesWidth(str, 0, str.length);
-					x = w - width;
+					x = w - width + 20;
 					g.drawString(t, x, y);
 					
 					g.setColor(col);

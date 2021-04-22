@@ -17,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -2002,7 +2003,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 		});
-
+		
 		JLabel jLabel = new JLabel(new ImageIcon(image));
 		
 		dialog.add(jLabel);
