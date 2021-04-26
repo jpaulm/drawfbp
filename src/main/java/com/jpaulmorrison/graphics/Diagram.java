@@ -804,6 +804,7 @@ public class Diagram {
 		// crop
 					int x, w, y, h;
 
+					int top_border_height = 60;
 					int bottom_border_height = 60;
 
 					x = minX;
@@ -829,20 +830,33 @@ public class Diagram {
 					h = Math.min(h, driver.buffer.getHeight());
 
 					BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
+					
+					// Build strip containing full .drw file name
+					
+					int width = Math.max(w + 40, buffer2.getWidth());
+					BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + top_border_height + bottom_border_height,
+							BufferedImage.TYPE_INT_ARGB);
+
+					Graphics g = combined.getGraphics();
+					
+					g.setColor(Color.WHITE);
+
+					g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 
 					Font f = driver.fontf.deriveFont(Font.PLAIN, driver.fontf.getSize() + 4f);   
 					
-					Graphics g = buffer2.getGraphics();
+					//Graphics g = buffer2.getGraphics();
 					Color col = g.getColor();
 					g.setColor(Color.BLACK);
 					g.setFont(f);
 					FontMetrics metrics = g.getFontMetrics(f);
 					y = /* buffer2.getMinY() + */ 20;
 					
-					String t = diagFile.getName();		
+					String t = diagFile.getAbsolutePath();		
 					x = 0;					
 					g.drawString(t, x, y);
 					
+					/*
 					Font f2 = driver.fontf.deriveFont(Font.BOLD);
 					g.setFont(f2);
 					x = w - 100;
@@ -854,12 +868,13 @@ public class Diagram {
 					t = t.replace("T",  " ");
 					t += " (UTC)";
 					byte[] str = t.getBytes();
-					int width = metrics.bytesWidth(str, 0, str.length);
+					width = metrics.bytesWidth(str, 0, str.length);
 					x = w - width + 20;
-					g.drawString(t, x, y);
+					g.drawString(t, x, y + 20);
 					
 					g.setColor(col);
 
+					*/
 					// Now we build a strip containing the diagram description
 
 					f = driver.fontg.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10));
@@ -868,6 +883,7 @@ public class Diagram {
 					metrics = g.getFontMetrics(f);
 					width = 0;
 					//t = desc;
+					byte[] str = new byte[0];
 					if (desc != null) {
 						str = desc.getBytes();
 						width = metrics.bytesWidth(str, 0, desc.length());
@@ -877,22 +893,22 @@ public class Diagram {
 					
 					width = Math.max(w + 40, buffer2.getWidth());
 
-					BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + bottom_border_height,
-							BufferedImage.TYPE_INT_ARGB);
+					//BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + top_border_height + bottom_border_height,
+					//		BufferedImage.TYPE_INT_ARGB);
 
-					g = combined.getGraphics();
+					//g = combined.getGraphics();
 
-					g.setColor(Color.WHITE);
+					//g.setColor(Color.WHITE);
 
-					g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
+					//g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 					int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
-					g.drawImage(buffer2, x2, 0, null);
+					g.drawImage(buffer2, x2, top_border_height, null);
 					
 					if (desc != null && !desc.trim().equals("")) {
 						col = g.getColor();
 						g.setColor(Color.BLUE);
 
-						f2 = driver.fontg.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10));
+						Font f2 = driver.fontg.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10));
 
 						g.setFont(f2);
 						x = combined.getWidth() / 2;
@@ -916,7 +932,23 @@ public class Diagram {
 						g.setColor(col);
 					}
 
-				
+					Font f2 = driver.fontf.deriveFont(Font.BOLD);
+					g.setFont(f2);
+					x = w - 100;
+					ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+					t = utc.toString();
+					int i = t.indexOf(":");
+					int j = t.substring(i + 1).indexOf(":");
+					t = t.substring(0, i + j + 1);
+					t = t.replace("T",  " ");
+					t += " (UTC)";
+					str = t.getBytes();
+					width = metrics.bytesWidth(str, 0, str.length);
+					x = w - width + 20;
+					g.drawString(t, x, combined.getHeight() - 20);
+					
+					g.setColor(col);
+
 					// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
 
 					driver.showImage(combined, diagFile.getName(), true);	
