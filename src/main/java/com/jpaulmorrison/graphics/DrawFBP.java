@@ -2011,9 +2011,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		});
 		
-		JLabel jLabel = new JLabel(new ImageIcon(image));
+		ImagePanel jPanel = new ImagePanel(image);
 		
-		dialog.add(jLabel);
+		dialog.add(jPanel);
 
 		dialog.setLocation(new Point(200, 200));
 
@@ -6010,6 +6010,45 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				MyOptionPane.showMessageDialog(driver, jsp, MyOptionPane.INFORMATION_MESSAGE);
 			}
 		}
+	}
+	
+	public class ImagePanel extends JPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		Image image = null;
+		Dimension dim = null;
+		
+		public ImagePanel(Image img) {
+			image = img;
+			dim = new Dimension(image.getWidth(null), image.getHeight(null));
+			setPreferredSize(dim);
+			//ComponentListener cl = new ComponentAdapter() {
+	        //    public void componentResized(ComponentEvent ce) {
+	         //       Component c = ce.getComponent();
+	             //   img = im1.getScaledInstance(c.getWidth(), c.getHeight(), Image.SCALE_SMOOTH); 
+	        //    }
+	        //};
+			//addComponentListener(cl);
+		}
+		
+		public void paintComponent(Graphics g) {
+			//g.drawImage(image, 0, 0, getWidth(), getHeight(), this); // draw the image
+			
+			int width = getWidth();
+			int height = getHeight();
+			g.setColor(Color.WHITE);
+			g.fillRect(0, 0, width, height);
+			
+			int x = (width - dim.width) /2;
+			int y = (height - dim.height) /2; 
+			
+			g.drawImage(image, x, y, dim.width, dim.height, this); // draw the image
+		}
+		
+		
 	}
 
 	public class SelectionArea extends JPanel implements MouseInputListener {

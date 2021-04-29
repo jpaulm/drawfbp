@@ -85,6 +85,7 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$ExeFilter
  com.jpaulmorrison.graphics.DrawFBP$FBPFilter
  com.jpaulmorrison.graphics.DrawFBP$ImageFilter
+ com.jpaulmorrison.graphics.DrawFBP$ImagePanel
  com.jpaulmorrison.graphics.DrawFBP$JSFilter
  com.jpaulmorrison.graphics.DrawFBP$JSONFilter
  com.jpaulmorrison.graphics.DrawFBP$JarFileFilter

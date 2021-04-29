@@ -288,6 +288,9 @@ public class Diagram {
 
 				String suff = driver.getSuffix(file.getAbsolutePath());
 				BufferedImage bi = (BufferedImage) contents;
+				
+				int w = bi.getWidth();
+				int h = bi.getHeight();
 
 				ImageIO.write(bi, suff, file);
 			} catch (IOException e) {
