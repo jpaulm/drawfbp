@@ -17,7 +17,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -1606,6 +1605,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			}
 
+			boolean landscape = image.getWidth() > image.getHeight();
+			
 			currentImageDir = new File(fFile.getParent());
 			saveProp("currentImageDir", fFile.getParent());
 			saveProperties();
@@ -1632,10 +1633,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
 			aset.add(new Copies(1));
-			// aset.add(MediaSizeName.NA_5X7);
-			aset.add(MediaSizeName.NA_8X10);
+			aset.add(MediaSizeName.A);
 			aset.add(Sides.ONE_SIDED);
-			aset.add(OrientationRequested.LANDSCAPE);
+			
+			if (landscape) 
+				aset.add(OrientationRequested.LANDSCAPE);
+			else 
+				aset.add(OrientationRequested.PORTRAIT);
+			
 			Doc document = new SimpleDoc(imagestream, doc, null);
 
 			
@@ -1991,6 +1996,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		repaint();
 	}
 
+	// https://stackoverflow.com/questions/10107752/how-do-i-have-a-background-image-resize-in-a-java-gui
+	
 	void showImage(final BufferedImage image, String title, final boolean save) {
 		
 		//final JDialog dialog = new JDialog();	

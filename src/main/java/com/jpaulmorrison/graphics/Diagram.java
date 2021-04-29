@@ -2,10 +2,13 @@ package com.jpaulmorrison.graphics;
 
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -828,7 +831,9 @@ public class Diagram {
 					y = Math.max(y, driver.buffer.getMinY());
 					w = Math.min(w, driver.buffer.getWidth());
 					h = Math.min(h, driver.buffer.getHeight());
-
+					
+					driver.selBlock = null;		// clear "selected" colour
+			
 					BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
 					
 					// Build strip containing full .drw file name
@@ -839,45 +844,60 @@ public class Diagram {
 
 					Graphics g = combined.getGraphics();
 					
+					area.paintComponent(g);
+					
+					/*
+					ComponentListener cl = new ComponentListener() {
+
+						@Override
+						public void componentResized(ComponentEvent e) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void componentMoved(ComponentEvent e) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void componentShown(ComponentEvent e) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void componentHidden(ComponentEvent e) {
+							// TODO Auto-generated method stub
+							
+						} };	
+						
+					combined.addComponentListener(cl);
+					
+					*/
+					
 					g.setColor(Color.WHITE);
 
 					g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 
-					Font f = driver.fontf.deriveFont(Font.PLAIN, driver.fontf.getSize() + 4f);   
+					Font f = driver.fontf /*.deriveFont(Font.PLAIN, driver.fontf.getSize() + 4f) */;   
 					
 					//Graphics g = buffer2.getGraphics();
 					Color col = g.getColor();
 					g.setColor(Color.BLACK);
 					g.setFont(f);
-					FontMetrics metrics = g.getFontMetrics(f);
+					FontMetrics metrics = null;   //g.getFontMetrics(f);
 					y = /* buffer2.getMinY() + */ 20;
 					
 					String t = diagFile.getAbsolutePath();		
 					x = 0;					
 					g.drawString(t, x, y);
 					
-					/*
-					Font f2 = driver.fontf.deriveFont(Font.BOLD);
-					g.setFont(f2);
-					x = w - 100;
-					ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-					t = utc.toString();
-					int i = t.indexOf(":");
-					int j = t.substring(i + 1).indexOf(":");
-					t = t.substring(0, i + j + 1);
-					t = t.replace("T",  " ");
-					t += " (UTC)";
-					byte[] str = t.getBytes();
-					width = metrics.bytesWidth(str, 0, str.length);
-					x = w - width + 20;
-					g.drawString(t, x, y + 20);
 					
-					g.setColor(col);
-
-					*/
 					// Now we build a strip containing the diagram description
 
-					f = driver.fontg.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10));
+					f = driver.fontg /*.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10)) */;
 					g.setFont(f);
 
 					metrics = g.getFontMetrics(f);
@@ -908,11 +928,11 @@ public class Diagram {
 						col = g.getColor();
 						g.setColor(Color.BLUE);
 
-						Font f2 = driver.fontg.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10));
+						//Font f2 = driver.fontg /*.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10)) */ ;
 
-						g.setFont(f2);
+						//g.setFont(f2);
 						x = combined.getWidth() / 2;
-						metrics = g.getFontMetrics(f);
+						//metrics = g.getFontMetrics(f);
 						 
 						width = 0;
 						int sy = (bottom_border_height - metrics.getHeight()) / 2;
@@ -932,7 +952,7 @@ public class Diagram {
 						g.setColor(col);
 					}
 
-					Font f2 = driver.fontf.deriveFont(Font.BOLD);
+					Font f2 = driver.fontf /*.deriveFont(Font.BOLD) */;
 					g.setFont(f2);
 					x = w - 100;
 					ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
