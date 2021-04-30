@@ -7,6 +7,7 @@
    <tocitem text="Contents"  expand="true">
        <tocitem text="Introduction" target="intro"/>
        <tocitem text="Getting Started" target="gettingstarted"/>
+        <tocitem text="Block Types" target="blocktypes"/>
        <tocitem text="Choosing Files" target="filechooser"/>
        <tocitem text="Blocks" target="blocks">
            <tocitem text="Processes" target="processes" />           

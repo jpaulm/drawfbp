@@ -26,6 +26,7 @@
       <mapID target="panning" url="panning.html" />
       <mapID target="comparing" url="comparing.html" />      
       <mapID target="gettingstarted" url="gettingstarted.html" />
+      <mapID target="blocktypes" url="blocktypes.html" />
       <mapID target="genprog" url="genprog.html" />
       <mapID target="propfile" url="propfile.html" />
       <mapID target="fonts" url="fonts.html" />

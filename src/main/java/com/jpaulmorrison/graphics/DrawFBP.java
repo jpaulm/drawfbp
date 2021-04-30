@@ -223,8 +223,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	// "Subnet" is not a separate block type (it is a variant of "Process")
 
-	String blockNames[] = { "Process", "Initial IP", "Enclosure", "Subnet", "ExtPorts: In", "... Out", "... Out/In",
+	String blockNames[] = { "Process", "Initial IP", "Enclosure", "Subnet", "ExtPort In", "ExtPort Out", "ExtPort O/I",
 			"Legend", "File", "Person", "Report" };
+	
+	String shortNames[] = { "Proc", "IIP", "Encl", "Subn", "ExtPt I", "EP O", "EP O/I",
+			"Legd", "File", "Pers", "Rept" };
 
 	String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
 			Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
@@ -292,8 +295,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	JLabel zoom = new JLabel("Zoom");
 	JCheckBox pan = new JCheckBox("Pan");
-	JButton up = new JButton("Go to Directory");
-
+	JButton up = new JButton();
+	
 	JRadioButton[] but = new JRadioButton[11];
 	Box box21 = null;
 
@@ -876,6 +879,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// box2.add(Box.createHorizontalStrut(0));
 		pack();
 
+		up.setText("Go to Directory");
+		
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
 			but[j].addActionListener(this);
@@ -2005,7 +2010,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//iFrame.setTitle(title);
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent ev) {
+			public void windowClosing(WindowEvent ev) {		
 				askAboutSavingImage(image, dialog, save);
 			}
 
@@ -5277,14 +5282,25 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	public void componentResized(ComponentEvent e) {
-
+		
 		Dimension dim = getSize();
-		Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
+		
+		if (dim.width > 1000)
+			up.setText("Go to Directory");
+		else
+			up.setText("Dir");
+		
+		
+		//Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
 		int no = but.length;
 		for (int j = 0; j < no; j++) {
-			box21.remove(0);
-			but[j].setMaximumSize(dim2);
-			box21.add(but[j]);
+			//box21.remove(0);
+			//but[j].setMaximumSize(dim2);
+			if (dim.width > 1000)
+				but[j].setText(blockNames[j]);
+			else
+				but[j].setText(shortNames[j]);
+			//box21.add(but[j]);
 		}
 		// (getGraphics()).drawImage(buffer, 0, 0, null);
 		// System.out.println("Resized");
