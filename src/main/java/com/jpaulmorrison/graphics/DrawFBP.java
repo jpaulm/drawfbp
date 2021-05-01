@@ -72,7 +72,8 @@ import javax.swing.text.StyleContext;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-public class DrawFBP extends JFrame implements ActionListener, ComponentListener, ChangeListener, MouseListener {
+public class DrawFBP extends JFrame implements ActionListener, ComponentListener, ChangeListener, 
+    MouseMotionListener, MouseListener {
 
 	static final long serialVersionUID = 111L;
 	// private static final DrawFBP DrawFBP = null;
@@ -118,7 +119,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	String javaFBPJarFile = null;
 	// String jhallJarFile = null;
 
-	Block selBlockM = null; // used only when mousing over
+	Block selBlockM = null; // used when mousing over, and locating block for 
+	                        //    drawing arrows
 	Block selBlock = null; // permanent select
 	Arrow selArrow = null; // permanent select
 	String generalFont = null;
@@ -448,6 +450,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// readPropertiesFile();
 
+		addMouseMotionListener(this);
+		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		// label = new JLabel(" ");
 
@@ -886,8 +890,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			but[j].addActionListener(this);
 			butGroup.add(but[j]);
 			box21.add(but[j]);
-			// jsp.add(but[j]);
-			// but[j].setFont(fontg);
+			if (j < but.length - 1)
+				box21.add(Box.createHorizontalGlue());
 			but[j].setText(blockNames[j]);
 			but[j].setFocusable(true);
 		}
@@ -1128,7 +1132,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuItem = new JMenuItem("Compare Diagrams");
 		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		menuItem = new JMenuItem("Clear Visible Indicators");
+		menuItem = new JMenuItem("Clear Compare Indicators");
 		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		diagMenu.addSeparator();
@@ -1483,7 +1487,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return;
 		}
 
-		if (s.equals("Clear Visible Indicators")) {
+		if (s.equals("Clear Compare Indicators")) {
 
 			for (Block bl : curDiag.blocks.values()) {
 				bl.compareFlag = null;
@@ -3016,18 +3020,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		UIManager.put("MenuBar.font", fontg);
 		UIManager.put("MenuItem.font", fontg);
 		UIManager.put("Label.font", fontf);
-
-		// for (Block block : curDiag.blocks.values()) {
-		// block.draw(osg);
-		// }
-
-		// for (Arrow arrow : curDiag.arrows.values()) {
-		// arrow.draw(osg);
-		// }
-
-		// if (depDialog != null)
-		// depDialog.setFont(fontf);
-
+		
+        SwingUtilities.updateComponentTreeUI(DrawFBP.this);
+        
 		/*
 		 * for (Object item : ht.keySet()) { UIManager.put(item, fontg); //
 		 * System.out.println(item + " - " + fontg); }
@@ -6353,6 +6348,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 		public void mouseMoved(MouseEvent e) {
+			selBlockM = null;
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
 				return;
@@ -6401,7 +6397,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			}
 
-			selBlockM = null;
+			//selBlockM = null;
 			// look for corner of an enclosure - if corner not null, you will
 			// see diagonal arrows at corners
 			for (Block block : curDiag.blocks.values()) {
@@ -6505,12 +6501,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		}
 
-		/*
+		/***
 		 * The following mouse actions are supported:
 		 * 
 		 * - click on block - highlights block - double-click on block - brings up popup
-		 * menu if not subnet - brings up subnet if subnet - press on side of block
-		 * starts arrow - release on side of block starts or ends arrow - click on arrow
+		 *    menu if not subnet - brings up subnet if subnet - press on side of block
+		 *    starts arrow - release on side of block starts or ends arrow - click on arrow
 		 * - brings up popup menu - press on block - starts drag
 		 * 
 		 */
@@ -7684,6 +7680,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		selBlockM = null;
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		selBlockM = null;
+		
 	}
 
 }

@@ -873,9 +873,7 @@ public class Block implements ActionListener {
 				showArrowEndAreas(g);
 		
 		//if (driver.fpArrowRoot != null && driver.fpArrowRoot.block == this) 
-		//	showArrowEndAreas(g);
-		
-		
+		//	showArrowEndAreas(g);		
 		
 		if (!(type.equals(Types.ENCL_BLOCK)))
 		    driver.blueCircs(g);

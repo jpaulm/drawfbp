@@ -2,6 +2,8 @@ package com.jpaulmorrison.graphics;
 
 import javax.swing.*;
 
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 
 /**
@@ -49,12 +51,12 @@ public class JTabbedPaneWithCloseIcons extends JTabbedPane {
 								currentDiagramDir.getAbsolutePath());
 					// saveProperties();
 					
-					driver.curDiag.area.removeMouseListener(driver.curDiag.area);
-					driver.curDiag.area.removeMouseMotionListener(driver.curDiag.area);
+					driver.curDiag.area.removeMouseListener((MouseListener) driver.curDiag.area);
+					driver.curDiag.area.removeMouseMotionListener((MouseMotionListener)driver.curDiag.area);
 					String s = f.getAbsolutePath();
 					if (s == null || s.endsWith(".drw")) {
-						driver.curDiag.area.addMouseListener(driver.curDiag.area);
-						driver.curDiag.area.addMouseMotionListener(driver.curDiag.area);
+						driver.curDiag.area.addMouseListener((MouseListener)driver.curDiag.area);
+						driver.curDiag.area.addMouseMotionListener((MouseMotionListener)driver.curDiag.area);
 					}
 					
 				}
