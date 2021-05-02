@@ -286,9 +286,6 @@ public class Diagram {
 				String suff = driver.getSuffix(file.getAbsolutePath());
 				BufferedImage bi = (BufferedImage) contents;
 				
-				int w = bi.getWidth();
-				int h = bi.getHeight();
-
 				ImageIO.write(bi, suff, file);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -805,204 +802,198 @@ public class Diagram {
 	
 	void createImage() {
 		// crop
-					int x, w, y, h;
+		int x, w, y, h;
 
-					int top_border_height = 60;
-					int bottom_border_height = 60;
+		int top_border_height = 60;
+		int bottom_border_height = 60;
 
-					x = minX;
-					x = Math.max(1, x);
-					w = maxX - x;
+		x = minX;
+		x = Math.max(1, x);
+		w = maxX - x;
 
-					y = minY - 40;
-					y = Math.max(1, y);
-					h = maxY - y;
+		y = minY - 40;
+		y = Math.max(1, y);
+		h = maxY - y;
 
-					int aw = area.getWidth();
-					int ah = area.getHeight();
-					w = Math.min(aw, w);
-					h = Math.min(ah, h + bottom_border_height);
+		int aw = area.getWidth();
+		int ah = area.getHeight();
+		w = Math.min(aw, w);
+		h = Math.min(ah, h + bottom_border_height);
 
-					y = Math.max(0, y);
+		y = Math.max(0, y);
 
-					// adjust x, y, w, h to avoid RasterFormatException
+		// adjust x, y, w, h to avoid RasterFormatException
 
-					x = Math.max(x, driver.buffer.getMinX());
-					y = Math.max(y, driver.buffer.getMinY());
-					w = Math.min(w, driver.buffer.getWidth());
-					h = Math.min(h, driver.buffer.getHeight());
-					
-					driver.selBlock = null;		// clear "selected" colour
-			
-					BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
-					
-					// Build strip containing full .drw file name
-					
-					int width = Math.max(w + 40, buffer2.getWidth());
-					BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + top_border_height + bottom_border_height,
-							BufferedImage.TYPE_INT_ARGB);
+		x = Math.max(x, driver.buffer.getMinX());
+		y = Math.max(y, driver.buffer.getMinY());
+		w = Math.min(w, driver.buffer.getWidth());
+		h = Math.min(h, driver.buffer.getHeight());
 
-					Graphics g = combined.getGraphics();
-					
-					area.paintComponent(g);
-					
-					/*
-					ComponentListener cl = new ComponentListener() {
+		// driver.selBlock = null; // clear "selected" colour
 
-						@Override
-						public void componentResized(ComponentEvent e) {
-							// TODO Auto-generated method stub
-							
-						}
+		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
 
-						@Override
-						public void componentMoved(ComponentEvent e) {
-							// TODO Auto-generated method stub
-							
-						}
+		// Build strip containing full .drw file name
 
-						@Override
-						public void componentShown(ComponentEvent e) {
-							// TODO Auto-generated method stub
-							
-						}
+		int width = Math.max(w + 40, buffer2.getWidth());
+		BufferedImage combined = new BufferedImage(width,
+				buffer2.getHeight() + top_border_height + bottom_border_height, BufferedImage.TYPE_INT_ARGB);
 
-						@Override
-						public void componentHidden(ComponentEvent e) {
-							// TODO Auto-generated method stub
-							
-						} };	
-						
-					combined.addComponentListener(cl);
-					
-					*/
-					
-					g.setColor(Color.WHITE);
+		Graphics g = combined.getGraphics();
 
-					g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
+		area.paintComponent(g);
 
-					Font f = driver.fontf /*.deriveFont(Font.PLAIN, driver.fontf.getSize() + 4f) */;   
-					
-					//Graphics g = buffer2.getGraphics();
-					Color col = g.getColor();
-					g.setColor(Color.BLACK);
-					g.setFont(f);
-					FontMetrics metrics = null;   //g.getFontMetrics(f);
-					y = /* buffer2.getMinY() + */ 20;
-					
-					String t = diagFile.getAbsolutePath();		
-					x = 0;					
-					g.drawString(t, x, y);
-					
-					
-					// Now we build a strip containing the diagram description
+		/*
+		 * ComponentListener cl = new ComponentListener() {
+		 * 
+		 * @Override public void componentResized(ComponentEvent e) { // TODO
+		 * Auto-generated method stub
+		 * 
+		 * }
+		 * 
+		 * @Override public void componentMoved(ComponentEvent e) { // TODO
+		 * Auto-generated method stub
+		 * 
+		 * }
+		 * 
+		 * @Override public void componentShown(ComponentEvent e) { // TODO
+		 * Auto-generated method stub
+		 * 
+		 * }
+		 * 
+		 * @Override public void componentHidden(ComponentEvent e) { // TODO
+		 * Auto-generated method stub
+		 * 
+		 * } };
+		 * 
+		 * combined.addComponentListener(cl);
+		 * 
+		 */
 
-					f = driver.fontg /*.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10)) */;
-					g.setFont(f);
+		g.setColor(Color.WHITE);
 
-					metrics = g.getFontMetrics(f);
-					width = 0;
-					//t = desc;
-					byte[] str = new byte[0];
-					if (desc != null) {
-						str = desc.getBytes();
-						width = metrics.bytesWidth(str, 0, desc.length());
-					}
+		g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 
-					w = Math.max(w, width);
-					
-					width = Math.max(w + 40, buffer2.getWidth());
+		Font f = driver.fontf /* .deriveFont(Font.PLAIN, driver.fontf.getSize() + 4f) */;
 
-					//BufferedImage combined = new BufferedImage(width, buffer2.getHeight() + top_border_height + bottom_border_height,
-					//		BufferedImage.TYPE_INT_ARGB);
+		// Graphics g = buffer2.getGraphics();
+		Color col = g.getColor();
+		g.setColor(Color.BLACK);
+		g.setFont(f);
+		FontMetrics metrics = null; // g.getFontMetrics(f);
+		y = /* buffer2.getMinY() + */ 20;
 
-					//g = combined.getGraphics();
+		String t = diagFile.getAbsolutePath();
+		x = 0;
+		g.drawString(t, x, y);
 
-					//g.setColor(Color.WHITE);
+		// Now we build a strip containing the diagram description
 
-					//g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
-					int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
-					g.drawImage(buffer2, x2, top_border_height, null);
-					
-					if (desc != null && !desc.trim().equals("")) {
-						col = g.getColor();
-						g.setColor(Color.BLUE);
+		f = driver.fontg /* .deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10)) */;
+		g.setFont(f);
 
-						//Font f2 = driver.fontg /*.deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10)) */ ;
+		metrics = g.getFontMetrics(f);
+		width = 0;
+		// t = desc;
+		byte[] str = new byte[0];
+		if (desc != null) {
+			str = desc.getBytes();
+			width = metrics.bytesWidth(str, 0, desc.length());
+		}
 
-						//g.setFont(f2);
-						x = combined.getWidth() / 2;
-						//metrics = g.getFontMetrics(f);
-						 
-						width = 0;
-						int sy = (bottom_border_height - metrics.getHeight()) / 2;
-						y = buffer2.getHeight() + bottom_border_height - sy;
-						
-						if (desc != null) {
-							str = desc.getBytes();
-							width = metrics.bytesWidth(str, 0, desc.length());
-							//int sy = (bottom_border_height - metrics.getHeight()) / 2;
-							//y = buffer2.getHeight() + bottom_border_height - sy;
-							g.drawString(desc, x - width / 2, y);
-						}
+		w = Math.max(w, width);
 
-						
-						//g.setColor(Color.BLACK);
-						
-						g.setColor(col);
-					}
+		width = Math.max(w + 40, buffer2.getWidth());
 
-					Font f2 = driver.fontf /*.deriveFont(Font.BOLD) */;
-					g.setFont(f2);
-					x = w - 100;
-					ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-					t = utc.toString();
-					int i = t.indexOf(":");
-					int j = t.substring(i + 1).indexOf(":");
-					t = t.substring(0, i + j + 1);
-					t = t.replace("T",  " ");
-					t += " (UTC)";
-					str = t.getBytes();
-					width = metrics.bytesWidth(str, 0, str.length);
-					x = w - width + 20;
-					g.drawString(t, x, combined.getHeight() - 20);
-					
-					g.setColor(col);
+		// BufferedImage combined = new BufferedImage(width, buffer2.getHeight() +
+		// top_border_height + bottom_border_height,
+		// BufferedImage.TYPE_INT_ARGB);
 
-					// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
+		// g = combined.getGraphics();
 
-					driver.showImage(combined, diagFile.getName(), true);	
+		// g.setColor(Color.WHITE);
+
+		// g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
+		int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
+		g.drawImage(buffer2, x2, top_border_height, null);
+
+		if (desc != null && !desc.trim().equals("")) {
+			col = g.getColor();
+			g.setColor(Color.BLUE);
+
+			// Font f2 = driver.fontg /*.deriveFont(Font.ITALIC, (float)
+			// (driver.fontg.getSize() + 10)) */ ;
+
+			// g.setFont(f2);
+			x = combined.getWidth() / 2;
+			// metrics = g.getFontMetrics(f);
+
+			width = 0;
+			int sy = (bottom_border_height - metrics.getHeight()) / 2;
+			y = buffer2.getHeight() + bottom_border_height - sy;
+
+			if (desc != null) {
+				str = desc.getBytes();
+				width = metrics.bytesWidth(str, 0, desc.length());
+				// int sy = (bottom_border_height - metrics.getHeight()) / 2;
+				// y = buffer2.getHeight() + bottom_border_height - sy;
+				g.drawString(desc, x - width / 2, y);
+			}
+
+			// g.setColor(Color.BLACK);
+
+			g.setColor(col);
+		}
+
+		Font f2 = driver.fontf /* .deriveFont(Font.BOLD) */;
+		g.setFont(f2);
+		x = w - 100;
+		ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+		t = utc.toString();
+		int i = t.indexOf(":");
+		int j = t.substring(i + 1).indexOf(":");
+		t = t.substring(0, i + j + 1);
+		t = t.replace("T", " ");
+		t += " (UTC)";
+		str = t.getBytes();
+		width = metrics.bytesWidth(str, 0, str.length);
+		x = w - width + 20;
+		g.drawString(t, x, combined.getHeight() - 20);
+
+		g.setColor(col);
+
+		// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
+
+		driver.showImage(combined, diagFile.getName(), true);
 	}
 
 	void findEnclosedBlocksAndArrows(Enclosure enc) {
 		// look for blocks which are within enclosure
-		  
-				enc.llb = new LinkedList<Block>();
-				for (Block block : blocks.values()) {
-					if (block == enc)
-						continue;
-					if (block.leftEdge >= enc.leftEdge
-							&& block.rgtEdge <= enc.rgtEdge
-							&& block.topEdge >= enc.topEdge
-							&& block.botEdge <= enc.botEdge) {
-						enc.llb.add(block); // set aside for action
-					}
-				}
-		 
-				// look for arrows which are within enclosure
-				
-				enc.lla = new LinkedList<Arrow>();
-				for (Arrow arrow : arrows.values()) {
-					Block from = blocks.get(Integer.valueOf(arrow.fromId));
-					Block to = blocks.get(Integer.valueOf(arrow.toId));
-					Arrow a2 = arrow.findLastArrowInChain(); 
-					if (a2 != null)
-						to = blocks.get(Integer.valueOf(a2.toId));
-					
-					if (enc.llb.contains(from)  && enc.llb.contains(to)) 
-						enc.lla.add(arrow);
-				
-				}
+
+		enc.llb = new LinkedList<Block>();
+		for (Block block : blocks.values()) {
+			if (block == enc)
+				continue;
+			if (block.leftEdge >= enc.leftEdge && block.rgtEdge <= enc.rgtEdge && block.topEdge >= enc.topEdge
+					&& block.botEdge <= enc.botEdge) {
+				enc.llb.add(block); // set aside for action
+			}
+		}
+
+		// look for arrows which are within enclosure
+
+		enc.lla = new LinkedList<Arrow>();
+		for (Arrow arrow : arrows.values()) {
+			Block from = blocks.get(Integer.valueOf(arrow.fromId));
+			Block to = blocks.get(Integer.valueOf(arrow.toId));
+			Arrow a2 = arrow.findLastArrowInChain();
+			if (a2 != null)
+				to = blocks.get(Integer.valueOf(a2.toId));
+
+			if (enc.llb.contains(from) && enc.llb.contains(to))
+				enc.lla.add(arrow);
+
+		}
 	}
 	
 	Point computeArrowVar (Point fix, Block subnetBlock){

@@ -867,7 +867,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		pan.setBorderPaintedFlat(false);
 
 		up.setFont(fontg);
-		up.setActionCommand("Go to Folder");
+		up.setActionCommand("Go to Directory");
 		up.addActionListener(this);
 		up.setBackground(slateGray1);
 		// up.setEnabled(false);
@@ -883,7 +883,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// box2.add(Box.createHorizontalStrut(0));
 		pack();
 
-		up.setText("Go to Directory");
+		up.setText("Go to Dir");
 		
 		for (int j = 0; j < but.length; j++) {
 			but[j] = new JRadioButton();
@@ -1702,7 +1702,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return;
 		}
 
-		if (s.equals("Go to Folder")) {
+		if (s.equals("Go to Directory")) {
 			String w = null;
 			File f = curDiag.diagFile;
 			if (f != null) {
@@ -5280,10 +5280,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		Dimension dim = getSize();
 		
-		if (dim.width > 1000)
-			up.setText("Go to Directory");
-		else
-			up.setText("Dir");
+	
+		//if (dim.width > 1000)
+		//	up.setText("Go to Directory");
+		//else
+			up.setText("Go to Dir");
 		
 		
 		//Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
@@ -7684,13 +7685,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		selBlockM = null;
+		//selBlockM = null;
 		
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		selBlockM = null;
+		//selBlockM = null;
 		
 	}
 

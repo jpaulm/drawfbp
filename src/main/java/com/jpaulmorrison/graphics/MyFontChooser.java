@@ -120,12 +120,14 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 		
 		fixedFont = driver.fixedFont;
 		lb1 = new JLabel("Fixed Fonts (current: " + fixedFont + ")");
+		lb1.setPreferredSize(new Dimension(lb1.getWidth(), 40));
 		b1.add(lb1);
 		b1.add(lsF);
 		jlF.setSelectedValue(fixedFont, true); 
 		
 		generalFont = driver.generalFont;
 		lb2 = new JLabel("General Fonts (current: " + generalFont + ")");
+		lb2.setPreferredSize(new Dimension(lb2.getWidth(), 40));
 		b2.add(lb2);
 		b2.add(lsG);
 		jlG.setSelectedValue(generalFont, true); 		
