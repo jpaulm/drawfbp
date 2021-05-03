@@ -9,7 +9,7 @@ Latest release is `v2.21.8`: the jar file (which includes the `math.geom2d` and 
 
 If you click on the Maven shield below to obtain DrawFBP, select `Download` and `jar`. 
 
-**Note:** Change/add a variable to your environment variables, named **DRAWFBP_VERSION**, with value **drawfbp-2.21.8** .
+**Note:** Change/add a variable to your environment variables, named **DRAWFBP_LIB**, whose value is the name of the library containing your DrawFBP jar file.
 
 
 **Note:**  `fbp.json` in `docs` does not download correctly:  please do a copy and paste from https://github.com/jpaulm/drawfbp/blob/master/docs/fbp.json (current version thanks to Henri Bergius of NoFlo)
