@@ -9,7 +9,7 @@ public class ReportBlock extends Block {
 		super(diag);
 		width = BLOCKWIDTH;
 		height = BLOCKHEIGHT;
-		type = Block.Types.REPORT_BLOCK;
+		typeCode = Block.Types.REPORT_BLOCK;
 		//calcEdges();
 	}
 	

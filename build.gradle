@@ -47,7 +47,7 @@ allprojects { project ->
      }
 }
 */
-version = '2.21.8'
+version = '2.22.0'
 
 group = 'com.jpaulmorrison'
 

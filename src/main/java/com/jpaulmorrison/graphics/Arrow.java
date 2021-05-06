@@ -655,7 +655,7 @@ public class Arrow implements ActionListener {
 				}
 				upStreamPort = ans;
 
-				if (b.type.equals(Block.Types.EXTPORT_IN_BLOCK)
+				if (b.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)
 						|| b instanceof IIPBlock) {
 					MyOptionPane.showMessageDialog(driver,
 							"Upstream port must be blank", MyOptionPane.ERROR_MESSAGE);
@@ -700,7 +700,7 @@ public class Arrow implements ActionListener {
 				
 				arr.downStreamPort = ans;
 				
-				if (b.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+				if (b.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					MyOptionPane.showMessageDialog(driver,
 							"Downstream port must be blank", MyOptionPane.ERROR_MESSAGE);
 					arr.downStreamPort = "";

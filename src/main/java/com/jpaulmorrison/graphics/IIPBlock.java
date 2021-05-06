@@ -15,7 +15,7 @@ public class IIPBlock extends Block {
 			
 	IIPBlock(Diagram diag) {
 		super(diag);
-		type = Block.Types.IIP_BLOCK;
+		typeCode = Block.Types.IIP_BLOCK;
 		
 		width = 60;  // will be overwritten - depends on contents of desc
 

@@ -31,7 +31,7 @@ public class Enclosure extends Block {
 	
 	Enclosure(Diagram diag) {
 		super(diag);
-		type = Block.Types.ENCL_BLOCK; 
+		typeCode = Block.Types.ENCL_BLOCK; 
 		width = 250;
 		height = 100;
 		corner = Corner.NONE;
@@ -45,7 +45,7 @@ public class Enclosure extends Block {
 		cy = Integer.parseInt(s);
 		s = item.get("id").trim();
 		id = Integer.parseInt(s);
-        type = item.get("type");
+        typeCode = item.get("type");
         desc = item.get("description");
 		s = item.get("height").trim();
 		height = Integer.parseInt(s);

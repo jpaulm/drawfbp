@@ -345,14 +345,14 @@ public class CodeManager implements ActionListener {
 				if (block instanceof ExtPortBlock) {
 					ExtPortBlock eb = (ExtPortBlock) block;
 					String s = "";
-					if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
+					if (block.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)) {
 						s = "SUBIN";
 						if (eb.substreamSensitive)
 							t = "SubInSS";
 						else
 							t = "SubIn";
 					} else
-						if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+						if (block.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 						s = "SUBOUT";
 						if (eb.substreamSensitive)
 							t = "SubOutSS";
@@ -832,14 +832,14 @@ public class CodeManager implements ActionListener {
 		int outs = 0;
 		for (Block block : diag.blocks.values()) {
 			if (block instanceof ExtPortBlock) {
-				if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
+				if (block.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)) {
 					if (lang.equals("Java")) {
 						ins++;
 						inData += ", @InPort(\"" + block.desc + "\")";
 					} else {
 						inData += "[InPort(\"" + block.desc + "\")] \n";
 					}
-				} else if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+				} else if (block.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					if (lang.equals("Java")) {
 						outs++;
 						outData += ", @OutPort(\"" + block.desc + "\")";
@@ -1440,13 +1440,13 @@ public class CodeManager implements ActionListener {
 				ExtPortBlock eb = (ExtPortBlock) block;
 				String s = "";
 				String t;
-				if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
+				if (block.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)) {
 					s = "SUBIN";
 					if (eb.substreamSensitive)
 						t = "SubInSS";
 					else
 						t = "SubIn";
-				} else if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+				} else if (block.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					s = "SUBOUT";
 					if (eb.substreamSensitive)
 						t = "SubOutSS";
@@ -1584,14 +1584,14 @@ public class CodeManager implements ActionListener {
 				ExtPortBlock eb = (ExtPortBlock) block;
 				String s = "";
 				String t;
-				if (block.type.equals(Block.Types.EXTPORT_IN_BLOCK)) {
+				if (block.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)) {
 					s = "SUBIN";
 					if (eb.substreamSensitive)
 						t = "SubInSS";
 					else
 						t = "SubIn";
 				} else
-					if (block.type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+					if (block.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					s = "SUBOUT";
 					if (eb.substreamSensitive)
 						t = "SubOutSS";

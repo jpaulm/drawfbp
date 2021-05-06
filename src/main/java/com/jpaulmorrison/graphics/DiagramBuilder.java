@@ -290,7 +290,7 @@ public class DiagramBuilder {
 											.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
 										block.width = 2 * block.width;
 									}
-									block.type = type;
+									block.typeCode = type;
 									
 									String sbs = item.get("substreamsensitive");
 									if (sbs != null && sbs.equals("true")){											
@@ -446,8 +446,8 @@ public class DiagramBuilder {
 		
 		for (Arrow a : diag.arrows.values()) {
 			Block fromBlock = diag.blocks.get(Integer.valueOf(a.fromId));
-			if (fromBlock != null && (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
-					|| fromBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)))
+			if (fromBlock != null && (fromBlock.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)
+					|| fromBlock.typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK)))
 				a.upStreamPort = "OUT";
 			
 			Arrow a2 = a.findLastArrowInChain();
@@ -460,8 +460,8 @@ public class DiagramBuilder {
 			Block toBlock = diag.blocks.get(Integer.valueOf(a2.toId));
 
 			if (toBlock != null && (
-			 toBlock.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
-					|| toBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)))
+			 toBlock.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)
+					|| toBlock.typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK)))
 
 				a2.downStreamPort = "IN";
 		}

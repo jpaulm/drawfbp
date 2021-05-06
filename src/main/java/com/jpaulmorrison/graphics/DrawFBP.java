@@ -158,7 +158,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	KeyStroke escapeKS = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0, false);
 
-	String blockType = Block.Types.PROCESS_BLOCK;
+	//String blockType = Block.Types.PROCESS_BLOCK;
 
 	FoundPointB edgePoint = null; // this controls display of detection areas while mouse moving
 
@@ -231,11 +231,21 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	String shortNames[] = { "Proc", "IIP", "Encl", "Subn", "ExtPt I", "EP O", "EP O/I",
 			"Legd", "File", "Pers", "Rept" };
 
-	String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
-			Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
-			Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
-			Block.Types.REPORT_BLOCK };
-
+		
+	static int BUT_PROCESS = 0;
+	static int BUT_IIP = 1;
+	static int BUT_ENCL = 2;
+	static int BUT_SUBNET = 3;
+	static int BUT_EXTPORT_IN = 4;
+	static int BUT_EXTPORT_OUT = 5;
+	static int BUT_EXTPORT_OI = 6;
+	static int BUT_LEGEND = 7;
+	static int BUT_FILE = 8;
+	static int BUT_PERSON = 9;
+	static int BUT_REPORT = 10;
+	
+	
+	
 	// HashMap<String, String> jarFiles = new HashMap<String, String>(); // does not
 	// contain JavaFBP jar file
 	Set<String> jarFiles = new HashSet<String>(); // does not contain JavaFBP jar file
@@ -299,7 +309,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	JCheckBox pan = new JCheckBox("Pan");
 	JButton up = new JButton();
 	
-	JRadioButton[] but = new JRadioButton[11];
+	MyRadioButton[] but = null;
 	Box box21 = null;
 
 	// Timer ttStartTimer = null;
@@ -338,6 +348,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	boolean clickToGrid = true;
 
 	// LinkedList<String> fbpJsonLl = null;
+	
+	MyRadioButton selRB = null;
+	
+	//String blkType = null;
 
 	final boolean CODEMGRCREATE = true;
 
@@ -426,6 +440,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		scaleLab.setText(scale);
 
 		zWS = (int) Math.round(zoneWidth * scalingFactor);
+		
+		//but[BUT_PROCESS].code = Block.Types.PROCESS_BLOCK;
 
 		try {
 
@@ -694,7 +710,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		fbpJsonFile = properties.get("fbpJsonFile");
 		
+		//String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
+		//		Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
+		//		Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
+		//		Block.Types.REPORT_BLOCK };
 		
+		//MyRadioButton but[] = new MyRadioButton[11];
+		
+		
+		//blkType = blockNames[BUT_PROCESS];
 
 		setVisible(true);
 		addComponentListener(this);
@@ -885,8 +909,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		up.setText("Go to Dir");
 		
+		but = new MyRadioButton[11];
 		for (int j = 0; j < but.length; j++) {
-			but[j] = new JRadioButton();
+			but[j] = new MyRadioButton();
 			but[j].addActionListener(this);
 			butGroup.add(but[j]);
 			box21.add(but[j]);
@@ -895,7 +920,22 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			but[j].setText(blockNames[j]);
 			but[j].setFocusable(true);
 		}
+		
 		but[but.length - 1].setAlignmentX(Component.RIGHT_ALIGNMENT);
+		
+		but[BUT_PROCESS].code = Block.Types.PROCESS_BLOCK;
+		but[BUT_IIP].code = Block.Types.IIP_BLOCK;
+		but[BUT_ENCL].code = Block.Types.ENCL_BLOCK;
+		but[BUT_SUBNET].code = Block.Types.PROCESS_BLOCK;
+		but[BUT_EXTPORT_IN].code = Block.Types.EXTPORT_IN_BLOCK;
+		but[BUT_EXTPORT_OUT].code = Block.Types.EXTPORT_OUT_BLOCK;
+		but[BUT_EXTPORT_OI].code = Block.Types.EXTPORT_OUTIN_BLOCK;
+		but[BUT_LEGEND].code = Block.Types.LEGEND_BLOCK;
+		but[BUT_FILE].code = Block.Types.FILE_BLOCK;
+		but[BUT_PERSON].code = Block.Types.PERSON_BLOCK;
+		but[BUT_REPORT].code = Block.Types.REPORT_BLOCK;
+		
+		selRB = but[BUT_PROCESS];  // set selected RadioButton to "Process"	
 
 		box1.add(box2);
 
@@ -1316,9 +1356,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			changeFontSize();
 			return;
 		}
-
+	
+		if (e.getSource() instanceof MyRadioButton) {
+			MyRadioButton rb = (MyRadioButton) e.getSource();
+			rb.setSelected(true);
+			selRB = rb;
+			//setBlkType(); 
+			willBeSubnet = (selRB == but[BUT_SUBNET]);  
+			return;
+		}
+	
 		String s = e.getActionCommand();
-
 		if (s.equals("Open Diagram")) {
 			openAction(null);
 			return;
@@ -1893,7 +1941,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					+ "*    Authors: J.Paul Rodker Morrison, Canada,      *\n"
 					+ "*             Bob Corrick, UK                      *\n"
 					+ "*                                                  *\n"
-					+ "*    Copyright 2009, ..., 2020                     *\n"
+					+ "*    Copyright 2009, ..., 2021                     *\n"
 					+ "*                                                  *\n"
 					+ "*    FBP web site:                                 *\n"
 					+ "*      https://jpaulm.github.io/fbp/index.html     *\n"
@@ -1961,7 +2009,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// }
 			// newItemMenu.setVisible(true);
 
-			Block blk = createBlock(blockType, x, y, curDiag, true);
+			//Block blk = createBlock(blockType, x, y, curDiag, true);
+			Block blk = createBlock(x, y, curDiag, true);
 			if (null != blk) {
 				// if (!blk.editDescription(CREATE))
 				// return;;
@@ -2000,7 +2049,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return;
 		}
 
-		setBlkType(s);
+		MyOptionPane.showMessageDialog(this, "Command not recognized", MyOptionPane.ERROR_MESSAGE);
+		//setBlkType(s);
 
 		repaint();
 	}
@@ -2064,51 +2114,25 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	void setBlkType(String s) {
+	/*
+	void setBlkType() {
 
-		if (s.equals("none")) {
-			blockType = "";
-
-		} else
-
-		if (s.equals("Subnet")) {
-			blockType = Block.Types.PROCESS_BLOCK;
-			willBeSubnet = true;
-
-		} else {
-			willBeSubnet = false;
-			if (s.equals("Process")) {
-				blockType = Block.Types.PROCESS_BLOCK;
-
-			} else if (s.equals("File")) {
-				blockType = Block.Types.FILE_BLOCK;
-
-			} else if (s.equals("Report")) {
-				blockType = Block.Types.REPORT_BLOCK;
-
-			} else if (s.equals("ExtPorts: In")) {
-				blockType = Block.Types.EXTPORT_IN_BLOCK; // In
-
-			} else if (s.equals("... Out")) {
-				blockType = Block.Types.EXTPORT_OUT_BLOCK;// Out
-
-			} else if (s.equals("... Out/In")) {
-				blockType = Block.Types.EXTPORT_OUTIN_BLOCK; // Out/In
-
-			} else if (s.equals("Initial IP")) {
-				blockType = Block.Types.IIP_BLOCK;
-
-			} else if (s.equals("Legend")) {
-				blockType = Block.Types.LEGEND_BLOCK;
-
-			} else if (s.equals("Person")) {
-				blockType = Block.Types.PERSON_BLOCK;
-
-			} else if (s.equals("Enclosure")) {
-				blockType = Block.Types.ENCL_BLOCK;
+		blkType = null;
+		willBeSubnet = false;
+		for (int i = 0; i < but.length; i++) {
+			if (but[i] == selRB) {
+				blkType = blockNames[i];
+				break;
 			}
 		}
+		//if (s.equals("Subnet")) {
+		if (selRB == but[BUT_SUBNET]) {
+			//blockType = Block.Types.PROCESS_BLOCK;
+			willBeSubnet = true;
+		}
 	}
+	
+	*/
 
 	void setNotation(Notation notn) {
 
@@ -2167,28 +2191,31 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	// editType is false if no edit; true if block type determines type
 
-	Block createBlock(String blkType, int xa, int ya, Diagram diag, boolean editType) {
+	//Block createBlock(String blkType, int xa, int ya, Diagram diag, boolean editType) {
+	Block createBlock(int xa, int ya, Diagram diag, boolean editType) {
 		Block block = null;
 		boolean oneLine = false;
 		String title = "";
-		if (blkType.equals(Block.Types.PROCESS_BLOCK)) {
+		//if (blkType.equals(Block.Types.PROCESS_BLOCK)) {
+		if (selRB == but[BUT_PROCESS]) {	
 			block = new ProcessBlock(diag);
 			block.isSubnet = willBeSubnet;
 		}
 
-		else if (blkType.equals(Block.Types.EXTPORT_IN_BLOCK) || blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
-				|| blkType.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
+		//else if (blkType.equals(Block.Types.EXTPORT_IN_BLOCK) || blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
+		//		|| blkType.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
+		else if (selRB == but[BUT_EXTPORT_IN] || selRB == but[BUT_EXTPORT_OUT] || selRB == but[BUT_EXTPORT_OI]) {		
 			oneLine = true;
 			title = "External Port";
 			block = new ExtPortBlock(diag);
 		}
 
-		else if (blkType.equals(Block.Types.FILE_BLOCK)) {
+		else if (selRB == but[BUT_FILE]) {
 			title = "File";
 			block = new FileBlock(diag);
 		}
 
-		else if (blkType.equals(Block.Types.IIP_BLOCK)) {
+		else if (selRB == but[BUT_IIP]) {
 			oneLine = true;
 			title = "IIP";
 			block = new IIPBlock(diag);
@@ -2197,12 +2224,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// block.width = 60; // default
 		}
 
-		else if (blkType.equals(Block.Types.LEGEND_BLOCK)) {
+		else if (selRB == but[BUT_LEGEND]) {
 			title = "Legend";
 			block = new LegendBlock(diag);
 		}
 
-		else if (blkType.equals(Block.Types.ENCL_BLOCK)) {
+		else if (selRB == but[BUT_ENCL]) {
 			oneLine = true;
 			title = "Enclosure";
 			block = new Enclosure(diag);
@@ -2211,19 +2238,21 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			block.cy = ((ya + block.height / 2) + y) / 2;
 		}
 
-		else if (blkType.equals(Block.Types.PERSON_BLOCK)) {
+		else if (selRB == but[BUT_PERSON]) {
 			title = "Person";
 			oneLine = true;
 			block = new PersonBlock(diag);
 		}
 
-		else if (blkType.equals(Block.Types.REPORT_BLOCK)) {
+		else if (selRB == but[BUT_REPORT]) {
 			title = "Report";
 			block = new ReportBlock(diag);
-		} else
+		} 
+		
+		else
 			return null;
 
-		block.type = blkType;
+		block.typeCode = selRB.code;
 
 		block.cx = xa;
 		block.cy = ya;
@@ -2232,7 +2261,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		if (editType) {
 			if (oneLine) {
-				if (blkType != Block.Types.ENCL_BLOCK) {
+				//if (blkType != Block.Types.ENCL_BLOCK) {
+				if (selRB == but[BUT_ENCL]) {	
 					// String d = "Enter description";
 					String d = "Enter " + title + " text";
 					String ans = (String) MyOptionPane.showInputDialog(this, "Enter text", d,
@@ -2247,7 +2277,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			} else if (!block.editDescription(CREATE))
 				return null;
 
-			if (blkType.equals(Block.Types.IIP_BLOCK)) {
+			//if (blkType.equals(Block.Types.IIP_BLOCK)) {  
+			if (selRB == but[BUT_IIP]) {		
 				IIPBlock ib = (IIPBlock) block;
 				ib.desc = ib.checkNestedChars(block.desc);
 				ib.width = ib.calcIIPWidth(osg);
@@ -2857,7 +2888,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	void redrawVarBlocks() {
 		for (Block b : curDiag.blocks.values()) {
-			if (b.type.equals(Block.Types.IIP_BLOCK) || b.type.equals(Block.Types.LEGEND_BLOCK)) {
+			if (b.typeCode.equals(Block.Types.IIP_BLOCK) || b.typeCode.equals(Block.Types.LEGEND_BLOCK)) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						curDiag.area.repaint();
@@ -2986,20 +3017,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			gMenu[i].setFont(fontg);
 		}
 
-		for (int i = 0; i < but.length; i++) {
-			but[i].setFont(fontg);
-			but[i].setFocusable(true);
-			but[i].addKeyListener(new KeyAdapter() {
-				public void keyPressed(KeyEvent ev) {
-					if (ev.getKeyCode() == KeyEvent.VK_ENTER) {
-						JRadioButton rb = (JRadioButton) ev.getSource();
-						rb.setSelected(true);
-						setBlkType(rb.getText());
-					}
-				}
-			});
-		}
-
+		
 		UIDefaults def = UIManager.getLookAndFeelDefaults();
 
 		final FontUIResource res = new FontUIResource(fontg);
@@ -4013,10 +4031,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if ((Math.abs(ob.cx - nb.cx) > 10) || (Math.abs(ob.cy - nb.cy) > 10))
 						nb.compareFlag = "M";
 
-					if (!(strEqu(nb.type, ob.type))) {
+					if (!(strEqu(nb.typeCode, ob.typeCode))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Block Type for '" + cleanDesc(nb, false) + ": " + nb.type + "\n"
-								+ "   Other value: " + ob.type + "\n\n"));
+						mismatches.add(new String("This Block Type for '" + cleanDesc(nb, false) + ": " + nb.typeCode + "\n"
+								+ "   Other value: " + ob.typeCode + "\n\n"));
 					}
 
 					if (!(strEqu(nb.fullClassName, ob.fullClassName))) {
@@ -5468,7 +5486,60 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	    }
 	}
 	*/
-	
+	// @Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void mouseClicked(MouseEvent e) {
+			int i = jtp.indexAtLocation(e.getX(), e.getY());
+			if (i > -1) {
+
+				ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+				if (b != null && b.diag != null) {
+
+					Diagram diag = b.diag;
+
+					if (diag == null)
+						getNewDiag();
+
+					jtp.setSelectedIndex(i);
+				}
+
+			}
+
+			repaint();
+
+		}
+
+		public void mouseEntered(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void mouseExited(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void mousePressed(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			//selBlockM = null;
+			
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			//selBlockM = null;
+			
+		}
+
 	public class Notation {
 		// this class refers the network notation
 		String label;
@@ -5527,6 +5598,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			filter = filt;
 			propertyName = dir;
 		}
+	}
+	
+	public class MyRadioButton extends JRadioButton {
+		String code = null; 
 	}
 
 	public class CloseAppAction extends AbstractAction {
@@ -6435,7 +6510,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// logic to change cursor to drag_icon
 				int hh = gFontHeight;
 				boolean udi; // Use Drag Icon
-				if (block.type.equals(Block.Types.ENCL_BLOCK)) {
+				if (block.typeCode.equals(Block.Types.ENCL_BLOCK)) {
 					udi = between(xa, block.leftEdge + block.width / 5, block.rgtEdge - block.width / 5)
 							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2);
 				} else {
@@ -6675,8 +6750,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					// arrow.fromId = foundBlock.id;
 					arrow.fromId = fpArrowRoot.block.id;
 					Block fromBlock = curDiag.blocks.get(Integer.valueOf(arrow.fromId));
-					if (fromBlock.type.equals(Block.Types.EXTPORT_IN_BLOCK)
-							|| fromBlock.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+					if (fromBlock.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)
+							|| fromBlock.typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
 						arrow.upStreamPort = "OUT";
 					// arrow.fromId = -1;
 					currentArrow = arrow;
@@ -7320,8 +7395,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				// curDiag.xa = xa;
 				// curDiag.ya = ya;
-				if (!(blockType.equals("")) && foundBlock == null)
-					if (null != createBlock(blockType, xa, ya, curDiag, true))
+				//if (!(blockType.equals("")) && foundBlock == null)
+				//	if (null != createBlock(blockType, xa, ya, curDiag, true))
+				if (foundBlock == null && null != createBlock(xa, ya, curDiag, true))
 						curDiag.changed = true;
 				repaint();
 
@@ -7435,11 +7511,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					// .showMessageDialog(this,
 					// "Direction of arrow has been reversed");
 				}
-				if (from instanceof ExtPortBlock && (from.type.equals(Block.Types.EXTPORT_OUT_BLOCK)
-						|| from.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK) && a2.fromX < from.cx))
+				if (from instanceof ExtPortBlock && (from.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)
+						|| from.typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK) && a2.fromX < from.cx))
 					error = true;
-				else if (to instanceof ExtPortBlock && (to.type.equals(Block.Types.EXTPORT_IN_BLOCK)
-						|| to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK) && a2.toX > to.cx))
+				else if (to instanceof ExtPortBlock && (to.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)
+						|| to.typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK) && a2.toX > to.cx))
 					error = true;
 
 				if (!a2.checkSides())
@@ -7460,7 +7536,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				to.displayPortInfo();
 
 				// Block toBlock = curDiag.blocks.get(new Integer(a2.toId));
-				if (to.type.equals(Block.Types.EXTPORT_OUT_BLOCK) || to.type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+				if (to.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK) || to.typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
 					a2.downStreamPort = "IN";
 				foundBlock = null;
 
@@ -7525,9 +7601,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 
 					boolean error = true;
-					if (from instanceof ExtPortBlock && from.type.equals(Block.Types.EXTPORT_OUT_BLOCK))
+					if (from instanceof ExtPortBlock && from.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK))
 						MyOptionPane.showMessageDialog(this, "Arrow in wrong direction", MyOptionPane.ERROR_MESSAGE);
-					else if (to instanceof ExtPortBlock && to.type.equals(Block.Types.EXTPORT_IN_BLOCK))
+					else if (to instanceof ExtPortBlock && to.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK))
 						MyOptionPane.showMessageDialog(this, "Arrow in wrong direction", MyOptionPane.ERROR_MESSAGE);
 					else
 						error = false;
@@ -7641,58 +7717,5 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	// @Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseClicked(MouseEvent e) {
-		int i = jtp.indexAtLocation(e.getX(), e.getY());
-		if (i > -1) {
-
-			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-			if (b != null && b.diag != null) {
-
-				Diagram diag = b.diag;
-
-				if (diag == null)
-					getNewDiag();
-
-				jtp.setSelectedIndex(i);
-			}
-
-		}
-
-		repaint();
-
-	}
-
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		//selBlockM = null;
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		//selBlockM = null;
-		
-	}
-
+	
 }

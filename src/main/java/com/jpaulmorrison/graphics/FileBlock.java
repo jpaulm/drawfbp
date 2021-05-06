@@ -9,7 +9,7 @@ public class FileBlock extends Block {
 	
 	FileBlock(Diagram diag) {
 		super(diag);
-		type = Block.Types.FILE_BLOCK;
+		typeCode = Block.Types.FILE_BLOCK;
 		width = 64;
 		height = 72;
 		//calcEdges();

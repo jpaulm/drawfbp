@@ -646,7 +646,7 @@ public class Diagram {
 				
 				eb.cx = arrow.copy.fromX - eb.width / 2;
 				eb.cy = arrow.copy.fromY;
-				eb.type = Block.Types.EXTPORT_IN_BLOCK;					
+				eb.typeCode = Block.Types.EXTPORT_IN_BLOCK;					
 				sbnDiag.maxBlockNo++;
 				eb.id = sbnDiag.maxBlockNo;
 				arrow.copy.fromId = eb.id;
@@ -695,7 +695,7 @@ public class Diagram {
 				ExtPortBlock eb = new ExtPortBlock(sbnDiag);
 				eb.cx = arrow.copy.toX + eb.width / 2;
 				eb.cy = arrow.copy.toY;
-				eb.type = Block.Types.EXTPORT_OUT_BLOCK;				
+				eb.typeCode = Block.Types.EXTPORT_OUT_BLOCK;				
 				sbnDiag.maxBlockNo++;
 				eb.id = sbnDiag.maxBlockNo;
 				arrow.copy.toId = eb.id;
@@ -958,6 +958,7 @@ public class Diagram {
 		str = t.getBytes();
 		width = metrics.bytesWidth(str, 0, str.length);
 		x = w - width + 20;
+		x = combined.getWidth() - width + 20;   
 		g.drawString(t, x, combined.getHeight() - 20);
 
 		g.setColor(col);

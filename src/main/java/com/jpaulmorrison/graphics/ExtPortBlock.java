@@ -14,7 +14,7 @@ public class ExtPortBlock extends Block {
 		//this.diag = diag;
 		width = 36;
 		height = 28;
-		type = Block.Types.EXTPORT_IN_BLOCK;
+		typeCode = Block.Types.EXTPORT_IN_BLOCK;
 				
 		//calcEdges();
 	}
@@ -24,11 +24,11 @@ public class ExtPortBlock extends Block {
 		if (!visible)
 			return;
 		int c = cx;
-		if (type.equals(Block.Types.EXTPORT_IN_BLOCK))
+		if (typeCode.equals(Block.Types.EXTPORT_IN_BLOCK))
 			drawIn(g, cx, width);
-		else if (type.equals(Block.Types.EXTPORT_OUT_BLOCK))
+		else if (typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK))
 			drawOut(g, cx, width);
-		else if (type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)){	
+		else if (typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK)){	
 			c = cx - width / 4;
 			drawOut(g, c, width / 2);	
 			c = cx + width / 4;
@@ -195,7 +195,7 @@ public class ExtPortBlock extends Block {
 			g.setFont(ff);
 		}
 		
-		if (!type.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
+		if (!typeCode.equals(Block.Types.EXTPORT_OUTIN_BLOCK))
 			g.drawLine(right, cy - height, right, cy + height);
 		
 		calcDiagMaxAndMin(left, right, top, bottom);

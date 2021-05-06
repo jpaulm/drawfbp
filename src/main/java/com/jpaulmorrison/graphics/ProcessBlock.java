@@ -6,7 +6,7 @@ public class ProcessBlock extends Block {
 		super(diag);
 		width = BLOCKWIDTH;
 		height = BLOCKHEIGHT;
-		type = Block.Types.PROCESS_BLOCK;
+		typeCode = Block.Types.PROCESS_BLOCK;
 		//buildSides();
 	}
 	

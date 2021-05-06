@@ -7,7 +7,7 @@ import java.awt.Graphics;
 		
 		PersonBlock (Diagram diag){
 			super(diag);
-			type = Block.Types.PERSON_BLOCK;
+			typeCode = Block.Types.PERSON_BLOCK;
 			width = 40;
 		  	height = 60;
 		  	//calcEdges();

@@ -7,7 +7,7 @@ public class LegendBlock extends Block {
 
 	LegendBlock(Diagram diag) {
 		super(diag);
-		type = Block.Types.LEGEND_BLOCK;
+		typeCode = Block.Types.LEGEND_BLOCK;
 		width = driver.gFontWidth * 12 + 4;
 		height = driver.gFontHeight * 4 + 4;
 		buildSides();

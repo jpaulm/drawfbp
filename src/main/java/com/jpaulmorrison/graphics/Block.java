@@ -15,7 +15,7 @@ import javax.swing.*;
 import com.jpaulmorrison.graphics.DrawFBP.Notation;
 
 public class Block implements ActionListener {
-	String type;   // One of Types (single character strings)
+	String typeCode;   // block type - single character form
 	DrawFBP driver;
 	int leftEdge, rgtEdge, topEdge, botEdge;
 	int width, height;
@@ -90,6 +90,7 @@ public class Block implements ActionListener {
 		static String ENCL_BLOCK = "O";
 		static String PERSON_BLOCK = "P";
 		static String REPORT_BLOCK = "R";
+		
 		//static String UP = "Z";
 	}
 
@@ -98,7 +99,7 @@ public class Block implements ActionListener {
 		diag = d;   // Diagram containing block
 		driver = d.driver;
 
-		type = Block.Types.PROCESS_BLOCK;
+		typeCode = Types.PROCESS_BLOCK;
 
 		subnetFileName = null;
 		fullClassName = null;
@@ -483,7 +484,7 @@ public class Block implements ActionListener {
 	
 	String serialize() {
 		String s = "<block> <x> " + cx + " </x> <y> " + cy + " </y> <id> " + id
-				+ " </id> <type>" + type + "</type> ";
+				+ " </id> <type>" + typeCode + "</type> ";
 		s += "<width>" + width + "</width> <height>" + height + "</height> ";
 		if (desc != null) {
 			s += "<description>";
@@ -546,11 +547,11 @@ public class Block implements ActionListener {
 		// Build a block using a HashMap built using the XML description
 
 		String s;
-		type = item.get("type");
-		if (type == null)
-			type = Block.Types.PROCESS_BLOCK;
+		typeCode = item.get("type");
+		if (typeCode == null)
+			typeCode = Types.PROCESS_BLOCK;
 		desc = item.get("description");
-		if (type.equals(Block.Types.IIP_BLOCK) && desc != null && desc.length() > 0 && desc.substring(0,1).equals("\""))
+		if (typeCode.equals(Block.Types.IIP_BLOCK) && desc != null && desc.length() > 0 && desc.substring(0,1).equals("\""))
 			desc = desc.substring(1,desc.length() - 2);				
 		
 		
@@ -875,7 +876,7 @@ public class Block implements ActionListener {
 		//if (driver.fpArrowRoot != null && driver.fpArrowRoot.block == this) 
 		//	showArrowEndAreas(g);		
 		
-		if (!(type.equals(Types.ENCL_BLOCK)))
+		if (!(typeCode.equals(Types.ENCL_BLOCK)))
 		    driver.blueCircs(g);
 		
 		driver.repaint();
@@ -1549,8 +1550,8 @@ public class Block implements ActionListener {
 				menuItem = new JMenuItem("Edit Item");
 				menuItem.addActionListener(this);
 				diag.jpm.add(menuItem);
-				if (type.equals(Block.Types.EXTPORT_IN_BLOCK)
-						|| type.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
+				if (typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)
+						|| typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
 					diag.jpm.addSeparator();
 					menuItem = new JMenuItem(
 							"Toggle Substream Sensitive / Normal");
@@ -1971,12 +1972,23 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		
 
 		String t = "";
-		for (int i = 0; i < driver.blockTypes.length; i++) {
-			if (driver.blockTypes[i].equals(type)) {
+		//for (int i = 0; i < driver.blockTypes.length; i++) {
+		//	if (driver.blockTypes[i].equals(type)) {
+		//		t = driver.blockNames[i];
+		//		break;
+		//	}
+		//}
+		
+		//t = driver.blkType;
+		t = "";
+		
+		for (int i = 0; i < driver.but.length; i++) {
+			if (driver.selRB == driver.but[i]) {
 				t = driver.blockNames[i];
 				break;
 			}
 		}
+		
 		String init = (option < DrawFBP.MODIFY) ? "Create " : "Modify ";		
 		
 
