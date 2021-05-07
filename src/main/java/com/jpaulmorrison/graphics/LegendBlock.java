@@ -43,6 +43,7 @@ public class LegendBlock extends Block {
 			}
 			//g.setFont(oldf);
 			buildSides();
+			calcEdges();
 
 			showDetectionAreas(g);
 

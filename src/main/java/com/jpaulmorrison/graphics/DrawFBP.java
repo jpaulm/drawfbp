@@ -43,6 +43,7 @@ import java.util.regex.Pattern;
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import javax.help.HelpSet;
@@ -2070,7 +2071,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		});
 		
-		ImagePanel jPanel = new ImagePanel(image);
+		ImagePanel jPanel = new ImagePanel(image);	
 		
 		dialog.add(jPanel);
 
@@ -2262,7 +2263,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (editType) {
 			if (oneLine) {
 				//if (blkType != Block.Types.ENCL_BLOCK) {
-				if (selRB == but[BUT_ENCL]) {	
+				if (selRB != but[BUT_ENCL]) {	
 					// String d = "Enter description";
 					String d = "Enter " + title + " text";
 					String ans = (String) MyOptionPane.showInputDialog(this, "Enter text", d,
@@ -2274,6 +2275,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					else
 						block.desc = ans;
 				}
+				
 			} else if (!block.editDescription(CREATE))
 				return null;
 
@@ -5601,6 +5603,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 	
 	public class MyRadioButton extends JRadioButton {
+		
+		private static final long serialVersionUID = 1L;
 		String code = null; 
 	}
 
@@ -6133,6 +6137,28 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			int y = (height - dim.height) /2; 
 			
 			g.drawImage(image, x, y, dim.width, dim.height, this); // draw the image
+			
+			Color col = g.getColor();
+			g.setColor(Color.BLACK);
+			
+			
+			//x = width - 140;
+			ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
+			String t = utc.toString();
+			int i = t.indexOf(":");
+			int j = t.substring(i + 1).indexOf(":");
+			t = t.substring(0, i + j + 1);
+			t = t.replace("T", " ");
+			t += " (UTC)";
+			byte[] str = t.getBytes();
+			Graphics2D g2 = (Graphics2D) g;
+			FontMetrics metrics = g2.getFontMetrics();
+			width = metrics.bytesWidth(str, 0, str.length);
+			//x = w - width + 20;
+			x = getWidth() - width;   
+			g.drawString(t, x, getHeight() - 20);
+
+			g.setColor(col);
 		}
 		
 		

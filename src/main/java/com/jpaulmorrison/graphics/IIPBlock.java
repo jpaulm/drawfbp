@@ -77,7 +77,8 @@ public class IIPBlock extends Block {
 			if (t.length() < 2)
 				t = " " + t;
 			byte[] str = t.getBytes();
-			w = 4 + metrics.bytesWidth(str, 0, t.length());
+			//w = 4 + metrics.bytesWidth(str, 0, t.length());
+			w = 4 + metrics.bytesWidth(str, 0, str.length);
 									
 		}
 		return w;
@@ -144,6 +145,8 @@ public class IIPBlock extends Block {
 					"Brackets not balanced in IIP string", MyOptionPane.ERROR_MESSAGE);
 		return res;
 	}
+	
+	/*
 	void showArrowEndAreas(Graphics g) {
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
@@ -163,5 +166,6 @@ public class IIPBlock extends Block {
 			
 			g.setColor(col);
 	}
+	*/
 	  
 }

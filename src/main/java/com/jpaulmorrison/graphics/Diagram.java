@@ -824,6 +824,10 @@ public class Diagram {
 
 		// adjust x, y, w, h to avoid RasterFormatException
 
+		int x2 = x;
+		int y2 = y;
+		int w2 = w;
+		int h2 = h;
 		x = Math.max(x, driver.buffer.getMinX());
 		y = Math.max(y, driver.buffer.getMinY());
 		w = Math.min(w, driver.buffer.getWidth());
@@ -841,46 +845,17 @@ public class Diagram {
 
 		Graphics g = combined.getGraphics();
 
-		area.paintComponent(g);
+		//g.setColor(Color.WHITE);
 
-		/*
-		 * ComponentListener cl = new ComponentListener() {
-		 * 
-		 * @Override public void componentResized(ComponentEvent e) { // TODO
-		 * Auto-generated method stub
-		 * 
-		 * }
-		 * 
-		 * @Override public void componentMoved(ComponentEvent e) { // TODO
-		 * Auto-generated method stub
-		 * 
-		 * }
-		 * 
-		 * @Override public void componentShown(ComponentEvent e) { // TODO
-		 * Auto-generated method stub
-		 * 
-		 * }
-		 * 
-		 * @Override public void componentHidden(ComponentEvent e) { // TODO
-		 * Auto-generated method stub
-		 * 
-		 * } };
-		 * 
-		 * combined.addComponentListener(cl);
-		 * 
-		 */
+		//g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 
-		g.setColor(Color.WHITE);
-
-		g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
-
-		Font f = driver.fontf /* .deriveFont(Font.PLAIN, driver.fontf.getSize() + 4f) */;
+		Font f = driver.fontf;
 
 		// Graphics g = buffer2.getGraphics();
 		Color col = g.getColor();
 		g.setColor(Color.BLACK);
 		g.setFont(f);
-		FontMetrics metrics = null; // g.getFontMetrics(f);
+		//FontMetrics metrics = null; // g.getFontMetrics(f);
 		y = /* buffer2.getMinY() + */ 20;
 
 		String t = diagFile.getAbsolutePath();
@@ -889,44 +864,39 @@ public class Diagram {
 
 		// Now we build a strip containing the diagram description
 
-		f = driver.fontg /* .deriveFont(Font.ITALIC, (float) (driver.fontg.getSize() + 10)) */;
+		f = driver.fontg;
 		g.setFont(f);
 
-		metrics = g.getFontMetrics(f);
+		FontMetrics metrics = g.getFontMetrics(f);
 		width = 0;
 		// t = desc;
 		byte[] str = new byte[0];
-		if (desc != null) {
+		if (desc != null && !desc.trim().equals("")) {
 			str = desc.getBytes();
-			width = metrics.bytesWidth(str, 0, desc.length());
+			width = metrics.bytesWidth(str, 0, str.length);
 		}
 
 		w = Math.max(w, width);
 
-		width = Math.max(w + 40, buffer2.getWidth());
+		width = Math.max(w /* + 40 */, buffer2.getWidth());
+		
+		g.setColor(Color.WHITE);
 
-		// BufferedImage combined = new BufferedImage(width, buffer2.getHeight() +
-		// top_border_height + bottom_border_height,
-		// BufferedImage.TYPE_INT_ARGB);
+		g.fillRect(0, 0, width, combined.getHeight());
 
-		// g = combined.getGraphics();
-
-		// g.setColor(Color.WHITE);
-
-		// g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
-		int x2 = (combined.getWidth() - buffer2.getWidth()) / 2;
-		g.drawImage(buffer2, x2, top_border_height, null);
+		g.setColor(Color.BLACK);
+		
+		int x3 = (combined.getWidth() - buffer2.getWidth()) / 2;
+		g.drawImage(buffer2, x3, top_border_height, null);
 
 		if (desc != null && !desc.trim().equals("")) {
 			col = g.getColor();
 			g.setColor(Color.BLUE);
-
-			// Font f2 = driver.fontg /*.deriveFont(Font.ITALIC, (float)
-			// (driver.fontg.getSize() + 10)) */ ;
-
-			// g.setFont(f2);
+			//Font f2 = driver.fontg;
+			Font f2 = driver.fontg.deriveFont(Font.BOLD);
+			g.setFont(f2);
+			
 			x = combined.getWidth() / 2;
-			// metrics = g.getFontMetrics(f);
 
 			width = 0;
 			int sy = (bottom_border_height - metrics.getHeight()) / 2;
@@ -943,9 +913,11 @@ public class Diagram {
 			// g.setColor(Color.BLACK);
 
 			g.setColor(col);
+			g.setFont(driver.fontg);
 		}
 
-		Font f2 = driver.fontf /* .deriveFont(Font.BOLD) */;
+		/*
+		Font f2 = driver.fontf;
 		g.setFont(f2);
 		x = w - 100;
 		ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
@@ -962,6 +934,7 @@ public class Diagram {
 		g.drawString(t, x, combined.getHeight() - 20);
 
 		g.setColor(col);
+		*/
 
 		// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
 

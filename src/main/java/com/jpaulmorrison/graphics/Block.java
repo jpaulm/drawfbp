@@ -393,6 +393,7 @@ public class Block implements ActionListener {
 		//FontMetrics metrics = g.getFontMetrics(g.getFont());
 		//FontMetrics metrics = g.getFontMetrics(driver.fontg);
 		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+		//int saveY = 0;
 
 		for (int i = 0; i < str.length; i++) {
 			//x = 0;
@@ -409,13 +410,15 @@ public class Block implements ActionListener {
 			String t = str[i];
 			
 			byte[] str2 = t.getBytes();
-			x = 2 + metrics.bytesWidth(str2, 0, t.length());
-			x += x / 6;     // fudge - add 16%
+			x = 2 + metrics.bytesWidth(str2, 0, str2.length);
+			//x += x / 6;     // fudge - add 16%
 			
 			maxX = Math.max(x, maxX);
+			
 			//System.out.println(maxX);
 			if (!(str[i].trim().equals(""))) {
 				// minY = Math.min(minY, y);
+				//saveY = y;
 				y += driver.gFontHeight;
 				nonBlankLineFound = true;
 			}
@@ -424,6 +427,7 @@ public class Block implements ActionListener {
 			}
 		}
 
+		//y = saveY;
 		x = (maxX) / 2; // find half width
 		x = cx - x;
 		x += 4;                     //fudge
@@ -441,7 +445,7 @@ public class Block implements ActionListener {
 		textX = x; 
 		textY = y;
 		
-
+ 
 		for (int i = 0; i < str.length; i++) {
 		//	g.drawString(str[i], x, y); 
 			y += driver.gFontHeight;
@@ -450,9 +454,10 @@ public class Block implements ActionListener {
 		if (this instanceof LegendBlock) {
 			height = y - saveY + 24;
 			width = maxX + 24;
-			buildSides();
-			calcEdges();
+			//buildSides();
+			//calcEdges();
 		}
+		 
 		return str;
 	}
 
