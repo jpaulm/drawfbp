@@ -16,7 +16,6 @@ import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -207,7 +206,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		NONE, TOPLEFT, BOTTOMLEFT, TOPRIGHT, BOTTOMRIGHT
 	}
 
-	// Side side;
+	static final int top_border_height = 60;
+	static final int bottom_border_height = 60;		
 
 	ImageIcon leafIcon = null;
 	ImageIcon javaIcon = null;
@@ -2056,9 +2056,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		repaint();
 	}
 
-	// https://stackoverflow.com/questions/10107752/how-do-i-have-a-background-image-resize-in-a-java-gui
-	
+		
 	void showImage(final BufferedImage image, String title, final boolean save) {
+		
+		ImagePanel jPanel = new ImagePanel(image);	
 		
 		//final JDialog dialog = new JDialog();	
 		final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.DOCUMENT_MODAL);
@@ -2066,26 +2067,60 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {		
-				askAboutSavingImage(image, dialog, save);
+				askAboutSavingImage(jPanel, dialog, save);
+				//askAboutSavingImage(jPanel.stretched_image, dialog, save);
 			}
 
 		});
 		
-		ImagePanel jPanel = new ImagePanel(image);	
+		ComponentListener cl = new ComponentListener() {
+
+			@Override
+			public void componentResized(ComponentEvent e) {
+				dialog.repaint();
+				
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent e) {
+				
+				
+			}
+
+			@Override
+			public void componentShown(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void componentHidden(ComponentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
 		
+		dialog.addComponentListener(cl);
+
+				
+		dialog.setPreferredSize(new Dimension(image.getWidth(), image.getHeight() + top_border_height + 
+				bottom_border_height));
+				
 		dialog.add(jPanel);
 
-		dialog.setLocation(new Point(200, 200));
-
+		dialog.setLocation(new Point(200, 200));	
+				
 		dialog.pack();
 		dialog.setVisible(true);
-		// iFrame.setAlwaysOnTop(false);
 
 		dialog.repaint();
 		repaint();
 	}
 
-	void askAboutSavingImage(Image img, JDialog jd, boolean save) {
+	// https://stackoverflow.com/questions/11272938/how-to-save-panel-as-image-in-swing
+	
+	void askAboutSavingImage(ImagePanel ip, JDialog jd, boolean save) {
 		if (!save) {
 			jd.dispose();
 			return;
@@ -2097,7 +2132,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// final boolean SAVE_AS = true;
 		if (answer == MyOptionPane.YES_OPTION) {
 			// User clicked YES.
-			File f = curDiag.genSave(null, langs[Lang.IMAGE], img, null);
+			File f = curDiag.genSave(null, langs[Lang.IMAGE], ip, null);
 			// diag.diagLang = gl;
 			Date date = new Date();
 			// Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -6105,38 +6140,46 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	public class ImagePanel extends JPanel {
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
-		Image image = null;
+		BufferedImage image = null;
 		Dimension dim = null;
-		
-		public ImagePanel(Image img) {
+		//int top_border_height = 60;
+		//int bottom_border_height = 60;
+
+	  		
+		public ImagePanel(BufferedImage img) {
 			image = img;
 			dim = new Dimension(image.getWidth(null), image.getHeight(null));
-			setPreferredSize(dim);
-			//ComponentListener cl = new ComponentAdapter() {
-	        //    public void componentResized(ComponentEvent ce) {
-	         //       Component c = ce.getComponent();
-	             //   img = im1.getScaledInstance(c.getWidth(), c.getHeight(), Image.SCALE_SMOOTH); 
-	        //    }
-	        //};
-			//addComponentListener(cl);
+			setPreferredSize(dim);	
 		}
 		
 		public void paintComponent(Graphics g) {
 			//g.drawImage(image, 0, 0, getWidth(), getHeight(), this); // draw the image
-			
+			super.paintComponent(g);
 			int width = getWidth();
 			int height = getHeight();
 			g.setColor(Color.WHITE);
 			g.fillRect(0, 0, width, height);
 			
-			int x = (width - dim.width) /2;
-			int y = (height - dim.height) /2; 
+			Font f = driver.fontf;
+
+			// Graphics g = buffer2.getGraphics();
+			//Color col = g.getColor();
+			g.setColor(Color.BLACK);
+			g.setFont(f);
+			//FontMetrics metrics = null; // g.getFontMetrics(f);
+			int y = /* buffer2.getMinY() + */ 20;
+
+			String t = curDiag.diagFile.getAbsolutePath();
+			int x = 0;
+			g.drawString(t, x, y);
 			
-			g.drawImage(image, x, y, dim.width, dim.height, this); // draw the image
+			x = (width - dim.width) /2;  
+			y = (height - dim.height) /2; 
+			FontMetrics metrics = g.getFontMetrics(f);
+			y = 20 + 2 * metrics.getHeight();
+			
+			g.drawImage(image, x, y, dim.width, dim.height, this); // draw the original image
 			
 			Color col = g.getColor();
 			g.setColor(Color.BLACK);
@@ -6144,23 +6187,22 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			
 			//x = width - 140;
 			ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-			String t = utc.toString();
+			t = utc.toString();
 			int i = t.indexOf(":");
 			int j = t.substring(i + 1).indexOf(":");
 			t = t.substring(0, i + j + 1);
 			t = t.replace("T", " ");
 			t += " (UTC)";
 			byte[] str = t.getBytes();
-			Graphics2D g2 = (Graphics2D) g;
-			FontMetrics metrics = g2.getFontMetrics();
+			
+			//metrics = g.getFontMetrics(f);
 			width = metrics.bytesWidth(str, 0, str.length);
 			//x = w - width + 20;
 			x = getWidth() - width;   
-			g.drawString(t, x, getHeight() - 20);
+			g.drawString(t, x, getHeight() - metrics.getHeight());
 
-			g.setColor(col);
+			g.setColor(col);			
 		}
-		
 		
 	}
 

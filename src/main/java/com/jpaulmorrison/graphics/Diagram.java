@@ -2,6 +2,7 @@ package com.jpaulmorrison.graphics;
 
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -12,8 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -276,6 +275,7 @@ public class Diagram {
 			}
 		}
 		
+		// https://stackoverflow.com/questions/11272938/how-to-save-panel-as-image-in-swing
 		if (lang == driver.langs[Lang.IMAGE]) {
 			Path path = file.toPath();
 			try {
@@ -284,9 +284,10 @@ public class Diagram {
 				file = path.toFile();
 
 				String suff = driver.getSuffix(file.getAbsolutePath());
-				BufferedImage bi = (BufferedImage) contents;
-				
-				ImageIO.write(bi, suff, file);
+				Container c = ((DrawFBP.ImagePanel) contents) /*.getRootPane() */;
+				BufferedImage im = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_ARGB);
+				c.paint(im.createGraphics());				
+				ImageIO.write(im, suff, file); 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -803,9 +804,8 @@ public class Diagram {
 	void createImage() {
 		// crop
 		int x, w, y, h;
-
-		int top_border_height = 60;
-		int bottom_border_height = 60;
+		
+		
 
 		x = minX;
 		x = Math.max(1, x);
@@ -818,7 +818,7 @@ public class Diagram {
 		int aw = area.getWidth();
 		int ah = area.getHeight();
 		w = Math.min(aw, w);
-		h = Math.min(ah, h + bottom_border_height);
+		h = Math.min(ah, h + DrawFBP.bottom_border_height);
 
 		y = Math.max(0, y);
 
@@ -837,76 +837,62 @@ public class Diagram {
 
 		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
 
-		// Build strip containing full .drw file name
+		// Build image containing old image plus extra top and bottom
 
 		int width = Math.max(w + 40, buffer2.getWidth());
 		BufferedImage combined = new BufferedImage(width,
-				buffer2.getHeight() + top_border_height + bottom_border_height, BufferedImage.TYPE_INT_ARGB);
+				buffer2.getHeight() + DrawFBP.top_border_height + DrawFBP.bottom_border_height, BufferedImage.TYPE_INT_ARGB);
 
 		Graphics g = combined.getGraphics();
 
-		//g.setColor(Color.WHITE);
+		g.setColor(Color.WHITE);
 
-		//g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
-
-		Font f = driver.fontf;
-
-		// Graphics g = buffer2.getGraphics();
-		Color col = g.getColor();
-		g.setColor(Color.BLACK);
-		g.setFont(f);
-		//FontMetrics metrics = null; // g.getFontMetrics(f);
-		y = /* buffer2.getMinY() + */ 20;
-
-		String t = diagFile.getAbsolutePath();
-		x = 0;
-		g.drawString(t, x, y);
-
+		g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
+		
 		// Now we build a strip containing the diagram description
 
-		f = driver.fontg;
+		Font f = driver.fontg;
+		
 		g.setFont(f);
 
 		FontMetrics metrics = g.getFontMetrics(f);
-		width = 0;
-		// t = desc;
+		//width = 0;
+		
 		byte[] str = new byte[0];
 		if (desc != null && !desc.trim().equals("")) {
 			str = desc.getBytes();
-			width = metrics.bytesWidth(str, 0, str.length);
+			w = metrics.bytesWidth(str, 0, str.length);
 		}
 
-		w = Math.max(w, width);
+		width = Math.max(w, width);
 
-		width = Math.max(w /* + 40 */, buffer2.getWidth());
-		
-		g.setColor(Color.WHITE);
-
-		g.fillRect(0, 0, width, combined.getHeight());
+		// width = Math.max(w /* + 40 */, buffer2.getWidth());				
 
 		g.setColor(Color.BLACK);
 		
-		int x3 = (combined.getWidth() - buffer2.getWidth()) / 2;
-		g.drawImage(buffer2, x3, top_border_height, null);
+		f = driver.fontf;
+
+		
+		int x3 = (width - buffer2.getWidth()) / 2;
+		g.drawImage(buffer2, x3, DrawFBP.top_border_height, null);
 
 		if (desc != null && !desc.trim().equals("")) {
-			col = g.getColor();
+			Color col = g.getColor();
 			g.setColor(Color.BLUE);
 			//Font f2 = driver.fontg;
 			Font f2 = driver.fontg.deriveFont(Font.BOLD);
 			g.setFont(f2);
 			
-			x = combined.getWidth() / 2;
+			
 
 			width = 0;
-			int sy = (bottom_border_height - metrics.getHeight()) / 2;
-			y = buffer2.getHeight() + bottom_border_height - sy;
+			int sy =  metrics.getHeight() / 2;
+			y = buffer2.getHeight() + DrawFBP.top_border_height - sy;
 
 			if (desc != null) {
 				str = desc.getBytes();
 				width = metrics.bytesWidth(str, 0, desc.length());
-				// int sy = (bottom_border_height - metrics.getHeight()) / 2;
-				// y = buffer2.getHeight() + bottom_border_height - sy;
+				x = (combined.getWidth() - width) / 2;
 				g.drawString(desc, x - width / 2, y);
 			}
 
@@ -916,29 +902,7 @@ public class Diagram {
 			g.setFont(driver.fontg);
 		}
 
-		/*
-		Font f2 = driver.fontf;
-		g.setFont(f2);
-		x = w - 100;
-		ZonedDateTime utc = ZonedDateTime.now(ZoneOffset.UTC);
-		t = utc.toString();
-		int i = t.indexOf(":");
-		int j = t.substring(i + 1).indexOf(":");
-		t = t.substring(0, i + j + 1);
-		t = t.replace("T", " ");
-		t += " (UTC)";
-		str = t.getBytes();
-		width = metrics.bytesWidth(str, 0, str.length);
-		x = w - width + 20;
-		x = combined.getWidth() - width + 20;   
-		g.drawString(t, x, combined.getHeight() - 20);
-
-		g.setColor(col);
-		*/
-
-		// https://stackoverflow.com/questions/299495/how-to-add-an-image-to-a-jpanel
-
-		driver.showImage(combined, diagFile.getName(), true);
+		driver.showImage(combined, diagFile.getName(), true);   
 	}
 
 	void findEnclosedBlocksAndArrows(Enclosure enc) {
