@@ -37,11 +37,21 @@ public class LegendBlock extends Block {
 			String str[] = centreDesc();
 			int x = textX;
 			int y = textY;
+			int right = 0;
 			for (int i = 0; i < str.length; i++) {
 				g.drawString(str[i], x, y); 
 				y += driver.gFontHeight;
+				right = Math.max(right,  x + driver.gFontWidth * str[i].length());
 			}
 			//g.setFont(oldf);
+			//centreDesc();
+			topEdge = textY;
+			botEdge = y;
+			leftEdge = textX - 20;
+			rgtEdge = right + 20;
+			width = rgtEdge - leftEdge;
+			height = botEdge - topEdge;
+			
 			buildSides();
 			calcEdges();
 
@@ -57,6 +67,10 @@ public class LegendBlock extends Block {
 
 			showDetectionAreas(g);
 
+			leftEdge = cx - width / 2 - 20;
+			rgtEdge = cx + width / 2 + 20;
+			topEdge = cy - height / 2;
+			botEdge = cy + height / 2 + 40;
 		}
 		
 		int tlx = cx - width / 2;

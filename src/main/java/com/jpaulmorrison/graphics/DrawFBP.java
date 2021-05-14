@@ -1848,8 +1848,34 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			// curDiag.imageFile = fFile;
 
-			String name = fFile.getName();
-			showImage(image, name, false);
+			//String name = fFile.getName();
+			//showImage(image, name, false);  
+			
+		    //JFrame frame = new JFrame();
+		    //final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.APPLICATION_MODAL);
+		    final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.MODELESS);
+		    dialog.setUndecorated(false);
+		   // frame.add(new JLabel(new ImageIcon(image)));
+		    dialog.add(new JLabel(new ImageIcon(image)));
+		    dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		    
+		    dialog.setPreferredSize(new Dimension(image.getWidth() + 20, image.getHeight() + top_border_height));
+		 
+		    /*
+		    dialog.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
+		            .getScreenSize().getWidth() / 2 - image.getWidth() / 2),
+		            (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
+		                    .getHeight() / 2 - image.getHeight() / 2),
+		            image.getWidth(), image.getHeight());
+		    
+		    //RoundRectangle2D r = new RoundRectangle2D.Double(0, 0, image.getWidth(), image.getHeight(), 25, 25);
+		    //dialog.setShape(r);
+		    //dialog.setOpacity(0f);
+		    */ 
+		    dialog.setLocation(400, 400);
+		    dialog.setMinimumSize(dialog.getPreferredSize());
+		    
+		    dialog.setVisible(true);
 
 			return;
 		}
@@ -2059,10 +2085,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 	void showImage(final BufferedImage image, String title, final boolean save) {
 		
+	
 		ImagePanel jPanel = new ImagePanel(image);	
 		
 		//final JDialog dialog = new JDialog();	
-		final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.DOCUMENT_MODAL);
+		final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.APPLICATION_MODAL);
 		//iFrame.setTitle(title);
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
@@ -2131,7 +2158,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// boolean b = false;
 		// final boolean SAVE_AS = true;
 		if (answer == MyOptionPane.YES_OPTION) {
-			// User clicked YES.
+			
+			int w = curDiag.maxX - curDiag.minX;
+			//int h = curDiag.maxY - curDiag.minY;
+			
+			int h = curDiag.maxY + top_border_height;
+			
+			ip.setSize(new Dimension(w, h));     
+			//jd.setSize(new Dimension(w, h));     
+			
 			File f = curDiag.genSave(null, langs[Lang.IMAGE], ip, null);
 			// diag.diagLang = gl;
 			Date date = new Date();
@@ -6156,6 +6191,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		public void paintComponent(Graphics g) {
 			//g.drawImage(image, 0, 0, getWidth(), getHeight(), this); // draw the image
 			super.paintComponent(g);
+			
+			// Fill area with white
+			
 			int width = getWidth();
 			int height = getHeight();
 			g.setColor(Color.WHITE);
@@ -6172,7 +6210,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			String t = curDiag.diagFile.getAbsolutePath();
 			int x = 0;
-			g.drawString(t, x, y);
+			g.drawString(" " + t, x, y);
 			
 			x = (width - dim.width) /2;  
 			y = (height - dim.height) /2; 
@@ -6192,7 +6230,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			int j = t.substring(i + 1).indexOf(":");
 			t = t.substring(0, i + j + 1);
 			t = t.replace("T", " ");
-			t += " (UTC)";
+			t += " (UTC) ";
 			byte[] str = t.getBytes();
 			
 			//metrics = g.getFontMetrics(f);

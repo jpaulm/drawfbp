@@ -284,10 +284,19 @@ public class Diagram {
 				file = path.toFile();
 
 				String suff = driver.getSuffix(file.getAbsolutePath());
-				Container c = ((DrawFBP.ImagePanel) contents) /*.getRootPane() */;
-				BufferedImage im = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_ARGB);
-				c.paint(im.createGraphics());				
-				ImageIO.write(im, suff, file); 
+				//Container c = ((DrawFBP.ImagePanel) contents);
+				DrawFBP.ImagePanel ip = ((DrawFBP.ImagePanel) contents);
+				int w = ip.getWidth();
+				int h = ip.getHeight();
+				BufferedImage im = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+				Graphics g = im.createGraphics();	
+				ip.paint(g);
+				String fmt = null;
+				if (suff.equals("jpg") || suff.equals("jpeg"))
+					fmt = "jpg";
+				else
+					fmt = "png";
+				ImageIO.write(im, fmt, file); 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -811,27 +820,29 @@ public class Diagram {
 		x = Math.max(1, x);
 		w = maxX - x;
 
-		y = minY - 40;
+		y = minY - driver.top_border_height;
 		y = Math.max(1, y);
 		h = maxY - y;
 
-		int aw = area.getWidth();
-		int ah = area.getHeight();
-		w = Math.min(aw, w);
-		h = Math.min(ah, h + DrawFBP.bottom_border_height);
+		//int aw = area.getWidth();
+		//int ah = area.getHeight();
+		//w = Math.min(aw, w);
+		//h = Math.min(ah, h + DrawFBP.bottom_border_height);
+		
+		h += DrawFBP.bottom_border_height;
 
 		y = Math.max(0, y);
 
 		// adjust x, y, w, h to avoid RasterFormatException
 
-		int x2 = x;
-		int y2 = y;
-		int w2 = w;
-		int h2 = h;
-		x = Math.max(x, driver.buffer.getMinX());
-		y = Math.max(y, driver.buffer.getMinY());
-		w = Math.min(w, driver.buffer.getWidth());
-		h = Math.min(h, driver.buffer.getHeight());
+		int x2 = driver.buffer.getMinX();
+		int y2 = driver.buffer.getMinY();
+		int w2 = driver.buffer.getWidth();
+		int h2 = driver.buffer.getHeight();
+		x = Math.max(x, x2);
+		y = Math.max(y, y2);
+		w = Math.min(w, w2);
+		h = Math.min(h, h2);
 
 		// driver.selBlock = null; // clear "selected" colour
 
