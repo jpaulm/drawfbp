@@ -27,30 +27,49 @@ public class LegendBlock extends Block {
 		if (desc != null && !(desc.trim().equals(""))) {
 			
 			
-			g.setColor(Color.BLACK);
+			g.setColor(Color.BLACK);			
+			//g.drawRect(cx - 2, cy - 2, 6, 6);
 			
 			//drawDesc(g);
 			//Font oldf = g.getFont();
 			//float fl = oldf.getSize2D();
 			//Font f = oldf.deriveFont((float)(fl * 1.2));
 			//g.setFont(f);
+			g.setFont(driver.fontg);
 			String str[] = centreDesc();
-			int x = textX;
-			int y = textY;
-			int right = 0;
+			//int x = textX;
+			//int y = textY;
+			
+			int x = cx - width / 2;
+			int y = cy - height / 2;
+			
+			//textY = y;
+			//textX = x;
+			
+			//int right = 0;
 			for (int i = 0; i < str.length; i++) {
 				g.drawString(str[i], x, y); 
 				y += driver.gFontHeight;
-				right = Math.max(right,  x + driver.gFontWidth * str[i].length());
+				//right = Math.max(right,  x + driver.gFontWidth * str[i].length());
 			}
 			//g.setFont(oldf);
 			//centreDesc();
+			/*
 			topEdge = textY;
 			botEdge = y;
 			leftEdge = textX - 20;
 			rgtEdge = right + 20;
 			width = rgtEdge - leftEdge;
 			height = botEdge - topEdge;
+			
+			*/
+			
+			topEdge = cy - height / 2;;
+			botEdge = cy + height / 2;
+			leftEdge = cx - width / 2;
+			rgtEdge = cx + width / 2;
+			//width = rgtEdge - leftEdge;
+			//height = botEdge - topEdge;
 			
 			buildSides();
 			calcEdges();
@@ -91,4 +110,5 @@ public class LegendBlock extends Block {
 		//blueCircs(g);	 
 	} 
 	
+
 }

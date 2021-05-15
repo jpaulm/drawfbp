@@ -195,10 +195,14 @@ public class Block implements ActionListener {
 
 		
 
-		if (desc != null) {
+		if (desc != null && !(this instanceof LegendBlock)) {
 			String str[] = centreDesc();
-			int x = textX;
-			int y = textY;
+			//int x = textX;
+			//int y = textY;
+			
+			int x = cx - width / 2 + 20;
+			int y = cy - height / 2 + 20;
+			
 			for (int i = 0; i < str.length; i++) {
 				g.drawString(str[i], x, y); 
 				y += driver.gFontHeight;
@@ -378,85 +382,55 @@ public class Block implements ActionListener {
 			diag.minY = Math.min(ymin - 20, diag.minY);
 		//}
 	}
+	
 	String[] centreDesc() {
 
 		//g.setColor(Color.BLACK);
 
 		int x = 0;
 		int y = 0;
-		//int minX = Integer.MAX_VALUE;
 		int maxX = 0;
 
 		String str[] = desc.split("\n");
-		boolean nonBlankLineFound = false;
-		//Graphics g = driver.getGraphics();
-		//FontMetrics metrics = g.getFontMetrics(g.getFont());
-		//FontMetrics metrics = g.getFontMetrics(driver.fontg);
+		
 		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
-		//int saveY = 0;
+		int saveY = 0;
 
-		for (int i = 0; i < str.length; i++) {
-			//x = 0;
-			/*
-			for (int j = 0; j < str[i].length(); j++) {
-				char c = str[i].charAt(j);
-				if (c != ' ')
-					minX = Math.min(x, minX);
-
-				x += metrics.charWidth(c);
-				//System.out.println(x);
-			}
-			*/		
-			String t = str[i];
-			
-			byte[] str2 = t.getBytes();
-			x = 2 + metrics.bytesWidth(str2, 0, str2.length);
-			//x += x / 6;     // fudge - add 16%
-			
-			maxX = Math.max(x, maxX);
-			
-			//System.out.println(maxX);
-			if (!(str[i].trim().equals(""))) {
-				// minY = Math.min(minY, y);
-				//saveY = y;
-				y += driver.gFontHeight;
-				nonBlankLineFound = true;
-			}
-			if (nonBlankLineFound) {
-				// maxY = y;
-			}
-		}
-
-		//y = saveY;
-		x = (maxX) / 2; // find half width
-		x = cx - x;
-		x += 4;                     //fudge
-
-		y = y / 2; // find half height
-		if (this instanceof ReportBlock)
-			y = cy - y;
-		else if (this instanceof PersonBlock)
-			y = cy + height / 2 + driver.gFontHeight;
-		else
-			y = cy - y + driver.gFontHeight;
-
-		y -= driver.gFontHeight / 3; // fudge!
-		int saveY = y; 
-		textX = x; 
-		textY = y;
-		
- 
-		for (int i = 0; i < str.length; i++) {
-		//	g.drawString(str[i], x, y); 
-			y += driver.gFontHeight;
-		}
-		
 		if (this instanceof LegendBlock) {
-			height = y - saveY + 24;
-			width = maxX + 24;
-			//buildSides();
-			//calcEdges();
+			 
+			for (int i = 0; i < str.length; i++) {
+				String t = str[i];
+				byte[] str2 = t.getBytes();
+				x = 2 + metrics.bytesWidth(str2, 0, str2.length);
+
+				maxX = Math.max(x, maxX);
+				// System.out.println(maxX);
+
+				y += driver.gFontHeight;
+			}
+
+			height = y - saveY;
+			width = maxX;
+			
+			 
 		}
+		else {
+			// y = saveY;
+			x = (maxX) / 2; // find half width
+			x = cx - x;
+			x += 4; // fudge
+
+			y = y / 2; // find half height
+			if (this instanceof ReportBlock)
+				y = cy - y;
+			else if (this instanceof PersonBlock)
+				y = cy + height / 2 + driver.gFontHeight;
+			else
+				y = cy - y + driver.gFontHeight;
+
+			y -= driver.gFontHeight / 3; // fudge!
+		}
+	
 		 
 		return str;
 	}
