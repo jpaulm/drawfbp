@@ -78,6 +78,8 @@ public class Block implements ActionListener {
 	Rectangle topRect = null;
 	Rectangle botRect = null;
 	Rectangle rightRect = null;	
+	int textHeight = 0;
+	int textWidth = 0;
 
 	static public class Types {
 		static String PROCESS_BLOCK = "B";
@@ -195,17 +197,30 @@ public class Block implements ActionListener {
 
 		
 
-		if (desc != null && !(this instanceof LegendBlock)) {
+		if (desc != null) {
 			String str[] = centreDesc();
-			//int x = textX;
-			//int y = textY;
-			
-			int x = cx - width / 2 + 20;
-			int y = cy - height / 2 + 20;
-			
-			for (int i = 0; i < str.length; i++) {
-				g.drawString(str[i], x, y); 
-				y += driver.gFontHeight;
+			int x = 0;
+			int y = 0;
+			if (this instanceof ProcessBlock) {
+				x = cx - textWidth / 2;
+				y = cy - textHeight / 2;
+				y += driver.gFontHeight - 6;
+				
+				for (int i = 0; i < str.length; i++) {
+					g.drawString(str[i], x, y);
+					y += driver.gFontHeight;
+				}
+
+			} else if (!(this instanceof LegendBlock)) {
+
+				x = cx - width / 2 + 20;
+				y = cy - height / 2 + 20;
+				y += driver.gFontHeight + 2;
+
+				for (int i = 0; i < str.length; i++) {
+					g.drawString(str[i], x, y);
+					y += driver.gFontHeight;
+				}
 			}
 		}
 
@@ -396,7 +411,7 @@ public class Block implements ActionListener {
 		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
 		int saveY = 0;
 
-		if (this instanceof LegendBlock) {
+		if (this instanceof ProcessBlock) {
 			 
 			for (int i = 0; i < str.length; i++) {
 				String t = str[i];
@@ -409,12 +424,26 @@ public class Block implements ActionListener {
 				y += driver.gFontHeight;
 			}
 
-			height = y - saveY;
-			width = maxX;
-			
-			 
+			textHeight = y - saveY;
+			textWidth = maxX;
 		}
-		else {
+		else if (this instanceof LegendBlock) {
+				 
+				for (int i = 0; i < str.length; i++) {
+					String t = str[i];
+					byte[] str2 = t.getBytes();
+					x = 2 + metrics.bytesWidth(str2, 0, str2.length);
+
+					maxX = Math.max(x, maxX);
+					// System.out.println(maxX);
+
+					y += driver.gFontHeight;
+				}
+
+				height = y - saveY;
+				width = maxX;
+			}
+			else{
 			// y = saveY;
 			x = (maxX) / 2; // find half width
 			x = cx - x;
@@ -423,10 +452,11 @@ public class Block implements ActionListener {
 			y = y / 2; // find half height
 			if (this instanceof ReportBlock)
 				y = cy - y;
-			else if (this instanceof PersonBlock)
-				y = cy + height / 2 + driver.gFontHeight;
-			else
-				y = cy - y + driver.gFontHeight;
+			else 
+				//if (this instanceof PersonBlock)
+				//y = cy + height / 2 + driver.gFontHeight;
+			//else
+				y = cy - y + driver.gFontHeight + 2;
 
 			y -= driver.gFontHeight / 3; // fudge!
 		}

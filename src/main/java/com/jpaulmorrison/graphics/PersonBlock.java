@@ -47,8 +47,10 @@ import java.awt.Graphics;
 					tly, cy + height / 2);
 			if (desc != null) {
 				String str[] = centreDesc();
-				int x = textX;
-				int y = textY;
+				//int x = textX;
+				//int y = textY;
+				int x = tlx + 6;
+				int y = tly + driver.gFontHeight + 2;
 				for (int i = 0; i < str.length; i++) {
 					g.drawString(str[i], x, y); 
 					y += driver.gFontHeight;

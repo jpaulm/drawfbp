@@ -46,6 +46,7 @@ public class LegendBlock extends Block {
 			//textY = y;
 			//textX = x;
 			
+			y += driver.gFontHeight + 2;
 			//int right = 0;
 			for (int i = 0; i < str.length; i++) {
 				g.drawString(str[i], x, y); 

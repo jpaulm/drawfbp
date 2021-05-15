@@ -885,7 +885,8 @@ public class Diagram {
 
 		
 		int x3 = (width - buffer2.getWidth()) / 2;
-		g.drawImage(buffer2, x3, DrawFBP.top_border_height, null);
+		//g.drawImage(buffer2, x3, DrawFBP.top_border_height, null);
+		g.drawImage(buffer2, x3, 0, null);
 
 		if (desc != null && !desc.trim().equals("")) {
 			Color col = g.getColor();

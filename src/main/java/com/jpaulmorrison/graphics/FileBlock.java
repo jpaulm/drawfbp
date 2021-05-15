@@ -48,8 +48,8 @@ public class FileBlock extends Block {
 		g.drawArc(x, y, width, 20, 190, 160);	
 		if (desc != null) {
 			String str[] = centreDesc();
-			int x1 = textX;
-			int y1 = textY;
+			int x1 = cx - width / 2 + 6;
+			int y1 = cy - height / 2 + driver.gFontHeight + 12;
 			for (int i = 0; i < str.length; i++) {
 				g.drawString(str[i], x1, y1); 
 				y1 += driver.gFontHeight;

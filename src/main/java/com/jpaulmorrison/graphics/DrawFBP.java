@@ -936,6 +936,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		but[BUT_PERSON].code = Block.Types.PERSON_BLOCK;
 		but[BUT_REPORT].code = Block.Types.REPORT_BLOCK;
 		
+		but[BUT_PERSON].oneLine = true; 
+		but[BUT_EXTPORT_IN].oneLine = true; 
+		but[BUT_EXTPORT_OUT].oneLine = true; 
+		but[BUT_EXTPORT_OI].oneLine = true; 
+		but[BUT_IIP].oneLine = true; 
+		but[BUT_ENCL].oneLine = true; 
+		
 		selRB = but[BUT_PROCESS];  // set selected RadioButton to "Process"	
 
 		box1.add(box2);
@@ -1780,21 +1787,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			
 			
 			return;
-			/*
-			 * 
-			 * //curDiag.fCParm[Diagram.IMAGE].prompt =
-			 * curDiag.fCParm[Diagram.IMAGE].prompt.substring(0, i) + ": " + fn;
-			 * 
-			 * file = curDiag.genSave(null, curDiag.fCParm[Diagram.IMAGE], combined); //
-			 * file = curDiag.genSave(null, fCPArray[IMAGE], buffer2); if (file == null) {
-			 * MyOptionPane.showMessageDialog(this, "File not saved"); // curDiag.imageFile
-			 * = null; g.dispose(); return; }
-			 * 
-			 * // ImageIcon image = new ImageIcon(combined); // curDiag.imageFile = file;
-			 * Date date = new Date(); //Calendar calendar =
-			 * Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-			 * file.setLastModified(date.getTime()); return;
-			 */
+			
 		}
 
 		if (s.equals("Show Image")) {
@@ -2162,7 +2155,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			int w = curDiag.maxX - curDiag.minX;
 			//int h = curDiag.maxY - curDiag.minY;
 			
-			int h = curDiag.maxY + top_border_height;
+			int h = curDiag.maxY + top_border_height + bottom_border_height;
 			
 			ip.setSize(new Dimension(w, h));     
 			//jd.setSize(new Dimension(w, h));     
@@ -2265,10 +2258,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	//Block createBlock(String blkType, int xa, int ya, Diagram diag, boolean editType) {
 	Block createBlock(int xa, int ya, Diagram diag, boolean editType) {
 		Block block = null;
-		boolean oneLine = false;
+		//boolean oneLine = false;
 		String title = "";
 		//if (blkType.equals(Block.Types.PROCESS_BLOCK)) {
-		if (selRB == but[BUT_PROCESS]) {	
+		if (selRB == but[BUT_PROCESS] || selRB == but[BUT_SUBNET]) {	
 			block = new ProcessBlock(diag);
 			block.isSubnet = willBeSubnet;
 		}
@@ -2276,7 +2269,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//else if (blkType.equals(Block.Types.EXTPORT_IN_BLOCK) || blkType.equals(Block.Types.EXTPORT_OUT_BLOCK)
 		//		|| blkType.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
 		else if (selRB == but[BUT_EXTPORT_IN] || selRB == but[BUT_EXTPORT_OUT] || selRB == but[BUT_EXTPORT_OI]) {		
-			oneLine = true;
+			//oneLine = true;
 			title = "External Port";
 			block = new ExtPortBlock(diag);
 		}
@@ -2287,7 +2280,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 		else if (selRB == but[BUT_IIP]) {
-			oneLine = true;
+			//oneLine = true;
 			title = "IIP";
 			block = new IIPBlock(diag);
 			// IIPBlock ib = (IIPBlock) block;
@@ -2301,7 +2294,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 		else if (selRB == but[BUT_ENCL]) {
-			oneLine = true;
+			//oneLine = true;
 			title = "Enclosure";
 			block = new Enclosure(diag);
 			Point pt = diag.area.getLocation();
@@ -2311,7 +2304,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		else if (selRB == but[BUT_PERSON]) {
 			title = "Person";
-			oneLine = true;
+			//oneLine = true;
 			block = new PersonBlock(diag);
 		}
 
@@ -2331,7 +2324,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return null; // fudge!
 
 		if (editType) {
-			if (oneLine) {
+			if (selRB.oneLine) {
 				//if (blkType != Block.Types.ENCL_BLOCK) {
 				if (selRB != but[BUT_ENCL]) {	
 					// String d = "Enter description";
@@ -5676,6 +5669,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		private static final long serialVersionUID = 1L;
 		String code = null; 
+		boolean oneLine = false;
 	}
 
 	public class CloseAppAction extends AbstractAction {
