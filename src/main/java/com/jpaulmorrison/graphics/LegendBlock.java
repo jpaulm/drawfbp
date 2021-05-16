@@ -10,7 +10,7 @@ public class LegendBlock extends Block {
 		typeCode = Block.Types.LEGEND_BLOCK;
 		width = driver.gFontWidth * 12 + 4;
 		height = driver.gFontHeight * 4 + 4;
-		buildSides();
+		buildSideRects();
 		calcEdges();
 	}
 
@@ -36,7 +36,8 @@ public class LegendBlock extends Block {
 			//Font f = oldf.deriveFont((float)(fl * 1.2));
 			//g.setFont(f);
 			g.setFont(driver.fontg);
-			String str[] = centreDesc();
+			//String str[] = centreDesc();
+			String str[] = desc.split("\n");
 			//int x = textX;
 			//int y = textY;
 			
@@ -72,7 +73,7 @@ public class LegendBlock extends Block {
 			//width = rgtEdge - leftEdge;
 			//height = botEdge - topEdge;
 			
-			buildSides();
+			buildSideRects();
 			calcEdges();
 
 			showDetectionAreas(g);
@@ -83,7 +84,7 @@ public class LegendBlock extends Block {
 			width = 40;
 			height = 15;
 			//showArrowEndAreas(g);
-			buildSides();
+			buildSideRects();
 
 			showDetectionAreas(g);
 

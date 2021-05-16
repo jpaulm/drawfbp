@@ -113,7 +113,7 @@ public class Block implements ActionListener {
 
 	}
 
-	void buildSides(){		
+	void buildSideRects(){	
 		
 		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
 				driver.zWS, height + driver.zWS);
@@ -121,6 +121,7 @@ public class Block implements ActionListener {
 				width + driver.zWS, driver.zWS);		
 		rightRect = new Rectangle(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
 				driver.zWS, height + driver.zWS);
+		//System.out.println(rightRect.x + " " + rightRect.y + " " + rightRect.width + " " + rightRect.height );
 		if (!(this instanceof ReportBlock))
 			botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, 
 					width + driver.zWS, driver.zWS );
@@ -442,6 +443,7 @@ public class Block implements ActionListener {
 
 				height = y - saveY;
 				width = maxX;
+				//System.out.println(width);   // delete later
 			}
 			else{
 			// y = saveY;
@@ -613,7 +615,7 @@ public class Block implements ActionListener {
 			width = iip.calcIIPWidth(driver.osg);
 			if (iip.width < 15)
 				iip.width = 15;
-			buildSides();
+			buildSideRects();
 		} 
 		s = item.get("height");
 		if (s != null)
@@ -631,7 +633,7 @@ public class Block implements ActionListener {
 			Enclosure ol = (Enclosure) this;
 			ol.desc = item.get("description");
 		}
-		buildSides();
+		buildSideRects();
 		calcEdges();
 
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
@@ -1610,7 +1612,7 @@ public class Block implements ActionListener {
 					width = ib.calcIIPWidth(driver.osg);
 					if (width < 12)
 						width = 12;
-					buildSides();
+					buildSideRects();
 
 					for (Arrow arrow : diag.arrows.values()) {
 						if (arrow.fromId == id && arrow.fromY == arrow.toY) // i.e.
@@ -1963,7 +1965,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		area.setFont(driver.fontg);
 		//JScrollPane pane = new JScrollPane(area);
 		 
-		
+		 
 		// ensure area within frame gets focus
 		area.addHierarchyListener(new HierarchyListener() {
 			public void hierarchyChanged(HierarchyEvent he) {
@@ -1978,6 +1980,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				}
 			}
 		});
+		
+		 
 		
 
 		String t = "";
@@ -2002,7 +2006,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		
 
 		int result = MyOptionPane.showOptionDialog(driver, new Object[]{ 
-				"Enter/change " + t + " name or description", 
+				"Enter/change " + t + " name or desc'n", 
 				pane
 			}, init + t);		
 		
@@ -2014,7 +2018,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		desc = area.getText();
 		
 		centreDesc();  
-		buildSides();
+		buildSideRects();
 		
 		diag.changed = true;
 

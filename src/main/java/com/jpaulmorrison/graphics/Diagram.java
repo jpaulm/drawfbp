@@ -695,7 +695,7 @@ public class Diagram {
 				arrow.toX = var.x;
 				arrow.toY = var.y;	
 				arrow.toId = subnetBlock.id;
-				eb.buildSides();
+				eb.buildSideRects();
 			}
 			
 			
@@ -727,7 +727,7 @@ public class Diagram {
 				
 				arrow.upStreamPort = ans;
 				
-				eb.buildSides();			
+				eb.buildSideRects();			
 				eb.calcEdges();
 				//arrow.fromId = subnetBlock.id;
 				Point fixed = new Point(arrow.toX, arrow.toY);				
@@ -1031,7 +1031,7 @@ public class Diagram {
 		subnetBlock.cx = enc.cx;
 		subnetBlock.cy = enc.cy;
 		//subnetBlock.diag = sbnDiag;   
-		subnetBlock.buildSides();
+		subnetBlock.buildSideRects();
 		subnetBlock.calcEdges();
 		return subnetBlock;
 	}

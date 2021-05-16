@@ -2035,7 +2035,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// if (!blk.editDescription(CREATE))
 				// return;;
 				curDiag.changed = true;
-				blk.buildSides();
+				blk.buildSideRects();
 			}
 			repaint();
 			return;
@@ -2349,7 +2349,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				ib.width = ib.calcIIPWidth(osg);
 				if (ib.width < 15)
 					ib.width = 15;
-				ib.buildSides();
+				ib.buildSideRects();
 			}
 		}
 		block.calcEdges();
@@ -2359,7 +2359,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// diag.changed = true;
 		selBlock = block;
 		// selArrowP = null;
-		block.buildSides();
+		block.buildSideRects();
 		return block;
 	}
 
@@ -6750,7 +6750,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			// look for side or corner of an enclosure
 			for (Block block : curDiag.blocks.values()) {
-				block.buildSides();
+				block.buildSideRects();
 				block.adjEdgeRects();
 				block.calcEdges();
 				if (block instanceof Enclosure) {
@@ -6914,7 +6914,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				for (Block block : curDiag.blocks.values()) {
 					block.cx = block.cx + xa - panX;
 					block.cy = block.cy + ya - panY;
-					block.buildSides();
+					block.buildSideRects();
 					block.calcEdges();
 				}
 				for (Arrow arrow : curDiag.arrows.values()) {
@@ -7061,7 +7061,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				block.rightRect.x += x_inc;
 				block.rightRect.y += y_inc;
 
-				block.buildSides();
+				block.buildSideRects();
 				block.calcEdges();
 				block.adjEdgeRects();
 
@@ -7077,7 +7077,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						for (Block bk : enc.llb) {
 							bk.cx += xa - oldx;
 							bk.cy += ya - oldy;
-							bk.buildSides();
+							bk.buildSideRects();
 							bk.calcEdges();
 						}
 						repaint();

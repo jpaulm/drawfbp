@@ -55,7 +55,7 @@ public class IIPBlock extends Block {
 			g.drawString(desc, cx - width / 2 + 4 /*+ 6 */, cy + 4);
 		}
 
-		buildSides();
+		buildSideRects();
 		
 		showDetectionAreas(g);
 

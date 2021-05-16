@@ -957,7 +957,7 @@ public class Arrow implements ActionListener {
 		int pid = p.id;
 		diag.blocks.put(Integer.valueOf(pid), p);
 		
-		p.buildSides();
+		p.buildSideRects();
 		p.calcEdges();
 		p.adjEdgeRects();
 		
