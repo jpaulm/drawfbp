@@ -899,7 +899,7 @@ public class Diagram {
 
 			width = 0;
 			int sy =  metrics.getHeight() / 2;
-			y = buffer2.getHeight() + DrawFBP.top_border_height - sy;
+			y = buffer2.getHeight() + 20 - sy;
 
 			if (desc != null) {
 				str = desc.getBytes();
