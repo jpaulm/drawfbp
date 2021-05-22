@@ -1608,21 +1608,21 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			MyOptionPane.showMessageDialog(this, "References to additional " + lib + " files removed (not deleted)",
 					MyOptionPane.INFORMATION_MESSAGE);
+			return;
 		}
 
-		// if (s.equals("Locate DrawFBP Help File")) {
-
-		// locateJhallJarFile(true);
-		// return;
-		// }
+		
 
 		if (s.equals("Change Fonts")) {
 			changeFonts();
+			return;
 		}
 
 		if (s.equals("Change Font Size")) {
 			changeFontSize();
+			return;
 		}
+		
 
 		if (s.equals("Print Image")) {
 
@@ -1740,6 +1740,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		if (s.equals("Display Properties")) {
 			displayProperties();
+			return; 
 		}
 
 		if (s.equals("Toggle Click to Grid")) {
@@ -1874,8 +1875,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 		if (s.equals("Close Diagram")) {
-			if (closeTab(false))
-				;
+			closeTab(false);
 			return;
 		}
 		if (s.equals("Launch Help")) {
@@ -2069,7 +2069,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return;
 		}
 
-		MyOptionPane.showMessageDialog(this, "Command not recognized", MyOptionPane.ERROR_MESSAGE);
+		MyOptionPane.showMessageDialog(this, "Command not recognized: " + s, MyOptionPane.ERROR_MESSAGE);
 		//setBlkType(s);
 
 		repaint();
