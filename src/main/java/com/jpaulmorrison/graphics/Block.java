@@ -433,7 +433,7 @@ public class Block implements ActionListener {
 				for (int i = 0; i < str.length; i++) {
 					String t = str[i];
 					byte[] str2 = t.getBytes();
-					x = 2 + metrics.bytesWidth(str2, 0, str2.length);
+					x = 8 + metrics.bytesWidth(str2, 0, str2.length);
 
 					maxX = Math.max(x, maxX);
 					// System.out.println(maxX);

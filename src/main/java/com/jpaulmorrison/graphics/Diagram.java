@@ -820,7 +820,7 @@ public class Diagram {
 		x = Math.max(1, x);
 		w = maxX - x;
 
-		y = minY - driver.top_border_height;
+		y = minY - DrawFBP.top_border_height;
 		y = Math.max(1, y);
 		h = maxY - y;
 
