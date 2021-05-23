@@ -820,9 +820,12 @@ public class Diagram {
 		x = Math.max(1, x);
 		w = maxX - x;
 
-		y = minY - DrawFBP.top_border_height;
+		
+		y = minY;
 		y = Math.max(1, y);
 		h = maxY - y;
+		//y -= DrawFBP.top_border_height;
+		y = Math.max(1, y);
 
 		//int aw = area.getWidth();
 		//int ah = area.getHeight();
@@ -835,16 +838,26 @@ public class Diagram {
 
 		// adjust x, y, w, h to avoid RasterFormatException
 
-		int x2 = driver.buffer.getMinX();
-		int y2 = driver.buffer.getMinY();
-		int w2 = driver.buffer.getWidth();
-		int h2 = driver.buffer.getHeight();
+		//int x2 = driver.buffer.getMinX();
+		//int y2 = driver.buffer.getMinY();
+		//int w2 = driver.buffer.getWidth();
+		//int h2 = driver.buffer.getHeight();
+		int x2 = area.getX();
+		int y2 = area.getY();
+		int w2 = area.getWidth();
+		int h2 = area.getHeight();
 		x = Math.max(x, x2);
 		y = Math.max(y, y2);
 		w = Math.min(w, w2);
 		h = Math.min(h, h2);
 
 		// driver.selBlock = null; // clear "selected" colour
+		/*
+		System.out.println("x1: " + x);
+		System.out.println("y1: " + y);
+		System.out.println("w1: " + w);
+		System.out.println("h1: " + h);
+		*/
 
 		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
 
