@@ -1351,6 +1351,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return diag;
 	}
 
+	
 	public void actionPerformed(ActionEvent e) {
 
 		// comparing = false;
@@ -1840,36 +1841,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			saveProp("currentImageDir", fFile.getParent());
 			saveProperties();
 
-			// curDiag.imageFile = fFile;
-
-			//String name = fFile.getName();
-			//showImage(image, name, false);  
-			
-		    //JFrame frame = new JFrame();
-		    //final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.APPLICATION_MODAL);
-		    final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.MODELESS);
-		    dialog.setUndecorated(false);
-		   // frame.add(new JLabel(new ImageIcon(image)));
-		    dialog.add(new JLabel(new ImageIcon(image)));
-		    dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		    final JFrame jf = new JFrame();
+		    jf.setUndecorated(false);
+		   
+		    jf.add(new JLabel(new ImageIcon(image)));
+		    jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		    
-		    dialog.setPreferredSize(new Dimension(image.getWidth() + 20, image.getHeight() + top_border_height));
+		    jf.setPreferredSize(new Dimension(image.getWidth() + 20, image.getHeight() + top_border_height));
 		 
-		    /*
-		    dialog.setBounds((int) (java.awt.Toolkit.getDefaultToolkit()
-		            .getScreenSize().getWidth() / 2 - image.getWidth() / 2),
-		            (int) (java.awt.Toolkit.getDefaultToolkit().getScreenSize()
-		                    .getHeight() / 2 - image.getHeight() / 2),
-		            image.getWidth(), image.getHeight());
-		    
-		    //RoundRectangle2D r = new RoundRectangle2D.Double(0, 0, image.getWidth(), image.getHeight(), 25, 25);
-		    //dialog.setShape(r);
-		    //dialog.setOpacity(0f);
-		    */ 
-		    dialog.setLocation(400, 400);
-		    dialog.setMinimumSize(dialog.getPreferredSize());
-		    
-		    dialog.setVisible(true);
+		    jf.setLocation(400, 400);
+		    //jf.setMinimumSize(jf.getPreferredSize());
+		    jf.pack();
+		    jf.setVisible(true);
 
 			return;
 		}
