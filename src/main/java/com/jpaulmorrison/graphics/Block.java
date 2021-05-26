@@ -2,6 +2,7 @@ package com.jpaulmorrison.graphics;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -1995,8 +1996,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		//t = driver.blkType;
 		t = "";
 		
-		for (int i = 0; i < driver.but.length; i++) {
-			if (driver.selRB == driver.but[i]) {
+		for (int i = 0; i < driver.blockTypes.length; i++) {
+			if (driver.blockTypes[i].equals(typeCode)) {
 				t = driver.blockNames[i];
 				break;
 			}
@@ -2017,6 +2018,13 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
         
 		desc = area.getText();
 		
+		// try this! worked (fingers crossed) !
+		
+		int w = driver.buffer.getWidth();
+		int h = driver.buffer.getHeight();
+		driver.buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		driver.osg = (Graphics2D) driver.buffer.getGraphics();
+		diag.area.repaint();
 		centreDesc();  
 		buildSideRects();
 		

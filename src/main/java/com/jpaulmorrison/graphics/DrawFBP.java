@@ -232,10 +232,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	String shortNames[] = { "Proc", "IIP", "Encl", "Subn", "ExtPt I", "EP O", "EP O/I",
 			"Legd", "File", "Pers", "Rept" };
 
-	//String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
-	//		Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
-	//		Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
-	//		Block.Types.REPORT_BLOCK };
+	String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
+			Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
+			Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
+			Block.Types.REPORT_BLOCK };
 		
 	static int BUT_PROCESS = 0;
 	static int BUT_IIP = 1;
