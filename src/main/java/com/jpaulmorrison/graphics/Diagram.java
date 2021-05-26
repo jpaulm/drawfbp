@@ -852,6 +852,13 @@ public class Diagram {
 		//y = Math.max(y, y2);
 		w = Math.min(w, w2);
 		h = Math.min(h, h2);
+		
+		//trying something different:
+		
+		x = area.getX();
+		y = area.getY();
+		w = area.getWidth();
+		h = area.getHeight();
 
 		//BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
 		BufferedImage buffer2 = copyImage(driver.buffer, x, y, w, h);
