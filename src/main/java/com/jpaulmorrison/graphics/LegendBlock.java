@@ -11,7 +11,7 @@ public class LegendBlock extends Block {
 		width = driver.gFontWidth * 12 + 4;
 		height = driver.gFontHeight * 4 + 4;
 		buildSideRects();
-		calcEdges();
+		//calcEdges();
 	}
 
 	@Override
@@ -69,12 +69,12 @@ public class LegendBlock extends Block {
 			topEdge = cy - height / 2;;
 			botEdge = cy + height / 2;
 			leftEdge = cx - width / 2;
-			rgtEdge = cx + width / 2;
+			rightEdge = cx + width / 2;
 			//width = rgtEdge - leftEdge;
 			//height = botEdge - topEdge;
 			
 			buildSideRects();
-			calcEdges();
+			//calcEdges();
 
 			showDetectionAreas(g);
 
@@ -89,7 +89,7 @@ public class LegendBlock extends Block {
 			showDetectionAreas(g);
 
 			leftEdge = cx - width / 2 - 20;
-			rgtEdge = cx + width / 2 + 20;
+			rightEdge = cx + width / 2 + 20;
 			topEdge = cy - height / 2;
 			botEdge = cy + height / 2 + 40;
 		}

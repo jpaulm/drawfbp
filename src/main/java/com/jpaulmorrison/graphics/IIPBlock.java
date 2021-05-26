@@ -85,20 +85,7 @@ public class IIPBlock extends Block {
 	}
 	
 
-	/*
-	
-	void buildSides(){		
-		
-		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
-				driver.zWS, height + driver.zWS);
-		topRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
-				width + driver.zWS, driver.zWS);		
-		rightRect = new Rectangle(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
-				driver.zWS, height + driver.zWS);		
-		botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, 
-					width + driver.zWS, driver.zWS );
-	}
-*/	
+	 
 	String checkNestedChars(String s) {
 		Stack<String> stk = new Stack<String>();
 		String chars = "{[(<}])>";

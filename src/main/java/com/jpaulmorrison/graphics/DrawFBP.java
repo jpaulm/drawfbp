@@ -232,6 +232,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	String shortNames[] = { "Proc", "IIP", "Encl", "Subn", "ExtPt I", "EP O", "EP O/I",
 			"Legd", "File", "Pers", "Rept" };
 
+	//String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
+	//		Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
+	//		Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
+	//		Block.Types.REPORT_BLOCK };
 		
 	static int BUT_PROCESS = 0;
 	static int BUT_IIP = 1;
@@ -2075,7 +2079,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 		});
-		
+		/*
 		ComponentListener cl = new ComponentListener() {
 
 			@Override
@@ -2105,6 +2109,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		};
 		
 		dialog.addComponentListener(cl);
+		*/
 
 				
 		dialog.setPreferredSize(new Dimension(image.getWidth(), image.getHeight() + top_border_height + 
@@ -2187,7 +2192,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// saveProp("defaultNotation", notn.label);
 		currNotn = notn;
 		jtf.setText("Diagram Notation: " + notn.label);
-		jtf.repaint();
+		//jtf.repaint();
 
 		/*
 		menuItem1.setEnabled(true); 
@@ -2335,7 +2340,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				ib.buildSideRects();
 			}
 		}
-		block.calcEdges();
+		//block.calcEdges();
 		// diag.maxBlockNo++;
 		// block.id = diag.maxBlockNo;
 		diag.blocks.put(Integer.valueOf(block.id), block);
@@ -3007,7 +3012,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			b.label.setFont(fontf);
 		}
-		jtp.repaint();
+		//jtp.repaint();
 		String dfs = properties.get("defaultFontSize");
 		if (dfs == null) {
 			defaultFontSize = 14.0f;
@@ -3100,7 +3105,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//setJMenuBar(menuBar);
 
 		repaint();
-		validate();
+		//validate();
 	}
 
 	final boolean SAVEAS = true;
@@ -6161,7 +6166,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	  		
 		public ImagePanel(BufferedImage img) {
 			image = img;
-			dim = new Dimension(image.getWidth(null), image.getHeight(null));
+			dim = new Dimension(image.getWidth(null) + 40, image.getHeight(null));
 			setPreferredSize(dim);	
 		}
 		
@@ -6267,7 +6272,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		public void paintComponent(Graphics g) {
 
 			// Paint background if we're opaque.
-			// super.paintComponent(g);
+			super.paintComponent(g);
 			int w = getWidth();
 			if (isOpaque()) {
 				// g.setColor(getBackground());
@@ -6378,7 +6383,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					// (block.botEdge + zWS / 2));
 				}
 
-				if (!(between(x, block.leftEdge - zWS / 2, block.rgtEdge + zWS / 2)))
+				if (!(between(x, block.leftEdge - zWS / 2, block.rightEdge + zWS / 2)))
 					continue;
 
 				if (!(between(y, block.topEdge - zWS / 2, block.botEdge + zWS / 2)))
@@ -6396,7 +6401,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (side == Side.LEFT)
 					fpB.x = block.leftEdge;
 				else if (side == Side.RIGHT)
-					fpB.x = block.rgtEdge;
+					fpB.x = block.rightEdge;
 				else if (side == Side.TOP)
 					fpB.y = block.topEdge;
 				else if (side == Side.BOTTOM)
@@ -6576,13 +6581,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						enc.corner = Corner.BOTTOMLEFT;
 						break;
 					}
-					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
+					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.TOPRIGHT;
 						break;
 					}
-					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
+					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						enclSelForArrow = enc;
 						enc.corner = Corner.BOTTOMRIGHT;
@@ -6594,11 +6599,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				int hh = gFontHeight;
 				boolean udi; // Use Drag Icon
 				if (block.typeCode.equals(Block.Types.ENCL_BLOCK)) {
-					udi = between(xa, block.leftEdge + block.width / 5, block.rgtEdge - block.width / 5)
+					udi = between(xa, block.leftEdge + block.width / 5, block.rightEdge - block.width / 5)
 							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2);
 				} else {
 
-					udi = between(xa, block.leftEdge + zWS * 3 / 4, block.rgtEdge - zWS * 3 / 4)
+					udi = between(xa, block.leftEdge + zWS * 3 / 4, block.rightEdge - zWS * 3 / 4)
 							&& between(ya, block.topEdge + zWS * 3 / 2, block.botEdge - zWS * 3 / 2);
 				}
 
@@ -6734,13 +6739,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// look for side or corner of an enclosure
 			for (Block block : curDiag.blocks.values()) {
 				block.buildSideRects();
-				block.adjEdgeRects();
-				block.calcEdges();
+				//block.adjEdgeRects();
+				//block.calcEdges();
 				if (block instanceof Enclosure) {
 					Enclosure enc = (Enclosure) block;
 					/* test for a hit within the rectangle at top */
 					int hh = gFontHeight;
-					if (between(xa, block.leftEdge + block.width / 5, block.rgtEdge - block.width / 5)
+					if (between(xa, block.leftEdge + block.width / 5, block.rightEdge - block.width / 5)
 							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2)) {
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
@@ -6761,13 +6766,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						enc.corner = Corner.BOTTOMLEFT;
 						break;
 					}
-					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
+					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						blockSelForDragging = enc;
 						enc.corner = Corner.TOPRIGHT;
 						break;
 					}
-					if (between(xa, block.rgtEdge - 6, block.rgtEdge + 6)
+					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						blockSelForDragging = enc;
 						enc.corner = Corner.BOTTOMRIGHT;
@@ -6898,7 +6903,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					block.cx = block.cx + xa - panX;
 					block.cy = block.cy + ya - panY;
 					block.buildSideRects();
-					block.calcEdges();
+					//block.calcEdges();
 				}
 				for (Arrow arrow : curDiag.arrows.values()) {
 					arrow.fromX = arrow.fromX + xa - panX;
@@ -7045,8 +7050,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				block.rightRect.y += y_inc;
 
 				block.buildSideRects();
-				block.calcEdges();
-				block.adjEdgeRects();
+				//block.calcEdges();
+				//block.adjEdgeRects();
 
 				if (fpArrowRoot != null && fpArrowRoot.block == block) {
 					fpArrowRoot.x += xa - oldx;
@@ -7061,7 +7066,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							bk.cx += xa - oldx;
 							bk.cy += ya - oldy;
 							bk.buildSideRects();
-							bk.calcEdges();
+							//bk.calcEdges();
 						}
 						repaint();
 					}
@@ -7350,8 +7355,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (blockSelForDragging.hNeighbour != null) {
 					if (clickToGrid) {
 						blockSelForDragging.cy = blockSelForDragging.hNeighbour.cy;
-						blockSelForDragging.adjEdgeRects();
-						blockSelForDragging.calcEdges();
+						blockSelForDragging.buildSideRects();
+						//blockSelForDragging.calcEdges();
 					}
 					blockSelForDragging.hNeighbour = null;
 				}
@@ -7359,8 +7364,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (blockSelForDragging.vNeighbour != null) {
 					if (clickToGrid) {
 						blockSelForDragging.cx = blockSelForDragging.vNeighbour.cx;
-						blockSelForDragging.adjEdgeRects();
-						blockSelForDragging.calcEdges();
+						//blockSelForDragging.adjEdgeRects();
+						blockSelForDragging.buildSideRects();
 					}
 					blockSelForDragging.vNeighbour = null;
 				}
@@ -7442,7 +7447,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// Check if we are within a block
 
 				for (Block block : curDiag.blocks.values()) {
-					block.calcEdges();
+					//block.calcEdges();
+					block.buildSideRects();
 					if (!(block instanceof Enclosure)) {
 						if (between(xa, block.cx - block.width / 4, block.cx + block.width / 4)
 								&& between(ya, block.cy - block.height / 4, block.cy + block.height / 4)) {
@@ -7557,7 +7563,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (edgePoint.side == Side.LEFT)
 						xa = foundBlock.leftEdge;
 					else if (edgePoint.side == Side.RIGHT)
-						xa = foundBlock.rgtEdge;
+						xa = foundBlock.rightEdge;
 					else if (edgePoint.side == Side.TOP)
 						ya = foundBlock.topEdge;
 					else

@@ -958,8 +958,8 @@ public class Arrow implements ActionListener {
 		diag.blocks.put(Integer.valueOf(pid), p);
 		
 		p.buildSideRects();
-		p.calcEdges();
-		p.adjEdgeRects();
+		//p.calcEdges();
+		//p.adjEdgeRects();
 		
 		// test if arrow crosses left and right sides
 		

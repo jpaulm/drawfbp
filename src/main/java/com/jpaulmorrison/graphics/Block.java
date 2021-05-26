@@ -17,7 +17,7 @@ import com.jpaulmorrison.graphics.DrawFBP.Notation;
 public class Block implements ActionListener {
 	String typeCode;   // block type - single character form
 	DrawFBP driver;
-	int leftEdge, rgtEdge, topEdge, botEdge;
+	int leftEdge, rightEdge, topEdge, botEdge;
 	int width, height;
 
 	String desc;
@@ -114,16 +114,16 @@ public class Block implements ActionListener {
 	}
 
 	void buildSideRects(){	
-		
-		leftRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+		calcEdges();
+		leftRect = new Rectangle(leftEdge - driver.zWS / 2, topEdge - driver.zWS / 2, 
 				driver.zWS, height + driver.zWS);
-		topRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+		topRect = new Rectangle(leftEdge - driver.zWS / 2, topEdge - driver.zWS / 2, 
 				width + driver.zWS, driver.zWS);		
-		rightRect = new Rectangle(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, 
+		rightRect = new Rectangle(rightEdge - driver.zWS / 2, topEdge - driver.zWS / 2, 
 				driver.zWS, height + driver.zWS);
 		//System.out.println(rightRect.x + " " + rightRect.y + " " + rightRect.width + " " + rightRect.height );
 		if (!(this instanceof ReportBlock))
-			botRect = new Rectangle(cx - width / 2 - driver.zWS / 2, cy + height / 2  - driver.zWS / 2, 
+			botRect = new Rectangle(leftEdge - driver.zWS / 2, botEdge  - driver.zWS / 2, 
 					width + driver.zWS, driver.zWS );
 	}
 	
@@ -362,7 +362,7 @@ public class Block implements ActionListener {
 	}
 	
 	
-	
+	/*
 	public void adjEdgeRects() {
 		leftRect.x = cx - width / 2 - driver.zWS / 2;
 		leftRect.y = cy - height / 2 - driver.zWS / 2;
@@ -383,10 +383,10 @@ public class Block implements ActionListener {
 			botRect.height = driver.zWS;
 		}
 	}
-	
+	*/
 	void calcEdges() {
 		leftEdge = cx - width / 2;
-		rgtEdge = cx + width / 2;
+		rightEdge = cx + width / 2;
 		topEdge = cy - height / 2;
 		botEdge = cy + height / 2;
 	}
@@ -634,7 +634,7 @@ public class Block implements ActionListener {
 			ol.desc = item.get("description");
 		}
 		buildSideRects();
-		calcEdges();
+		//calcEdges();
 
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
 
@@ -1619,7 +1619,7 @@ public class Block implements ActionListener {
 							// horizontal
 							arrow.fromX = cx + width / 2;
 					}
-					calcEdges();
+					//calcEdges();
 				}
 				else
 					if (isSubnet) {

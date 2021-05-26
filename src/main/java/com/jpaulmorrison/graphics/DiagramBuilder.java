@@ -326,7 +326,7 @@ public class DiagramBuilder {
 								}
 								
 								block.buildBlockFromXML(item);
-								//block.buildSideRects();
+								block.buildSideRects();
 								//block.calcEdges();				
 								
 							}

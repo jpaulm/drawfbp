@@ -680,7 +680,7 @@ public class Diagram {
 				
 				
 				
-				eb.calcEdges();
+				//eb.calcEdges();
 				//arrow.toId = subnetBlock.id;
 				Point fixed = new Point(arrow.fromX, arrow.fromY);
 				if (arrow.bends != null) {
@@ -728,7 +728,7 @@ public class Diagram {
 				arrow.upStreamPort = ans;
 				
 				eb.buildSideRects();			
-				eb.calcEdges();
+				//eb.calcEdges();
 				//arrow.fromId = subnetBlock.id;
 				Point fixed = new Point(arrow.toX, arrow.toY);				
 				Point var = computeArrowVar(fixed, subnetBlock);
@@ -811,6 +811,7 @@ public class Diagram {
 	}
 	
 	void createImage() {
+		
 		// crop
 		int x, w, y, h;
 		
@@ -834,72 +835,96 @@ public class Diagram {
 		
 		h += DrawFBP.bottom_border_height;
 
+		x = Math.max(0, x);
 		y = Math.max(0, y);
 
 		// adjust x, y, w, h to avoid RasterFormatException
 
 		//int x2 = driver.buffer.getMinX();
 		//int y2 = driver.buffer.getMinY();
-		//int w2 = driver.buffer.getWidth();
-		//int h2 = driver.buffer.getHeight();
-		int x2 = area.getX();
-		int y2 = area.getY();
-		int w2 = area.getWidth();
-		int h2 = area.getHeight();
-		x = Math.max(x, x2);
-		y = Math.max(y, y2);
+		int w2 = driver.buffer.getWidth();
+		int h2 = driver.buffer.getHeight();
+		//int x2 = area.getX();
+		//int y2 = area.getY();
+		//int w2 = area.getWidth();
+		//int h2 = area.getHeight();
+		//x = Math.max(x, x2);
+		//y = Math.max(y, y2);
 		w = Math.min(w, w2);
 		h = Math.min(h, h2);
 
-		// driver.selBlock = null; // clear "selected" colour
-		/*
-		System.out.println("x1: " + x);
-		System.out.println("y1: " + y);
-		System.out.println("w1: " + w);
-		System.out.println("h1: " + h);
-		*/
+		//BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
+		BufferedImage buffer2 = copyImage(driver.buffer, x, y, w, h);
+						
+		//Font f = driver.fontg;
+		
+		//g.setFont(f);
 
-		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
+		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+		//width = 0;
+		
+		byte[] str = new byte[0];
+		
+		str = diagFile.getAbsolutePath().getBytes();
+		int w5 = metrics.bytesWidth(str, 0, str.length);
+		
+		
+		int w6 = 0;
+		if (desc != null && !desc.trim().equals("")) {
+			str = desc.getBytes();
+			w6 = metrics.bytesWidth(str, 0, str.length);
+		}
 
 		// Build image containing old image plus extra top and bottom
 
-		int width = Math.max(w + 40, buffer2.getWidth());
-		BufferedImage combined = new BufferedImage(width,
-				buffer2.getHeight() + DrawFBP.top_border_height + DrawFBP.bottom_border_height, BufferedImage.TYPE_INT_ARGB);
+		int width = Math.max(w, buffer2.getWidth());
+		width = Math.max(width, w5);
+		width = Math.max(width, w6);
+		
+		w2 = Math.max(w2,  width);
+		h2 = Math.max(h2, h);
+		
+		
+		BufferedImage combined = new BufferedImage(width + 80,
+				buffer2.getHeight() + DrawFBP.top_border_height  + DrawFBP.bottom_border_height, 
+				BufferedImage.TYPE_INT_ARGB);
+		
+		int x3 = buffer2.getMinX();
+		int y3 = buffer2.getMinY();
+		int w3 = buffer2.getWidth();
+		int h3 = buffer2.getHeight();
+		int x4 = combined.getMinX();
+		int y4 = combined.getMinY();
+		int w4 = combined.getWidth();
+		int h4 = combined.getHeight();
 
 		Graphics g = combined.getGraphics();
 
 		g.setColor(Color.WHITE);
-
+		//g.setColor(Color.RED);
+		
 		g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 		
 		// Now we build a strip containing the diagram description
 
-		Font f = driver.fontg;
 		
-		g.setFont(f);
 
-		FontMetrics metrics = g.getFontMetrics(f);
-		//width = 0;
+		//width = Math.max(w, width);   not sure about this!
+
 		
-		byte[] str = new byte[0];
-		if (desc != null && !desc.trim().equals("")) {
-			str = desc.getBytes();
-			w = metrics.bytesWidth(str, 0, str.length);
-		}
-
-		width = Math.max(w, width);
-
-		// width = Math.max(w /* + 40 */, buffer2.getWidth());				
-
 		g.setColor(Color.BLACK);
 		
-		f = driver.fontf;
-
+		//f = driver.fontf;
 		
-		int x3 = (width - buffer2.getWidth()) / 2;
-		//g.drawImage(buffer2, x3, DrawFBP.top_border_height, null);
-		g.drawImage(buffer2, x3, 0, null);
+		
+		int xoff = (combined.getWidth() - buffer2.getWidth()) / 2;
+		
+		//  copy buffer2 to display area (combined)
+		
+		//g.drawImage(buffer2, xoff, DrawFBP.top_border_height, null);
+		g.drawImage(buffer2, xoff, 10, null);
+		
+		// ----------------------------------------
 
 		if (desc != null && !desc.trim().equals("")) {
 			Color col = g.getColor();
@@ -928,6 +953,16 @@ public class Diagram {
 		}
 
 		driver.showImage(combined, diagFile.getName(), true);   
+		 
+	}
+	
+	public static BufferedImage copyImage(BufferedImage source, int x, int y, int w, int h){
+	    // BufferedImage b = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
+		BufferedImage b = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	    Graphics g = b.getGraphics();
+	    g.drawImage(source, x, y, null);
+	    g.dispose();
+	    return b;
 	}
 
 	void findEnclosedBlocksAndArrows(Enclosure enc) {
@@ -937,7 +972,7 @@ public class Diagram {
 		for (Block block : blocks.values()) {
 			if (block == enc)
 				continue;
-			if (block.leftEdge >= enc.leftEdge && block.rgtEdge <= enc.rgtEdge && block.topEdge >= enc.topEdge
+			if (block.leftEdge >= enc.leftEdge && block.rightEdge <= enc.rightEdge && block.topEdge >= enc.topEdge
 					&& block.botEdge <= enc.botEdge) {
 				enc.llb.add(block); // set aside for action
 			}
@@ -1017,7 +1052,8 @@ public class Diagram {
 
 		subnetBlock.cx = x;
 		subnetBlock.cy = y;
-		subnetBlock.calcEdges();
+		//subnetBlock.calcEdges();
+		subnetBlock.buildSideRects();
 		origDiag.maxBlockNo++;
 		subnetBlock.id = origDiag.maxBlockNo;
 		origDiag.blocks.put(Integer.valueOf(subnetBlock.id), subnetBlock);
@@ -1045,7 +1081,7 @@ public class Diagram {
 		subnetBlock.cy = enc.cy;
 		//subnetBlock.diag = sbnDiag;   
 		subnetBlock.buildSideRects();
-		subnetBlock.calcEdges();
+		//subnetBlock.calcEdges();
 		return subnetBlock;
 	}
 	

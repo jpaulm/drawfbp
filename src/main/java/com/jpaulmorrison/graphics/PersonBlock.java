@@ -1,6 +1,7 @@
 package com.jpaulmorrison.graphics;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 
 	public class PersonBlock extends Block {
@@ -46,15 +47,16 @@ import java.awt.Graphics;
 			calcDiagMaxAndMin(tlx, cx + width / 2,
 					tly, cy + height / 2);
 			if (desc != null) {
-				String str[] = centreDesc();
-				//int x = textX;
-				//int y = textY;
-				int x = tlx + 6;
-				int y = tly + driver.gFontHeight + 2;
-				for (int i = 0; i < str.length; i++) {
-					g.drawString(str[i], x, y); 
-					y += driver.gFontHeight;
-				}
+				FontMetrics metrics = g.getFontMetrics(driver.fontg);
+		
+				byte[] str = desc.getBytes();
+				int width = metrics.bytesWidth(str, 0, desc.length());
+				int x = cx - width / 2;
+				int y = tly + height + 10 + driver.gFontHeight + 2;
+				//for (int i = 0; i < str.length; i++) {
+				g.drawString(desc, x, y); 
+				//	y += driver.gFontHeight;
+				//}
 			}
 			//blueCircs(g);
 			}

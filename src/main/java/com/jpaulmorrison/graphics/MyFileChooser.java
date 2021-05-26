@@ -2016,7 +2016,7 @@ public class MyFileChooser extends JDialog
 			String lt = driver.filterOptions[i];
 
 			JLabel l = new JLabel(lt);
-l.setFont(driver.fontg);
+			l.setFont(driver.fontg);
 			Rectangle bounds = super.getBounds();
 			g.setColor(c);
 			g.fillRect(0, 0, bounds.width, bounds.height);
@@ -2148,7 +2148,7 @@ l.setFont(driver.fontg);
 				setEnabled(false);
 				getCaret().setVisible(false);
 			}
-			repaint();
+			//repaint();
 		}
 
 	}
