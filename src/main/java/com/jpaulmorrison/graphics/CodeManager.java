@@ -20,7 +20,7 @@ import java.awt.image.BufferedImage;
 
 public class CodeManager implements ActionListener {
 
-	DrawFBP driver;
+	DrawFBP driver = null;
 	
 	HashMap<String, Integer> blocklist;
 	// HashMap<String, Integer> portlist;
@@ -407,7 +407,7 @@ public class CodeManager implements ActionListener {
 				if (!getPortNames(arrow))
 					return false;
 
-				//driver.jf.jf.repaint();
+				//driver.jf.jf.// repaint();
 
 				String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 				// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
@@ -419,7 +419,7 @@ public class CodeManager implements ActionListener {
 
 				// }
 
-				//driver.jf.repaint();
+				driver.jf.repaint();
 				// String upPort = arrow.upStreamPort;
 				// String dnPort = a2.downStreamPort;
 
@@ -1082,7 +1082,7 @@ public class CodeManager implements ActionListener {
 			}
 		}
 		nsLabel.setText(changed ? "Not saved" : " ");
-		dialog.repaint();
+		dialog.// repaint();
 	}
 
 	public void insertUpdate(DocumentEvent e) {
@@ -1096,7 +1096,7 @@ public class CodeManager implements ActionListener {
 			}
 		}
 		nsLabel.setText(changed ? "Not saved" : " ");
-		dialog.repaint();
+		dialog.// repaint();
 	}
 
 	public void removeUpdate(DocumentEvent e) {
@@ -1110,7 +1110,7 @@ public class CodeManager implements ActionListener {
 			}
 		}
 		nsLabel.setText(changed ? "Not saved" : " ");
-		dialog.repaint();
+		dialog.// repaint();
 	}
 */
 	
@@ -1513,7 +1513,7 @@ public class CodeManager implements ActionListener {
 
 			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 
-			// driver.jf.repaint();
+			driver.jf.repaint();
 
 			data += comma;
 			// String upPort = arrow.upStreamPort;
@@ -1658,7 +1658,7 @@ public class CodeManager implements ActionListener {
 			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 			// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
-			//driver.jf.repaint();
+			driver.jf.repaint();
 
 			if (!(from instanceof IIPBlock)) {
 				upPort = a2.upStreamPort;

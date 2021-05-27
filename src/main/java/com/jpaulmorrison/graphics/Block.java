@@ -393,10 +393,12 @@ public class Block implements ActionListener {
 	}
 	void calcDiagMaxAndMin(int xmin, int xmax, int ymin, int ymax) {
 		//if (visible) {
-			diag.maxX = Math.max(xmax + 20, diag.maxX);
+			
 			diag.minX = Math.min(xmin - 20, diag.minX);
-			diag.maxY = Math.max(ymax, diag.maxY);
+			diag.maxX = Math.max(xmax + 20, diag.maxX);
+			
 			diag.minY = Math.min(ymin - 20, diag.minY);
+			diag.maxY = Math.max(ymax + 20, diag.maxY);
 		//}
 	}
 	
@@ -1328,7 +1330,7 @@ public class Block implements ActionListener {
 		//portInfo.toFront();
 		//jdialog.setPreferredSize(new Dimension(dim.width / 2, dim.height / 2));
 		
-		//portInfo.validate();
+		portInfo.validate();
 		panel.repaint();
 		portInfo.repaint();
 		driver.repaint();
@@ -1756,7 +1758,7 @@ public class Block implements ActionListener {
 			outputPortAttrs = null;
 			isSubnet = false;
 			diag.changed = true;
-			//diag.driver.repaint();
+			diag.driver.repaint();
 			driver.repaint();
 			return;
 
@@ -1948,7 +1950,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// diag.changeCompLang();
 			driver.repaint();
 		}
-		// if (s.equals("Exit")) {
+		//if (s.equals("Exit")) {
 		// diag.foundBlock = null;
 		// driver.repaint();
 		// }
@@ -2018,7 +2020,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
         
 		desc = area.getText();
 		
-		// try this! worked (fingers crossed) !
+		// try this! it worked (fingers crossed) !
 		
 		int w = driver.buffer.getWidth();
 		int h = driver.buffer.getHeight();
@@ -2030,7 +2032,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		
 		diag.changed = true;
 
-		//driver.repaint();
+		driver.repaint();
 
 		return true;
 	}

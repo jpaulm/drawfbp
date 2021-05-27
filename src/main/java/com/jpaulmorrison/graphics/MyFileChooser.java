@@ -249,14 +249,11 @@ public class MyFileChooser extends JDialog
 		// comp = new MyFileCompare();
 		renderer = new ListRenderer(driver);
 
-		
-			dialog.setTitle(chooserTitle);
-			if (lang == driver.langs[DrawFBP.Lang.CLASS])
-				listShowingSpecHdr = listHead;
-			if (lang == driver.langs[DrawFBP.Lang.JS] || 
-					driver.currNotn == driver.notations[DrawFBP.Notation.JSON])
-				listShowingSpecHdr = listHead;
-		
+		dialog.setTitle(chooserTitle);
+		if (lang == driver.langs[DrawFBP.Lang.CLASS])
+			listShowingSpecHdr = listHead;
+		if (lang == driver.langs[DrawFBP.Lang.JS] || driver.currNotn == driver.notations[DrawFBP.Notation.JSON])
+			listShowingSpecHdr = listHead;
 
 		enterAction = new EnterAction();
 		suggAction = new SuggAction();
@@ -293,7 +290,7 @@ public class MyFileChooser extends JDialog
 		butFind.setRequestFocusEnabled(true);
 		butParent.setRequestFocusEnabled(true);
 		//if (saveAs)
-			butNF.setRequestFocusEnabled(true);
+		butNF.setRequestFocusEnabled(true);
 		butUseSugg.setRequestFocusEnabled(true);
 
 		//t_dirName.addMouseListener(this);
@@ -305,7 +302,7 @@ public class MyFileChooser extends JDialog
 		butParent.setFocusTraversalKeysEnabled(false);
 		butSortByDate.setFocusTraversalKeysEnabled(false);
 		//if (saveAs)
-			butNF.setFocusTraversalKeysEnabled(false);
+		butNF.setFocusTraversalKeysEnabled(false);
 		t_fileName.setFocusTraversalKeysEnabled(false);
 		butOK.setFocusTraversalKeysEnabled(false);
 		butFind.setFocusTraversalKeysEnabled(false);
@@ -942,8 +939,8 @@ public class MyFileChooser extends JDialog
 		listView.repaint();
 		dialog.repaint();
 
-		// panel.repaint();
-		// frame.repaint();
+		panel.repaint();
+		//frame.repaint();
 
 	}
 
@@ -992,7 +989,7 @@ public class MyFileChooser extends JDialog
 		
 		if (driver.currNotn != driver.notations[DrawFBP.Notation.JSON]) {
 			if (!inTree && driver.sortByDate)
-				Collections.sort(ll, compDate);
+				Collections.sort(ll, compDate);   
 			else
 				Collections.sort(ll, compName);
 		}
@@ -1077,8 +1074,9 @@ public class MyFileChooser extends JDialog
 			}
 			else {
 				if (currentNode == null) {
-					File f = new File(listHead + "/" + s);
-					if (f.isDirectory() || -1 == s.indexOf("."))
+					String fd = listHead + "/" + s;
+					File f = new File(fd.substring(0, fd.indexOf("@")));
+					if (f.isDirectory() /*|| -1 == s.indexOf(".") */)
 						icon = driver.folderIcon;
 				} else {
 					if (currentNode.getChildCount() > 0)
@@ -1848,7 +1846,7 @@ public class MyFileChooser extends JDialog
 			// }
 			panel.validate();
 			dialog.repaint();
-			// frame.repaint();
+			//frame.repaint();
 		}
 
 	}
@@ -1955,11 +1953,11 @@ public class MyFileChooser extends JDialog
 			t_fileName.setText((new File(listHead)).getName()+ "/");
 			showList();
 						
-			//listView.repaint();
+			listView.repaint();
 			dialog.repaint();
 			panel.validate();
 			panel.repaint();
-			// frame.repaint();
+			//frame.repaint();
 			t_dirName.repaint();
 			repaint();
 
@@ -2148,7 +2146,7 @@ public class MyFileChooser extends JDialog
 				setEnabled(false);
 				getCaret().setVisible(false);
 			}
-			//repaint();
+			repaint();
 		}
 
 	}

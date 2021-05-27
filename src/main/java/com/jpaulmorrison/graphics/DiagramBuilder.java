@@ -485,9 +485,12 @@ public class DiagramBuilder {
 			//driver.saveProp("defaultNotation", driver.currNotn.label);
 			//driver.saveProperties();
 		//}
-		driver.jtf.setText("Diagram Notation: " + driver.currNotn.label);
+		//driver.jtf.setText("Diagram Notation: " + driver.currNotn.label);
+		driver.setNotation(driver.currNotn);
 		frame.repaint();
 	}
+	
+	
 
 	public static void createTables(
 			HashMap<String, HashMap<String, String>> tagInfo) {

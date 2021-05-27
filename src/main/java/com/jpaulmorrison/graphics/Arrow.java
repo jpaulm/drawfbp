@@ -89,7 +89,7 @@ public class Arrow implements ActionListener {
 
 	void draw(Graphics g) {
 		//driver.validate();
-		//driver.repaint();
+		driver.repaint();
 
 			
 		shapeList = new LinkedList<Shape>(); 

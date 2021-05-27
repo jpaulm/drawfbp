@@ -648,7 +648,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// return null;
 		}
 
-		// repaint();
+		repaint();
 		// update(getGraphics());
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		closeTabAction = new CloseTabAction();
@@ -696,7 +696,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		Dimension dim2 = new Dimension(w2, h2);
 		setPreferredSize(dim2);
-		// repaint();
+		repaint();
 		// Display the window.
 		pack();
 
@@ -896,9 +896,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		pan.setBorderPaintedFlat(false);
 
 		up.setFont(fontg);
-		up.setActionCommand("Go to Directory");
+		up.setActionCommand("Go to Dir");
 		up.addActionListener(this);
 		up.setBackground(slateGray1);
+		up.setMinimumSize(new Dimension(11 * gFontWidth, up.getHeight()));
 		// up.setEnabled(false);
 
 		// pan.setBorder(null);
@@ -1230,7 +1231,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		box0.add(jfv);
 		menuBar.add(box0);
 
-		jtf.setText("Diagram Notation: " + currNotn.label);
+		setNotation(currNotn);
 		jtf.setFont(fontg);
 		jtf.setEditable(false);
 
@@ -1355,6 +1356,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return diag;
 	}
 
+	
 	
 	public void actionPerformed(ActionEvent e) {
 
@@ -2066,7 +2068,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	void showImage(final BufferedImage image, String title, final boolean save) {
 		
 	
-		ImagePanel jPanel = new ImagePanel(image);	
+		ImagePanel imgPanel = new ImagePanel(image);	
 		
 		//final JDialog dialog = new JDialog();	
 		final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.APPLICATION_MODAL);
@@ -2074,48 +2076,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		dialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {		
-				askAboutSavingImage(jPanel, dialog, save);
+				askAboutSavingImage(imgPanel, dialog, save);
 				//askAboutSavingImage(jPanel.stretched_image, dialog, save);
 			}
 
 		});
-		/*
-		ComponentListener cl = new ComponentListener() {
-
-			@Override
-			public void componentResized(ComponentEvent e) {
-				dialog.repaint();
-				
-			}
-
-			@Override
-			public void componentMoved(ComponentEvent e) {
-				
-				
-			}
-
-			@Override
-			public void componentShown(ComponentEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void componentHidden(ComponentEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		};
-		
-		dialog.addComponentListener(cl);
-		*/
+	
 
 				
 		dialog.setPreferredSize(new Dimension(image.getWidth(), image.getHeight() + top_border_height + 
 				bottom_border_height));
 				
-		dialog.add(jPanel);
+		dialog.add(imgPanel);
 
 		dialog.setLocation(new Point(200, 200));	
 				
@@ -2191,27 +2163,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// curDiag.diagNotn = notn;
 		// saveProp("defaultNotation", notn.label);
 		currNotn = notn;
-		jtf.setText("Diagram Notation: " + notn.label);
-		//jtf.repaint();
-
-		/*
-		menuItem1.setEnabled(true); 
-		if (currNotn.lang == langs[Lang.JAVA])
-			menuItem1.setText("Locate JavaFBP Jar File");
-		else if (currNotn == notations[Notation.JSON])
-			menuItem1.setText("Locate fbp.json File");
-		else 
-			menuItem1.setEnabled(false);
-
-		menuItem2.setEnabled(true);
-		if (currNotn.lang == langs[Lang.JAVA])
-			menuItem2.setText("Add Additional Jar File");
-		else if (currNotn.lang == langs[Lang.CSHARP])
-			menuItem2.setText("Add Additional Dll File");
+		Dimension dim = getSize();		
+		if (dim.width < 1000)
+			jtf.setText("Notation: " + notn.label);
 		else
-			menuItem2.setEnabled(false);
+			jtf.setText("Diagram Notation: " + notn.label);
+		jtf.repaint();
+		repaint();
 		
-		*/
 		modMenuItems();
 
 		filterOptions[0] = currNotn.lang.filter.getDescription();
@@ -2992,7 +2951,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		jfs.setText("Font Size: " + defaultFontSize);
 		saveProp("defaultFontSize", Float.toString(defaultFontSize));
 		adjustFonts();
-		// repaint();		
+		repaint();		
 		saveProperties();
 		MyOptionPane.showMessageDialog(this, "Font size changed");
 		repaint();
@@ -3012,7 +2971,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			b.label.setFont(fontf);
 		}
-		//jtp.repaint();
+		jtp.repaint();
 		String dfs = properties.get("defaultFontSize");
 		if (dfs == null) {
 			defaultFontSize = 14.0f;
@@ -4243,7 +4202,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		curDiag = newDiag;
 		// oldDiag.changed = false;
 		// newDiag.changed = false;
-		// repaint();
+		repaint();
 		// comparing = false;
 	}
 
@@ -5393,7 +5352,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				scaleLab.setText(scale);
 				// pack();
 				// setPreferredSize(new Dimension(1200, 800));
-				// repaint();
+				repaint();
 			}
 		}
 
@@ -5456,6 +5415,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// }
 		return image;
 	}
+	
+	
 
 	public static void main(final String[] args) {
 
@@ -6166,8 +6127,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	  		
 		public ImagePanel(BufferedImage img) {
 			image = img;
-			dim = new Dimension(image.getWidth(null) + 40, image.getHeight(null));
+			dim = new Dimension(image.getWidth(null), image.getHeight(null));
+			System.out.println(dim.width + " " + dim.height);
 			setPreferredSize(dim);	
+			//setSize(dim);
 		}
 		
 		public void paintComponent(Graphics g) {
@@ -6295,7 +6258,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			grid.setSelected(clickToGrid);
 
-			// repaint();
+			repaint();
 			// Graphics2D g2d = (Graphics2D) g;
 
 			for (Block block : diag.blocks.values()) {
@@ -6953,7 +6916,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					return;
 				}
 				// curDiag.changed = true;
-				// repaint();
+				repaint();
 				// return;
 			}
 
@@ -7715,7 +7678,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 					currentArrow = null;
 
-					// repaint();
+					repaint();
 					return;
 				}
 
@@ -7740,7 +7703,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					repaint();
 					return;
 				}
-				// repaint();
+				repaint();
 				// }
 
 				if (currentArrow.bends == null) {

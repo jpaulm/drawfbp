@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
 
+import com.jpaulmorrison.graphics.DrawFBP.ImagePanel;
 import com.jpaulmorrison.graphics.DrawFBP.Lang;
 import com.jpaulmorrison.graphics.DrawFBP.Side;
 
@@ -740,7 +741,7 @@ public class Diagram {
 		}
 		
 				
-		//driver.repaint();		
+		driver.repaint();		
  
 		subnetBlock.desc = w;
 		
@@ -828,11 +829,6 @@ public class Diagram {
 		//y -= DrawFBP.top_border_height;
 		y = Math.max(1, y);
 
-		//int aw = area.getWidth();
-		//int ah = area.getHeight();
-		//w = Math.min(aw, w);
-		//h = Math.min(ah, h + DrawFBP.bottom_border_height);
-		
 		h += DrawFBP.bottom_border_height;
 
 		x = Math.max(0, x);
@@ -840,28 +836,32 @@ public class Diagram {
 
 		// adjust x, y, w, h to avoid RasterFormatException
 
-		//int x2 = driver.buffer.getMinX();
-		//int y2 = driver.buffer.getMinY();
+		
 		int w2 = driver.buffer.getWidth();
 		int h2 = driver.buffer.getHeight();
-		//int x2 = area.getX();
-		//int y2 = area.getY();
-		//int w2 = area.getWidth();
-		//int h2 = area.getHeight();
-		//x = Math.max(x, x2);
-		//y = Math.max(y, y2);
+		
 		w = Math.min(w, w2);
 		h = Math.min(h, h2);
 		
 		//trying something different:
-		
-		x = area.getX();
-		y = area.getY();
-		w = area.getWidth();
-		h = area.getHeight();
+		w = Math.min(area.getWidth(), w);
+		h = Math.min(area.getHeight(), h);
 
-		//BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
-		BufferedImage buffer2 = copyImage(driver.buffer, x, y, w, h);
+		x = area.getX() + (area.getWidth() - w) /2;
+		y = area.getY() + (area.getHeight() - h) /2;
+		System.out.println(x + " " + y + " " + w + " " + h);
+		
+		//w = area.getWidth();
+		//h = area.getHeight();
+		//x = area.getX();
+		//y = area.getY();
+		
+		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
+		//BufferedImage buffer2 = copyImage(driver.buffer, x, y, w, h);
+		
+		ImagePanel ip = driver.new ImagePanel(buffer2); 
+		ip.repaint();
+		
 						
 		//Font f = driver.fontg;
 		
@@ -907,8 +907,8 @@ public class Diagram {
 
 		Graphics g = combined.getGraphics();
 
-		g.setColor(Color.WHITE);
-		//g.setColor(Color.RED);
+		//g.setColor(Color.WHITE);
+		g.setColor(Color.RED);
 		
 		g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 		
@@ -967,7 +967,7 @@ public class Diagram {
 	    // BufferedImage b = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
 		BufferedImage b = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 	    Graphics g = b.getGraphics();
-	    g.drawImage(source, x, y, null);
+	    g.drawImage(source, 0, 0, null);
 	    g.dispose();
 	    return b;
 	}

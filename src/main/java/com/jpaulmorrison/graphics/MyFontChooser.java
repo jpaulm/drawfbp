@@ -175,7 +175,8 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	
 	void done() {
 		jDialog.setVisible(false);
-		driver.repaint();
+		driver.adjustFonts();
+		driver.invalidate();
 	}
 	
 	public void valueChanged(ListSelectionEvent e) {
@@ -345,8 +346,8 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		//jl.repaint();
-		//ls.repaint();
+		jlF.repaint();
+		lsG.repaint();
 
 	}
 
