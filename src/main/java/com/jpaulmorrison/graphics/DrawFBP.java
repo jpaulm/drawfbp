@@ -2112,13 +2112,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// final boolean SAVE_AS = true;
 		if (answer == MyOptionPane.YES_OPTION) {
 			
+			/*
 			int w = curDiag.maxX - curDiag.minX;
-			//int h = curDiag.maxY - curDiag.minY;
 			
 			int h = curDiag.maxY + top_border_height + bottom_border_height;
 			
-			ip.setSize(new Dimension(w, h));     
-			//jd.setSize(new Dimension(w, h));     
+			ip.setSize(new Dimension(w, h));  
+			*/
 			
 			File f = curDiag.genSave(null, langs[Lang.IMAGE], ip, null);
 			// diag.diagLang = gl;
@@ -6128,7 +6128,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		public ImagePanel(BufferedImage img) {
 			image = img;
 			dim = new Dimension(image.getWidth(null), image.getHeight(null));
-			System.out.println(dim.width + " " + dim.height);
+			//System.out.println(dim.width + " " + dim.height);
 			setPreferredSize(dim);	
 			//setSize(dim);
 		}

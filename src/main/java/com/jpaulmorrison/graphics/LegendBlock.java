@@ -97,6 +97,8 @@ public class LegendBlock extends Block {
 		int tlx = cx - width / 2;
 		int tly = cy - height / 2;		
 		showCompareFlag(g, tlx, tly);
+		
+
 		 
 		// g.setColor(Color.BLACK);
 		calcDiagMaxAndMin(tlx, cx + width / 2, tly, cy

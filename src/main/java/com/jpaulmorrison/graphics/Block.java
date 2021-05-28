@@ -116,15 +116,15 @@ public class Block implements ActionListener {
 
 	void buildSideRects(){	
 		calcEdges();
-		leftRect = new Rectangle(leftEdge - driver.zWS / 2, topEdge - driver.zWS / 2, 
+		leftRect = new Rectangle(leftEdge - driver.zWS, topEdge - driver.zWS / 2, 
 				driver.zWS, height + driver.zWS);
-		topRect = new Rectangle(leftEdge - driver.zWS / 2, topEdge - driver.zWS / 2, 
+		topRect = new Rectangle(leftEdge - driver.zWS, topEdge - driver.zWS / 2, 
 				width + driver.zWS, driver.zWS);		
 		rightRect = new Rectangle(rightEdge - driver.zWS / 2, topEdge - driver.zWS / 2, 
 				driver.zWS, height + driver.zWS);
 		//System.out.println(rightRect.x + " " + rightRect.y + " " + rightRect.width + " " + rightRect.height );
 		if (!(this instanceof ReportBlock))
-			botRect = new Rectangle(leftEdge - driver.zWS / 2, botEdge  - driver.zWS / 2, 
+			botRect = new Rectangle(leftEdge - driver.zWS, botEdge  - driver.zWS / 2, 
 					width + driver.zWS, driver.zWS );
 	}
 	
@@ -436,19 +436,22 @@ public class Block implements ActionListener {
 				for (int i = 0; i < str.length; i++) {
 					String t = str[i];
 					byte[] str2 = t.getBytes();
-					x = 8 + metrics.bytesWidth(str2, 0, str2.length);
+					x = 12 + metrics.bytesWidth(str2, 0, str2.length);
 
 					maxX = Math.max(x, maxX);
 					// System.out.println(maxX);
 
 					y += driver.gFontHeight;
+					
 				}
-
+				
+				y  += driver.gFontHeight;
+				
 				height = y - saveY;
 				width = maxX;
-				//System.out.println(width);   // delete later
+				
 			}
-			else{
+			else {
 			// y = saveY;
 			x = (maxX) / 2; // find half width
 			x = cx - x;
@@ -458,9 +461,7 @@ public class Block implements ActionListener {
 			if (this instanceof ReportBlock)
 				y = cy - y;
 			else 
-				//if (this instanceof PersonBlock)
-				//y = cy + height / 2 + driver.gFontHeight;
-			//else
+				
 				y = cy - y + driver.gFontHeight + 2;
 
 			y -= driver.gFontHeight / 3; // fudge!
@@ -611,18 +612,23 @@ public class Block implements ActionListener {
 		s = item.get("id").trim();
 		id = Integer.parseInt(s);		
 		s = item.get("width");
-		width = Integer.parseInt(s.trim());
+		if (s != null)
+			width = Integer.parseInt(s.trim());
+		s = item.get("height");
+		if (s != null)
+			height = Integer.parseInt(s.trim());
 		
+		/*
 		if (this instanceof IIPBlock) {
 			IIPBlock iip = (IIPBlock) this;
 			width = iip.calcIIPWidth(driver.osg);
 			if (iip.width < 15)
 				iip.width = 15;
 			buildSideRects();
-		} 
-		s = item.get("height");
-		if (s != null)
-			height = Integer.parseInt(s.trim());
+		}
+		*/
+		
+		buildSideRects();
 		s = item.get("multiplex");
 		if (s != null)
 			multiplex = true;

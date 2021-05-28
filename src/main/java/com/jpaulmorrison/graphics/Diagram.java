@@ -827,9 +827,9 @@ public class Diagram {
 		y = Math.max(1, y);
 		h = maxY - y;
 		//y -= DrawFBP.top_border_height;
-		y = Math.max(1, y);
+		//y = Math.max(1, y);
 
-		h += DrawFBP.bottom_border_height;
+		// h += DrawFBP.bottom_border_height;
 
 		x = Math.max(0, x);
 		y = Math.max(0, y);
@@ -843,25 +843,33 @@ public class Diagram {
 		w = Math.min(w, w2);
 		h = Math.min(h, h2);
 		
-		//trying something different:
 		w = Math.min(area.getWidth(), w);
 		h = Math.min(area.getHeight(), h);
+		
+		/*
+		int w3 = area.getWidth();
+		int h3 = area.getHeight();
 
-		x = area.getX() + (area.getWidth() - w) /2;
-		y = area.getY() + (area.getHeight() - h) /2;
-		System.out.println(x + " " + y + " " + w + " " + h);
+		x = (w3 - w) /2;
+		y = (h3 - h) /2;
 		
-		//w = area.getWidth();
-		//h = area.getHeight();
-		//x = area.getX();
-		//y = area.getY();
+		// try reducing x - figure out why later!
 		
-		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);
-		//BufferedImage buffer2 = copyImage(driver.buffer, x, y, w, h);
+		x -= 120;
 		
-		ImagePanel ip = driver.new ImagePanel(buffer2); 
-		ip.repaint();
+		// now try reducing y
 		
+		y -= 120;
+		*/
+		
+		x = 40;		
+		y = 0;
+			
+		x = Math.max(0,  x);
+		y = Math.max(0,  y);
+		
+		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);	
+			
 						
 		//Font f = driver.fontg;
 		
@@ -888,27 +896,19 @@ public class Diagram {
 		width = Math.max(width, w5);
 		width = Math.max(width, w6);
 		
-		w2 = Math.max(w2,  width);
-		h2 = Math.max(h2, h);
+		//w2 = Math.max(w2,  width);
+		//h2 = Math.max(h2, h);
 		
 		
 		BufferedImage combined = new BufferedImage(width + 80,
 				buffer2.getHeight() + DrawFBP.top_border_height  + DrawFBP.bottom_border_height, 
 				BufferedImage.TYPE_INT_ARGB);
 		
-		int x3 = buffer2.getMinX();
-		int y3 = buffer2.getMinY();
-		int w3 = buffer2.getWidth();
-		int h3 = buffer2.getHeight();
-		int x4 = combined.getMinX();
-		int y4 = combined.getMinY();
-		int w4 = combined.getWidth();
-		int h4 = combined.getHeight();
-
+		
 		Graphics g = combined.getGraphics();
 
-		//g.setColor(Color.WHITE);
-		g.setColor(Color.RED);
+		g.setColor(Color.WHITE);
+		//g.setColor(Color.RED);
 		
 		g.fillRect(0, 0, combined.getWidth(), combined.getHeight());
 		
@@ -927,6 +927,7 @@ public class Diagram {
 		int xoff = (combined.getWidth() - buffer2.getWidth()) / 2;
 		
 		//  copy buffer2 to display area (combined)
+		
 		
 		//g.drawImage(buffer2, xoff, DrawFBP.top_border_height, null);
 		g.drawImage(buffer2, xoff, 10, null);
