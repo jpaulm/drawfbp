@@ -945,7 +945,7 @@ public class Diagram {
 
 			width = 0;
 			int sy =  metrics.getHeight() / 2;
-			y = buffer2.getHeight() + 20 - sy;
+			y = buffer2.getHeight() + 60 - sy;
 
 			if (desc != null) {
 				str = desc.getBytes();
