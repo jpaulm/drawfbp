@@ -114,18 +114,24 @@ public class Block implements ActionListener {
 
 	}
 
-	void buildSideRects(){	
+	void buildSideRects() {	
+		buildSideRects(leftEdge, topEdge, width, height);
+		
+	}
+	
+	void buildSideRects(int x, int y, int w, int h) {	
 		calcEdges();
-		leftRect = new Rectangle(leftEdge - driver.zWS, topEdge - driver.zWS / 2, 
-				driver.zWS, height + driver.zWS);
-		topRect = new Rectangle(leftEdge - driver.zWS, topEdge - driver.zWS / 2, 
-				width + driver.zWS, driver.zWS);		
-		rightRect = new Rectangle(rightEdge - driver.zWS / 2, topEdge - driver.zWS / 2, 
-				driver.zWS, height + driver.zWS);
+		int shift = (this instanceof LegendBlock) ? driver.zWS : driver.zWS / 2;
+		leftRect = new Rectangle(x - shift, y - driver.zWS / 2, 
+				driver.zWS, h + shift);
+		topRect = new Rectangle(x - shift, y - driver.zWS / 2, 
+				w + shift, driver.zWS);		
+		rightRect = new Rectangle(x + w - driver.zWS / 2, y - driver.zWS / 2, 
+				driver.zWS, h + driver.zWS);
 		//System.out.println(rightRect.x + " " + rightRect.y + " " + rightRect.width + " " + rightRect.height );
 		if (!(this instanceof ReportBlock))
-			botRect = new Rectangle(leftEdge - driver.zWS, botEdge  - driver.zWS / 2, 
-					width + driver.zWS, driver.zWS );
+			botRect = new Rectangle(x - shift, y + h - driver.zWS / 2, 
+					w + shift, driver.zWS );	
 	}
 	
 	void draw(Graphics g) {
@@ -880,8 +886,8 @@ public class Block implements ActionListener {
 
 
 	void showDetectionAreas(Graphics g) {
-		if (this instanceof Enclosure)
-			return;
+		//if (this instanceof Enclosure)
+		//	return;
 		
 		if (driver.edgePoint != null) 
 			if (driver.edgePoint.block == this)		
@@ -1938,7 +1944,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			driver.repaint();
 			return;
 		}
-		
+		/*
 		if (s.equals("Toggle Colour")) {
 			Enclosure enc = (Enclosure) this;
 			enc.coloured = !enc.coloured;
@@ -1946,7 +1952,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			driver.repaint();
 			return;
 		}
-		
+		*/
 		if (s.equals("Delete")) {
 			final boolean CHOOSE = true;
 			diag.delBlock(this, CHOOSE);

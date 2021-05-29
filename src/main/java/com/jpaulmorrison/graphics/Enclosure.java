@@ -20,7 +20,7 @@ public class Enclosure extends Block {
 	//LinkedList<SubnetPort> subnetPorts = null;
 	boolean editPortName = false;
 	boolean changeSubstreamSensitivity = false;
-	boolean coloured = true;
+	//boolean coloured = true;
 	Color vLightBlue = new Color(220, 235, 255);
 	
 	Color lightBlue = new Color(160, 220, 250);
@@ -80,10 +80,10 @@ public class Enclosure extends Block {
 		 
 		g.drawLine(x, y, x1, y); // top line
 		g.drawLine(x2, y, x + width, y); // top line
-		g.drawLine(x + width, y, x + width, y + height);
-		g.drawLine(x, y + height, x + width, y + height);
-		g.drawLine(x, y, x, y + height);
-		((Graphics2D)g).setStroke(str);		
+		g.drawLine(x + width, y, x + width, y + height); // right side
+		g.drawLine(x, y + height, x + width, y + height); // bottom side
+		g.drawLine(x, y, x, y + height);   // left side
+		((Graphics2D) g).setStroke(str);		
 		//int xs = x;
 		//int ys = y;
 		
@@ -108,14 +108,21 @@ public class Enclosure extends Block {
 		g.drawLine(x1, y  + hh /2 , x2, y + hh /2 ); // bottom
 		g.drawLine(x2, y - hh, x2, y + hh /2 ); // right
 		
-		if (coloured) {
-		  g.drawRect(x1, y - hh, x2 - x1, (int)(1.5 * hh));
+		// changing width and height to refer to small rectangle
+		
+		int w2 = x2 - x1;
+		int h2 = hh * 3 / 2;
+		
+		//if (coloured) {
+		  //g.drawRect(x1, y - hh, x2 - x1, (int)(1.5 * hh));
+		  g.drawRect(x1, y - hh, w2, hh * 3 / 2);
 		  //Color col = g.getColor();
 		  g.setColor(vLightBlue);
 		  //g.setColor(new Color(221, 221, 221));
-		  g.fillRect(x1 + 1, y - hh + 1, x2 - x1 - 2, (int) (1.5 * hh) - 2);
+		  g.fillRect(x1 + 1, y - hh + 1, w2 - 2, hh * 3 / 2 - 2);
 		  g.setColor(col);
-		}
+		  buildSideRects(x1, y - hh, w2, h2);
+		//}
 		if (desc != null) {
 			x = (x1 + x2 - desc.length() * driver.gFontWidth) / 2;
 			g.drawString(desc, x, y);
@@ -164,39 +171,8 @@ public class Enclosure extends Block {
 				g.drawLine(x + 8, y + 8, x + 4, y + 8);
 			}
 		}
-		/*
-		if (subnetPorts != null) {
-			g.setColor(Color.RED);
-			for (SubnetPort snp : subnetPorts) {
-								
-				snp.name = snp.eb.description;
+		        
 				
-				if (snp.side == DrawFBP.Side.LEFT) {
-					snp.x = cx - width / 2;
-					
-					//if (snp.name != null && !(snp.name.equals("")))
-					//	g.drawString(snp.name, snp.x - 10 - driver.gFontWidth
-					//			* snp.name.length(), snp.y - driver.gFontHeight
-					//			/ 2);
-					if (snp.substreamSensitive) {
-						GeneralPath gp = drawSemicircle(snp.x, snp.y, +1);
-						((Graphics2D)g).fill(gp);						
-					}
-				} else { // if RIGHT
-					snp.x = cx + width / 2;
-					//if (snp.name != null && !(snp.name.equals("")))
-					//	g.drawString(snp.name, snp.x + 10, snp.y
-					//			- driver.gFontHeight / 2);
-					if (snp.substreamSensitive) {
-						GeneralPath gp = drawSemicircle(snp.x, snp.y, -1);
-						((Graphics2D)g).fill(gp);	
-					}
-				}
-			}
-			g.setColor(Color.BLACK);
-		}
-		*/
-
 		showDetectionAreas(g);
 
 		calcDiagMaxAndMin(leftEdge, rightEdge,    // enclosure may have been stretched...
@@ -217,7 +193,9 @@ public class Enclosure extends Block {
 		return gp;
 	}
 	
+	
 	void showArrowEndAreas(Graphics g) {
+		super.showArrowEndAreas(g);
 		 
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
@@ -231,7 +209,7 @@ public class Enclosure extends Block {
 			g.fillRect(cx + width / 2 - driver.zWS / 2, cy - height / 2 - driver.zWS / 2, driver.zWS, height); // right
 		//} else
 		//	g.fillRect(cx + width / 2 - 1, cy - height / 2 - 1, 4, height - 12); // right
-		g.setColor(col);
-		 
+		g.setColor(col);		 
 	} 
+	
 }

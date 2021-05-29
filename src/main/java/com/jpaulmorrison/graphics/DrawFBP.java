@@ -6838,6 +6838,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (i == -1)
 				return;
 
+						
 			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
@@ -7001,6 +7002,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				int y_inc = ya - oldy;
 				block.cx += x_inc;
 				block.cy += y_inc;
+				
+				/*
 				block.topRect.x += x_inc;
 				block.topRect.y += y_inc;
 				if (block.botRect != null) {
@@ -7011,10 +7014,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				block.leftRect.y += y_inc;
 				block.rightRect.x += x_inc;
 				block.rightRect.y += y_inc;
+			    */
 
 				block.buildSideRects();
 				//block.calcEdges();
 				//block.adjEdgeRects();
+				repaint();
 
 				if (fpArrowRoot != null && fpArrowRoot.block == block) {
 					fpArrowRoot.x += xa - oldx;
@@ -7201,6 +7206,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						}
 
 					}
+					
 					repaint();
 					// return;
 				}
@@ -7323,6 +7329,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					blockSelForDragging.hNeighbour = null;
 				}
+				
+				//else 
+				//	blockSelForDragging.cy = ya;
 
 				if (blockSelForDragging.vNeighbour != null) {
 					if (clickToGrid) {
@@ -7332,6 +7341,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					blockSelForDragging.vNeighbour = null;
 				}
+				
+				//else 
+				//	blockSelForDragging.cx = xa;
 
 				for (Arrow arrow : curDiag.arrows.values()) {
 					if (arrow.fromId == blockSelForDragging.id) {
@@ -7356,6 +7368,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// blockSelForDragging = null;
 
 				setCursor(defaultCursor);
+				blockSelForDragging.buildSideRects();
 				repaint();
 				return;
 			}
