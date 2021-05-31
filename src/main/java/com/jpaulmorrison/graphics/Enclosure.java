@@ -11,12 +11,15 @@ import java.awt.geom.GeneralPath;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import com.jpaulmorrison.graphics.DrawFBP.Corner;
+import com.jpaulmorrison.graphics.DrawFBP.ECorner;
+import com.jpaulmorrison.graphics.DrawFBP.ESide;
 
 public class Enclosure extends Block {
 	
 	
-	DrawFBP.Corner corner = Corner.NONE;
+	DrawFBP.ECorner eCorner = ECorner.NONE;
+	DrawFBP.ESide eSide = ESide.NONE;
+	int eX, eY;
 	//LinkedList<SubnetPort> subnetPorts = null;
 	boolean editPortName = false;
 	boolean changeSubstreamSensitivity = false;
@@ -34,7 +37,8 @@ public class Enclosure extends Block {
 		typeCode = Block.Types.ENCL_BLOCK; 
 		width = 250;
 		height = 100;
-		corner = Corner.NONE;
+		eCorner = ECorner.NONE;
+		eSide = ESide.NONE;
 		//subnetPorts = new LinkedList<SubnetPort>();
 	}
 	void buildEncl(HashMap<String, String> item) {
@@ -129,12 +133,12 @@ public class Enclosure extends Block {
 		}
 
 		// following logic draws diagonal arrow at selected corner
-		if (corner != Corner.NONE) {
-			int leftEdge = cx - width / 2;
-			int rgtEdge = cx + width / 2;
-			int topEdge = cy - height / 2;
-			int botEdge = cy + height / 2;
-			if (corner == DrawFBP.Corner.TOPLEFT) {
+		if (eCorner != ECorner.NONE) {
+			//int leftEdge = cx - width / 2;
+			//int rgtEdge = cx + width / 2;
+			//int topEdge = cy - height / 2;
+			//int botEdge = cy + height / 2;
+			if (eCorner == DrawFBP.ECorner.TOPLEFT) {
 				x = leftEdge;
 				y = topEdge;
 				g.drawLine(x - 8, y - 8, x + 8, y + 8);
@@ -143,7 +147,7 @@ public class Enclosure extends Block {
 				g.drawLine(x + 8, y + 8, x + 8, y + 4);
 				g.drawLine(x + 8, y + 8, x + 4, y + 8);
 			}
-			if (corner == DrawFBP.Corner.BOTTOMLEFT) {
+			if (eCorner == DrawFBP.ECorner.BOTTOMLEFT) {
 				x = leftEdge;
 				y = botEdge;
 				g.drawLine(x - 8, y + 8, x + 8, y - 8);
@@ -152,8 +156,8 @@ public class Enclosure extends Block {
 				g.drawLine(x + 8, y - 8, x + 8, y - 4);
 				g.drawLine(x + 8, y - 8, x + 4, y - 8);
 			}
-			if (corner == DrawFBP.Corner.TOPRIGHT) {
-				x = rgtEdge;
+			if (eCorner == DrawFBP.ECorner.TOPRIGHT) {
+				x = rightEdge;
 				y = topEdge;
 				g.drawLine(x - 8, y + 8, x + 8, y - 8);
 				g.drawLine(x - 8, y + 8, x - 8, y + 4);
@@ -161,14 +165,54 @@ public class Enclosure extends Block {
 				g.drawLine(x + 8, y - 8, x + 8, y - 4);
 				g.drawLine(x + 8, y - 8, x + 4, y - 8);
 			}
-			if (corner == DrawFBP.Corner.BOTTOMRIGHT) {
-				x = rgtEdge;
+			if (eCorner == DrawFBP.ECorner.BOTTOMRIGHT) {
+				x = rightEdge;
 				y = botEdge;
 				g.drawLine(x - 8, y - 8, x + 8, y + 8);
 				g.drawLine(x - 8, y - 8, x - 8, y - 4);
 				g.drawLine(x - 8, y - 8, x - 4, y - 8);
 				g.drawLine(x + 8, y + 8, x + 8, y + 4);
 				g.drawLine(x + 8, y + 8, x + 4, y + 8);
+			}
+		}
+		
+		// following logic draws arrow at selected side
+		if (eSide != ESide.NONE) {
+			if (eSide == DrawFBP.ESide.LEFT) {
+				x = leftEdge;
+				y = eY;
+				g.drawLine(x - 12, y, x + 12, y); // main line
+				g.drawLine(x - 12, y, x - 8, y + 4);
+				g.drawLine(x - 12, y, x - 8, y - 4);
+				g.drawLine(x + 12, y, x + 8, y - 4);
+				g.drawLine(x + 12, y, x + 8, y + 4);
+			}
+			if (eSide == DrawFBP.ESide.TOP) {
+				y = topEdge;
+				x = eX;
+				g.drawLine(x, y - 12, x, y + 12);  // main line
+				g.drawLine(x, y - 12, x - 4, y - 8);
+				g.drawLine(x, y - 12, x + 4, y - 8);
+				g.drawLine(x, y + 12, x - 4, y + 8);
+				g.drawLine(x, y + 12, x + 4, y + 8);
+			}
+			if (eSide == DrawFBP.ESide.RIGHT) {
+				x = rightEdge;
+				y = eY;
+				g.drawLine(x - 12, y, x + 12, y); // main line
+				g.drawLine(x - 12, y, x - 8, y + 4);
+				g.drawLine(x - 12, y, x - 8, y - 4);
+				g.drawLine(x + 12, y, x + 8, y - 4);
+				g.drawLine(x + 12, y, x + 8, y + 4);
+			}
+			if (eSide == DrawFBP.ESide.BOTTOM) {
+				y = botEdge;
+				x = eX;
+				g.drawLine(x, y - 12, x, y + 12);  // main line
+				g.drawLine(x, y - 12, x - 4, y - 8);
+				g.drawLine(x, y - 12, x + 4, y - 8);
+				g.drawLine(x, y + 12, x - 4, y + 8);
+				g.drawLine(x, y + 12, x + 4, y + 8);
 			}
 		}
 		        

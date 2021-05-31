@@ -76,10 +76,11 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$9
  com.jpaulmorrison.graphics.DrawFBP$CloseAppAction
  com.jpaulmorrison.graphics.DrawFBP$CloseTabAction
- com.jpaulmorrison.graphics.DrawFBP$Corner
  com.jpaulmorrison.graphics.DrawFBP$CsharpFileFilter
  com.jpaulmorrison.graphics.DrawFBP$DiagramFilter
  com.jpaulmorrison.graphics.DrawFBP$DllFilter
+ com.jpaulmorrison.graphics.DrawFBP$ECorner
+ com.jpaulmorrison.graphics.DrawFBP$ESide
  com.jpaulmorrison.graphics.DrawFBP$EscapeAction
  com.jpaulmorrison.graphics.DrawFBP$ExeFilter
  com.jpaulmorrison.graphics.DrawFBP$FBPFilter

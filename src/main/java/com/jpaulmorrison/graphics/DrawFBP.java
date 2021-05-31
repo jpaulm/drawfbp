@@ -107,7 +107,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	int gFontWidth, gFontHeight;
 
 	// Enclosure enclSelForDragging = null;
-	Enclosure enclSelForArrow = null;
+	Enclosure enclSelForArrow = null;   // used for displaying "stretch" arrows on enclosures
 
 	File propertiesFile = null;
 	HashMap<String, String> properties = null;
@@ -141,8 +141,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	ImageIcon favicon = null;
 	// String zipFileName;
-	int ox = 0; // enclosure being dragged - cx
-	int oy = 0; // enclosure being dragged - cy
+	int ocx = 0; // enclosure being dragged - cx
+	int ocy = 0; // enclosure being dragged - cy
 	int ow = 0; // enclosure being dragged - width
 	int oh = 0; // enclosure being dragged - height
 
@@ -202,10 +202,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	// public static final String Side = null;
 
-	static enum Corner {
+	static enum ECorner {
 		NONE, TOPLEFT, BOTTOMLEFT, TOPRIGHT, BOTTOMRIGHT
 	}
 
+	static enum ESide {
+		NONE, LEFT, TOP, RIGHT, BOTTOM
+	}
 	static final int top_border_height = 60;
 	static final int bottom_border_height = 60;		
 
@@ -6518,7 +6521,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			// System.out.println("M: " + xa + "," + ya);
 			if (enclSelForArrow != null) {
-				enclSelForArrow.corner = Corner.NONE;
+				enclSelForArrow.eCorner = ECorner.NONE;
+				enclSelForArrow.eSide = ESide.NONE;
 				enclSelForArrow = null;
 				repaint();
 				return;
@@ -6535,25 +6539,54 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
 							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						enclSelForArrow = enc;
-						enc.corner = Corner.TOPLEFT;
+						enc.eCorner = ECorner.TOPLEFT;
 						break;
 					}
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						enclSelForArrow = enc;
-						enc.corner = Corner.BOTTOMLEFT;
+						enc.eCorner = ECorner.BOTTOMLEFT;
 						break;
 					}
 					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						enclSelForArrow = enc;
-						enc.corner = Corner.TOPRIGHT;
+						enc.eCorner = ECorner.TOPRIGHT;
 						break;
 					}
 					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						enclSelForArrow = enc;
-						enc.corner = Corner.BOTTOMRIGHT;
+						enc.eCorner = ECorner.BOTTOMRIGHT;
+						break;
+					}
+					
+					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
+							&& between(ya, block.topEdge, block.botEdge)) {
+						enclSelForArrow = enc;
+						enc.eSide = ESide.LEFT;
+						enc.eY = ya;
+						break;
+					}
+					if (between(ya, block.topEdge - 6, block.topEdge + 6)
+							&& between(xa, block.leftEdge, block.rightEdge)) {
+						enclSelForArrow = enc;
+						enc.eSide = ESide.TOP;
+						enc.eX = xa;
+						break;
+					}
+					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
+							&& between(ya, block.topEdge, block.botEdge)) {
+						enclSelForArrow = enc;
+						enc.eSide = ESide.RIGHT;
+						enc.eY = ya;
+						break;
+					}
+					if (between(ya, block.botEdge - 6, block.botEdge + 6)
+							&& between(xa, block.leftEdge, block.rightEdge)) {
+						enclSelForArrow = enc;
+						enc.eSide = ESide.BOTTOM;
+						enc.eX = xa;
 						break;
 					}
 				}
@@ -6720,28 +6753,56 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
 							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						blockSelForDragging = enc;
-						enc.corner = Corner.TOPLEFT;
+						enc.eCorner = ECorner.TOPLEFT;
 						break;
 					}
 					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						blockSelForDragging = enc;
-						enc.corner = Corner.BOTTOMLEFT;
+						enc.eCorner = ECorner.BOTTOMLEFT;
 						break;
 					}
 					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.topEdge - 6, block.topEdge + 6)) {
 						blockSelForDragging = enc;
-						enc.corner = Corner.TOPRIGHT;
+						enc.eCorner = ECorner.TOPRIGHT;
 						break;
 					}
 					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
 							&& between(ya, block.botEdge - 6, block.botEdge + 6)) {
 						blockSelForDragging = enc;
-						enc.corner = Corner.BOTTOMRIGHT;
+						enc.eCorner = ECorner.BOTTOMRIGHT;
 						break;
 					}
-
+					
+					if (between(xa, block.leftEdge - 6, block.leftEdge + 6)
+							&& between(ya, block.topEdge, block.botEdge)) {
+						blockSelForDragging = enc;
+						enc.eSide = ESide.LEFT;
+						enc.eY = ya;
+						break;
+					}
+					if (between(ya, block.topEdge - 6, block.topEdge + 6)
+							&& between(xa, block.leftEdge, block.rightEdge)) {
+						blockSelForDragging = enc;
+						enc.eSide = ESide.TOP;
+						enc.eX = xa;
+						break;
+					}
+					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
+							&& between(ya, block.topEdge, block.botEdge)) {
+						blockSelForDragging = enc;
+						enc.eSide = ESide.RIGHT;
+						enc.eY = ya;
+						break;
+					}
+					if (between(ya, block.botEdge - 6, block.botEdge + 6)
+							&& between(xa, block.leftEdge, block.rightEdge)) {
+						blockSelForDragging = enc;
+						enc.eSide = ESide.BOTTOM;
+						enc.eX = xa;
+						break;
+					}
 				} else { // not enclosure
 					/*
 					 * the following leaves a strip around the outside of each block that cannot be
@@ -6775,8 +6836,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 			if (blockSelForDragging != null && blockSelForDragging instanceof Enclosure) {
-				ox = blockSelForDragging.cx;
-				oy = blockSelForDragging.cy;
+				ocx = blockSelForDragging.cx;
+				ocy = blockSelForDragging.cy;
 				ow = blockSelForDragging.width;
 				oh = blockSelForDragging.height;
 				repaint();
@@ -6935,38 +6996,56 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (blockSelForDragging instanceof Enclosure) {
 					Enclosure enc = (Enclosure) blockSelForDragging;
 
-					if (enc.corner == Corner.TOPLEFT) {
-						enc.width = ox + ow / 2 - xa; // ox is value of cx when dragging started
-						enc.height = oy + oh / 2 - ya; // oy is value of cy when dragging started
+					if (enc.eCorner == ECorner.TOPLEFT) {
+						enc.width = ocx + ow / 2 - xa; // ox is value of cx when dragging started
+						enc.height = ocy + oh / 2 - ya; // oy is value of cy when dragging started
 						enc.cx = xa + enc.width / 2; // ow is value of width when dragging started
 						enc.cy = ya + enc.height / 2; // oh is value of height when dragging started
-
 					}
-					if (enc.corner == Corner.BOTTOMLEFT) {
-						enc.width = ox + ow / 2 - xa;
-						enc.height = ya - (oy - oh / 2);
+					if (enc.eCorner == ECorner.BOTTOMLEFT) {
+						enc.width = ocx + ow / 2 - xa;
+						enc.height = ya - (ocy - oh / 2);
 						enc.cx = xa + enc.width / 2;
 						enc.cy = ya - enc.height / 2;
-
 					}
-					if (enc.corner == Corner.TOPRIGHT) {
-						enc.width = xa - (ox - ow / 2);
-						enc.height = oy + oh / 2 - ya;
+					if (enc.eCorner == ECorner.TOPRIGHT) {
+						enc.width = xa - (ocx - ow / 2);
+						enc.height = ocy + oh / 2 - ya;
 						enc.cx = xa - enc.width / 2;
 						enc.cy = ya + enc.height / 2;
-
 					}
-					if (enc.corner == Corner.BOTTOMRIGHT) {
-						enc.width = xa - (ox - ow / 2);
-						enc.height = ya - (oy - oh / 2);
+					if (enc.eCorner == ECorner.BOTTOMRIGHT) {
+						enc.width = xa - (ocx - ow / 2);
+						enc.height = ya - (ocy - oh / 2);
 						enc.cx = xa - enc.width / 2;
 						enc.cy = ya - enc.height / 2;
-
+					}
+					
+					// logic to drag one side of enclosure
+					if (enc.eSide == ESide.LEFT) {
+						enc.width = (ocx + ow / 2) - xa;
+						enc.cx = xa + enc.width / 2;
+						enc.eY = ya;
+					}
+					if (enc.eSide == ESide.TOP) {
+						enc.height = (ocy + oh / 2) - ya;
+						enc.cy = ya + enc.height / 2;
+						enc.eX = xa;
+					}
+					if (enc.eSide == ESide.RIGHT) {
+						enc.width = xa - (ocx - ow / 2);
+						enc.cx = xa - enc.width / 2;
+						enc.eY = ya;
+					}
+					if (enc.eSide == ESide.BOTTOM) {
+						enc.height = ya - (ocy - oh / 2);
+						enc.cy = ya - enc.height / 2;
+						enc.eX = xa;
 					}
 					// enc.buildSides();
 					// enc.adjEdgeRects();
 					enc.calcEdges();
-					if (enc.corner != Corner.NONE) {
+					if (enc.eCorner != ECorner.NONE || enc.eSide != ESide.NONE) {
 						curDiag.changed = true;
 						// enc.corner = Corner.NONE;
 						repaint();
@@ -7374,7 +7453,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 			if (blockSelForDragging != null && blockSelForDragging instanceof Enclosure) {
-				((Enclosure) blockSelForDragging).corner = Corner.NONE;
+				((Enclosure) blockSelForDragging).eCorner = ECorner.NONE;
+				((Enclosure) blockSelForDragging).eSide = ESide.NONE;
 				blockSelForDragging = null;
 				curDiag.changed = true;
 				setCursor(defaultCursor);
