@@ -11,7 +11,7 @@ If you click on the Maven shield below to obtain DrawFBP, select `Download` and 
 
 **Note:** To use the `drawfbp.bat` function, create/modify your environment variables, as follows: 
 
--  **DRAWFBP_LIB** to specify the library containing your copy of drawfbp-x.y.z.jar
+-  **DRAWFBP_LIB** to specify the library containing your copy of drawfbp-x.y.z.jar - you need to append `\build\libs`
 -  **DRAWFBP_VERSION** specifying the current version number, e.g. 2.22.1 (in this case) 
 
 **Note:**  `fbp.json` in `docs` does not download correctly:  please do a copy and paste from https://github.com/jpaulm/drawfbp/blob/master/docs/fbp.json (current version thanks to Henri Bergius of NoFlo).
