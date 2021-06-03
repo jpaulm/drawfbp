@@ -9,13 +9,16 @@ Latest release is `v2.22.1`: the jar file (which includes the `math.geom2d` and 
 
 If you click on the Maven shield below to obtain DrawFBP, select `Download` and `jar`. 
 
-<!--
 **Note:** To use the `drawfbp.bat` function, create/modify your environment variables, as follows: 
 
 -  **DRAWFBP_LIB** to specify the local repository containing your copy of drawfbp-x.y.z.jar in the `\build\libs` directory
 -  **DRAWFBP_VERSION** specifying the current version number, e.g. 2.22.1 (in this case) 
 
--->
+Now, to associate the `drawfbp.bat` file with the `.drw` file type, issue the following commands in DOS, running in adminstrator mode (adjusting for the relevant file name):
+
+`assoc .drw=DrawFBPFile`
+`ftype DrawFBPFile=C:\Users\Paul\Documents\GitHub\drawfbp\drawfbp.bat "%1"`
+
 
 **Note:**  `fbp.json` in `docs` does not download correctly:  please do a copy and paste from https://github.com/jpaulm/drawfbp/blob/master/docs/fbp.json (current version thanks to Henri Bergius of NoFlo).
 
