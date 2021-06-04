@@ -67,7 +67,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\drawfbp-2.22.1.jar;%APP_HOME%\lib\javaGeom-0.11.1.jar;%APP_HOME%\lib\javahelp-2.0.05.jar
+set CLASSPATH=%APP_HOME%\lib\drawfbp-2.22.2.jar;%APP_HOME%\lib\javaGeom-0.11.1.jar;%APP_HOME%\lib\javahelp-2.0.05.jar
 
 
 @rem Execute drawfbp

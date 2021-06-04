@@ -5427,27 +5427,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		SwingUtilities.invokeLater(myRunnable);
 
-		/*
-		 * SwingUtilities.invokeLater(new Runnable(args) { public void run(args) {
-		 * 
-		 * String[] runArgs = args;
-		 * 
-		 * String laf = UIManager.getSystemLookAndFeelClassName();
-		 * 
-		 * 
-		 * System.setProperty("apple.laf.useScreenMenuBar", "true");
-		 * 
-		 * try { UIManager.setLookAndFeel(laf); } catch (ClassNotFoundException e1) {
-		 * e1.printStackTrace(); } catch (InstantiationException e1) {
-		 * e1.printStackTrace(); } catch (IllegalAccessException e1) {
-		 * e1.printStackTrace(); } catch (UnsupportedLookAndFeelException e1) {
-		 * e1.printStackTrace(); }
-		 * 
-		 * setDefaultLookAndFeelDecorated(true);
-		 * 
-		 * DrawFBP _mf= new DrawFBP(runArgs); _mf.setVisible(true);
-		 * System.out.println(runArgs); } });
-		 */
+		
 
 	}
 
@@ -5456,7 +5436,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		Runnable aRunnable = new Runnable() {
 			public void run() {
 				String[] runArgs = paramStr;
-
+				
 				String laf = UIManager.getSystemLookAndFeelClassName();
 
 				System.setProperty("apple.laf.useScreenMenuBar", "true");

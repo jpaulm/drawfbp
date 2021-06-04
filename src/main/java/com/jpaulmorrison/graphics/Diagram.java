@@ -2,7 +2,6 @@ package com.jpaulmorrison.graphics;
 
 
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -21,8 +20,6 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
-
-import com.jpaulmorrison.graphics.DrawFBP.ImagePanel;
 import com.jpaulmorrison.graphics.DrawFBP.Lang;
 import com.jpaulmorrison.graphics.DrawFBP.Side;
 

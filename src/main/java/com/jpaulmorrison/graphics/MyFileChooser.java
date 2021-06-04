@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -640,10 +641,8 @@ public class MyFileChooser extends JDialog
 		LinkedList<String> ll2 = null;
 		inTree = false;
 		String s = listHead;
-
-		// String x = t_dirName.getText();
-		// t_dirName.setVisible(true);
-
+		
+		
 		String t = null;
 		File f = new File(listHead);
 		if (-1 == s.indexOf("!")) { // if fullNodeName is NOT a
@@ -685,38 +684,12 @@ public class MyFileChooser extends JDialog
 						t = driver.javaFBPJarFile;
 					
 					if (t != null) {
-
-						try {
-							File f2 = new File(t);
-							v = Files.getLastModifiedTime(f2.toPath())
-									.toString();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						int i = v.lastIndexOf(".");
-						if (i > -1)
-							v = v.substring(0, i);
-						v = v.replace("T", " ");
-						ll.add(t + "@" + v);
+						ll.add(attachDate(t)); 
 					}					
 				 
 					if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP]) {
-						for (String u : driver.jarFiles) {
-							if (new File(u).exists()) {
-								try {
-									File f2 = new File(u);
-									v = Files.getLastModifiedTime(f2.toPath()).toString();
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								int i = v.lastIndexOf(".");
-								if (i > -1)
-									v = v.substring(0, i);
-								v = v.replace("T", " ");
-								ll.add(u + "@" + v);
-							}
+						for (String u : driver.jarFiles) {							
+							ll.add(attachDate(u)); 							
 						}
 					}
 				}
@@ -741,72 +714,48 @@ public class MyFileChooser extends JDialog
 					//}
 					
 					File[] ds = f.listFiles();
+					
 					ll2 = new LinkedList<String>();
-					// if (ds != null) {
-					 //  for (File child : ds) {
-					//      // Do something with child
-					//    }
 
-					
+					if (ds != null) {
+						for (File entry : ds) {
+							String fs = entry.toString();
+							// System.out.println(fs);
 
-					 if (ds != null) {
-						    for (File entry : ds) {
-						String fs = entry.toString();		
-						//System.out.println(fs);
+							File fx = new File(fs);
+							if (!fx.exists())
+								continue;
+							if (fx.isDirectory()) {
+								fs = attachDate(fs);
+								ll2.add(fs); // directories go into ll first
+							}
+						}
 
-
-						File fx = new File(fs);
-						if (!fx.exists())
-							continue;
-						if (fx.isDirectory())
-							ll2.add(fs); // directories go into ll first
-
-					}
-					ll.addAll(mySort(ll2)); // add elements of ll2 to ll in
-											// sorted
-											// order
-					 
-					ll2.clear();
-					//try (DirectoryStream<Path> ds2 = Files.newDirectoryStream(p))) 
-					
-					//try {
-					//	ds = Files.newDirectoryStream(p);
-					//} catch (IOException e) {
-						// TODO Auto-generated catch block
-					//	e.printStackTrace();
-					//}
-					//ds = f.listFiles();
-
-					//if (ds != null) {
-					    for (File entry : ds) {
-				
-						String fs = entry.toString();
-						//System.out.println("-" + fs);
-
-						File fx = new File(fs);
-						if (!fx.exists())
-							continue;
-						if (fx.isDirectory())
-							continue;
+						Collection<String> coll = mySort(ll2);
+						ll.addAll(coll); 
 						
-						//String ss = lang.label;
-						if (lang.label.equals("Print") ||
-							lang.filter.accept(fx) || driver.allFiles) 
-							ll2.add(entry.toString()); // non-directories go
-														// into ll2,
-						// which is
-						// then sorted into ll
+						ll2.clear();
 
+						for (File entry : ds) {
+
+							String fs = entry.toString();
+							// System.out.println("-" + fs);
+
+							File fx = new File(fs);
+							if (!fx.exists())
+								continue;
+							if (fx.isDirectory())
+								continue;
+
+							// String ss = lang.label;
+							if (lang.label.equals("Print") || lang.filter.accept(fx) || driver.allFiles)
+								ll2.add(attachDate(entry.toString())); // non-directories go
+															// into ll2,
+
+						}
+
+						ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll
 					}
- 
-					
-				//} catch (IOException e) {
-					// TODO Auto-generated catch block
-				//	e.printStackTrace();
-				//}
-				
-				ll.addAll(mySort(ll2)); // add elements of ll2 to end of ll
-					    }
 				}
 
 			} else {
@@ -843,13 +792,13 @@ public class MyFileChooser extends JDialog
 			}
 			
 			
-			if (ll.size() == 0)  {
-				ll.add("No files in directory with specified extension");
+			//if (ll.size() == 0)  {
+			//	ll.add("No files in directory with specified extension");
 				//MyOptionPane.showMessageDialog(driver,
 				//		"No files in directory with specified extension",
 				//		MyOptionPane.INFORMATION_MESSAGE);
 				//t_suggName.setEditable(true);
-			}
+			//}
 			//else {
 
 			Object[] oa = ll.toArray();
@@ -964,25 +913,9 @@ public class MyFileChooser extends JDialog
 			//File f = new File(listHead + "/" + s); 
 			
 			if (!inTree) {
-				String s2 = (new File(s)).getName();
-
-				File f = new File(s);
-
-				Path path = f.toPath();
-				String t = "";
-				try {
-					t = Files.getLastModifiedTime(path).toString();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				int i = t.lastIndexOf(".");
-				if (i > -1)
-					t = t.substring(0, i);
-				t = t.replace("T", " ");
-
-				// if (!inJarTree)
-				ll.add(s2 + "@" + t);
+				//ll.add(attachDate(s)); 	
+				ll.add(s);
+				
 			} else
 				ll.add(s);		 
 		}
@@ -996,6 +929,28 @@ public class MyFileChooser extends JDialog
 		
 		return ll;
 		
+	}
+	
+	String attachDate(String s) {
+		String s2 = (new File(s)).getName();
+
+		File f = new File(s);
+
+		Path path = f.toPath();
+		String t = "";
+		try {
+			t = Files.getLastModifiedTime(path).toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int i = t.lastIndexOf(".");
+		if (i > -1)
+			t = t.substring(0, i);
+		t = t.replace("T", " ");
+
+		// if (!inJarTree)
+		return s2 + "@" + t;
 	}
 
 	Comparator<String> compName = new Comparator<String>() {
@@ -1075,7 +1030,12 @@ public class MyFileChooser extends JDialog
 			else {
 				if (currentNode == null) {
 					String fd = listHead + "/" + s;
-					File f = new File(fd.substring(0, fd.indexOf("@")));
+					int i = fd.indexOf("@");
+					File f = null;
+					if (i == -1)
+						f = new File(fd);
+					else
+					    f = new File(fd.substring(0, i));
 					if (f.isDirectory() /*|| -1 == s.indexOf(".") */)
 						icon = driver.folderIcon;
 				} else {
@@ -1983,7 +1943,11 @@ public class MyFileChooser extends JDialog
 				}
 
 				boolean b = f.mkdir();
-				if (!b)
+				if (b)
+					MyOptionPane.showMessageDialog(driver,
+							"New folder created: " + f.getAbsolutePath(),
+							MyOptionPane.INFORMATION_MESSAGE);
+				else
 					MyOptionPane.showMessageDialog(driver,
 							"Folder not created: " + f.getAbsolutePath(),
 							MyOptionPane.ERROR_MESSAGE);
