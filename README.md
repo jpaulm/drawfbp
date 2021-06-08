@@ -9,12 +9,12 @@ Latest release is `v2.22.1`: the jar file (which includes the `math.geom2d` and 
 
 If you click on the Maven shield below to obtain DrawFBP, select `Download` and `jar`. 
 
-**Note:** To use the `drawfbp.bat` function, 
-
-<!-- create/modify your environment variables, as follows: 
+**Note:** To use the `drawfbp.bat` function, create/modify your environment variables, as follows: 
 
 -  **DRAWFBP_LIB** to specify the local repository containing the `drawfbp.bat` file and the `\build\libs` directory containing the downloaded `drawfbp-x.y.z.jar` jar file
 -  **DRAWFBP_VERSION** specifying the current version number, e.g. 2.22.1 (in this case) 
+
+<!--
 
 Now, to associate the `drawfbp.bat` file with the `.drw` file type, issue the following commands in DOS, running in adminstrator mode:
 
@@ -24,7 +24,8 @@ Now, to associate the `drawfbp.bat` file with the `.drw` file type, issue the fo
 (see https://stackoverflow.com/questions/28189137/windows-establish-file-association-to-batch-file )
 
 -->
-enter a call to `drawfbp.bat` in DOS, followed by the name of the `.drw` file, e.g.
+
+Now enter a call to `drawfbp.bat` in DOS, followed by the name of the `.drw` file, e.g.
 
     <folder containing DrawFBP on your machine>\drawfbp.bat C:\Users\bobco\drawfbp\diagrams\CheckShowTextCsharp.drw
 
