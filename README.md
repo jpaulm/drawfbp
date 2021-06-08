@@ -28,6 +28,8 @@ Now, to associate the `drawfbp.bat` file with the `.drw` file type, issue the fo
 Now enter a call to `drawfbp.bat` in DOS, followed by the name of the `.drw` file, e.g.
 
     <folder containing DrawFBP on your machine>\drawfbp.bat C:\Users\bobco\drawfbp\diagrams\CheckShowTextCsharp.drw
+    
+Now, dear reader, if you can figure out how to associate either the `.jar` file or the `.bat` file with the filtype `.drw`, I would appreciate it if you would let me know!    
 
 **Note:**  `fbp.json` in `docs` does not download correctly:  please do a copy and paste from https://github.com/jpaulm/drawfbp/blob/master/docs/fbp.json (current version thanks to Henri Bergius of NoFlo).
 
