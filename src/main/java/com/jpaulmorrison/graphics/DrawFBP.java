@@ -6550,9 +6550,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					if (between(ya, block.topEdge - 6, block.topEdge + 6)
 							&& between(xa, block.leftEdge, block.rightEdge)) {
-						enclSelForArrow = enc;
-						enc.eSide = ESide.TOP;
-						enc.eX = xa;
+						int x0 = enc.cx - enc.width/2;
+						int x1 = x0  + enc.width / 5 ;
+						int x2 = x0 + 4 * enc.width / 5; 
+						if (xa >= x1 && xa <= x2)  // if 'x' within small rectangle, set side to none
+							enc.eSide = ESide.NONE;
+						else {
+							enclSelForArrow = enc;
+							enc.eSide = ESide.TOP;
+							enc.eX = xa;
+						}
 						break;
 					}
 					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
@@ -6764,9 +6771,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					if (between(ya, block.topEdge - 6, block.topEdge + 6)
 							&& between(xa, block.leftEdge, block.rightEdge)) {
-						blockSelForDragging = enc;
-						enc.eSide = ESide.TOP;
-						enc.eX = xa;
+						int x0 = enc.cx - enc.width/2;
+						int x1 = x0  + enc.width / 5 ;
+						int x2 = x0 + 4 * enc.width / 5; 
+						if (xa >= x1 && xa <= x2)  // if 'x' within small rectangle, set side to none
+							enc.eSide = ESide.NONE;
+						else {
+							blockSelForDragging = enc;
+							enc.eSide = ESide.TOP;
+							enc.eX = xa;
+						}
 						break;
 					}
 					if (between(xa, block.rightEdge - 6, block.rightEdge + 6)
