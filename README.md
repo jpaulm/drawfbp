@@ -96,7 +96,7 @@ Features
 - Variety of block types, including "Initial IP", Report, File, Legend (text with no boundary), External ports (for subnets), Human (!)
 - Top-down design supported - although bottom-up is also supported (blocks can be placed on the diagram and connected, and class names filled in later)
 - Display subnets in separate tabs
-- Convert portion of diagram to subnet ("excise")
+- Convert portion of diagram to subnet (using Enclosure block "Excise" function)
 - Specify connection capacity
 - "Automatic" ports
 - Checking for valid port names
