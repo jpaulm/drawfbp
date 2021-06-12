@@ -11,7 +11,7 @@ If you click on the Maven shield below to obtain DrawFBP, select `Download` and 
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-Note: Maven currently contains an earlier version of DrawFBP.
+<!-- Note: Maven currently contains an earlier version of DrawFBP. -->
 
 **Note:** To use the `drawfbp.bat` function, create/modify your environment variables, as follows: 
 
