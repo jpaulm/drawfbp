@@ -20,10 +20,10 @@ If you click on the Maven shield below to obtain DrawFBP, select `Download` and 
 
 <!--
 
-Now, to associate the `drawfbp.bat` file with the `.drw` file type, issue the following commands in DOS, running in adminstrator mode:
+Now, to associate the `drawfbp.bat` file with the `.drw` file type, issue the following commands in DOS, running in *adminstrator mode*:
 
     `assoc .drw=DrawFBPFile`
-    `ftype DrawFBPFile=call "%DRAWFBP_LIB%\drawfbp.bat" "%1" %*`
+    `ftype DrawFBPFile=cmd /k call "%DRAWFBP_LIB%\drawfbp.bat" "%1" %*`
     
 (see https://stackoverflow.com/questions/28189137/windows-establish-file-association-to-batch-file )
 
