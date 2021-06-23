@@ -1769,7 +1769,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return;
 		}
 
-		if (s.equals("Go to Directory")) {
+		if (s.equals("Go to Dir")) {
 			String w = null;
 			File f = curDiag.diagFile;
 			if (f != null) {
