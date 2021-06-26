@@ -13,6 +13,9 @@ If you click on the Maven shield below to obtain DrawFBP, select `Download` and 
 
 <!--Note: Maven currently contains an earlier version of DrawFBP. -->
 
+Associating `.drw` file type with DrawFBP application
+---
+
 There is a `.bat` file, `draw.bat`, which can be associated with the filetype `.drw` - the easiest way to do this is to right click on a `.drw` file, then select `Open with...`.  Now select the `Always use this app to open .drw files` option, then go down to the section which allows you to browse directories and files, and select `draw.bat` in your local `GitHub\drawfbp` directory.
 
 **Note:** To use the `draw.bat` function, create/modify your environment variables, as follows: 
@@ -29,15 +32,12 @@ Now, to associate the `drawfbp.bat` file with the `.drw` file type, issue the fo
     
 (see https://stackoverflow.com/questions/28189137/windows-establish-file-association-to-batch-file )
 
- 
+--> 
 
-Now enter a call to `draw.bat` in DOS, followed by the name of the `.drw` file, e.g.
+You can also call the `draw.bat` function directly in DOS as e.g.
 
-    <folder containing DrawFBP on your machine>\drawfbp.bat C:\Users\bobco\drawfbp\diagrams\CheckShowTextCsharp.drw
+     <folder containing DrawFBP on your machine>\draw.bat <name of .drw file>
     
-Now, dear reader, if you can figure out how to associate either the `.jar` file or the `.bat` file with the filtype `.drw`, I would appreciate it if you would let me know!    
-
--->
 
 **Note:**  `fbp.json` in `docs` does not download correctly:  please do a copy and paste from https://github.com/jpaulm/drawfbp/blob/master/docs/fbp.json (current version thanks to Henri Bergius of NoFlo).
 
