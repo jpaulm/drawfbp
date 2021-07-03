@@ -486,7 +486,7 @@ public class DiagramBuilder {
 			//driver.saveProperties();
 		//}
 		//driver.jtf.setText("Diagram Notation: " + driver.currNotn.label);
-		driver.setNotation(driver.currNotn);
+		driver.setNotation(driver.currNotn, false);
 		frame.repaint();
 	}
 	

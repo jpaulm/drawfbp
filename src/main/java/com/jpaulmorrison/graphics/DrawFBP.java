@@ -359,6 +359,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	MyRadioButton selRB = null;
 	
+	//Notation currNotn = null;
+	
 	//String blkType = null;
 
 	final boolean CODEMGRCREATE = true;
@@ -416,12 +418,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fileMenu = new JMenu(" File ");
 		diagMenu = new JMenu(" Diagram ");
 		helpMenu = new JMenu(" Help ");
-		
+		/*
 		currNotn = findNotnFromLabel(properties.get("defaultNotation")); 
 		if (currNotn == null)
 			currNotn = notations[Notation.JAVA_FBP];
-		//setNotation(currNotn);
-
+		
+		menuBar = createMenuBar();
+		setJMenuBar(menuBar);
+		
+		setNotation(currNotn, false);  // not changing notation
+*/
 		scalingFactor = 1.0d;
 
 		String sF = properties.get("scalingfactor");
@@ -520,6 +526,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// diagFCParm = new FileChooserParm("Diagram", "currentDiagramDir",
 		// langs[Lang.4], "Diagrams (*.drw)");
+		
+		
 
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
@@ -571,7 +579,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			currNotn = findNotnFromLabel(dn);
 		}
 		saveProp("defaultNotation", currNotn.label);
-
+		setNotation(currNotn, false);
+		
 		String sBD = properties.get("sortbydate");
 		if (sBD == null) {
 			sortByDate = false;
@@ -677,6 +686,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		buildUI(cont);
 
 		add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		menuBar = createMenuBar();
+		setJMenuBar(menuBar);
+		
+		currNotn = findNotnFromLabel(properties.get("defaultNotation")); 
+		if (currNotn == null)
+			currNotn = notations[Notation.JAVA_FBP];	
+		
+		setNotation(currNotn, false);  // not changing notation
 
 		String t = properties.get("x");
 		int x = 0, y = 0, w2 = 1200, h2 = 800;
@@ -1000,10 +1018,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		image = loadImage("drag_icon.gif");
 		drag_icon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
 		
-		menuBar = createMenuBar();
-		setJMenuBar(menuBar);
+		//menuBar = createMenuBar();
+		//setJMenuBar(menuBar);
 		
-		setNotation(currNotn);
+		setNotation(currNotn, false);
 		adjustFonts();
 		
 	}
@@ -1047,28 +1065,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
-		JMenu gnMenu = new JMenu("Select Network Notation...");
-		fileMenu.add(gnMenu);
-		int j = notations.length;
-		gMenu = new JMenuItem[j];
-
-		int k = 0;
-		for (int i = 0; i < j; i++) {
-			// if (!(genlangs[Lang.i].label.equals("FBP"))) {
-			gMenu[k] = new JMenuItem(notations[i].label);
-			gnMenu.add(gMenu[k]);
-			gMenu[k].addActionListener(this);
-			k++;
-			// }
-		}
+		//JMenu gnMenu = new JMenu("Select Network Notation...");
+		
+		
 
 		fileMenu.addSeparator();
 
-		String s = "Generate ";
+		//String s = "Generate ";
 		// if (curDiag != null)
-		s += currNotn.label + " ";
-		s += "Network";
-		gNMenuItem = new JMenuItem(s);
+		//s += currNotn.label + " ";
+		//s += "Network";
+		//gNMenuItem = new JMenuItem(s);
 		fileMenu.add(gNMenuItem);
 		gNMenuItem.addActionListener(this);
 
@@ -1234,7 +1241,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		box0.add(jfv);
 		menuBar.add(box0);
 
-		setNotation(currNotn);
+		setNotation(currNotn, false);
 		jtf.setFont(fontg);
 		jtf.setEditable(false);
 
@@ -1429,7 +1436,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				curDiag.changed = true;
 
-				setNotation(currNotn);
+				setNotation(currNotn, true);
 
 				MyOptionPane.showMessageDialog(this, "Notation changed to " + currNotn.label
 						+ "\nNote: some File and Block-related options will have changed");
@@ -1644,7 +1651,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			else
 				currentImageDir = new File(ss);
 
-			MyFileChooser fc = new MyFileChooser(this, currentImageDir, langs[Lang.IMAGE], "Print Image");
+			MyFileChooser fc = new MyFileChooser(this, currentImageDir, langs[Lang.IMAGE], "Print Image");  
 
 			File f = curDiag.diagFile;
 			if (f != null) {
@@ -2161,7 +2168,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	*/
 
-	void setNotation(Notation notn) {
+	void setNotation(Notation notn, boolean change) {
 
 		// curDiag.diagNotn = notn;
 		// saveProp("defaultNotation", notn.label);
@@ -2180,26 +2187,33 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		saveProp("defaultNotation", currNotn.label);
 		saveProperties();
-	//menuBar = createMenuBar(); 
+		//menuBar = createMenuBar(); 
 
 		//setJMenuBar(menuBar);
 		
-		String u = "Generate "; 
-		// if (curDiag != null)
-		u += currNotn.label + " ";
-		u += "Network";
-		gNMenuItem.setText(u);
-		//gNMenuItem.addActionListener(this);
-		//fileMenu.add(gNMenuItem, 7);
-
-		for (Block bk : curDiag.blocks.values()) {
-			bk.component = null;
-			bk.fullClassName = null;
-			bk.codeFileName = null;
-			bk.subnetFileName = null;
-			bk.compName = null;
+		String u = "Generate ";
+		
+		if (!change) {
+			//String u = "Generate "; 
+			// if (curDiag != null)
+			u += currNotn.label + " ";
+			u += "Network";
+			gNMenuItem = new JMenuItem(u);
 		}
-
+		else {
+			//String u = "Generate "; 
+			// if (curDiag != null)
+			u += currNotn.label + " ";
+			u += "Network";
+			gNMenuItem.setText(u);
+			for (Block bk : curDiag.blocks.values()) {
+				bk.component = null;
+				bk.fullClassName = null;
+				bk.codeFileName = null;
+				bk.subnetFileName = null;
+				bk.compName = null;
+			}
+		}
 		repaint();
 	}
 
@@ -3027,10 +3041,25 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (jmi instanceof JMenuItem)
 				jmi.setFont(fontg);			
 		}
-		
-		for (int i = 0; i < gMenu.length; i++) {
-			gMenu[i].setFont(fontg);
+		int n = notations.length;
+		gMenu = new JMenuItem[n];
+
+		int k = 0;
+		JMenu gnMenu = new JMenu("Select Network Notation...");
+		fileMenu.add(gnMenu);
+		for (int i = 0; i < n; i++) {
+			// if (!(genlangs[Lang.i].label.equals("FBP"))) {
+			gMenu[k] = new JMenuItem(notations[i].label);
+			gnMenu.add(gMenu[k]);
+			gMenu[k].addActionListener(this);
+			gMenu[k].setFont(fontg);
+			k++;
+			// }
 		}
+		
+		//for (int i = 0; i < gMenu.length; i++) {
+			
+		//}
 
 		
 		UIDefaults def = UIManager.getLookAndFeelDefaults();
@@ -4410,7 +4439,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			out.write(s);
 			out.write("</properties> \n");
 			// Close the BufferedWriter
-			out.flush();
+			//out.flush();
 			out.close();
 
 		} catch (FileNotFoundException ex) {
@@ -4584,7 +4613,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		try {
 			File jFile = new File(jarFileName);
-			jarFile = new JarFile(jFile);
+			jarFile = new JarFile(jFile); 
 
 			entries = jarFile.entries();
 
@@ -4905,7 +4934,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	void saveProp(String s, String t) {
 		properties.put(s, t);
-		saveProperties();
+		//saveProperties();
 	}
 
 	void saveProperties() {
@@ -5619,6 +5648,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					return;
 				Diagram diag = b.diag;
 
+				curDiag = diag;
 				if (diag != null && diag.changed) {
 					if (!closeTab(true)) {
 						openDiags++;
@@ -5636,13 +5666,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						return;
 					Diagram diag = b.diag;
 
-					if (diag != null)
+					if (diag != null) {
+						curDiag = diag;
 						if (diag.changed)
 							openDiags++;
 						else if (!closeTab(true)) {
 							openDiags++;
 							break; // return true if tab closed
 						}
+					}
 				}
 			}
 
@@ -6243,12 +6275,19 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			repaint();
 			// Graphics2D g2d = (Graphics2D) g;
+			
+			for (Arrow arrow : diag.arrows.values()) {
+				// if (diag.diagFile != null)
+				// System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
+				arrow.draw(osg);
+				// System.out.println("arrow-draw");
+			}
 
 			for (Block block : diag.blocks.values()) {
 				if (!(block instanceof Enclosure))
 					block.draw(osg);
 			}
-
+			
 			for (Block block : diag.blocks.values()) {
 				if (block instanceof Enclosure)
 					block.draw(osg);
@@ -6257,12 +6296,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// if (diag.diagFile != null)
 			// System.out.println(diag.diagFile.getAbsolutePath() + " " +
 			// diag.arrows.size());
-			for (Arrow arrow : diag.arrows.values()) {
-				// if (diag.diagFile != null)
-				// System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
-				arrow.draw(osg);
-				// System.out.println("arrow-draw");
-			}
+			
 
 			if (tailMark != null)
 				drawRedCircle(osg, tailMark.x, tailMark.y);

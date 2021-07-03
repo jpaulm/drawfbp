@@ -593,13 +593,13 @@ public class Block implements ActionListener {
 			isSubnet = s.equals("true");
 
 		fullClassName = item.get("blockclassname");
-		String w = fullClassName; 
+		String w = fullClassName;   
 		if (w != null) {
 			w = w.replace("\\",  File.separator);
 			w = w.replace("/",  File.separator);
 		}
 		compName = item.get("compname");
-				
+		 	 		
 		if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] && w != null){
 			if (!fullClassName.endsWith(".class"))  
 				fullClassName += ".class";
@@ -608,8 +608,11 @@ public class Block implements ActionListener {
 			getClassInfo(w); 
 		}
 		
+		 
+		
 		if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] && fullClassName != null)		
-			component = loadJavaClass(fullClassName);           
+			component = loadJavaClass(fullClassName);       
+		   
 		
 		s = item.get("x").trim();
 		cx = Integer.parseInt(s);

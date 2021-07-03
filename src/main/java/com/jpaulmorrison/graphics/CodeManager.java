@@ -419,7 +419,7 @@ public class CodeManager implements ActionListener {
 
 				// }
 
-				driver.jf.repaint();
+				//driver.jf.repaint();
 				// String upPort = arrow.upStreamPort;
 				// String dnPort = a2.downStreamPort;
 
