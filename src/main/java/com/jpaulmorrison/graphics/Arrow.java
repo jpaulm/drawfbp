@@ -142,6 +142,7 @@ public class Arrow implements ActionListener {
 		int fx, fy, tx, ty;
 		fx = fromX;
 		fy = fromY;
+		
 		 
 		int segno = 0;
 		

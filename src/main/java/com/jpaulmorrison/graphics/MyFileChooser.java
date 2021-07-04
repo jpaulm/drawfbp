@@ -236,7 +236,8 @@ public class MyFileChooser extends JDialog
 		t_fileName.getCaret().setVisible(true);
 		t_fileName.addActionListener(this);
 		t_fileName.addMouseListener(this);
-		t_fileName.setText(new File(listHead).getName() + "/");
+		//t_fileName.setText(new File(listHead).getName() + "/");
+		t_fileName.setText(listHead + "/");
 
 		t_fileName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
 
@@ -793,13 +794,13 @@ public class MyFileChooser extends JDialog
 			}
 			
 			
-			//if (ll.size() == 0)  {
-			//	ll.add("No files in directory with specified extension");
+			if (ll.size() == 0)  {
+				ll.add("No files in directory with specified extension");
 				//MyOptionPane.showMessageDialog(driver,
 				//		"No files in directory with specified extension",
 				//		MyOptionPane.INFORMATION_MESSAGE);
 				//t_suggName.setEditable(true);
-			//}
+			}
 			//else {
 
 			Object[] oa = ll.toArray();
@@ -1632,8 +1633,8 @@ public class MyFileChooser extends JDialog
 				int i = s.indexOf("@");
 				if (i > -1)
 					s = s.substring(0, i); // drop date, if any
-				//File f = new File(t_dirName.getText() + "/" + s);
-				File f = new File(s);
+				File f = new File(t_dirName.getText() + "/" + s);
+				//File f = new File(s);
 				if (f.exists())
 					if (f.isDirectory()) {
 						String w = f.getAbsolutePath();
@@ -1644,23 +1645,23 @@ public class MyFileChooser extends JDialog
 					} else {
 						// s = s.replace("\\", File.separator);
 						// s = s.replace("/", File.separator);
-						t_fileName.setText(s);
-						enterAction.actionPerformed(new ActionEvent(e, 0, "")); // recursive! probably doesn't get
+						//t_fileName.setText(s);
+						//enterAction.actionPerformed(new ActionEvent(e, 0, "")); // recursive! probably doesn't get
 																				// control!
 					}
 
 			} else {
-				String s2 = s;
+				//String s2 = s;
 				if (selComp == t_fileName) {
 					s = t_fileName.getText();
 					if (s.endsWith("/"))
 						s = s.substring(0, s.length() - 1);
-					//String s2 = s;
+					String s2 = s;
 					// System.out.println("Show file name: " + s2);
 					s = s.replace("\\", "/");
-					//if (!s.endsWith(".jar") && !s.endsWith("fbp.json") || -1 == s.indexOf("/"))
-					//	s2 = t_dirName.getText() + "/" + s;
-					//else 
+					if (!s.endsWith(".jar") && !s.endsWith("fbp.json") || -1 == s.indexOf("/"))
+						s2 = t_dirName.getText() + "/" + s;
+					else 
 						s2 = s;
 					File f = new File(s2);
 
@@ -1729,7 +1730,7 @@ public class MyFileChooser extends JDialog
 				}
 
 				if (s.toLowerCase().endsWith(".jar")) {
-					jarTree = driver.buildJarFileTree(s);  // xxxxxxxxxxxxx
+					jarTree = driver.buildJarFileTree(s);  
 					inTree = true;
 				}
 				
@@ -1770,7 +1771,7 @@ public class MyFileChooser extends JDialog
 				else {
 					if (s.endsWith("/"))
 							s = s.substring(0, s.length() - 1);
-					f = new File(/* listHead + "/" + */ s);
+					f = new File(listHead + "/" + s);
 				}
 
 				if (!f.exists()) {
@@ -2259,10 +2260,16 @@ public class MyFileChooser extends JDialog
 				}
 				
 				// if selected name has a suffix
-				if (0 < v.indexOf(".") /*|| inJarTree */) {
-					//v = v.replace("\\",  File.separator);
-					//v = v.replace("/",  File.separator);
-					t_fileName.setText(v);
+				String sfx = driver.getSuffix(v);
+				if (sfx != null) {
+				//if (0 < v.indexOf(".") /*|| inJarTree */) {
+					v = v.replace("\\",  "/");
+					int j = v.lastIndexOf("/");
+					if (v.endsWith(".jar") || v.endsWith(".json")) 
+						t_fileName.setText(v);
+					else
+						t_fileName.setText(v.substring(j + 1));					 
+						
 					enterAction.actionPerformed(new ActionEvent(e, 0, ""));
 					return;
 					
@@ -2300,35 +2307,38 @@ public class MyFileChooser extends JDialog
 		int i = t.indexOf("@");
 		if (i > -1)
 			t = t.substring(0, i);
-		
-		//t_fileName.setText(t);
+		t = t.replace("\\",  "/");
+		int j = t.lastIndexOf("/");
+		//if (j > -1)
+			t = t.substring(j + 1);
+		t_fileName.setText(t);
 		if (lang != driver.langs[Lang.PRINT] && !inTree) {
-			//String t2 = t;
+			String t2 = t;
 			if (!t.equals("")) {
-				//if (!t.endsWith(".jar") && !t.endsWith("fbp.json")) {
-					//t2 = t_dirName.getText() + "/" + t;
-					//File f = new File(t2);
-					File f = new File(t);
+				if (!t.endsWith(".jar") && !t.endsWith("fbp.json")) {
+					t2 = t_dirName.getText() + "/" + t;
+					File f = new File(t2);
+					//File f = new File(t);
 					 
 					if (!f.exists()) {
-					//	if (0 < t.lastIndexOf(".")) { // if file
+						if (0 < t.lastIndexOf(".")) { // if file
 							MyOptionPane.showMessageDialog(driver,
 									"File does not exist: "
 											+ f.getAbsolutePath(),
 									MyOptionPane.ERROR_MESSAGE);
 							repaint();
 							return;
-					//	}
+						}
 						
 					} 
-			//	}
+				}
 				 
 			}
 		}
 		
 				
 		
-		if (lang == driver.langs[Lang.PRINT] || -1 < t.indexOf(".")) { // if has suffix
+		if (lang == driver.langs[Lang.PRINT] || null != driver.getSuffix(t)) { 
 			//t = t.replace("\\",  File.separator);
 			//t = t.replace("/",  File.separator);
 			t_fileName.setText(t);

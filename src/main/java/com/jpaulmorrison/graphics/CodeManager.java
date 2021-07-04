@@ -404,8 +404,8 @@ public class CodeManager implements ActionListener {
 						|| to instanceof LegendBlock)
 					continue;
 
-				if (!getPortNames(arrow))
-					return false;
+				getPortNames(arrow);
+					
 
 				//driver.jf.jf.// repaint();
 
@@ -1196,7 +1196,9 @@ public class CodeManager implements ActionListener {
 		}
 		if (notn.lang == driver.langs[Lang.JAVA]) {
 			fileString = checkMain(file, fileString);
-			fileString = checkPackage(file, fileString);
+			String fsCheck = checkPackage(file, fileString);
+			if (fsCheck != null)
+				fileString = fsCheck;
 		}
 		
 		//if(packageNameChanged) {
@@ -1506,8 +1508,7 @@ public class CodeManager implements ActionListener {
 					|| to instanceof PersonBlock || to instanceof Enclosure)
 				continue;
 
-			if (!getPortNames(arrow))
-				return "";
+			getPortNames(arrow);
 			String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 			// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
 
@@ -1649,8 +1650,7 @@ public class CodeManager implements ActionListener {
 					|| to instanceof ReportBlock || to instanceof LegendBlock)
 				continue;
 
-			if (!getPortNames(arrow))
-				return false;
+			getPortNames(arrow);
 
 			String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 			// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
@@ -1877,64 +1877,67 @@ public class CodeManager implements ActionListener {
 	}
 
 	*/
-	boolean getPortNames(Arrow arrow) {
+	void getPortNames(Arrow arrow) {
 		
 		Block from = diag.blocks.get(Integer.valueOf(arrow.fromId));
 		Arrow a2 = arrow.findLastArrowInChain();
 		Block to = diag.blocks.get(Integer.valueOf(a2.toId));
-		boolean z;
+		boolean z = false; 
 		
 		if (from instanceof ProcessBlock) {
 			upPort = arrow.upStreamPort;
-			while (true) {
-				if (upPort != null && !(upPort.trim().equals(""))) {
+			//while (true) {
+				if (upPort != null && !(upPort.trim().equals("")))  
 					z = diag.validatePortName(upPort);
-					//z = z && !from.isDupPort(upPort);
-					if (z) {
+										
+					
+					if (!z) {
 						// upPort = z;
-						break;
-					}
+						
 
 					String ans = (String) MyOptionPane.showInputDialog(driver.jf,
-							"Invalid or duplicate output port from " + "\"" + from.desc + "\"",
+							"Invalid output port from " + "\"" + from.desc + "\"",
 							"Please correct port name", MyOptionPane.PLAIN_MESSAGE, null, null, upPort);
 					if (ans != null/* && ans.length() > 0 */) {
 						upPort = ans.trim();
 						diag.changed = true;
-						break;
+						arrow.upStreamPort = upPort;
 					}
 				}
 			}
 
-			arrow.upStreamPort = upPort;
+		 
 
-		}
+		//}
 
+		z = false;
 		dnPort = a2.downStreamPort;
-		while (true) {
-			if (dnPort != null && !(dnPort.trim().equals(""))) {
+	//	while (true) {
+			if (dnPort != null && !(dnPort.trim().equals("")))  
 				z = diag.validatePortName(dnPort);
-				//z = z && !to.isDupPort(dnPort);
+			
 				if (z) {
 					//dnPort = z;
-					break;
+					return;
 				}
 				
+			 
 				String ans = (String) MyOptionPane.showInputDialog(driver.jf,
-						"Invalid or duplicate input port to " + "\"" + to.desc + "\"",
+						"Invalid input port to " + "\"" + to.desc + "\"",
 						"Please correct port name",
 						MyOptionPane.PLAIN_MESSAGE, null, null, dnPort);
 				if (ans != null/* && ans.length() > 0*/) {
 					dnPort = ans.trim();
 					diag.changed = true;
+					a2.downStreamPort = dnPort;
 				}
 			
-			}
-		}
+			//}
+	//	}
 
-		a2.downStreamPort = dnPort;
+		
 
-		return true;
+		return;
 	}
 
 	

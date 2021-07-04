@@ -344,7 +344,7 @@ public class DiagramBuilder {
 						} else if (endtag.equals("connection")) {
 							if (!arrowBuilt) {
 								thisArrow.buildArrow(item);
-								if (thisArrow.fromId > -1 && thisArrow.toId > -1 && thisArrow.toX > -1)  { 
+								if (thisArrow.fromId > -1 && thisArrow.toId > -1)  { 
 									Integer aid = Integer.valueOf(item.get("id"));
 									diag.arrows.put(aid, thisArrow);
 								}								

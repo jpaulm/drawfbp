@@ -1065,9 +1065,22 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
+		JMenu gnMenu = new JMenu("Select Network Notation...");
+		fileMenu.add(gnMenu);
+		int k = 0;
 		//JMenu gnMenu = new JMenu("Select Network Notation...");
-		
-		
+		//fileMenu.add(gnMenu);
+		int n = notations.length;
+		//gMenu = new JMenuItem[n];
+		for (int i = 0; i < n; i++) {
+			// if (!(genlangs[Lang.i].label.equals("FBP"))) {
+			//gMenu[k] = new JMenuItem(notations[i].label);
+			gnMenu.add(gMenu[k]);
+			gMenu[k].addActionListener(this);
+			//gMenu[k].setFont(fontg);
+			k++;
+			// }
+		}
 
 		fileMenu.addSeparator();
 
@@ -2761,16 +2774,25 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return -1;
 	}
 
-	String getSuffix(String s) {
-		String s2 = s.replace("\\", "/");
-		int i = s.lastIndexOf("/");
-		if (i > -1)
-			s2 = s.substring(0, i + 1);
-		int j = s2.lastIndexOf(".");
+	String getSuffix(String s) {  		
+		
+		String s2 = s.replace("\\", "/"); 
+		int i = s2.lastIndexOf("/");
+		//if (i > -1)
+			s2 = s2.substring(i + 1);
+		int j = s2.lastIndexOf(".");		
 		if (j == -1)
 			return null;
-		else
-			return s2.substring(j + 1);
+		else {		
+			String s3 = s2.substring(j + 1);
+			for (int k = 0; k < langs.length; k++) {
+				if (s3.equals(langs[k].ext)) {
+					return s3;
+				}
+			}	
+			return null;
+		}
+		
 	}
 
 	void saveAction(boolean saveAs) {
@@ -3043,7 +3065,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 		int n = notations.length;
 		gMenu = new JMenuItem[n];
-
+/*
 		int k = 0;
 		JMenu gnMenu = new JMenu("Select Network Notation...");
 		fileMenu.add(gnMenu);
@@ -3056,10 +3078,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			k++;
 			// }
 		}
-		
-		//for (int i = 0; i < gMenu.length; i++) {
-			
-		//}
+		*/
+		for (int i = 0; i < gMenu.length; i++) {
+			gMenu[i] = new JMenuItem(notations[i].label);
+			gMenu[i].setFont(fontg);
+		}
 
 		
 		UIDefaults def = UIManager.getLookAndFeelDefaults();
@@ -7298,7 +7321,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 								curDiag.desc = df.getName();
 								curDiag.title = df.getName();
 
-								curDiag.changed = false;
+								//curDiag.changed = false;
 								return;
 							}
 						} else {
