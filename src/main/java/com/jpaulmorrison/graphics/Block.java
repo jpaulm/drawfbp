@@ -1563,7 +1563,8 @@ public class Block implements ActionListener {
 					diag.jpm.add(menuItem3b);
 					
 					menuItem1b.setEnabled(driver.currNotn != null && 							
-							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
+							(driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] ||
+							driver.currNotn.lang == driver.langs[DrawFBP.Lang.CSHARP])); 
 					menuItem3b.setEnabled(driver.currNotn != null && 							
 							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 											

@@ -15,7 +15,6 @@
 @rem
 
 @if "%DEBUG%" == "" @echo off
- 
 @rem ##########################################################################
 @rem
 @rem  drawfbp startup script for Windows
@@ -68,13 +67,13 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\drawfbp-2.22.3.jar;%APP_HOME%\lib\javaGeom-0.11.1.jar;%APP_HOME%\lib\javahelp-2.0.05.jar
+set CLASSPATH=%APP_HOME%\lib\drawfbp-2.22.4.jar;%APP_HOME%\lib\javaGeom-0.11.1.jar;%APP_HOME%\lib\javahelp-2.0.05.jar
+
 
 @rem Execute drawfbp
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %DRAWFBP_OPTS%  -classpath "%CLASSPATH%" com.jpaulmorrison.graphics.DrawFBP %*
 
 :end
-pause
 @rem End local scope for the variables with windows NT shell
 if "%ERRORLEVEL%"=="0" goto mainEnd
 
@@ -88,4 +87,3 @@ exit /b 1
 if "%OS%"=="Windows_NT" endlocal
 
 :omega
-pause
