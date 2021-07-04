@@ -334,7 +334,7 @@ public class Diagram {
 		
 		//suggFile = null;
 		MyOptionPane.showMessageDialog(jf, w + " saved: " + file.getName());
-		changed = false;
+		//changed = false;
 		return file;
 	}
 	

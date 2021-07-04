@@ -1201,7 +1201,8 @@ public class CodeManager implements ActionListener {
 				fileString = fsCheck;
 		}
 		
-		//if(packageNameChanged) {
+		packageNameChanged = false;   // fudge!
+		if(packageNameChanged) {
 		
 		
 			try {
@@ -1228,7 +1229,7 @@ public class CodeManager implements ActionListener {
 			
 			docText.repaint();
 						
-		//}
+		}
 		
 		// genCodeFileName = file.getAbsolutePath();
 		driver.saveProp(driver.currNotn.netDirProp, file.getParent());
