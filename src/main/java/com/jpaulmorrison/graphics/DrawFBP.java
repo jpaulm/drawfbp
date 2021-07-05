@@ -2222,6 +2222,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 		//else
 		//	fileMenu.add(gNMenuItem);
+		gNMenuItem.addActionListener(this);
 		
 		repaint();
 	}
