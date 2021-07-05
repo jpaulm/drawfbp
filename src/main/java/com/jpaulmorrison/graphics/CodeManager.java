@@ -364,7 +364,7 @@ public class CodeManager implements ActionListener {
 					}
 					s = makeUniqueDesc(s); // and make it unique
 					//s = makeUniqueDesc(s); // and make it unique
-					if (!(t.toLowerCase().endsWith(".class")))
+					if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] && !(t.toLowerCase().endsWith(".class")))
 					    t += ".class";
 					//if (t.toLowerCase().endsWith(".class"))
 					//	t = t.substring(0, t.length() - 6);
