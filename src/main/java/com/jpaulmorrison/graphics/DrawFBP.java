@@ -2205,20 +2205,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//setJMenuBar(menuBar);
 		
 		String u = "Generate ";
+		u += currNotn.label + " ";
+		u += "Network";
+		gNMenuItem = new JMenuItem(u); 
 		
-		if (!change) {
-			//String u = "Generate "; 
-			// if (curDiag != null)
-			u += currNotn.label + " ";
-			u += "Network";
-			gNMenuItem = new JMenuItem(u);
-		}
-		else {
-			//String u = "Generate "; 
-			// if (curDiag != null)
-			u += currNotn.label + " ";
-			u += "Network";
-			gNMenuItem.setText(u);
+		if (change) {			
 			for (Block bk : curDiag.blocks.values()) {
 				bk.component = null;
 				bk.fullClassName = null;
@@ -2226,7 +2217,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				bk.subnetFileName = null;
 				bk.compName = null;
 			}
+			fileMenu.remove(7);
+			fileMenu.add(gNMenuItem, 7);
 		}
+		//else
+		//	fileMenu.add(gNMenuItem);
+		
 		repaint();
 	}
 
@@ -6299,13 +6295,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			repaint();
 			// Graphics2D g2d = (Graphics2D) g;
 			
+			/*
 			for (Arrow arrow : diag.arrows.values()) {
 				// if (diag.diagFile != null)
 				// System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
 				arrow.draw(osg);
 				// System.out.println("arrow-draw");
 			}
-
+			 */
+			
 			for (Block block : diag.blocks.values()) {
 				if (!(block instanceof Enclosure))
 					block.draw(osg);
@@ -6314,6 +6312,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			for (Block block : diag.blocks.values()) {
 				if (block instanceof Enclosure)
 					block.draw(osg);
+			}
+			
+			for (Arrow arrow : diag.arrows.values()) {
+				// if (diag.diagFile != null)
+				// System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
+				arrow.draw(osg);
+				// System.out.println("arrow-draw");
 			}
 
 			// if (diag.diagFile != null)

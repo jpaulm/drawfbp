@@ -2055,15 +2055,16 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 	void assignSubnetDiagram() {
 		//int xa, ya;
-		if (subnetFileName != null) {
+		if (subnetFileName != null || fullClassName != null ) {
 			if (MyOptionPane.YES_OPTION != MyOptionPane.showConfirmDialog(
 					driver,
-					"Block already associated with diagram (" + subnetFileName
-							+ ") - change it?",
-					"Change diagram", MyOptionPane.YES_NO_OPTION)) {
+					"Code or subnet already associated with block (\"" + desc
+							+ "\") - change it?",
+					"Change diagram", MyOptionPane.YES_NO_OPTION))  
 				return;
-			}
+			 
 			subnetFileName = null;
+			fullClassName = null;
 		}
 
 		String t = driver.properties.get("currentDiagramDir");
@@ -2073,18 +2074,20 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				t = System.getProperty("user.home");
 		}
 		MyFileChooser fc = new MyFileChooser(driver,new File(t), 
-				driver.currNotn.lang,  "Assign Subnet Diagram");
+				driver.langs[DrawFBP.Lang.DIAGRAM],  "Assign Subnet Diagram");  
 
 		int returnVal = fc.showOpenDialog();
 		String dFN = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
 			dFN = driver.getSelFile(fc);
-			if (dFN != null) {
+			if (dFN == null) 
+				return;
 				File f = new File(dFN); 
-				if (!driver.currNotn.lang.filter.accept(f))						
-					dFN += "." +  driver.currNotn.lang.ext;
-				driver.curDiag.changed = true;
-			}
+				if (!driver.langs[DrawFBP.Lang.DIAGRAM].filter.accept(f))						
+					//dFN += "." +  driver.currNotn.lang.ext;
+					return;
+			driver.curDiag.changed = true;
+			//}
 			
 			
 			subnetFileName = dFN;
@@ -2098,6 +2101,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 			int i = dFN.lastIndexOf("/");
 			dFN = dFN.substring(i + 1);
+			/*
 			if (desc == null || desc.equals("")) {
 				int j = dFN.lastIndexOf("/"); 
 				desc = dFN.substring(j + 1);
@@ -2108,16 +2112,17 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 				if (ans != null)
 					desc = ans;
+				*/
 			}
 			fullClassName = null;
 			component = null;
 			
 			
 			MyOptionPane.showMessageDialog(driver,
-					"Subnet " + dFN + " associated with " + desc + " block",
+					"Subnet \"" + dFN + "\" associated with \"" + desc + "\" block",
 					MyOptionPane.INFORMATION_MESSAGE);
 			
-		}
+		//}
 
 		
 

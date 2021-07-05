@@ -1879,70 +1879,46 @@ public class CodeManager implements ActionListener {
 
 	*/
 	void getPortNames(Arrow arrow) {
-		
+
 		Block from = diag.blocks.get(Integer.valueOf(arrow.fromId));
 		Arrow a2 = arrow.findLastArrowInChain();
 		Block to = diag.blocks.get(Integer.valueOf(a2.toId));
-		boolean z = false; 
-		
+
 		if (from instanceof ProcessBlock) {
 			upPort = arrow.upStreamPort;
-			//while (true) {
-				if (upPort != null && !(upPort.trim().equals("")))  
-					z = diag.validatePortName(upPort);
-										
-					
-					if (!z) {
-						// upPort = z;
-						
 
-					String ans = (String) MyOptionPane.showInputDialog(driver.jf,
-							"Invalid output port from " + "\"" + from.desc + "\"",
-							"Please correct port name", MyOptionPane.PLAIN_MESSAGE, null, null, upPort);
-					if (ans != null/* && ans.length() > 0 */) {
-						upPort = ans.trim();
-						diag.changed = true;
-						arrow.upStreamPort = upPort;
-					}
-				}
-			}
+			if (!diag.validatePortName(upPort)) {
 
-		 
-
-		//}
-
-		z = false;
-		dnPort = a2.downStreamPort;
-	//	while (true) {
-			if (dnPort != null && !(dnPort.trim().equals("")))  
-				z = diag.validatePortName(dnPort);
-			
-				if (z) {
-					//dnPort = z;
-					return;
-				}
-				
-			 
 				String ans = (String) MyOptionPane.showInputDialog(driver.jf,
-						"Invalid input port to " + "\"" + to.desc + "\"",
-						"Please correct port name",
-						MyOptionPane.PLAIN_MESSAGE, null, null, dnPort);
-				if (ans != null/* && ans.length() > 0*/) {
-					dnPort = ans.trim();
+						"Invalid output port from " + "\"" + from.desc + "\"", "Please correct port name",
+						MyOptionPane.PLAIN_MESSAGE, null, null, upPort);
+				if (ans != null && ans.length() > 0) {
+					upPort = ans.trim();
 					diag.changed = true;
-					a2.downStreamPort = dnPort;
+					arrow.upStreamPort = upPort;
 				}
-			
-			//}
-	//	}
+				else 
+					upPort = "?";
+			}
+		}
 
-		
+		dnPort = a2.downStreamPort;
 
-		return;
+		if (!diag.validatePortName(dnPort)) {
+
+			String ans = (String) MyOptionPane.showInputDialog(driver.jf,
+					"Invalid input port to " + "\"" + to.desc + "\"", "Please correct port name",
+					MyOptionPane.PLAIN_MESSAGE, null, null, dnPort);
+			if (ans != null  && ans.length() > 0 ) {
+				dnPort = ans.trim();
+				diag.changed = true;
+				a2.downStreamPort = dnPort;
+			}
+			else 
+				dnPort = "?";
+		}
 	}
 
-	
-	
 	public class MyDocListener1 implements DocumentListener {
 		
 		// used by displayDoc only
