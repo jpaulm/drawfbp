@@ -400,8 +400,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		langs[Lang.JARFILE] = new Lang("Jar File", "jar", new JarFileFilter(), "javaFBPJarFile");
 		langs[Lang.CLASS] = new Lang("Class", "class", new JavaClassFilter(), "currentClassDir");
 		langs[Lang.FBP_JSON] = new Lang("JSON", "json", new JSONFilter(), "currentJSDir");
-		langs[Lang.DLL] = new Lang(null, "dll", new DllFilter(), "dllFileDir");
-		langs[Lang.EXE] = new Lang(null, "exe", new ExeFilter(), "exeDir");
+		langs[Lang.DLL] = new Lang("dll", "dll", new DllFilter(), "dllFileDir");
+		langs[Lang.EXE] = new Lang("exe", "exe", new ExeFilter(), "exeDir");
 		langs[Lang.PRINT] = new Lang("Print", null, null, null);
 
 		notations = new Notation[4];
