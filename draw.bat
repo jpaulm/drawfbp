@@ -1,7 +1,7 @@
 echo off
 echo "DrawFBP displaying %1"
 echo "Jar file: %DRAWFBP_LIB%\%DRAWFBP_VERSION%.jar"
-pause
+
 rem Find java.exe
 if defined JAVA_HOME goto findJavaFromJavaHome
 
