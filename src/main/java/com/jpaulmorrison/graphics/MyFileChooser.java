@@ -75,15 +75,15 @@ public class MyFileChooser extends JDialog
 	//DefaultMutableTreeNode fbpJsonTree = new DefaultMutableTreeNode();
 
 	DrawFBP driver = null;
-	MyButton butParent = new MyButton(null, "parent");
-	MyButton butOK = new MyButton(null, "OK");
-	MyButton butFind = new MyButton(null, "Find");
-	MyButton butCancel = new MyButton(null, "cancel");
-	MyButton butDel = new MyButton(null, "delete");
-	MyButton butNF = new MyButton(null, "new folder");
+	MyFCButton butParent = new MyFCButton(null, "parent");
+	MyFCButton butOK = new MyFCButton(null, "OK");
+	MyFCButton butFind = new MyFCButton(null, "Find");
+	MyFCButton butCancel = new MyFCButton(null, "cancel");
+	MyFCButton butDel = new MyFCButton(null, "delete");
+	MyFCButton butNF = new MyFCButton(null, "new folder");
 	JCheckBox butSortByDate = new JCheckBox("Sort ByDate");
 
-	MyButton butUseSugg = new MyButton(null, "useSugg");
+	MyFCButton butUseSugg = new MyFCButton(null, "useSugg");
 
 	MyTextField t_dirName = new MyTextField(100, "dir");
 	MyTextField t_fileName = new MyTextField(100, "file");
@@ -850,7 +850,7 @@ public class MyFileChooser extends JDialog
 			order.remove(5);             //??????????????
 			order.add(5, list);			
 
-			FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+			FontMetrics metrics = driver.getGraphics().getFontMetrics(driver.fontg);
 			list.setFixedCellHeight(metrics.getHeight());
 
 			list.setCellRenderer(renderer);
@@ -1281,8 +1281,8 @@ public class MyFileChooser extends JDialog
 			cBox.setBackground(vLightBlue);
 		}
 
-		if (selComp instanceof MyButton) {
-			((MyButton) selComp).setSelected(false);
+		if (selComp instanceof MyFCButton) {
+			((MyFCButton) selComp).setSelected(false);
 		}
 		//paintList();
 		//selComp = t_fileName;
@@ -1323,8 +1323,8 @@ public class MyFileChooser extends JDialog
 			if (selComp == cBox)
 				cBox.setRequestFocusEnabled(false);
 			
-			if (selComp instanceof MyButton) 
-				((MyButton) selComp).setSelected(false);
+			if (selComp instanceof MyFCButton) 
+				((MyFCButton) selComp).setSelected(false);
 			 
 			// selComp.setRequestFocusEnabled(false);
 			selComp.setFocusable(false);
@@ -1356,8 +1356,8 @@ public class MyFileChooser extends JDialog
 			//	selComp = list;
 			//}
 
-			else if (selComp instanceof MyButton)
-				((MyButton) selComp).setSelected(true);
+			else if (selComp instanceof MyFCButton)
+				((MyFCButton) selComp).setSelected(true);
 
 			if (selComp instanceof MyComboBox) {
 
@@ -1570,12 +1570,12 @@ public class MyFileChooser extends JDialog
 		public void actionPerformed(ActionEvent e) {
 
 			//System.out.println(selComp);
-			if (selComp instanceof MyButton) {
+			if (selComp instanceof MyFCButton) {
 				// ((MyButton) selComp).getAction().actionPerformed(new
 				// ActionEvent(e, 0, ""));
 				if (selComp == butOK)  //check this out!
 					return;
-				((MyButton) selComp).doClick();
+				((MyFCButton) selComp).doClick();
 				return;
 			}
 			if (selComp == butSortByDate) {
@@ -2144,13 +2144,13 @@ public class MyFileChooser extends JDialog
 
 	}
 
-	class MyButton extends JButton {
+	class MyFCButton extends JButton {
 
 		private static final long serialVersionUID = 1L;
 		
 		String name = null;
 		
-		public MyButton(String text, String name) {
+		public MyFCButton(String text, String name) {
 			super(text);
 			this.name = name;
 		}

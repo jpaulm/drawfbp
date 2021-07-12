@@ -41,11 +41,11 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	JLabel lb1, lb2;
 	
 
-	MyFontChooser(JFrame frm, DrawFBP drawFBP) {
+	MyFontChooser(JFrame frm, DrawFBP d) {
 
 		// type = t; // true if general text; false if fixed-width
 		//frame = frm;
-		driver = drawFBP;
+		driver = d;
 		//ft = ftyp;
 		//cr = new CellRenderer();
 	}
@@ -58,7 +58,7 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 		for (int j = 0; j < allfonts.length; j++) {
 			llG.add(allfonts[j].getName());
-			FontMetrics fontMetrics = driver.osg.getFontMetrics(allfonts[j]);
+			FontMetrics fontMetrics = driver.getGraphics().getFontMetrics(allfonts[j]);
 			if (fontMetrics.charWidth('i') == fontMetrics
 							.charWidth('m'))
 				llF.add(allfonts[j].getName());

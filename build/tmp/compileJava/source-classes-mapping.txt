@@ -21,6 +21,8 @@ com/jpaulmorrison/graphics/SplashWindow.java
  com.jpaulmorrison.graphics.SplashWindow$2$1
 com/jpaulmorrison/graphics/Diagram.java
  com.jpaulmorrison.graphics.Diagram
+com/jpaulmorrison/graphics/MyJButton.java
+ com.jpaulmorrison.graphics.MyJButton
 com/jpaulmorrison/graphics/AInPort.java
  com.jpaulmorrison.graphics.AInPort
 com/jpaulmorrison/graphics/Enclosure.java
@@ -49,8 +51,6 @@ com/jpaulmorrison/graphics/CodeManager.java
  com.jpaulmorrison.graphics.CodeManager$1
  com.jpaulmorrison.graphics.CodeManager$CloseAction
  com.jpaulmorrison.graphics.CodeManager$MyDocListener1
-com/jpaulmorrison/graphics/TabButton.java
- com.jpaulmorrison.graphics.TabButton
 com/jpaulmorrison/graphics/PersonBlock.java
  com.jpaulmorrison.graphics.PersonBlock
 com/jpaulmorrison/graphics/MyOptionPane.java
@@ -118,8 +118,8 @@ com/jpaulmorrison/graphics/MyFileChooser.java
  com.jpaulmorrison.graphics.MyFileChooser$EnterAction
  com.jpaulmorrison.graphics.MyFileChooser$FindAction
  com.jpaulmorrison.graphics.MyFileChooser$ListRenderer
- com.jpaulmorrison.graphics.MyFileChooser$MyButton
  com.jpaulmorrison.graphics.MyFileChooser$MyComboBox
+ com.jpaulmorrison.graphics.MyFileChooser$MyFCButton
  com.jpaulmorrison.graphics.MyFileChooser$MyTextField
  com.jpaulmorrison.graphics.MyFileChooser$MyTextField$1
  com.jpaulmorrison.graphics.MyFileChooser$MyTraversalPolicy

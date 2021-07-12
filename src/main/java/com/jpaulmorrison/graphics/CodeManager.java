@@ -634,9 +634,12 @@ public class CodeManager implements ActionListener {
 		
 		driver.jf.setFont(driver.fontf);
 
-		driver.jf.setTitle("Generated Code for " + diag.diagFile);		
+		driver.jf.setTitle("Generated Code for " + diag.diagFile);	
+		
+		//int n = driver.notations.length;
+		//driver.gMenu = new JMenuItem[n];
 
-		driver.jf.setJMenuBar(createMenuBar());		
+		driver.jf.setJMenuBar(createCMMenuBar());		
 
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
 		driver.jf.setIconImage(image);
@@ -674,7 +677,9 @@ public class CodeManager implements ActionListener {
 
 		});
 		
-		driver.jf.setJMenuBar(createMenuBar());
+		//int nn = driver.notations.length;
+		//driver.gMenu = new JMenuItem[nn];
+		driver.jf.setJMenuBar(createCMMenuBar());
 		driver.jf.repaint();
 
 		image = driver.loadImage("DrawFBP-logo-small.png");
@@ -706,7 +711,7 @@ public class CodeManager implements ActionListener {
 		MyDocument doc2 = new MyDocument(sc);
 		lineNos.setStyledDocument(doc2); 		
 		
-		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontf);
+		FontMetrics metrics = driver.getGraphics().getFontMetrics(driver.fontf);
 		String str = "        ";  // 8 blanks
 		byte[] str2 = str.getBytes();
 		int xx = 2 + metrics.bytesWidth(str2, 0, str.length());
@@ -1381,7 +1386,7 @@ public class CodeManager implements ActionListener {
 	}
 	
 	
-	public JMenuBar createMenuBar() {
+	public JMenuBar createCMMenuBar() {
 
 		JMenuBar menuBar;
 

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -67,11 +66,11 @@ public class IIPBlock extends Block {
 		//blueCircs(g);
 	}
 	
-	int calcIIPWidth(Graphics2D g2d) {
+	int calcIIPWidth(/*Graphics2D g2d*/) {
 		int w = 10;
 		if (desc != null) {
 			//FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());	
-			FontMetrics metrics = g2d.getFontMetrics(driver.fontf);
+			FontMetrics metrics = driver.getGraphics().getFontMetrics(driver.fontf);
 			height = driver.gFontHeight + metrics.getMaxAscent();
 			String t = desc;
 			if (t.length() < 2)

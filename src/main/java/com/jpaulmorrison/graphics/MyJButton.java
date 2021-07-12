@@ -20,15 +20,17 @@ import javax.swing.plaf.basic.BasicButtonUI;
 
 // look after handling 'x' on tabs
 
-	public class TabButton extends JButton implements ActionListener {
+	public class MyJButton extends JButton implements ActionListener {
 		
     	static final long serialVersionUID = 111L;
-    	JTabbedPaneWithCloseIcons jtp;
+    	//JTabbedPaneWithCloseIcons jtp;
     	//Diagram diag;
+    	DrawFBP driver = null;
     	    	
-        public TabButton(JTabbedPane jtp) {
+        public MyJButton(DrawFBP d) {
+        	driver = d;
             int size = 17;
-            this.jtp = (JTabbedPaneWithCloseIcons) jtp;
+            //this.jtp = (JTabbedPaneWithCloseIcons) jtp;
             setPreferredSize(new Dimension(size, size));
             setToolTipText("close this tab");
             //Make the button looks the same for all Laf's
@@ -49,10 +51,10 @@ import javax.swing.plaf.basic.BasicButtonUI;
         }
  
        public void actionPerformed(ActionEvent e) {
-            int i = jtp.indexOfTabComponent(getParent());
+            int i = driver.jtp.indexOfTabComponent(getParent());
             if (i != -1) {
-             	jtp.setSelectedIndex(i);
-             	jtp.driver.closeTab(false);
+             	driver.jtp.setSelectedIndex(i);
+             	driver.jtp.driver.closeTab(false);
               // pane.remove(i);
               }
        }

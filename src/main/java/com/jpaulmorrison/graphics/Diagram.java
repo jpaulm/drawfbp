@@ -834,8 +834,10 @@ public class Diagram {
 		// adjust x, y, w, h to avoid RasterFormatException
 
 		
-		int w2 = driver.buffer.getWidth();
-		int h2 = driver.buffer.getHeight();
+		//int w2 = driver.buffer.getWidth();
+		//int h2 = driver.buffer.getHeight();
+		int w2 = driver.getWidth();
+		int h2 = driver.getHeight();
 		
 		w = Math.min(w, w2);
 		h = Math.min(h, h2);
@@ -865,14 +867,20 @@ public class Diagram {
 		x = Math.max(0,  x);
 		y = Math.max(0,  y);
 		
-		BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);	
-			
+		//BufferedImage buffer2 = driver.buffer.getSubimage(x, y, w, h);	
+		
+		BufferedImage buffer2 = (BufferedImage) driver.createImage(area.getWidth(), area.getHeight());
+		
+		Graphics g2 = buffer2.getGraphics(); 
+		area.paint(g2);
+		
+		//BufferedImage buffer2 = img.getSubimage(x, y, w, h);			
 						
 		//Font f = driver.fontg;
 		
 		//g.setFont(f);
 
-		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+		FontMetrics metrics = driver.getGraphics().getFontMetrics(driver.fontg);
 		//width = 0;
 		
 		byte[] str = new byte[0];

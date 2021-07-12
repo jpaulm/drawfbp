@@ -2,7 +2,6 @@ package com.jpaulmorrison.graphics;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -136,6 +135,8 @@ public class Block implements ActionListener {
 	
 	void draw(Graphics g) {
 
+		//g.drawString("fudge", cx, cy);
+		
 		if (diag == null) // fudge
 			return;
 
@@ -418,7 +419,7 @@ public class Block implements ActionListener {
 
 		String str[] = desc.split("\n");
 		
-		FontMetrics metrics = driver.osg.getFontMetrics(driver.fontg);
+		FontMetrics metrics = driver.getGraphics().getFontMetrics(driver.fontg);
 		int saveY = 0;
 
 		if (this instanceof ProcessBlock) {
@@ -908,7 +909,7 @@ public class Block implements ActionListener {
 		if (!(typeCode.equals(Types.ENCL_BLOCK)))
 		    driver.blueCircs(g);
 		
-		driver.repaint();
+		//driver.repaint();
 		
 		 
 	}
@@ -1348,7 +1349,7 @@ public class Block implements ActionListener {
 		portInfo.validate();
 		panel.repaint();
 		portInfo.repaint();
-		driver.repaint();
+		//driver.repaint();
 	}
 
 	
@@ -1628,7 +1629,7 @@ public class Block implements ActionListener {
 					IIPBlock ib = (IIPBlock) this;
 					desc = ib.checkNestedChars(desc);					
 					
-					width = ib.calcIIPWidth(driver.osg);
+					width = ib.calcIIPWidth();
 					if (width < 12)
 						width = 12;
 					buildSideRects();
@@ -1651,7 +1652,8 @@ public class Block implements ActionListener {
 							
 					}
 			}
-			driver.update(driver.osg);
+			//driver.update(driver.osg);
+			driver.repaint();
 			diag.changed = true;
 			return;
 		}
@@ -1774,7 +1776,7 @@ public class Block implements ActionListener {
 			outputPortAttrs = null;
 			isSubnet = false;
 			diag.changed = true;
-			diag.driver.repaint();
+			//diag.driver.repaint();
 			driver.repaint();
 			return;
 
@@ -1810,7 +1812,7 @@ public class Block implements ActionListener {
 			multiplex = !multiplex;
 			if (!multiplex)
 				mpxfactor = null;
-			driver.repaint();
+			//driver.repaint();
 			diag.changed = true;
 			return;
 
@@ -1847,7 +1849,7 @@ public class Block implements ActionListener {
 				&& s.equals("Toggle Substream Sensitive / Normal")) {
 			ExtPortBlock eb = (ExtPortBlock) this;
 			eb.substreamSensitive = !eb.substreamSensitive;
-			driver.repaint();
+			//driver.repaint();
 			diag.changed = true;
 			return;
 
@@ -1862,7 +1864,7 @@ public class Block implements ActionListener {
 			if (ans != null/* && ans.length() > 0*/) {
 				/*diag.cEncl.*/desc = ans;
 			}
-			driver.repaint();
+			//driver.repaint();
 			diag.changed = true;
 			return;
 
@@ -1889,7 +1891,7 @@ public class Block implements ActionListener {
 			enc.draggingContents = true;
 			driver.blockSelForDragging = this;
 			diag.findEnclosedBlocksAndArrows(enc);
-			driver.repaint();
+			//driver.repaint();
 			diag.changed = true;
 			return;
 		}
@@ -1932,20 +1934,20 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// diag is the diagram being modified, this is the "enclosure" block within it
 			// ans is the name chosen for the (new) subnet
 			
-			driver.repaint();
+			//driver.repaint();
 			return;
 
 		}
 		if (s.equals("Toggle Visible/Invisible")) {
 			visible = !visible;
 			diag.changed = true;
-			driver.repaint();
+			//driver.repaint();
 			return;
 		}
 		if (s.equals("Switch off Selected Status")) {			
 			driver.selBlock = null;			
 			diag.changed = true;
-			driver.repaint();
+			//driver.repaint();
 			return;
 		}
 		/*
@@ -1964,7 +1966,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			diag.changed = true;
 			driver.selBlock = null;
 			// diag.changeCompLang();
-			driver.repaint();
+			//driver.repaint();
 		}
 		//if (s.equals("Exit")) {
 		// diag.foundBlock = null;
@@ -2037,12 +2039,18 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		desc = area.getText();
 		
 		// try this! it worked (fingers crossed) !
+		/*
+		 *  Solve double buffering first!  
+		 * 
+		 */ 
+		//int w = driver.buffer.getWidth();
+		//int h = driver.buffer.getHeight();
 		
-		int w = driver.buffer.getWidth();
-		int h = driver.buffer.getHeight();
-		driver.buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		//driver.buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		/*
 		driver.osg = (Graphics2D) driver.buffer.getGraphics();
 		diag.area.repaint();
+		*/
 		centreDesc();  
 		buildSideRects();
 		

@@ -305,7 +305,7 @@ public class DiagramBuilder {
 									block = new IIPBlock(diag);
 									IIPBlock ib = (IIPBlock) block;
 									//block.width = ib.width;
-									ib.width = ib.calcIIPWidth(driver.osg);
+									ib.width = ib.calcIIPWidth();
 									block.buildSideRects();
 
 								} else if (type

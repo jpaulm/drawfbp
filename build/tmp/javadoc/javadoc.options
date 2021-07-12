@@ -1,10 +1,10 @@
 -Xdoclint:none 
 -classpath 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\build\\classes\\java\\main;C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\build\\resources\\main;C:\\Users\\Paul\\.gradle\\caches\\modules-2\\files-2.1\\math.geom2d\\javaGeom\\0.11.1\\5951b33da14e56c9e2b1f741b9ba3531401393b6\\javaGeom-0.11.1.jar;C:\\Users\\Paul\\.gradle\\caches\\modules-2\\files-2.1\\javax.help\\javahelp\\2.0.05\\ca70822c47a67fc3a11670270567c2d01566dae1\\javahelp-2.0.05.jar'
 -d 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\build\\docs\\javadoc'
--doctitle 'drawfbp 2.22.5 API'
+-doctitle 'drawfbp 3.0.0 API'
 -notimestamp 
 -quiet 
--windowtitle 'drawfbp 2.22.5 API'
+-windowtitle 'drawfbp 3.0.0 API'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\AInPort.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\AOutPort.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\Arrow.java'
@@ -27,11 +27,11 @@
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\MyDocument.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\MyFileChooser.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\MyFontChooser.java'
+'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\MyJButton.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\MyOptionPane.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\PersonBlock.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\ProcessBlock.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\ReportBlock.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\RequestFocusListener.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\SplashWindow.java'
-'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\TabButton.java'
 'C:\\Users\\Paul\\Documents\\GitHub\\drawfbp\\src\\main\\java\\com\\jpaulmorrison\\graphics\\VersionAndTimestamp.java'

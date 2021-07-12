@@ -15,7 +15,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -97,11 +97,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	Block blockSelForDragging = null;
 
-	BufferedImage buffer = null;
+	//BufferedImage buffer = null;
 
 	// int maxX, maxY;
 
-	Graphics2D osg;
+	//Graphics2D osg;
 
 	// SelectionArea area;
 	int gFontWidth, gFontHeight;
@@ -135,7 +135,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	// int xTranslate = 0; // 400;
 	// int yTranslate = 0; // 400;
 
-	BasicStroke bs;
+	
 
 	// boolean propertiesChanged = false;
 
@@ -359,15 +359,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	MyRadioButton selRB = null;
 	
-	//Notation currNotn = null;
+	RenderingHints rh = null;
 	
 	//String blkType = null;
+	
+	private Image dbImage = null;
+	private Graphics dbg = null;
 
 	final boolean CODEMGRCREATE = true;
-
 	
 	DrawFBP(String[] args) {
 
+		//setVisible(false);
 		properties = new HashMap<String, String>();
 		startProperties = new HashMap<String, String>();
 		readPropertiesFile();
@@ -387,7 +390,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			diagramName = properties.get("currentDiagram");
 		}
 
-		frameInit();
+		//frameInit();
 
 		langs = new Lang[12];
 
@@ -418,16 +421,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fileMenu = new JMenu(" File ");
 		diagMenu = new JMenu(" Diagram ");
 		helpMenu = new JMenu(" Help ");
-		/*
-		currNotn = findNotnFromLabel(properties.get("defaultNotation")); 
-		if (currNotn == null)
-			currNotn = notations[Notation.JAVA_FBP];
 		
-		menuBar = createMenuBar();
-		setJMenuBar(menuBar);
-		
-		setNotation(currNotn, false);  // not changing notation
-*/
 		scalingFactor = 1.0d;
 
 		String sF = properties.get("scalingfactor");
@@ -478,8 +472,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// Create and set up the window.
 
-		// readPropertiesFile();
+		//System.out.println("Created GUI on EDT? "+
+         //       SwingUtilities.isEventDispatchThread());
+		/*
+		BufferStrategy bufferStrategy = getBufferStrategy ();
 
+		if (bufferStrategy == null) {
+		    createBufferStrategy(3);
+		    return;
+		}
+*/
 		addMouseMotionListener(this);
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -504,19 +506,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		setPreferredSize(new Dimension(w, h));
 		// maxX = (int) (w * .8);
 		// maxY = (int) (h * .8);
-		buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		//buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		// osg = buffer.createGraphics();
-		osg = (Graphics2D) buffer.getGraphics();
-		// osg = (Graphics2D) getGraphics();
-		// setVisible(true);
+		//osg = (Graphics2D) buffer.getGraphics();
+		//setVisible(true); 
+		//osg = (Graphics2D) getGraphics();
+		
 
 		// osg = (Graphics2D) getGraphics();
 
 		// http://www.oracle.com/technetwork/java/painting-140037.html
 
-		bs = new BasicStroke(1.5f, BasicStroke.CAP_ROUND, // width 1.5
-				BasicStroke.JOIN_ROUND);
-		osg.setStroke(bs);
+		
 
 		// UIDefaults def = UIManager.getLookAndFeelDefaults();
 		// UIDefaults def = UIManager.getDefaults();
@@ -529,14 +530,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		
 
-		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
+		rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 		rh.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		rh.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
 		rh.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_DEFAULT);
-		osg.setRenderingHints(rh);
+		//osg.setRenderingHints(rh);
 
 		// readPropertiesFile();
 
@@ -621,14 +622,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// read/create time
 		fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
-		osg.setFont(fontg);
+		//osg.setFont(fontg);
+		
+		
+		//FontMetrics metrics =  getGraphics().getFontMetrics(fontg);
 
-		FontMetrics metrics = null;
-
-		metrics = osg.getFontMetrics(fontg);
-
-		gFontWidth = metrics.charWidth('n'); // should be the average!
-		gFontHeight = metrics.getAscent() + metrics.getLeading();
+		//gFontWidth = metrics.charWidth('n'); // should be the average!
+		//gFontHeight = metrics.getAscent() + metrics.getLeading();
 
 		jfl = new JTextField("");
 
@@ -660,7 +660,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// return null;
 		}
 
-		repaint();
+		//repaint();
 		// update(getGraphics());
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		closeTabAction = new CloseTabAction();
@@ -672,6 +672,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			@Override
 			public void windowClosing(WindowEvent ev) {
 				closeAppAction.actionPerformed(new ActionEvent(ev, 0, "CLOSE"));
+				//osg.dispose();
+				//bufferStrategy.show();
 			}
 
 		});
@@ -682,13 +684,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		jtp.getActionMap().put("CLOSE", escapeAction);
 
+		int n = notations.length;
+		gMenu = new JMenuItem[n];
+		for (int i = 0; i < notations.length; i++)
+			gMenu[i] = new JMenuItem(notations[i].label);
+		
+		setJMenuBar(createMenuBar());
+		
 		Container cont = getContentPane();
-		buildUI(cont);
+		buildUI(cont);		
 
 		add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		menuBar = createMenuBar();
-		setJMenuBar(menuBar);
 		
 		currNotn = findNotnFromLabel(properties.get("defaultNotation")); 
 		if (currNotn == null)
@@ -717,7 +723,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		Dimension dim2 = new Dimension(w2, h2);
 		setPreferredSize(dim2);
-		repaint();
+		
+		setVisible(true); 
+		
+		FontMetrics metrics =  getGraphics().getFontMetrics(fontg);
+
+		gFontWidth = metrics.charWidth('n'); // should be the average!
+		gFontHeight = metrics.getAscent() + metrics.getLeading();
+		
+		
 		// Display the window.
 		pack();
 
@@ -746,10 +760,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		//blkType = blockNames[BUT_PROCESS];
 
-		setVisible(true);
+		//setVisible(true);
 		addComponentListener(this);
 
-		repaint();
+		//repaint();
 
 		// wDiff = getWidth() - curDiag.area.getWidth();
 		// hDiff = getHeight() - curDiag.area.getHeight();
@@ -779,7 +793,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Open " + diagramName));
 	
 		
-		repaint();
+		//repaint();
 
 	}
 
@@ -790,26 +804,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (diagramName == null)
 			diagramName = properties.get("currentDiagram");
 
-		/*
-		 * 
-		 * MouseListener mouseListener = new MouseAdapter() {
-		 * 
-		 * public void mouseClicked(MouseEvent e) {
-		 * 
-		 * int i = jtp.indexAtLocation(e.getX(), e.getY()); if (i == -1) return;
-		 * ButtonTabComponent b = (ButtonTabComponent) jtp .getTabComponentAt(i); if (b
-		 * == null || b.diag == null) return; Diagram diag = b.diag;
-		 * 
-		 * if (diag == null) { getNewDiag(); // diag = new Diagram(driver); // b.diag =
-		 * diag; } // curDiag = diag; else { //if (i == -1 ) { //
-		 * MyOptionPane.showMessageDialog(driver, // "No diagram selected", //
-		 * MyOptionPane.WARNING_MESSAGE); //} //else if (comparing) { comparing = false;
-		 * compare(i); return; } else jtp.setSelectedIndex(i); repaint(); }
-		 * 
-		 * repaint();
-		 * 
-		 * } };
-		 */
+		
 		getNewDiag();
 		curDiag.desc = "Click anywhere on selection area";
 
@@ -817,42 +812,31 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		jtp.addMouseListener(this);
 
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		Box box1 = new Box(BoxLayout.Y_AXIS);
-		container.add(box1);
+		Box vbox1 = new Box(BoxLayout.Y_AXIS);
+		container.add(vbox1);
 
-		Box box4 = new Box(BoxLayout.X_AXIS);
-		box1.add(box4);
-		/*
-		 * int sf = (int) Math.round(100.0 * scalingFactor); zoomControl = new
-		 * JSlider(JSlider.VERTICAL, 60, 200, sf); zoomControl.setPreferredSize(new
-		 * Dimension(40, 200)); zoomControl.setMajorTickSpacing(20); //
-		 * zoomControl.setMinorTickSpacing(10); zoomControl.setPaintTicks(true);
-		 * zoomControl.setSnapToTicks(true); zoomControl.setPaintLabels(false);
-		 * zoomControl.setPaintTrack(true); zoomControl.setVisible(true);
-		 * zoomControl.addChangeListener(this); zoomControl.getInputMap().put(escapeKS,
-		 * "CLOSE"); zoomControl.getActionMap().put("CLOSE", escapeAction);
-		 */
-		// zoomControl.setBackground(Color.WHITE);
-		Box box45 = new Box(BoxLayout.Y_AXIS);
-		Box box46 = new Box(BoxLayout.X_AXIS);
-		Box box5 = new Box(BoxLayout.X_AXIS);
-		Box box61 = new Box(BoxLayout.X_AXIS);
-		Box box62 = new Box(BoxLayout.X_AXIS);
-		Box box6 = new Box(BoxLayout.Y_AXIS);
+		Box hbox4 = new Box(BoxLayout.X_AXIS);
+		vbox1.add(hbox4);
+		Box vbox45 = new Box(BoxLayout.Y_AXIS);
+		Box hbox46 = new Box(BoxLayout.X_AXIS);
+		Box hbox5 = new Box(BoxLayout.X_AXIS);
+		Box hbox61 = new Box(BoxLayout.X_AXIS);
+		Box hbox62 = new Box(BoxLayout.X_AXIS);
+		Box vbox6 = new Box(BoxLayout.Y_AXIS);
 
-		box5.add(Box.createRigidArea(new Dimension(10, 0)));
+		hbox5.add(Box.createRigidArea(new Dimension(10, 0)));
 
-		box6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		// scaleLab = new JLabel();
-		box61.add(scaleLab);
-		box61.add(Box.createRigidArea(new Dimension(5, 0)));
+		hbox61.add(scaleLab);
+		hbox61.add(Box.createRigidArea(new Dimension(5, 0)));
 
-		box62.add(zoom);
-		box62.add(Box.createRigidArea(new Dimension(5, 0)));
+		hbox62.add(zoom);
+		hbox62.add(Box.createRigidArea(new Dimension(5, 0)));
 
-		box6.add(zoomControl);
-		box6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox6.add(zoomControl);
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		scaleLab.setForeground(Color.BLUE);
 		// String scale = "100%";
@@ -860,12 +844,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		saveProp("scalingfactor", Double.toString(scalingFactor));
 
-		box6.add(Box.createRigidArea(new Dimension(0, 10)));
-		box6.add(box61);
-		box6.add(Box.createRigidArea(new Dimension(0, 10)));
-		box6.add(box62);
-		box5.add(box6);
-		box5.add(Box.createRigidArea(new Dimension(10, 0)));
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox6.add(hbox61);
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox6.add(hbox62);
+		hbox5.add(vbox6);
+		hbox5.add(Box.createRigidArea(new Dimension(10, 0)));
 		// grid.setAlignmentX(JComponent.LEFT_ALIGNMENT);
 		grid.setFont(fontg);
 		grid.setSelected(true);
@@ -874,32 +858,37 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		grid.addActionListener(this);
 		grid.setBackground(slateGray1);
 		grid.setBorderPaintedFlat(false);
-		box6.add(Box.createRigidArea(new Dimension(0, 10)));
-		box45.add(box5);
-		box45.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox45.add(hbox5);
+		vbox45.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		box46.add(grid);
-		box46.add(Box.createRigidArea(new Dimension(0, 10)));
-		box45.add(box46);
+		hbox46.add(grid);
+		hbox46.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox45.add(hbox46);
 		// scaleLab.setFont(fontg);
 
-		box4.add(box45);
-		Point p = jtp.getLocation();
-		jtp.setLocation(p.x + 100, p.y);
-		box4.add(jtp);
-		box4.add(Box.createRigidArea(new Dimension(50, 0)));
+		hbox4.add(vbox45);
+		//Point p = jtp.getLocation();
+		//jtp.setLocation(p.x + 100, p.y);
+		
+		//Box vbox7 = new Box(BoxLayout.Y_AXIS);
+		//vbox7.add(jtp);
+		//vbox7.add(curDiag.area);  
+		//hbox4.add(vbox7);
+		hbox4.add(jtp);
+		hbox4.add(Box.createRigidArea(new Dimension(50, 0)));
 		// jtp.setBackground(Color.WHITE);
 		// Align the left edges of the components.
 		// curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
 		diagDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
 		// label.setLabelFor(area);
-		box1.add(diagDesc);
+		vbox1.add(diagDesc);
 		Font ft = fontg.deriveFont(Font.BOLD);
 		diagDesc.setFont(ft);
 		diagDesc.setPreferredSize(new Dimension(0, gFontHeight * 2));
 		diagDesc.setForeground(Color.BLUE);
 
-		box1.add(Box.createRigidArea(new Dimension(0, 4)));
+		vbox1.add(Box.createRigidArea(new Dimension(0, 4)));
 		Box box2 = new Box(BoxLayout.X_AXIS);
 		// JScrollPane jsp = new JScrollPane();
 		// box2.add(jsp);
@@ -932,7 +921,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		box2.add(Box.createRigidArea(new Dimension(10, 0)));
 		box2.add(up);
 		// box2.add(Box.createHorizontalStrut(0));
-		pack();
+		//pack();
 
 		up.setText("Go to Dir");
 		
@@ -971,7 +960,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		selRB = but[BUT_PROCESS];  // set selected RadioButton to "Process"	
 
-		box1.add(box2);
+		vbox1.add(box2);
 
 		// box21.add(Box.createRigidArea(new Dimension(10,0)));
 		// box21.add(Box.createHorizontalStrut(10));
@@ -1025,7 +1014,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		adjustFonts();
 		
 	}
-
+	
+	
 	public JMenuBar createMenuBar() {
 
 		// JMenu editMenu;
@@ -1084,11 +1074,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		fileMenu.addSeparator();
 
-		//String s = "Generate ";
-		// if (curDiag != null)
-		//s += currNotn.label + " ";
-		//s += "Network";
-		//gNMenuItem = new JMenuItem(s);
+		String s = "Generate ";
+		if (currNotn != null)
+			s += currNotn.label + " ";
+		s += "Network";
+		gNMenuItem = new JMenuItem(s);
 		fileMenu.add(gNMenuItem);
 		gNMenuItem.addActionListener(this);
 
@@ -1354,8 +1344,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		String s = diagramName;
 		if (s == null || s.endsWith(".drw")) {
-			curDiag.area.addMouseListener(curDiag.area);
-			curDiag.area.addMouseMotionListener(curDiag.area);
+			diag.area.addMouseListener(diag.area);
+			diag.area.addMouseMotionListener(diag.area);
 		}
 
 		// int j = jtp.getTabCount(); // for debugging
@@ -1374,7 +1364,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		diag.blocks = new ConcurrentHashMap<Integer, Block>();
 		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();
 
-		repaint();
+		//repaint();
 
 		return diag;
 	}
@@ -1436,7 +1426,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			// jtp.setSelectedIndex(curDiag.tabNum);
 
-			repaint();
+			//repaint();
 
 			return;
 
@@ -2205,7 +2195,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//setJMenuBar(menuBar);
 		
 		String u = "Generate ";
-		u += currNotn.label + " ";
+		if (currNotn != null)
+			u += currNotn.label + " ";
 		u += "Network";
 		gNMenuItem = new JMenuItem(u); 
 		
@@ -2320,7 +2311,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (selRB == but[BUT_IIP]) {		
 				IIPBlock ib = (IIPBlock) block;
 				ib.desc = ib.checkNestedChars(block.desc);
-				ib.width = ib.calcIIPWidth(osg);
+				ib.width = ib.calcIIPWidth();
 				if (ib.width < 15)
 					ib.width = 15;
 				ib.buildSideRects();
@@ -2540,7 +2531,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	SelectionArea getNewArea() {
 
-		SelectionArea sa = new SelectionArea();
+		SelectionArea sa = new SelectionArea(true);
 		sa.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
 		sa.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
 		sa.getInputMap().put(escapeKS, "CLOSE");
@@ -2613,13 +2604,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		saveProp("currentDiagram", diagramName);
 
 		String s = diagramName;
-		curDiag.area.removeMouseListener(curDiag.area);
-		curDiag.area.removeMouseMotionListener(curDiag.area);
-		if (s == null || s.endsWith(".drw")) {
-			curDiag.area.addMouseListener(curDiag.area);
-			curDiag.area.addMouseMotionListener(curDiag.area);
+		if (curDiag != null && curDiag.area != null) {
+			curDiag.area.removeMouseListener(curDiag.area);
+			curDiag.area.removeMouseMotionListener(curDiag.area);
+			if (s == null || s.endsWith(".drw")) {
+				curDiag.area.addMouseListener(curDiag.area);
+				curDiag.area.addMouseMotionListener(curDiag.area);
+			}
 		}
-
 		ButtonTabComponent b = null;
 
 		int i = getFileTabNo(file.getAbsolutePath());
@@ -3023,7 +3015,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
 		fontf = fontf.deriveFont(defaultFontSize);
 		
-		osg.setFont(fontg);
+		//osg.setFont(fontg);
 		jfl.setFont(fontg);
 		jfs.setFont(fontg);
 		jfv.setFont(fontg);
@@ -3060,8 +3052,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (jmi instanceof JMenuItem)
 				jmi.setFont(fontg);			
 		}
-		int n = notations.length;
-		gMenu = new JMenuItem[n];
+		//int n = notations.length;
+		//gMenu = new JMenuItem[n];
 /*
 		int k = 0;
 		JMenu gnMenu = new JMenu("Select Network Notation...");
@@ -3077,7 +3069,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 		*/
 		for (int i = 0; i < gMenu.length; i++) {
-			gMenu[i] = new JMenuItem(notations[i].label);
+			//gMenu[i] = new JMenuItem(notations[i].label);
 			gMenu[i].setFont(fontg);
 		}
 
@@ -5362,11 +5354,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		Dimension dim = getSize();
 		
-	
 		//if (dim.width > 1000)
 		//	up.setText("Go to Directory");
 		//else
-			up.setText("Go to Dir");
+		//	up.setText("Go to Dir");
 		
 		
 		//Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
@@ -5380,9 +5371,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				but[j].setText(shortNames[j]);
 			//box21.add(but[j]);
 		}
-		// (getGraphics()).drawImage(buffer, 0, 0, null);
-		// System.out.println("Resized");
-
+		
 	}
 
 	public void componentShown(ComponentEvent arg0) {
@@ -5404,7 +5393,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				scaleLab.setText(scale);
 				// pack();
 				// setPreferredSize(new Dimension(1200, 800));
-				repaint();
+				//zoomControl.repaint();
 			}
 		}
 
@@ -5468,15 +5457,73 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return image;
 	}
 	
-	
+	/* as per video
+	public void paint(Graphics g) {
+		//super.paint(g);
+		dbImage = createImage(getWidth(), getHeight());
+		dbg = dbImage.getGraphics(); 
+		// me
+		//super.paint(dbg);
+		//video says:
+		paintComponent(dbg);
+		g.drawImage(dbImage, 0, 0, this);
+	}
 
+	public void paintComponent(Graphics g) {
+		// video says do drawline etc. here!
+		//g.drawRoundRect(300, 300, 600, 600, 6, 6);
+		curDiag.area.paintComponent(dbg);
+		//paint(g);  // video says only drawlines and repaint!
+		
+		repaint();
+	}
+	*/ 
+	
+	public void paint(Graphics g) {
+		//super.paint(g);
+		dbImage = createImage(getWidth(), getHeight());
+		dbg = dbImage.getGraphics(); 
+		// trying this!
+		 
+		BasicStroke bs = new BasicStroke(1.5f, BasicStroke.CAP_ROUND, // width 1.5
+				BasicStroke.JOIN_ROUND);
+		Graphics2D g2d = (Graphics2D) dbg;
+		g2d.setStroke(bs);
+		g2d.setRenderingHints(rh);
+		dbg.setFont(fontg);
+				 
+		// me
+		super.paint(dbg);
+		//super.getContentPane().paintComponents(dbg);
+		
+		//video says:
+		//paintComponent(dbg);
+		g.drawImage(dbImage, 0, 0, this);
+	}
+
+	public void paintComponent(Graphics g) {
+		// video says do drawline etc. here!
+		 
+		BasicStroke bs = new BasicStroke(1.5f, BasicStroke.CAP_ROUND, // width 1.5
+				BasicStroke.JOIN_ROUND);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setStroke(bs);
+		g2d.setRenderingHints(rh);
+		g.setFont(fontg);
+		 
+		//curDiag.area.paintComponent(g);
+		//paint(g);  // video says only drawlines and repaint!
+		//getContentPane().paintComponents(g);
+		
+		repaint();
+	}
+	
 	public static void main(final String[] args) {
 
+		
 		Runnable myRunnable = createRunnable(args);
 
 		SwingUtilities.invokeLater(myRunnable);
-
-		
 
 	}
 
@@ -5502,10 +5549,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					e1.printStackTrace();
 				}
 
-				setDefaultLookAndFeelDecorated(true);
+				
 
 				DrawFBP _mf = new DrawFBP(runArgs);
-				_mf.setVisible(true);
+				//_mf.setVisible(true);
+				//setDefaultLookAndFeelDecorated(true);
 				// System.out.println(runArgs);
 
 			}
@@ -5586,6 +5634,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			
 		}
 
+		 
+		//public void repaint() {
+			
+		//}
+		
+		 
+		
 	public class Notation {
 		// this class refers the network notation
 		String label;
@@ -6227,10 +6282,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
+		
+		Image dbImage2 = null;
+		Graphics dbg2 = null;
 
-		public SelectionArea() {
+		public SelectionArea(boolean b) {
 
 			setOpaque(true);
+			//boolean b2 = isDoubleBuffered();
 
 			/*
 			 * String s = diagramName; if (s == null || s.endsWith(".drw")) {
@@ -6266,19 +6325,32 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 		}
-
+		/* 
+		public void paint(Graphics g) {
+			dbImage2 = createImage(getWidth(), getHeight());
+			dbg2 = dbImage2.getGraphics(); 
+			paintComponent(dbg2);
+			g.drawImage(dbImage2, 0, 0, this);
+		}
+ */
+ 
 		public void paintComponent(Graphics g) {
-
+			
+			
 			// Paint background if we're opaque.
-			super.paintComponent(g);
+			//super.paintComponent(g);
+			
 			int w = getWidth();
+		  
+			 
 			if (isOpaque()) {
 				// g.setColor(getBackground());
-				osg.setColor(Color.WHITE);
+				g.setColor(Color.WHITE);
 				int h = getHeight();
-				osg.fillRect(0, 0, (int) (w / scalingFactor), (int) (h / scalingFactor - 0));
+				g.fillRect(0, 0, (int) (w / scalingFactor), (int) (h / scalingFactor - 0));
 			}
-
+			 
+  
 			int i = jtp.getSelectedIndex();
 
 			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
@@ -6293,47 +6365,39 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			grid.setSelected(clickToGrid);
 
-			repaint();
+			//repaint();
 			// Graphics2D g2d = (Graphics2D) g;
 			
-			/*
-			for (Arrow arrow : diag.arrows.values()) {
-				// if (diag.diagFile != null)
-				// System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
-				arrow.draw(osg);
-				// System.out.println("arrow-draw");
-			}
-			 */
-			
+			 
+			  
 			for (Block block : diag.blocks.values()) {
 				if (!(block instanceof Enclosure))
-					block.draw(osg);
+					block.draw(g);
 			}
-			
+			 
+			 
 			for (Block block : diag.blocks.values()) {
 				if (block instanceof Enclosure)
-					block.draw(osg);
+					block.draw(g);
 			}
 			
 			for (Arrow arrow : diag.arrows.values()) {
 				// if (diag.diagFile != null)
 				// System.out.println(diag.diagFile.getAbsolutePath() + " " + arrow);
-				arrow.draw(osg);
+				arrow.draw(g);
 				// System.out.println("arrow-draw");
 			}
 
-			// if (diag.diagFile != null)
-			// System.out.println(diag.diagFile.getAbsolutePath() + " " +
-			// diag.arrows.size());
+			 
 			
 
 			if (tailMark != null)
-				drawRedCircle(osg, tailMark.x, tailMark.y);
+				drawRedCircle(g, tailMark.x, tailMark.y);
 
 			if (headMark != null)
-				drawRedCircle(osg, headMark.x, headMark.y);
+				drawRedCircle(g, headMark.x, headMark.y);
 
-			blueCircs(osg);
+			blueCircs(g);
 
 			String s = diag.desc;
 			if (s != null) {
@@ -6346,23 +6410,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			diagDesc.setText(s);
 
-			/*
-			 * 
-			 * if (comparing) { Color col = osg.getColor(); osg.setColor(lb); int cSize =
-			 * 80; int x = w - cSize / 2; int y = cSize / 2;
-			 * 
-			 * osg.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize); osg.fillOval(x -
-			 * cSize / 2, y - cSize / 2, cSize, cSize); osg.setColor(col);
-			 * osg.setFont(fontg); FontMetrics metrics =
-			 * this.osg.getFontMetrics(this.fontg);
-			 * 
-			 * String[] s1 = new String[]{"waiting", "to", "compare"}; y -= 10;
-			 * 
-			 * for (int j = 0; j < s1.length; j++) { byte[] str2 = s1[j].getBytes(); int xx
-			 * = 2 + metrics.bytesWidth(str2, 0, s1[j].length()); osg.drawString(s1[j], x -
-			 * xx / 2, y); y += 15; } }
-			 * 
-			 */
+		
 
 			Graphics2D g2d = (Graphics2D) g;
 
@@ -6375,10 +6423,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// g2d.drawImage(buffer, 0, 0, null);
 			g2d.scale(scalingFactor, scalingFactor);  
 			// g2d.scale(.8, .8);
-			g.drawImage(buffer, 0, 0, null);
+			//g.drawImage(buffer, 0, 0, null);
+			//setVisible(true);
 
 		}
-
+ 
+		
 		FoundPointB findBlockEdge(int x, int y, String type) {
 
 			FoundPointB fpB = null;
@@ -6534,7 +6584,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// detArr = null;
 			// detArrSegNo = -1;
 
-			repaint();
+			//repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
@@ -6567,7 +6617,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				enclSelForArrow.eCorner = ECorner.NONE;
 				enclSelForArrow.eSide = ESide.NONE;
 				enclSelForArrow = null;
-				repaint();
+				//repaint();
 				return;
 			}
 
@@ -6684,7 +6734,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					xa = edgePoint.x;
 					ya = edgePoint.y;
 					fpArrowEndB = edgePoint;
-					repaint();
+					//repaint();
 				}
 			}
 
@@ -6701,7 +6751,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			colourArrows(xa, ya);
 
-			repaint();
+			//repaint();
 		}
 
 		public void mouseEntered(MouseEvent e) {
@@ -7916,6 +7966,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 			}
 		}
+		
+		/*
+		public void repaint() {
+			
+		}
+		*/
 
 	}
 
