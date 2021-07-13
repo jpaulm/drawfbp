@@ -45,7 +45,8 @@ public class CodeManager implements ActionListener {
 	JScrollPane scrollPane;
 	
 	Lang lang; 
-
+	
+	JFrame jf = null;
 
 	HashMap<Integer, String> descArray = new HashMap<Integer, String>();
 	// HashMap<Integer, String> cdescArray = new HashMap<Integer, String>();
@@ -78,6 +79,7 @@ public class CodeManager implements ActionListener {
 		d.cm = this;
 		closeAction = new CloseAction();
 		lang = driver.currNotn.lang;	
+		jf = new JFrame();
 		
 		sc = new StyleContext();	
 		//doc = new DefaultStyledDocument(); 
@@ -91,7 +93,7 @@ public class CodeManager implements ActionListener {
 	
 	//void genCode() {
 	//	if (!generateCode()) {
-	//		//driver.jf.dispose();
+	//		//jf.dispose();
 	//	}
 	//}
 
@@ -126,12 +128,12 @@ public class CodeManager implements ActionListener {
 		/*
 		String fn = diag.diagFile == null ? "unknown" : diag.diagFile.getName();		
 			
-		driver.jf.setTitle("Generated Code for " + fn);		
+		jf.setTitle("Generated Code for " + fn);		
 
-		driver.jf.setJMenuBar(createMenuBar());		
+		jf.setJMenuBar(createMenuBar());		
 
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
-		driver.jf.setIconImage(image);
+		jf.setIconImage(image);
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		*/
@@ -172,7 +174,7 @@ public class CodeManager implements ActionListener {
 		/*
 			if (packageName == null || packageName.equals("") || packageName.equals("null")
 					|| packageName.equals("(null)")) {
-				packageName = (String) MyOptionPane.showInputDialog(driver.jf,
+				packageName = (String) MyOptionPane.showInputDialog(jf,
 						"Please fill in a package name or namespace here if desired", null);
 				if (packageName == null || packageName.equals("") || packageName.equals("null"))
 					//packageName = "(null)";
@@ -407,7 +409,7 @@ public class CodeManager implements ActionListener {
 				getPortNames(arrow);
 					
 
-				//driver.jf.jf.// repaint();
+				//jf.jf.// repaint();
 
 				String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 				// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
@@ -419,7 +421,7 @@ public class CodeManager implements ActionListener {
 
 				// }
 
-				//driver.jf.repaint();
+				//jf.repaint();
 				// String upPort = arrow.upStreamPort;
 				// String dnPort = a2.downStreamPort;
 
@@ -578,8 +580,8 @@ public class CodeManager implements ActionListener {
 			e.printStackTrace();
 		}
 
-		driver.jf.repaint();
-		// driver.jframe.update(jdriver.osg);
+		jf.repaint();
+		// jframe.update(jdriver.osg);
 
 		return true;
 	}
@@ -630,19 +632,19 @@ public class CodeManager implements ActionListener {
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		
-		driver.jf = new JFrame();
+		//jf = new JFrame();
 		
-		driver.jf.setFont(driver.fontf);
+		jf.setFont(driver.fontf);
 
-		driver.jf.setTitle("Generated Code for " + diag.diagFile);	
+		jf.setTitle("Generated Code for " + diag.diagFile);	
 		
 		//int n = driver.notations.length;
 		//driver.gMenu = new JMenuItem[n];
 
-		driver.jf.setJMenuBar(createCMMenuBar());		
+		jf.setJMenuBar(createCMMenuBar());		
 
 		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
-		driver.jf.setIconImage(image);
+		jf.setIconImage(image);
 		
 		file = filex;
 		//String fileString = null;
@@ -655,22 +657,22 @@ public class CodeManager implements ActionListener {
 			int i = clsName.lastIndexOf(".");
 			if (i > -1)
 				clsName = clsName.substring(0, i);
-			driver.jf.setTitle("Displayed Code: " + file.getName());
+			jf.setTitle("Displayed Code: " + file.getName());
 		} else
-			driver.jf.setTitle("Displayed Code: " + clsName + "." + notn.lang.ext);
+			jf.setTitle("Displayed Code: " + clsName + "." + notn.lang.ext);
 
 		
-		//driver.depDialog = driver.jf;
+		//driver.depDialog = jf;
 		nsLabel.setFont(driver.fontg);
 		//completeChange = false;
 		
-		DrawFBP.applyOrientation(driver.jf);
+		DrawFBP.applyOrientation(jf);
 
 		//dialog.setAlwaysOnTop(false);
 		
-		driver.jf.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		jf.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		
-		driver.jf.addWindowListener(new WindowAdapter() {
+		jf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev) {
 				closeAction.actionPerformed(new ActionEvent(ev, 0, "CLOSE"));
 			}
@@ -679,24 +681,24 @@ public class CodeManager implements ActionListener {
 		
 		//int nn = driver.notations.length;
 		//driver.gMenu = new JMenuItem[nn];
-		driver.jf.setJMenuBar(createCMMenuBar());
-		driver.jf.repaint();
+		jf.setJMenuBar(createCMMenuBar());
+		jf.repaint();
 
 		image = driver.loadImage("DrawFBP-logo-small.png");
-		driver.jf.setIconImage(image);
+		jf.setIconImage(image);
 
 		Point p = driver.getLocation();
 		Dimension dim = driver.getSize();
-		driver.jf.setPreferredSize(new Dimension(dim.width - 100, dim.height - 50));
-		driver.jf.setLocation(p.x + 100, p.y + 50);
-		driver.jf.setForeground(Color.WHITE);
+		jf.setPreferredSize(new Dimension(dim.width - 100, dim.height - 50));
+		jf.setLocation(p.x + 100, p.y + 50);
+		jf.setForeground(Color.WHITE);
 		
 				
 		panel = new JPanel();
 		scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED); 
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED); 
-		driver.jf.add(scrollPane);
+		jf.add(scrollPane);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		scrollPane.setViewportView(panel);
 		//scrollPane.add(panel);
@@ -723,7 +725,7 @@ public class CodeManager implements ActionListener {
 		lineNos.setEditable(false);		
 				
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
-		//nsLabel.paint(driver.jf.getGraphics());
+		//nsLabel.paint(jf.getGraphics());
 		nsLabel.repaint();
 		
 		if (file != null) {
@@ -772,7 +774,7 @@ public class CodeManager implements ActionListener {
 				doc.remove(0, doc.getLength());
 				doc.insertString(0, fileString, normalStyle);
 			} catch (BadLocationException ble) {
-				MyOptionPane.showMessageDialog(driver.jf, "Couldn't insert text into text pane",
+				MyOptionPane.showMessageDialog(jf, "Couldn't insert text into text pane",
 						MyOptionPane.ERROR_MESSAGE);
 				return fileString;
 
@@ -812,10 +814,10 @@ public class CodeManager implements ActionListener {
 		
 		scrollPane.setViewportView(panel);
 		
-		driver.jf.pack();
-		driver.jf.setVisible(true);
+		jf.pack();
+		jf.setVisible(true);
 		
-		driver.jf.repaint();
+		jf.repaint();
 
 		return fileString;
 
@@ -1133,7 +1135,7 @@ public class CodeManager implements ActionListener {
 		try {
 			fileString = doc.getText(0, doc.getLength());
 		} catch (BadLocationException ble) {
-			MyOptionPane.showMessageDialog(driver.jf,
+			MyOptionPane.showMessageDialog(jf,
 					"Save Code: Couldn't get text from text pane", MyOptionPane.ERROR_MESSAGE);
 			// diag.changeCompLang();
 			return false;
@@ -1188,7 +1190,7 @@ public class CodeManager implements ActionListener {
 			x = file;
 			
 		File file = diag.genSave(x, driver.currNotn.lang, fileString, 
-		        new File(suggName), driver.jf);
+		        new File(suggName), jf);
 		
 		
 		// note: suggName does not have to be a real file!
@@ -1214,7 +1216,7 @@ public class CodeManager implements ActionListener {
 				doc.remove(0, doc.getLength());
 				doc.insertString(0, fileString, normalStyle);
 			} catch (BadLocationException e) {
-				MyOptionPane.showMessageDialog(driver.jf,
+				MyOptionPane.showMessageDialog(jf,
 						"Save Code: Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 				// diag.changeCompLang();
 				return false;
@@ -1222,14 +1224,14 @@ public class CodeManager implements ActionListener {
 
 			colourCode();
 			if (!(driver.writeFile(file, fileString))) {
-				MyOptionPane.showMessageDialog(driver.jf, "File not saved");
+				MyOptionPane.showMessageDialog(jf, "File not saved");
 				// diag.changeCompLang();
 				return false;
 			}
 			else
-				driver.jf.dispose();
+				jf.dispose();
 
-			//MyOptionPane.showMessageDialog(driver.jf,
+			//MyOptionPane.showMessageDialog(jf,
 			//		"File " + file.getName() + " saved");
 			
 			docText.repaint();
@@ -1240,7 +1242,7 @@ public class CodeManager implements ActionListener {
 		driver.saveProp(driver.currNotn.netDirProp, file.getParent());
 		//saveProperties();
 		doc.changed = false;
-		driver.jf.repaint();
+		jf.repaint();
 
 		if (packageNameChanged) {
 			driver.saveProp("currentPackageName", packageName);
@@ -1251,11 +1253,11 @@ public class CodeManager implements ActionListener {
 		nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 		nsLabel.repaint();
 		// diag.genCodeFileName = file.getAbsolutePath();
-		driver.jf.setTitle("Generated Code: " + file.getName());		
-		driver.jf.repaint();
+		jf.setTitle("Generated Code: " + file.getName());		
+		jf.repaint();
 
 		//if (saveType != SAVE_AS)
-		//	driver.jf.dispose();
+		//	jf.dispose();
 		return true;
 		
 		} catch(Exception e ) {
@@ -1293,7 +1295,7 @@ public class CodeManager implements ActionListener {
 
 		int v = fs.indexOf("/src/");
 		if (v == -1) {
-			MyOptionPane.showMessageDialog(driver.jf, fs + " does not reference a 'src' directory!",
+			MyOptionPane.showMessageDialog(jf, fs + " does not reference a 'src' directory!",
 					MyOptionPane.WARNING_MESSAGE);
 			return null;
 		}
@@ -1313,7 +1315,7 @@ public class CodeManager implements ActionListener {
 		if (!fNPkg.equals(pkg)) {
  	
 
-				int ans = MyOptionPane.showConfirmDialog(driver.jf,
+				int ans = MyOptionPane.showConfirmDialog(jf,
 						"Package name in file: " + pkg + "\n" + "   does not match package name based on file name:\n" +
 				             fNPkg	+ ", \n   do you want to change it?",
 						"Change package name?", MyOptionPane.YES_NO_CANCEL_OPTION);
@@ -1326,7 +1328,7 @@ public class CodeManager implements ActionListener {
 						int j = fileString.substring(0, i).indexOf("package");
 						if (j == -1) {
 							fileString = "package " + fNPkg + ";\n" + fileString;
-							MyOptionPane.showMessageDialog(driver.jf, "Package name added: " + fNPkg);
+							MyOptionPane.showMessageDialog(jf, "Package name added: " + fNPkg);
 						} else {
 							if (pkg == null) {								
 								String t = "package " + fNPkg + ";\n"; 
@@ -1338,9 +1340,9 @@ public class CodeManager implements ActionListener {
 								//pkg = fNPkg;
 								fileString = fileString.replace("@!@", fNPkg);
 							}
-							MyOptionPane.showMessageDialog(driver.jf, "Package name changed: " + pkg + " to " + fNPkg);
-							driver.jf.setVisible(false);
-							//driver.jf = null;
+							MyOptionPane.showMessageDialog(jf, "Package name changed: " + pkg + " to " + fNPkg);
+							jf.setVisible(false);
+							//jf = null;
 							//driver.writeFile(file,  fileString);  done in saveCode
 							//displayDoc(file, gl, fileString);
 							
@@ -1354,19 +1356,19 @@ public class CodeManager implements ActionListener {
 							doc.remove(0, doc.getLength());
 							doc.insertString(0, fileString, normalStyle);
 						} catch (BadLocationException ble) {
-							MyOptionPane.showMessageDialog(driver.jf, "Couldn't insert text into text pane",
+							MyOptionPane.showMessageDialog(jf, "Couldn't insert text into text pane",
 									MyOptionPane.ERROR_MESSAGE);
 							return fileString;
 
 						}
 						*/
 						//docText.setText(doc); 
-						//driver.jf.dispose();
+						//jf.dispose();
 						displayDoc(null, lang, fileString);
 						//driver.writeFile(file,  fileString);
 						//driver.saveProp("currentPackageName", pkg);
 						doc.changed = false; 
-						driver.jf.repaint();
+						jf.repaint();
 					}
 					
 					// saveProperties();
@@ -1439,7 +1441,7 @@ public class CodeManager implements ActionListener {
 		for (Block block : diag.blocks.values()) {
 			// String s = "";
 			if (block instanceof ProcessBlock && block.desc == null) {
-				MyOptionPane.showMessageDialog(driver.jf, "One or more missing block descriptions",
+				MyOptionPane.showMessageDialog(jf, "One or more missing block descriptions",
 						MyOptionPane.WARNING_MESSAGE);
 				// error = true;
 				return null;
@@ -1504,7 +1506,7 @@ public class CodeManager implements ActionListener {
 			Arrow a2 = arrow.findLastArrowInChain();
 			Block to = diag.blocks.get(Integer.valueOf(a2.toId));
 			if (to == null) {
-				MyOptionPane.showMessageDialog(driver.jf, "Downstream block not found: from " + from.desc,
+				MyOptionPane.showMessageDialog(jf, "Downstream block not found: from " + from.desc,
 						MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
@@ -1520,7 +1522,7 @@ public class CodeManager implements ActionListener {
 
 			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 
-			driver.jf.repaint();
+			jf.repaint();
 
 			data += comma;
 			// String upPort = arrow.upStreamPort;
@@ -1541,7 +1543,7 @@ public class CodeManager implements ActionListener {
 				if (!arrow.endsAtLine && driver.isDupPort(dnPort, to)) {
 					String proc = to.desc;
 					dnPort += "???";
-					MyOptionPane.showMessageDialog(driver.jf, "Duplicate port name: " + proc + "." + dnPort,
+					MyOptionPane.showMessageDialog(jf, "Duplicate port name: " + proc + "." + dnPort,
 							MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
@@ -1621,7 +1623,7 @@ public class CodeManager implements ActionListener {
 			}
 			if (block instanceof ProcessBlock) {
 				if (block.desc == null) {
-					MyOptionPane.showMessageDialog(driver.jf,
+					MyOptionPane.showMessageDialog(jf,
 							"One or more missing block descriptions", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 					return false;
@@ -1646,7 +1648,7 @@ public class CodeManager implements ActionListener {
 			Arrow a2 = arrow.findLastArrowInChain();
 			Block to = diag.blocks.get(Integer.valueOf(a2.toId));
 			if (to == null) {
-				MyOptionPane.showMessageDialog(driver.jf,
+				MyOptionPane.showMessageDialog(jf,
 						"Downstream block not found", MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
@@ -1664,7 +1666,7 @@ public class CodeManager implements ActionListener {
 			String toDesc = descArray.get(Integer.valueOf(a2.toId));
 			// String cToDesc = cdescArray.get(new Integer(a2.toId));
 
-			driver.jf.repaint();
+			jf.repaint();
 
 			if (!(from instanceof IIPBlock)) {
 				upPort = a2.upStreamPort;
@@ -1690,14 +1692,14 @@ public class CodeManager implements ActionListener {
 				if (!a2.endsAtLine && driver.isDupPort(dnPort, to)) {
 					String proc = to.desc;
 					dnPort += "???";
-					MyOptionPane.showMessageDialog(driver.jf,
+					MyOptionPane.showMessageDialog(jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
 				if (driver.isDupPort(upPort, from)) {
 					String proc = from.desc;
 					upPort += "???";
-					MyOptionPane.showMessageDialog(driver.jf,
+					MyOptionPane.showMessageDialog(jf,
 							"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
@@ -1705,12 +1707,12 @@ public class CodeManager implements ActionListener {
 
 				if (from.multiplex) {
 
-					MyOptionPane.showMessageDialog(driver.jf,
+					MyOptionPane.showMessageDialog(jf,
 							"Multiplexing not supported", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				} else if (to.multiplex) {
 
-					MyOptionPane.showMessageDialog(driver.jf,
+					MyOptionPane.showMessageDialog(jf,
 							"Multiplexing not supported", MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				} else
@@ -1723,7 +1725,7 @@ public class CodeManager implements ActionListener {
 				if (driver.isDupPort(dnPort, to)) {
 					String proc = to.desc;
 					dnPort += "???";
-					MyOptionPane.showMessageDialog(driver.jf,
+					MyOptionPane.showMessageDialog(jf,
 							"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
 					error = true;
 				}
@@ -1749,7 +1751,7 @@ public class CodeManager implements ActionListener {
 			doc.insertString(doc.getLength(), code, baseStyle);
 
 		} catch (BadLocationException ble) {
-			MyOptionPane.showMessageDialog(driver.jf,
+			MyOptionPane.showMessageDialog(jf,
 					"Couldn't insert text into text pane", MyOptionPane.ERROR_MESSAGE);
 			// restore old language parameters
 			
@@ -1773,8 +1775,8 @@ public class CodeManager implements ActionListener {
 			}
 
 		
-		 driver.jf.repaint();
-		// driver.jframe.update(jdriver.osg);
+		 jf.repaint();
+		// jframe.update(jdriver.osg);
 
 		 
 
@@ -1804,7 +1806,7 @@ public class CodeManager implements ActionListener {
 		if (c == null) {
 			c = b.codeFileName;
 			if (c == null) {
-				MyOptionPane.showMessageDialog(driver.jf,
+				MyOptionPane.showMessageDialog(jf,
 						"Missing full class name for: " + b.desc, MyOptionPane.ERROR_MESSAGE);
 				c = "invalid class";
 				error = true;
@@ -1894,7 +1896,7 @@ public class CodeManager implements ActionListener {
 
 			if (!diag.validatePortName(upPort)) {
 
-				String ans = (String) MyOptionPane.showInputDialog(driver.jf,
+				String ans = (String) MyOptionPane.showInputDialog(jf,
 						"Invalid output port from " + "\"" + from.desc + "\"", "Please correct port name",
 						MyOptionPane.PLAIN_MESSAGE, null, null, upPort);
 				if (ans != null && ans.length() > 0) {
@@ -1911,7 +1913,7 @@ public class CodeManager implements ActionListener {
 
 		if (!diag.validatePortName(dnPort)) {
 
-			String ans = (String) MyOptionPane.showInputDialog(driver.jf,
+			String ans = (String) MyOptionPane.showInputDialog(jf,
 					"Invalid input port to " + "\"" + to.desc + "\"", "Please correct port name",
 					MyOptionPane.PLAIN_MESSAGE, null, null, dnPort);
 			if (ans != null  && ans.length() > 0 ) {
@@ -1935,7 +1937,7 @@ public class CodeManager implements ActionListener {
 					doc.changed = true;
 				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 				nsLabel.repaint();
-				driver.jf.repaint();
+				jf.repaint();
 			}
 			
 		}
@@ -1946,7 +1948,7 @@ public class CodeManager implements ActionListener {
 					doc.changed = true;
 				nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 				nsLabel.repaint();
-				driver.jf.repaint();
+				jf.repaint();
 			}
 
 			
@@ -1957,7 +1959,7 @@ public class CodeManager implements ActionListener {
 				doc.changed = true; 
 			nsLabel.setText(doc.changed ? "Changed" : "Unchanged ");
 			nsLabel.repaint();
-			driver.jf.repaint();					
+			jf.repaint();					
 		}
 
 		
@@ -1971,25 +1973,27 @@ public class CodeManager implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 
 			if (!doc.changed) {
-				driver.jf.dispose();
+				jf.dispose();
 				return;
 			}
 
-			int answer = MyOptionPane.showConfirmDialog(driver.jf, "Save generated or modified code?", 
+			int answer = MyOptionPane.showConfirmDialog(jf, "Save generated or modified code?", 
 					"Save code", MyOptionPane.YES_NO_CANCEL_OPTION);
 
 			if (answer == MyOptionPane.NO_OPTION) {
 				doc.changed = false;
-				driver.jf.setVisible(false);
-				driver.jf.dispose();
+				jf.setVisible(false);
+				jf.dispose();
 				
 			} else if (answer != MyOptionPane.CANCEL_OPTION) {  // i.e. YES
 				doc.changed = false;
 				saveCode(false);
+				jf.setVisible(false);
+				jf.dispose();
 				//if (doc.changed)
 				//	return;
 
-				//driver.jf.dispose();
+				//jf.dispose();
 			}
 		}
 	}

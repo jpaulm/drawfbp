@@ -1,11 +1,11 @@
 buildscript {  
-    repositories {
-        mavenCentral()       
+   repositories {
+      mavenCentral()       
     }
      
-    dependencies {
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"     
-    }
+  dependencies {
+       classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"     
+  }
 }
 
 
@@ -47,7 +47,7 @@ allprojects { project ->
      }
 }
 */
-version = '3.0.0'
+version = '3.0.1'
 
 group = 'com.jpaulmorrison'
 
@@ -60,11 +60,10 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
 
-nexusStaging {  
-    username = ossrhUser
-    password = ossrhPassword       
-    
-}
+//nexusStaging {                           // try removing - leave in publish!
+//    username = ossrhUser
+ //   password = ossrhPassword           
+//}
 
 repositories {
     mavenCentral()

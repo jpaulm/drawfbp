@@ -219,8 +219,12 @@ public class Arrow implements ActionListener {
 			buildFatLine(fx, fy, tx, ty, segno, g);
 			
 			
-			if (!dropOldest)
-				g.drawLine(fx, fy, tx, ty);
+			if (!dropOldest) {
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setStroke(driver.bs);
+				g2d.setRenderingHints(driver.rh);
+				g.drawLine(fx, fy, tx, ty);  
+			}
 			else {
 				Shape shape = new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
 				shape = zzstroke.createStrokedShape(shape);
@@ -1122,6 +1126,9 @@ public class Arrow implements ActionListener {
 		}
 	
 	// Build rectangle around arrow segment, and add to Shape array
+	
+	// this only draws light blue rectangle if segment selected - it does not draw line
+	
 	static Color ltBlue = new Color(173, 216, 230); 
 	
 	void buildFatLine(int fx, int fy, int tx, int ty, int segNo, Graphics g) {

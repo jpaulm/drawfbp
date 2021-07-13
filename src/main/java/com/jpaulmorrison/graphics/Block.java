@@ -114,11 +114,11 @@ public class Block implements ActionListener {
 	}
 
 	void buildSideRects() {	
-		buildSideRects(leftEdge, topEdge, width, height);
+		buildSideRectsWDims(leftEdge, topEdge, width, height);
 		
 	}
 	
-	void buildSideRects(int x, int y, int w, int h) {	
+	void buildSideRectsWDims(int x, int y, int w, int h) {	
 		calcEdges();
 		int shift = (this instanceof LegendBlock) ? driver.zWS : driver.zWS / 2;
 		leftRect = new Rectangle(x - shift, y - driver.zWS / 2, 
@@ -207,7 +207,7 @@ public class Block implements ActionListener {
 		
 
 		if (desc != null) {
-			String str[] = centreDesc();
+			String str[] = centreDesc();   
 			int x = 0;
 			int y = 0;
 			if (this instanceof ProcessBlock) {
@@ -910,6 +910,7 @@ public class Block implements ActionListener {
 		    driver.blueCircs(g);
 		
 		//driver.repaint();
+		driver.curDiag.area.repaint();
 		
 		 
 	}
@@ -1653,7 +1654,8 @@ public class Block implements ActionListener {
 					}
 			}
 			//driver.update(driver.osg);
-			driver.repaint();
+			//driver.repaint();
+			diag.area.repaint();
 			diag.changed = true;
 			return;
 		}
@@ -1777,7 +1779,8 @@ public class Block implements ActionListener {
 			isSubnet = false;
 			diag.changed = true;
 			//diag.driver.repaint();
-			driver.repaint();
+			//driver.repaint();
+			diag.area.repaint();
 			return;
 
 		}
@@ -2056,7 +2059,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		
 		diag.changed = true;
 
-		driver.repaint();
+		//driver.repaint();
+		diag.area.repaint();
 
 		return true;
 	}
@@ -2134,7 +2138,8 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 		
 
-		driver.repaint();
+		//driver.repaint();
+		diag.area.repaint();
 	}
 
 	void selectNonJavaSource() throws MalformedURLException {
