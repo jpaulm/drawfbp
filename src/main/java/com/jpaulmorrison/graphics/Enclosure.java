@@ -56,7 +56,8 @@ public class Enclosure extends Block {
 		s = item.get("width").trim();
 		width = Integer.parseInt(s);
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
-		calcEdges();
+		//calcEdges();
+		buildSideRects();
 	}
 	
 
@@ -125,7 +126,7 @@ public class Enclosure extends Block {
 		  //g.setColor(new Color(221, 221, 221));
 		  g.fillRect(x1 + 1, y - hh + 1, w2 - 2, hh * 3 / 2 - 2);
 		  g.setColor(col);
-		  buildSideRectsWDims(x1, y - hh, w2, h2);
+		  buildSideRectsD(x1, y - hh, w2, h2);
 		//}
 		if (desc != null) {
 			x = (x1 + x2 - desc.length() * driver.gFontWidth) / 2;

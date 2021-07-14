@@ -109,16 +109,16 @@ public class Block implements ActionListener {
 		id = d.maxBlockNo;
 		
 		
-		//buildSides();
+		buildSideRects();
 
 	}
 
 	void buildSideRects() {	
-		buildSideRectsWDims(leftEdge, topEdge, width, height);
+		buildSideRectsD(leftEdge, topEdge, width, height);
 		
 	}
 	
-	void buildSideRectsWDims(int x, int y, int w, int h) {	
+	void buildSideRectsD(int x, int y, int w, int h) {	
 		calcEdges();
 		int shift = (this instanceof LegendBlock) ? driver.zWS : driver.zWS / 2;
 		leftRect = new Rectangle(x - shift, y - driver.zWS / 2, 
@@ -652,7 +652,7 @@ public class Block implements ActionListener {
 			Enclosure ol = (Enclosure) this;
 			ol.desc = item.get("description");
 		}
-		buildSideRects();
+		//buildSideRects();
 		//calcEdges();
 
 		diag.maxBlockNo = Math.max(id, diag.maxBlockNo);
@@ -917,6 +917,7 @@ public class Block implements ActionListener {
 	 
 	void showArrowEndAreas(Graphics g) {
 		//if (visible) {
+		buildSideRects();
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 		Graphics2D g2 = (Graphics2D) g;
@@ -1462,37 +1463,37 @@ public class Block implements ActionListener {
 	}
 
 	void buildBlockPopupMenu() {
-		diag.jpm = new JPopupMenu("            Block-related Actions");
+		diag.actionList = new JPopupMenu("            Block-related Actions");
 		// driver.curPopup = jpm;
-		diag.jpm.setLocation(cx + 100, cy + 100);
-		diag.jpm.setVisible(true);
+		diag.actionList.setLocation(cx + 100, cy + 100);
+		diag.actionList.setVisible(true);
 		JMenuItem menuItem = null;
 		JLabel label2 = new JLabel();
 		label2.setFont(driver.fontg);
 		// label2.setHorizontalAlignment(SwingConstants.CENTER);
-		label2.setText(diag.jpm.getLabel());
+		label2.setText(diag.actionList.getLabel());
 		// label2.setForeground(Color.BLUE);
-		diag.jpm.add(label2);
-		diag.jpm.addSeparator();
+		diag.actionList.add(label2);
+		diag.actionList.addSeparator();
 		
 		if (this instanceof Enclosure) {
 			menuItem = new JMenuItem("Edit Enclosure Label");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 			menuItem = new JMenuItem("Edit Subnet Port Name");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 			menuItem = new JMenuItem("Toggle Substream Sensitivity");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
-			diag.jpm.addSeparator();
+			diag.actionList.add(menuItem);
+			diag.actionList.addSeparator();
 			menuItem = new JMenuItem("Excise Subnet");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
-			diag.jpm.addSeparator();
+			diag.actionList.add(menuItem);
+			diag.actionList.addSeparator();
 			menuItem = new JMenuItem("Drag Contents");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 
 		} else {
 			if (this instanceof ProcessBlock || this instanceof FileBlock
@@ -1503,23 +1504,23 @@ public class Block implements ActionListener {
 				else
 					menuItem = new JMenuItem("Edit Description");
 				menuItem.addActionListener(this);
-				diag.jpm.add(menuItem);
+				diag.actionList.add(menuItem);
 				if (this instanceof ProcessBlock) {
 
 					menuItem = new JMenuItem("Toggle Subnet On/Off");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);
+					diag.actionList.add(menuItem);
 					menuItem = new JMenuItem("Assign Subnet Diagram (.drw)");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);
+					diag.actionList.add(menuItem);
 					
-					diag.jpm.addSeparator();
+					diag.actionList.addSeparator();
 
 					if (isSubnet) {
 						menuItem = new JMenuItem("Display Subnet");
 						menuItem.addActionListener(this);
-						diag.jpm.add(menuItem);
-						diag.jpm.addSeparator();
+						diag.actionList.add(menuItem);
+						diag.actionList.addSeparator();
 					}					
 
 					else 
@@ -1530,39 +1531,39 @@ public class Block implements ActionListener {
 
 							menuItem = new JMenuItem("Choose Source Code");
 							menuItem.addActionListener(this);
-							diag.jpm.add(menuItem);
+							diag.actionList.add(menuItem);
 
 							menuItem = new JMenuItem("Display Source Code");
 							menuItem.addActionListener(this);
-							diag.jpm.add(menuItem);
-							diag.jpm.addSeparator();
+							diag.actionList.add(menuItem);
+							diag.actionList.addSeparator();
 						}
 
 					//diag.jpm.addSeparator();
 					menuItem = new JMenuItem("Toggle Multiplexing");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);
+					diag.actionList.add(menuItem);
 					menuItem = new JMenuItem("Set Multiplexing Factor");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);
+					diag.actionList.add(menuItem);
 					menuItem = new JMenuItem("Clear Multiplexing Factor");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);
-					diag.jpm.addSeparator();
+					diag.actionList.add(menuItem);
+					diag.actionList.addSeparator();
 					menuItem = new JMenuItem("Remove Logger");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);					
-					diag.jpm.addSeparator();
+					diag.actionList.add(menuItem);					
+					diag.actionList.addSeparator();
 					JMenuItem menuItem1b = new JMenuItem(
 								"Choose Component/Subnet Class");  
 					menuItem1b.addActionListener(this);
-					diag.jpm.add(menuItem1b);					
+					diag.actionList.add(menuItem1b);					
 					JMenuItem menuItem2b = new JMenuItem("Display Full Class Name");
 					menuItem2b.addActionListener(this);
-					diag.jpm.add(menuItem2b);
+					diag.actionList.add(menuItem2b);
 					JMenuItem menuItem3b = new JMenuItem("Display Description and Port Info");
 					menuItem3b.addActionListener(this);
-					diag.jpm.add(menuItem3b);
+					diag.actionList.add(menuItem3b);
 					
 					menuItem1b.setEnabled(driver.currNotn != null && 							
 							(driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] ||
@@ -1570,46 +1571,46 @@ public class Block implements ActionListener {
 					menuItem3b.setEnabled(driver.currNotn != null && 							
 							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
 											
-					diag.jpm.addSeparator();
+					diag.actionList.addSeparator();
 					menuItem = new JMenuItem(
 							"Clear Associated Diagram and/or Class");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);
+					diag.actionList.add(menuItem);
 
 				}
 			} else {
 
 				menuItem = new JMenuItem("Edit Item");
 				menuItem.addActionListener(this);
-				diag.jpm.add(menuItem);
+				diag.actionList.add(menuItem);
 				if (typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)
 						|| typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
-					diag.jpm.addSeparator();
+					diag.actionList.addSeparator();
 					menuItem = new JMenuItem(
 							"Toggle Substream Sensitive / Normal");
 					menuItem.addActionListener(this);
-					diag.jpm.add(menuItem);
+					diag.actionList.add(menuItem);
 				}
 			}
-			diag.jpm.addSeparator();
+			diag.actionList.addSeparator();
 		}
 		if (!(this instanceof Enclosure)) {
 			menuItem = new JMenuItem("Toggle Visible/Invisible");
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 			menuItem.addActionListener(this);		 
 			menuItem = new JMenuItem("Switch off Selected Status");
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 			menuItem.addActionListener(this);
 		}
-		diag.jpm.addSeparator();
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Delete");
-		diag.jpm.add(menuItem);
+		diag.actionList.add(menuItem);
 		menuItem.addActionListener(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
-		diag.jpm = null;
+		diag.actionList = null;
 
 		if (s.equals("Edit Process Name or Description") || s.equals("Edit Description")) {
 

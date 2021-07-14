@@ -306,7 +306,7 @@ public class DiagramBuilder {
 									IIPBlock ib = (IIPBlock) block;
 									//block.width = ib.width;
 									ib.width = ib.calcIIPWidth();
-									block.buildSideRects();
+									ib.buildSideRects();
 
 								} else if (type
 										.equals(Block.Types.LEGEND_BLOCK)) {
@@ -326,7 +326,7 @@ public class DiagramBuilder {
 								}
 								
 								block.buildBlockFromXML(item);
-								block.buildSideRects();
+								//block.buildSideRects();
 								//block.calcEdges();				
 								
 							}

@@ -67,7 +67,7 @@ public class Diagram {
 	Block parent = null;
 
 		
-	JPopupMenu jpm;
+	JPopupMenu actionList;  // popup menu for block - or arrow-related actions
 		
 	CodeManager cm = null;
 	Block motherBlock = null;
@@ -693,7 +693,7 @@ public class Diagram {
 				arrow.toX = var.x;
 				arrow.toY = var.y;	
 				arrow.toId = subnetBlock.id;
-				eb.buildSideRects();
+				//eb.buildSideRects();
 			}
 			
 			
@@ -725,7 +725,7 @@ public class Diagram {
 				
 				arrow.upStreamPort = ans;
 				
-				eb.buildSideRects();			
+				//eb.buildSideRects();			
 				//eb.calcEdges();
 				//arrow.fromId = subnetBlock.id;
 				Point fixed = new Point(arrow.toX, arrow.toY);				
@@ -1066,7 +1066,7 @@ public class Diagram {
 		subnetBlock.cx = x;
 		subnetBlock.cy = y;
 		//subnetBlock.calcEdges();
-		subnetBlock.buildSideRects();
+		//subnetBlock.buildSideRects();
 		origDiag.maxBlockNo++;
 		subnetBlock.id = origDiag.maxBlockNo;
 		origDiag.blocks.put(Integer.valueOf(subnetBlock.id), subnetBlock);
@@ -1093,7 +1093,7 @@ public class Diagram {
 		subnetBlock.cx = enc.cx;
 		subnetBlock.cy = enc.cy;
 		//subnetBlock.diag = sbnDiag;   
-		subnetBlock.buildSideRects();
+		//subnetBlock.buildSideRects();
 		//subnetBlock.calcEdges();
 		return subnetBlock;
 	}

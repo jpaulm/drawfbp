@@ -20,7 +20,7 @@ public class IIPBlock extends Block {
 
 		height = driver.gFontHeight + 8;
 		
-		//buildSides();
+		buildSideRects();
 		//calcEdges();
 	}
 	

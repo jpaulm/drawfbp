@@ -532,16 +532,16 @@ public class Arrow implements ActionListener {
 	}
 
 	void buildArrowPopupMenu() {
-		diag.jpm = new JPopupMenu("            Arrow-related Actions");
+		diag.actionList = new JPopupMenu("            Arrow-related Actions");
 		// driver.curPopup = jpm;
 		//diag.jpm.setLocation(fromX + 100, fromY + 100);
-		diag.jpm.setVisible(true);
+		diag.actionList.setVisible(true);
 		JLabel label2 = new JLabel();
-		label2.setText(diag.jpm.getLabel());
+		label2.setText(diag.actionList.getLabel());
 		label2.setFont(driver.fontg);
 		// label2.setForeground(Color.BLUE);
-		diag.jpm.add(label2);
-		diag.jpm.addSeparator();
+		diag.actionList.add(label2);
+		diag.actionList.addSeparator();
 		JMenuItem menuItem;
 		Block from = diag.blocks.get(Integer.valueOf(fromId));
 		Block to = diag.blocks.get(Integer.valueOf(toId));
@@ -558,68 +558,68 @@ public class Arrow implements ActionListener {
 		if (!(from instanceof ExtPortBlock) && !(from instanceof IIPBlock)) {
 			menuItem = new JMenuItem("Edit Upstream Port Name");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 		}
 		if (!(to instanceof ExtPortBlock) && endsAtBlock) {
 			menuItem = new JMenuItem("Edit Downstream Port Name");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 		}
-		diag.jpm.addSeparator();
+		diag.actionList.addSeparator();
 		}
 		
 		if ((from instanceof ProcessBlock || from instanceof ExtPortBlock) && (to instanceof ProcessBlock || from instanceof ExtPortBlock)) {
 
 			menuItem = new JMenuItem("Toggle Upstream Port Automatic / Normal");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 
 			menuItem = new JMenuItem(
 					"Toggle Downstream Port Automatic / Normal");
 			menuItem.addActionListener(this);
-			diag.jpm.add(menuItem);
+			diag.actionList.add(menuItem);
 		}
 		
-		diag.jpm.addSeparator();
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Set Capacity");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
+		diag.actionList.add(menuItem);
 		menuItem = new JMenuItem("Remove Capacity");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
-		diag.jpm.addSeparator();
+		diag.actionList.add(menuItem);
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Toggle DropOldest");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
-		diag.jpm.addSeparator();
+		diag.actionList.add(menuItem);
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Add Logger");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
-		diag.jpm.addSeparator();
+		diag.actionList.add(menuItem);
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Redraw Arrow");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
-		diag.jpm.addSeparator();
+		diag.actionList.add(menuItem);
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Drag Tail");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
+		diag.actionList.add(menuItem);
 		menuItem = new JMenuItem("Drag Head");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
+		diag.actionList.add(menuItem);
 		menuItem = new JMenuItem("Drag New or Existing Bend");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
-		diag.jpm.addSeparator();
+		diag.actionList.add(menuItem);
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Add Extra Arrowhead");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
+		diag.actionList.add(menuItem);
 		menuItem = new JMenuItem("Remove Extra Arrowhead");
 		menuItem.addActionListener(this);
-		diag.jpm.add(menuItem);
+		diag.actionList.add(menuItem);
 
-		diag.jpm.addSeparator();
+		diag.actionList.addSeparator();
 		menuItem = new JMenuItem("Delete");
-		diag.jpm.add(menuItem);
+		diag.actionList.add(menuItem);
 		menuItem.addActionListener(this);
 		diag.driver.currentArrow = null;
 		
@@ -628,7 +628,7 @@ public class Arrow implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
 
-		diag.jpm = null;
+		diag.actionList = null;
 
 		if (s.equals("Edit Upstream Port Name")) {
 
@@ -962,7 +962,7 @@ public class Arrow implements ActionListener {
 		int pid = p.id;
 		diag.blocks.put(Integer.valueOf(pid), p);
 		
-		p.buildSideRects();
+		//p.buildSideRects();
 		//p.calcEdges();
 		//p.adjEdgeRects();
 		

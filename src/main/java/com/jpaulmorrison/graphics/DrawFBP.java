@@ -2049,7 +2049,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// if (!blk.editDescription(CREATE))
 				// return;;
 				curDiag.changed = true;
-				blk.buildSideRects();
+				//blk.buildSideRects();
 			}
 			repaint();
 			return;
@@ -2065,7 +2065,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			curDiag = b.diag;
 			b.buildBlockPopupMenu();
 			// use_drag_icon = false;
-			curDiag.jpm.show(this, x + 100, y + 100);
+			curDiag.actionList.show(this, x + 100, y + 100);
 			repaint();
 			return;
 
@@ -2078,7 +2078,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			a.buildArrowPopupMenu();
 			curDiag = a.diag;
-			curDiag.jpm.show(this, a.toX + 100, a.toY + 100);
+			curDiag.actionList.show(this, a.toX + 100, a.toY + 100);
 			repaint();
 			return;
 		}
@@ -2263,11 +2263,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// IIPBlock ib = (IIPBlock) block;
 			// block.width = ib.width;
 			// block.width = 60; // default
+			//block.buildSideRects();
 		}
 
 		else if (selRB == but[BUT_LEGEND]) {
 			title = "Legend";
 			block = new LegendBlock(diag);
+			//block.buildSideRects();
 		}
 
 		else if (selRB == but[BUT_ENCL]) {
@@ -2320,7 +2322,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return null;
 
 			//if (blkType.equals(Block.Types.IIP_BLOCK)) {  
-			if (selRB == but[BUT_IIP]) {		
+			//if (selRB == but[BUT_IIP]) {
+			if (block instanceof IIPBlock) {	
 				IIPBlock ib = (IIPBlock) block;
 				ib.desc = ib.checkNestedChars(block.desc);
 				ib.width = ib.calcIIPWidth();
@@ -2336,7 +2339,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// diag.changed = true;
 		selBlock = block;
 		// selArrowP = null;
-		block.buildSideRects();
+		
 		return block;
 	}
 
@@ -6679,7 +6682,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (udi) {
 					selBlockM = block; // mousing select
 					// if (!use_drag_icon) {
-					if (curDiag.jpm == null && !panSwitch)
+					if (curDiag.actionList == null && !panSwitch)
 						setCursor(drag_icon);
 					// use_drag_icon = true;
 					// }
@@ -6771,10 +6774,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			curx = xa;
 			cury = ya;
 
-			if (curDiag.jpm != null) {
-				curDiag.jpm.setVisible(false);
-				curDiag.jpm = null;
-				repaint();
+			if (curDiag.actionList != null) {
+				curDiag.actionList.setVisible(false);
+				curDiag.actionList = null;
+				curDiag.area.repaint();  
 				return;
 			}
 
@@ -6803,11 +6806,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// arrowEndForDragging = null;
 			// bendForDragging = null;
 
-			repaint();
+			curDiag.area.repaint();
 
 			// look for side or corner of an enclosure
 			for (Block block : curDiag.blocks.values()) {
-				block.buildSideRects();
+				//block.buildSideRects();
 				//block.adjEdgeRects();
 				//block.calcEdges();
 				if (block instanceof Enclosure) {
@@ -6902,7 +6905,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				/* check for possible starts of arrows */
 
 				if (headMark != null || tailMark != null) {
-					repaint();
+					curDiag.area.repaint();
 					return;
 				}
 				edgePoint = findBlockEdge(xa, ya, "P");
@@ -6910,7 +6913,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					xa = edgePoint.x;
 					ya = edgePoint.y;
 					// fpArrowRoot = edgePoint;
-					repaint();
+					curDiag.area.repaint();
 				}
 
 			}
@@ -6920,7 +6923,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				ocy = blockSelForDragging.cy;
 				ow = blockSelForDragging.width;
 				oh = blockSelForDragging.height;
-				repaint();
+				curDiag.area.repaint();
 				return;
 			}
 
@@ -6965,7 +6968,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 			}
 
-			repaint();
+			curDiag.area.repaint();
 		}
 
 		public void mouseDragged(MouseEvent e) {
@@ -7026,7 +7029,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				curDiag.changed = true;
 				panX = xa;
 				panY = ya;
-				repaint();
+				curDiag.area.repaint();
 				return;
 			}
 
@@ -7122,9 +7125,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						enc.cy = ya - enc.height / 2;
 						enc.eX = xa;
 					}
-					// enc.buildSides();
+					enc.buildSideRects();
 					// enc.adjEdgeRects();
-					enc.calcEdges();
+					//enc.calcEdges();
 					if (enc.eCorner != ECorner.NONE || enc.eSide != ESide.NONE) {
 						curDiag.changed = true;
 						// enc.corner = Corner.NONE;
@@ -7278,9 +7281,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// detArrSegNo = 0;
 			//repaint();
 
-			if (curDiag.jpm != null) {
-				curDiag.jpm.setVisible(false);
-				curDiag.jpm = null;
+			if (curDiag.actionList != null) {
+				curDiag.actionList.setVisible(false);
+				curDiag.actionList = null;
 				curDiag.area.repaint();
 				return;
 			}
@@ -7362,7 +7365,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 							curDiag = blockSelForDragging.diag;
 
-							curDiag.jpm.show(this, xa + 100, ya + 100);
+							curDiag.actionList.show(this, xa + 100, ya + 100);
 
 						}
 
@@ -7569,7 +7572,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 						// currentArrow.lastX = xa;
 						// currentArrow.lastY = ya;
-						curDiag.jpm.show(e.getComponent(), xa, ya);
+						curDiag.actionList.show(e.getComponent(), xa, ya);
 						curDiag.area.repaint();
 						return;
 					}
