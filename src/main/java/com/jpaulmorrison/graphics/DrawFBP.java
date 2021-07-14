@@ -6898,6 +6898,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
 						blockSelForDragging = block;
+						selBlockM = block;
 						break;
 					}
 				}
