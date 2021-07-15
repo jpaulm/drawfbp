@@ -6259,7 +6259,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
 		
+		Image dbImage = null;
 		Image dbImage2 = null;
+		Graphics dbg = null;
 		Graphics dbg2 = null;
 
 		public SelectionArea(boolean b) {
@@ -6280,6 +6282,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		}
 
+		public void paint(Graphics g) {
+			//super.paint(g);
+			dbImage = createImage(getWidth(), getHeight());
+			dbg = dbImage.getGraphics(); 
+			
+			//super.paint(dbg);	
+			paintComponent(dbg);
+			
+			g.drawImage(dbImage, 0, 0, this);
+		}
+
+		  
 		// a is "from" arrow; a2 may be same, or arrow that a joins to...
 		void defaultPortNames(Arrow a) {
 			Block from = curDiag.blocks.get(Integer.valueOf(a.fromId));
