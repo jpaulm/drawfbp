@@ -958,6 +958,7 @@ public class Arrow implements ActionListener {
 		//Integer i = Integer.valueOf(id);
 		
 		p.desc = "Logger";
+		p.centreDesc();
 		//diag.maxBlockNo++;
 		int pid = p.id;
 		diag.blocks.put(Integer.valueOf(pid), p);

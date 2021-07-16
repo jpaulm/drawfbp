@@ -10,7 +10,10 @@ public class ReportBlock extends Block {
 		width = BLOCKWIDTH;
 		height = BLOCKHEIGHT;
 		typeCode = Block.Types.REPORT_BLOCK;
-		//calcEdges();
+
+		//centreDesc();
+		buildSideRects();
+		centreDesc();
 	}
 	
 	@Override
@@ -89,7 +92,7 @@ public class ReportBlock extends Block {
 		int x = left + 6;
 		int y = top + driver.gFontHeight + 6;
 		if (desc != null) {
-			String str[] = centreDesc();
+			////String str[] = centreDesc();
 			for (int i = 0; i < str.length; i++) {
 				g.drawString(str[i], x, y); 
 				y += driver.gFontHeight;

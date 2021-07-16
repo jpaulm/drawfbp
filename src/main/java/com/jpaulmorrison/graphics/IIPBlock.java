@@ -21,7 +21,7 @@ public class IIPBlock extends Block {
 		height = driver.gFontHeight + 8;
 		
 		buildSideRects();
-		//calcEdges();
+		centreDesc();
 	}
 	
 	@Override
@@ -75,7 +75,7 @@ public class IIPBlock extends Block {
 			String t = desc;
 			if (t.length() < 2)
 				t = " " + t;
-			byte[] str = t.getBytes();
+			byte str[] = (byte[]) t.getBytes();
 			//w = 4 + metrics.bytesWidth(str, 0, t.length());
 			w = 4 + metrics.bytesWidth(str, 0, str.length);
 									

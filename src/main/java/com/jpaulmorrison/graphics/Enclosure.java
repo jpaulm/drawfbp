@@ -51,6 +51,7 @@ public class Enclosure extends Block {
 		id = Integer.parseInt(s);
         typeCode = item.get("type");
         desc = item.get("description");
+        centreDesc();
 		s = item.get("height").trim();
 		height = Integer.parseInt(s);
 		s = item.get("width").trim();

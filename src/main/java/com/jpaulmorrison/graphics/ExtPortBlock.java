@@ -16,7 +16,8 @@ public class ExtPortBlock extends Block {
 		height = 28;
 		typeCode = Block.Types.EXTPORT_IN_BLOCK;
 				
-		//calcEdges();
+		centreDesc();
+		buildSideRects();
 	}
 	
 	@Override

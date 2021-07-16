@@ -673,6 +673,7 @@ public class Diagram {
 					ans = ans.trim();					
 				}				
 				eb.desc = ans;
+				eb.centreDesc();
 				
 				arrow.downStreamPort = ans;
 				
@@ -722,6 +723,7 @@ public class Diagram {
 					ans = ans.trim();					
 				 
 				eb.desc = ans;
+				eb.centreDesc();
 				
 				arrow.upStreamPort = ans;
 				
@@ -741,6 +743,7 @@ public class Diagram {
 		driver.repaint();		
  
 		subnetBlock.desc = w;
+		subnetBlock.centreDesc();
 		
 			
 		driver.repaint();
@@ -1061,6 +1064,7 @@ public class Diagram {
 	 */
 	
 	ProcessBlock buildSubnetBlock(Diagram sbnDiag, Diagram origDiag, Enclosure enc, int x, int y) {
+		
 		ProcessBlock subnetBlock = new ProcessBlock(origDiag);
 
 		subnetBlock.cx = x;

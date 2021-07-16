@@ -306,6 +306,7 @@ public class DiagramBuilder {
 									IIPBlock ib = (IIPBlock) block;
 									//block.width = ib.width;
 									ib.width = ib.calcIIPWidth();
+									ib.textWidth = ib.width;
 									ib.buildSideRects();
 
 								} else if (type

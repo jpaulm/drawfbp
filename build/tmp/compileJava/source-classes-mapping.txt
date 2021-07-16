@@ -65,7 +65,6 @@ com/jpaulmorrison/graphics/FoundPointB.java
 com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP
  com.jpaulmorrison.graphics.DrawFBP$1
- com.jpaulmorrison.graphics.DrawFBP$10
  com.jpaulmorrison.graphics.DrawFBP$2
  com.jpaulmorrison.graphics.DrawFBP$3
  com.jpaulmorrison.graphics.DrawFBP$4
@@ -97,6 +96,7 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$Notation
  com.jpaulmorrison.graphics.DrawFBP$RunTask
  com.jpaulmorrison.graphics.DrawFBP$SelectionArea
+ com.jpaulmorrison.graphics.DrawFBP$SelectionArea$1
  com.jpaulmorrison.graphics.DrawFBP$Side
 com/jpaulmorrison/graphics/ProcessBlock.java
  com.jpaulmorrison.graphics.ProcessBlock

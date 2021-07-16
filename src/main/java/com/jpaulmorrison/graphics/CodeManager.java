@@ -154,6 +154,7 @@ public class CodeManager implements ActionListener {
 				if (block.desc == null || block.desc.equals("")) {
 					block.desc = "IN/OUT";
 					block.desc = makeUniqueDesc(block.desc);
+					block.centreDesc();
 				}
 			}
 		}

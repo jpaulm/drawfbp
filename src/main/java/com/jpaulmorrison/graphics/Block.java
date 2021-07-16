@@ -13,6 +13,7 @@ import java.util.*;
 import javax.swing.*;
 
 import com.jpaulmorrison.graphics.DrawFBP.Notation;
+import com.sun.javafx.charts.Legend;
 
 public class Block implements ActionListener {
 	String typeCode;   // block type - single character form
@@ -33,7 +34,7 @@ public class Block implements ActionListener {
 	int id;
 	
 	//int tlx, tly;
-	int textX, textY;
+	//int textX, textY;
 
 	static final int BLOCKWIDTH = 92; 
 
@@ -80,6 +81,7 @@ public class Block implements ActionListener {
 	Rectangle rightRect = null;	
 	int textHeight = 0;
 	int textWidth = 0;
+	String str[] = null;
 
 	static public class Types {
 		static String PROCESS_BLOCK = "B";
@@ -108,6 +110,7 @@ public class Block implements ActionListener {
 		d.maxBlockNo ++;
 		id = d.maxBlockNo;
 		
+		centreDesc();   
 		
 		buildSideRects();
 
@@ -135,8 +138,7 @@ public class Block implements ActionListener {
 	
 	void draw(Graphics g) {
 
-		//g.drawString("fudge", cx, cy);
-		
+				
 		if (diag == null) // fudge
 			return;
 
@@ -198,22 +200,16 @@ public class Block implements ActionListener {
 		if (isSubnet) // block is a subnet
 			g.drawRoundRect(tlx + 2, tly + 2, width - 4, height - 4, 6, 6);
 
-		// g.drawLine(tlx, tly + driver.fontHeight + driver.fontHeight
-		// / 2 +
-		// 3, tlx +
-		// width,
-		// tly + driver.fontHeight + driver.fontHeight / 2 + 3);
-
-		
+			
 
 		if (desc != null) {
-			String str[] = centreDesc();   
-			int x = 0;
-			int y = 0;
+			//// String str[] = centreDesc();   
+			int x = cx - textWidth / 2; 
+			int y = cy - textHeight / 2 + driver.gFontHeight - 6;
 			if (this instanceof ProcessBlock) {
-				x = cx - textWidth / 2;
-				y = cy - textHeight / 2;
-				y += driver.gFontHeight - 6;
+				//x = cx - textWidth / 2;
+				//y = cy - textHeight / 2;
+				//y += driver.gFontHeight - 6;
 				
 				for (int i = 0; i < str.length; i++) {
 					g.drawString(str[i], x, y);
@@ -222,9 +218,9 @@ public class Block implements ActionListener {
 
 			} else if (!(this instanceof LegendBlock)) {
 
-				x = cx - width / 2 + 20;
-				y = cy - height / 2 + 20;
-				y += driver.gFontHeight + 2;
+				//x = cx - width / 2 + 20;
+				//y = cy - height / 2 + 20;
+				//y += driver.gFontHeight + 2;
 
 				for (int i = 0; i < str.length; i++) {
 					g.drawString(str[i], x, y);
@@ -369,29 +365,7 @@ public class Block implements ActionListener {
 		 
 	}
 	
-	
-	/*
-	public void adjEdgeRects() {
-		leftRect.x = cx - width / 2 - driver.zWS / 2;
-		leftRect.y = cy - height / 2 - driver.zWS / 2;
-		leftRect.width = driver.zWS;
-		leftRect.height = height + driver.zWS;
-		rightRect.x = cx + width / 2 - driver.zWS / 2; 
-		rightRect.y = cy - height / 2 - driver.zWS / 2;
-		rightRect.width = driver.zWS;
-		rightRect.height = height + driver.zWS;
-		topRect.x = cx - width / 2 - driver.zWS / 2;
-		topRect.y = cy - height / 2 - driver.zWS / 2;
-		topRect.width = width + driver.zWS;
-		topRect.height = driver.zWS;
-		if (botRect != null) {
-			botRect.x = cx - width / 2 - driver.zWS / 2;
-			botRect.y = cy + height / 2 - driver.zWS / 2;
-			botRect.width = width + driver.zWS;
-			botRect.height = driver.zWS;
-		}
-	}
-	*/
+		
 	void calcEdges() {
 		leftEdge = cx - width / 2;
 		rightEdge = cx + width / 2;
@@ -410,20 +384,28 @@ public class Block implements ActionListener {
 	}
 	
 	String[] centreDesc() {
+		return centreDesc(driver);
+	}
+	
+	String[] centreDesc(Component comp) {
 
-		//g.setColor(Color.BLACK);
+		textHeight = 0;
+		textWidth = 0;
+		str = null;
+		if (desc == null)
+			return null;
 
 		int x = 0;
 		int y = 0;
 		int maxX = 0;
 
-		String str[] = desc.split("\n");
-		
-		FontMetrics metrics = driver.getGraphics().getFontMetrics(driver.fontg);
+		str = desc.split("\n");   // split ddesc into multiple lines
+
+		FontMetrics metrics = comp.getGraphics().getFontMetrics(driver.fontg);
 		int saveY = 0;
 
 		if (this instanceof ProcessBlock) {
-			 
+
 			for (int i = 0; i < str.length; i++) {
 				String t = str[i];
 				byte[] str2 = t.getBytes();
@@ -437,61 +419,56 @@ public class Block implements ActionListener {
 
 			textHeight = y - saveY;
 			textWidth = maxX;
-		}
-		else if (this instanceof LegendBlock) {
-				 
-				for (int i = 0; i < str.length; i++) {
-					String t = str[i];
-					byte[] str2 = t.getBytes();
-					x = 12 + metrics.bytesWidth(str2, 0, str2.length);
+		} else if (this instanceof LegendBlock) {
 
-					maxX = Math.max(x, maxX);
-					// System.out.println(maxX);
+			for (int i = 0; i < str.length; i++) {
+				String t = str[i];
+				byte[] str2 = t.getBytes();
+				x = 12 + metrics.bytesWidth(str2, 0, str2.length);
 
-					y += driver.gFontHeight;
-					
-				}
-				
-				y  += driver.gFontHeight;
-				
-				height = y - saveY;
-				width = maxX;
-				
+				maxX = Math.max(x, maxX);
+				// System.out.println(maxX);
+
+				y += driver.gFontHeight;
+
 			}
-			else {
+
+			y += driver.gFontHeight;
+
+			height = y - saveY;  
+			width = maxX;
+			textHeight = height;
+			textWidth = width;
+			//str = ?????????
+			
+		} else if (this instanceof IIPBlock) {
+			width = maxX;
+			textWidth = width;
+
+		} else {
 			// y = saveY;
 			x = (maxX) / 2; // find half width
 			x = cx - x;
 			x += 4; // fudge
 
 			y = y / 2; // find half height
+			
 			if (this instanceof ReportBlock)
 				y = cy - y;
-			else 
-				
+			else
+
 				y = cy - y + driver.gFontHeight + 2;
 
 			y -= driver.gFontHeight / 3; // fudge!
 		}
-	
-		 
+		
+		//textX = cx - textWidth / 2;
+		//textY = cy - textHeight / 2;
+
 		return str;
 	}
 
-	 
-
-	//void showZones(Graphics g) {
-
-		//if (!(this instanceof LegendBlock))  // comment out for next release
-		//	return;
-		//if (driver.currentArrow == null && driver.selBlockM == this)
-		//	showArrowEndAreas(g);
-		 
-		//else if (driver.currentArrow != null && this == driver.foundBlock)
-		//	showArrowEndAreas(g);
-
-	//}
-
+	
  
 	void showCompareFlag(Graphics g, int tlx, int tly){
 		if (compareFlag != null) {
@@ -573,9 +550,12 @@ public class Block implements ActionListener {
 		if (typeCode == null)
 			typeCode = Types.PROCESS_BLOCK;
 		desc = item.get("description");
-		if (typeCode.equals(Block.Types.IIP_BLOCK) && desc != null && desc.length() > 0 && desc.substring(0,1).equals("\""))
-			desc = desc.substring(1,desc.length() - 2);				
-		
+		//centreDesc();
+		if (typeCode.equals(Block.Types.IIP_BLOCK) && desc != null && desc.length() > 0 && 
+				desc.substring(0,1).equals("\"")) {
+			desc = desc.substring(1,desc.length() - 2);					
+		}
+		centreDesc();
 		
 		codeFileName = item.get("codefilename");
 		//if (codeFileName != null) { 
@@ -651,6 +631,7 @@ public class Block implements ActionListener {
 		if (this instanceof Enclosure) {
 			Enclosure ol = (Enclosure) this;
 			ol.desc = item.get("description");
+			ol.centreDesc();
 		}
 		//buildSideRects();
 		//calcEdges();
@@ -1626,15 +1607,18 @@ public class Block implements ActionListener {
 					MyOptionPane.PLAIN_MESSAGE, null, null, desc);
 			if (ans != null/* && ans.length() > 0*/) {
 				desc = ans.trim();
+				centreDesc();
 				diag.changed = true;
 				if (this instanceof IIPBlock) {
 					IIPBlock ib = (IIPBlock) this;
 					desc = ib.checkNestedChars(desc);					
 					
 					width = ib.calcIIPWidth();
+					textWidth = width;
 					if (width < 12)
 						width = 12;
 					buildSideRects();
+					//centreDesc();
 
 					for (Arrow arrow : diag.arrows.values()) {
 						if (arrow.fromId == id && arrow.fromY == arrow.toY) // i.e.
@@ -2041,6 +2025,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		//}
         
 		desc = area.getText();
+		centreDesc();
 		
 		// try this! it worked (fingers crossed) !
 		/*
@@ -2055,7 +2040,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		driver.osg = (Graphics2D) driver.buffer.getGraphics();
 		diag.area.repaint();
 		*/
-		centreDesc();  
+		//centreDesc();  
 		buildSideRects();
 		
 		diag.changed = true;

@@ -731,6 +731,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		Dimension dim2 = new Dimension(w2, h2);
 		setPreferredSize(dim2);
 		
+		//setVisible(true); 
+		
+	
+		
+		// Display the window.
+		pack();
+		
 		setVisible(true); 
 		
 		FontMetrics metrics =  getGraphics().getFontMetrics(fontg);
@@ -738,9 +745,6 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		gFontWidth = metrics.charWidth('n'); // should be the average!
 		gFontHeight = metrics.getAscent() + metrics.getLeading();
 		
-		
-		// Display the window.
-		pack();
 
 		sortByDate = false;
 		t = properties.get("sortbydate");
@@ -2024,8 +2028,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				curDiag.desc = curDiag.desc.replace('\n', ' ');
 				curDiag.desc = curDiag.desc.trim();
 				curDiag.changed = true;
-				if (curDiag.parent != null)
+				if (curDiag.parent != null) {
 					curDiag.parent.desc = ans;
+					curDiag.parent.centreDesc();
+				}
 			}
 			repaint();
 			return;
@@ -2314,8 +2320,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (ans == null)
 						return null;
 
-					else
+					else {
 						block.desc = ans;
+						block.centreDesc();
+					}
 				}
 				
 			} else if (!block.editDescription(CREATE))
@@ -2326,7 +2334,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (block instanceof IIPBlock) {	
 				IIPBlock ib = (IIPBlock) block;
 				ib.desc = ib.checkNestedChars(block.desc);
+				//ib.centreDesc();
 				ib.width = ib.calcIIPWidth();
+				ib.textWidth = ib.width;
 				if (ib.width < 15)
 					ib.width = 15;
 				ib.buildSideRects();
@@ -2921,9 +2931,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontg = new Font(generalFont, Font.PLAIN, (int) defaultFontSize);
 			adjustFonts();
-			repaint();
+			
 			// repaint();
-			redrawVarBlocks();
+			curDiag.area.redrawVarBlocks(driver);
+			repaint();
 		}
 
 		if (fFontChanged) {
@@ -2933,26 +2944,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			jfl.setText("Fixed font: " + fixedFont + "; general font: " + generalFont);
 			fontf = new Font(fixedFont, Font.PLAIN, (int) defaultFontSize);
 			adjustFonts();
-			repaint();
+			
 			// repaint();
-			redrawVarBlocks();
+			curDiag.area.redrawVarBlocks(driver);
+			repaint();
 		}
 
 		return;
 	}
 
-	void redrawVarBlocks() {
-		for (Block b : curDiag.blocks.values()) {
-			if (b.typeCode.equals(Block.Types.IIP_BLOCK) || b.typeCode.equals(Block.Types.LEGEND_BLOCK)) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						curDiag.area.repaint();
-					}
-				});
-			}
-
-		}
-	}
+	
 
 	void chooseFonts(MyFontChooser fontChooser) {
 
@@ -5527,8 +5528,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				
 
-				/*DrawFBP _mf = */ new DrawFBP(runArgs);
-				//_mf.setVisible(true);
+				new DrawFBP(runArgs);
 				//setDefaultLookAndFeelDecorated(true);
 				// System.out.println(runArgs);
 
@@ -6560,6 +6560,20 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 		}
 
+		void redrawVarBlocks(Component comp) {
+			for (Block b : curDiag.blocks.values()) {
+				if (b.typeCode.equals(Block.Types.IIP_BLOCK) || b.typeCode.equals(Block.Types.LEGEND_BLOCK)) {
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							b.centreDesc(comp);
+							repaint();
+						}
+					});
+				}
+
+			}
+		}
+		
 		public void mouseMoved(MouseEvent e) {
 			selBlockM = null;
 			int i = jtp.getSelectedIndex();
@@ -6791,7 +6805,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (curDiag.actionList != null) {
 				curDiag.actionList.setVisible(false);
 				curDiag.actionList = null;
-				curDiag.area.repaint();  
+				repaint();  
 				return;
 			}
 
@@ -6820,7 +6834,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// arrowEndForDragging = null;
 			// bendForDragging = null;
 
-			curDiag.area.repaint();
+			repaint();
 
 			// look for side or corner of an enclosure
 			for (Block block : curDiag.blocks.values()) {
@@ -6920,7 +6934,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				/* check for possible starts of arrows */
 
 				if (headMark != null || tailMark != null) {
-					curDiag.area.repaint();
+					repaint();
 					return;
 				}
 				edgePoint = findBlockEdge(xa, ya, "P");
@@ -6928,7 +6942,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					xa = edgePoint.x;
 					ya = edgePoint.y;
 					// fpArrowRoot = edgePoint;
-					curDiag.area.repaint();
+					repaint();
 				}
 
 			}
@@ -6938,7 +6952,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				ocy = blockSelForDragging.cy;
 				ow = blockSelForDragging.width;
 				oh = blockSelForDragging.height;
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -6983,7 +6997,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 			}
 
-			curDiag.area.repaint();
+			repaint();
 		}
 
 		public void mouseDragged(MouseEvent e) {
@@ -6998,7 +7012,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 
 						
-			curDiag.area.repaint();
+			repaint();
 			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
 			if (b == null || b.diag == null)
 				return;
@@ -7023,16 +7037,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			if (panSwitch) {
 				for (Block block : curDiag.blocks.values()) {
-					block.cx = block.cx + xa - panX;
-					block.cy = block.cy + ya - panY;
+					block.cx += xa - panX;
+					block.cy += ya - panY;
+					//block.textX += xa - panX;
+					//block.textY += ya - panY;
 					block.buildSideRects();
 					//block.calcEdges();
 				}
 				for (Arrow arrow : curDiag.arrows.values()) {
-					arrow.fromX = arrow.fromX + xa - panX;
-					arrow.fromY = arrow.fromY + ya - panY;
-					arrow.toX = arrow.toX + xa - panX;
-					arrow.toY = arrow.toY + ya - panY;
+					arrow.fromX += xa - panX;
+					arrow.fromY += ya - panY;
+					arrow.toX += xa - panX;
+					arrow.toY += ya - panY;
 					if (arrow.bends != null) {
 						for (Bend bend : arrow.bends) {
 							bend.x = bend.x + xa - panX;
@@ -7044,7 +7060,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				curDiag.changed = true;
 				panX = xa;
 				panY = ya;
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7061,7 +7077,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					tailMark.y = ya;
 					curDiag.changed = true;
 					currentArrow = arr;
-					curDiag.area.repaint();
+					repaint();
 					return;
 
 				} else if (headMark != null) {
@@ -7072,7 +7088,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					headMark.y = ya;
 					curDiag.changed = true;
 					currentArrow = arr;
-					curDiag.area.repaint();
+					repaint();
 					return;
 				}
 				// curDiag.changed = true;
@@ -7084,7 +7100,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				bendForDragging.x = xa;
 				bendForDragging.y = ya;
 				curDiag.changed = true;
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7146,7 +7162,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (enc.eCorner != ECorner.NONE || enc.eSide != ESide.NONE) {
 						curDiag.changed = true;
 						// enc.corner = Corner.NONE;
-						curDiag.area.repaint();
+						repaint();
 						return;
 					}
 
@@ -7180,24 +7196,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				block.cx += x_inc;
 				block.cy += y_inc;
 				
-				/*
-				block.topRect.x += x_inc;
-				block.topRect.y += y_inc;
-				if (block.botRect != null) {
-					block.botRect.x += x_inc;
-					block.botRect.y += y_inc;
-				}
-				block.leftRect.x += x_inc;
-				block.leftRect.y += y_inc;
-				block.rightRect.x += x_inc;
-				block.rightRect.y += y_inc;
-			    */
 
 				block.buildSideRects();  
 				//block.calcEdges();
 				//block.adjEdgeRects();
 								
-				curDiag.area.repaint();
+				repaint();
 
 				if (fpArrowRoot != null && fpArrowRoot.block == block) {
 					fpArrowRoot.x += xa - oldx;
@@ -7214,7 +7218,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							bk.buildSideRects();
 							//bk.calcEdges();
 						}
-						curDiag.area.repaint();
+						repaint();
 					}
 					if (enc.lla != null) {
 						for (Arrow a : enc.lla) {
@@ -7228,7 +7232,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 									bd.y += ya - oldy;
 								}
 						}
-						curDiag.area.repaint();
+						repaint();
 					}
 				}
 
@@ -7236,7 +7240,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				oldy = ya;
 
 				curDiag.changed = true;
-				curDiag.area.repaint();
+				repaint();
 
 				// block.calcEdges();
 			}
@@ -7271,7 +7275,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			colourArrows(xa, ya);
 
-			curDiag.area.repaint();
+			repaint();
 		}
 
 		public void mouseReleased(MouseEvent e) {
@@ -7299,7 +7303,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (curDiag.actionList != null) {
 				curDiag.actionList.setVisible(false);
 				curDiag.actionList = null;
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7319,7 +7323,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			if (curDiag.area.contains(xa, ya) && panSwitch) {
 				setCursor(openPawCursor);
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7386,7 +7390,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 					}
 					
-					curDiag.area.repaint();
+					repaint();
 					// return;
 				}
 
@@ -7418,7 +7422,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							currentArrow = null;
 							edgePoint = null;
 
-							curDiag.area.repaint();
+							repaint();
 							return;
 						}
 
@@ -7435,7 +7439,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							headMark = null;
 							currentArrow = null;
 							edgePoint = null;
-							curDiag.area.repaint();
+							repaint();
 							return;
 						}
 					}
@@ -7458,7 +7462,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						currentArrow = null;
 						headMark = null;
 						edgePoint = null;
-						curDiag.area.repaint();
+						repaint();
 						return;
 					}
 
@@ -7488,7 +7492,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				bendForDragging.marked = false;
 				bendForDragging = null;
 				curDiag.changed = true;
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7548,7 +7552,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				setCursor(defaultCursor);
 				blockSelForDragging.buildSideRects();
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7558,7 +7562,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				blockSelForDragging = null;
 				curDiag.changed = true;
 				setCursor(defaultCursor);
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7588,7 +7592,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						// currentArrow.lastX = xa;
 						// currentArrow.lastY = ya;
 						curDiag.actionList.show(e.getComponent(), xa, ya);
-						curDiag.area.repaint();
+						repaint();
 						return;
 					}
 				}
@@ -7644,7 +7648,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				//	if (null != createBlock(blockType, xa, ya, curDiag, true))
 				if (foundBlock == null && null != createBlock(xa, ya, curDiag, true))
 						curDiag.changed = true;
-				curDiag.area.repaint();
+				repaint();
 
 				return;
 			}
@@ -7663,7 +7667,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				if (between(currentArrow.fromX, x - zWS / 2, x + zWS / 2)
 						&& between(currentArrow.fromY, y - zWS / 2, y + zWS / 2)) {
-					curDiag.area.repaint();
+					repaint();
 					return;
 				}
 
@@ -7676,7 +7680,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						curDiag.arrows.remove(aid);
 						foundBlock = null;
 						currentArrow = null;
-						curDiag.area.repaint();
+						repaint();
 						return;
 					}
 				}
@@ -7705,7 +7709,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					curDiag.arrows.remove(aid);
 					foundBlock = null;
 					currentArrow = null;
-					curDiag.area.repaint();
+					repaint();
 					return;
 				}
 
@@ -7790,7 +7794,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				currentArrow = null;
 				curDiag.changed = true;
 
-				curDiag.area.repaint();
+				repaint();
 				return;
 			}
 
@@ -7840,7 +7844,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							curDiag.arrows.remove(aid);
 							foundBlock = null;
 							currentArrow = null;
-							curDiag.area.repaint();
+							repaint();
 							return;
 						}
 
@@ -7872,7 +7876,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 					currentArrow = null;
 
-					curDiag.area.repaint();
+					repaint();
 					return;
 				}
 
@@ -7894,10 +7898,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					curDiag.arrows.remove(aid);
 					foundBlock = null;
 					currentArrow = null;
-					curDiag.area.repaint();
+					repaint();
 					return;
 				}
-				//curDiag.area.repaint();
+				//repaint();
 				// }
 
 				if (currentArrow.bends == null) {
@@ -7925,7 +7929,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				currentArrow.toX = x;
 				currentArrow.toY = y;
 				curDiag.changed = true;
-				curDiag.area.repaint();
+				repaint();
 				// return;
 				// }
 			}

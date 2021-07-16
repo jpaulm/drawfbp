@@ -12,7 +12,9 @@ public class FileBlock extends Block {
 		typeCode = Block.Types.FILE_BLOCK;
 		width = 64;
 		height = 72;
-		//calcEdges();
+		
+		centreDesc();
+		buildSideRects();
 	}
 	
 	@Override
@@ -47,7 +49,7 @@ public class FileBlock extends Block {
 		x = cx - width / 2;
 		g.drawArc(x, y, width, 20, 190, 160);	
 		if (desc != null) {
-			String str[] = centreDesc();
+			////String str[] = centreDesc();
 			int x1 = cx - width / 2 + 6;
 			int y1 = cy - height / 2 + driver.gFontHeight + 12;
 			for (int i = 0; i < str.length; i++) {
