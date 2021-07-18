@@ -6432,11 +6432,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					// (block.botEdge + zWS / 2));
 				}
 
-				if (!(between(x, block.leftEdge - zWS / 2, block.rightEdge + zWS / 2)))
-					continue;
+				int i = 0;
+				if (currentArrow != null)
+					i = 1;
+				
+				// ?? if (!(between(x, block.leftEdge - zWS / 2, block.rightEdge + zWS / 2)))
+				//	continue;
 
-				if (!(between(y, block.topEdge - zWS / 2, block.botEdge + zWS / 2)))
-					continue;
+				// ?? if (!(between(y, block.topEdge - zWS / 2, block.botEdge + zWS / 2)))
+				//	continue;
 
 				/* look for block edge touching xa and ya */
 				// if (type.equals("D"))
@@ -6555,6 +6559,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					arr.toX = (int) point.x();
 					arr.toY = (int) point.y();
 				}
+				arr.ah = arr.buildArrowhead(arr.toX, arr.toY);  
 				arr.extraArrowhead = null;
 				adjustArrowsEndingAtLine(arr); // call recursively
 			}
@@ -7055,6 +7060,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							bend.y = bend.y + ya - panY;
 						}
 					}
+					arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
 				}
 				// repaint();
 				curDiag.changed = true;
@@ -7084,6 +7090,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					arr.toId = -1;
 					arr.toX = xa;
 					arr.toY = ya;
+					arr.ah = arr.buildArrowhead(arr.toX, arr.toY);  
 					headMark.x = xa;
 					headMark.y = ya;
 					curDiag.changed = true;
@@ -7186,6 +7193,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (arrow.toId == block.id && arrow.endsAtBlock) {
 						arrow.toX += xa - oldx;
 						arrow.toY += ya - oldy;
+						arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
 						arrow.extraArrowhead = null;
 						adjustArrowsEndingAtLine(arrow); // must be recursive
 					}
@@ -7231,7 +7239,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 									bd.x += xa - oldx;
 									bd.y += ya - oldy;
 								}
+							a.ah = a.buildArrowhead(a.toX, a.toY);  
 						}
+						
 						repaint();
 					}
 				}
@@ -7252,12 +7262,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				currentArrow.toId = -1;
 				currentArrow.toX = xa;
 				currentArrow.toY = ya;
+				currentArrow.ah = currentArrow.buildArrowhead(currentArrow.toX, currentArrow.toY);  
 				curDiag.changed = true;
 				fpArrowEndA = null;
 				fpArrowEndB = null;
 				currentArrow.endsAtBlock = false;
 				currentArrow.endsAtLine = false;
 
+			
 				if (Math.abs(currentArrow.fromX - xa) > 10 || // pick arbitrary figure!
 						Math.abs(currentArrow.fromY - ya) > 10) {
 					// System.out.println("dragging " + xa + " " + ya);
@@ -7458,6 +7470,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 						arr.toX = fpA.x;
 						arr.toY = fpA.y;
+						arr.ah = arr.buildArrowhead(arr.toX, arr.toY);  
 						arrowEndForDragging = null;
 						currentArrow = null;
 						headMark = null;
@@ -7473,6 +7486,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					// arr.bends.add(new Bend(arr.toX, arr.toY));
 					arr.toX = xa;
 					arr.toY = ya;
+					arr.ah = arr.buildArrowhead(arr.toX, arr.toY);  
 					Arrow arr2 = currentArrow;
 					arrowEndForDragging = arr2;
 					headMark = null;
@@ -7536,6 +7550,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (arrow.toId == blockSelForDragging.id && !arrow.endsAtLine) {
 						arrow.toX += blockSelForDragging.cx - savex;
 						arrow.toY += blockSelForDragging.cy - savey;
+						arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);   
 					}
 				}
 
@@ -7662,8 +7677,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				fpArrowEndB = edgePoint;
 			}
 
-			if (foundBlock != null // && leftButton
-			) {
+			if (foundBlock != null)  { // && leftButton
+			   
 
 				if (between(currentArrow.fromX, x - zWS / 2, x + zWS / 2)
 						&& between(currentArrow.fromY, y - zWS / 2, y + zWS / 2)) {
@@ -7740,6 +7755,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				a.toX = xa;
 				a.toY = ya;
+				a.ah = a.buildArrowhead(a.toX, a.toY);  
 				
 				if (curDiag.oldArrow != null) {
 					a.upStreamPort = curDiag.oldArrow.upStreamPort;
@@ -7822,6 +7838,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					currentArrow.toX = xa;
 					currentArrow.toY = ya;
+					currentArrow.ah = currentArrow.buildArrowhead(currentArrow.toX, currentArrow.toY);  
 					currentArrow.endsAtLine = true;
 					currentArrow.segNo = fpA.segNo;
 					currentArrow.upStreamPort = "OUT";
@@ -7928,6 +7945,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				currentArrow.lastY = y;
 				currentArrow.toX = x;
 				currentArrow.toY = y;
+				currentArrow.ah = currentArrow.buildArrowhead(x, y);     
 				curDiag.changed = true;
 				repaint();
 				// return;

@@ -677,11 +677,12 @@ public class Diagram {
 				
 				arrow.downStreamPort = ans;
 				
-				
-				
+								
 				//eb.calcEdges();
 				//arrow.toId = subnetBlock.id;
 				Point fixed = new Point(arrow.fromX, arrow.fromY);
+				fixed.x = arrow.fromX;
+				fixed.y = arrow.fromY;
 				if (arrow.bends != null) {
 					for (Bend bend : arrow.bends) {
 						fixed.x = bend.x;   // use first section
@@ -693,6 +694,7 @@ public class Diagram {
 				
 				arrow.toX = var.x;
 				arrow.toY = var.y;	
+				arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
 				arrow.toId = subnetBlock.id;
 				//eb.buildSideRects();
 			}
@@ -1117,7 +1119,8 @@ public class Diagram {
 		arrCopy.fromX = arrow.fromX;
 		arrCopy.fromY = arrow.fromY;
 		arrCopy.toX = arrow.toX;
-		arrCopy.toY = arrow.toY;				
+		arrCopy.toY = arrow.toY;	
+		arrCopy.ah = arrow.buildArrowhead(arrow.toX, arrCopy.toY);
 		
 		arrCopy.fromId = arrow.fromId;
 		arrCopy.toId = arrow.toId;
