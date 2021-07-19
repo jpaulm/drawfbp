@@ -109,10 +109,12 @@ public class Block implements ActionListener {
 		fullClassName = null;
 		d.maxBlockNo ++;
 		id = d.maxBlockNo;
+		width = BLOCKWIDTH;
+		height = BLOCKHEIGHT;
 		
 		centreDesc();   
 		
-		buildSideRects();
+		//buildSideRects();
 
 	}
 
@@ -1624,6 +1626,7 @@ public class Block implements ActionListener {
 						if (arrow.fromId == id && arrow.fromY == arrow.toY) // i.e.
 							// horizontal
 							arrow.fromX = cx + width / 2;
+						arrow.rebuildFatLines();
 					}
 					//calcEdges();
 				}

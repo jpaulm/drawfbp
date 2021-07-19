@@ -83,6 +83,7 @@ public class Arrow implements ActionListener {
 		driver = d.driver;		
 		capacity = -1;
 		ah = null;
+		shapeList = new LinkedList<Shape>();
 		//endX2 = endY2 = -1;
 		  
 		
@@ -488,7 +489,8 @@ public class Arrow implements ActionListener {
 		s = item.get("toy").trim();
 		toY = Integer.parseInt(s);
 		
-		ah = buildArrowhead(toX, toY);  
+		//ah = buildArrowhead(toX, toY);  
+		rebuildFatLines();  
 		
 		upStreamPort = item.get("upstreamport");		
 		downStreamPort = item.get("downstreamport");
@@ -955,9 +957,15 @@ public class Arrow implements ActionListener {
 			toX = b.x;
 			toY = b.y;
 		}
-		ProcessBlock p = new ProcessBlock(diag);
-		p.cx = (fromX + toX) / 2;
-		p.cy = (fromY + toY) / 2;
+		
+		int x = (fromX + toX) / 2;
+		int y = (fromY + toY) / 2;
+		//ProcessBlock p = new ProcessBlock(diag);
+		ProcessBlock p = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
+		
+		//p.cx = (fromX + toX) / 2;
+		//p.cy = (fromY + toY) / 2;
+		//p.buildSideRects();
 		
 		//Integer i = Integer.valueOf(id);
 		
@@ -1015,14 +1023,16 @@ public class Arrow implements ActionListener {
 				xSign = -1;			 
 			aL.toX = p.cx - xSign * p.width / 2;
 			aL.toY = p.cy - xSign * hh;
-			aL.ah = aL.buildArrowhead(aL.toX, aL.toY);  
+			//aL.ah = aL.buildArrowhead(aL.toX, aL.toY);  
+			aL.rebuildFatLines();
 		}
 		else {
 			if (toY < fromY)  
 				ySign = -1;			 
 			aL.toX = p.cx - ySign * ww;
 			aL.toY = p.cy - ySign * p.height / 2;				
-			aL.ah = aL.buildArrowhead(aL.toX, aL.toY);   
+			//aL.ah = aL.buildArrowhead(aL.toX, aL.toY);   
+			aL.rebuildFatLines();
 		}
 		aL.endsAtBlock = true;
 		//diag.maxArrowNo++;
@@ -1122,7 +1132,8 @@ public class Arrow implements ActionListener {
 		y = toY;
 		toY = fromY;
 		
-		ah = buildArrowhead(toX, toY);  
+		//ah = buildArrowhead(toX, toY);  
+		rebuildFatLines();
 		
 		fromY = y;
 		id = toId;
@@ -1163,6 +1174,7 @@ public class Arrow implements ActionListener {
 
 		shapeList.add(sh);		 	
 		
+			
 	}
 	
 	void rebuildFatLines() {
@@ -1182,10 +1194,12 @@ public class Arrow implements ActionListener {
 				segno++;
 			}
 			
-		tx2 = toX;
-		ty2 = toY;
+		//tx2 = toX;
+		//ty2 = toY;
 		
-		buildFatLine(fx2, fy2, tx2, ty2, segno);
+		buildFatLine(fx2, fy2, toX, toY, segno);
+		
+		ah = buildArrowhead(toX, toY);  
 		
 	}
 	

@@ -694,7 +694,8 @@ public class Diagram {
 				
 				arrow.toX = var.x;
 				arrow.toY = var.y;	
-				arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
+				//arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
+				arrow.rebuildFatLines();
 				arrow.toId = subnetBlock.id;
 				//eb.buildSideRects();
 			}
@@ -738,6 +739,7 @@ public class Diagram {
 				arrow.fromX = var.x;
 				arrow.fromY = var.y;
 				arrow.fromId = subnetBlock.id;
+				arrow.rebuildFatLines();
 			}
 		}
 		
@@ -1067,10 +1069,11 @@ public class Diagram {
 	
 	ProcessBlock buildSubnetBlock(Diagram sbnDiag, Diagram origDiag, Enclosure enc, int x, int y) {
 		
-		ProcessBlock subnetBlock = new ProcessBlock(origDiag);
-
+		//ProcessBlock subnetBlock = new ProcessBlock(origDiag);
+		ProcessBlock subnetBlock = (ProcessBlock) driver.createBlock(x, y, origDiag, false, true);
 		subnetBlock.cx = x;
 		subnetBlock.cy = y;
+		subnetBlock.buildSideRects();
 		//subnetBlock.calcEdges();
 		//subnetBlock.buildSideRects();
 		origDiag.maxBlockNo++;
@@ -1120,7 +1123,8 @@ public class Diagram {
 		arrCopy.fromY = arrow.fromY;
 		arrCopy.toX = arrow.toX;
 		arrCopy.toY = arrow.toY;	
-		arrCopy.ah = arrow.buildArrowhead(arrow.toX, arrCopy.toY);
+		//arrCopy.ah = arrow.buildArrowhead(arrow.toX, arrCopy.toY);
+		arrCopy.rebuildFatLines();
 		
 		arrCopy.fromId = arrow.fromId;
 		arrCopy.toId = arrow.toId;

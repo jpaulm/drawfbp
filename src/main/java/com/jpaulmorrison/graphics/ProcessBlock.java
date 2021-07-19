@@ -8,7 +8,7 @@ public class ProcessBlock extends Block {
 		height = BLOCKHEIGHT;
 		typeCode = Block.Types.PROCESS_BLOCK;
 		//buildSides();
-		buildSideRects();
+		//buildSideRects();
 	}
 	
 }

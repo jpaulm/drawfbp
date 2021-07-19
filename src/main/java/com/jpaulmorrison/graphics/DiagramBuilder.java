@@ -265,13 +265,17 @@ public class DiagramBuilder {
 								cEncl = null;
 							} else {
 								type = item.get("type");
+								int x = Integer.parseInt(item.get("x"));
+								int y = Integer.parseInt(item.get("y"));
 								if (null == type) {
 									MyOptionPane.showMessageDialog(frame,
 											"No block type specified", MyOptionPane.ERROR_MESSAGE);
-									block = new ProcessBlock(diag);
+									//block = new ProcessBlock(diag);
+									block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);									
 
 								} else if (type.equals(Block.Types.PROCESS_BLOCK)) {
-									block = new ProcessBlock(diag);								
+									//block = new ProcessBlock(diag);	
+									block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
 									
 								} else if (type
 										.equals(Block.Types.REPORT_BLOCK)) {
@@ -323,7 +327,7 @@ public class DiagramBuilder {
 								} else {
 									MyOptionPane.showMessageDialog(frame,
 											"Undefined block type", MyOptionPane.ERROR_MESSAGE);
-									block = new ProcessBlock(diag);
+									block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
 								}
 								
 								block.buildBlockFromXML(item);
