@@ -13,6 +13,10 @@ If you click on the Maven shield below to obtain DrawFBP, select `Download` and 
 
 <!--Note: Maven currently contains an earlier version of DrawFBP. -->
 
+Slack group
+---
+https://fbphq.slack.com/archives/CSL38J5KR
+
 Associating `.drw` file type with DrawFBP application
 ---
 
