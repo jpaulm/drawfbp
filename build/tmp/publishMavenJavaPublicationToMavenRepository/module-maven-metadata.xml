@@ -3,11 +3,11 @@
   <groupId>com.jpaulmorrison</groupId>
   <artifactId>drawfbp</artifactId>
   <versioning>
-    <latest>3.0.2</latest>
-    <release>3.0.2</release>
+    <latest>3.0.4</latest>
+    <release>3.0.4</release>
     <versions>
-      <version>3.0.2</version>
+      <version>3.0.4</version>
     </versions>
-    <lastUpdated>20210716133313</lastUpdated>
+    <lastUpdated>20210719223154</lastUpdated>
   </versioning>
 </metadata>

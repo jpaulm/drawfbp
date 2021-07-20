@@ -31,18 +31,29 @@ public class MyOptionPane {
 		 
 		 JOptionPane pane = new JOptionPane(message, msgType, OK_CANCEL_OPTION, ico,
 				  options, initialValue);
+		 JDialog dialog = pane.createDialog(f, title);
+		 
+		 if (f instanceof DrawFBP) {
+			 pane.setFont(((DrawFBP) f).fontf);
+			 dialog.setFont(((DrawFBP) f).fontf);
+		 }
+		 
+		 //pane.setFont(f.getFont());
 		
 		//JScrollPane jsp = new JScrollPane();
 		
 		//pane.add(jsp);
 					
-	    JDialog dialog = pane.createDialog(f, title);
+	    
 	    dialog.setModal(true);
 	     dialog.setTitle(title);
 	     if (!dialog.isResizable()) 
              dialog.setResizable(true);
 	     
 	     //jsp.add(dialog);
+	     if (f instanceof DrawFBP) {
+			 dialog.setFont(((DrawFBP) f).fontf);
+		 }
           
 	     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	     DrawFBP.applyOrientation(dialog); 
@@ -82,11 +93,15 @@ public class MyOptionPane {
 	static void showMessageDialog(Component f,  Object message, String s, int msgType, ImageIcon ico) {
 		
 		JOptionPane pane = new JOptionPane(message, msgType, DEFAULT_OPTION, ico);
+		 JDialog dialog = pane.createDialog(f, s);
 		 
-	     
+		if (f instanceof DrawFBP) {
+			 pane.setFont(((DrawFBP) f).fontf);
+			 dialog.setFont(((DrawFBP) f).fontf);
+		 } 
 	    // JScrollPane jsp = new JScrollPane();
 	   //  pane.add(jsp);
-	    JDialog dialog = pane.createDialog(f, s);
+	   
 	    dialog.setModal(true);
 	     
 	     if (!dialog.isResizable())  
@@ -116,9 +131,13 @@ public class MyOptionPane {
 	
 	static int showConfirmDialog(Component f,  Object message, String title, int optionType, int msgType) {
 		
-		JOptionPane pane = new JOptionPane(message, msgType, optionType);		 
-	 	 
-	     JDialog dialog = pane.createDialog((Component) f, title);
+		JOptionPane pane = new JOptionPane(message, msgType, optionType);	
+		JDialog dialog = pane.createDialog((Component) f, title);
+		if (f instanceof DrawFBP) {
+			 pane.setFont(((DrawFBP) f).fontf);
+			 dialog.setFont(((DrawFBP) f).fontf);
+		 }
+	     
 	     dialog.setModal(true);
 	     if (!dialog.isResizable())  
            dialog.setResizable(true);
@@ -153,13 +172,18 @@ public class MyOptionPane {
 			String title) {
 
 		 
-		JOptionPane pane = new JOptionPane(message, PLAIN_MESSAGE, OK_CANCEL_OPTION);		
+		JOptionPane pane = new JOptionPane(message, PLAIN_MESSAGE, OK_CANCEL_OPTION);	
+		JDialog dialog = pane.createDialog(f, title);
 		
 		/*
 		http://stackoverflow.com/questions/27404362/custom-dialog-using-joptionpane-api-wont-dispose
 		*/
-			
-	     JDialog dialog = pane.createDialog(f, title);
+		
+		if (f instanceof DrawFBP) {
+			 pane.setFont(((DrawFBP) f).fontf);
+			 dialog.setFont(((DrawFBP) f).fontf);
+		 }	
+	     
 	     dialog.setModal(true);
 	     if (!dialog.isResizable()) 
             dialog.setResizable(true);

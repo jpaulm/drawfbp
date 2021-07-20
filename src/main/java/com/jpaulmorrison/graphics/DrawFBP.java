@@ -3112,10 +3112,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 			}
 		}
-		UIManager.put("Menu.font", fontg);
-		UIManager.put("MenuBar.font", fontg);
-		UIManager.put("MenuItem.font", fontg);
+		UIManager.put("Menu.font", fontf);
+		UIManager.put("MenuBar.font", fontf);
+		UIManager.put("MenuItem.font", fontf);
 		UIManager.put("Label.font", fontf);
+		UIManager.put("JPopupMenu.font", fontf);
 		
         SwingUtilities.updateComponentTreeUI(DrawFBP.this);
         

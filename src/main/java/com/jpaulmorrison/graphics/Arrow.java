@@ -544,7 +544,9 @@ public class Arrow implements ActionListener {
 		diag.actionList.setVisible(true);
 		JLabel label2 = new JLabel();
 		label2.setText(diag.actionList.getLabel());
-		label2.setFont(driver.fontg);
+		//label2.setFont(driver.fontg);
+		label2.setFont(driver.fontf);
+		diag.actionList.setFont(driver.fontf);
 		// label2.setForeground(Color.BLUE);
 		diag.actionList.add(label2);
 		diag.actionList.addSeparator();

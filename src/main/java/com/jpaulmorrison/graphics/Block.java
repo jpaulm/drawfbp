@@ -13,7 +13,6 @@ import java.util.*;
 import javax.swing.*;
 
 import com.jpaulmorrison.graphics.DrawFBP.Notation;
-import com.sun.javafx.charts.Legend;
 
 public class Block implements ActionListener {
 	String typeCode;   // block type - single character form
@@ -444,7 +443,9 @@ public class Block implements ActionListener {
 			//str = ?????????
 			
 		} else if (this instanceof IIPBlock) {
-			width = maxX;
+			//width = maxX;
+			IIPBlock ip = (IIPBlock) this;
+			width = ip.calcIIPWidth();
 			textWidth = width;
 
 		} else {
@@ -467,6 +468,7 @@ public class Block implements ActionListener {
 		//textX = cx - textWidth / 2;
 		//textY = cy - textHeight / 2;
 
+		
 		return str;
 	}
 
@@ -1452,12 +1454,13 @@ public class Block implements ActionListener {
 		diag.actionList.setVisible(true);
 		JMenuItem menuItem = null;
 		JLabel label2 = new JLabel();
-		label2.setFont(driver.fontg);
+		label2.setFont(driver.fontf);
 		// label2.setHorizontalAlignment(SwingConstants.CENTER);
 		label2.setText(diag.actionList.getLabel());
 		// label2.setForeground(Color.BLUE);
 		diag.actionList.add(label2);
 		diag.actionList.addSeparator();
+		diag.actionList.setFont(driver.fontf);
 		
 		if (this instanceof Enclosure) {
 			menuItem = new JMenuItem("Edit Enclosure Label");
@@ -1604,7 +1607,7 @@ public class Block implements ActionListener {
 
 		if (s.equals("Edit Item")) { // one-line descriptions
 
-			String ans = (String) MyOptionPane.showInputDialog(driver,
+			String ans = (String) MyOptionPane.showInputDialog(driver,   
 					"Enter or change text", "Edit Item",
 					MyOptionPane.PLAIN_MESSAGE, null, null, desc);
 			if (ans != null/* && ans.length() > 0*/) {
@@ -1795,7 +1798,7 @@ public class Block implements ActionListener {
 				s2 += ".class";
 			}
 			*/
-			MyOptionPane.showMessageDialog(driver, s2);
+			MyOptionPane.showMessageDialog(driver, s2);  
 			return;
 		}
 			
@@ -1974,7 +1977,10 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		JScrollPane pane = new JScrollPane(area);
 		
 		area.setText(desc);
-		area.setFont(driver.fontg);
+		//if (typeCode.equals(Types.IIP_BLOCK)) 
+		//	area.setFont(driver.fontf);
+		//else
+			area.setFont(driver.fontg);
 		//JScrollPane pane = new JScrollPane(area);
 		 
 		 
@@ -2471,21 +2477,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				return;
 			}
 		}
-/*
-		String ans = (String) MyOptionPane.showInputDialog(driver,
-				"Edit arbitrary string or browse (enter # to browse)",
-				"Enter/change source code name", MyOptionPane.PLAIN_MESSAGE,
-				null, null, codeFileName);
 
-		if (ans == null  || ans.length() == 0) 
-			return;
-		codeFileName = ans.trim();
-		// javaClass = null;
-		diag.changed = true;
-		 
-
-		if (codeFileName.equals("#")) {
-			*/
 		 
 
 			String t = driver.properties.get(notn.srcDirProp);
