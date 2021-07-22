@@ -1110,7 +1110,8 @@ public class Block implements ActionListener {
 	*/ 
 	
 	void displayPortInfo() {
-		if (driver.currNotn.lang != driver.langs[DrawFBP.Lang.JAVA])
+		if (driver.currNotn.lang != driver.langs[DrawFBP.Lang.JAVA] &&
+				driver.currNotn.lang != driver.langs[DrawFBP.Lang.CSHARP])
 			return;
 		if (fullClassName == null)
 			return;
@@ -1118,7 +1119,10 @@ public class Block implements ActionListener {
 			ptInfoLoc = portInfo.getLocation();
 			portInfo.dispose();
 		}
-		buildMetadata();   
+		if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA])
+				buildMetadata();  
+		else 
+			compDescr = desc;
 		// final JDialog portInfo = new JDialog(driver);
 		portInfo = new JDialog(driver);		
 		
@@ -1134,28 +1138,7 @@ public class Block implements ActionListener {
 		
 		 
 		
-		/* 
-		portInfo.addMouseMotionListener(new MouseMotionAdapter() {
-			public void mouseDragged(MouseEvent e) {
-				//super.mouseDragged(e);
-				if (pILocn != null) {
-					pILocn = portInfo.getLocation();
-					portInfo.repaint();
-				}
-				
-			}
-
-			//@Override
-			//public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			//}
-			
-		});
-	 */
-		//portInfo.addMouseMotionListener(portInfo);
-		//portInfo.addWindowListener(portInfo);
-		//portInfo.addMouseMotionListener(portInfo);
+		
 		
 		portInfo.setTitle("Description and Port Information");
 		portInfo.toFront();
@@ -1218,83 +1201,124 @@ public class Block implements ActionListener {
 	
 		gbc.gridwidth = 1;
 		gbc.gridy = 4;
-	
-		JTextField[] tft = new JTextField[ROWSIZE];
-		tft[0] = new JTextField(" Port ");
-		tft[1] = new JTextField(" Type ");
-		tft[2] = new JTextField(" Class ");
-		tft[3] = new JTextField(" Function ");
-		tft[4] = new JTextField(" Connected? ");
-		displayRow(gbc, gbl, tft, panel, Color.BLUE);
-	
-		for (AInPort ip : inputPortAttrs.values()) {
-			JTextField[] tfi = new JTextField[ROWSIZE];  //array of text fields
-			tfi[0] = new JTextField(ip.value);
-			String s = "input";
-			if (ip.arrayPort)
-				s += ", array";
-			if (ip.fixedSize)
-				s += ", fixed size";
-			if (ip.optional)
-				s += ", optional";
-			tfi[1] = new JTextField(s);
-			if (ip.type == null)
-				tfi[2] = new JTextField("");
-			else
-				tfi[2] = new JTextField(ip.type.getName());
-			tfi[3] = new JTextField(ip.description);
+		
+		//if (inputPortAttrs != null && outputPortAttrs != null) {
+
+			JTextField[] tft = new JTextField[ROWSIZE];
+			tft[0] = new JTextField(" Port ");
+			tft[1] = new JTextField(" Type ");
+			tft[2] = new JTextField(" Class ");
+			tft[3] = new JTextField(" Function ");
+			tft[4] = new JTextField(" Connected? ");
+			displayRow(gbc, gbl, tft, panel, Color.BLUE);
 			
-			int res = testMatch(tfi[0].getText(), tfi[1].getText());
-			String results[] = {"Yes", "Missing", "Optional"};
-			tfi[4] = new JTextField(results[res]);
+		if (inputPortAttrs != null && outputPortAttrs != null) {
 			
-			gbc.gridx = 0;
-			gbc.weightx = 0.5;
-			displayRow(gbc, gbl, tfi, panel, Color.BLACK);
+			for (AInPort ip : inputPortAttrs.values()) {
+				JTextField[] tfi = new JTextField[ROWSIZE]; // array of text fields
+				tfi[0] = new JTextField(ip.value);
+				String s = "input";
+				if (ip.arrayPort)
+					s += ", array";
+				if (ip.fixedSize)
+					s += ", fixed size";
+				if (ip.optional)
+					s += ", optional";
+				tfi[1] = new JTextField(s);
+				if (ip.type == null)
+					tfi[2] = new JTextField("");
+				else
+					tfi[2] = new JTextField(ip.type.getName());
+				tfi[3] = new JTextField(ip.description);
+
+				int res = testMatch(tfi[0].getText(), tfi[1].getText());
+				String results[] = { "Yes", "Missing", "Optional" };
+				tfi[4] = new JTextField(results[res]);
+
+				gbc.gridx = 0;
+				gbc.weightx = 0.5;
+				displayRow(gbc, gbl, tfi, panel, Color.BLACK);
+			}
+
+			for (AOutPort op : outputPortAttrs.values()) {
+				JTextField[] tfo = new JTextField[ROWSIZE];
+				tfo[0] = new JTextField(op.value);
+				String s = "output";
+				if (op.arrayPort)
+					s += ", array";
+				if (op.fixedSize)
+					s += ", fixed size";
+				if (op.optional)
+					s += ", optional";
+				tfo[1] = new JTextField(s);
+				if (op.type == null)
+					tfo[2] = new JTextField("");
+				else
+					tfo[2] = new JTextField(op.type.getName());
+				tfo[3] = new JTextField(op.description);
+
+				int res = testMatch(tfo[0].getText(), tfo[1].getText());
+				String results[] = { "Yes", "Missing", "Optional" };
+				tfo[4] = new JTextField(results[res]);
+
+				displayRow(gbc, gbl, tfo, panel, Color.BLACK);
+			}
+
+			LinkedList<String> lst = checkUnmatchedPorts();
+			for (String ls : lst) {
+				JTextField[] tfu = new JTextField[ROWSIZE];
+				tfu[0] = new JTextField(ls.substring(1));
+				if (ls.substring(0, 1).equals("I"))
+					tfu[1] = new JTextField("(input)");
+				else
+					tfu[1] = new JTextField("(output)");
+				tfu[2] = new JTextField("");
+				tfu[3] = new JTextField("");
+				tfu[4] = new JTextField("?");
+				displayRow(gbc, gbl, tfu, panel, Color.BLACK);
+			}
 		}
-		
-		
-	
-		for (AOutPort op : outputPortAttrs.values()) {
-			JTextField[] tfo = new JTextField[ROWSIZE];
-			tfo[0] = new JTextField(op.value);
-			String s = "output";
-			if (op.arrayPort)
-				s += ", array";
-			if (op.fixedSize)
-				s += ", fixed size";
-			if (op.optional)
-				s += ", optional";
-			tfo[1] = new JTextField(s);
-			if (op.type == null)
-				tfo[2] = new JTextField("");
-			else
-				tfo[2] = new JTextField(op.type.getName());
-			tfo[3] = new JTextField(op.description);
-			
-			int res = testMatch(tfo[0].getText(), tfo[1].getText());
-			String results[] = {"Yes", "Missing", "Optional"};
-			tfo[4] = new JTextField(results[res]);
-			
-			displayRow(gbc, gbl, tfo, panel, Color.BLACK);
-		}
-	
-		
-		
-		LinkedList<String> lst = checkUnmatchedPorts();
-		for (String ls : lst) {
+		else {
+			for (Arrow arr: diag.arrows.values()) {
+				if (arr.fromId == id) {
+					JTextField[] tfu = new JTextField[ROWSIZE];
+					tfu[0] = new JTextField(arr.upStreamPort);
+					//if (ls.substring(0, 1).equals("I"))
+					//	tfu[1] = new JTextField("(input)");
+					//else
+						tfu[1] = new JTextField("(output)");
+					tfu[2] = new JTextField("");
+					tfu[3] = new JTextField("");
+					tfu[4] = new JTextField("yes");
+					displayRow(gbc, gbl, tfu, panel, Color.BLACK);
+				}
+			}
+			for (Arrow arr: diag.arrows.values()) {
+				Arrow arr2 = arr.findLastArrowInChain();
+				if (arr2.toId == id) {
+					JTextField[] tfu = new JTextField[ROWSIZE];
+					tfu[0] = new JTextField(arr2.downStreamPort);
+					//if (ls.substring(0, 1).equals("I"))
+						tfu[1] = new JTextField("(input)");
+					//else
+					//	tfu[1] = new JTextField("(output)");
+					tfu[2] = new JTextField("");
+					tfu[3] = new JTextField("");
+					tfu[4] = new JTextField("yes");
+					displayRow(gbc, gbl, tfu, panel, Color.BLACK);
+				}
+			}
 			JTextField[] tfu = new JTextField[ROWSIZE];
-			tfu[0] = new JTextField(ls.substring(1));
-			if (ls.substring(0, 1).equals("I"))
-				tfu[1] = new JTextField("(input)");
-			else
-				tfu[1] = new JTextField("(output)");
+			tfu[0] = new JTextField("?");
+			//if (ls.substring(0, 1).equals("I"))
+			tfu[1] = new JTextField(" ");
+			//else
+			//	tfu[1] = new JTextField("(output)");
 			tfu[2] = new JTextField("");
 			tfu[3] = new JTextField("");
-			tfu[4] = new JTextField("?");
+			tfu[4] = new JTextField("no");
 			displayRow(gbc, gbl, tfu, panel, Color.BLACK);
 		}
-	
 		portInfo.add(panel);
 		//jdialog.pack();  
 		
@@ -1551,11 +1575,13 @@ public class Block implements ActionListener {
 					menuItem3b.addActionListener(this);
 					diag.actionList.add(menuItem3b);
 					
-					menuItem1b.setEnabled(driver.currNotn != null && 							
+					boolean b = driver.currNotn != null && 							
 							(driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] ||
-							driver.currNotn.lang == driver.langs[DrawFBP.Lang.CSHARP])); 
-					menuItem3b.setEnabled(driver.currNotn != null && 							
-							driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
+							driver.currNotn.lang == driver.langs[DrawFBP.Lang.CSHARP]);
+					menuItem1b.setEnabled(b); 
+					//menuItem3b.setEnabled(driver.currNotn != null && 							
+					//		driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
+					menuItem3b.setEnabled(b); 
 											
 					diag.actionList.addSeparator();
 					menuItem = new JMenuItem(
@@ -1829,11 +1855,11 @@ public class Block implements ActionListener {
 
 		}
 		if (s.equals("Display Description and Port Info")) {
-			if (component == null) {
-				MyOptionPane.showMessageDialog(driver,
-						"No class information associated with block", MyOptionPane.ERROR_MESSAGE);
-				return;
-			}
+			//if (component == null) {
+			//	MyOptionPane.showMessageDialog(driver,
+			//			"No class information associated with block", MyOptionPane.ERROR_MESSAGE);
+			//	return;
+			//}
 
 			displayPortInfo();
 			return;
