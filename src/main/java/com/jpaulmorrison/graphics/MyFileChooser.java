@@ -47,7 +47,7 @@ import com.jpaulmorrison.graphics.DrawFBP.Lang;
 public class MyFileChooser extends JDialog 
 		implements
 			MouseListener,
-			ActionListener,
+			ActionListener, 
 			//ListSelectionListener,
 			KeyListener
 			 {
@@ -241,14 +241,23 @@ public class MyFileChooser extends JDialog
 
 		t_fileName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
 
-		t_suggName.setEditable(false);
-		t_suggName.setEnabled(true);
-		// text3.setRequestFocusEnabled(true);
-		t_suggName.setFont(driver.fontg.deriveFont(Font.ITALIC));
-		// text3.setPreferredSize(new Dimension(100, driver.fontHeight + 2));
-
+		//t_suggName.setEditable(false);
+		//t_suggName.setEnabled(true);
+		//t_suggName.setFont(driver.fontg.deriveFont(Font.ITALIC));
 		//String s = (saveAs) ? "Save or Save As" : "Open File";
 		// comp = new MyFileCompare();
+		t_suggName.setEditable(true);
+		t_suggName.setEnabled(true);
+		t_suggName.setRequestFocusEnabled(true);
+		t_suggName.setBackground(vLightBlue);
+		t_suggName.getCaret().setVisible(true);
+		t_suggName.addActionListener(this);
+		t_fileName.addMouseListener(this);
+		//t_fileName.setText(new sugg(listHead).getName() + "/");
+		//t_fileName.setText(listHead + "/");
+
+		t_suggName.setPreferredSize(new Dimension(100, driver.gFontHeight + 2));
+
 		renderer = new ListRenderer(driver);
 
 		dialog.setTitle(chooserTitle);
@@ -1177,6 +1186,9 @@ public class MyFileChooser extends JDialog
 
 		if (e.getSource() == t_fileName){
 			selComp = t_fileName;  
+		}
+		if (e.getSource() == t_suggName){
+			selComp = t_suggName;  
 		}
 			
 		//if (e.getSource() == t_dirName){

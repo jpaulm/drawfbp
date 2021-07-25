@@ -504,10 +504,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//getContentPane().add(jsp);
 		applyOrientation(this);
 
-		int w = (int) dim.getWidth();
-		int h = (int) dim.getHeight();
+		int w = (int) dim.getWidth() - 100;
+		int h = (int) dim.getHeight() - 100;
 		
 		setPreferredSize(new Dimension(w, h));
+		
+		setLocation(new Point(50, 50));
 		// maxX = (int) (w * .8);
 		// maxY = (int) (h * .8);
 		//buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -685,8 +687,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		});
 
-		// jtp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-		// .put(escapeKS, "CLOSE");
+		jtp.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+		 .put(escapeKS, "CLOSE");
 		jtp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKS, "CLOSE");
 
 		jtp.getActionMap().put("CLOSE", escapeAction);
@@ -986,10 +988,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		box2.add(Box.createRigidArea(new Dimension(10, 0)));
 		// box2.add(Box.createHorizontalGlue());
-		for (int j = 0; j < but.length; j++) {
-			but[j].getInputMap().put(escapeKS, "CLOSE");
-			but[j].getActionMap().put("CLOSE", escapeAction);
-		}
+		//for (int j = 0; j < but.length; j++) {
+		//	but[j].getInputMap().put(escapeKS, "CLOSE");
+		//	but[j].getActionMap().put("CLOSE", escapeAction);
+		//}
 
 		BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
 		// loadImage("javaIcon.jpg");
@@ -1279,10 +1281,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		menuItem = new JMenuItem("About");
 		helpMenu.add(menuItem);
-		menuItem.addActionListener(this);
-		menuBar.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
+		//menuItem.addActionListener(this);
+		//menuBar.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
 
-		menuBar.getActionMap().put("CLOSE", escapeAction);
+		//menuBar.getActionMap().put("CLOSE", escapeAction);
 		menuBar.setVisible(true);
 
 		ct = helpMenu.getItemCount();  
@@ -2564,10 +2566,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		SelectionArea sa = new SelectionArea(true);
 		sa.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, true);
-		sa.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
-		sa.getInputMap().put(escapeKS, "CLOSE");
+		//sa.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(escapeKS, "CLOSE");
+		//sa.getInputMap().put(escapeKS, "CLOSE");
 
-		sa.getActionMap().put("CLOSE", escapeAction);
+		//sa.getActionMap().put("CLOSE", escapeAction);
 
 		return sa;
 	}
@@ -2981,27 +2983,30 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// Float[] selectionValues = {new Float(10), new Float(12), new Float(14),
 		// new Float(16), new Float(18), new Float(20), new Float(22)};
-		Float[] selectionValues = new Float[7];
-		for (int i = 0; i < selectionValues.length; i++) {
-			selectionValues[i] = Float.valueOf(i * 2.0f + 10);
-		}
+		String[] selectionValues = new String[7];
 		int j = 0;
 		for (int i = 0; i < selectionValues.length; i++) {
-			if (Float.compare(selectionValues[i].floatValue(), defaultFontSize) == 0)
+			selectionValues[i] = String.valueOf(i * 2.0f + 10);
+			if (selectionValues[i].equals(String.valueOf(defaultFontSize)))
 				j = i;
 		}
-		Float fs = (Float) MyOptionPane.showInputDialog(this, "Font size dialog", "Select a font size",
+		//int j = 0;
+		//for (int i = 0; i < selectionValues.length; i++) {
+		//	if (Float.compare(selectionValues[i].floatValue(), defaultFontSize) == 0)
+		//		j = i;
+		//}
+		Object fs = MyOptionPane.showInputDialog(this, "Font size dialog", "Select a font size",
 				MyOptionPane.PLAIN_MESSAGE, null, selectionValues, selectionValues[j]);
 		if (fs == null)
 			return;
 
-		defaultFontSize = fs.floatValue();
-		fontg = fontg.deriveFont(fs);
-		fontf = fontf.deriveFont(fs);
+		defaultFontSize = Float.valueOf((String)fs);
+		fontg = fontg.deriveFont(defaultFontSize);
+		fontf = fontf.deriveFont(defaultFontSize);
 		jfs.setText("Font Size: " + defaultFontSize);
 		saveProp("defaultFontSize", Float.toString(defaultFontSize));
 		adjustFonts();
-		repaint();		
+		//repaint();		
 		saveProperties();
 		MyOptionPane.showMessageDialog(this, "Font size changed");
 		repaint();
@@ -5375,15 +5380,34 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	public void componentResized(ComponentEvent e) {
 		
-		Dimension dim = getSize();
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();				
 		
-		//if (dim.width > 1000)
-		//	up.setText("Go to Directory");
-		//else
-		//	up.setText("Go to Dir");
+		int w = (int) dim.getWidth();
+		int h = (int) dim.getHeight();
+		/*
+		Dimension dim2 = getSize();
+		if (0 == (getExtendedState() & JFrame.MAXIMIZED_VERT)) { 
+			//if (dim2.getWidth() >= w || dim2.getHeight() >= h) {		
+				//setPreferredSize(new Dimension(w, h));
+			//w = (int) dim.getWidth() - 200;
+			h -= 200;
+			w -= 200;
+			setSize(new Dimension(w, h));		
+			setLocation(new Point(100, 100));
+			//}
+		}
 		
-		
-		//Dimension dim2 = new Dimension(dim.width / but.length, dim.height);
+		if (0 == (getExtendedState() & JFrame.MAXIMIZED_HORIZ)) { 
+			//if (dim2.getWidth() >= w || dim2.getHeight() >= h) {		
+				//setPreferredSize(new Dimension(w, h));
+			h -= 200;
+			w -= 200;
+			//h = (int) dim.getHeight() - 200;
+			setMaximumSize(new Dimension(w, h));		
+			setLocation(new Point(100, 100));
+			//}
+		}
+		*/
 		int no = but.length;
 		for (int j = 0; j < no; j++) {
 			//box21.remove(0);
@@ -5394,7 +5418,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				but[j].setText(shortNames[j]);
 			//box21.add(but[j]);
 		}
-		
+		//repaint();
+		//curDiag.changed = true;
 	}
 
 	public void componentShown(ComponentEvent arg0) {
@@ -5828,8 +5853,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				repaint();
 				return;
 			}
-
-			closeAppAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
+			
+			
+			//if (!(e.getSource() instanceof JMenuBar)  )
+			//		closeAppAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 		}
 	}
 

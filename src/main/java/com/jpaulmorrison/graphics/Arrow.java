@@ -630,6 +630,7 @@ public class Arrow implements ActionListener {
 		diag.actionList.add(menuItem);
 		menuItem.addActionListener(this);
 		diag.driver.currentArrow = null;
+		diag.driver.repaint();
 		
 	}
 

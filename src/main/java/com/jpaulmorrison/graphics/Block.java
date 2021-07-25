@@ -1618,6 +1618,7 @@ public class Block implements ActionListener {
 		menuItem = new JMenuItem("Delete");
 		diag.actionList.add(menuItem);
 		menuItem.addActionListener(this);
+		diag.driver.repaint();
 	}
 
 	public void actionPerformed(ActionEvent e) {
