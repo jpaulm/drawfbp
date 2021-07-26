@@ -2074,6 +2074,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			b.buildBlockPopupMenu();
 			// use_drag_icon = false;
 			curDiag.actionList.show(this, x + 100, y + 100);
+			curDiag.actionList = null;
 			repaint();
 			return;
 
@@ -2087,6 +2088,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			a.buildArrowPopupMenu();
 			curDiag = a.diag;
 			curDiag.actionList.show(this, a.toX + 100, a.toY + 100);
+			curDiag.actionList = null;
 			repaint();
 			return;
 		}
@@ -7440,6 +7442,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							curDiag = blockSelForDragging.diag;
 
 							curDiag.actionList.show(this, xa + 100, ya + 100);
+							
+							blockSelForDragging = null;
+							curDiag.actionList = null;
 
 						}
 
@@ -7654,6 +7659,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						// currentArrow.lastX = xa;
 						// currentArrow.lastY = ya;
 						curDiag.actionList.show(e.getComponent(), xa, ya);
+						
+						curDiag.actionList = null;   
+						
 						repaint();
 						return;
 					}
