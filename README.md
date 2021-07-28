@@ -13,7 +13,7 @@ If you click on the Maven shield below to obtain DrawFBP, select `Download` and 
 
 <!--Note: Maven currently contains an earlier version of DrawFBP. -->
 
-Slack group
+Slack group for DrawFBP in FBPHQ
 ---
 https://fbphq.slack.com/archives/CSL38J5KR
 
