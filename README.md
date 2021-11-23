@@ -5,7 +5,7 @@ DrawFBP
 
 General web site on Flow-Based Programming: https://jpaulm.github.io/fbp/ .
 
-Latest good release is v3.0.5 - v3.0.6 has a bug in it, which will be fixed as soon as possible!
+Latest good release is v3.0.5 - v3.0.6 has a bug in it, which will be fixed as soon as possible!  If downloading from Maven, please use v3.0.5.
 
 <!--
 
@@ -15,7 +15,7 @@ If you click on the Maven shield below to obtain DrawFBP, select `Download` and 
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
-<!--Note: Maven currently contains an earlier version of DrawFBP. -->
+Note: Maven currently contains an earlier version of DrawFBP. -->
 
 Slack group for DrawFBP in FBPHQ
 ---
