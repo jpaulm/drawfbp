@@ -72,11 +72,11 @@ public class MyOptionPane {
 	     	 return null;
 	     if (selValue instanceof Integer && ((Integer) selValue).intValue() == CANCEL_OPTION)
 	    	 return null;
-	    // Object o = pane.getInputValue();
-	    // if (selValue instanceof Float)
+	     Object o = pane.getInputValue();
+	     if (selValue instanceof Float)
 	    	 return selValue;
-	   //  else
-	    //	 return o;
+	     else
+	    	 return o;
 	     
 	     
 	}

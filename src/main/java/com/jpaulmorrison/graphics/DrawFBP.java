@@ -396,10 +396,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		//frameInit();
 
-		langs = new Lang[12];
+		langs = new Lang[13];
 
 		langs[Lang.JAVA] = new Lang("Java", "java", new JavaFileFilter(), "currentJavaFBPDir");
 		langs[Lang.CSHARP] = new Lang("C#", "cs", new CsharpFileFilter(), "currentCsharpFBPDir");
+		langs[Lang.GO] = new Lang("Go", "go", new GoFileFilter(), "currentGoFBPDir");
 		langs[Lang.JS] = new Lang("JS", "js", new JSFilter(), "currentJSDir");
 		langs[Lang.FBP] = new Lang("FBP", "fbp", new FBPFilter(), "currentFBPNetworkDir");
 		langs[Lang.DIAGRAM] = new Lang("Diagram", "drw", new DiagramFilter(), "currentDiagramDir"); // y
@@ -411,9 +412,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		langs[Lang.EXE] = new Lang("exe", "exe", new ExeFilter(), "exeDir");
 		langs[Lang.PRINT] = new Lang("Print", null, null, null);
 
-		notations = new Notation[4];
+		notations = new Notation[5];
 		notations[Notation.JAVA_FBP] = new Notation("JavaFBP", langs[Lang.JAVA]);
 		notations[Notation.CSHARP_FBP] = new Notation("C#FBP", langs[Lang.CSHARP]);
+		notations[Notation.GO_FBP] = new Notation("GoFBP", langs[Lang.GO]);
 		notations[Notation.JSON] = new Notation("JSON", langs[Lang.JS]);
 		notations[Notation.FBP] = new Notation("FBP", langs[Lang.FBP]);
 
@@ -589,7 +591,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			currNotn = findNotnFromLabel(dn);
 		}
 		saveProp("defaultNotation", currNotn.label);
-		setNotation(currNotn, false);
+		//setNotation(currNotn, false);
 		
 		String sBD = properties.get("sortbydate");
 		if (sBD == null) {
@@ -656,6 +658,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		jtp.setForeground(Color.BLACK);
 		jtp.setBackground(Color.WHITE);
+		//adjustFonts();
 
 		BufferedImage image = loadImage("DrawFBP-logo-small.png");
 
@@ -1028,6 +1031,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//menuBar = createMenuBar();
 		//setJMenuBar(menuBar);
 		
+		
 		setNotation(currNotn, false);
 		adjustFonts();
 		
@@ -1244,7 +1248,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		Box box0 = new Box(BoxLayout.X_AXIS);
 		// JPanel jp1 = new JPanel();
 		Dimension dim = jtf.getPreferredSize();
-		jtf.setPreferredSize(new Dimension(gFontWidth * 20, dim.height));
+		//jtf.setPreferredSize(new Dimension(gFontWidth * 20, dim.height));  // let it float...?
 
 		box0.add(Box.createRigidArea(new Dimension(20, 0)));
 		box0.add(jtf); // languages
@@ -2233,8 +2237,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			fileMenu.remove(7);
 			fileMenu.add(gNMenuItem, 7);
 		}
-		//else
-		//	fileMenu.add(gNMenuItem);
+		adjustFonts();
+		FontUIResource fontUI = new FontUIResource(fontf);
+		//gNMenuItem.setFont(fontUI);
+		//gNMenuItem.setPreferredSize(menuItem1.getPreferredSize());
+		UIManager.put("MenuItem.font", fontUI);
 		gNMenuItem.addActionListener(this);
 		
 		repaint();
@@ -5667,6 +5674,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				public static final int CSHARP_FBP = 1;
 				public static final int JSON = 2;
 				public static final int FBP = 3;
+				public static final int GO_FBP = 4;
 				
 		Notation(String vm, Lang lan) {
 			label = vm;		
@@ -5692,16 +5700,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// list of "languages"
 		public static final int JAVA = 0;
 		public static final int CSHARP = 1;
-		public static final int JS = 2;
-		public static final int FBP = 3;
-		public static final int DIAGRAM = 4;
-		public static final int IMAGE = 5;
-		public static final int JARFILE = 6;
-		public static final int FBP_JSON = 7;
-		public static final int CLASS = 8;
-		public static final int DLL = 9;
-		public static final int EXE = 10;
-		public static final int PRINT = 11;
+		public static final int GO = 2;
+		public static final int JS = 3;
+		public static final int FBP = 4;
+		public static final int DIAGRAM = 5;
+		public static final int IMAGE = 6;
+		public static final int JARFILE = 7;
+		public static final int FBP_JSON = 8;
+		public static final int CLASS = 9;
+		public static final int DLL = 10;
+		public static final int EXE = 11;
+		public static final int PRINT = 12;
 
 		Lang(String lab, String extn, FileFilter filt, String dir) {
 			label = lab;
@@ -5905,6 +5914,20 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		@Override
 		public String getDescription() {
 			return "C# source files (*.cs)";
+		}
+	}
+	
+	public class GoFileFilter extends FileFilter {
+		@Override
+		public boolean accept(File f) {
+
+			return f.getName().toLowerCase().endsWith(".go") || f.isDirectory();
+
+		}
+
+		@Override
+		public String getDescription() {
+			return "Go source files (*.go)";
 		}
 	}
 
@@ -6315,7 +6338,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			 */
 			// setFont(fontg);
 
-			setBackground(Color.WHITE);
+			//setBackground(Color.WHITE);
+			setBackground(Color.BLACK);  // exp
 			// setPreferredSize(new Dimension(4000, 3000)); // experimental
 			// pack();
 
