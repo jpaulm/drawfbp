@@ -2362,7 +2362,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//block.calcEdges();
 		// diag.maxBlockNo++;
 		// block.id = diag.maxBlockNo;
-		diag.blocks.put(Integer.valueOf(block.id), block);
+		//diag.blocks.put(Integer.valueOf(block.id), block);
 		// diag.changed = true;
 		//selBlock = block;   
 		// selArrowP = null;
@@ -5121,6 +5121,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			for (Bend bend : arr.bends) {
 				x2 = bend.x;
 				y2 = bend.y;
+				Point2D pb = new Point2D(x2, y2);
+				if (p.distance(pb) <=  40 ) {
+					res = true;
+					break;
+				}
 
 				line = new Line2D(x1, y1, x2, y2);
 				try {
@@ -5153,21 +5158,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			if (d >= 40.0)
 				return false;
-
 		}
-		// boolean res = false;
-
-		// System.out.println(d);
-
-		// if (d >= 40.0) {
-		// detArr = null;
-		// detArrSegNo = -1;
-		// arr.highlightedSeg = -1;
-		// }
-		// else {
-		// detArr = arr;
-		// detArrSegNo = segNo;
-
+				
 		if (arr.shapeList == null || arr.shapeList.size() <= seg)
 			return false;
 
@@ -5176,8 +5168,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		arr.highlightedSeg = seg;
 
 		res = sh.contains(xp, yp);
-		// }
-
+		 
 		return res;
 	}
 

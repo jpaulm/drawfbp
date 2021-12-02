@@ -790,8 +790,7 @@ public class Arrow implements ActionListener {
 			diag.oldArrow = this;
 			diag.delTouchingArrows(this);
 			diag.arrows.remove(Integer.valueOf(id));
-			return;
-			/*
+			
 			Arrow arr = new Arrow(diag);
 			
 			// try reusing id
@@ -808,8 +807,7 @@ public class Arrow implements ActionListener {
 			//driver.currentArrow = arr;
 			
 			return;
-			*/
-			
+						
 		} if (s.equals("Drag Tail")) {
 			//tailMarked = true;
 			driver.tailMark = new Point(fromX, fromY);

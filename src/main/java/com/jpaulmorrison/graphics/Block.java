@@ -204,7 +204,7 @@ public class Block implements ActionListener {
 			
 
 		if (desc != null) {
-			//// String str[] = centreDesc();   
+			String str[] = centreDesc();   
 			int x = cx - textWidth / 2; 
 			int y = cy - textHeight / 2 + driver.gFontHeight - 6;
 			if (this instanceof ProcessBlock) {
@@ -1564,8 +1564,10 @@ public class Block implements ActionListener {
 					menuItem.addActionListener(this);
 					diag.actionList.add(menuItem);					
 					diag.actionList.addSeparator();
-					JMenuItem menuItem1b = new JMenuItem(
-								"Choose Component/Subnet Class");  
+					String chComp = "Choose Component/Subnet"; 
+					if (driver.currNotn.lang != driver.langs[DrawFBP.Lang.GO])
+						chComp += " Class";
+					JMenuItem menuItem1b = new JMenuItem(chComp);  
 					menuItem1b.addActionListener(this);
 					diag.actionList.add(menuItem1b);					
 					JMenuItem menuItem2b = new JMenuItem("Display Full Class Name");
@@ -1577,7 +1579,8 @@ public class Block implements ActionListener {
 					
 					boolean b = driver.currNotn != null && 							
 							(driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] ||
-							driver.currNotn.lang == driver.langs[DrawFBP.Lang.CSHARP]);
+							driver.currNotn.lang == driver.langs[DrawFBP.Lang.CSHARP] ||
+  							driver.currNotn.lang == driver.langs[DrawFBP.Lang.GO]);
 					menuItem1b.setEnabled(b); 
 					//menuItem3b.setEnabled(driver.currNotn != null && 							
 					//		driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
@@ -1650,7 +1653,7 @@ public class Block implements ActionListener {
 					if (width < 12)
 						width = 12;
 					buildSideRects();
-					//centreDesc();
+					centreDesc();
 
 					for (Arrow arrow : diag.arrows.values()) {
 						if (arrow.fromId == id && arrow.fromY == arrow.toY) // i.e.
@@ -1737,11 +1740,13 @@ public class Block implements ActionListener {
 			return;
 		}
 		
-		if (s.equals("Choose Component/Subnet Class")) {			
+		if (s.startsWith("Choose Component/Subnet")) {			
 			
 			try {
 				if (driver.currNotn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 					selectJavaClass();
+				else if (driver.currNotn == driver.notations[DrawFBP.Notation.GO_FBP])
+					selectNonJavaSource();   
 				else {
 					if (driver.currNotn == driver.notations[DrawFBP.Notation.JSON] &&
 							driver.fbpJsonFile == null) {
@@ -2000,7 +2005,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 
 	boolean editDescription(int option) {
 
-		final JTextArea area = new JTextArea(4, 3);
+		JTextArea area = new JTextArea(4, 3);
 		JScrollPane pane = new JScrollPane(area);
 		
 		area.setText(desc);
@@ -2067,22 +2072,23 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		/*
 		 *  Solve double buffering first!  
 		 * 
-		 */ 
-		//int w = driver.buffer.getWidth();
-		//int h = driver.buffer.getHeight();
+		 
+		int w = driver.buffer.getWidth();
+		int h = driver.buffer.getHeight();
 		
-		//driver.buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		/*
+		driver.buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		
 		driver.osg = (Graphics2D) driver.buffer.getGraphics();
 		diag.area.repaint();
-		*/
+		
 		//centreDesc();  
 		buildSideRects();
+		*/
 		
 		diag.changed = true;
 
-		//driver.repaint();
-		diag.area.repaint();
+		driver.repaint();
+		//diag.area.repaint();
 
 		return true;
 	}

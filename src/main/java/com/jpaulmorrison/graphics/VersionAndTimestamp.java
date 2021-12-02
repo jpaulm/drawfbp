@@ -1,14 +1,14 @@
 /*
- * Copyright (C) J.P. Morrison, Enterprises, Ltd. 2009,..., 2020 All Rights Reserved. 
+ * Copyright (C) J.P. Morrison, Enterprises, Ltd. 2009,..., 2021 All Rights Reserved. 
  */
 package com.jpaulmorrison.graphics;
 
 public final class VersionAndTimestamp {
 
-	static String version = "3.0.7";
+	static String version = "3.1.0";
 
 
-	static String date = "Aug. 22, 2021";  
+	static String date = "Dec. 2, 2021";  
 
 
 	static String getVersion() {

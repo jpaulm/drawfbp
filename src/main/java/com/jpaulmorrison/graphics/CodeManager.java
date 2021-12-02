@@ -267,6 +267,7 @@ public class CodeManager implements ActionListener {
 			styles[k + 7] = packageNameStyle;
 			styles[k + 8] = normalStyle;
 		
+			int blkIndex = 0;
 			
 			for (Block block : diag.blocks.values()) {
 
@@ -287,7 +288,8 @@ public class CodeManager implements ActionListener {
 					error = true;
 					
 										 
-					if (block.component == null  && block.compName == null) {
+					if (block.component == null  && block.compName == null &&
+							driver.curDiag.lang != driver.langs[DrawFBP.Lang.GO] ) {
 						MyOptionPane.showMessageDialog(driver,
 								"Class name missing for '" + s + "' - diagram needs to be updated",
 								MyOptionPane.WARNING_MESSAGE);
@@ -587,26 +589,40 @@ public class CodeManager implements ActionListener {
 		return true;
 	}
 
-	String genComp(String name, String className /*, String lang */) {
+	String genComp(String name, String className) {
+		String compName = "";
 		if (className == null)
-			className = "????";
+			compName = "????";
 		
 		if (lang == driver.langs[Lang.JAVA]) {
-			//if (!(className.equals("\"Invalid class\"")))
 			if (!(className.endsWith(".class")))
-				className += ".class";
-			return "component(\"" + name + "\"," + className + ")";
+				compName = className + ".class";
+			return "component(\"" + name + "\"," + compName + ")";
 		}
-		else {
-			className.replace("\\",  "/");
-			int i = className.lastIndexOf("/");
-			if (lang != driver.langs[Lang.CSHARP]) {
-				int j = className.lastIndexOf("."); 
-				i = Math.max(i, j);
-			}
-			className = className.substring(i + 1);
-			return "Component(\"" + name + "\", typeof(" + className + "))";
+		if (lang == driver.langs[Lang.CSHARP]) {
+			compName = className.replace("\\",  "/");
+			int i = compName.lastIndexOf("/");
+			int j = compName.lastIndexOf("."); 
+			i = Math.max(i, j);			
+			compName = compName.substring(i + 1);
+			return "Component(\"" + name + "\", typeof(" + compName + "))";
 		}
+		if (lang == driver.langs[Lang.GO]) {
+			compName = className.replace("\\",  "/");
+			int i = compName.lastIndexOf("components/");
+			compName = compName.substring(i + 11);
+			compName = compName.replace("/", ".").
+					substring(0, compName.length() - 3);
+			String lc = name.toLowerCase();
+			return lc + " := net.NewProc(\"" + name +
+					"\", &" + compName + "{})";
+		}
+		compName = className.replace("\\",  "/");
+		int i = compName.lastIndexOf("/");
+		
+		compName = compName.substring(i + 1);
+		return "Component(\"" + name + "\", typeof(" + compName + "))";
+		
 	}
 
 	String genConnect(Arrow arrow) {
