@@ -766,17 +766,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		fbpJsonFile = properties.get("fbpJsonFile");
 		
-		//String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
-		//		Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
-		//		Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
-		//		Block.Types.REPORT_BLOCK };
 		
-		//MyRadioButton but[] = new MyRadioButton[11];
-		
-		
-		//blkType = blockNames[BUT_PROCESS];
-
-		//setVisible(true);
 		addComponentListener(this);
 		
 		Container cont = getContentPane();
@@ -2359,12 +2349,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				ib.buildSideRects();
 			}
 		}
-		//block.calcEdges();
-		// diag.maxBlockNo++;
-		// block.id = diag.maxBlockNo;
-		//diag.blocks.put(Integer.valueOf(block.id), block);
-		// diag.changed = true;
-		//selBlock = block;   
+		block.calcEdges();
+		 diag.maxBlockNo++;
+		 block.id = diag.maxBlockNo;
+		diag.blocks.put(Integer.valueOf(block.id), block);
+		 diag.changed = true;
+		selBlock = block;   
 		// selArrowP = null;
 		
 		return block;
@@ -5505,7 +5495,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return image;
 	}
 	
-	
+	/*
 	public void paint(Graphics g) {
 		//super.paint(g);
 		dbImage = createImage(getWidth(), getHeight());
@@ -5516,7 +5506,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		g.drawImage(dbImage, 0, 0, this);
 	}
 
-	/* 
+	 
 	public void paintComponent(Graphics g) {
 		// video says do drawline etc. here!		 
 		 
@@ -6415,7 +6405,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			 
 			  
 			for (Block block : diag.blocks.values()) {
-				if (!(block instanceof Enclosure))
+				if (block != null && !(block instanceof Enclosure))
 					block.draw(g);
 			}
 			 

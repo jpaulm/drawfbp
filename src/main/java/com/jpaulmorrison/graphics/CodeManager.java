@@ -113,30 +113,19 @@ public class CodeManager implements ActionListener {
 		String curDir = diag.diagFile.getParentFile().getAbsolutePath();
 		driver.saveProp("currentDiagramDir", curDir);
 
-		String component = (notn.lang == driver.langs[Lang.JAVA])
+		String component = (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 				? "component"
 				: "Component";
 		// String connect = (gl.label.equals("Java")) ? "connect" : "Connect";
-		String initialize = (notn.lang == driver.langs[Lang.JAVA])
+		String initialize = (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 				? "initialize"
 				: "Initialize";
-		String _port = (notn.lang == driver.langs[Lang.JAVA]) ? "port" : "Port";
-		String sDO = (notn.lang == driver.langs[Lang.JAVA])
+		String _port = (notn == driver.notations[DrawFBP.Notation.JAVA_FBP]) ? "port" : "Port";
+		String sDO = (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 				? "setDropOldest()"
 				: "SetDropOldest()";
 		
-		/*
-		String fn = diag.diagFile == null ? "unknown" : diag.diagFile.getName();		
-			
-		jf.setTitle("Generated Code for " + fn);		
-
-		jf.setJMenuBar(createMenuBar());		
-
-		BufferedImage image = driver.loadImage("DrawFBP-logo-small.png");
-		jf.setIconImage(image);
 		
-		JFrame.setDefaultLookAndFeelDecorated(true);
-		*/
 
 		String code = "";
 
@@ -169,7 +158,7 @@ public class CodeManager implements ActionListener {
 		clsName = w.substring(j + 1);
 		
 			
-		if (notn.lang == driver.langs[DrawFBP.Lang.JAVA])  
+		if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP] )  {
 			packageName = driver.properties.get("currentPackageName");
 		 
 		/*
@@ -188,16 +177,38 @@ public class CodeManager implements ActionListener {
 		}
 		
 		*/
+		} else if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+				packageName = driver.properties.get("currentPackageName");
+			}
+			 
+			 
 		
-		String[] contents;
+		String[] contents = new String[0];
+		int k = 0;
 		if (notn == driver.notations[DrawFBP.Notation.JSON]) {
 			contents = new String[1];
 			contents[0] = generateJSON();
 			styles[0] = normalStyle;
+			k = 1;
+		} else if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+			contents = new String[10];
+			contents[0] = "package ";
+			contents[1] = packageName;
+			contents[2] = ";  //change package name, or delete statement, if desired\n"; 
+			String title = driver.curDiag.title; 
+			contents[3] = "import (\n"
+					+ "	... \n"
+					+ "	\"github.com/jpaulm/gofbp/core\"\n"
+					+ ")\n"
+					+ "\n"
+					+ "func Test" + title + "(t *testing.T) {\n"
+					+ "	net := core.NewNetwork(\"" + title + "\")\n";
+			k = 4;
 		} else {
 			contents = new String[20];  
-			int k = 0;
-			if (notn.lang == driver.langs[Lang.JAVA]) {
+			contents[0] = "";
+			
+			if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP]) {
 				//if (packageName != null) {
 					contents[0] = "package ";
 					contents[1] = packageName;
@@ -218,7 +229,7 @@ public class CodeManager implements ActionListener {
 				k = 3;
 			}
 
-			if (notn.lang == driver.langs[Lang.JAVA])
+			if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 				contents[k + 0] = "import com.jpaulmorrison.fbp.core.engine.*; \n";
 
 			if (ext.equals("SubNet"))    
@@ -230,13 +241,13 @@ public class CodeManager implements ActionListener {
 			
 			contents[k + 3] = clsName;
 			
-			if (notn.lang == driver.langs[Lang.JAVA])
+			if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 				contents[k + 4] = " extends ";
 			else
 				contents[k + 4] = " : ";
 			contents[k + 5] = ext;
 			
-			if (notn.lang == driver.langs[Lang.JAVA])
+			if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 				contents[k + 6] = " {\nString description = ";
 			else
 				contents[k + 6] = " {\nstring description = ";
@@ -245,7 +256,7 @@ public class CodeManager implements ActionListener {
 				diag.desc = "(no description)";
 			contents[k + 7] = "\"" + diag.desc + "\"";
 			
-			if (notn.lang == driver.langs[Lang.JAVA])
+			if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 				contents[k + 8] = ";\nprotected void define() { \n";
 			else
 				contents[k + 8] = ";\npublic override void Define() { \n";
@@ -266,9 +277,10 @@ public class CodeManager implements ActionListener {
 			styles[k + 6] = normalStyle;
 			styles[k + 7] = packageNameStyle;
 			styles[k + 8] = normalStyle;
-		
-			int blkIndex = 0;
 			
+		}
+		
+						
 			for (Block block : diag.blocks.values()) {
 
 				String t;
@@ -369,7 +381,8 @@ public class CodeManager implements ActionListener {
 					}
 					s = makeUniqueDesc(s); // and make it unique
 					//s = makeUniqueDesc(s); // and make it unique
-					if (driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA] && !(t.toLowerCase().endsWith(".class")))
+					if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP] && 
+							!(t.toLowerCase().endsWith(".class")))
 					    t += ".class";
 					//if (t.toLowerCase().endsWith(".class"))
 					//	t = t.substring(0, t.length() - 6);
@@ -434,22 +447,7 @@ public class CodeManager implements ActionListener {
 				if (from instanceof ProcessBlock
 						&& to instanceof ProcessBlock) {
 
-					/*
-					if (!arrow.endsAtLine && driver.isDupPort(dnPort, to)) {
-						String proc = to.desc;
-						dnPort += "???";
-						MyOptionPane.showMessageDialog(driver,
-								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
-						error = true;
-					}
-					if (driver.isDupPort(upPort, from)) {
-						String proc = from.desc;
-						upPort += "???";
-						MyOptionPane.showMessageDialog(driver,
-								"Duplicate port name: " + proc + "." + upPort, MyOptionPane.ERROR_MESSAGE);
-						error = true;
-					}
-					*/
+					
 					if (from.multiplex) {
 						code += "for (int i = 0; i < " + compress(fromDesc)
 								+ "_count; i++)\n";
@@ -471,31 +469,37 @@ public class CodeManager implements ActionListener {
 						if (arrow.dropOldest)
 							code += "c" + arrow.id + "." + sDO + "; \n";
 					} else {
+						if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+							fromDesc = fromDesc.toLowerCase();
+							toDesc = toDesc.toLowerCase();
+							code += " " + "net.Connect(" + fromDesc + ", " + q(upPort) + ", " +
+							toDesc + ", " + q(dnPort) + ", 6)\n";
+									
+						} else {
 						code += "  " + genConnect(arrow) + "(" + component + "("
 								+ q(fromDesc) + "), " + _port + "(" + q(upPort)
 								+ "), " + component + "(\"" + toDesc + "\"), "
 								+ _port + "(" + q(dnPort) + ")" + cap + "); \n";
 						if (arrow.dropOldest)
 							code += "c" + arrow.id + "." + sDO + "; \n";
+						}
 					}
 				}
 
 				else
 					if (from instanceof IIPBlock
 							&& to instanceof ProcessBlock) {
-					/*
-					if (!arrow.endsAtLine && driver.isDupPort(dnPort, to)) {
-						String proc = to.desc;
-						dnPort += "???";
-						MyOptionPane.showMessageDialog(driver,
-								"Duplicate port name: " + proc + "." + dnPort, MyOptionPane.ERROR_MESSAGE);
-						error = true;
-					}
-					*/
+						if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+							toDesc = toDesc.toLowerCase();
+							code += " " + "net.Initialize(" + q(fromDesc) +  ", " +
+									toDesc + ", " + q(dnPort) + ")\n";
+									
+						} else {
 
 					code += "  " + initialize + "(" + q(fromDesc) + ", " + component
 							+ "(\"" + toDesc + "\"), " + _port + "(" + q(dnPort)
 							+ ")" + cap + "); \n";
+						}
 				}
 
 				if (from instanceof ExtPortBlock) {
@@ -517,23 +521,32 @@ public class CodeManager implements ActionListener {
 				}
 			}
 
+			int sno = 1;
 			if (ext.equals("Network")) {   
+				if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+					code += "net.Run()\n}\n";
+					sno = 4;
+					contents[sno] = code;
+					styles[sno] = normalStyle;
+
+					sno++;
+				} else {
 				String s = diag.title;
 				i = s.indexOf(".");
 				if (i > -1)
 					s = s.substring(0, i);
 				code += "} \n";
-				if (notn.lang == driver.langs[Lang.JAVA])
+				if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
 					code += "public static void main(String[] argv) throws Exception  { \n"
 							+ "  new " + s + "().go(); \n";
 				else
 					code += "internal static void Main(String[] argv) { \n"
 							+ "  new " + s + "().Go();\n }\n";
-			}
-
+			
+	
 			code += "} \n";
 
-			int sno = 12;
+			sno = 12;
 			contents[sno] = code;
 			styles[sno] = normalStyle;
 
@@ -542,7 +555,9 @@ public class CodeManager implements ActionListener {
 			contents[sno] = "}\n";
 			styles[sno] = normalStyle;
 			sno++;
-
+				}
+			}
+			
 			if (error) {
 				contents[sno] = "\n /* Errors in generated code - they must be corrected for your program to run - \n\n"
 						+ "               remove this comment when you are done  */  \n";
@@ -550,7 +565,7 @@ public class CodeManager implements ActionListener {
 				MyOptionPane.showMessageDialog(driver,
 						"Error in generated code", MyOptionPane.ERROR_MESSAGE);
 			}
-		}
+		 
 		// insert data from arrays
 		try {
 			
@@ -614,6 +629,7 @@ public class CodeManager implements ActionListener {
 			compName = compName.replace("/", ".").
 					substring(0, compName.length() - 3);
 			String lc = name.toLowerCase();
+			//check for subin and subout -> core.subin... 
 			return lc + " := net.NewProc(\"" + name +
 					"\", &" + compName + "{})";
 		}
@@ -626,7 +642,7 @@ public class CodeManager implements ActionListener {
 	}
 
 	String genConnect(Arrow arrow) {
-		String connect = (notn.lang == driver.langs[Lang.JAVA]) ? "connect" : "Connect";
+		String connect = (notn == driver.notations[DrawFBP.Notation.JAVA_FBP]) ? "connect" : "Connect";
 		if (arrow.dropOldest) {
 			connect = "Connection c" + arrow.id + " = " + connect;  
 		}
@@ -1218,7 +1234,7 @@ public class CodeManager implements ActionListener {
 			// diag.changeCompLang();
 			return false;
 		}
-		if (notn.lang == driver.langs[Lang.JAVA]) {
+		if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP]) {
 			fileString = checkMain(file, fileString);
 			String fsCheck = checkPackage(file, fileString);
 			if (fsCheck != null)

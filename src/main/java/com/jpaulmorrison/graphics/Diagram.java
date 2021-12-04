@@ -547,9 +547,12 @@ public class Diagram {
 
 		changed = true;
 		Integer aid = Integer.valueOf(block.id);
-		blocks.remove(aid);
+		Block oldBlk = blocks.remove(aid);
+		if (oldBlk == null) {
+			int i = 1;
+		}
 		// changeCompLang();
-
+		
 		driver.repaint();
 	}
 
@@ -1069,8 +1072,8 @@ public class Diagram {
 	
 	ProcessBlock buildSubnetBlock(Diagram sbnDiag, Diagram origDiag, Enclosure enc, int x, int y) {
 		
-		//ProcessBlock subnetBlock = new ProcessBlock(origDiag);
-		ProcessBlock subnetBlock = (ProcessBlock) driver.createBlock(x, y, origDiag, false, true);
+		ProcessBlock subnetBlock = new ProcessBlock(origDiag);
+		//ProcessBlock subnetBlock = (ProcessBlock) driver.createBlock(x, y, origDiag, false, true);
 		subnetBlock.cx = x;
 		subnetBlock.cy = y;
 		subnetBlock.buildSideRects();

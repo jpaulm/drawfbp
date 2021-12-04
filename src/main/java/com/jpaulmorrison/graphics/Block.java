@@ -271,12 +271,7 @@ public class Block implements ActionListener {
 				} else
 				if (compName != null)
 					name = compName;
-				//else
-				//	if (!(name.endsWith(driver.currNotn.lang.ext)))
-				//		name += "." + driver.currNotn.lang.ext;
-				 
-				//else
-				//	name = fullClassName;
+				
 				int x = cx - name.length() * driver.gFontWidth / 2;
 				g.drawString(name, x, y);
 				g.setFont(fontsave);
@@ -1582,8 +1577,7 @@ public class Block implements ActionListener {
 							driver.currNotn.lang == driver.langs[DrawFBP.Lang.CSHARP] ||
   							driver.currNotn.lang == driver.langs[DrawFBP.Lang.GO]);
 					menuItem1b.setEnabled(b); 
-					//menuItem3b.setEnabled(driver.currNotn != null && 							
-					//		driver.currNotn.lang == driver.langs[DrawFBP.Lang.JAVA]); 
+					
 					menuItem3b.setEnabled(b); 
 											
 					diag.actionList.addSeparator();

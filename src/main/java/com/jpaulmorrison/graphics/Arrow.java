@@ -962,7 +962,10 @@ public class Arrow implements ActionListener {
 		int x = (fromX + toX) / 2;
 		int y = (fromY + toY) / 2;
 		//ProcessBlock p = new ProcessBlock(diag);
-		ProcessBlock p = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
+		ProcessBlock p = new ProcessBlock(diag);
+		//block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);	
+		p.cx = x;
+		p.cy = y;
 		
 		//p.cx = (fromX + toX) / 2;
 		//p.cy = (fromY + toY) / 2;

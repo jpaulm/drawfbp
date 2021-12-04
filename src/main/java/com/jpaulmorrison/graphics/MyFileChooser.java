@@ -1812,10 +1812,7 @@ public class MyFileChooser extends JDialog
 			} else { // inTree
 				
 				String w = list.getSelectedValue();
-				//int k = w.lastIndexOf(".");
-				//if (k > -1) {
-				//	String suff = w.substring(k + 1);
-				//	if (suff.equals(driver.currNotn.lang.ext)) 
+				
 				if (w != null) {
 					File f = new File(w);
 					if (lang.filter.accept(f))						
