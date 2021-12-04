@@ -5,17 +5,17 @@ DrawFBP
 
 General web site on Flow-Based Programming: https://jpaulm.github.io/fbp/ .
 
-Last good release is `v3.0.3`: some weird bugs have crept in since then, which have to be tracked down!  In the meantime, please use `v3.0.3`.  Apologies!
+Last good release is `v3.1.1`.
 
-The jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-3.0.3.jar` - can be obtained from the Releases folder (click on `tags`, then `Releases`), `build/libs` <!--, and Maven, shortly -->.  
+The jar file (which includes the `math.geom2d` and `JavaHelp` jar files) - `drawfbp-3.1.1.jar` - can be obtained from the Releases folder (click on `tags`, then `Releases`), `build/libs` , and Maven, shortly.  
 
-<!--
+
 If you click on the Maven shield below to obtain DrawFBP, select `Download` and `jar`. 
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.jpaulmorrison/drawfbp.svg?label=DrawFBP)](https://search.maven.org/search?q=g:%22com.jpaulmorrison%22%20AND%20a:%22drawfbp%22)
 
 Note: The Maven shield will show the earlier version for a while...  
--->
+
 
 Associating `.drw` file type with DrawFBP application
 ---
