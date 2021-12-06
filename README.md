@@ -25,7 +25,7 @@ There is a `.bat` file, `draw.bat`, which can be associated with the filetype `.
 **Note:** To use the `draw.bat` function, create/modify your environment variables, as follows: 
 
 -  **DRAWFBP_LIB** to specify the local repository containing the `draw.bat` file (`...\GitHub\drawfbp`) and the `\build\libs` directory containing the downloaded `drawfbp-x.y.z.jar` jar file
--  **DRAWFBP_VERSION** specifying the current version number, e.g. 3.1.1 (in this case) 
+-  **DRAWFBP_VERSION** specifying the current version number
 
 <!--
 
