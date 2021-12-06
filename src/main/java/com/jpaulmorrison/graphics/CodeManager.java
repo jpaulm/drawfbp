@@ -133,7 +133,7 @@ public class CodeManager implements ActionListener {
 		//portNames = new HashSet<String>();
 		blocklist = new HashMap<String, Integer>();
 
-		ext = "Network";
+		ext = "Network";  
 
 		Style[] styles = new Style[20];
 
@@ -194,15 +194,19 @@ public class CodeManager implements ActionListener {
 			contents = new String[10];
 			contents[0] = "package ";
 			contents[1] = packageName;
-			contents[2] = ";  //change package name, or delete statement, if desired\n"; 
+			contents[2] = "  //change package name, or delete statement, if desired\n"; 
 			String title = driver.curDiag.title; 
 			contents[3] = "import (\n"
 					+ "	... \n"
+					+ "	testing \n"
 					+ "	\"github.com/jpaulm/gofbp/core\"\n"
 					+ ")\n"
 					+ "\n"
-					+ "func Test" + title + "(t *testing.T) {\n"
-					+ "	net := core.NewNetwork(\"" + title + "\")\n";
+					+ "func Test" + title + "(t *testing.T) {\n";
+			if (ext.equals("SubNet"))  
+				contents[3] += "	net := core.NewSubnet(\"" + title + "\")\n";
+			else
+				contents[3] += "	net := core.NewNetwork(\"" + title + "\")\n";
 			k = 4;
 		} else {
 			contents = new String[20];  
@@ -280,6 +284,7 @@ public class CodeManager implements ActionListener {
 			
 		}
 		
+		int blkNo = 0;
 						
 			for (Block block : diag.blocks.values()) {
 
@@ -305,13 +310,14 @@ public class CodeManager implements ActionListener {
 						MyOptionPane.showMessageDialog(driver,
 								"Class name missing for '" + s + "' - diagram needs to be updated",
 								MyOptionPane.WARNING_MESSAGE);
+						block.compName = "(null)";
 						//return false;						 
 
 					} else {
 						c = cleanComp(block);
 						if (lang == driver.langs[DrawFBP.Lang.CSHARP] && c.toLowerCase().endsWith(lang.ext))
 							c = c.substring(0, c.length() - lang.ext.length() - 1);						
-					}
+					// }
 					
 					 
 					
@@ -320,7 +326,7 @@ public class CodeManager implements ActionListener {
 					if (!block.multiplex){
 						if (!block.visible)
 							s += "(invisible)";
-						code += "  " + genComp(s, c) + "; \n";  						
+						code += "  " + genComp(s, c, false) + "; \n";  						
 					}
 					else {
 						if (block.mpxfactor == null) {
@@ -356,27 +362,27 @@ public class CodeManager implements ActionListener {
 						}
 						code += "\n";
 					}
-
+				}
 				}
 
 				if (block instanceof ExtPortBlock) {
 					ExtPortBlock eb = (ExtPortBlock) block;
 					String s = "";
 					if (block.typeCode.equals(Block.Types.EXTPORT_IN_BLOCK)) {
-						s = "SUBIN";
+						s = "SUBIN" + blkNo;
 						if (eb.substreamSensitive)
 							t = "SubInSS";
 						else
 							t = "SubIn";
 					} else
 						if (block.typeCode.equals(Block.Types.EXTPORT_OUT_BLOCK)) {
-						s = "SUBOUT";
+						s = "SUBOUT" + blkNo;
 						if (eb.substreamSensitive)
 							t = "SubOutSS";
 						else
 							t = "SubOut";
 					} else {
-						s = "SUBOI";
+						s = "SUBOI" + blkNo;
 						t = "SubOI";
 					}
 					s = makeUniqueDesc(s); // and make it unique
@@ -387,15 +393,19 @@ public class CodeManager implements ActionListener {
 					//if (t.toLowerCase().endsWith(".class"))
 					//	t = t.substring(0, t.length() - 6);
 
-					code += "  " + genComp(s, t) + "; \n";
-					code += "  " + initialize + "(\"" + eb.desc + "\", " + component + "(\""
-							+ s + "\"), " + _port + "(\"NAME\")); \n";
+					code += "  " + genComp(s, t, true) + "; \n";
+					//net.Initialize("15", proc1, "COUNT")
+					if (notn == driver.notations[DrawFBP.Notation.GO_FBP])  
+						code += "  " + "net.Initialize" + "(\"" + eb.desc + "\", " + s.toLowerCase() + ", \"NAME\"); \n";
+					else	
+						code += "  " + initialize + "(\"" + eb.desc + "\", " + component + "(\""
+								+ s + "\"), " + _port + "(\"NAME\")); \n";
 					descArray.put(Integer.valueOf(block.id), s);
 				}
 
 				if (block instanceof IIPBlock)
 					descArray.put(Integer.valueOf(block.id), block.desc);
-				
+				blkNo ++;
 			}
 
 			for (Arrow arrow : diag.arrows.values()) {
@@ -425,22 +435,16 @@ public class CodeManager implements ActionListener {
 				getPortNames(arrow);
 					
 
-				//jf.jf.// repaint();
-
 				String fromDesc = descArray.get(Integer.valueOf(arrow.fromId));
 				// String cFromDesc = cdescArray.get(new Integer(arrow.fromId));
-
+				if (fromDesc == null)
+					fromDesc = "(null)";
+				
 				String toDesc = descArray.get(Integer.valueOf(a2.toId));
 				// String cToDesc = cdescArray.get(new Integer(a2.toId));
-
-				// boolean ok;
-
-				// }
-
-				//jf.repaint();
-				// String upPort = arrow.upStreamPort;
-				// String dnPort = a2.downStreamPort;
-
+				if (toDesc == null)
+					toDesc = "(null)";
+				
 				String cap = "";
 				if (arrow.capacity > 0)
 					cap = ", " + arrow.capacity;
@@ -470,7 +474,7 @@ public class CodeManager implements ActionListener {
 							code += "c" + arrow.id + "." + sDO + "; \n";
 					} else {
 						if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
-							fromDesc = fromDesc.toLowerCase();
+							fromDesc = fromDesc.toLowerCase();             
 							toDesc = toDesc.toLowerCase();
 							code += " " + "net.Connect(" + fromDesc + ", " + q(upPort) + ", " +
 							toDesc + ", " + q(dnPort) + ", 6)\n";
@@ -503,14 +507,31 @@ public class CodeManager implements ActionListener {
 				}
 
 				if (from instanceof ExtPortBlock) {
-
-					code += "  " + genConnect(arrow) + "(" + component + "("
-							+ q(fromDesc) + "), " + _port + "(\"OUT\"), "
-							+ component + "(\"" + toDesc + "\"), " + _port + "("
-							+ q(dnPort) + ")" + cap + "); \n";
-					if (arrow.dropOldest)
-						code += "c" + arrow.id + "." + sDO + "; \n";
+					if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+						// proc1 := net.NewProc("SubIn", &core.SubIn{})
+						// net.Connect(sender, "OUT", proc2, "IN", 6)
+						//code += "proc" + blkNo + ":= net.NewProc(\"SubIn" + blkNo + "\", &core.SubIn{})" ;
+						code += " " + "net.Connect(" + q(fromDesc.toLowerCase()) + ", \"OUT\"," + q(toDesc.toLowerCase()) +
+								", " + q(dnPort) + ", 6)\n";
+					
+					} else {
+						code += "  " + genConnect(arrow) + "(" + component + "("
+								+ q(fromDesc) + "), " + _port + "(\"OUT\"), "
+								+ component + "(\"" + toDesc + "\"), " + _port + "("
+								+ q(dnPort) + ")" + cap + "); \n";
+						if (arrow.dropOldest)
+							code += "c" + arrow.id + "." + sDO + "; \n";
+					}
+					
 				} else if (to instanceof ExtPortBlock) {
+					if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+						// proc1 := net.NewProc("SubIn", &core.SubIn{})
+						// net.Connect(sender, "OUT", proc2, "IN", 6)
+						//code += "proc" + blkNo + ":= net.NewProc(\"SubIn" + blkNo + "\", &core.SubIn{})" ;
+						code += " " + "net.Connect(" + q(fromDesc.toLowerCase()) + ", " + q(upPort) + "," + q(toDesc.toLowerCase()) +
+								", \"IN\", 6)\n";
+					
+					} else {
 
 					code += "  " + genConnect(arrow) + "(" + component + "("
 							+ q(fromDesc) + "), " + _port + "(" + q(upPort)
@@ -518,43 +539,44 @@ public class CodeManager implements ActionListener {
 							+ _port + "(\"IN\" " + ")" + cap + "); \n";
 					if (arrow.dropOldest)
 						code += "c" + arrow.id + "." + sDO + "; \n";
+					}
 				}
 			}
 
 			int sno = 1;
-			if (ext.equals("Network")) {   
-				if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
-					code += "net.Run()\n}\n";
-					sno = 4;
+			
+			if (notn == driver.notations[DrawFBP.Notation.GO_FBP]) {
+				code += "net.Run()\n}\n";
+				sno = 4;
+				contents[sno] = code;
+				styles[sno] = normalStyle;
+
+				sno++;
+			} else {
+				if (ext.equals("Network")) {
+
+					String s = diag.title;
+					i = s.indexOf(".");
+					if (i > -1)
+						s = s.substring(0, i);
+					code += "} \n";
+					if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
+						code += "public static void main(String[] argv) throws Exception  { \n" + "  new " + s
+								+ "().go(); \n";
+					else
+						code += "internal static void Main(String[] argv) { \n" + "  new " + s + "().Go();\n }\n";
+
+					code += "} \n";
+
+					sno = 12;
 					contents[sno] = code;
 					styles[sno] = normalStyle;
 
 					sno++;
-				} else {
-				String s = diag.title;
-				i = s.indexOf(".");
-				if (i > -1)
-					s = s.substring(0, i);
-				code += "} \n";
-				if (notn == driver.notations[DrawFBP.Notation.JAVA_FBP])
-					code += "public static void main(String[] argv) throws Exception  { \n"
-							+ "  new " + s + "().go(); \n";
-				else
-					code += "internal static void Main(String[] argv) { \n"
-							+ "  new " + s + "().Go();\n }\n";
-			
-	
-			code += "} \n";
 
-			sno = 12;
-			contents[sno] = code;
-			styles[sno] = normalStyle;
-
-			sno++;
-
-			contents[sno] = "}\n";
-			styles[sno] = normalStyle;
-			sno++;
+					contents[sno] = "}\n";
+					styles[sno] = normalStyle;
+					sno++;
 				}
 			}
 			
@@ -564,6 +586,7 @@ public class CodeManager implements ActionListener {
 				styles[sno] = errorStyle;
 				MyOptionPane.showMessageDialog(driver,
 						"Error in generated code", MyOptionPane.ERROR_MESSAGE);
+				return false;
 			}
 		 
 		// insert data from arrays
@@ -604,7 +627,7 @@ public class CodeManager implements ActionListener {
 		return true;
 	}
 
-	String genComp(String name, String className) {
+	String genComp(String name, String className, boolean subComp) {
 		String compName = "";
 		if (className == null)
 			compName = "????";
@@ -624,12 +647,15 @@ public class CodeManager implements ActionListener {
 		}
 		if (lang == driver.langs[Lang.GO]) {
 			compName = className.replace("\\",  "/");
-			int i = compName.lastIndexOf("components/");
-			compName = compName.substring(i + 11);
-			compName = compName.replace("/", ".").
-					substring(0, compName.length() - 3);
+			if (subComp) 
+				compName = "core." + className + ".go"; 
+			else {			
+				int i = compName.lastIndexOf("components/");
+				compName = compName.substring(i + 11);
+			}
+			compName = compName.replace("/", ".").substring(0, compName.length() - 3);				
+			 
 			String lc = name.toLowerCase();
-			//check for subin and subout -> core.subin... 
 			return lc + " := net.NewProc(\"" + name +
 					"\", &" + compName + "{})";
 		}
@@ -835,7 +861,7 @@ public class CodeManager implements ActionListener {
 			try {				
 				doc2.insertString(doc2.getLength(), num, baseStyle);				
 			} catch (BadLocationException ble) {
-				System.err.println("Couldn't insert initial text into text pane.");
+				System.err.println("Couldn't insert number into text pane.");
 			}
 		}
 		
@@ -844,8 +870,9 @@ public class CodeManager implements ActionListener {
 		docText.setStyledDocument(doc);  
 	
 		docText.setVisible(true);
-		
-		scrollPane.setViewportView(panel);
+		 
+		//scrollPane.setViewportView(panel);
+	
 		
 		jf.pack();
 		jf.setVisible(true);

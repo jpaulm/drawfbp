@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.geom.GeneralPath;
 
 public class ExtPortBlock extends Block {
 	
@@ -91,10 +92,10 @@ public class ExtPortBlock extends Block {
 		g.fillPolygon(ptx, pty, 7);
 		
 		g.setColor(Color.BLACK);
-		if (substreamSensitive) {
+		if (substreamSensitive) {		
 			/*
 			//GeneralPath gp = Enclosure.drawSemicircle(right + 4, cy, +1);
-			//g.fill(gp);
+			//((Object) g).fill(gp);
 			int ptx2[] = new int[3];
 			int pty2[] = new int[3];
 			ptx2[0] = right - 10;
@@ -106,6 +107,7 @@ public class ExtPortBlock extends Block {
 			g.setColor(Color.BLUE);
 			g.drawPolygon(ptx2, pty2, 3);		
 			g.fillPolygon(ptx2, pty2, 3);
+			 
 			*/
 			Font ff = g.getFont();			
 			Font ffb = ff.deriveFont(Font.BOLD, 18.0f);
@@ -117,6 +119,7 @@ public class ExtPortBlock extends Block {
 
 			g.drawString(t, cx - width / 2, cy + 5);			
 			g.setFont(ff);
+			 
 		}
 		
 		g.drawLine(left, cy - height, left, cy + height);
