@@ -1090,15 +1090,17 @@ public class Arrow implements ActionListener {
 		if (!endsAtLine)
 			return null;
 
-		int id = toId; // endsAtine, so toId must be a line ID
+		int id = toId; // endsAtLine, so toId must be an arrow ID
 		
 		Arrow a;		
 		while (true) {
 			if (id == -1)  			
-				return null;
+				return this;
 			
 			a = null;
 			for (Arrow arrow : diag.arrows.values()) {
+				if (arrow == this)
+					continue;
 				if (id == arrow.id) {
 					a = arrow;
 					id = a.toId;
@@ -1106,15 +1108,14 @@ public class Arrow implements ActionListener {
 				}
 			}
 			
-			if (a == null)  // no arrow matches id, so return null
-				return null;			 
+			if (a == null)  // no arrow matches id, so return this
+				return this;			 
 			
 			if (a.endsAtBlock)
 				return a;
 			
 			if (!a.endsAtLine)
-				return null;
-			
+				return this;
 			id = a.toId;
 		}
 	}

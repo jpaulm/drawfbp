@@ -6355,6 +6355,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			Block from = curDiag.blocks.get(Integer.valueOf(a.fromId));
 			Block to = curDiag.blocks.get(Integer.valueOf(a.toId));
 			Arrow a2 = a.findLastArrowInChain();
+			if (a2 == null)
+				a2 = a;
 			to = curDiag.blocks.get(Integer.valueOf(a2.toId));
 			if (from != null && (from instanceof ProcessBlock || from instanceof ExtPortBlock)
 					&& (a2.endsAtBlock && to != null && (to instanceof ProcessBlock || to instanceof ExtPortBlock))) {
@@ -7043,19 +7045,20 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					arrow.lastY = ya;
 					Integer aid = Integer.valueOf(arrow.id);
 					curDiag.arrows.put(aid, arrow);
-					arrowHorTisBeingDragged = arrow;
+					//arrowHorTisBeingDragged = arrow;
 
 					// foundBlock = null;
 
 				}
 			}
-
+/*
 			else {
 				Arrow arrow = currentArrow;
 				if (tailMark != null || headMark != null) {
 					arrowHorTisBeingDragged = arrow;
 				}
 			}
+			*/
 
 			repaint();
 		}
@@ -7519,6 +7522,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							arr.endsAtLine = false;
 							// break;
 							headMark = null;
+							arrowHorTisBeingDragged = null;
 							currentArrow = null;
 							edgePoint = null;
 							repaint();
@@ -7907,7 +7911,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 					Block from = curDiag.blocks.get(Integer.valueOf(currentArrow.fromId));
 					Block to = curDiag.blocks.get(Integer.valueOf(foundArrow.toId));
-					Arrow a2 = foundArrow.findLastArrowInChain();
+					Arrow a2 = foundArrow.findLastArrowInChain();					
 					to = curDiag.blocks.get(Integer.valueOf(a2.toId));
 
 					if (to == from) {
