@@ -19,7 +19,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.Shape;
+//import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.*;
 
@@ -71,6 +71,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleContext;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+
+//import com.jpaulmorrison.graphics.DrawFBP.Side;
 
 public class DrawFBP extends JFrame implements ActionListener, ComponentListener, ChangeListener, 
     MouseMotionListener, MouseListener {
@@ -148,7 +150,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	String diagramName = null;
 
-	Arrow arrowEndForDragging = null; /// only used for Drag Head and Drag Tail
+	Arrow arrowHorTisBeingDragged = null; /// only used for Drag Head and Drag Tail
 
 	Bend bendForDragging = null;
 	CloseTabAction closeTabAction = null;
@@ -160,13 +162,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	//String blockType = Block.Types.PROCESS_BLOCK;
 
-	FoundPointB edgePoint = null; // this controls display of detection areas while mouse moving
+	BlockPoint edgePoint; // this controls display of detection areas while mouse moving
 
-	FoundPointB fpArrowRoot = null; // this is used to draw blue circle where
+	BlockPoint fpArrowRoot; // this is used to draw blue circle where
 									// arrows can start
-	FoundPointB fpArrowEndB = null;
+	BlockPoint fpArrowEndB;  // point where arrow ends at block
 
-	FoundPointA fpArrowEndA = null;
+	ArrowPoint fpArrowEndA;  // point where arrow ends at line
 
 	Arrow currentArrow = null;
 	Block foundBlock;
@@ -367,8 +369,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	//String blkType = null;
 	
-	private Image dbImage = null;
-	private Graphics dbg = null;
+	//private Image dbImage = null;
+	//private Graphics dbg = null;
 
 	final boolean CODEMGRCREATE = true;
 	
@@ -1237,7 +1239,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		Box box0 = new Box(BoxLayout.X_AXIS);
 		// JPanel jp1 = new JPanel();
-		Dimension dim = jtf.getPreferredSize();
+		//Dimension dim = jtf.getPreferredSize();
 		//jtf.setPreferredSize(new Dimension(gFontWidth * 20, dim.height));  // let it float...?
 
 		box0.add(Box.createRigidArea(new Dimension(20, 0)));
@@ -5069,7 +5071,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	 * Object.class) // Object // class // is // default a.checkStatus =
 	 * Status.COMPATIBLE; else a.checkStatus = Status.INCOMPATIBLE; }
 	 * 
-	 */
+	 
 
 	boolean pointInLine(Point2D p, int fx, int fy, int tx, int ty) {
 		Line2D line = new Line2D((double) fx, (double) fy, (double) tx, (double) ty);
@@ -5082,84 +5084,31 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		return d < 4;
 	}
-
+*/
 	/**
 	 * Test if point (xp, yp) is "near" line defined by arrow
 	 */
 
-	boolean nearpln(int xp, int yp, Arrow arr) {
+	boolean nearpln(int xp, int yp, Line2D line) {
 
-		int x1 = arr.fromX;
-		int y1 = arr.fromY;
-		int x2 = 0;
-		int y2 = 0;
-		int seg = 0;
-		Point2D p = new Point2D(xp, yp);
-		Line2D line;
+		Point p = new Point(xp, yp);
 		double d = 0.0;
-		boolean res = false;
-		arr.highlightedSeg = -1;
 
-		if (arr.shapeList == null)
-			return false;
+		//boolean res = false;
 
-		Block b = curDiag.blocks.get(Integer.valueOf(arr.fromId));
-		if (b == null || b.contains(new Point(xp, yp)))
-			return false;
+		//if (arrseg.arr.shapeList == null)
+		//	return false;
 
-		if (arr.bends != null) {
-			for (Bend bend : arr.bends) {
-				x2 = bend.x;
-				y2 = bend.y;
-				Point2D pb = new Point2D(x2, y2);
-				if (p.distance(pb) <=  40 ) {
-					res = true;
-					break;
-				}
+		//Block b = curDiag.blocks.get(Integer.valueOf(arrseg.arr.fromId));
+		//if (b == null || b.contains(p))
+		//	return false;
 
-				line = new Line2D(x1, y1, x2, y2);
-				try {
-					d = line.distance(p);
-				} catch (DegeneratedLine2DException e) {
-
-				}
-				if (d < 40.0) {
-					res = true;
-					break;
-				}
-				x1 = x2;
-				y1 = y2;
-
-				seg++;
-			}
+		try {
+			d = line.distance(new Point2D(p));
+		} catch (DegeneratedLine2DException e) {
 
 		}
-
-		x2 = arr.toX;
-		y2 = arr.toY;
-
-		if (!res) {
-
-			line = new Line2D(x1, y1, x2, y2);
-			try {
-				d = line.distance(p);
-			} catch (DegeneratedLine2DException e) {
-
-			}
-			if (d >= 40.0)
-				return false;
-		}
-				
-		if (arr.shapeList == null || arr.shapeList.size() <= seg)
-			return false;
-
-		Shape sh = arr.shapeList.get(seg);
-
-		arr.highlightedSeg = seg;
-
-		res = sh.contains(xp, yp);
-		 
-		return res;
+		return d < 4.0;
 	}
 
 	void displayAlignmentLines(Block block) {
@@ -5326,6 +5275,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 		if (fpArrowEndA != null && currentArrow != null) {
+			
 			drawBlueCircle(g, fpArrowEndA.x, fpArrowEndA.y);
 			repaint();
 		}
@@ -5832,6 +5782,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		private static final long serialVersionUID = 1L;
 
 		public void actionPerformed(ActionEvent e) {
+			fpArrowRoot = null;
 			if (currentArrow != null) {
 				Integer aid = Integer.valueOf(currentArrow.id);
 				curDiag.arrows.remove(aid);
@@ -5847,8 +5798,6 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			
 			
-			//if (!(e.getSource() instanceof JMenuBar)  )
-			//		closeAppAction.actionPerformed(new ActionEvent(jtp, 0, "CLOSE"));
 		}
 	}
 
@@ -6295,7 +6244,70 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 	}
 
+	public class ArrowPoint extends Point{
+
+		// This kind of Point is a (possibly temporary) arrow end
+    
+		private static final long serialVersionUID = 1L;	
 		
+		Arrow arrow;  // arrow that point is on
+		int segNo;
+		//x and y are declared in Point
+		
+		ArrowPoint(int x, int y, Arrow arr, int segno) {
+			super();
+			this.x = x; this.y = y; 
+			arrow = arr;
+			segNo = segno;
+		}
+	}
+	
+	public class BlockPoint extends Point {
+		
+		// This kind of Point is the start or end of an arrow on a block
+		 
+		private static final long serialVersionUID = 1L;	
+		Block block;	
+		Side side;	 
+		
+		//x and y are declared in Point
+		
+		BlockPoint(int x, int y, Side s, Block blk) {
+			super();
+			this.x = x; this.y = y; 
+			this.side = s; this.block = blk;		
+		}
+	}
+
+	public class BendPoint extends Point{
+
+		// This kind of Point is at a Bend
+    
+		private static final long serialVersionUID = 1L;			
+		Bend bend; 
+		//x and y are declared in Point
+		
+		BendPoint(int x, int y, Bend b) {
+			super();
+			this.x = x; this.y = y; 
+			this.bend = b;		
+		}
+	}	
+	
+	public class ArrowSeg extends Line2D {
+		  
+		//private static final long serialVersionUID = 1L;			
+		Bend bend; 
+		Arrow arr;
+		int seg;
+				
+		ArrowSeg(int x1, int y1, int x2, int y2, Arrow a, int segNo) {
+			super(x1, y1, x2, y2);
+			this.arr = a;	
+			this.seg = segNo;
+		}
+	}	
+	
 	public class SelectionArea extends JPanel implements MouseInputListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
@@ -6463,9 +6475,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
  
 		
-		FoundPointB findBlockEdge(int x, int y) {
+		BlockPoint findBlockEdge(int x, int y) {
 
-			FoundPointB fpB = null;
+			BlockPoint fpB = null;
 			for (Block block : curDiag.blocks.values()) {
 
 				// test whether to even look at block...
@@ -6490,7 +6502,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (side == null)
 					continue;
 
-				fpB = new FoundPointB(x, y, side, block);
+				fpB = new BlockPoint(x, y, side, block);
 
 				if (side == Side.LEFT)
 					fpB.x = block.leftEdge;
@@ -6509,44 +6521,46 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return fpB;
 		}
 
-		@SuppressWarnings("unused")
-		// see if x and y are "close" to any arrow - if so, return it, else null
-		FoundPointA findArrow(int x, int y) {
+		
+		// see if x and y are "close" to any segment of an arrow - if so, return arrow and segment no., else null
+		
+		ArrowPoint findArrow(int x, int y) {
 
-			FoundPointA fpA = null;
+			ArrowPoint fpA = null;
 
 			for (Arrow arrow : curDiag.arrows.values()) {
 				if (arrow.toId == -1)
 					continue;
 
-				// int x1 = arrow.fromX;
-				// int y1 = arrow.fromY;
+				 int x1 = arrow.fromX;
+				 int y1 = arrow.fromY;
 				int segNo = 0;
-				// int x2, y2;
+				 int x2, y2;
 
 				if (arrow.bends != null) {
 					for (Bend bend : arrow.bends) {
-						// x2 = bend.x;
-						// y2 = bend.y;
-
-						if (nearpln(x, y, arrow)) {
-							segNo = arrow.highlightedSeg;
-							fpA = new FoundPointA(x, y, arrow, segNo);
+						x2 = bend.x;
+						y2 = bend.y;
+						Line2D line = new Line2D(x1, y1, x2, y2);
+						if (nearpln(x, y, line)) {
+							//segNo = arrow.highlightedSeg;
+							fpA = new ArrowPoint(x, y, arrow, segNo);
 							return fpA;
 						}
 
-						// x1 = x2;
-						// y1 = y2;
+						x1 = x2;
+						y1 = y2;
 						segNo++;
 					}
 				}
 
-				// x2 = arrow.toX;
-				// y2 = arrow.toY;
+				//x2 = arrow.toX;
+				//y2 = arrow.toY;
 
-				if (nearpln(x, y, arrow)) {
-					segNo = arrow.highlightedSeg;
-					fpA = new FoundPointA(x, y, arrow, segNo);
+				Line2D line = new Line2D(x1, y1, arrow.toX, arrow.toY);
+				if (nearpln(x, y, line)) {
+					//segNo = arrow.highlightedSeg;
+					fpA = new ArrowPoint(x, y, arrow, segNo);
 					return fpA;
 				}
 			}
@@ -6744,17 +6758,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				// logic to change cursor to drag_icon
 				int hh = gFontHeight;
-				boolean udi; // Use Drag Icon
+				boolean useDragIcon; // Use Drag Icon
 				if (block.typeCode.equals(Block.Types.ENCL_BLOCK)) {
-					udi = between(xa, block.leftEdge + block.width / 5, block.rightEdge - block.width / 5)
+					useDragIcon = between(xa, block.leftEdge + block.width / 5, block.rightEdge - block.width / 5)
 							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2);
 				} else {
 
-					udi = between(xa, block.leftEdge + zWS * 3 / 4, block.rightEdge - zWS * 3 / 4)
-							&& between(ya, block.topEdge + zWS * 3 / 2, block.botEdge - zWS * 3 / 2);
+					useDragIcon = between(xa, block.leftEdge + zWS / 2, block.rightEdge - zWS / 2)
+							&& between(ya, block.topEdge + zWS / 2, block.botEdge - zWS / 2);
 				}
 
-				if (udi) {
+				if (useDragIcon) {
 					selBlockM = block; // mousing select
 					// if (!use_drag_icon) {
 					if (curDiag.actionList == null && !panSwitch)
@@ -6777,7 +6791,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					setCursor(defaultCursor);
 			}
 			// curDiag.foundBlock = null;
-
+		
 			if (currentArrow != null
 					&& (Math.abs(currentArrow.fromX - xa) > 10 || Math.abs(currentArrow.fromY - ya) > 10)) {
 				edgePoint = findBlockEdge(xa, ya);
@@ -6800,7 +6814,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			}
 
-			colourArrows(xa, ya);
+			//colourArrows(xa, ya);
 
 			//repaint();
 		}
@@ -6966,8 +6980,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					 * the following leaves a strip around the outside of each block that cannot be
 					 * used for dragging!
 					 */
-					Rectangle rect = new Rectangle(block.leftEdge + zWS * 3 / 4, block.topEdge + zWS * 3 / 4,
-							block.width - zWS * 3 / 2, block.height - zWS * 3 / 2);
+					Rectangle rect = new Rectangle(block.leftEdge + zWS / 2, block.topEdge + zWS / 2,
+							block.width - zWS, block.height - zWS);
 					if (rect.contains(xa, ya)) {
 
 						mousePressedX = oldx = xa;
@@ -7029,7 +7043,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					arrow.lastY = ya;
 					Integer aid = Integer.valueOf(arrow.id);
 					curDiag.arrows.put(aid, arrow);
-					arrowEndForDragging = arrow;
+					arrowHorTisBeingDragged = arrow;
 
 					// foundBlock = null;
 
@@ -7039,7 +7053,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			else {
 				Arrow arrow = currentArrow;
 				if (tailMark != null || headMark != null) {
-					arrowEndForDragging = arrow;
+					arrowHorTisBeingDragged = arrow;
 				}
 			}
 
@@ -7077,7 +7091,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				// blockSelForDragging = null;
 				// enclSelForDragging = null;
-				arrowEndForDragging = null;
+				arrowHorTisBeingDragged = null;
 				bendForDragging = null;
 			}
 
@@ -7101,7 +7115,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							bend.y = bend.y + ya - panY;
 						}
 					}
-					//arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
+					  
 					arrow.rebuildFatLines();
 				}
 				// repaint();
@@ -7115,8 +7129,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// if (!leftButton) // use left button for dragging
 			// return;
 
-			if (arrowEndForDragging != null) {
-				Arrow arr = arrowEndForDragging;
+			if (arrowHorTisBeingDragged != null) {
+				Arrow arr = arrowHorTisBeingDragged;
 				if (tailMark != null) {
 					arr.fromId = -1;
 					arr.fromX = xa;
@@ -7311,7 +7325,6 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				currentArrow.toId = -1;
 				currentArrow.toX = xa;
 				currentArrow.toY = ya;
-				//currentArrow.ah = currentArrow.buildArrowhead(currentArrow.toX, currentArrow.toY); 
 				currentArrow.rebuildFatLines();
 				curDiag.changed = true;
 				fpArrowEndA = null;
@@ -7333,9 +7346,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 
 				}
-
+				
+				ArrowPoint fpArrowEnd = findArrow(xa, ya);
+				
+				if (fpArrowEnd != null && fpArrowEnd.arrow != null)  
+					currentArrow.toId = -2;  
 			}
-			colourArrows(xa, ya);
+			//colourArrows(xa, ya);
 
 			repaint();
 		}
@@ -7403,8 +7420,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					selBlock = blockSelForDragging;
 					// this tests if mouse has moved (approximately) - ignore
 					// small twitches and also big jumps!
-					if (between(mousePressedX, (int) (x - 6 * scalingFactor), (int) (x + 6 * scalingFactor))
-							&& between(mousePressedY, (int) (y - 6 * scalingFactor), (int) (y + 6 * scalingFactor))
+					if (between(mousePressedX, (int) (x - zWS / 2), (int) (x + zWS / 2))
+							&& between(mousePressedY, (int) (y - zWS / 2), (int) (y + zWS / 2))
 							|| Math.abs(mousePressedX - x) > 100 || Math.abs(mousePressedY - y) > 100) {
 
 						// if it was a small move, or a big jump, just get
@@ -7456,18 +7473,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					
 					repaint();
-					// return;
+					return;
 				}
 
 			}
 
-			if (arrowEndForDragging != null) {
+			if (arrowHorTisBeingDragged != null) {
 
 				// currentArrow = null;
 
 				foundBlock = null;
 				// curDiag.changed = true;
-				Arrow arr = arrowEndForDragging;
+				Arrow arr = arrowHorTisBeingDragged;
 
 				// try to anchor arrow tail or head!
 
@@ -7478,7 +7495,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 							arr.fromId = block.id;
 							foundBlock = block;
 
-							arrowEndForDragging = null;
+							arrowHorTisBeingDragged = null;
 							currentArrow = null;
 							// currentArrow = null;
 							// arr.tailMark = null;
@@ -7513,19 +7530,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// if headmarked and no block found, try to detect an arrow...
 
 				if (headMark != null && foundBlock == null) {
-					FoundPointA fpA;
+					ArrowPoint fpA;
 					if (null != (fpA = findArrow(arr.toX, arr.toY))) {
 						arr.toId = fpA.arrow.id;
 						arr.endsAtBlock = false;
 						arr.endsAtLine = true;
 
-						// currentArrow.toId = arr.id;
-
 						arr.toX = fpA.x;
-						arr.toY = fpA.y;
-						//arr.ah = arr.buildArrowhead(arr.toX, arr.toY); 
+						arr.toY = fpA.y; 
 						arr.rebuildFatLines();
-						arrowEndForDragging = null;
+						arrowHorTisBeingDragged = null;
 						currentArrow = null;
 						headMark = null;
 						edgePoint = null;
@@ -7534,27 +7548,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 
 					arr.toId = -1;
-					// arr.toX = -1;
-					// if (arr.bends == null)
-					// arr.bends = new LinkedList<Bend>();
-					// arr.bends.add(new Bend(arr.toX, arr.toY));
+					
 					arr.toX = xa;
-					arr.toY = ya;
-					//arr.ah = arr.buildArrowhead(arr.toX, arr.toY);  
+					arr.toY = ya; 
 					arr.rebuildFatLines();
 					Arrow arr2 = currentArrow;
-					arrowEndForDragging = arr2;
+					arrowHorTisBeingDragged = arr2;
 					headMark = null;
 
 				}
 
 				curDiag.changed = true;
-
-				/*
-				 * if (tailMark != null || headMark != null ) { tailMark = null; //headMark =
-				 * null; //currentArrow = null; edgePoint = null; repaint(); return; }
-				 */
-				//repaint();
 			}
 
 			if (bendForDragging != null) {
@@ -7641,28 +7645,23 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			foundBlock = null;
 			if (currentArrow == null) {
 
-				// Look for a line to detect, for deletion, etc. - logic to end
+				// Look for a line to detect, for popup menu - logic to end
 				// arrow at a line comes in a later section...
 				// currentArrow = null;
 				// if (!leftButton) {
 
-				FoundPointA fpA = findArrow(xa, ya);
+				ArrowPoint fpA = findArrow(xa, ya);
 				if (fpA != null && fpA.arrow != null) {
 					currentArrow = fpA.arrow;
 					fpArrowEndA = fpA;
 				}
-
+								
 				selArrow = currentArrow;
 
 				if (currentArrow != null) {
-					// Arrow arr = foundArrow;
-					// arr.fromId = curDiag.foundBlock.id;
 					if (currentArrow.endsAtLine || currentArrow.endsAtBlock) {
 						curDiag = currentArrow.diag;
 						currentArrow.buildArrowPopupMenu();
-
-						// currentArrow.lastX = xa;
-						// currentArrow.lastY = ya;
 						curDiag.actionList.show(e.getComponent(), xa, ya);
 						
 						curDiag.actionList = null;   
@@ -7671,12 +7670,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						return;
 					}
 				}
-				// else
-				// if (curDiag.findArrowCrossing)
-				// MyOptionPane.showMessageDialog(this,
-				// "No arrow detected");
-				// curDiag.findArrowCrossing = false;
-
+				
 				foundBlock = null;
 
 				// Check if we are within a block
@@ -7881,12 +7875,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (currentArrow != null && foundBlock == null) {
 
 				Arrow foundArrow = null;
-
-				// see if xa and ya are "close" to specified arrow
-				FoundPointA fpA = findArrow(xa, ya);
+			
+				// see if xa and ya are "close" to any arrow
+				ArrowPoint fpA = findArrow(xa, ya);
+				
 				if (fpA != null && fpA.arrow != null) {
 					foundArrow = fpA.arrow;
 					fpArrowEndA = fpA;
+					
 
 					if (x != curx) {
 						double s = ya - foundArrow.lastY;
@@ -7899,7 +7895,6 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					currentArrow.toX = xa;
 					currentArrow.toY = ya;
-					//currentArrow.ah = currentArrow.buildArrowhead(currentArrow.toX, currentArrow.toY);  
 					currentArrow.rebuildFatLines();
 					currentArrow.endsAtLine = true;
 					currentArrow.segNo = fpA.segNo;
@@ -7942,16 +7937,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					} else {
 						curDiag.changed = true;
 
-						// checkCompatibility(curDiag.currentArrow);
-
-						/*
-						 * if (to != null) { if (side == Side.TOP) curDiag.currentArrow.toY = to.cy -
-						 * to.height / 2; else if (side == Side.BOTTOM) curDiag.currentArrow.toY = to.cy
-						 * + to.height / 2; else if (side == Side.LEFT) curDiag.currentArrow.toX = to.cx
-						 * - to.width / 2; else if (side == Side.RIGHT) curDiag.currentArrow.toX = to.cx
-						 * + to.width / 2; }
-						 */
-					}
+						}
 
 					currentArrow = null;
 
@@ -7966,7 +7952,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				// if (currentArrow != null) {
 
-				if (!(between(xa, currentArrow.toX - zWS / 2, // what is this?!
+				if (!(between(xa, currentArrow.toX - zWS / 2, 
 						currentArrow.toX + zWS / 2)
 						&& between(ya, currentArrow.toY - zWS / 2, currentArrow.toY + zWS / 2))) {
 					// curDiag.currentArrow.toX = xa;
@@ -7983,6 +7969,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				//repaint();
 				// }
 
+				if (currentArrow.endsAtLine)
+					return;
+				
 				if (currentArrow.bends == null) {
 					currentArrow.bends = new LinkedList<Bend>();
 				}
@@ -8006,8 +7995,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				currentArrow.lastX = x;
 				currentArrow.lastY = y;
 				currentArrow.toX = x;
-				currentArrow.toY = y;
-				//currentArrow.ah = currentArrow.buildArrowhead(x, y);     
+				currentArrow.toY = y;  
 				currentArrow.rebuildFatLines();
 				curDiag.changed = true;
 				repaint();
@@ -8020,7 +8008,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		public void mouseClicked(MouseEvent arg0) {
 
 		}
-
+/*
 		@SuppressWarnings("unused")
 		void colourArrows(int x, int y) {
 
@@ -8045,7 +8033,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 			}
 		}
-		
+		*/
 		/*
 		public void repaint() {
 			

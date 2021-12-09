@@ -10,7 +10,7 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
+import math.geom2d.line.Line2D;
 import java.awt.geom.PathIterator;
 
 import math.geom2d.Point2D;
@@ -20,6 +20,8 @@ import java.util.*;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import com.jpaulmorrison.graphics.DrawFBP.ArrowSeg;
 
 //import com.jpaulmorrison.graphics.DrawFBP.Side;
 
@@ -92,8 +94,7 @@ public class Arrow implements ActionListener {
 	void draw(Graphics g) {
 		//driver.validate();
 		driver.repaint();
-
-			
+		
 		shapeList = new LinkedList<Shape>(); 
 		
 		//int endX, endY;
@@ -147,19 +148,19 @@ public class Arrow implements ActionListener {
 		
 		 
 		int segno = 0;
+		boolean capDrawn = false;
 		
-		if (bends != null) {
-			
-			boolean capDrawn = false;
-			
+		if (bends != null) {			
 			for (Bend bend : bends) {
 				//System.out.println("bend");
 				tx = bend.x;
 				ty = bend.y;
-				//buildFatLine(fx, fy, tx, ty, segno);
-				
-				if (!dropOldest)
+				Graphics2D g2d = (Graphics2D) g;				
+				if (!dropOldest) {					
+					g2d.setStroke(driver.bs);
+					g2d.setRenderingHints(driver.rh);
 					g.drawLine(fx, fy, tx, ty);
+				}
 				else {
 					Shape shape = (Shape) new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
 					shape = zzstroke.createStrokedShape(shape);
@@ -182,13 +183,9 @@ public class Arrow implements ActionListener {
 				calcLimits(fx, tx, fy, ty);
 				fx = tx;
 				fy = ty;
-				
-				
-				
 				segno++;
 			}
-			//tx = toX;
-			//ty = toY;
+			
 		} else  
 			if (capacity > 0) {
 				
@@ -264,7 +261,7 @@ public class Arrow implements ActionListener {
 			}
 
 		} else if (endsAtLine)  
-			drawCircle(g, toX, toY, Color.BLACK, 6);
+			drawCircle(g, toX, toY, Color.BLACK, 8);
 
 		if (toX != -1 && (endsAtBlock || endsAtLine)) {
 			if (upStreamPort != null
@@ -811,7 +808,7 @@ public class Arrow implements ActionListener {
 		} if (s.equals("Drag Tail")) {
 			//tailMarked = true;
 			driver.tailMark = new Point(fromX, fromY);
-			driver.arrowEndForDragging = this;
+			driver.arrowHorTisBeingDragged = this;
 			driver.repaint();
 			diag.changed = true;
 			return;
@@ -819,7 +816,7 @@ public class Arrow implements ActionListener {
 		}  if (s.equals("Drag Head")) {
 			//headMarked = true;
 			driver.headMark = new Point(toX, toY);
-			driver.arrowEndForDragging = this;
+			driver.arrowHorTisBeingDragged = this;
 			driver.repaint();
 			diag.changed = true;
 			return;
@@ -840,7 +837,9 @@ public class Arrow implements ActionListener {
 				for (Bend bend : bends) {
 					tx = bend.x;
 					ty = bend.y;
-					if (driver.pointInLine(p, fx, fy, tx, ty)) {
+					//if (driver.pointInLine(p, fx, fy, tx, ty)) {   
+					Line2D line = new Line2D(fx, fy, tx, ty);
+					if (driver.nearpln(driver.curx, driver.cury, line)) {
 						extraArrowhead = buildArrowhead(driver.curx, driver.cury);
 						diag.changed = true;
 						return;
@@ -851,7 +850,9 @@ public class Arrow implements ActionListener {
 			}
 			tx = toX;
 			ty = toY;
-			if (driver.pointInLine(p, fx, fy, tx, ty)) 
+			//if (driver.pointInLine(p, fx, fy, tx, ty)) 
+			Line2D line = new Line2D(fx, fy, tx, ty);
+			if (driver.nearpln(driver.curx, driver.cury, line)) 
 				extraArrowhead = buildArrowhead(driver.curx, driver.cury);	
 			diag.changed = true;
 			driver.repaint();
@@ -881,7 +882,7 @@ public class Arrow implements ActionListener {
 			
 			
 		}
-		
+		 
 	}
 	
 	// two cases here: 1) bend being created at end of arrow (no red circle) 
@@ -889,32 +890,34 @@ public class Arrow implements ActionListener {
 	//                     2a) new bend is being created
 	//                     2b) existing bend is being detected
 
-	void createBend(int bendx, int bendy) {
+	void createBend(int x, int y) {
 				
 		int segNo = 0;				
 		Bend bn = null;
 		
 		if (!endsAtBlock && !endsAtLine) {
-			bends.add(new Bend(bendx, bendy));
+			bends.add(new Bend(x, y));
 			return;
 		}
 		
 		int x1 = fromX;
 		int y1 = fromY;
+		int x2, y2;
 		if (bends != null) {
 			
 			for (Bend b : bends) {
+				x2 = b.x;
+				y2 = b.y;
 
-				if (sameBend(bendx, bendy, b)) {
+				if (sameBend(x, y, b)) {
 					bn = b;
 					bn.marked = true;
 					driver.bendForDragging = bn;
 					return;
 				}
-				
-				if (driver.nearpln(bendx, bendy, this) &&  
-						highlightedSeg == segNo) {
-					bn = new Bend(bendx, bendy);
+				ArrowSeg arrseg = driver.new ArrowSeg(x1, y1, x2, y2, this, segNo);
+				if (driver.nearpln(x, y, arrseg)) {
+					bn = new Bend(x, y);
 					if (x1 == b.x) // if line vertical
 						bn.x = x1;
 					if (y1 == b.y) // if line horizontal
@@ -924,17 +927,19 @@ public class Arrow implements ActionListener {
 					driver.bendForDragging = bn;
 					return;
 				}
-				x1 = b.x;
-				y1 = b.y;
+				x1 = x2;
+				y1 = y2;
 				segNo++;
 			}
+			
 		}
 		else
 			bends = new LinkedList<Bend>();
-				
-		if (driver.nearpln(bendx, bendy, this) &&  
-				highlightedSeg == segNo) {	
-			bn = new Bend(bendx, bendy);
+		x2 = toX;
+		y2 = toY;
+		ArrowSeg arrseg = driver.new ArrowSeg(x1, y1, x2, y2, this, segNo);
+		if (driver.nearpln(x, y, arrseg)) {	
+			bn = new Bend(x, y);
 			if (x1 == toX) // if line vertical
 				bn.x = x1;
 			if (y1 == toY) // if line horizontal
@@ -943,8 +948,7 @@ public class Arrow implements ActionListener {
 			bn.marked = true;
 			driver.bendForDragging = bn;
 		}
-	}
-	 
+	}	 
 
 	boolean sameBend(int x1, int y1, Bend b) {
 		return ((x1 - b.x) * (x1 - b.x) + (y1 - b.y) * (y1 - b.y)) < 6 * 6;
@@ -985,17 +989,18 @@ public class Arrow implements ActionListener {
 		
 		// test if arrow crosses left and right sides
 		
-		Line2D.Float arrow = new Line2D.Float(fromX, fromY, toX, toY);
-		Line2D.Float left = new Line2D.Float(p.cx - p.width / 2, p.cy - p.height / 2, // left edge
+		Line2D arrow = new Line2D(fromX, fromY, toX, toY);
+		Line2D left = new Line2D(p.cx - p.width / 2, p.cy - p.height / 2, // left edge
 				p.cx - p.width / 2, p.cy + p.height / 2);
-		Line2D.Float bot = new Line2D.Float(p.cx - p.width / 2, p.cy + p.height / 2, // bottom edge
-				p.cx + p.width / 2, p.cy + p.height / 2);
+		Line2D bot = new Line2D(p.cx - p.width / 2, p.cy + p.height / 2, // bottom edge
+				 p.cx + p.width / 2, p.cy + p.height / 2);
 		int hh = 0;
 		int ww = 0;
 		float sl = 0f;
 		boolean lr = true;
-		if (arrow.intersectsLine(left)) {
-			sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
+		if (Line2D.intersects(arrow,left)) {
+			//sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
+			sl = (toY - fromY) / (toX - fromX);
 			hh = (int) ((p.width/ 2) * sl);
 		}		
 		else {
@@ -1006,8 +1011,9 @@ public class Arrow implements ActionListener {
 			 *   will have a value of zero.  Works!  
 			 *********************************************************************************/
 			
-			if (arrow.intersectsLine(bot)) {
-				sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
+			if (Line2D.intersects(arrow,bot)) {
+				//sl = (arrow.y2 - arrow.y1) / (arrow.x2 - arrow.x1);
+				sl = (toY - fromY) / (toX - fromX);
 				ww = (int) ((p.height / 2) / sl);
 				lr = false;
 			}

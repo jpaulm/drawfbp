@@ -93,22 +93,7 @@ public class ExtPortBlock extends Block {
 		
 		g.setColor(Color.BLACK);
 		if (substreamSensitive) {		
-			/*
-			//GeneralPath gp = Enclosure.drawSemicircle(right + 4, cy, +1);
-			//((Object) g).fill(gp);
-			int ptx2[] = new int[3];
-			int pty2[] = new int[3];
-			ptx2[0] = right - 10;
-			ptx2[1] = right;
-			ptx2[2] = right - 10;
-			pty2[0] = top;
-			pty2[1] = cy;
-			pty2[2] = bottom;
-			g.setColor(Color.BLUE);
-			g.drawPolygon(ptx2, pty2, 3);		
-			g.fillPolygon(ptx2, pty2, 3);
-			 
-			*/
+			
 			Font ff = g.getFont();			
 			Font ffb = ff.deriveFont(Font.BOLD, 18.0f);
 			g.setFont(ffb);			
@@ -117,7 +102,7 @@ public class ExtPortBlock extends Block {
 			byte[] str = t.getBytes();
 			int width = metrics.bytesWidth(str, 0, t.length());
 
-			g.drawString(t, cx - width / 2, cy + 5);			
+			g.drawString(t, cx - width / 2 - 30, cy + 5);			
 			g.setFont(ff);
 			 
 		}
@@ -171,22 +156,7 @@ public class ExtPortBlock extends Block {
 		g.fillPolygon(ptx, pty, 7);
 		g.setColor(Color.BLACK);
 		if (substreamSensitive){
-			/*
-			//g.setColor(Color.RED);			
-			//GeneralPath gp = Enclosure.drawSemicircle(left - 4, cy, +1);
-			//g.fill(gp);	
-			int ptx2[] = new int[3];
-			int pty2[] = new int[3];
-			ptx2[0] = left + 10;
-			ptx2[1] = left;
-			ptx2[2] = left + 10;
-			pty2[0] = top;
-			pty2[1] = cy;
-			pty2[2] = bottom;
-			g.setColor(Color.BLUE);
-			g.drawPolygon(ptx2, pty2, 3);		
-			g.fillPolygon(ptx2, pty2, 3);
-			*/
+		
 			Font ff = g.getFont();			
 			Font ffb = ff.deriveFont(Font.BOLD, 18.0f);
 			g.setFont(ffb);			
@@ -195,7 +165,7 @@ public class ExtPortBlock extends Block {
 			byte[] str = t.getBytes();
 			int width = metrics.bytesWidth(str, 0, t.length());
 
-			g.drawString(t, cx - width / 2, cy + 5);			
+			g.drawString(t, cx + width / 2 + 15, cy + 5);			
 			g.setFont(ff);
 		}
 		

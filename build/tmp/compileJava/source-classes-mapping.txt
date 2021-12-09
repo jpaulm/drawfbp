@@ -38,8 +38,6 @@ com/jpaulmorrison/graphics/MyFontChooser.java
  com.jpaulmorrison.graphics.MyFontChooser$CellRenderer
 com/jpaulmorrison/graphics/RequestFocusListener.java
  com.jpaulmorrison.graphics.RequestFocusListener
-com/jpaulmorrison/graphics/FoundPointA.java
- com.jpaulmorrison.graphics.FoundPointA
 com/jpaulmorrison/graphics/AOutPort.java
  com.jpaulmorrison.graphics.AOutPort
 com/jpaulmorrison/graphics/ButtonTabComponent.java
@@ -60,8 +58,6 @@ com/jpaulmorrison/graphics/Arrow.java
  com.jpaulmorrison.graphics.Arrow$Arrowhead
  com.jpaulmorrison.graphics.Arrow$Status
  com.jpaulmorrison.graphics.Arrow$ZigzagStroke
-com/jpaulmorrison/graphics/FoundPointB.java
- com.jpaulmorrison.graphics.FoundPointB
 com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP
  com.jpaulmorrison.graphics.DrawFBP$1
@@ -73,6 +69,10 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$7
  com.jpaulmorrison.graphics.DrawFBP$8
  com.jpaulmorrison.graphics.DrawFBP$9
+ com.jpaulmorrison.graphics.DrawFBP$ArrowPoint
+ com.jpaulmorrison.graphics.DrawFBP$ArrowSeg
+ com.jpaulmorrison.graphics.DrawFBP$BendPoint
+ com.jpaulmorrison.graphics.DrawFBP$BlockPoint
  com.jpaulmorrison.graphics.DrawFBP$CloseAppAction
  com.jpaulmorrison.graphics.DrawFBP$CloseTabAction
  com.jpaulmorrison.graphics.DrawFBP$CsharpFileFilter

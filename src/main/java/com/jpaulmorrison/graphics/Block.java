@@ -1988,10 +1988,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 			// diag.changeCompLang();
 			//driver.repaint();
 		}
-		//if (s.equals("Exit")) {
-		// diag.foundBlock = null;
-		// driver.repaint();
-		// }
+		
 
 	}
 	

@@ -6,7 +6,8 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.geom.Line2D;
+//import java.awt.geom.Line2D;
+import math.geom2d.line.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -1024,19 +1025,19 @@ public class Diagram {
 			var.y = subnetBlock.cy - subnetBlock.height / 2;
 		}
 		else {
-			Line2D.Float line = new Line2D.Float(fix.x, fix.y, subnetBlock.cx, subnetBlock.cy);
+			Line2D line = new Line2D(fix.x, fix.y, subnetBlock.cx, subnetBlock.cy);
 			DrawFBP.Side s = null;
 			double left = subnetBlock.cx - subnetBlock.width / 2;			
 			double right = subnetBlock.cx + subnetBlock.width / 2;
 			double top = subnetBlock.cy - subnetBlock.height / 2;
 			double bottom = subnetBlock.cy + subnetBlock.height / 2;
-			if (line.intersectsLine(left, top, left, bottom)) 
+			if (Line2D.intersects(line, new Line2D(left, top, left, bottom))) 
 				s = Side.LEFT;
-			else if (line.intersectsLine(right, top, right, bottom))
+			else if (Line2D.intersects(line, new Line2D(right, top, right, bottom)))
 				s = Side.RIGHT;
-			else if (line.intersectsLine(left, top, right, top))
+			else if (Line2D.intersects(line, new Line2D(left, top, right, top)))
 				s = Side.TOP;
-			else if (line.intersectsLine(left, bottom, right, bottom))
+			else if (Line2D.intersects(line, new Line2D(left, bottom, right, bottom)))
 				s = Side.BOTTOM;
 			
 			float slope = (float) (subnetBlock.cy - fix.y) / (subnetBlock.cx - fix.x);  
