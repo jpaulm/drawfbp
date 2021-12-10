@@ -196,9 +196,9 @@ public class CodeManager implements ActionListener {
 			contents[1] = packageName;
 			contents[2] = "  //change package name, or delete statement, if desired\n"; 
 			String title = driver.curDiag.title; 
-			contents[3] = "import (\n"
+			contents[3] = "import (\n"					
+					+ "	\"testing\" \n"
 					+ "	... \n"
-					+ "	testing \n"
 					+ "	\"github.com/jpaulm/gofbp/core\"\n"
 					+ ")\n"
 					+ "\n"
