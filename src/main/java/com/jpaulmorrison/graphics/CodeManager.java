@@ -394,7 +394,6 @@ public class CodeManager implements ActionListener {
 					//	t = t.substring(0, t.length() - 6);
 
 					code += "  " + genComp(s, t, true) + "; \n";
-					//net.Initialize("15", proc1, "COUNT")
 					if (notn == driver.notations[DrawFBP.Notation.GO_FBP])  
 						code += "  " + "net.Initialize" + "(\"" + eb.desc + "\", " + s.toLowerCase() + ", \"NAME\"); \n";
 					else	
@@ -650,6 +649,7 @@ public class CodeManager implements ActionListener {
 			compName = className.replace("\\",  "/");
 			 
 			if (subComp) 
+
 				//compName = "core." + className + ".go"; 
 				newProcName = "core." + className + ".go";
 			else {		
@@ -657,12 +657,15 @@ public class CodeManager implements ActionListener {
 				String s = driver.readFile(f);
 				newProcName = getGoProc(s);			
 				int i = compName.lastIndexOf("components/");				
+
 				compName = compName.substring(i + 11);
 				i = compName.lastIndexOf("/");
 				newProcName = compName.substring(0, i + 1) + newProcName;
 			}
+
 			//compName = compName.replace("/", ".").substring(0, compName.length() - 3);	
 			newProcName = newProcName.replace("/", ".");
+
 			 
 			String lc = name.toLowerCase();
 			return lc + " := net.NewProc(\"" + name +
