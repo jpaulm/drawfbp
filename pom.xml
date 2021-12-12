@@ -4,7 +4,7 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.jpaulmorrison</groupId>
 <artifactId>drawfbp</artifactId>
-<version>3.1.2</version>
+<version>3.1.3</version>
 <name>DrawFBP</name>
 <description>Diagramming Tool for Flow-Based Programming</description>
 <url>https://github.com/jpaulm/drawfbp</url>

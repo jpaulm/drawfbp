@@ -394,7 +394,6 @@ public class CodeManager implements ActionListener {
 					//	t = t.substring(0, t.length() - 6);
 
 					code += "  " + genComp(s, t, true) + "; \n";
-					//net.Initialize("15", proc1, "COUNT")
 					if (notn == driver.notations[DrawFBP.Notation.GO_FBP])  
 						code += "  " + "net.Initialize" + "(\"" + eb.desc + "\", " + s.toLowerCase() + ", \"NAME\"); \n";
 					else	
@@ -646,18 +645,25 @@ public class CodeManager implements ActionListener {
 			return "Component(\"" + name + "\", typeof(" + compName + "))";
 		}
 		if (lang == driver.langs[Lang.GO]) {
+			String newProcName;
 			compName = className.replace("\\",  "/");
 			if (subComp) 
-				compName = "core." + className + ".go"; 
+				newProcName = "core." + className + ".go"; 
 			else {			
+				
+				File f = new File(compName);
+				String s = driver.readFile(f);
+				newProcName = getGoProc(s);					
 				int i = compName.lastIndexOf("components/");
 				compName = compName.substring(i + 11);
+				i = compName.lastIndexOf("/");
+				newProcName = compName.substring(0, i + 1) + newProcName;
 			}
-			compName = compName.replace("/", ".").substring(0, compName.length() - 3);				
+			newProcName = newProcName.replace("/", ".");				
 			 
 			String lc = name.toLowerCase();
 			return lc + " := net.NewProc(\"" + name +
-					"\", &" + compName + "{})";
+					"\", &" + newProcName + "{})";
 		}
 		compName = className.replace("\\",  "/");
 		int i = compName.lastIndexOf("/");
@@ -685,7 +691,48 @@ public class CodeManager implements ActionListener {
 					+ "))";
 	}
 	
-	
+	String getGoProc(String s) {
+
+		String out = null;
+		int errNo = 0;
+		BabelParser2 bp = new BabelParser2(s, errNo);
+
+		// Scan off comment, if any...
+		while (true) { 
+			if (bp.tc('/', 'o') && bp.tc('*', 'o')) {
+				while (true) {
+					if (bp.tc('*', 'o') && bp.tc('/', 'o'))
+						break;
+					bp.tu('o');
+				}
+			}
+			
+			if (bp.tc('/', 'o') && bp.tc('/', 'o')) {
+				while (true) {
+					if (bp.tc('\n', 'o'))
+						break;
+					if (bp.tc('\r', 'o'))
+						break;
+					bp.tu('o');
+				}
+			}
+
+			if (bp.tc('t', 'o') && bp.tc('y', 'o') && bp.tc('p', 'o') && bp.tc('e', 'o') && bp.tc(' ', 'o')) {
+				while (true) {
+					if (bp.tc(' ', 'o'))
+						break;
+					bp.tu();
+				}
+				out = bp.getOutStr();
+			}
+			if (out != null)
+				break;
+			
+			bp.tu('o');
+		}
+
+		return out;
+	}
 
 	String displayDoc(File filex, Lang lang, String fileString) {
 		
