@@ -1680,7 +1680,7 @@ public class MyFileChooser extends JDialog
 					if (!inTree) {
 						if (!f.exists()) {
 							// if (-1 == s.indexOf(".")) {
-							if (null == driver.getSuffix(s)) {
+							if (null == driver.checkSuffix(s)) {
 
 								// add appropriate extension
 
@@ -2274,7 +2274,8 @@ public class MyFileChooser extends JDialog
 				//if (0 < v.indexOf(".") /*|| inJarTree */) {
 					v = v.replace("\\",  "/");
 					int j = v.lastIndexOf("/");
-					if (v.endsWith(".jar") || v.endsWith(".json")) 
+					if (v.endsWith(".jar") || v.endsWith(".json") ||
+							v.endsWith(".mod"))  
 						t_fileName.setText(v);
 					else
 						t_fileName.setText(v.substring(j + 1));					 
@@ -2347,7 +2348,7 @@ public class MyFileChooser extends JDialog
 		
 				
 		
-		if (lang == driver.langs[Lang.PRINT] || null != driver.getSuffix(t)) { 
+		if (lang == driver.langs[Lang.PRINT] || null != driver.checkSuffix(t)) { 
 			//t = t.replace("\\",  File.separator);
 			//t = t.replace("/",  File.separator);
 			t_fileName.setText(t);

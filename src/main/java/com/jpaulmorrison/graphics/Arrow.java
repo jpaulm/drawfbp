@@ -12,9 +12,6 @@ import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
 import math.geom2d.line.Line2D;
 import java.awt.geom.PathIterator;
-
-import math.geom2d.Point2D;
-
 import java.util.*;
 
 import javax.swing.JLabel;
@@ -829,7 +826,7 @@ public class Arrow implements ActionListener {
 			return;
 			
 		} else if (s.equals("Add Extra Arrowhead")) {
-			Point2D p = new Point2D((double)driver.curx, (double)driver.cury);
+			//Point2D p = new Point2D((double)driver.curx, (double)driver.cury);
 			int fx = fromX;
 			int fy = fromY; 
 			int tx, ty;			

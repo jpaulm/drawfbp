@@ -15,7 +15,6 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
-import javax.swing.JTabbedPane;
 import javax.swing.plaf.basic.BasicButtonUI;
 
 // look after handling 'x' on tabs

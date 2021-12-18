@@ -179,7 +179,7 @@ public class Diagram {
 				//File f2 = new File(s);
 				if (!(newFile.exists()) || newFile.isDirectory()) {
 
-					String suff = driver.getSuffix(s);
+					String suff = driver.checkSuffix(s);
 					if (suff == null)
 						newFile = new File(s + "." + lang.ext);
 					else {
@@ -282,7 +282,7 @@ public class Diagram {
 				file = null;
 				file = path.toFile();
 
-				String suff = driver.getSuffix(file.getAbsolutePath());
+				String suff = driver.checkSuffix(file.getAbsolutePath());
 				//Container c = ((DrawFBP.ImagePanel) contents);
 				DrawFBP.ImagePanel ip = ((DrawFBP.ImagePanel) contents);
 				int w = ip.getWidth();
@@ -548,10 +548,8 @@ public class Diagram {
 
 		changed = true;
 		Integer aid = Integer.valueOf(block.id);
-		Block oldBlk = blocks.remove(aid);
-		if (oldBlk == null) {
-			int i = 1;
-		}
+		blocks.remove(aid);
+		
 		// changeCompLang();
 		
 		driver.repaint();

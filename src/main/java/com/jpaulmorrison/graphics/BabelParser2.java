@@ -126,6 +126,61 @@ public class BabelParser2 {
 
 		return true;
 	}
+	
+	/**
+	 * This macro compares against a given string. Scanning is continuous
+	 * from the end of one incoming packet to the start of the next one. End of
+	 * input results in a false result - i.e. end of input is considered to not
+	 * match _any_ test character.
+	 */
+	public boolean tcl(String s) {
+		for (int i = 0; i < s.length(); i++) {
+			while (inputIndex >= endOfInput) {
+				if (!getMoreInput())
+					return false;
+			}
+			if (input[inputIndex] != s.charAt(i))
+				return false;
+			if (outputIndex >= output.length) {
+				errNo = Integer.valueOf(1);
+				return false;
+			}
+			output[outputIndex] = input[inputIndex];
+			outputIndex++;
+			inputIndex++;
+		}
+		return true;
+	}
+	/**
+	 * Same as tcl(char), but with modification (must be 'i', 'n' or 'o') ('n' is
+	 * equivalent to old Babel 'IO' - I- AND O-modification)
+	 * 
+	 * @param x
+	 *            char
+	 * @param mod
+	 *            char
+	 */
+
+	public boolean tcl(String s, char mod) {
+		for (int i = 0; i < s.length(); i++) {
+			while (inputIndex >= endOfInput) {
+				if (!getMoreInput())
+					return false;
+			}
+			if (inputIndex > 180) {
+				int j = 0;
+			}
+			if (input[inputIndex] != s.charAt(i))
+				return false;
+			if (mod != 'o' && mod != 'n') {
+				output[outputIndex] = input[inputIndex];
+				outputIndex++;
+			}
+			if (mod != 'i' && mod != 'n')
+				inputIndex++;
+		}
+		return true;
+	}
 	/**
 	 * Test for blank, CR or tab, but with modification (must be 'i', 'n' or 'o')
 	 * ('n' is equivalent to old Babel 'IO' - I- and O-modification)

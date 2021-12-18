@@ -2616,7 +2616,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return null;
 		}
 
-		if (null == getSuffix(file.getName()) && !(file.isDirectory())) {
+		if (null == checkSuffix(file.getName()) && !(file.isDirectory())) {
 			String name = file.getAbsolutePath();
 			name += ".drw";
 			file = new File(name);
@@ -2706,7 +2706,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// jtp.setSelectedIndex(curDiag.tabNum);
 		// Notation notn = null;
 
-		String suff = getSuffix(fname);
+		String suff = checkSuffix(fname);
 
 		// Notation notn = null;
 		if (!(suff.equals("drw") || suff.equals("dr~"))) {
@@ -2796,7 +2796,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 		return -1;
 	}
-
+	
 	String getSuffix(String s) {  		
 		
 		String s2 = s.replace("\\", "/"); 
@@ -2806,8 +2806,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		int j = s2.lastIndexOf(".");		
 		if (j == -1)
 			return null;
-		else {		
-			String s3 = s2.substring(j + 1);
+		else 
+			return s2.substring(j + 1);
+		}
+		
+	  
+
+	String checkSuffix(String s) {  		
+		
+		String s3 = getSuffix(s);
 			for (int k = 0; k < langs.length; k++) {
 				if (s3.equals(langs[k].ext)) {
 					return s3;
@@ -2816,7 +2823,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return null;
 		}
 		
-	}
+	 
 
 	void saveAction(boolean saveAs) {
 
@@ -5322,8 +5329,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();				
 		
-		int w = (int) dim.getWidth();
-		int h = (int) dim.getHeight();
+		//int w = (int) dim.getWidth();
+		//int h = (int) dim.getHeight();
 		/*
 		Dimension dim2 = getSize();
 		if (0 == (getExtendedState() & JFrame.MAXIMIZED_VERT)) { 
