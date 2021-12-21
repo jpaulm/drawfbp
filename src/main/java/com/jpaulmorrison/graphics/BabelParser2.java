@@ -132,6 +132,9 @@ public class BabelParser2 {
 	 * from the end of one incoming packet to the start of the next one. End of
 	 * input results in a false result - i.e. end of input is considered to not
 	 * match _any_ test character.
+	 * 
+	 * @param s
+	 *            String	
 	 */
 	public boolean tcl(String s) {
 		for (int i = 0; i < s.length(); i++) {
@@ -155,8 +158,8 @@ public class BabelParser2 {
 	 * Same as tcl(char), but with modification (must be 'i', 'n' or 'o') ('n' is
 	 * equivalent to old Babel 'IO' - I- AND O-modification)
 	 * 
-	 * @param x
-	 *            char
+	 * @param s
+	 *            String
 	 * @param mod
 	 *            char
 	 */
@@ -167,9 +170,7 @@ public class BabelParser2 {
 				if (!getMoreInput())
 					return false;
 			}
-			if (inputIndex > 180) {
-				int j = 0;
-			}
+			
 			if (input[inputIndex] != s.charAt(i))
 				return false;
 			if (mod != 'o' && mod != 'n') {

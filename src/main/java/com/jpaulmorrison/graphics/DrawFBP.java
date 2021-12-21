@@ -2386,6 +2386,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		propertyDescriptions.put("Current NoFlo network code directory", "currentNoFloNetworkDir");
 		propertyDescriptions.put("Current .fbp notation directory", "currentFBPNetworkDir");
 		propertyDescriptions.put("Current package name", "currentPackageName");
+		propertyDescriptions.put("Current project name (GoFBP)", "currentProjectName");
 		propertyDescriptions.put("Font for code", "fixedFont");
 		propertyDescriptions.put("Font for text", "generalFont");
 		propertyDescriptions.put("Default font size", "defaultFontSize");
@@ -2812,17 +2813,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 	  
 
-	String checkSuffix(String s) {  		
-		
-		String s3 = getSuffix(s);
+		String checkSuffix(String s) {
+			String s3 = getSuffix(s);
+			if (s3 == null)
+				return null;
+			
 			for (int k = 0; k < langs.length; k++) {
 				if (s3.equals(langs[k].ext)) {
 					return s3;
 				}
-			}	
+			}
 			return null;
 		}
-		
 	 
 
 	void saveAction(boolean saveAs) {
@@ -5858,13 +5860,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		@Override
 		public boolean accept(File f) {
 
-			return f.getName().toLowerCase().endsWith(".go") || f.isDirectory();
+			return f.getName().toLowerCase().endsWith(".go") || 
+					f.getName().toLowerCase().equals("go.mod") ||
+					f.isDirectory();
 
 		}
 
 		@Override
 		public String getDescription() {
-			return "Go source files (*.go)";
+			return "Go source files (*.go, go.mod)";
 		}
 	}
 

@@ -2095,7 +2095,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				return;
 			 
 			subnetFileName = null;
-			fullClassName = null;
+			//fullClassName = null;
 		}
 
 		String t = driver.properties.get("currentDiagramDir");
@@ -2145,7 +2145,7 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 					desc = ans;
 				*/
 			}
-			fullClassName = null;
+			//fullClassName = null;
 			component = null;
 			
 			
