@@ -141,9 +141,11 @@ public class CodeManager implements ActionListener {
 			for (Block block : diag.blocks.values()) {
 				if (block instanceof ProcessBlock) {
 					String str = block.fullClassName;
+					if (str != null) {
 					int i = str.lastIndexOf("/");
 					str = str.substring(0, i);
 					goComps.put(str, null);   // add unique...
+					}
 				}
 			}
 		}
@@ -733,9 +735,13 @@ public class CodeManager implements ActionListener {
 			compName = className.replace("\\",  "/");			
 				 
 			if (subComp) 
-
 				newProcName = "core." + className;
-			else {		
+			else {						
+				if (compName == null) {
+					MyOptionPane.showMessageDialog(jf, "Component name not set for: " + name,
+							MyOptionPane.ERROR_MESSAGE);
+					return "";
+				}
 				File f = new File(compName);
 				String s = driver.readFile(f);
 				if (s == null) {

@@ -25,11 +25,11 @@ gradle.projectsEvaluated {
     }
 }
 }
-
+/*
 dependencies {
   annotationProcessor "org.apache.logging.log4j:log4j-core:[2.11,2.12)"   
 }
-/* 
+ 
 allprojects { project -> 
      dependencyLocking {
         lockAllConfigurations()
@@ -47,7 +47,7 @@ allprojects { project ->
      }
 }
 */
-version = '3.1.3'
+version = '3.1.4'
 
 group = 'com.jpaulmorrison'
 
