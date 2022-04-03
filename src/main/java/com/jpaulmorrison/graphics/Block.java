@@ -82,17 +82,17 @@ public class Block implements ActionListener {
 	int textWidth = 0;
 	String str[] = null;
 
-	static public class Types {
-		static String PROCESS_BLOCK = "B";
-		static String EXTPORT_IN_BLOCK = "C";
-		static String EXTPORT_OUT_BLOCK = "D";
-		static String EXTPORT_OUTIN_BLOCK = "E";
-		static String FILE_BLOCK = "F";
-		static String IIP_BLOCK = "I";
-		static String LEGEND_BLOCK = "L";
-		static String ENCL_BLOCK = "O";
-		static String PERSON_BLOCK = "P";
-		static String REPORT_BLOCK = "R";
+	final static public class Types {
+		final static String PROCESS_BLOCK = "B";
+		final static String EXTPORT_IN_BLOCK = "C";
+		final static String EXTPORT_OUT_BLOCK = "D";
+		final static String EXTPORT_OUTIN_BLOCK = "E";
+		final static String FILE_BLOCK = "F";
+		final static String IIP_BLOCK = "I";
+		final static String LEGEND_BLOCK = "L";
+		final static String ENCL_BLOCK = "O";
+		final static String PERSON_BLOCK = "P";
+		final static String REPORT_BLOCK = "R";
 		
 		//static String UP = "Z";
 	}
@@ -212,8 +212,8 @@ public class Block implements ActionListener {
 				//y = cy - textHeight / 2;
 				//y += driver.gFontHeight - 6;
 				
-				for (int i = 0; i < str.length; i++) {
-					g.drawString(str[i], x, y);
+				for (String s: str) {
+					g.drawString(s, x, y);
 					y += driver.gFontHeight;
 				}
 
@@ -223,8 +223,8 @@ public class Block implements ActionListener {
 				//y = cy - height / 2 + 20;
 				//y += driver.gFontHeight + 2;
 
-				for (int i = 0; i < str.length; i++) {
-					g.drawString(str[i], x, y);
+				for (String s: str) {
+					g.drawString(s, x, y);
 					y += driver.gFontHeight;
 				}
 			}
@@ -402,8 +402,7 @@ public class Block implements ActionListener {
 
 		if (this instanceof ProcessBlock) {
 
-			for (int i = 0; i < str.length; i++) {
-				String t = str[i];
+			for (String t: str) {
 				byte[] str2 = t.getBytes();
 				x = 2 + metrics.bytesWidth(str2, 0, str2.length);
 
@@ -417,8 +416,7 @@ public class Block implements ActionListener {
 			textWidth = maxX;
 		} else if (this instanceof LegendBlock) {
 
-			for (int i = 0; i < str.length; i++) {
-				String t = str[i];
+			for (String t: str) {
 				byte[] str2 = t.getBytes();
 				x = 12 + metrics.bytesWidth(str2, 0, str2.length);
 
@@ -551,7 +549,7 @@ public class Block implements ActionListener {
 		desc = item.get("description");
 		//centreDesc();
 		if (typeCode.equals(Block.Types.IIP_BLOCK) && desc != null && desc.length() > 0 && 
-				desc.substring(0,1).equals("\"")) {
+				desc.charAt(0) == '\"') {
 			desc = desc.substring(1,desc.length() - 2);					
 		}
 		centreDesc();
@@ -649,7 +647,7 @@ public class Block implements ActionListener {
 		
 		
 		if (fullClassName != null) {
-			if (fullClassName.indexOf("!") == -1) {// if no "!", language is not
+			if (!fullClassName.contains("!")) {// if no "!", language is not
 													// Java...
 				//driver.tryFindJarFile = false;
 				if (fullClassName.toLowerCase().endsWith(".json")) {
@@ -912,8 +910,8 @@ public class Block implements ActionListener {
 	  
 
 	void buildMetadata() {
-		inputPortAttrs = new HashMap<String, AInPort>();
-		outputPortAttrs = new HashMap<String, AOutPort>();
+		inputPortAttrs = new HashMap<>();
+		outputPortAttrs = new HashMap<>();
 		String s = driver.javaFBPJarFile; 
 		if (s == null)
 			return;
@@ -978,15 +976,15 @@ public class Block implements ActionListener {
 
 			meth = inport.getMethod("arrayPort");
 			Boolean b = (Boolean) meth.invoke(a);
-			ipt.arrayPort = b.booleanValue();
+			ipt.arrayPort = b;  //.booleanValue();
 
 			meth = inport.getMethod("fixedSize");
 			b = (Boolean) meth.invoke(a);
-			ipt.fixedSize = b.booleanValue();
+			ipt.fixedSize = b;
 			
 			meth = inport.getMethod("optional");
 			b = (Boolean) meth.invoke(a);
-			ipt.optional = b.booleanValue();
+			ipt.optional = b;
 
 			meth = inport.getMethod("description");
 			ipt.description = (String) meth.invoke(a);
@@ -996,7 +994,7 @@ public class Block implements ActionListener {
 
 			meth = inport.getMethod("setDimension");
 			Integer ic = (Integer) meth.invoke(a);
-			int i = ic.intValue();
+			int i = ic;
 
 			meth = inport.getMethod("valueList");
 			String[] sa = (String[]) meth.invoke(a);
@@ -1039,15 +1037,15 @@ public class Block implements ActionListener {
 
 			meth = outport.getMethod("arrayPort");
 			Boolean b = (Boolean) meth.invoke(a);
-			opt.arrayPort = b.booleanValue();
+			opt.arrayPort = b;
 
 			meth = outport.getMethod("fixedSize");
 			b = (Boolean) meth.invoke(a);
-			opt.fixedSize = b.booleanValue();
+			opt.fixedSize = b;
 
 			meth = outport.getMethod("optional");
 			b = (Boolean) meth.invoke(a);
-			opt.optional = b.booleanValue();
+			opt.optional = b;
 			
 			meth = outport.getMethod("description");
 			opt.description = (String) meth.invoke(a);
@@ -1057,7 +1055,7 @@ public class Block implements ActionListener {
 
 			meth = outport.getMethod("setDimension");
 			Integer ic = (Integer) meth.invoke(a);
-			int i = ic.intValue();
+			int i = ic;
 
 			meth = outport.getMethod("valueList");
 			String[] sa = (String[]) meth.invoke(a);
@@ -1263,7 +1261,7 @@ public class Block implements ActionListener {
 			for (String ls : lst) {
 				JTextField[] tfu = new JTextField[ROWSIZE];
 				tfu[0] = new JTextField(ls.substring(1));
-				if (ls.substring(0, 1).equals("I"))
+				if (ls.charAt(0) == 'I')
 					tfu[1] = new JTextField("(input)");
 				else
 					tfu[1] = new JTextField("(output)");
@@ -1384,8 +1382,8 @@ public class Block implements ActionListener {
 		final int tMMissing = 1;
 		final int tMOptional = 2;
 		
-		boolean input = (type.indexOf("input") > -1 || type.indexOf("param") > -1);
-		boolean output = (type.indexOf("output") > -1);
+		boolean input = (type.contains("input") || type.contains("param"));
+		boolean output = (type.contains("output"));
 		if (!input && !output) {
 			MyOptionPane.showMessageDialog(driver, "Port type of \""
 					+ port + "\" must be \"input\" or \"output\"", MyOptionPane.ERROR_MESSAGE);
@@ -1415,14 +1413,14 @@ public class Block implements ActionListener {
 					return tMMissing;
 		}
 		
-			if (type.indexOf("optional") > -1)
+			if (type.contains("optional"))
 			return tMOptional;
 		else
 			return tMMissing; // If port missing, error
 	}
 
 	LinkedList<String> checkUnmatchedPorts() {
-		LinkedList<String> lst = new LinkedList<String>();
+		LinkedList<String> lst = new LinkedList<>();
 		for (Arrow arrow : diag.arrows.values()) {
 
 			boolean found = false;
@@ -2195,14 +2193,14 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 		//Class<?> tempComp = null;
 		//String tempFCN = null;
 		if (returnVal == MyFileChooser.APPROVE_OPTION) {
-			String res = driver.getSelFile(fc);
+			String fs = driver.getSelFile(fc);
 
-				String fs = res;
+				//String fs = res;
 				//boolean injar = true;
 				//if (fs.endsWith("jar"))
 				//	cFile = new File(driver.javaFBPJarFile); 
 				//else 
-				if (-1 == fs.indexOf("!")) {
+				if (!fs.contains("!")) {
 					//injar = false;
 					cFile = new File(fs);
 					if (cFile == null || !(cFile.exists())) {
@@ -2217,12 +2215,12 @@ The old diagram will be modified, and a new subnet diagram created, with "extern
 				//String u = cFile.getName();
 				String v2 = fs;
 			
-				boolean	inTree = v2.indexOf("!") > -1;
+				boolean	inTree = v2.contains("!");
 				v2 = v2.replace("\\",  "/");
 				int k = v2.lastIndexOf("/");
 				if (!inTree) {					
-					String w = v2.substring(0, k);
-					String currentClassDir = w;
+					String currentClassDir = v2.substring(0, k);
+					//String currentClassDir = w;
 					if (currentClassDir != null)
 						driver.saveProp("currentClassDir", currentClassDir);
 				}

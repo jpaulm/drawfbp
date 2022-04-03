@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
+//import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -207,7 +207,7 @@ public class MyFileChooser extends JDialog
 			cBox.setSelectedIndex(driver.allFiles ? 1 : 0);
 		}
 
-		order = new Vector<Component>(10);
+		order = new Vector<>(10);
 		//order.add(t_dirName);
 		order.add(butSortByDate);
 		order.add(butFind);
@@ -647,7 +647,7 @@ public class MyFileChooser extends JDialog
 	@SuppressWarnings("unchecked")
 	private void showList() {
 
-		LinkedList<String> ll = new LinkedList<String>();
+		LinkedList<String> ll = new LinkedList<>();
 		LinkedList<String> ll2 = null;
 		inTree = false;
 		String s = listHead;
@@ -655,7 +655,7 @@ public class MyFileChooser extends JDialog
 		
 		String t = null;
 		File f = new File(listHead);
-		if (-1 == s.indexOf("!")) { // if fullNodeName is NOT a
+		if (!s.contains("!")) { // if fullNodeName is NOT a
 										// file
 										// within a jar file or fbp.json...
 
@@ -725,7 +725,7 @@ public class MyFileChooser extends JDialog
 					
 					File[] ds = f.listFiles();
 					
-					ll2 = new LinkedList<String>();
+					ll2 = new LinkedList<>();
 
 					if (ds != null) {
 						for (File entry : ds) {
@@ -742,9 +742,10 @@ public class MyFileChooser extends JDialog
 						}
 
 						//Collection<String> coll = mySort(ll2);
-						Collection<String> coll = ll2;
-						ll.addAll(coll); 
-						
+						//Collection<String> coll = ll2;
+						//ll.addAll(coll);
+						ll.addAll(ll2);
+
 						ll2.clear();
 
 						for (File entry : ds) {
@@ -777,9 +778,9 @@ public class MyFileChooser extends JDialog
 				if (currentNode == null)
 					return;
 
-				ll = new LinkedList<String>();
+				ll = new LinkedList<>();
 
-				ll2 = new LinkedList<String>();
+				ll2 = new LinkedList<>();
 
 				if (currentNode.getChildCount() > 0) {
 
@@ -837,7 +838,7 @@ public class MyFileChooser extends JDialog
 				nodeNames[j] = "";
 			}
 
-			list = new JList<String>(nodeNames);
+			list = new JList<>(nodeNames);
 			// list.setSelectedIndex(k);
 			//list.setSelectedIndex(-1);
 			
@@ -919,7 +920,7 @@ public class MyFileChooser extends JDialog
 		
 		// Collections.sort sorts in place - that's OK!		
 		//int lhl = listHead.length();
-		LinkedList<String> ll = new LinkedList<String>();
+		LinkedList<String> ll = new LinkedList<>();
 		for (String s : from) {
 			//File f = new File(listHead + "/" + s); 
 			
@@ -1095,13 +1096,13 @@ public class MyFileChooser extends JDialog
 			if (s == null)
 				name.setBackground(vLightBlue);
 
-			else if (s.indexOf(".jar@") > -1 || inTree)
+			else if (s.contains(".jar@") || inTree)
 				name.setBackground(goldenRod);
 			else
 				name.setBackground(vLightBlue);
 
 			if (isSelected) {
-				if (s.indexOf(".jar@") > -1 || inTree)
+				if (s.contains(".jar@") || inTree)
 					name.setBackground(bisque);
 				else
 					name.setBackground(lightBlue);
@@ -1671,7 +1672,7 @@ public class MyFileChooser extends JDialog
 					String s2 = s;
 					// System.out.println("Show file name: " + s2);
 					s = s.replace("\\", "/");
-					if (!s.endsWith(".jar") && !s.endsWith("fbp.json") || -1 == s.indexOf("/"))
+					if (!s.endsWith(".jar") && !s.endsWith("fbp.json") || !s.contains("/"))
 						s2 = t_dirName.getText() + "/" + s;
 					else 
 						s2 = s;
@@ -2062,8 +2063,8 @@ public class MyFileChooser extends JDialog
 
 			idx = (idx + 1) % order.size();
 
-			Component c = order.get(idx);
-			return c;
+			//Component c = order.get(idx);
+			return order.get(idx);
 		}
 		public Component getComponentBefore(Container focusCycleRoot,
 				Component aComponent) {
@@ -2082,8 +2083,8 @@ public class MyFileChooser extends JDialog
 				idx = order.size() - 1;
 			}
 
-			Component c = order.get(idx);
-			return c;
+			//Component c = order.get(idx);
+			return order.get(idx);
 		}
 
 	}

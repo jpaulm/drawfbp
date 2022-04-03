@@ -24,7 +24,7 @@ public class DiagramBuilder {
 		DrawFBP driver = diag.driver;
 		Integer errNo = Integer.valueOf(0);
 		BabelParser2 bp = new BabelParser2(input, errNo);
-		HashMap<String, HashMap<String, String>> tagInfo = new HashMap<String, HashMap<String, String>>();
+		HashMap<String, HashMap<String, String>> tagInfo = new HashMap<>();
 		createTables(tagInfo);
 
 		boolean done = false;
@@ -35,7 +35,7 @@ public class DiagramBuilder {
 		String saveData = null;
 		// Object object;
 
-		HashMap<String, String> item = new HashMap<String, String>();
+		HashMap<String, String> item = new HashMap<>();
 
 		boolean atomic = false;
 		HashMap<String, String> curFl = null;
@@ -44,11 +44,11 @@ public class DiagramBuilder {
 		//testing
 		
 		// 3 stacks
-		Stack<String> names = new Stack<String>(); // names (atomic and
+		Stack<String> names = new Stack<>(); // names (atomic and
 		// non-atomic)
-		Stack<HashMap<String, String>> fldLists = new Stack<HashMap<String, String>>();
+		Stack<HashMap<String, String>> fldLists = new Stack<>();
 		// field lists
-		Stack<String> clsNames = new Stack<String>(); // class names
+		Stack<String> clsNames = new Stack<>(); // class names
 
 		boolean endsw; // if true, it is an end tag
 		boolean control = false; // if true, it is a comment or control tag
@@ -65,7 +65,7 @@ public class DiagramBuilder {
 		//driver.grid.setSelected(diag.clickToGrid);
 		
 		
-		while (true) { // skip blanks, CRs or tabs
+		while (!bp.finished()) { // skip blanks, CRs or tabs
 			if (!(bp.tb('o')))				
 			    break;
 		}
@@ -79,7 +79,7 @@ public class DiagramBuilder {
 			return;
 		}
 
-		while (true) { // main loop - we should be just after a <
+		while (!bp.finished()) { // main loop - we should be just after a <
 
 			if (bp.tc('/', 'o'))
 				endsw = true;
@@ -91,25 +91,27 @@ public class DiagramBuilder {
 			if (bp.tc('?', 'o'))
 				control = true;
 			
-			while (true) { // scan off a symbol within <>
+			while (!bp.finished()) { // scan off a symbol within <>
 				if (bp.tc('>', 'o'))
 					break;			
 
 				bp.tu();
 			}
+
 			
 			// at end, we can use getOutStr to get output into String (sym)
 
 			if (!control) {
 
 				starttag = bp.getOutStr(); // get this symbol - check if ends in /
-				if (starttag.startsWith("drawfbp_file"))
+				if (starttag.startsWith("drawfbp_file")) {
 					starttag = "drawfbp_file";
+				}
 
-				if (starttag.charAt(starttag.length() - 1) == '/') { // stand-alone field
+				if (starttag.endsWith("/")) { // stand-alone field
 					// (no data)
 					endsw = true;
-					starttag = starttag.substring(0, starttag.length() - 1); // drop final
+					starttag = starttag.substring(0, starttag.length() - 1); // drop final character
 					endtag = starttag;
 					// slash from symbol
 					names.push(starttag);
@@ -154,8 +156,8 @@ public class DiagramBuilder {
 							System.out.println("Starting class " + starttag);
 
 						if (starttag.equals("connection")) {
-							Arrow arrow = new Arrow(diag);
-							thisArrow = arrow;
+							thisArrow = new Arrow(diag);
+							//thisArrow = arrow;
 							arrowBuilt = false;							
 
 						} else if (starttag.equals("bends")) {
@@ -267,75 +269,74 @@ public class DiagramBuilder {
 								type = item.get("type");
 								int x = Integer.parseInt(item.get("x"));
 								int y = Integer.parseInt(item.get("y"));
-								if (null == type) {
-									MyOptionPane.showMessageDialog(frame,
-											"No block type specified", MyOptionPane.ERROR_MESSAGE);
-									block = new ProcessBlock(diag);
-									//block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);	
-									block.cx = x;
-									block.cy = y;
-
-								} else if (type.equals(Block.Types.PROCESS_BLOCK)) {
-									block = new ProcessBlock(diag);	
-									//block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
-									block.cx = x;
-									block.cy = y;
-									
-								} else if (type
-										.equals(Block.Types.REPORT_BLOCK)) {
-									block = new ReportBlock(diag);
-
-								} else if (type.equals(Block.Types.FILE_BLOCK)) {
-									block = new FileBlock(diag);
-
-								} else if (type
-										.equals(Block.Types.EXTPORT_IN_BLOCK)
-										|| type.equals(Block.Types.EXTPORT_OUT_BLOCK)
-										|| type.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
-									block = new ExtPortBlock(diag);
-
-									if (type
-											.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
-										block.width = 2 * block.width;
-									}
-									block.typeCode = type;
-									
-									String sbs = item.get("substreamsensitive");
-									if (sbs != null && sbs.equals("true")){											
-										if (block instanceof ExtPortBlock) {
-											ExtPortBlock eb = (ExtPortBlock) block;
-											eb.substreamSensitive = true;
+								switch (type) {
+									//case null:
+									//	MyOptionPane.showMessageDialog(frame,
+									//			"No block type specified", MyOptionPane.ERROR_MESSAGE);
+									//	block = new ProcessBlock(diag);
+										//block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
+									//	block.cx = x;
+									//	block.cy = y;
+									//	break;
+									case Block.Types.PROCESS_BLOCK:
+										block = new ProcessBlock(diag);
+										//block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
+										block.cx = x;
+										block.cy = y;
+										break;
+									case Block.Types.REPORT_BLOCK:
+										block = new ReportBlock(diag);
+										break;
+									case Block.Types.FILE_BLOCK:
+										block = new FileBlock(diag);
+										break;
+									case Block.Types.EXTPORT_IN_BLOCK:
+									case Block.Types.EXTPORT_OUT_BLOCK:
+									case Block.Types.EXTPORT_OUTIN_BLOCK:
+										block = new ExtPortBlock(diag);
+										if (type
+												.equals(Block.Types.EXTPORT_OUTIN_BLOCK)) {
+											block.width = 2 * block.width;
 										}
-										//if (snp != null)
-										//	snp.substreamSensitive = true;										
+										block.typeCode = type;
+
+										String sbs = item.get("substreamsensitive");
+										if (sbs != null && sbs.equals("true")){
+											if (block instanceof ExtPortBlock) {
+												ExtPortBlock eb = (ExtPortBlock) block;
+												eb.substreamSensitive = true;
+											}
+											//if (snp != null)
+											//	snp.substreamSensitive = true;
+										}
+										break;
+									case Block.Types.IIP_BLOCK:
+										block = new IIPBlock(diag);
+										IIPBlock ib = (IIPBlock) block;
+										//block.width = ib.width;
+										ib.width = ib.calcIIPWidth();
+										ib.textWidth = ib.width;
+										ib.buildSideRects();
+										break;
+									case Block.Types.LEGEND_BLOCK:
+										block = new LegendBlock(diag);
+										break;
+									case Block.Types.PERSON_BLOCK:
+										block = new PersonBlock(diag);
+										break;
+									case Block.Types.ENCL_BLOCK:
+										block = new Enclosure(diag);
+										break;
+									default:
+										MyOptionPane.showMessageDialog(frame,
+												"Undefined block type", MyOptionPane.ERROR_MESSAGE);
+										block = new ProcessBlock(diag);
+										//block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);
+										block.cx = x;
+										block.cy = y;
+										break;
 									}
-								} else if (type.equals(Block.Types.IIP_BLOCK)) {
-									block = new IIPBlock(diag);
-									IIPBlock ib = (IIPBlock) block;
-									//block.width = ib.width;
-									ib.width = ib.calcIIPWidth();
-									ib.textWidth = ib.width;
-									ib.buildSideRects();
-
-								} else if (type
-										.equals(Block.Types.LEGEND_BLOCK)) {
-									block = new LegendBlock(diag);
-
-								} else if (type
-										.equals(Block.Types.PERSON_BLOCK)) {
-									block = new PersonBlock(diag);
-
-								} else if (type.equals(Block.Types.ENCL_BLOCK)) {
-									block = new Enclosure(diag);
-
-								} else {
-									MyOptionPane.showMessageDialog(frame,
-											"Undefined block type", MyOptionPane.ERROR_MESSAGE);
-									block = new ProcessBlock(diag);
-									//block = (ProcessBlock) driver.createBlock(x, y, diag, false, true);	
-									block.cx = x;
-									block.cy = y;
-								}
+								//}
 								
 								block.buildBlockFromXML(item);
 								//block.buildSideRects();
@@ -366,7 +367,7 @@ public class DiagramBuilder {
 							
 						} else if (endtag.equals("bend")) {
 							if (thisArrow.bends == null)
-								thisArrow.bends = new LinkedList<Bend>();
+								thisArrow.bends = new LinkedList<>();
 							Bend bend = new Bend();
 							bend.buildBend(item);
 							thisArrow.bends.add(bend);
@@ -390,13 +391,13 @@ public class DiagramBuilder {
 
 					}
 				}
-			}
+			}   // !control
 
 			// if we have just read an end tag, a non-atomic name, or control
 			// (!?),
 			// skip following blanks to next non-blank (should be a <)
 			if (endsw || !atomic || control) {
-				while (true) { // skip blanks and tabs
+				while (!bp.finished()) { // skip blanks and tabs
 					if (!(bp.tb('o')))
 					    break;
 				}
@@ -408,8 +409,10 @@ public class DiagramBuilder {
 			// blanks
 			// or tabs, if any
 
-			while (true) {
+			while (!bp.finished()) {
 
+				// Not sure why this is here - historical reasons, probably!
+				
 				if (bp.tc('\\', 'o')) { // back-slash followed by angle bracket
 										// -> angle bracket only
 					if (bp.tc('>'))
@@ -420,8 +423,9 @@ public class DiagramBuilder {
 					continue;
 				}
 
-				if (bp.tc('<', 'o'))
-					break; // look for left bracket
+				if (bp.tc('<', 'o')) {
+					break; // look for left bracket 
+				}
 
 				// here we have found something that is not a < - it could be
 				// end of file, or it could be data
@@ -437,16 +441,15 @@ public class DiagramBuilder {
 			if (done)
 				break;
 
-			data = bp.getOutStr();
-			
-			if (data != null) {	
-				data = data.trim();
-				if (data.equals("null"))  // .drw builder occasionally inserting "null" 
-					data = "";
+			data = bp.getOutStr().trim();
+			if (data == null || data.equals("null"))
+				data = "";
+			//if (data.equals("null"))  // .drw builder occasionally inserting "null"
+			//	data = "";
+			if (!data.equals("")){
 				Pattern p = Pattern.compile("\\s*");
 				Matcher m = p.matcher(data);
-				if (!(data.equals("")) && !m.matches())
-
+				if (!m.matches())
 					if (endsw || !atomic)
 						MyOptionPane.showMessageDialog(frame,
 								"Characters found not preceded by field start tag: \""
@@ -508,7 +511,7 @@ public class DiagramBuilder {
 			HashMap<String, HashMap<String, String>> tagInfo) {
 
 		// fields in Diagram
-		HashMap<String, String> fl1 = new HashMap<String, String>();
+		HashMap<String, String> fl1 = new HashMap<>();
 		fl1.put("title", "*");  // deprecated
 		//fl1.put("drawfbp_file", "LinkedList");
 		fl1.put("net", "LinkedList");
@@ -526,11 +529,11 @@ public class DiagramBuilder {
 		fl1.put("connections", "LinkedList");
 		fl1.put("description", "*");  // deprecated
 
-		HashMap<String, String> fl2 = new HashMap<String, String>();
+		HashMap<String, String> fl2 = new HashMap<>();
 		fl2.put("block", "Block");
 
 		// fields in Block
-		HashMap<String, String> fl3 = new HashMap<String, String>();
+		HashMap<String, String> fl3 = new HashMap<>();
 		fl3.put("x", "*");
 		fl3.put("y", "*");
 		fl3.put("id", "*");
@@ -549,11 +552,11 @@ public class DiagramBuilder {
 		fl3.put("issubnet", "*");	
 		fl3.put("subnetports", "LinkedList");
 
-		HashMap<String, String> fl4 = new HashMap<String, String>();
+		HashMap<String, String> fl4 = new HashMap<>();
 		fl4.put("connection", "LinkedList");
 
 		// fields in Connection (Arrow)
-		HashMap<String, String> fl5 = new HashMap<String, String>();
+		HashMap<String, String> fl5 = new HashMap<>();
 		fl5.put("fromx", "*");
 		fl5.put("fromy", "*");
 		fl5.put("tox", "*");
@@ -571,18 +574,18 @@ public class DiagramBuilder {
 		fl5.put("endsatline", "*");	
 		fl5.put("bends", "LinkedList");
 
-		HashMap<String, String> fl6 = new HashMap<String, String>();
+		HashMap<String, String> fl6 = new HashMap<>();
 		fl6.put("bend", "Bend");
 
-		HashMap<String, String> fl7 = new HashMap<String, String>();
+		HashMap<String, String> fl7 = new HashMap<>();
 		fl7.put("x", "*");
 		fl7.put("y", "*");
 
-		HashMap<String, String> fl8 = new HashMap<String, String>();
+		HashMap<String, String> fl8 = new HashMap<>();
 		fl8.put("subnetport", "SubnetPort");
 
 		// field in SubnetPort
-		HashMap<String, String> fl9 = new HashMap<String, String>();
+		HashMap<String, String> fl9 = new HashMap<>();
 		fl9.put("y", "*");
 		fl9.put("name", "*");
 		fl9.put("side", "*");

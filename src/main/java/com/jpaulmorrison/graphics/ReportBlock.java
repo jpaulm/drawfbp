@@ -93,8 +93,8 @@ public class ReportBlock extends Block {
 		int y = top + driver.gFontHeight + 6;
 		if (desc != null) {
 			////String str[] = centreDesc();
-			for (int i = 0; i < str.length; i++) {
-				g.drawString(str[i], x, y); 
+			for (String s: str) {
+				g.drawString(s, x, y);
 				y += driver.gFontHeight;
 			}
 		}

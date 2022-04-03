@@ -49,14 +49,14 @@ public class LegendBlock extends Block {
 			
 			y += driver.gFontHeight + 2;
 			//int right = 0;
-			for (int i = 0; i < str.length; i++) {
-				g.drawString(str[i], x, y); 
+			for (String s: str) {
+				g.drawString(s, x, y);
 				y += driver.gFontHeight;
 				//right = Math.max(right,  x + driver.gFontWidth * str[i].length());
 			}
 			
 			
-			topEdge = cy - height / 2;;
+			topEdge = cy - height / 2;
 			botEdge = cy + height / 2;
 			leftEdge = cx - width / 2;
 			rightEdge = cx + width / 2;

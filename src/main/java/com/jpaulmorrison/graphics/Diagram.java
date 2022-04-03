@@ -76,8 +76,8 @@ public class Diagram {
 	Diagram(DrawFBP drawFBP) {
 		driver = drawFBP;
 		driver.curDiag = this;
-		blocks = new ConcurrentHashMap<Integer, Block>();
-		arrows = new ConcurrentHashMap<Integer, Arrow>();
+		blocks = new ConcurrentHashMap<>();
+		arrows = new ConcurrentHashMap<>();
 		//clickToGrid = true;
 		parent = null;
 		//portNames = new HashSet<String> ();
@@ -990,7 +990,7 @@ public class Diagram {
 	void findEnclosedBlocksAndArrows(Enclosure enc) {
 		// look for blocks which are within enclosure
 
-		enc.llb = new LinkedList<Block>();
+		enc.llb = new LinkedList<>();
 		for (Block block : blocks.values()) {
 			if (block == enc)
 				continue;
@@ -1002,7 +1002,7 @@ public class Diagram {
 
 		// look for arrows which are within enclosure
 
-		enc.lla = new LinkedList<Arrow>();
+		enc.lla = new LinkedList<>();
 		for (Arrow arrow : arrows.values()) {
 			Block from = blocks.get(Integer.valueOf(arrow.fromId));
 			Block to = blocks.get(Integer.valueOf(arrow.toId));
@@ -1139,7 +1139,7 @@ public class Diagram {
 		arrCopy.endsAtLine = arrow.endsAtLine;
 		if (arrow.bends != null) {
 			//Rectangle r = new Rectangle(enc.cx - enc.width / 2, enc.cy - enc.height / 2, enc.width, enc.height);
-			arrCopy.bends = new LinkedList<Bend>();
+			arrCopy.bends = new LinkedList<>();
 			for (Bend b : arrow.bends) {
 				/*
 				if (from == null){

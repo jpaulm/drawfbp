@@ -70,7 +70,7 @@ public class MyOptionPane {
 	     dialog.setVisible(false);
 	     if (selValue == null)
 	     	 return null;
-	     if (selValue instanceof Integer && ((Integer) selValue).intValue() == CANCEL_OPTION)
+	     if (selValue instanceof Integer && (Integer) selValue == CANCEL_OPTION)
 	    	 return null;
 	     Object o = pane.getInputValue();
 	     if (selValue instanceof Float || selValue instanceof String)
@@ -153,7 +153,7 @@ public class MyOptionPane {
 	     Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 	     int i = -1;
 	     if (pane.getValue() != null)  
-	       i = ((Integer) pane.getValue()).intValue();
+	       i = (Integer) pane.getValue();
 	     //dialog.setVisible(false);
 	     pane.setVisible(false);
 	     dialog.dispose();
@@ -197,7 +197,7 @@ public class MyOptionPane {
 	     Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 	     int i = -1;
 	     if (pane.getValue() != null)  
-	         i = ((Integer) pane.getValue()).intValue();
+	         i = (Integer) pane.getValue();
 	     dialog.setVisible(false);
 	     return i;
 	     

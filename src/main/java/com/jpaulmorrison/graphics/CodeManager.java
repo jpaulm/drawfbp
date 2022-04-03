@@ -40,7 +40,7 @@ public class CodeManager implements ActionListener {
 	Diagram diag;
 	// Font font;
 	String packageName = null;
-	LinkedList<String> counterList = new LinkedList<String>();
+	LinkedList<String> counterList = new LinkedList<>();
 	JPanel panel;
 	JScrollPane scrollPane;
 	
@@ -48,7 +48,7 @@ public class CodeManager implements ActionListener {
 	
 	JFrame jf = null;
 
-	HashMap<Integer, String> descArray = new HashMap<Integer, String>();
+	HashMap<Integer, String> descArray = new HashMap<>();
 	// HashMap<Integer, String> cdescArray = new HashMap<Integer, String>();
 	// int type;
 	JLabel nsLabel = new JLabel();
@@ -56,7 +56,7 @@ public class CodeManager implements ActionListener {
 	//FileChooserParm[] saveFCPArr;
 	//String langLabel;
 	Notation notn = null;
-	String upPort = null;;
+	String upPort = null;
 	String dnPort = null;
 	//StyledDocument doc = null;
 	MyDocument doc = null;
@@ -90,7 +90,7 @@ public class CodeManager implements ActionListener {
 		//doc = (MyDocument) docText.getStyledDocument();
 		//addStylesToDocument(doc);
 		setStyles(sc);
-		goComps = new HashMap<String, String>();
+		goComps = new HashMap<>();
 		
 	}
 	
@@ -131,7 +131,7 @@ public class CodeManager implements ActionListener {
 
 		// boolean error = false;
 		//portNames = new HashSet<String>();
-		blocklist = new HashMap<String, Integer>();
+		blocklist = new HashMap<>();
 
 		net_type = "Network";  
 
@@ -781,7 +781,7 @@ public class CodeManager implements ActionListener {
 	String genCompMpx(String name, String className) {
 		if (className == null)
 			className = "????";
-		if (lang.equals("Java"))
+		if (lang.label.equals("Java"))
 			return "component(\"" + name + ":\" + i," + className + ".class)";
 		else
 			return "Component(\"" + name + ":\" + i, typeof(" + className
@@ -821,7 +821,7 @@ public class CodeManager implements ActionListener {
 				return null;
 			
 			if (bp.tcl("/*", 'o')) {
-				while (true) {
+				while (!bp.finished()) {
 					if (bp.tcl("*/", 'o'))
 						break;
 					bp.tu('o');
@@ -842,7 +842,7 @@ public class CodeManager implements ActionListener {
 				while (bp.tb('o')) {					
 				}
 			// at this point, must not be a blank	
-				while (true) {
+				while (!bp.finished()) {
 					if (bp.tb('o'))
 						break;
 					bp.tu();  // copy to output
@@ -1107,10 +1107,10 @@ public class CodeManager implements ActionListener {
 		String t = s;
 		if (blocklist.containsKey(s)) {
 			i = blocklist.get(s);
-			i = Integer.valueOf(i.intValue() + 1);
+			i = i.intValue() + 1;
 			t = s + "_" + i.toString() + "_";
 		} else
-			i = Integer.valueOf(1);
+			i = 1;
 		blocklist.put(s, i);
 		return t;
 
@@ -1276,7 +1276,20 @@ public class CodeManager implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
-		
+
+		switch (s) {
+			case "Save" :
+				//saveCode(!SAVE_AS);
+				//break;
+			case "Save As" :
+				saveCode(!SAVE_AS);
+				break;
+			case "Exit" :
+				closeAction.actionPerformed(new ActionEvent(e, 0, "CLOSE"));
+				break;
+			default: break;
+		}
+		/*
 		if (s.equals("Save")) {
 
 			saveCode(!SAVE_AS);   
@@ -1288,6 +1301,7 @@ public class CodeManager implements ActionListener {
 		} else if (s.equals("Exit")) {			
 			closeAction.actionPerformed(new ActionEvent(e, 0, "CLOSE"));			
 		}
+		*/
 		return;
 	}
 
@@ -1352,7 +1366,7 @@ public class CodeManager implements ActionListener {
 */
 	
 	String compress(String s) {
-		if (counterList.indexOf(s) == -1)
+		if (!counterList.contains(s))
 			counterList.add(s);
 		return "X$" + counterList.indexOf(s);
 	}
@@ -1665,7 +1679,7 @@ public class CodeManager implements ActionListener {
 		data += q(diag.title) + "\n},\n";
 		data += "\"processes\": [\n";
 		//portNames = new HashSet<String>();
-		blocklist = new HashMap<String, Integer>();
+		blocklist = new HashMap<>();
 
 		String comma = "";
 		for (Block block : diag.blocks.values()) {
@@ -1740,7 +1754,7 @@ public class CodeManager implements ActionListener {
 						MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
-			if (from == null || to == null || from instanceof FileBlock || from instanceof ReportBlock
+			if (from == null || from instanceof FileBlock || from instanceof ReportBlock
 					|| from instanceof LegendBlock || from instanceof PersonBlock || from instanceof Enclosure
 					|| to instanceof FileBlock || to instanceof ReportBlock || to instanceof LegendBlock
 					|| to instanceof PersonBlock || to instanceof Enclosure)
@@ -1807,7 +1821,7 @@ public class CodeManager implements ActionListener {
 		String cma = "";
 		// generated = false;
 		//portNames = new HashSet<String>();
-		blocklist = new HashMap<String, Integer>();
+		blocklist = new HashMap<>();
 		// portlist = new HashMap<String, Integer>();
 		// diag.targetLang = "FBP";
 		//FileChooserParm saveFCP = diag.fCParm[DrawFBP.NETWORK];
@@ -1882,7 +1896,7 @@ public class CodeManager implements ActionListener {
 						"Downstream block not found", MyOptionPane.ERROR_MESSAGE);
 				break;
 			}
-			if (from == null || to == null || from instanceof FileBlock
+			if (from == null || from instanceof FileBlock
 					|| from instanceof ReportBlock
 					|| from instanceof LegendBlock || to instanceof FileBlock
 					|| to instanceof ReportBlock || to instanceof LegendBlock)

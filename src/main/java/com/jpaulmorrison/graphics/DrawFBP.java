@@ -33,6 +33,7 @@ import java.awt.image.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarEntry;
@@ -111,10 +112,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	// Enclosure enclSelForDragging = null;
 	Enclosure enclSelForArrow = null;   // used for displaying "stretch" arrows on enclosures
 
-	File propertiesFile = null;
-	HashMap<String, String> properties = null;
-	HashMap<String, String> startProperties = null;
-	HashMap<String, String> propertyDescriptions = null; // description is key
+	File propertiesFile;
+	HashMap<String, String> properties;
+	HashMap<String, String> startProperties;
+	HashMap<String, String> propertyDescriptions; // description is key
 
 	JTabbedPaneWithCloseIcons jtp;
 
@@ -148,7 +149,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	int ow = 0; // enclosure being dragged - width
 	int oh = 0; // enclosure being dragged - height
 
-	String diagramName = null;
+	String diagramName;
 
 	Arrow arrowHorTisBeingDragged = null; /// only used for Drag Head and Drag Tail
 
@@ -173,12 +174,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	Arrow currentArrow = null;
 	Block foundBlock;
 
-	URLClassLoader myURLClassLoader = null;
+	//URLClassLoader myURLClassLoader = null;
 
 	int curx, cury;
 
-	Notation notations[];
-	Lang langs[];
+	Notation[] notations;
+	Lang [] langs;
 
 	// FileChooserParm[] fCPArray = new FileChooserParm[10];
 
@@ -186,7 +187,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	boolean leftButton;
 	
-	MyDocument sourceDoc = null;
+	//MyDocument sourceDoc = null;
 
 	boolean sortByDate; // remember across invocations of MyFileChooser
 
@@ -206,11 +207,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	// public static final String Side = null;
 
-	static enum ECorner {
+	enum ECorner {
 		NONE, TOPLEFT, BOTTOMLEFT, TOPRIGHT, BOTTOMRIGHT
 	}
 
-	static enum ESide {
+	enum ESide {
 		NONE, LEFT, TOP, RIGHT, BOTTOM
 	}
 	static final int top_border_height = 60;
@@ -222,8 +223,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	ImageIcon folderIcon = null;
 	ImageIcon classIcon = null;
 
-	Class<?> jHelpClass = null;
-	Class<?> helpSetClass = null;
+	//Class<?> jHelpClass = null;
+	//Class<?> helpSetClass = null;
 
 	boolean panSwitch = false;
 	int panX, panY;
@@ -233,13 +234,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	// "Subnet" is not a separate block type (it is a variant of "Process")
 
-	String blockNames[] = { "Process", "Initial IP", "Enclosure", "Subnet", "ExtPort In", "ExtPort Out", "ExtPort O/I",
+	String[] blockNames = { "Process", "Initial IP", "Enclosure", "Subnet", "ExtPort In", "ExtPort Out", "ExtPort O/I",
 			"Legend", "File", "Person", "Report" };
 	
-	String shortNames[] = { "Proc", "IIP", "Encl", "Subn", "ExtPt I", "EP O", "EP O/I",
+	String [] shortNames = { "Proc", "IIP", "Encl", "Subn", "ExtPt I", "EP O", "EP O/I",
 			"Legd", "File", "Pers", "Rept" };
 
-	String blockTypes[] = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
+	String [] blockTypes = { Block.Types.PROCESS_BLOCK, Block.Types.IIP_BLOCK, Block.Types.ENCL_BLOCK,
 			Block.Types.PROCESS_BLOCK, Block.Types.EXTPORT_IN_BLOCK, Block.Types.EXTPORT_OUT_BLOCK,
 			Block.Types.EXTPORT_OUTIN_BLOCK, Block.Types.LEGEND_BLOCK, Block.Types.FILE_BLOCK, Block.Types.PERSON_BLOCK,
 			Block.Types.REPORT_BLOCK };
@@ -260,9 +261,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	// HashMap<String, String> jarFiles = new HashMap<String, String>(); // does not
 	// contain JavaFBP jar file
-	Set<String> jarFiles = new HashSet<String>(); // does not contain JavaFBP jar file
+	Set<String> jarFiles = new HashSet<>(); // does not contain JavaFBP jar file
 	// HashMap<String, String> dllFiles = new HashMap<String, String>();
-	Set<String> dllFiles = new HashSet<String>();
+	Set<String> dllFiles = new HashSet<>();
 
 	// JPopupMenu curPopup = null; // currently active popup menu
 
@@ -273,10 +274,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	boolean willBeSubnet = false;
 
-	JMenuBar menuBar = null;
-	JMenu fileMenu = null;
-	JMenu diagMenu = null;
-	JMenu helpMenu = null;
+	//JMenuBar menuBar = null;
+	JMenu fileMenu;
+	JMenu diagMenu;
+	JMenu helpMenu;
 
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
@@ -309,7 +310,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	DefaultMutableTreeNode fbpJsonTree = new DefaultMutableTreeNode();
 
-	static enum Side {
+	enum Side {
 		LEFT, TOP, RIGHT, BOTTOM
 	}
 	// static boolean READFILE = true;
@@ -334,7 +335,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	// volatile boolean finished = false;
 	// String clsDir = null;
 	String progName = null;
-	String output = "";
+	StringBuilder output = new StringBuilder();
 	String error = "";
 	String exeDir = null;
 
@@ -355,7 +356,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	// boolean comparing = false;
 	JFrame mmFrame = new JFrame();
 
-	JSlider zoomControl = null;
+	JSlider zoomControl;
 
 	boolean clickToGrid = true;
 
@@ -377,13 +378,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	DrawFBP(String[] args) {
 
 		//setVisible(false);
-		properties = new HashMap<String, String>();
-		startProperties = new HashMap<String, String>();
+		properties = new HashMap<>();
+		startProperties = new HashMap<>();
 		readPropertiesFile();
 		if (args.length == 1) {
 			diagramName = args[0];
 			diagramName = diagramName.replace("\\", "/");
-			if (diagramName.indexOf("/") == -1) {
+			if (!diagramName.contains("/")) {
 				final String dir = System.getProperty("user.dir");
 				diagramName = dir + "/" + diagramName;
 			}
@@ -434,7 +435,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		String sF = properties.get("scalingfactor");
 		if (sF != null)
-			scalingFactor = Double.valueOf(sF);
+			//scalingFactor = Double.valueOf(sF);
+			scalingFactor = Double.parseDouble(sF);
 
 		zoomControl = new JSlider(SwingConstants.VERTICAL, 60, 200, (int) (scalingFactor * 100));
 		zoomControl.setPreferredSize(new Dimension(40, 200));
@@ -603,30 +605,32 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			sortByDate = Boolean.getBoolean(sBD);
 
 		// Iterator<String> entries = jarFiles.iterator();
-		String z = "";
+		StringBuilder z = new StringBuilder();
 		String cma = "";
 
 		// while (entries.hasNext()) {
 		// String thisEntry = entries.next();
 		for (String thisEntry : jarFiles) {
-			z += cma + thisEntry;
+			z.append(cma);
+			z.append(thisEntry);
 			cma = ";";
 		}
-		saveProp("additionalJarFiles", z);
+		saveProp("additionalJarFiles", String.valueOf(z));
 
 		// entries = dllFiles.iterator();
-		z = "";
+		z = new StringBuilder();
 		cma = "";
 
 		// while (entries.hasNext()) {
 		// String thisEntry = entries.next();
 		for (String thisEntry : dllFiles) {
-			z += cma + thisEntry;
+			z.append(cma);
+			z.append(thisEntry);
 			cma = ";";
 		}
-		saveProp("additionalDllFiles", z);
+		saveProp("additionalDllFiles", String.valueOf(z));
 
-		startProperties = new HashMap<String, String>();
+		startProperties = new HashMap<>();
 		for (String s : properties.keySet()) {
 			startProperties.put(s, properties.get(s));
 		}
@@ -762,7 +766,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (t == null)
 			clickToGrid = true;
 		else
-			clickToGrid = Boolean.valueOf(t);
+			clickToGrid = Boolean.parseBoolean(t);
 
 		grid.setSelected(clickToGrid);
 		
@@ -787,7 +791,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// System.out.println(diagramName);
 		// }
 
-		boolean small = (diagramName) == null ? false : true;
+		boolean small = (diagramName) != null;
 
 		if (!small) // try suppressing this...
 			new SplashWindow(3000, this, small); // display
@@ -1006,7 +1010,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		classIcon = new ImageIcon(image);
 
 		Toolkit tk = Toolkit.getDefaultToolkit();
-		image = null;
+		//image = null;
 		openPawCursor = null;
 
 		image = loadImage("open_paw.gif");
@@ -1052,20 +1056,20 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// a group of JMenuItems
 		JMenuItem menuItem = new JMenuItem("Open Diagram");
 		// menu.setMnemonic(KeyEvent.VK_D);
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_MASK));
 
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Save");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("Save as...");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		menuItem = new JMenuItem("New Diagram");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
@@ -1158,7 +1162,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuItem.addActionListener(this);
 		
 		menuItem = new JMenuItem("Print Image");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.ALT_MASK));
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
 		fileMenu.addSeparator();
@@ -1375,8 +1379,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		diag.title = "(untitled)";
 		diag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
-		diag.blocks = new ConcurrentHashMap<Integer, Block>();
-		diag.arrows = new ConcurrentHashMap<Integer, Arrow>();
+		diag.blocks = new ConcurrentHashMap<>();
+		diag.arrows = new ConcurrentHashMap<>();
 
 		repaint();
 
@@ -1490,7 +1494,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		if (s.equals("Display Source Code")) {
 
-			File cFile = null;
+			File cFile;
 
 			// MyOptionPane.showMessageDialog(this, "Select a source file",
 			// MyOptionPane.INFORMATION_MESSAGE);
@@ -1682,7 +1686,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			int returnVal = fc.showOpenDialog(true, true,null); // set to saveAs
 
 			String fileStr = null;
-			fFile = null;
+
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				fileStr = getSelFile(fc);
 				fFile = new File(fileStr);
@@ -1694,7 +1698,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (!(fFile.exists()))
 				return;
 
-			BufferedImage image = null;
+			BufferedImage image;
 			try {
 				image = ImageIO.read(fFile);
 			} catch (IOException e1) {
@@ -1719,7 +1723,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				e1.printStackTrace();
 			}
 
-			DocFlavor doc = null;
+			DocFlavor doc;
 			if (fileStr.endsWith(".jpg") || fileStr.endsWith(".jpeg"))
 				doc = DocFlavor.INPUT_STREAM.JPEG;
 			else if (fileStr.endsWith(".png"))
@@ -1827,7 +1831,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		if (s.equals("Show Image")) {
 
-			File fFile = null;
+			File fFile;
 
 			String ss = properties.get("currentImageDir");
 			if (ss == null)
@@ -1848,7 +1852,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			int returnVal = fc.showOpenDialog(true, true, null); // set to saveAs
 
-			// fFile = null;
+			fFile = null;
 			if (returnVal == MyFileChooser.APPROVE_OPTION) {
 				fFile = new File(getSelFile(fc));
 			}
@@ -1860,7 +1864,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			// }
 
-			BufferedImage image = null;
+			BufferedImage image;
 			try {
 				image = ImageIO.read(fFile);
 			} catch (IOException e1) {
@@ -2099,7 +2103,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	void showImage(final BufferedImage image, String title, final boolean save) {
 		
 	
-		ImagePanel imgPanel = new ImagePanel(image);	
+		final ImagePanel imgPanel = new ImagePanel(image);
 		
 		//final JDialog dialog = new JDialog();	
 		final JDialog dialog = new JDialog(this, "", Dialog.ModalityType.APPLICATION_MODAL);
@@ -2165,14 +2169,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// diag.diagLang = gl;
 			jd.dispose();
 		}
-		return;
+		//return;
 
 	}
 
 	/*
 	void setBlkType() {
 
-		blkType = null;
+		blkType;
 		willBeSubnet = false;
 		for (int i = 0; i < but.length; i++) {
 			if (but[i] == selRB) {
@@ -2246,7 +2250,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 	
 	Block createBlock(int xa, int ya, Diagram diag, boolean editType, boolean isProcess) {
-		Block block = null;
+		Block block;
 		String code = selRB.code;
 		//boolean oneLine = false;
 		String title = "";
@@ -2363,7 +2367,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	void buildPropDescTable() {
-		propertyDescriptions = new LinkedHashMap<String, String>();
+		propertyDescriptions = new LinkedHashMap<>();
 
 		propertyDescriptions.put("Version #", "versionNo");
 		propertyDescriptions.put("Date", "date");
@@ -2466,7 +2470,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			String q = propertyDescriptions.get(p);
 			tft[1] = new JTextField(q);
 			String u = properties.get(q);
-			String w = "";
+			String w;
 			// System.out.println(p + " " + q);
 			int i;
 			if (u == null)
@@ -2587,7 +2591,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// }
 
-		String fileString = null;
+		String fileString;
 
 		if (file == null || file.isDirectory()) {
 			String s = properties.get("currentDiagramDir");
@@ -2647,7 +2651,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				curDiag.area.addMouseMotionListener(curDiag.area);
 			}
 		}
-		ButtonTabComponent b = null;
+		ButtonTabComponent b;
 
 		int i = getFileTabNo(file.getAbsolutePath());
 		if (-1 != i) {
@@ -2735,13 +2739,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	public String readFile(File file /* , boolean saveAs */) {
-		StringBuffer fileBuffer;
+		StringBuilder fileBuffer;
 		String fileString = null;
 		int i;
 		try {
 			FileInputStream in = new FileInputStream(file);
-			InputStreamReader dis = new InputStreamReader(in, "UTF-8");
-			fileBuffer = new StringBuffer();
+			//InputStreamReader dis = new InputStreamReader(in, "UTF-8");
+			InputStreamReader dis = new InputStreamReader(in, StandardCharsets.UTF_8);
+			fileBuffer = new StringBuilder();
 			try {
 				while ((i = dis.read()) != -1) {
 					fileBuffer.append((char) i);
@@ -2760,9 +2765,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// MyOptionPane.showMessageDialog(this, "File not found: "
 			// + file.getName(), MyOptionPane.ERROR_MESSAGE);
 			return null;
-		} catch (IOException e) {
-			MyOptionPane.showMessageDialog(this, "I/O Exception 2: " + file.getName(), MyOptionPane.ERROR_MESSAGE);
-			return null;
+		//} catch (IOException e) {
+		//	MyOptionPane.showMessageDialog(this, "I/O Exception 2: " + file.getName(), MyOptionPane.ERROR_MESSAGE);
+		//	return null;
 		}
 		return fileString;
 	} // readFile
@@ -2818,8 +2823,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (s3 == null)
 				return null;
 			
-			for (int k = 0; k < langs.length; k++) {
-				if (s3.equals(langs[k].ext)) {
+			for (Lang k : langs) {
+				if (s3.equals(k.ext)) {
 					return s3;
 				}
 			}
@@ -2871,7 +2876,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (file == null || fileString == null)
 			return false;
 		try {
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
 			out.write(fileString);
 			out.flush();
 			out.close();
@@ -2888,7 +2893,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return parent;
 		if (current.startsWith("/"))
 			return current;
-		if (current.length() > 1 && current.substring(1, 2).equals(":"))
+		if (current.length() > 1 && current.charAt(1) == ':')
 			return current;
 
 		String cur = current.replace('\\', '/');
@@ -2968,7 +2973,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			repaint();
 		}
 
-		return;
+		//return;
 	}
 
 	
@@ -3010,7 +3015,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (fs == null)
 			return;
 
-		defaultFontSize = Float.valueOf((String)fs);
+		defaultFontSize = Float.parseFloat((String) fs);
 		fontg = fontg.deriveFont(defaultFontSize);
 		fontf = fontf.deriveFont(defaultFontSize);
 		jfs.setText("Font Size: " + defaultFontSize);
@@ -3105,9 +3110,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// }
 		}
 		*/
-		for (int i = 0; i < gMenu.length; i++) {
+		for (JMenuItem i : gMenu) {
 			//gMenu[i] = new JMenuItem(notations[i].label);
-			gMenu[i].setFont(fontg);
+			i.setFont(fontg);
 		}
 
 		
@@ -3288,7 +3293,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if (-1 == jh.indexOf("jdk")) {
+			if (!jh.contains("jdk")) {
 				MyOptionPane.showMessageDialog(this,
 						"To do Java compiles, JAVA_HOME environment variable must point at JDK",
 						MyOptionPane.ERROR_MESSAGE);
@@ -3316,22 +3321,24 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			(new File(clsDirTr)).mkdirs();
 
-			String jf = "\"" + javaFBPJarFile;
+			StringBuilder jf = new StringBuilder("\"" + javaFBPJarFile);
 			for (String jfv : jarFiles) {
 				if (!(new File(jfv).exists())) {
 					MyOptionPane.showMessageDialog(driver,
 							"Jar file does not exist: " + jfv, MyOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				jf += delim + jfv;
+				jf.append(delim);
+				jf.append(jfv);
 			}
-			jf += delim + clsDirTr;
-			jf += delim + ".\"";
-
+			jf.append(delim);
+			jf.append(clsDirTr);
+			jf.append(delim);
+			jf.append(".\"");
 			String w = srcDir + "/" + progName;
 			List<String> params = Arrays.asList("\"" + javac + "\"",
 					// "-verbose",
-					"-cp", jf, "-d", "\"" + clsDirTr + "\"", "\"" + w + "\"");
+					"-cp", jf.toString(), "-d", "\"" + clsDirTr + "\"", "\"" + w + "\"");
 
 			ProcessBuilder pb = new ProcessBuilder(params);
 
@@ -3339,7 +3346,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			pb.redirectErrorStream(true);
 
-			output = "";
+			output = new StringBuilder();
 
 			// new WaitWindow(this); // display "Processing..." message
 
@@ -3353,7 +3360,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				String line;
 				while ((line = br.readLine()) != null) {
 					// System.out.println(line);
-					output += "<br>" + line;
+					output.append("<br>");
+					output.append(line);
 					// System.out.flush();
 				}
 			} catch (Exception e) {
@@ -3495,10 +3503,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				k += 10; // skip over "namespace"
 				int ks = k;
 
-				while (true) {
-					if (progString.substring(k, k + 1).equals(" ") || progString.substring(k, k + 1).equals("{")
-							|| progString.substring(k, k + 1).equals("\r")
-							|| progString.substring(k, k + 1).equals("\n"))
+				while (k < progString.length()) {
+					if (progString.charAt(k) == ' ' || progString.charAt(k) == '{'
+							|| progString.charAt(k) == '\r'
+							|| progString.charAt(k) == '\n')
 						break;
 					k++;
 				}
@@ -3558,9 +3566,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			progName = progName.substring(0, progName.length() - 3); // drop .cs
 
 			String z = properties.get("additionalDllFiles");
-			boolean gotDlls = -1 < z.indexOf("FBPLib.dll") && -1 < z.indexOf("FBPVerbs.dll");
+			boolean gotDlls = z.contains("FBPLib.dll") || z.contains("FBPVerbs.dll");
 
-			List<String> cmdList = new ArrayList<String>();
+			List<String> cmdList = new ArrayList<>();
 			cmdList.add("csc");
 			cmdList.add("-t:exe");
 			//t = t.replace("\\", "/");
@@ -3600,8 +3608,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			//	System.out.println(s);
 
 			ProcessBuilder pb = new ProcessBuilder(cmdList);
-			for (int m = 0; m < cmdList.size(); m++)
-				System.out.println(cmdList.get(m));
+			for (String m : cmdList)
+				System.out.println(m);
 
 			pb.directory(new File(trunc));
 
@@ -3613,14 +3621,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// new WaitWindow(this); // display "Processing..." message
 
 			String err = "";
-			output = "";
+			output = new StringBuilder();
 			try {
 				proc = pb.start();
 
 				BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 				String line;
 				while ((line = br.readLine()) != null) {
-					output += line + "<br>";
+					output.append(line);
+					output.append("<br>");
 				}
 			} catch (Exception e) {
 				err = analyzeCatch(e);
@@ -3810,9 +3819,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				t = t.replace("\\", "/");
 				int n = t.lastIndexOf("/");
 				t = t.substring(0, n);
-				String u = ss.substring(0, j);
+				//String u = ss.substring(0, j);
 
-				clsDir = u; // drop before package
+				clsDir = ss.substring(0, j); // drop before package
 			}
 
 			ss = ss.substring(0, ss.length() - 6); // drop .class suffix
@@ -3883,7 +3892,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						MyOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			if (-1 == jh.indexOf("jdk") && -1 == jh.indexOf("jre")) {
+			if (!jh.contains("jdk") && !jh.contains("jre")) {
 				MyOptionPane.showMessageDialog(/* this */ this,
 						"To run Java commmand, JAVA_HOME environment variable must point at JDK or JRE",
 						MyOptionPane.ERROR_MESSAGE);
@@ -3996,7 +4005,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			if (bp.tc('/', 'o')) {
 				if (bp.tc('*', 'o')) {
-					while (true) {
+					while (!bp.finished()) {
 						if (bp.tc('*', 'o') && bp.tc('/', 'o'))
 							break;
 						bp.tu('o');
@@ -4007,7 +4016,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 			if (bp.tc('/', 'o') && bp.tc('/', 'o')) {
-				while (true) {
+				while (!bp.finished()) {
 					if (bp.tc('\r', 'o')) {
 						bp.tc('\n', 'o');
 						break;
@@ -4032,11 +4041,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (bp.tc('p', 'o') && bp.tc('a', 'o') && bp.tc('c', 'o') && bp.tc('k', 'o') && bp.tc('a', 'o')
 				&& bp.tc('g', 'o') && bp.tc('e', 'o')) {
 
-			while (true) {
+			while (!bp.finished()) {
 				if (!bp.tb('o'))
 					break;
 			}
-			while (true) {
+			while (!bp.finished()) {
 				if (bp.tc(';', 'o') || bp.tb('o'))
 					break;
 				bp.tu();
@@ -4073,15 +4082,15 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	void compare(int tabNo) {
 
 		// comparing = false;
-		LinkedList<String> mismatches = new LinkedList<String>();
+		LinkedList<String> mismatches = new LinkedList<>();
 
-		int i = tabNo;
-		if (i == -1) {
+		//int i = tabNo;
+		if (tabNo == -1) {
 			// comparing = false;
 			return;
 		}
 
-		ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+		ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(tabNo);
 		if (b == null || b.diag == null) {
 			// comparing = false;
 			return;
@@ -4107,7 +4116,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return;
 
 		if (!strEqu(oldDiag.desc, newDiag.desc)) {
-			String cd = new String("Diagram descriptions different: \n" + "   This value:   " + newDiag.desc + "\n"
+			String cd = ("Diagram descriptions different: \n" + "   This value:   " + newDiag.desc + "\n"
 					+ "   Other value: " + oldDiag.desc + "\n\n");
 
 			mismatches.add(cd);
@@ -4127,31 +4136,31 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 					if (!(strEqu(nb.typeCode, ob.typeCode))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Block Type for '" + cleanDesc(nb, false) + ": " + nb.typeCode + "\n"
-								+ "   Other value: " + ob.typeCode + "\n\n"));
+						mismatches.add("This Block Type for '" + cleanDesc(nb, false) + ": " + nb.typeCode + "\n"
+								+ "   Other value: " + ob.typeCode + "\n\n");
 					}
 
 					if (!(strEqu(nb.fullClassName, ob.fullClassName))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String(
+						mismatches.add(
 								"This Full Class Name for '" + cleanDesc(nb, false) + ": \n                      "
-										+ nb.fullClassName + "\n" + "   Other value: " + ob.fullClassName + "\n\n"));
+										+ nb.fullClassName + "\n" + "   Other value: " + ob.fullClassName + "\n\n");
 
 					}
 					if (!(strEqu(nb.codeFileName, ob.codeFileName))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Code File Name for '" + cleanDesc(nb, false) + ": "
-								+ nb.codeFileName + "\n" + "   Other value: " + ob.codeFileName + "\n\n"));
+						mismatches.add("This Code File Name for '" + cleanDesc(nb, false) + ": "
+								+ nb.codeFileName + "\n" + "   Other value: " + ob.codeFileName + "\n\n");
 					}
 					if (!(strEqu(nb.subnetFileName, ob.subnetFileName))) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Subnet File Name for '" + cleanDesc(nb, false) + ": "
-								+ nb.subnetFileName + "\n" + "   Other value: " + ob.subnetFileName + "\n\n"));
+						mismatches.add("This Subnet File Name for '" + cleanDesc(nb, false) + ": "
+								+ nb.subnetFileName + "\n" + "   Other value: " + ob.subnetFileName + "\n\n");
 					}
 					if (nb.isSubnet != ob.isSubnet) {
 						nb.compareFlag = "C";
-						mismatches.add(new String("This Subnet flag for '" + cleanDesc(nb, false) + ": " + nb.isSubnet
-								+ "\n" + "   Other value: " + ob.isSubnet + "\n\n"));
+						mismatches.add("This Subnet flag for '" + cleanDesc(nb, false) + ": " + nb.isSubnet
+								+ "\n" + "   Other value: " + ob.isSubnet + "\n\n");
 					}
 
 					break;
@@ -4161,8 +4170,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			if (nb.compareFlag == null) {
 				nb.compareFlag = "A";
-				String ce = new String(
-						"Block with name '" + cleanDesc(nb, false) + "' added to this diagram\n\n");
+				String ce = "Block with name '" + cleanDesc(nb, false) + "' added to this diagram\n\n";
 
 				mismatches.add(ce);
 			}
@@ -4172,8 +4180,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		for (Block ob : oldDiag.blocks.values()) {
 			if (ob.compareFlag == null) {
 				ob.compareFlag = "O";
-				String ce = new String(
-						"Block with name '" + cleanDesc(ob, false) + "' omitted from this diagram\n\n");
+				String ce = "Block with name '" + cleanDesc(ob, false) + "' omitted from this diagram\n\n";
 
 				mismatches.add(ce);
 			} else
@@ -4391,7 +4398,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (!(key.equals("additionalJarFiles") || key.equals("additionalDllFiles"))) {
 						s = s.substring(0, k).trim();
 						key = key.replace("\\", "/");
-						if (-1 == key.indexOf("/")) // compensate for old bug (key and value were reversed)!
+						if (!key.contains("/")) // compensate for old bug (key and value were reversed)!
 							// saveProp(key, s);
 							//if (key.equals("currentDiagramDir"))
 							//	properties.put(key, s);
@@ -4597,13 +4604,13 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		if (findFile) {
 
-			if (s == null) {
+			if (s != null) {
 				//int res = MyOptionPane.showConfirmDialog(this, "Locate fbp.json file?", "Locate fbp.json file",
 				//		MyOptionPane.YES_NO_OPTION);
 				//if (res != MyOptionPane.YES_OPTION)
 				//	return;
 
-			} else {
+
 			int res = MyOptionPane.showConfirmDialog(this, "Change fbp.json file location?",
 						"Change fbp.json file location", MyOptionPane.YES_NO_OPTION);
 				if (res != MyOptionPane.YES_OPTION)
@@ -4648,7 +4655,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		// buildFbpJsonTree(fbpJsonFile);
 
-		return;
+		//return;
 	}
 
 	/*
@@ -4733,7 +4740,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		int levelNo = 0;
 		
 		//DefaultMutableTreeNode currentNode  = null;
-		DefaultMutableTreeNode nodes[] = new DefaultMutableTreeNode[100];
+		DefaultMutableTreeNode [] nodes = new DefaultMutableTreeNode[100];
 
 		while (true) {
 			if (!bp.tb('o'))
@@ -4759,7 +4766,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();	
 				//if (label == null) 
 				//	label = "list";
-				newNode.setUserObject(new String(first));
+				newNode.setUserObject(first);
 				//System.out.println("[" + levelNo + " " + label);
 				nodes[levelNo] = newNode;
 				DefaultMutableTreeNode node = null;
@@ -4775,7 +4782,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (bp.tc('{', 'o')) { // start of object
 				
 				DefaultMutableTreeNode newNode = new DefaultMutableTreeNode();
-				newNode.setUserObject(new String("group"));
+				newNode.setUserObject("group");
 				//System.out.println("{" + levelNo + " " + label);
 				if (levelNo == 0)
 					fbpJsonTree = newNode;
@@ -4800,7 +4807,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 			if (bp.tc('"', 'o')) {
-				while (true) {
+				while (!bp.finished()) {
 					if (bp.tc('"', 'o'))
 						break;
 					if (bp.tc('\\', 'o')) {
@@ -4810,7 +4817,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					}
 					bp.tu();
 				}
-				operand = new String(bp.getOutStr());
+				operand = bp.getOutStr();
 
 				if (bp.tc(':', 'o')) {
 					first = new String(operand);
@@ -4859,7 +4866,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// return null;
 		// }
 		
-		return;
+		//return;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -4870,7 +4877,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		while (e.hasMoreElements()) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
 			Object obj = node.getUserObject();
-			if (t.equals((String) obj))
+			if (t.equals(obj))
 				return node;
 		}
 		return null;
@@ -5158,9 +5165,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	Notation findNotnFromLabel(String s) {
-		for (int i = 0; i < notations.length; i++)
-			if (notations[i].label.equals(s))
-				return notations[i];
+		for (Notation i: notations)
+			if (i.label.equals(s))
+				return i;
 		return null;
 	}
 
@@ -5172,14 +5179,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	// }
 
 	Lang findLangFromSuff(String suff) {
-		for (int i = 0; i < langs.length; i++)
-			if (langs[i].ext.equals(suff))
-				return langs[i];
+		for (Lang i: langs)
+			if (i.ext.equals(suff))
+				return i;
 		return null;
 	}
 
 	URL[] buildUrls(File f) {
-		LinkedList<URL> ll = new LinkedList<URL>();
+		LinkedList<URL> ll = new LinkedList<>();
 		URL[] urls = null;
 
 		if (javaFBPJarFile == null)
@@ -5386,7 +5393,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				scalingFactor = ((double) js.getValue()) / 100.0;
 				saveProp("scalingfactor", Double.toString(scalingFactor));
 				// zWS = (int) Math.round(zoneWidth * scalingFactor);
-				String scale = (int) js.getValue() + "%";
+				String scale = js.getValue() + "%";
 				scaleLab.setText(scale);
 				// pack();
 				// setPreferredSize(new Dimension(1200, 800));
@@ -5489,7 +5496,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		Runnable aRunnable = new Runnable() {
 			public void run() {
-				String[] runArgs = paramStr;
+				//String[] runArgs = paramStr;
 				
 				String laf = UIManager.getSystemLookAndFeelClassName();
 
@@ -5509,7 +5516,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				
 
-				new DrawFBP(runArgs);
+				new DrawFBP(paramStr);
 				//setDefaultLookAndFeelDecorated(true);
 				// System.out.println(runArgs);
 
@@ -5519,7 +5526,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return aRunnable;
 
 	}
-/*
+
+	/*
 	class TimeOutTask extends TimerTask {
 	    private Thread t;
 	    private Timer timer;
@@ -5598,7 +5606,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		
 		 
 		
-	public class Notation {
+	public static class Notation {
 		// this class refers the network notation
 		String label;
 
@@ -5630,7 +5638,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	public class Lang {
+	public static class Lang {
 		// this class refers the language used for notation
 		String label;
 		String ext; // extension - without period
@@ -5660,7 +5668,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 	
-	public class MyRadioButton extends JRadioButton {
+	public static class MyRadioButton extends JRadioButton {
 		
 		private static final long serialVersionUID = 1L;
 		String code = null; 
@@ -5803,14 +5811,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (e.getSource() == jHelpViewer) {
 				popup.dispose();
 				repaint();
-				return;
+				//return;
 			}
 			
 			
 		}
 	}
 
-	public class JavaFileFilter extends FileFilter {
+	public static class JavaFileFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5826,7 +5834,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	public class JavaGenFilter extends FileFilter {
+	public static class JavaGenFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5842,7 +5850,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	public class CsharpFileFilter extends FileFilter {
+	public static class CsharpFileFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5856,7 +5864,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 	
-	public class GoFileFilter extends FileFilter {
+	public static class GoFileFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5872,7 +5880,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 
-	public class JSFilter extends FileFilter {
+	public static class JSFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5888,7 +5896,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 	
-	public class JSONFilter extends FileFilter {
+	public static class JSONFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5903,7 +5911,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 
-	public class FBPFilter extends FileFilter {
+	public static class FBPFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5920,7 +5928,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	public class JavaClassFilter extends FileFilter {
+	public static class JavaClassFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5935,7 +5943,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	public class DiagramFilter extends FileFilter {
+	public static class DiagramFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5954,7 +5962,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	}
 
-	public class JarFileFilter extends FileFilter {
+	public static class JarFileFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5970,7 +5978,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	// Filter for images
-	public class ImageFilter extends FileFilter {
+	public static class ImageFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -5986,7 +5994,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	// Filter for .dll files
-	public class DllFilter extends FileFilter {
+	public static class DllFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -6001,7 +6009,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	// Filter for .exe files
-	public class ExeFilter extends FileFilter {
+	public static class ExeFilter extends FileFilter {
 		@Override
 		public boolean accept(File f) {
 
@@ -6054,7 +6062,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			
 			pb.directory(new File(pBDir));
 
-			output = "";
+			output = new StringBuilder();
 			pb.redirectErrorStream(true);
 
 			error = "";
@@ -6110,10 +6118,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			    String line = null;
 
 			    while ((line = reader.readLine()) != null) {
-			         output += line + "\n";
+					output.append(line);
+					output.append("\n");
 			         //System.out.println(line);
 			         // see https://stackoverflow.com/questions/4886293/socket-input-stream-hangs-on-final-read-best-way-to-handle-this/4886747
-			         if (driver.currNotn.lang == langs[Lang.CSHARP] && line.startsWith("Counts: C:")  && -1 < line.indexOf(", DO: "))
+			         if (driver.currNotn.lang == langs[Lang.CSHARP] && line.startsWith("Counts: C:")  && line.contains(", DO: "))
 			        	 break;
 			    }
 			    /*
@@ -6169,9 +6178,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						"<html>Program error - " + pBDir + progName + "<br/>" + error + "</html>",
 						MyOptionPane.ERROR_MESSAGE);
 
-			if (!(output.equals(""))) {
+			if (!(output.equals(null) || output.length() == 0)) {
 				//String msg = "<html>Program output from: " + pBDir + progName + "<br/>\n" + output + "</html>";
-				JTextArea jta = new JTextArea(output);
+				JTextArea jta = new JTextArea(output.toString());
 				
 				Dimension dim = driver.getPreferredSize();
 				//Dimension dim2 = jta.getPreferredScrollableViewportSize();
@@ -6273,7 +6282,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 	
-	public class BlockPoint extends Point {
+	public static class BlockPoint extends Point {
 		
 		// This kind of Point is the start or end of an arrow on a block
 		 
@@ -6604,8 +6613,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						y2 = b.y;
 					}
 				}
-				Point2D p1 = new Point2D((double) x1, (double) y1);
-				Point2D p2 = new Point2D((double) x2, (double) y2);
+				Point2D p1 = new Point2D(x1,  y1);
+				Point2D p2 = new Point2D( x2, y2);
 				Line2D line = new Line2D(p1, p2); // correct segment of arow
 
 				int xp = arr.fromX;
@@ -6618,7 +6627,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					yp = b.y;
 				}
 
-				Point2D point = new Point2D((double) xp, (double) yp);
+				Point2D point = new Point2D( xp, yp);
 
 				// StraightLine2D perp = line.perpendicular(point);
 				StraightLine2D open = new StraightLine2D(xp, yp, arr.toX - xp, arr.toY - yp);
@@ -7400,8 +7409,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			}
 
-			int x = (int) e.getX();
-			int y = (int) e.getY();
+			int x = e.getX();
+			int y = e.getY();
 			x = (int) Math.round(x / scalingFactor);
 			y = (int) Math.round(y / scalingFactor);
 			int xa, ya;
@@ -7434,8 +7443,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					selBlock = blockSelForDragging;
 					// this tests if mouse has moved (approximately) - ignore
 					// small twitches and also big jumps!
-					if (between(mousePressedX, (int) (x - zWS / 2), (int) (x + zWS / 2))
-							&& between(mousePressedY, (int) (y - zWS / 2), (int) (y + zWS / 2))
+					if (between(mousePressedX, (x - zWS / 2),  (x + zWS / 2))
+							&& between(mousePressedY,  (y - zWS / 2),  (y + zWS / 2))
 							|| Math.abs(mousePressedX - x) > 100 || Math.abs(mousePressedY - y) > 100) {
 
 						// if it was a small move, or a big jump, just get
@@ -7567,8 +7576,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					arr.toX = xa;
 					arr.toY = ya; 
 					arr.rebuildFatLines();
-					Arrow arr2 = currentArrow;
-					arrowHorTisBeingDragged = arr2;
+					//Arrow arr2 = currentArrow;
+					arrowHorTisBeingDragged = currentArrow;
 					headMark = null;
 
 				}
@@ -7988,7 +7997,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					return;
 				
 				if (currentArrow.bends == null) {
-					currentArrow.bends = new LinkedList<Bend>();
+					currentArrow.bends = new LinkedList<>();
 				}
 				x = xa;
 				y = ya;

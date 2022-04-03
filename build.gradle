@@ -25,29 +25,8 @@ gradle.projectsEvaluated {
     }
 }
 }
-/*
-dependencies {
-  annotationProcessor "org.apache.logging.log4j:log4j-core:[2.11,2.12)"   
-}
- 
-allprojects { project -> 
-     dependencyLocking {
-        lockAllConfigurations()
-     }
-     task resolveAndLockAll {
-     doFirst {
-        assert gradle.startParameter.writeDependencyLocks
-     }
-     doLast {
-       configurations.findAll() {
-          it.canBeResolved
-         }.each {it.println()
-         it.resolve()}
-     }
-     }
-}
-*/
-version = '3.1.4'
+
+version = '3.1.5'
 
 group = 'com.jpaulmorrison'
 
@@ -55,10 +34,15 @@ description = 'DrawFBP is a picture-drawing tool that allows users to create mul
 
 compileJava.options.encoding = 'UTF-8'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+//sourceCompatibility = JavaVersion.VERSION_1_8
+//targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
+
+ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
+ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : ""
 
 //nexusStaging {                           // try removing - leave in publish!
 //    username = ossrhUser
@@ -124,8 +108,8 @@ ext {
 
 
 mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
-ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
-osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
+//ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
+//osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
 
 }
 
@@ -151,7 +135,7 @@ description = "Create default maven directory structure"
             groupId = 'com.jpaulmorrison'
             artifactId = 'drawfbp'       
             
-            version = project.version
+            //version = project.version
             
             from components.java
            

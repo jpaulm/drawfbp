@@ -86,7 +86,7 @@ public class IIPBlock extends Block {
 
 	 
 	String checkNestedChars(String s) {
-		Stack<String> stk = new Stack<String>();
+		Stack<String> stk = new Stack<>();
 		String chars = "{[(<}])>";
 		boolean inQuotes = false;
 		boolean warning = false;

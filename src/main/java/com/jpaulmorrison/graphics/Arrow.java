@@ -82,7 +82,7 @@ public class Arrow implements ActionListener {
 		driver = d.driver;		
 		capacity = -1;
 		ah = null;
-		shapeList = new LinkedList<Shape>();
+		shapeList = new LinkedList<>();
 		//endX2 = endY2 = -1;
 		  
 		
@@ -92,7 +92,7 @@ public class Arrow implements ActionListener {
 		//driver.validate();
 		driver.repaint();
 		
-		shapeList = new LinkedList<Shape>(); 
+		shapeList = new LinkedList<>();
 		
 		//int endX, endY;
 		Block from = null;
@@ -159,7 +159,7 @@ public class Arrow implements ActionListener {
 					g.drawLine(fx, fy, tx, ty);
 				}
 				else {
-					Shape shape = (Shape) new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
+					Shape shape = new java.awt.geom.Line2D.Double(fx, fy, tx, ty);
 					shape = zzstroke.createStrokedShape(shape);
 					((Graphics2D)g).draw(shape);					
 				}
@@ -931,7 +931,7 @@ public class Arrow implements ActionListener {
 			
 		}
 		else
-			bends = new LinkedList<Bend>();
+			bends = new LinkedList<>();
 		x2 = toX;
 		y2 = toY;
 		ArrowSeg arrseg = driver.new ArrowSeg(x1, y1, x2, y2, this, segNo);
@@ -1123,9 +1123,9 @@ public class Arrow implements ActionListener {
 		Arrow a = findLastArrowInChain();
 		to = diag.blocks.get(Integer.valueOf(a.toId));
 		if (!(from instanceof ProcessBlock)
-				&& !(from instanceof ExtPortBlock))
-			return true;
-		if (!(to instanceof ProcessBlock) && !(to instanceof ExtPortBlock))
+				&& !(from instanceof ExtPortBlock) ||
+			!(to instanceof ProcessBlock)
+				&& !(to instanceof ExtPortBlock))
 			return true;
 		
 		return true;
@@ -1160,14 +1160,14 @@ public class Arrow implements ActionListener {
 	
 	static Color ltBlue = new Color(173, 216, 230); 
 	
-	void buildFatLine(int fx, int fy, int tx, int ty, int segNo) {
+	void buildFatLine(int fx, int fy, int tx, int ty /*, int segNo */) {
 		
 		GeneralPath path = new GeneralPath();
 		double x, y;
 		final int aDW = driver.zWS; // arrow Detect Width - same as detect edge size
 		x = tx - fx;
 		y = ty - fy;
-		double hypoSqu = (double) (x * x) + (double) (y * y);
+		double hypoSqu = x * x + y * y;
 		double aLth = Math.sqrt(hypoSqu);
 		path.moveTo(0, -aDW / 2);
 		path.lineTo(0, aDW / 2);
@@ -1189,23 +1189,23 @@ public class Arrow implements ActionListener {
 		int fx2, fy2, tx2, ty2;
 		fx2 = fromX;
 		fy2 = fromY;
-		int segno = 0;
+		//int segno = 0;
 
 		if (bends != null)
 			for (Bend bend : bends) {
 				//System.out.println("bend");
 				tx2 = bend.x;
 				ty2 = bend.y;
-				buildFatLine(fx2, fy2, tx2, ty2, segno);
+				buildFatLine(fx2, fy2, tx2, ty2);
 				fx2 = tx2;
 				fy2 = ty2;
-				segno++;
+				//segno++;
 			}
 			
 		//tx2 = toX;
 		//ty2 = toY;
 		
-		buildFatLine(fx2, fy2, toX, toY, segno);
+		buildFatLine(fx2, fy2, toX, toY);
 		
 		ah = buildArrowhead(toX, toY);  
 		
@@ -1285,7 +1285,7 @@ public class Arrow implements ActionListener {
 
 		public Shape createStrokedShape(Shape shape ) {
 			GeneralPath result = new GeneralPath();
-			PathIterator it = new FlatteningPathIterator(((Shape) shape).getPathIterator( null ), FLATNESS );
+			PathIterator it = new FlatteningPathIterator(shape.getPathIterator( null ), FLATNESS );
 			float points[] = new float[6];
 			float moveX = 0, moveY = 0;
 			float lastX = 0, lastY = 0;

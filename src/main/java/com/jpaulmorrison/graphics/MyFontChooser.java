@@ -53,15 +53,15 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 	void buildFontLists() {
 		Font[] allfonts = GraphicsEnvironment.getLocalGraphicsEnvironment()
 				.getAllFonts();
-		LinkedList<String> llF = new LinkedList<String>();
-		LinkedList<String> llG = new LinkedList<String>();
+		LinkedList<String> llF = new LinkedList<>();
+		LinkedList<String> llG = new LinkedList<>();
 
-		for (int j = 0; j < allfonts.length; j++) {
-			llG.add(allfonts[j].getName());
-			FontMetrics fontMetrics = driver.getGraphics().getFontMetrics(allfonts[j]);
+		for (Font f: allfonts) {
+			llG.add(f.getName());
+			FontMetrics fontMetrics = driver.getGraphics().getFontMetrics(f);
 			if (fontMetrics.charWidth('i') == fontMetrics
 							.charWidth('m'))
-				llF.add(allfonts[j].getName());
+				llF.add(f.getName());
 		}
 		fixedFonts = new String[llF.size()];
 		llF.toArray(fixedFonts);
@@ -103,12 +103,12 @@ public class MyFontChooser implements ListSelectionListener, WindowListener {
 
 		p.setLayout(new BoxLayout(p, BoxLayout.X_AXIS));
 		
-		jlF = new JList<String>(fixedFonts);		
+		jlF = new JList<>(fixedFonts);
 		jlF.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);		
 		jlF.setLayoutOrientation(JList.VERTICAL);  		
 		jlF.setCellRenderer(new CellRenderer());
 		
-		jlG = new JList<String>(generalFonts);		
+		jlG = new JList<>(generalFonts);
 		jlG.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);		
 		jlG.setLayoutOrientation(JList.VERTICAL);  		
 		jlG.setCellRenderer(new CellRenderer());

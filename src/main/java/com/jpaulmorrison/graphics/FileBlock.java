@@ -52,8 +52,8 @@ public class FileBlock extends Block {
 			////String str[] = centreDesc();
 			int x1 = cx - width / 2 + 6;
 			int y1 = cy - height / 2 + driver.gFontHeight + 12;
-			for (int i = 0; i < str.length; i++) {
-				g.drawString(str[i], x1, y1); 
+			for (String s: str) {
+				g.drawString(s, x1, y1);
 				y1 += driver.gFontHeight;
 			}
 		}
