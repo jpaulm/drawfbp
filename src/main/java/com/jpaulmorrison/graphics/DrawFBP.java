@@ -5124,7 +5124,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		} catch (DegeneratedLine2DException e) {
 
 		}
-		return d < 4.0;
+		boolean res = d < 4.0;
+		return res;
 	}
 
 	void displayAlignmentLines(Block block) {
@@ -6563,6 +6564,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					for (Bend bend : arrow.bends) {
 						x2 = bend.x;
 						y2 = bend.y;
+						if (x2 == x1 && y2 == y1) //  somehow added 2nd identical bend!
+							continue;
 						Line2D line = new Line2D(x1, y1, x2, y2);
 						if (nearpln(x, y, line)) {
 							//segNo = arrow.highlightedSeg;

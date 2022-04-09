@@ -623,8 +623,8 @@ public class Arrow implements ActionListener {
 		menuItem = new JMenuItem("Delete");
 		diag.actionList.add(menuItem);
 		menuItem.addActionListener(this);
-		diag.driver.currentArrow = null;
-		diag.driver.repaint();
+		driver.currentArrow = null;
+		driver.repaint();
 		
 	}
 

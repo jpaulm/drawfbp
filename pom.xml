@@ -4,20 +4,20 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.jpaulmorrison</groupId>
 <artifactId>drawfbp</artifactId>
-<version>3.1.5</version>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>8</source>
-					<target>8</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<name>DrawFBP</name>
+<version>3.1.6</version>
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<source>8</source>
+				<target>8</target>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
+<name>DrawFBP</name>
 <description>Diagramming Tool for Flow-Based Programming</description>
 <url>https://github.com/jpaulm/drawfbp</url>
 <licenses>
