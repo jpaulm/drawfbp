@@ -305,7 +305,8 @@ public class Arrow implements ActionListener {
 			((Graphics2D)g).fill(sh);				
 			g.setColor(col);	
 		}
-		ah.draw(g);
+		if (!endsAtLine)
+			ah.draw(g);
 	}
 	
 	

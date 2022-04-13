@@ -4,7 +4,7 @@
 <modelVersion>4.0.0</modelVersion>
 <groupId>com.jpaulmorrison</groupId>
 <artifactId>drawfbp</artifactId>
-<version>3.1.6</version>
+<version>3.1.7</version>
 <build>
 	<plugins>
 		<plugin>

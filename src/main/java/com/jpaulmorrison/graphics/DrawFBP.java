@@ -90,7 +90,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	JTextField jfs = null;
 	JTextField jfv = null;
 
-	JLabel scaleLab;
+	JLabel scaleLabel;
 
 	Diagram curDiag = null;
 
@@ -356,7 +356,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	// boolean comparing = false;
 	JFrame mmFrame = new JFrame();
 
-	JSlider zoomControl;
+	JSlider zoomSlider;
 
 	boolean clickToGrid = true;
 
@@ -438,24 +438,24 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			//scalingFactor = Double.valueOf(sF);
 			scalingFactor = Double.parseDouble(sF);
 
-		zoomControl = new JSlider(SwingConstants.VERTICAL, 60, 200, (int) (scalingFactor * 100));
-		zoomControl.setPreferredSize(new Dimension(40, 200));
-		zoomControl.setMajorTickSpacing(20);
+		zoomSlider = new JSlider(SwingConstants.VERTICAL, 60, 200, (int) (scalingFactor * 100));
+		zoomSlider.setPreferredSize(new Dimension(40, 200));
+		zoomSlider.setMajorTickSpacing(20);
 		// zoomControl.setMinorTickSpacing(10);
-		zoomControl.setPaintTicks(true);
-		zoomControl.setSnapToTicks(true);
-		zoomControl.setPaintLabels(false);
-		zoomControl.setPaintTrack(true);
-		zoomControl.setVisible(true);
-		zoomControl.addChangeListener(this);
-		zoomControl.getInputMap().put(escapeKS, "CLOSE");
-		zoomControl.getActionMap().put("CLOSE", escapeAction);
+		zoomSlider.setPaintTicks(true);
+		zoomSlider.setSnapToTicks(true);
+		zoomSlider.setPaintLabels(false);
+		zoomSlider.setPaintTrack(true);
+		zoomSlider.setVisible(true);
+		zoomSlider.addChangeListener(this);
+		zoomSlider.getInputMap().put(escapeKS, "CLOSE");
+		zoomSlider.getActionMap().put("CLOSE", escapeAction);
 
-		zoomControl.setValue((int) (scalingFactor * 100));
+		zoomSlider.setValue((int) (scalingFactor * 100));
 		// String scale = (int) js.getValue() + "%";
 		String scale = (int) (scalingFactor * 100) + "%";
-		scaleLab = new JLabel();
-		scaleLab.setText(scale);
+		scaleLabel = new JLabel();
+		scaleLabel.setText(scale);
 
 		zWS = (int) Math.round(zoneWidth * scalingFactor);
 		
@@ -846,16 +846,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
 
 		// scaleLab = new JLabel();
-		hbox61.add(scaleLab);
+		hbox61.add(scaleLabel);
 		hbox61.add(Box.createRigidArea(new Dimension(5, 0)));
 
 		hbox62.add(zoom);
 		hbox62.add(Box.createRigidArea(new Dimension(5, 0)));
 
-		vbox6.add(zoomControl);
+		vbox6.add(zoomSlider);
 		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
 
-		scaleLab.setForeground(Color.BLUE);
+		scaleLabel.setForeground(Color.BLUE);
 		// String scale = "100%";
 		// scaleLab.setText(scale);
 
@@ -3067,7 +3067,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		pan.setFont(fontg);
 		up.setFont(fontg);
 		grid.setFont(fontg);
-		scaleLab.setFont(fontg);
+		scaleLabel.setFont(fontg);
 		fileMenu.setFont(fontg);
 		diagMenu.setFont(fontg);
 		helpMenu.setFont(fontg);
@@ -5386,7 +5386,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 	public void stateChanged(ChangeEvent e) {
 		Object source = e.getSource();
-		if (source instanceof JSlider && scaleLab != null) {
+		if (source instanceof JSlider && scaleLabel != null) {
 			JSlider js = (JSlider) source;
 			// oldW = getSize().width;
 			// oldH = getSize().height;
@@ -5395,7 +5395,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				saveProp("scalingfactor", Double.toString(scalingFactor));
 				// zWS = (int) Math.round(zoneWidth * scalingFactor);
 				String scale = js.getValue() + "%";
-				scaleLab.setText(scale);
+				scaleLabel.setText(scale);
 				// pack();
 				// setPreferredSize(new Dimension(1200, 800));
 				//zoomControl.repaint();
@@ -6359,16 +6359,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		}
 
-		public void paint(Graphics g) {
-			//super.paint(g);
-			dbImage = createImage(getWidth(), getHeight());
-			dbg = dbImage.getGraphics(); 
-			
-			//super.paint(dbg);	
-			paintComponent(dbg);
-			
-			g.drawImage(dbImage, 0, 0, this);
-		}
+		
 
 		  
 		// a is "from" arrow; a2 may be same, or arrow that a joins to...
@@ -6394,14 +6385,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 		}
-		/* 
 		public void paint(Graphics g) {
-			dbImage2 = createImage(getWidth(), getHeight());
-			dbg2 = dbImage2.getGraphics(); 
-			paintComponent(dbg2);
-			g.drawImage(dbImage2, 0, 0, this);
+			//super.paint(g);
+			dbImage = createImage(getWidth(), getHeight());
+			dbg = dbImage.getGraphics(); 
+			
+			//super.paint(dbg);	
+			Graphics2D g2d = (Graphics2D) dbg;
+			g2d.scale(scalingFactor, scalingFactor);  
+			paintComponent(dbg);
+			
+			g.drawImage(dbImage, 0, 0, this);
 		}
- */
  
 		public void paintComponent(Graphics g) {
 			
@@ -6416,7 +6411,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// g.setColor(getBackground());
 				g.setColor(Color.WHITE);
 				int h = getHeight();
-				g.fillRect(0, 0, (int) (w / scalingFactor), (int) (h / scalingFactor - 0));
+				g.fillRect(0, 0, (int) (w), (int) (h));
 			}
 			 
   
@@ -6490,7 +6485,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			// Now copy that off-screen image onto the screen
 			// g2d.drawImage(buffer, 0, 0, null);
-			g2d.scale(scalingFactor, scalingFactor);  
+			//g2d.scale(scalingFactor, scalingFactor);  
 			// g2d.scale(.8, .8);
 			//g.drawImage(buffer, 0, 0, null);
 			//setVisible(true);
