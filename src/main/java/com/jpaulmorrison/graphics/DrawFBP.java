@@ -81,6 +81,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	static final long serialVersionUID = 111L;
 	// private static final DrawFBP DrawFBP = null;
 	DrawFBP driver = this;
+
 	
 	Image dbImage = null;
 	Graphics dbg = null;
@@ -1470,7 +1471,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 		}
 
-		//}
+
 
 		if (s.startsWith("Generate ")) {
 			if (curDiag == null || curDiag.blocks.isEmpty()) {
@@ -1608,7 +1609,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// curDiag.changeCompLang();
 		// }
 
-		 
+
 		if (s.equals("Locate JavaFBP jar file")) {
 
 			locateJavaFBPJarFile(true);
@@ -1825,7 +1826,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			
 			curDiag.createImage();
-			
+
 			return;
 			
 		}
@@ -1899,8 +1900,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			closeTab(false);
 			return;
 		}
-		
-		if (s.equals("Launch Help")) {
+
+	if (s.equals("Launch Help")) {
 
 			HelpSet hs = null;
 			URL url = HelpSet.findHelpSet(getClass().getClassLoader(), "helpSet.hs");
@@ -2001,9 +2002,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			popup.setVisible(true);
 
 			popup.addWindowListener(new WindowAdapter() {
-				//public void windowClosing(WindowEvent ev) {
-				//	popup.dispose();
-				//}
+
+				public void windowClosing(WindowEvent ev) {
+					popup.dispose();
+				}
+
 			});
 
 			popup.addKeyListener(new KeyAdapter() {
@@ -5157,8 +5160,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}
 
+
 	 
 /*
+
 	Point2D gridAlign(Point2D p) {
 		Point2D p2 = p;
 		if (clickToGrid) {
@@ -5168,8 +5173,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 		return p2;
 	}
+
 	*/
 	 
+
 
 	Notation findNotnFromLabel(String s) {
 		for (Notation i: notations)
@@ -5317,7 +5324,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	void drawBlackSquare(Graphics g, int x, int y) {
+
 		final int squSize = 6;
+
 		Color col = g.getColor();
 		g.setColor(Color.BLACK);
 		g.drawRect(x - squSize / 2, y - squSize / 2, squSize, squSize);
@@ -5325,6 +5334,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 
 	public void drawRedCircle(Graphics g, int x, int y) {
+
 		int cSize = zWS - 2;
 		Color col = g.getColor();
 		g.setColor(Color.RED);
@@ -5338,6 +5348,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		g.setColor(Color.BLUE);
 		g.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
 		g.fillOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
+
 		g.setColor(col);
 	}
 
@@ -5409,7 +5420,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (!(js).getValueIsAdjusting()) {
 				scalingFactor = ((double) js.getValue()) / 100.0;
 				saveProp("scalingfactor", Double.toString(scalingFactor));
+
 				zWS = (int) Math.round(zoneWidth * scalingFactor);
+
 				String scale = js.getValue() + "%";
 				scaleLabel.setText(scale);
 				// pack();
@@ -6350,10 +6363,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		int oldx, oldy, mousePressedX, mousePressedY;
 		
 		Image dbImage = null;
+
 		//Image dbImage2 = null;
 		Graphics dbg = null;
 		//Graphics dbg2 = null;
-		
+	
 		
 
 		public SelectionArea(boolean b) {
@@ -6401,7 +6415,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 
 		}
+
 		/*
+
+		public void paint(Graphics g) {
+
 			//super.paint(g);
 			dbImage = createImage(getWidth(), getHeight());
 			dbg = dbImage.getGraphics(); 
@@ -6413,18 +6431,22 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			
 			g.drawImage(dbImage, 0, 0, this);
 		}
+
  */
+
 		public void paintComponent(Graphics g) {
 			
 			
 			// Paint background if we're opaque.
 			//super.paintComponent(g);
+
 			Graphics2D g2d = (Graphics2D) g;
 			
 			//if (zoomSw) {
 			g2d.scale(scalingFactor, scalingFactor); 
 			//	zoomSw = false;
 			//}
+
 			
 			int w = getWidth();
 		  
@@ -6498,6 +6520,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		
 
+
 			//Graphics2D g2d = (Graphics2D) g;
 
 			// g2d.scale(scalingFactor, scalingFactor);
@@ -6519,6 +6542,26 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			BlockPoint fpB = null;
 			for (Block block : curDiag.blocks.values()) {
+
+
+				// test whether to even look at block...
+				//if (type.equals(drag)) {
+					// System.out.println("horiz " + x + " " + (block.leftEdge - zWS / 2) + "-" +
+					// (block.rgtEdge + zWS / 2));
+					// System.out.println("vert " + y + " " + (block.topEdge - zWS / 2) + "-" +
+					// (block.botEdge + zWS / 2));
+				//}
+
+								
+				// ?? if (!(between(x, block.leftEdge - zWS / 2, block.rightEdge + zWS / 2)))
+				//	continue;
+
+				// ?? if (!(between(y, block.topEdge - zWS / 2, block.botEdge + zWS / 2)))
+				//	continue;
+
+				/* look for block edge touching xa and ya */
+				// if (type.equals("D"))
+				// System.out.println("calltouch " + x + " " + y);
 
 				Side side = touches(block, x, y);
 				if (side == null)
@@ -6659,6 +6702,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 		}
 		
+
 		public Point adjustXY(MouseEvent e) {			
 			int x = e.getX();				
 			int y = e.getY();
@@ -6669,6 +6713,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			return new Point(x, y);
 		}
 		
+
 		public void mouseMoved(MouseEvent e) {
 			selBlockM = null;
 			int i = jtp.getSelectedIndex();
@@ -6690,6 +6735,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			curDiag = b.diag;
 
+
 			Point p = adjustXY(e);
 			int xa = p.x;
 			int ya = p.y;
@@ -6698,11 +6744,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (panSwitch) {
 				Rectangle r = curDiag.area.getBounds();
 				r = new Rectangle(r.x, r.y, r.width - 20, r.height - 40);
+
 				if (r.contains(xa, ya))
+
 					setCursor(openPawCursor);
 				else
 					setCursor(defaultCursor);
 			}
+
 
 			moveX = xa;
 			moveY = ya;
@@ -6882,12 +6931,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 			// Side side = null;
 			leftButton = (e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == InputEvent.BUTTON1_DOWN_MASK;
+
 			Point p = adjustXY(e);
 			
 			int xa, ya;
 
 			xa = p.x;
 			ya = p.y;
+
 			curx = xa;
 			cury = ya;
 
@@ -6902,8 +6953,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				// Rectangle r = curDiag.area.getBounds();
 				Dimension d = curDiag.area.getSize();
 				// if (r.contains(x, y)) {
+
 				if (xa >= curDiag.area.getX() && xa <= curDiag.area.getX() + d.width && ya >= curDiag.area.getY()
 						&& ya <= curDiag.area.getY() + d.height) {
+
 					setCursor(closedPawCursor);
 					panX = xa;
 					panY = ya;
@@ -7107,12 +7160,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			curDiag = b.diag;
 
+
 			Point p = adjustXY(e);
 			int xa = p.x;
 			int ya = p.y;
 			
 
 			
+
 			// System.out.println("D: " + xa + "," + ya);
 			if (e.getClickCount() == 2) {
 
@@ -7413,12 +7468,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			}
 
+
 			Point p = adjustXY(e);
 			int xa = p.x;
 			int ya = p.y;
 
 			// Side side = null;
 			
+
 
 			// System.out.println("R: " + xa + "," + ya);
 
@@ -7442,9 +7499,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					selBlock = blockSelForDragging;
 					// this tests if mouse has moved (approximately) - ignore
 					// small twitches and also big jumps!
+
 					if (between(mousePressedX, (xa - zWS / 2),  (xa + zWS / 2))
 							&& between(mousePressedY,  (ya - zWS / 2),  (ya + zWS / 2))
 							|| Math.abs(mousePressedX - xa) > 100 || Math.abs(mousePressedY - ya) > 100) {
+
 
 						// if it was a small move, or a big jump, just get
 						// subnet, or display options
@@ -7757,8 +7816,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (foundBlock != null)  { // && leftButton
 			   
 
+
 				if (between(currentArrow.fromX, xa - zWS / 2, xa + zWS / 2)
 						&& between(currentArrow.fromY, ya - zWS / 2, ya + zWS / 2)) {
+
 					repaint();
 					return;
 				}
@@ -7907,7 +7968,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					fpArrowEndA = fpA;
 					
 
+
 					if (xa != curx) {
+
 						double s = ya - foundArrow.lastY;
 						double t = xa - foundArrow.lastX;
 						s = s / t;
@@ -7998,8 +8061,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (currentArrow.bends == null) {
 					currentArrow.bends = new LinkedList<>();
 				}
-				//x = xa;
-				//y = ya;
+
 				//currentArrow.endX2 = x;
 				//currentArrow.endY2 = y;
 
@@ -8015,10 +8077,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				currentArrow.createBend(xa, ya);
 
+
 				currentArrow.lastX = xa;
 				currentArrow.lastY = ya;
 				currentArrow.toX = xa;
 				currentArrow.toY = ya;  
+
 				currentArrow.rebuildFatLines();
 				curDiag.changed = true;
 				repaint();
