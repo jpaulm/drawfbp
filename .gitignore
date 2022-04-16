@@ -1,0 +1,31 @@
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+
+*-fulltrace.txt
+
+# Gradle
+.gradle
+
+# Maven packages/etc
+target
+build/classes
+build/dependency-cache
+build/reports
+build/docs/javadoc
+build/ivy.xml
+
+
+# Eclipse project
+bin
+.settings 
+
+
+# IDEA project
+.idea/
+*.iml
+
+# System's crap
+Thumbs.db
+.DS_Store
+

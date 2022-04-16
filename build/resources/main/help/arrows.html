@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="distribution" content="global">
+  <meta name="GENERATOR"
+ content="Mozilla/4.76 [en] (Win98; U) [Netscape]">
+  <title>Arrows</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="SHORTCUT ICON"
+ href="http://www.jpaulmorrison.com/favicon.ico">
+</head>
+<body style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);"
+ alink="#0000ee" link="#0000ee" vlink="#551a8b">
+<center style="color: rgb(0, 0, 153);">
+<h1>Arrows</h1>
+<hr style="width: 100%; height: 2px;"></center>
+<p>Mousing over an edge of a block will cause the block's boundaries to be coloured grey, indicating that an arrow can be 
+started or ended at that point on the edge of the block. Similarly when mousing over an arrow...
+<p>Arrows can be drawn by pressing the left button with the cursor
+positioned on an grey-coloured edge of a selected block, then drag the cursor to an edge of the destination block, 
+with the button held down; now click there.  The
+arrow will terminate with an arrowhead at that point.  </p>  
+<p>You cannot start and end an arrow at the same block.</p>
+<p>If you want a bend in the line, just release the button at the bend point, 
+press it again and resume dragging - then finish drawing the arrow in the normal way.</p>
+<p>If you decide to get rid of an arrow that you are drawing, before the end point is clicked on, you can hit the Esc keyboard button.
+After this, the arrow can be deleted by right-clicking on it, and selecting Delete.</p>
+<p>
+Arrows should start at the bottom or rightmost edge of
+one block, and terminate at the leftmost or top edge of another.
+If you want to terminate an arrow somewhere else on a block, you will be asked if that is what you want to do.</p>
+<p>If you want to delete a completed arrow, right click on it, and select the Delete option </p>
+<p>
+If the slope of a line segment is less than 1/10 or greater than 10/1, it will be
+assumed that the intention was to make it horizontal or vertical,
+respectively.</p>
+<p>
+If you click on a line rather than the edge of a block, the line being
+drawn will terminate there, with a small black circle&nbsp; marking the
+termination point.  You cannot start an arrow at a line - only end it there.&nbsp; 
+For code generation purposes, DrawFBP treats an arrow terminating at a line as 
+feeding into the same block and port
+as the arrow it terminates at.</p>
+<p>An IIP can be connected to a process by an arrow, 
+but the arrow will be displayed without an arrowhead.  This type 
+of connection can be drawn in either direction - however, if it
+is drawn in the wrong direction (i.e. from process to IIP), 
+DrawFBP will try to swap the ends of the arrow,
+which may give strange results if there are bends in the arrow.</p>  
+<p>When an arrow is completed, port names of <span style="color: rgb(0, 0, 153);">OUT</span>
+ and <span style="color: rgb(0, 0, 153);">IN</span> are 
+automatically filled in (one each per block) - these
+can be changed as desired afterwards.</p> 
+<p>
+Clicking on an arrow (whether it ends at a block or other arrow)
+brings up a popup menu showing
+operations that can be performed on it. These are the
+following:</p>
+<ul>
+  <li style="color: rgb(0, 153, 0);">"Edit Upstream Port Name"
+  </li>
+  <li style="color: rgb(0, 153, 0);">"Edit Downstream Port Name"  
+  </li>
+  <li style="color: rgb(0, 153, 0);">"Set Capacity"
+  </li>
+  <li style="color: rgb(0, 153, 0);">"Remove Capacity"
+  </li>
+  <li style="color: rgb(0, 153, 0);">"Toggle Upstream Port Automatic/Normal"
+  </li>
+  <li style="color: rgb(0, 153, 0);">"Toggle Downstream Port Automatic/Normal"</li>
+  <li style="color: rgb(0, 153, 0);">"Toggle DropOldest"</li>
+  <li style="color: rgb(0, 153, 0);">"Add Logger"</li>
+  <li  style="color: rgb(0, 153, 0);">"Redraw Arrow"</li>
+<li style="color: rgb(0, 153, 0);">"Drag Tail"</li>
+<li style="color: rgb(0, 153, 0);">"Drag Head"</li>
+<li style="color: rgb(0, 153, 0);">"Drag New or Existing Bend"</li>
+  <li style="color: rgb(0, 153, 0);">"Add Extra Arrowhead"</li>
+   <li style="color: rgb(0, 153, 0);">"Remove Extra Arrowhead"</li>
+   <li style="color: rgb(0, 153, 0);">"Delete"</li>
+</ul>
+<h3 style="color: rgb(0, 0, 153);">Edit Upstream/Downstream Port Name</h3>
+<p>Normally port names are just upper case strings; however, if you need
+to specify an element of an array port, use the conventional Java
+notation, e.g.&nbsp; <span
+ style="font-family: monospace; color: rgb(0, 0, 153);">XYZ[3]</span>, denoting the 4th element.</p>
+<h3 style="color: rgb(0, 0, 153);">Set/Remove Capacity</h3>
+<p>"Set Capacity" creates a small block containing the specified capacity, which can be dragged 
+around to a convenient location.  It will remain associated with the arrow, although it will not drag 
+with the arrow, and can be removed using "Remove Capacity", no matter where it has been dragged to.  
+<h3 style="color: rgb(0, 0, 153);">Automatic/Normal</h3>
+<p>If the upstream or downstream end of an arrow is toggled to "automatic"
+it is shown with a blue circle at that end. </p>
+<p>An automatic output port sends a close-down signal at process close-down <i>even though the process has not 
+specified a port name for that function.</i>  An automatic input port will delay the process until an IP or 
+close-down signal is detected at that port, again <i>even though the process has not 
+specified a port name for that function.</i>  No receive is required to process it.
+<h3 style="color: rgb(0, 0, 153);">DropOldest</h3>
+<p>This sets a connection attribute which drops the oldest IP on the connection if it would suspend the upstream (sending) 
+process.  DrawFBP displays this kind of connection with a zigzag line. </p>
+<p>This can be useful in cases where one does not need every measurement in a series.</p> 
+<h3 style="color: rgb(0, 0, 153);">Add Logger</h3>
+<p>Selecting this function adds a block onto the arrow, with a process name of "Logger".  The user can select any 
+component to assign to this block - either off-the-shelf, or custom.</p>
+<p>It can be deleted by using the "Remove Logger" function on the Logger block - this will 
+rebuild the arrow that was separated by the Logger block.</p>
+<h3 style="color: rgb(0, 0, 153);">Drag Functions</h3>
+<p>The three drag functions allow you to move, respectively, the tail or head of the selected arrow, 
+or to insert or move a bend in the line.  
+When inserting a new bend, you can drag it until you release the mouse button.</p>
+<p>If the head or tail of an arrow is dragged into contact with a different diagram block, it becomes attached
+to that block.</p>
+<h3 style="color: rgb(0, 0, 153);">Extra Arrowhead </h3>
+<p>DrawFBP supports one additional arrowhead per arrow, anywhere the user wants.  If the line is dragged the arrowhead 
+does not follow it, but it can be repositioned by clicking on this function again.
+<h3 style="color: rgb(0, 0, 153);">One-button Support </h3>
+<p>If desired, the list of arrow-related actions can also be brought up by clicking on Diagram/Arrow-related Actions.  For this to work, one of the
+arrows must have been selected (by clicking on it) - it will be coloured blue.  
+<br>
+<br>
+</body>
+</html>

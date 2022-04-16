@@ -1,0 +1,230 @@
+buildscript {  
+   repositories {
+      mavenCentral()       
+    }
+     
+  dependencies {
+       classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0"     
+  }
+}
+
+
+apply plugin: 'io.codearte.nexus-staging'
+
+allprojects {
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'java-library'
+
+gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked"
+    }
+}
+}
+
+version = '3.1.7'
+
+group = 'com.jpaulmorrison'
+
+description = 'DrawFBP is a picture-drawing tool that allows users to create multi-level diagrams implementing the technology and methodology known as Flow-Based Programming (FBP). Diagrams are saved in DrawFBP XML format, and will generate JavaFBP or C#FBP networks.'
+
+compileJava.options.encoding = 'UTF-8'
+
+//sourceCompatibility = JavaVersion.VERSION_1_8
+//targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
+
+ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
+ossrhPassword = project.hasProperty('ossrhPassword') ? project.property('ossrhPassword') : ""
+
+//nexusStaging {                           // try removing - leave in publish!
+//    username = ossrhUser
+ //   password = ossrhPassword           
+//}
+
+repositories {
+    mavenCentral()
+}
+
+ 
+
+dependencies { 	
+	implementation ('math.geom2d:javaGeom:0.11.1')
+	implementation ('javax.help:javahelp:2.0.05')
+ }  
+
+java {
+ withSourcesJar()
+ withJavadocJar()
+}
+
+jar {
+  
+    manifest {
+      attributes ('Implementation-Title': 'DrawFBP', 
+        'Implementation-Version': project.version,
+        'Class-Path': configurations.compileClasspath.collect { it.getName() }.join(' '),
+        'Main-Class' : mainClassName)
+    }
+      
+       
+    //baseName = project.name + '-all'
+    //archiveBaseName = project.name
+    from sourceSets.main.output       
+      
+    dependsOn configurations.compileClasspath
+   
+    from {       
+      configurations.compileClasspath.findAll {  it.name.endsWith('jar')  }.collect {   zipTree(it)  }         
+ 
+    }
+   
+    exclude('math/geom2s/**')
+    exclude('math/geom3d/**')
+    exclude('math/geom2s/**')
+    exclude('math/utils/**')
+    exclude('math/package/html')
+    exclude('com/seisw/**')
+}
+
+
+if (JavaVersion.current().isJava8Compatible()) {   
+        tasks.withType(Javadoc) {
+            options.addBooleanOption('Xdoclint:none', true)
+        }  
+}
+
+
+ext {
+    snapshotPublicationRepository = "https://oss.sonatype.org/content/repositories/snapshots/"
+    releasePublicationRepository = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+
+
+mainClassName = 'com.jpaulmorrison.graphics.DrawFBP'
+//ossrhUser =  project.hasProperty('ossrhUser') ? project.property('ossrhUser') : ""
+//osshrPassword = project.hasProperty('osshrPassword') ? project.property('osshrPassword') : ""
+
+}
+
+// Used to generate initial maven-dir layout
+task "create-dirs" { 
+doLast {
+description = "Create default maven directory structure" 
+//} 
+// {
+   sourceSets*.java.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+}
+
+
+
+    publishing { 
+  
+  
+    publications {
+        mavenJava(MavenPublication) {
+        
+            groupId = 'com.jpaulmorrison'
+            artifactId = 'drawfbp'       
+            
+            //version = project.version
+            
+            from components.java
+           
+                  
+            pom {
+                name = 'DrawFBP'
+                description = 'Diagramming Tool for Flow-Based Programming'
+                 // groupId 'com.jpaulmorrison'
+                 packaging 'jar'
+         
+               url = 'https://github.com/jpaulm/drawfbp'
+               
+               
+           
+                
+                licenses {
+                    license {
+                        name = 'Clarified Artistic License'
+                        url = 'https://spdx.org/licenses/ClArtistic.html'
+                    }
+                    
+                }
+                
+          developers {
+           developer {
+             id = 'jpaulmorr'
+             name = 'John Paul Rodker Morrison (Software architect/developer)'
+             email = 'jpaulmorr@gmail.com'
+           }
+           developer {
+             id  = 'bobcorrick'
+             name =  'Bob Corrick (Software architect/developer)'
+             email = 'bobcorrick@outlook.com'
+           }
+         }
+        
+      
+        
+        
+                scm {
+          connection = 'scm:git:git:https://github.com/jpaulm.git'
+          developerConnection = 'scm:git:ssh:https://github.com/jpaulm.git'
+          url = 'https://github.com/jpaulm.git'
+        }
+        
+      
+      
+            }
+        }
+    }
+    
+    
+    repositories {
+    
+       
+        maven {
+           
+         
+          
+          url (version.endsWith('SNAPSHOT') ? snapshotPublicationRepository : releasePublicationRepository) 
+          
+         credentials {
+                     username = ossrhUser
+                     password = ossrhPassword   
+                }
+           
+    
+    }
+}
+
+
+
+signing {
+    required {
+        // signing is required if this is a release version and the artifacts are to be published
+        !version.toString().endsWith('-SNAPSHOT') && tasks.withType(PublishToMavenRepository).find {
+             gradle.taskGraph.hasTask it
+        }
+    }
+    sign publishing.publications
+}
+
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+} 
+
+ 

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="distribution" content="global">
+  <meta name="GENERATOR"
+ content="Mozilla/4.76 [en] (Win98; U) [Netscape]">
+  <title>Reports</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="SHORTCUT ICON"
+ href="http://www.jpaulmorrison.com/favicon.ico">
+</head>
+<body style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);"
+ alink="#0000ee" link="#0000ee" vlink="#551a8b">
+<center style="color: rgb(0, 0, 153);">
+<h1>Enclosures</h1>
+<hr style="width: 100%; height: 2px;"></center>
+
+<p>
+When "Enclosure" is selected,&nbsp; a dashed box appears on the screen,
+with a shallow rectangle in the middle of the top line.&nbsp;  
+Any of the corners or sides can be dragged - dragging the corners will also adjust the neighbouring borders... 
+or the small rectangle at the top can be dragged, in which case the Enclosure as a  
+whole is dragged.</p>
+<p>Enclosures are used in addition for a number of diagramming purposes - they do not cause any code
+to be generated. </p>
+<p>Right-clicking on the small rectangle brings up a popup menu showing
+operations that can be performed on it.&nbsp; Currently there are four non-deprecated operations:</p>
+<ul style="color: rgb(0, 153, 0);">
+<li>"Edit Enclosure Label"</li>
+<li>"Excise Subnet" </li>
+<li>"Drag Contents" </li>
+    <li>"Delete" </li>
+</ul>
+
+<br>
+<h3 style="color: rgb(0, 0, 153);"><span style="text-decoration: line-through;">Edit Subnet Port Name</span> 
+<span style="color: rgb(0, 0, 0);">(deprecated)</span></h3>
+<p>This function can now be performed by editing the External Port block in the appropriate subnet.</p>
+<h3 style="color: rgb(0, 0, 153);"><span style="text-decoration: line-through;">Toggle Substream Sensitivity</span> <span style="color: rgb(0, 0, 0);">(deprecated)</span></h3>
+<p>This function can now be performed by editing the External Port block in the appropriate subnet.</p>
+<h3 style="color: rgb(0, 0, 153);">Excise Subnet</h3>
+<p>This function will 
+"excise" those blocks and arrows which are completely enclosed by the Enclosure block, and create a new 
+subnet including those blocks and arrows.  Arrows that cross the Enclosure boundary will have External Ports
+attached to them, which can be edited to specify the external port names, or to toggle the substream sensitivity indicator.</p>
+<p>The user wil be prompted to enter the "external port" names for the new subnet, as well as the .drw file name for the new subnet, 
+and a description.</p>
+<p>
+Arrows crossing the Enclosure boundary in the "source" diagram 
+will be attached roughly to the new subnet block - if
+the user wishes to change their position, they can be adjusted using the 
+arrow "drag" function - either dragging the tail or the head of the arrow as appropriate.</p>
+<p>Before doing an Excise, the user should save the diagram being worked on.</p>
+<h3 style="color: rgb(0, 0, 153);">Drag Contents</h3>
+<p>Clicking on this function will allow all blocks and arrows within the enclosure to be moved as a unit (see
+Dragging below). 
+
+</body>
+</html>
+

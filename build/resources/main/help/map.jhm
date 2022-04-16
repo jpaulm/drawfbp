@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+    PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
+    "http://java.sun.com/products/javahelp/map_2_0.dtd">
+<map version="2.0">
+      <mapID target="toplevelfolder" >
+      <mapID target="drawfbplogo" url="DrawFBP-logo-small.jpg"  />
+      <mapID target="intro" url="intro.html" />
+      <mapID target="overview" url="overview.html" />
+      <mapID target="filechooser" url="filechooser.html" />
+      <mapID target="blocks" url="blocks.html" />
+      <mapID target="diagram" url="diagram.html" />
+      <mapID target="files" url="files.html" />
+      <mapID target="reports" url="reports.html" />
+      <mapID target="processes" url="processes.html"/>
+      <mapID target="iips" url="iips.html" />
+      <mapID target="ports" url="ports.html" />
+      <mapID target="extports" url="extports.html" />
+      <mapID target="legends" url="legends.html" />
+      <mapID target="persons" url="persons.html" />
+      <mapID target="enclosures" url="enclosures.html" />
+      <mapID target="arrows" url="arrows.html" />\
+      <mapID target="subnets" url="subnets.html" />
+      <mapID target="dragging" url="dragging.html" />
+      <mapID target="zoom" url="zoom.html" />
+      <mapID target="panning" url="panning.html" />
+      <mapID target="comparing" url="comparing.html" />      
+      <mapID target="gettingstarted" url="gettingstarted.html" />
+      <mapID target="blocktypes" url="blocktypes.html" />
+      <mapID target="genprog" url="genprog.html" />
+      <mapID target="propfile" url="propfile.html" />
+      <mapID target="fonts" url="fonts.html" />
+</mapID>
+     
+ 
+</map>

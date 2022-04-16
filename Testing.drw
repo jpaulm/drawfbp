@@ -1,0 +1,35 @@
+<?xml version="1.0"?> 
+ <drawfbp_file xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="https://github.com/jpaulm/drawfbp/blob/master/lib/drawfbp_file.xsd"><net><desc>Components filled in</desc> <complang>Java</complang> <clicktogrid>false</clicktogrid> 
+<blocks><block> <x> 623 </x> <y> 190 </y> <id> 32 </id> <type>L</type> <width>82</width> <height>38</height> <description>rejected</description> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 242 </x> <y> 161 </y> <id> 48 </id> <type>B</type> <width>92</width> <height>64</height> <description>read
+sample
+file</description> <blockclassname>C:/Users/Paul/Documents/GitHub/javafbp/build/libs/javafbp-4.1.0.jar!com.jpaulmorrison.fbp.core.components.io.ReadFile</blockclassname> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 435 </x> <y> 161 </y> <id> 4 </id> <type>B</type> <width>92</width> <height>64</height> <description>filter by
+first letter</description> <blockclassname>C:/Users/Paul/Documents/GitHub/javafbp/build/libs/javafbp-4.1.0.jar!com.jpaulmorrison.fbp.core.components.text.StartsWith</blockclassname> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 434 </x> <y> 79 </y> <id> 38 </id> <type>I</type> <width>18</width> <height>18</height> <description>J</description> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 585 </x> <y> 236 </y> <id> 23 </id> <type>B</type> <width>92</width> <height>64</height> <description>Ignore</description> <blockclassname>C:/Users/Paul/Documents/GitHub/javafbp/build/libs/javafbp-4.1.0.jar!com.jpaulmorrison.fbp.core.components.routing.Discard</blockclassname> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 241 </x> <y> 79 </y> <id> 43 </id> <type>I</type> <width>314</width> <height>18</height> <description>C:/Users/bobco/drawfbp/txt-nonexist.csv</description> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 724 </x> <y> 59 </y> <id> 45 </id> <type>I</type> <width>130</width> <height>18</height> <description>Accepted entries</description> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 732 </x> <y> 128 </y> <id> 30 </id> <type>B</type> <width>92</width> <height>64</height> <description>display
+accepted
+lines</description> <blockclassname>C:/Users/Paul/Documents/GitHub/javafbp/build/libs/javafbp-4.1.0.jar!com.jpaulmorrison.fbp.core.components.swing.ShowText</blockclassname> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+<block> <x> 598 </x> <y> 131 </y> <id> 31 </id> <type>L</type> <width>91</width> <height>38</height> <description>accepted</description> <multiplex>false</multiplex><invisible>false</invisible><issubnet>false</issubnet> 
+</block> 
+</blocks> <connections>
+<connection> <fromx>481</fromx> <fromy>171</fromy> <tox>584</tox> <toy>204</toy> <fromid>4</fromid> <toid>23</toid> <id>17</id> <endsatline>false</endsatline><upstreamport>REJ</upstreamport><downstreamport>IN</downstreamport><segno>0</segno><bends> <bend> <x>584</x> <y> 171</y> </bend>
+ </bends> </connection> 
+<connection> <fromx>288</fromx> <fromy>161</fromy> <tox>389</tox> <toy>161</toy> <fromid>48</fromid> <toid>4</toid> <id>33</id> <endsatline>false</endsatline><upstreamport>OUT</upstreamport><downstreamport>IN</downstreamport><segno>0</segno></connection> 
+<connection> <fromx>243</fromx> <fromy>88</fromy> <tox>242</tox> <toy>129</toy> <fromid>43</fromid> <toid>48</toid> <id>35</id> <endsatline>false</endsatline><downstreamport>SOURCE</downstreamport><segno>0</segno></connection> 
+<connection> <fromx>437</fromx> <fromy>88</fromy> <tox>437</tox> <toy>129</toy> <fromid>38</fromid> <toid>4</toid> <id>27</id> <endsatline>false</endsatline><downstreamport>TEST</downstreamport><segno>0</segno></connection> 
+<connection> <fromx>728</fromx> <fromy>68</fromy> <tox>728</tox> <toy>96</toy> <fromid>45</fromid> <toid>30</toid> <id>30</id> <endsatline>false</endsatline><downstreamport>TITLE</downstreamport><segno>0</segno></connection> 
+<connection> <fromx>481</fromx> <fromy>142</fromy> <tox>686</tox> <toy>142</toy> <fromid>4</fromid> <toid>30</toid> <id>31</id> <endsatline>false</endsatline><upstreamport>ACC</upstreamport><downstreamport>IN</downstreamport><segno>0</segno></connection> 
+</connections> </net> </drawfbp_file>

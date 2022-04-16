@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <meta name="distribution" content="global">
+  <meta name="GENERATOR"
+ content="Mozilla/4.76 [en] (Win98; U) [Netscape]">
+  <title>External Ports</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="SHORTCUT ICON"
+ href="http://www.jpaulmorrison.com/favicon.ico">
+</head>
+<body style="color: rgb(0, 0, 0); background-color: rgb(255, 255, 255);"
+ alink="#0000ee" link="#0000ee" vlink="#551a8b">
+<center style="color: rgb(0, 0, 153);">
+<h1>External Ports</h1>
+<hr style="width: 100%; height: 2px;"></center>
+<p>To understand the use of External Ports, it is probably better to read
+the sections on <span style="color: rgb(0, 153, 0);">Ports</span> and <span
+ style="color: rgb(0, 153, 0);">Subnets</span> first.&nbsp; External
+Ports indicate
+the ports of a subnet, and basically just have a name, which must match
+a subnet port name at the next higher level. <br>
+<p>
+An External Port can be one of three types: input, output and
+output/input.&nbsp; <br>
+<p>
+The output/input external port is really an output type linked tightly
+to an input type, and therefore
+must have two names associated with it.<br>
+&nbsp;<p>
+Right clicking on an External Port brings up a popup menu showing
+operations that can be performed on it.&nbsp; These are the following:<br>
+<ul style="color: rgb(0, 153, 0);">
+  <li>"Edit Item" <span style="color: rgb(0, 0, 0);"></span><br>
+  </li>
+  <li>Toggle Substream Sensitive / Normal </li>
+  <li>Toggle Visible/Invisible </li>
+  <li>"Delete" </li>
+</ul>
+<p>An External Port can be connected by arrows to any block type - see
+the section on <span style="color: rgb(0, 153, 0);">Arrows</span>.&nbsp;
+However, arrows in some directions are prevented by the diagramming
+tool, e.g. routing an arrow <span style="font-style: italic;">from</span>
+a block <span style="font-style: italic;">to</span> an input-type
+external port is forbidden.<br>
+<br>
+<h3 style="color: rgb(0, 0, 153);">Edit Item</h3>
+<p>In the case of the output/input type, the two associated names are
+entered together, but separated by a colon, as follows:<br>
+<br>
+<div style="text-align: center;"color: rgb(0, 0, 153);>ABC:DEF<br>
+</div>
+<br>
+<br>
+<h3 style="color: rgb(0, 0, 153);"><span style="text-decoration: line-through;">Edit Subnet Port Name</span><span style="color: rgb(0, 0, 0);">(deprecated)</span></h3>
+<p>The user will be prompted to enter the subnet port name.</p>
+<h3 style="color: rgb(0, 0, 153);"><span style="text-decoration: line-through;">Toggle Substream Sensitivity</span><span style="color: rgb(0, 0, 0);">(deprecated)</span></h3>
+<p>Substream sensitivity is related to the idea that in FBP a subnet can be set up to process a substream as if it
+were a complete stream, closing down at end of substream, rather than having to wait for the whole stream to be processed. </p> 
+<p> In this case, this subnet port will cause the subnet to see end of stream, resulting in the usual wave of close-downs through the network.  
+This is the only situation in FBP where processes can be closed down, and then restarted.</p>
+<p>Subnet port symbols with substream sensitivity enabled will be marked with an "SS".</p>  
+<h3 style="color: rgb(0, 0, 153);">Toggle Visible/Invisible</h3>
+<p>Self-explanatory.</p>
+<h3 style="color: rgb(0, 0, 153);">Delete</h3>
+<p>Self-explanatory.</p>
+</body>
+</html>
