@@ -5271,7 +5271,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	/* static */ Side touches(Block b, int x, int y) {
 		Side side = null;
 
-		// System.out.println("Trytouch " + b + " " + x + " " + y);
+		//System.out.println("T: " + b.id + " " + x + " " + y);
 
 		if (b.leftRect != null && b.leftRect.contains(x, y))
 			side = Side.LEFT;
@@ -5285,10 +5285,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		else if (b.botRect != null && b.botRect.contains(x, y))
 			side = Side.BOTTOM;
 
-//		if (side != null)
-//			System.out.println("Touches " + b + " " + (side != null) + " " + x + " " + y); 
-		// else
-		// System.out.println("Touches " + b + "no side " + " " + x + " " + y);
+ 		//if (side != null)
+ 		//	System.out.println("U: " + b.id + " " + (side != null) + " " + x + " " + y); 
+		 //else
+		//  System.out.println("U: " + b.id + "no side " + " " + x + " " + y);
 
 		return side;
 	}
@@ -6544,25 +6544,6 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			for (Block block : curDiag.blocks.values()) {
 
 
-				// test whether to even look at block...
-				//if (type.equals(drag)) {
-					// System.out.println("horiz " + x + " " + (block.leftEdge - zWS / 2) + "-" +
-					// (block.rgtEdge + zWS / 2));
-					// System.out.println("vert " + y + " " + (block.topEdge - zWS / 2) + "-" +
-					// (block.botEdge + zWS / 2));
-				//}
-
-								
-				// ?? if (!(between(x, block.leftEdge - zWS / 2, block.rightEdge + zWS / 2)))
-				//	continue;
-
-				// ?? if (!(between(y, block.topEdge - zWS / 2, block.botEdge + zWS / 2)))
-				//	continue;
-
-				/* look for block edge touching xa and ya */
-				// if (type.equals("D"))
-				// System.out.println("calltouch " + x + " " + y);
-
 				Side side = touches(block, x, y);
 				if (side == null)
 					continue;
@@ -7083,7 +7064,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				if (edgePoint != null) {
 					xa = edgePoint.x;
 					ya = edgePoint.y;
-					// fpArrowRoot = edgePoint;
+					fpArrowRoot = edgePoint;
 					repaint();
 				}
 
@@ -7102,7 +7083,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			// if (currentArrow == null && foundBlock != null
 			// && arrowEndForDragging == null) {
 			if (currentArrow == null) {
-				fpArrowRoot = edgePoint;
+				//fpArrowRoot = edgePoint;
 				if (fpArrowRoot != null) {
 					Arrow arrow = new Arrow(curDiag);
 					curDiag.maxArrowNo++;
@@ -7144,7 +7125,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		public void mouseDragged(MouseEvent e) {
 
-			fpArrowRoot = null;
+			//fpArrowRoot = null;
 			fpArrowEndA = null;
 			fpArrowEndB = null;
 			// edgePoint = null;
@@ -7164,11 +7145,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			Point p = adjustXY(e);
 			int xa = p.x;
 			int ya = p.y;
-			
 
-			
-
-			// System.out.println("D: " + xa + "," + ya);
+			//System.out.println("D: " + xa + "," + ya);
 			if (e.getClickCount() == 2) {
 
 				// blockSelForDragging = null;
@@ -7413,27 +7391,32 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				fpArrowEndB = null;
 				currentArrow.endsAtBlock = false;
 				currentArrow.endsAtLine = false;
-
 			
-				if (Math.abs(currentArrow.fromX - xa) > 10 || // pick arbitrary figure!
-						Math.abs(currentArrow.fromY - ya) > 10) {
-					// System.out.println("dragging " + xa + " " + ya);
-					// FoundPointB fpB = findBlockEdge(xa, ya);
+				if (currentArrow.toId == -1 &&
+						(Math.abs(currentArrow.fromX - xa) > 12 || // pick arbitrary figure!
+						Math.abs(currentArrow.fromY - ya) > 12)) { 
 					edgePoint = findBlockEdge(xa, ya);
 					if (edgePoint != null) {
 						xa = edgePoint.x;
 						ya = edgePoint.y;
-						currentArrow.toId = -2; 
-						
+						currentArrow.toId = -2;
+						fpArrowEndB = edgePoint;  
 					}
-
+					else {
+						fpArrowEndA = findArrow(xa, ya);
+						
+						if (fpArrowEndA != null && fpArrowEndA.arrow != null)  
+							currentArrow.toId = -2;  
+						}
 				}
-				
-				ArrowPoint fpArrowEnd = findArrow(xa, ya);
-				
-				if (fpArrowEnd != null && fpArrowEnd.arrow != null)  
-					currentArrow.toId = -2;  
+
 			}
+				
+			//ArrowPoint fpArrowEnd = findArrow(xa, ya);
+				
+			//if (fpArrowEnd != null && fpArrowEnd.arrow != null)  
+			//	currentArrow.toId = -2;  
+			//}
 			//colourArrows(xa, ya);
 
 			repaint();
@@ -7448,6 +7431,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			fpArrowEndA = null;
 			fpArrowEndB = null;
 			selBlockM = null;
+			fpArrowRoot = null;
 
 			int i = jtp.getSelectedIndex();
 			if (i == -1)
@@ -7804,6 +7788,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				return;
 			}
 
+			// found a block to terminate arrow...			
+			
 			edgePoint = findBlockEdge(xa, ya);
 			// foundBlock = null;
 

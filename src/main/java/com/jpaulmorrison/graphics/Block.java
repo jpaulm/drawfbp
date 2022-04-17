@@ -120,12 +120,12 @@ public class Block implements ActionListener {
 	}
 
 	void buildSideRects() {	
+		calcEdges();
 		buildSideRectsD(leftEdge, topEdge, width, height);
 		
 	}
 	
-	void buildSideRectsD(int x, int y, int w, int h) {	
-		calcEdges();
+	void buildSideRectsD(int x, int y, int w, int h) {			
 		int shift = (this instanceof LegendBlock) ? driver.zWS : driver.zWS / 2;
 		leftRect = new Rectangle(x - shift, y - driver.zWS / 2, 
 				driver.zWS, h + shift);
