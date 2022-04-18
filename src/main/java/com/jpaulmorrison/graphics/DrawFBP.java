@@ -234,7 +234,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	int panX, panY;
 	Cursor openPawCursor = null;
 	Cursor closedPawCursor = null;
-	Cursor drag_icon = null;
+	Cursor dragIcon = null;
 
 	// "Subnet" is not a separate block type (it is a variant of "Process")
 
@@ -1026,7 +1026,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		closedPawCursor = tk.createCustomCursor(image, new Point(15, 15), "Paw");
 
 		image = loadImage("drag_icon.gif");
-		drag_icon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
+		dragIcon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
 		
 		//menuBar = createMenuBar();
 		//setJMenuBar(menuBar);
@@ -4356,9 +4356,9 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	static boolean between(int val, int lim1, int lim2) {
 		boolean res;
 		if (lim1 < lim2)
-			res = val >= lim1 && val <= lim2;
+			res = val > lim1 && val < lim2;
 		else
-			res = val >= lim2 && val <= lim1;
+			res = val > lim2 && val < lim1;
 		return res;
 	}
 	
@@ -5293,7 +5293,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return side;
 	}
 
-	public void blueCircs(Graphics g) {
+	public void drawBlueCircs(Graphics g) {
 		if (fpArrowRoot != null) {
 			drawBlueCircle(g, fpArrowRoot.x, fpArrowRoot.y);
 			repaint();
@@ -5319,6 +5319,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		g.setColor(Color.BLUE);
 		g.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
+		g.fillOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
 
 		g.setColor(col);
 	}
@@ -5342,16 +5343,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		g.setColor(col);
 	}
 	
-	void drawSolidCircle(Graphics g, int x, int y) {
-		int cSize = zWS - 2;
-		Color col = g.getColor();
-		g.setColor(Color.BLUE);
-		g.drawOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
-		g.fillOval(x - cSize / 2, y - cSize / 2, cSize, cSize);
-
-		g.setColor(col);
-	}
-
+	
 	public void componentHidden(ComponentEvent arg0) {
 		// TODO Auto-generated method stub
 
@@ -6505,7 +6497,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			if (headMark != null)
 				drawRedCircle(g, headMark.x, headMark.y);
 
-			blueCircs(g);
+			drawBlueCircs(g);
 
 			String s = diag.desc;
 			if (s != null) {
@@ -6820,38 +6812,30 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				int hh = gFontHeight;
 				boolean useDragIcon; // Use Drag Icon
 				if (block.typeCode.equals(Block.Types.ENCL_BLOCK)) {
-					useDragIcon = between(xa, block.leftEdge + block.width / 5, block.rightEdge - block.width / 5)
-							&& between(ya, block.topEdge - hh, block.topEdge + hh / 2);
+					useDragIcon = between(xa, block.leftEdge + block.width / 5, block.rightEdge - block.width / 5) &&
+							between(ya, block.topEdge - hh, block.topEdge + hh / 2);
 				} else {
 
-					useDragIcon = between(xa, block.leftEdge + zWS / 2, block.rightEdge - zWS / 2)
-							&& between(ya, block.topEdge + zWS / 2, block.botEdge - zWS / 2);
+					useDragIcon = between(xa, block.leftEdge + zWS, block.rightEdge - zWS) &&
+							between(ya, block.topEdge + zWS, block.botEdge - zWS);
 				}
 
 				if (useDragIcon) {
 					selBlockM = block; // mousing select
-					// if (!use_drag_icon) {
+					
 					if (curDiag.actionList == null && !panSwitch)
-						setCursor(drag_icon);
-					// use_drag_icon = true;
-					// }
+						setCursor(dragIcon);					
 
 					break;
 				}
 
 			}
 
-			// setCursor(defaultCursor); // experimental!
-
-			if (selBlockM == null) {
-				// if (use_drag_icon)
-				// use_drag_icon = false;
-
-				if (!panSwitch)
+			if (selBlockM == null && !panSwitch) {
 					setCursor(defaultCursor);
+					//useDragIcon = false;
 			}
-			// curDiag.foundBlock = null;
-		
+								
 			if (currentArrow != null
 					&& (Math.abs(currentArrow.fromX - xa) > 10 || Math.abs(currentArrow.fromY - ya) > 10)) {
 				edgePoint = findBlockEdge(xa, ya);
@@ -7042,10 +7026,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					 * the following leaves a strip around the outside of each block that cannot be
 					 * used for dragging!
 					 */
-					Rectangle rect = new Rectangle(block.leftEdge + zWS / 2, block.topEdge + zWS / 2,
-							block.width - zWS, block.height - zWS);
-					if (rect.contains(xa, ya)) {
-
+					block.calcEdges();
+					Rectangle rect = new Rectangle(block.leftEdge + zWS, block.topEdge + zWS,
+							block.width - zWS * 2, block.height - zWS * 2);
+					if (rect.contains(xa, ya)) {	
 						mousePressedX = oldx = xa;
 						mousePressedY = oldy = ya;
 						blockSelForDragging = block;
@@ -7060,7 +7044,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					repaint();
 					return;
 				}
-				edgePoint = findBlockEdge(xa, ya);
+				edgePoint = findBlockEdge(xa, ya);         
 				if (edgePoint != null) {
 					xa = edgePoint.x;
 					ya = edgePoint.y;
@@ -7074,10 +7058,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				ocx = blockSelForDragging.cx;
 				ocy = blockSelForDragging.cy;
 				ow = blockSelForDragging.width;
-				oh = blockSelForDragging.height;
+				oh = blockSelForDragging.height;			 
 				repaint();
 				return;
-			}
+		    } 
 
 			// if no currentArrow, but there is a found block, start an arrow
 			// if (currentArrow == null && foundBlock != null

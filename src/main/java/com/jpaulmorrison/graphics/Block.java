@@ -887,7 +887,7 @@ public class Block implements ActionListener {
 		//	showArrowEndAreas(g);		
 		
 		if (!(typeCode.equals(Types.ENCL_BLOCK)))
-		    driver.blueCircs(g);
+		    driver.drawBlueCircs(g);
 		
 		//driver.repaint();
 		driver.curDiag.area.repaint();
