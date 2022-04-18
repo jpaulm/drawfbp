@@ -6350,7 +6350,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}	
 	
-	public class SelectionArea extends JPanel implements MouseInputListener {
+	public class SelectionArea extends JPanel implements MouseListener, MouseMotionListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
 		
@@ -6697,7 +6697,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			fpArrowEndA = null;
 			fpArrowEndB = null;
 			edgePoint = null;
-
+			selArrow = null;
+ 
 			// detArr = null;
 			// detArrSegNo = -1;
 
@@ -6857,14 +6858,33 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 				}
 
 			}
+			
+			// Look for a line to detect, for popup menu - logic to end
+			// arrow at a line comes in a later section...
+			// currentArrow = null;
+			// if (!leftButton) {
+
+			if (currentArrow == null && fpArrowEndB == null &&
+					fpArrowEndA == null) {
+				ArrowPoint fpA = findArrow(xa, ya);
+				if (fpA != null && fpA.arrow != null) {
+					selArrow = fpA.arrow;
+					// fpArrowEndA = fpA;
+				}
+			}
+							
+			//selArrow = currentArrow;
 
 			//colourArrows(xa, ya);
 
-			//repaint();
+			repaint();
 		}
 
 		public void mouseEntered(MouseEvent e) {
+			
 		}
+
+	
 
 		public void mouseExited(MouseEvent e) {
 

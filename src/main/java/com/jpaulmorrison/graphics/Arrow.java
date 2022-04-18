@@ -116,8 +116,7 @@ public class Arrow implements ActionListener {
 		
 		showCompareFlag(g);
 
-		if (driver.selArrow == this)
-			g.setColor(Color.BLUE);
+		
 		
 		if (compareFlag == null || !(compareFlag.equals("D"))) {			
 
@@ -129,6 +128,9 @@ public class Arrow implements ActionListener {
 				//	g.setColor(DrawFBP.lg);
 				//else
 					// if (checkStatus == Status.UNCHECKED)
+				if (driver.selArrow == this)
+					g.setColor(Color.ORANGE);
+				else
 					g.setColor(Color.BLACK);
 			// else if (checkStatus == Status.COMPATIBLE)
 			// g.setColor(FOREST_GREEN);
@@ -267,11 +269,11 @@ public class Arrow implements ActionListener {
 					drawCircleFrom(g, fromX, fromY, toX, toY, Color.BLUE, 8);
 					
 				} else if (from.visible) {
-					g.setColor(Color.BLUE);
+					//g.setColor(Color.BLUE);
 					int y = fromY + driver.gFontHeight;
 					int x2 = fromX + driver.gFontWidth;
-					g.setColor(Color.BLACK);
-					g.drawString(upStreamPort, x2, y);
+					//g.setColor(Color.BLACK);
+					//g.drawString(upStreamPort, x2, y);
 				}
 				g.setColor(Color.BLACK);
 			}
@@ -284,10 +286,10 @@ public class Arrow implements ActionListener {
 					drawCircleTo(g, fx, fy, toX, toY, Color.BLUE, 8);
 					
 				} else if (to.visible) {
-					g.setColor(Color.BLUE);
+					//g.setColor(Color.BLUE);
 					int y = toY - driver.gFontHeight / 2;
 					x = toX - driver.gFontWidth * (downStreamPort.length() + 1);
-					g.setColor(Color.BLACK);
+					//g.setColor(Color.BLACK);
 					if (!endsAtLine && to != null && to.multiplex)
 						x -= 20;
 					g.drawString(downStreamPort, x, y);
