@@ -10,6 +10,9 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Path2D;
+
+import math.geom2d.Shape2D;
 import math.geom2d.line.Line2D;
 import java.awt.geom.PathIterator;
 import java.util.*;
@@ -50,7 +53,7 @@ public class Arrow implements ActionListener {
 	//String type;   // "I" for input to subnet; "O" for output from subnet; null if wholly inside or outside
 	
 	//LegendBlock capLegend;   //Legend block associated with Arrow 
-	LinkedList<Shape> shapeList = null;
+	LinkedList<Path2D.Double> pathList = null;
 	int highlightedSeg = -1;
 	
 	Arrowhead ah = null;
@@ -82,7 +85,7 @@ public class Arrow implements ActionListener {
 		driver = d.driver;		
 		capacity = -1;
 		ah = null;
-		shapeList = new LinkedList<>();
+		pathList = new LinkedList<>();
 		//endX2 = endY2 = -1;
 		  
 		
@@ -92,7 +95,7 @@ public class Arrow implements ActionListener {
 		//driver.validate();
 		driver.repaint();
 		
-		shapeList = new LinkedList<>();
+		pathList = new LinkedList<>();
 		
 		//int endX, endY;
 		Block from = null;
@@ -128,14 +131,19 @@ public class Arrow implements ActionListener {
 				//	g.setColor(DrawFBP.lg);
 				//else
 					// if (checkStatus == Status.UNCHECKED)
-				if (driver.selArrow == this) {
-					//g.setColor(Color.ORANGE);
-					for (Shape shape: shapeList) {
-						//(Path2D)shape.draw(g);
+				/*
+				if (driver.selArrow == this) { 
+					Graphics2D g2d = (Graphics2D) g;
+					g.setColor(Color.GRAY);					
+					for (Path2D.Double pd: pathList) {
+						g2d.draw(pd);
+						g2d.fill(pd);
 						}
-					}
+					driver.repaint();
+				}
+				*/
 				//else
-			//g.setColor(Color.BLACK);
+			g.setColor(Color.BLACK);
 			// else if (checkStatus == Status.COMPATIBLE)
 			// g.setColor(FOREST_GREEN);
 			// else
@@ -218,7 +226,7 @@ public class Arrow implements ActionListener {
 		
 		
 		if (tx > -1 && ty > -1) {
-			rebuildFatLines();
+			//rebuildFatLines();
 			
 			
 			if (!dropOldest) {
@@ -304,15 +312,26 @@ public class Arrow implements ActionListener {
 		if (extraArrowhead != null)  
 			extraArrowhead.draw(g); 
 		
+		if (driver.selArrow == this) { 
+			rebuildFatLines();
+			Graphics2D g2d = (Graphics2D) g;
+			g.setColor(Color.LIGHT_GRAY);					
+			for (Path2D.Double pd: pathList) {
+				g2d.draw(pd);
+				g2d.fill(pd);
+				}
+			driver.repaint();
+		}
+		
 		if (highlightedSeg != -1) {
-			Shape sh = shapeList.get(highlightedSeg);
+			Path2D.Double pd = pathList.get(highlightedSeg);
 			Color col = g.getColor();
 			g.setColor(ltBlue);  
-			((Graphics2D)g).fill(sh);				
+			((Graphics2D)g).fill(pd);				
 			g.setColor(col);	
 		}
 		if (!endsAtLine)
-			ah.draw(g);
+			ah.draw(g);   // draw arrowhead
 	}
 	
 	
@@ -1169,7 +1188,8 @@ public class Arrow implements ActionListener {
 	
 	void buildFatLine(int fx, int fy, int tx, int ty /*, int segNo */) {
 		
-		GeneralPath path = new GeneralPath();
+		//GeneralPath path = new GeneralPath();
+		Path2D.Double path = new Path2D.Double();
 		double x, y;
 		final int aDW = driver.zWS; // arrow Detect Width - same as detect edge size
 		x = tx - fx;
@@ -1185,9 +1205,8 @@ public class Arrow implements ActionListener {
 		// at.rotate(Math.PI / 4); // 45 degrees
 		at.rotate(tx - fx, ty - fy);
 		//Shape sh = path.createTransformedShape(at);
-		Shape sh = path.createTransformedShape(at);
-
-		shapeList.add(sh);		 	
+		Path2D.Double pd =  (Path2D.Double) path.createTransformedShape(at);
+		pathList.add(pd);		 	
 		
 			
 	}
