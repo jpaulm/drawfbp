@@ -117,26 +117,30 @@ public class Arrow implements ActionListener {
 		showCompareFlag(g);
 
 		
-		
+		g.setColor(Color.BLACK);
 		if (compareFlag == null || !(compareFlag.equals("D"))) {			
 
 			if ((from instanceof ProcessBlock || from instanceof ExtPortBlock
 					|| from instanceof Enclosure)
 					&& (to instanceof ProcessBlock || to instanceof ExtPortBlock
-							|| to instanceof Enclosure || endsAtLine))
+							|| to instanceof Enclosure || endsAtLine)) {
 				//if (compareFlag != null && compareFlag.equals("D"))
 				//	g.setColor(DrawFBP.lg);
 				//else
 					// if (checkStatus == Status.UNCHECKED)
-				if (driver.selArrow == this)
-					g.setColor(Color.ORANGE);
-				else
-					g.setColor(Color.BLACK);
+				if (driver.selArrow == this) {
+					//g.setColor(Color.ORANGE);
+					for (Shape shape: shapeList) {
+						//(Path2D)shape.draw(g);
+						}
+					}
+				//else
+			//g.setColor(Color.BLACK);
 			// else if (checkStatus == Status.COMPATIBLE)
 			// g.setColor(FOREST_GREEN);
 			// else
 			// g.setColor(ORANGE_RED);
-
+			}
 			else if (from instanceof LegendBlock || to instanceof LegendBlock)
 				g.setColor(Color.GRAY);
 		}
