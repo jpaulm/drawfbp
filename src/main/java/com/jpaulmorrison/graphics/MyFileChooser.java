@@ -2172,7 +2172,7 @@ public class MyFileChooser extends JDialog
 				g.setColor(vLightBlue);
 			else
 				g.setColor(Color.WHITE);
-			setOpaque(false);
+			//setOpaque(false);
 			setFocusPainted(false);
 
 		}

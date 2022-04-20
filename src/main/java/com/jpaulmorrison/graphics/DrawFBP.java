@@ -5465,27 +5465,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		return image;
 	}
 	
-	/*
-	public void paint(Graphics g) {
-		//super.paint(g);
-		dbImage = createImage(getWidth(), getHeight());
-		dbg = dbImage.getGraphics(); 
-		
-		super.paint(dbg);	
-		
-		g.drawImage(dbImage, 0, 0, this);
-	}
-
-	 
-	public void paintComponent(Graphics g) {
-		// video says do drawline etc. here!		 
-		 
-		getContentPane().paintComponents(g);
-		
-		repaint();
-	}
 	
-	*/ 
 	 
 	public static void main(final String[] args) {
 
@@ -6376,7 +6356,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			
 			
 			// Paint background if we're opaque.
-			//super.paintComponent(g);
+			super.paintComponent(g);
 
 			Graphics2D g2d = (Graphics2D) g;
 			
@@ -6389,12 +6369,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			int w = getWidth();
 		  
 			 
-			if (isOpaque()) {
+			//if (isOpaque()) {
 				// g.setColor(getBackground());
 				g.setColor(Color.WHITE);
 				int h = getHeight();
 				g.fillRect(0, 0, (int) (w), (int) (h));
-			}
+			//}
 			 
   
 			int i = jtp.getSelectedIndex();
@@ -7126,12 +7106,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						}
 					}
 					  
-					//arrow.rebuildFatLines();
+					arrow.rebuildFatLines();
+					//arrow.buildArrowhead(arrow.toX, arrow.toY);
 				}
 				// repaint();
 				curDiag.changed = true;
 				panX = xa;
 				panY = ya;
+				
 				repaint();
 				return;
 			}
@@ -7263,10 +7245,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					if (arrow.toId == block.id && arrow.endsAtBlock) {
 						arrow.toX += xa - oldx;
 						arrow.toY += ya - oldy;
-						arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
+						//arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
 						arrow.extraArrowhead = null;
 						adjustArrowsEndingAtLine(arrow); // must be recursive
-						//arrow.rebuildFatLines();
+						arrow.rebuildFatLines();
 						//buildarrowhead
 					}
 				}

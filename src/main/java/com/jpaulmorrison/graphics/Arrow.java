@@ -312,7 +312,7 @@ public class Arrow implements ActionListener {
 		if (driver.selArrow == this) { 
 			rebuildFatLines();
 			Graphics2D g2d = (Graphics2D) g;
-			g.setColor(Color.LIGHT_GRAY);	
+			g.setColor(DrawFBP.grey);	 
 			for (Path2D.Double pd: pathList) {
 				g2d.draw(pd);
 				g2d.fill(pd);

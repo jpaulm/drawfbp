@@ -8,11 +8,11 @@ package com.jpaulmorrison.graphics;
 public final class VersionAndTimestamp {
 
 
-	static String version = "3.1.7";
+	static String version = "3.1.8";
 
 
 
-	static String date = "Apr. 16, 2022";
+	static String date = "Apr. 20, 2022";
 
 	static String getVersion() {
 		return version;

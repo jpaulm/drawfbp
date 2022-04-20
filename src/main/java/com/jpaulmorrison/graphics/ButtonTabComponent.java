@@ -56,7 +56,8 @@ public class ButtonTabComponent extends JPanel {
         }
         //this.pane = pane;
         this.driver = driver;
-        setOpaque(false);         
+        //setOpaque(false);    
+        setOpaque(true);
         
         label = new JLabel();         
         add(label);
@@ -83,7 +84,8 @@ public class ButtonTabComponent extends JPanel {
         }
         int i = driver.jtp.getSelectedIndex();        
         boolean selected = (i == k);  
-        setBackground(selected ? Color.WHITE : Color.lightGray); 
+        //setBackground(selected ? Color.WHITE : Color.lightGray); 
+        setBackground(!selected ? Color.WHITE : DrawFBP.slateGray1); 
         label.setFont(driver.fontf);
         String s = "(untitled)";
         //Diagram d = b.diag;        
