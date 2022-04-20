@@ -12,7 +12,6 @@ import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
 
-import math.geom2d.Shape2D;
 import math.geom2d.line.Line2D;
 import java.awt.geom.PathIterator;
 import java.util.*;
@@ -20,8 +19,6 @@ import java.util.*;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-
-import com.jpaulmorrison.graphics.DrawFBP.ArrowSeg;
 
 //import com.jpaulmorrison.graphics.DrawFBP.Side;
 
@@ -284,8 +281,8 @@ public class Arrow implements ActionListener {
 					//g.setColor(Color.BLUE);
 					int y = fromY + driver.gFontHeight;
 					int x2 = fromX + driver.gFontWidth;
-					//g.setColor(Color.BLACK);
-					//g.drawString(upStreamPort, x2, y);
+					g.setColor(Color.BLACK);
+					g.drawString(upStreamPort, x2, y);
 				}
 				g.setColor(Color.BLACK);
 			}
@@ -315,7 +312,7 @@ public class Arrow implements ActionListener {
 		if (driver.selArrow == this) { 
 			rebuildFatLines();
 			Graphics2D g2d = (Graphics2D) g;
-			g.setColor(Color.LIGHT_GRAY);					
+			g.setColor(Color.LIGHT_GRAY);	
 			for (Path2D.Double pd: pathList) {
 				g2d.draw(pd);
 				g2d.fill(pd);
@@ -938,7 +935,7 @@ public class Arrow implements ActionListener {
 					driver.bendForDragging = bn;
 					return;
 				}
-				ArrowSeg arrseg = driver.new ArrowSeg(x1, y1, x2, y2, this, segNo);
+				Line2D arrseg = new Line2D(x1, y1, x2, y2);
 				if (driver.nearpln(x, y, arrseg)) {
 					bn = new Bend(x, y);
 					if (x1 == b.x) // if line vertical
@@ -960,7 +957,7 @@ public class Arrow implements ActionListener {
 			bends = new LinkedList<>();
 		x2 = toX;
 		y2 = toY;
-		ArrowSeg arrseg = driver.new ArrowSeg(x1, y1, x2, y2, this, segNo);
+		Line2D arrseg = new Line2D(x1, y1, x2, y2);
 		if (driver.nearpln(x, y, arrseg)) {	
 			bn = new Bend(x, y);
 			if (x1 == toX) // if line vertical

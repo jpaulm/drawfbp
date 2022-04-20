@@ -5550,66 +5550,60 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	}
 	*/
 	// @Override
-		public void mouseReleased(MouseEvent e) {
-			// TODO Auto-generated method stub
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
 
-		}
+	}
 
-		public void mouseClicked(MouseEvent e) {
-			int i = jtp.indexAtLocation(e.getX(), e.getY());
-			if (i > -1) {
+	public void mouseClicked(MouseEvent e) {
+		int i = jtp.indexAtLocation(e.getX(), e.getY());
+		if (i > -1) {
 
-				ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
-				if (b != null && b.diag != null) {
+			ButtonTabComponent b = (ButtonTabComponent) jtp.getTabComponentAt(i);
+			if (b != null && b.diag != null) {
 
-					Diagram diag = b.diag;
+				Diagram diag = b.diag;
 
-					if (diag == null)
-						getNewDiag();
+				if (diag == null)
+					getNewDiag();
 
-					jtp.setSelectedIndex(i);
-				}
-
+				jtp.setSelectedIndex(i);
 			}
 
-			repaint();
-
 		}
 
-		public void mouseEntered(MouseEvent arg0) {
-			// TODO Auto-generated method stub
+		repaint();
 
-		}
+	}
 
-		public void mouseExited(MouseEvent arg0) {
-			// TODO Auto-generated method stub
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 
-		}
+	}
 
-		public void mousePressed(MouseEvent arg0) {
-			// TODO Auto-generated method stub
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 
-		}
+	}
 
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			//selBlockM = null;
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// selBlockM = null;
+
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// selBlockM = null;
+
+	}
+
 			
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			//selBlockM = null;
-			
-		}
-
-		 
-		//public void repaint() {
-			
-		//}
-		
-		 
-		
 	public static class Notation {
 		// this class refers the network notation
 		String label;
@@ -6318,20 +6312,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 	}	
 	
-	public class ArrowSeg extends Line2D {
-		  
-		//private static final long serialVersionUID = 1L;			
-		Bend bend; 
-		Arrow arr;
-		int seg;
-				
-		ArrowSeg(int x1, int y1, int x2, int y2, Arrow a, int segNo) {
-			super(x1, y1, x2, y2);
-			this.arr = a;	
-			this.seg = segNo;
-		}
-	}	
-	
+		
 	public class SelectionArea extends JPanel implements MouseListener, MouseMotionListener {
 		static final long serialVersionUID = 111L;
 		int oldx, oldy, mousePressedX, mousePressedY;
@@ -6390,24 +6371,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		}
 
-		/*
-
-		public void paint(Graphics g) {
-
-			//super.paint(g);
-			dbImage = createImage(getWidth(), getHeight());
-			dbg = dbImage.getGraphics(); 
-			
-			//super.paint(dbg);	
-			Graphics2D g2d = (Graphics2D) dbg;
-			g2d.scale(scalingFactor, scalingFactor);  
-			paintComponent(dbg);
-			
-			g.drawImage(dbImage, 0, 0, this);
-		}
-
- */
-
+	
 		public void paintComponent(Graphics g) {
 			
 			
@@ -7391,9 +7355,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					else {
 						fpArrowEndA = findArrow(xa, ya);
 						
-						if (fpArrowEndA != null && fpArrowEndA.arrow != null)  
-							currentArrow.toId = -2;  
+						if (fpArrowEndA != null && fpArrowEndA.arrow != null) { 
+							currentArrow.toId = -2; 
+							selArrow = fpArrowEndA.arrow; 
 						}
+						
+					}
 				}
 
 			}

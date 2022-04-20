@@ -70,7 +70,6 @@ com/jpaulmorrison/graphics/DrawFBP.java
  com.jpaulmorrison.graphics.DrawFBP$8
  com.jpaulmorrison.graphics.DrawFBP$9
  com.jpaulmorrison.graphics.DrawFBP$ArrowPoint
- com.jpaulmorrison.graphics.DrawFBP$ArrowSeg
  com.jpaulmorrison.graphics.DrawFBP$BendPoint
  com.jpaulmorrison.graphics.DrawFBP$BlockPoint
  com.jpaulmorrison.graphics.DrawFBP$CloseAppAction
