@@ -12,7 +12,7 @@ public final class VersionAndTimestamp {
 
 
 
-	static String date = "Apr. 20, 2022";
+	static String date = "Apr. 21, 2022";
 
 	static String getVersion() {
 		return version;

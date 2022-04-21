@@ -974,7 +974,8 @@ public class Diagram {
 			g.setFont(driver.fontg);
 		}
 
-		driver.showImage(combined, diagFile.getName(), true);   
+		driver.showImage(combined, diagFile.getName(), true);  
+		driver.repaint();
 		 
 	}
 	

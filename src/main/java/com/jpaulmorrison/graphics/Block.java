@@ -356,19 +356,24 @@ public class Block implements ActionListener {
 			g.setColor(Color.BLACK);
 		}
 
-		
-
 		//blueCircs(g);
-		
-		 
 	}
 	
 		
 	void calcEdges() {
-		leftEdge = cx - width / 2;
-		rightEdge = cx + width / 2;
-		topEdge = cy - height / 2;
-		botEdge = cy + height / 2;
+		//if (!(this instanceof Enclosure)) {
+			leftEdge = cx - width / 2;
+			rightEdge = cx + width / 2;
+			topEdge = cy - height / 2;
+			botEdge = cy + height / 2;
+		//} else  {
+		//	int hh = driver.gFontHeight; 
+		//	leftEdge = cx - width / 2 + width / 5;
+		//	rightEdge = cx + width / 2 - width / 5;
+		//	topEdge = cy - height / 2 - hh;
+		//	botEdge = cy - height / 2 + hh;
+		//}
+		 
 	}
 	void calcDiagMaxAndMin(int xmin, int xmax, int ymin, int ymax) {
 		//if (visible) {
@@ -901,7 +906,6 @@ public class Block implements ActionListener {
 		Color col = g.getColor();
 		g.setColor(DrawFBP.grey);   
 		Graphics2D g2 = (Graphics2D) g;
-		
 		g2.fill(leftRect);
 		g2.fill(topRect);
 		g2.fill(rightRect);

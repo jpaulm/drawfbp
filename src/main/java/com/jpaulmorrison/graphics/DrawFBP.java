@@ -1159,8 +1159,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuItem = new JMenuItem("Change Font Size");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
-
 		fileMenu.addSeparator();
+		menuItem = new JMenuItem("Create Image");
+		fileMenu.add(menuItem);
+		menuItem.addActionListener(this);
+
+		//fileMenu.addSeparator();
 		menuItem = new JMenuItem("Show Image");
 		fileMenu.add(menuItem);
 		menuItem.addActionListener(this);
@@ -1204,10 +1208,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		menuItem = new JMenuItem("New Block");
 		diagMenu.add(menuItem);
 		menuItem.addActionListener(this);
-		diagMenu.addSeparator();
-		menuItem = new JMenuItem("Create Image");
-		diagMenu.add(menuItem);
-		menuItem.addActionListener(this);
+		//diagMenu.addSeparator();
+		//menuItem = new JMenuItem("Create Image");
+		//diagMenu.add(menuItem);
+		//menuItem.addActionListener(this);
 		//menuItem = new JMenuItem("Show Image");
 		//diagMenu.add(menuItem);
 		//menuItem.addActionListener(this);
@@ -7131,6 +7135,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					tailMark.y = ya;
 					curDiag.changed = true;
 					currentArrow = arr;
+					arr.rebuildFatLines();
 					//buildArrowhead
 					repaint();
 					return;
@@ -7140,7 +7145,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 					arr.toX = xa;
 					arr.toY = ya;
 					//arr.ah = arr.buildArrowhead(arr.toX, arr.toY);  
-					//arr.rebuildFatLines();
+					arr.rebuildFatLines();
 					headMark.x = xa;
 					headMark.y = ya;
 					curDiag.changed = true;
@@ -7239,7 +7244,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 						arrow.fromY += ya - oldy;
 						arrow.extraArrowhead = null;
 						adjustArrowsEndingAtLine(arrow); // must be recursive
-						//arrow.rebuildFatLines();
+						arrow.rebuildFatLines();
 						//arrow.ah = arrow.buildArrowhead(arrow.toX, arrow.toY);  
 					}
 					if (arrow.toId == block.id && arrow.endsAtBlock) {
@@ -7294,7 +7299,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 									bd.y += ya - oldy;
 								}
 							//a.ah = a.buildArrowhead(a.toX, a.toY);  
-							//a.rebuildFatLines();
+							a.rebuildFatLines();
 						}
 						
 						repaint();
