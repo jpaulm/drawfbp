@@ -30,7 +30,7 @@ class SplashWindow extends JWindow {
 		ImageIcon icon = new ImageIcon(i);
 		JLabel l = new JLabel(icon);
 		c.add(l, BorderLayout.CENTER);
-		pack();
+		//pack();
 		driver.repaint();
 
 		Point p = driver.getLocation();

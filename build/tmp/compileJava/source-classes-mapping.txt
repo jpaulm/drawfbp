@@ -1,3 +1,8 @@
+com/jpaulmorrison/graphics/ButtonTabComponent2.java
+ com.jpaulmorrison.graphics.ButtonTabComponent2
+ com.jpaulmorrison.graphics.ButtonTabComponent2$1
+ com.jpaulmorrison.graphics.ButtonTabComponent2$2
+ com.jpaulmorrison.graphics.ButtonTabComponent2$TabButton
 com/jpaulmorrison/graphics/ReportBlock.java
  com.jpaulmorrison.graphics.ReportBlock
 com/jpaulmorrison/graphics/Block.java
@@ -51,6 +56,12 @@ com/jpaulmorrison/graphics/CodeManager.java
  com.jpaulmorrison.graphics.CodeManager$MyDocListener1
 com/jpaulmorrison/graphics/PersonBlock.java
  com.jpaulmorrison.graphics.PersonBlock
+com/jpaulmorrison/graphics/TabComponentsDemo.java
+ com.jpaulmorrison.graphics.TabComponentsDemo
+ com.jpaulmorrison.graphics.TabComponentsDemo$1
+ com.jpaulmorrison.graphics.TabComponentsDemo$2
+ com.jpaulmorrison.graphics.TabComponentsDemo$3
+ com.jpaulmorrison.graphics.TabComponentsDemo$4
 com/jpaulmorrison/graphics/MyOptionPane.java
  com.jpaulmorrison.graphics.MyOptionPane
 com/jpaulmorrison/graphics/Arrow.java

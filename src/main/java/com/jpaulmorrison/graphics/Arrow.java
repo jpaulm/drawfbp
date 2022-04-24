@@ -506,7 +506,7 @@ public class Arrow implements ActionListener {
 		s = item.get("toy").trim();
 		toY = Integer.parseInt(s);
 		
-		//ah = buildArrowhead(toX, toY);  
+		ah = buildArrowhead(toX, toY);  
 		rebuildFatLines();  
 		
 		upStreamPort = item.get("upstreamport");		

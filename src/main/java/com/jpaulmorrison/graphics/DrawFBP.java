@@ -283,6 +283,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	JMenu diagMenu;
 	JMenu helpMenu;
 
+	JMenuBar menuBar = null;
 	JMenuItem gNMenuItem = null;
 	JMenuItem[] gMenu = null;
 	JMenuItem menuItem1 = new JMenuItem();
@@ -381,6 +382,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 	DrawFBP(String[] args) {
 
+		//public void runTest() {
 		//setVisible(false);
 		properties = new HashMap<>();
 		startProperties = new HashMap<>();
@@ -431,6 +433,8 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		// langs[Lang.PROCESS] = new Lang(null, "proc", null, currNotn.srcDirProp);
 		// langs[Lang.NETWORK] = new Lang(null, "network", null, currNotn.netDirProp);
 
+		// Create the menu bar.
+		menuBar = new JMenuBar();
 		fileMenu = new JMenu(" File ");
 		diagMenu = new JMenu(" Diagram ");
 		helpMenu = new JMenu(" Help ");
@@ -477,6 +481,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		}
 
 	}
+	 
 
 	/**
 	 * Create the GUI and show it. For thread safety, this method should be invoked
@@ -514,12 +519,17 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		//getContentPane().add(jsp);
 		applyOrientation(this);
 
-		int w = (int) dim.getWidth() - 100;
-		int h = (int) dim.getHeight() - 100;
+		//try!
 		
-		setPreferredSize(new Dimension(w, h));
+		//int w = (int) dim.getWidth() - 100;
+		//int h = (int) dim.getHeight() - 100;
 		
-		setLocation(new Point(50, 50));
+		//setPreferredSize(new Dimension(w, h));
+		
+		//setLocation(new Point(50, 50));
+		
+		// try end
+		
 		// maxX = (int) (w * .8);
 		// maxY = (int) (h * .8);
 		//buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -722,7 +732,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		if (currNotn == null)
 			currNotn = notations[Notation.JAVA_FBP];	
 		
-		setNotation(currNotn, false);  // not changing notation
+		//setNotation(currNotn, false);  // not changing notation
 
 		String t = properties.get("x");
 		int x = 0, y = 0, w2 = 1200, h2 = 800;
@@ -751,14 +761,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 		
 		// Display the window.
-		pack();
+		//pack();
 		
-		setVisible(true); 
+		//setVisible(true); 
 		
-		FontMetrics metrics =  getGraphics().getFontMetrics(fontg);
+		//FontMetrics metrics =  getGraphics().getFontMetrics(fontg);
 
-		gFontWidth = metrics.charWidth('n'); // should be the average!
-		gFontHeight = metrics.getAscent() + metrics.getLeading();
+		//gFontWidth = metrics.charWidth('n'); // should be the average!
+		//gFontHeight = metrics.getAscent() + metrics.getLeading();
 		
 
 		sortByDate = false;
@@ -780,7 +790,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		addComponentListener(this);
 		
 		Container cont = getContentPane();
+		
+		//-----------------------------------
+		
 		buildUI(cont);		
+		
+		//-----------------------------------
 
 		add(Box.createRigidArea(new Dimension(0, 10)));
 
@@ -799,6 +814,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		if (!small) // try suppressing this...
 			new SplashWindow(3000, this, small); // display
+		
+		pack();
+		
+		setVisible(true); 
+		repaint();
+		
+		FontMetrics metrics =  getGraphics().getFontMetrics(fontg);
+
+		gFontWidth = metrics.charWidth('n'); // should be the average!
+		gFontHeight = metrics.getAscent() + metrics.getLeading();
+
+
 		// for 3.0 secs, or until mouse is moved
 
 		// if (diagramName != null) {
@@ -814,236 +841,16 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Open " + diagramName));
 	
 		
-		//repaint();
+		repaint();
 
 	}
-
-	private void buildUI(Container container) {
-
-		buildPropDescTable();
-
-		if (diagramName == null)
-			diagramName = properties.get("currentDiagram");
-
-		
-		getNewDiag();
-		curDiag.desc = "Click anywhere on selection area";
-
-		// jtp.addMouseListener(mouseListener);
-		jtp.addMouseListener(this);
-
-		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		Box vbox1 = new Box(BoxLayout.Y_AXIS);
-		container.add(vbox1);
-
-		Box hbox4 = new Box(BoxLayout.X_AXIS);
-		vbox1.add(hbox4);
-		Box vbox45 = new Box(BoxLayout.Y_AXIS);
-		Box hbox46 = new Box(BoxLayout.X_AXIS);
-		Box hbox5 = new Box(BoxLayout.X_AXIS);
-		Box hbox61 = new Box(BoxLayout.X_AXIS);
-		Box hbox62 = new Box(BoxLayout.X_AXIS);
-		Box vbox6 = new Box(BoxLayout.Y_AXIS);
-
-		hbox5.add(Box.createRigidArea(new Dimension(10, 0)));
-
-		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
-
-		// scaleLab = new JLabel();
-		hbox61.add(scaleLabel);
-		hbox61.add(Box.createRigidArea(new Dimension(5, 0)));
-
-		hbox62.add(zoom);
-		hbox62.add(Box.createRigidArea(new Dimension(5, 0)));
-
-		vbox6.add(zoomSlider);
-		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
-
-		scaleLabel.setForeground(Color.BLUE);
-		// String scale = "100%";
-		// scaleLab.setText(scale);
-
-		saveProp("scalingfactor", Double.toString(scalingFactor));
-
-		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
-		vbox6.add(hbox61);
-		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
-		vbox6.add(hbox62);
-		hbox5.add(vbox6);
-		hbox5.add(Box.createRigidArea(new Dimension(10, 0)));
-		// grid.setAlignmentX(JComponent.LEFT_ALIGNMENT);
-		grid.setFont(fontg);
-		grid.setSelected(true);
-		// box.add(grid);
-		grid.setActionCommand("Toggle Click to Grid");
-		grid.addActionListener(this);
-		grid.setBackground(slateGray1);
-		grid.setBorderPaintedFlat(false);
-		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
-		vbox45.add(hbox5);
-		vbox45.add(Box.createRigidArea(new Dimension(0, 10)));
-
-		hbox46.add(grid);
-		hbox46.add(Box.createRigidArea(new Dimension(0, 10)));
-		vbox45.add(hbox46);
-		// scaleLab.setFont(fontg);
-
-		hbox4.add(vbox45);
-		//Point p = jtp.getLocation();
-		//jtp.setLocation(p.x + 100, p.y);
-		
-		//Box vbox7 = new Box(BoxLayout.Y_AXIS);
-		//vbox7.add(jtp);
-		//vbox7.add(curDiag.area);  
-		//hbox4.add(vbox7);
-		hbox4.add(jtp);
-		hbox4.add(Box.createRigidArea(new Dimension(50, 0)));
-		// jtp.setBackground(Color.WHITE);
-		// Align the left edges of the components.
-		// curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
-		diagDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
-		// label.setLabelFor(area);
-		vbox1.add(diagDesc);
-		Font ft = fontg.deriveFont(Font.BOLD);
-		diagDesc.setFont(ft);
-		diagDesc.setPreferredSize(new Dimension(0, gFontHeight * 2));
-		diagDesc.setForeground(Color.BLUE);
-
-		vbox1.add(Box.createRigidArea(new Dimension(0, 4)));
-		Box box2 = new Box(BoxLayout.X_AXIS);
-		// JScrollPane jsp = new JScrollPane();
-		// box2.add(jsp);
-		box2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-		// box1.add(box2);
-		// box2.add(Box.createHorizontalGlue());
-		// box2.add(Box.createHorizontalStrut(0));
-		box2.add(pan);
-		box2.add(Box.createRigidArea(new Dimension(10, 0)));
-		pan.setSelected(false);
-		pan.setFont(fontg);
-		pan.setActionCommand("Toggle Pan Switch");
-		pan.addActionListener(this);
-		pan.setBackground(slateGray1);
-		pan.setBorderPaintedFlat(false);
-
-		up.setFont(fontg);
-		up.setActionCommand("Go to Dir");
-		up.addActionListener(this);
-		up.setBackground(slateGray1);
-		up.setMinimumSize(new Dimension(11 * gFontWidth, up.getHeight()));
-		// up.setEnabled(false);
-
-		// pan.setBorder(null);
-		// pan.setPreferredSize(new Dimension(50, 20));
-		ButtonGroup butGroup = new ButtonGroup();
-
-		box21 = new Box(BoxLayout.X_AXIS);
-		box2.add(box21);
-		box2.add(Box.createRigidArea(new Dimension(10, 0)));
-		box2.add(up);
-		// box2.add(Box.createHorizontalStrut(0));
-		//pack();
-
-		up.setText("Go to Dir");
-		
-		but = new MyRadioButton[11];
-		for (int j = 0; j < but.length; j++) {
-			but[j] = new MyRadioButton();
-			but[j].addActionListener(this);
-			butGroup.add(but[j]);
-			box21.add(but[j]);
-			if (j < but.length - 1)
-				box21.add(Box.createHorizontalGlue());
-			but[j].setText(blockNames[j]);
-			but[j].setFocusable(true);
-		}
-		
-		but[but.length - 1].setAlignmentX(Component.RIGHT_ALIGNMENT);
-		
-		but[BUT_PROCESS].code = Block.Types.PROCESS_BLOCK;
-		but[BUT_IIP].code = Block.Types.IIP_BLOCK;
-		but[BUT_ENCL].code = Block.Types.ENCL_BLOCK;
-		but[BUT_SUBNET].code = Block.Types.PROCESS_BLOCK;
-		but[BUT_EXTPORT_IN].code = Block.Types.EXTPORT_IN_BLOCK;
-		but[BUT_EXTPORT_OUT].code = Block.Types.EXTPORT_OUT_BLOCK;
-		but[BUT_EXTPORT_OI].code = Block.Types.EXTPORT_OUTIN_BLOCK;
-		but[BUT_LEGEND].code = Block.Types.LEGEND_BLOCK;
-		but[BUT_FILE].code = Block.Types.FILE_BLOCK;
-		but[BUT_PERSON].code = Block.Types.PERSON_BLOCK;
-		but[BUT_REPORT].code = Block.Types.REPORT_BLOCK;
-		
-		but[BUT_PERSON].oneLine = true; 
-		but[BUT_EXTPORT_IN].oneLine = true; 
-		but[BUT_EXTPORT_OUT].oneLine = true; 
-		but[BUT_EXTPORT_OI].oneLine = true; 
-		but[BUT_IIP].oneLine = true; 
-		but[BUT_ENCL].oneLine = true; 
-		
-		selRB = but[BUT_PROCESS];  // set selected RadioButton to "Process"	
-
-		vbox1.add(box2);
-
-		// box21.add(Box.createRigidArea(new Dimension(10,0)));
-		// box21.add(Box.createHorizontalStrut(10));
-		//adjustFonts();
-
-		but[0].setSelected(true); // "Process"
-
-		box2.add(Box.createRigidArea(new Dimension(10, 0)));
-		// box2.add(Box.createHorizontalGlue());
-		//for (int j = 0; j < but.length; j++) {
-		//	but[j].getInputMap().put(escapeKS, "CLOSE");
-		//	but[j].getActionMap().put("CLOSE", escapeAction);
-		//}
-
-		BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
-		// loadImage("javaIcon.jpg");
-		setIconImage(image);
-		leafIcon = new ImageIcon(image);
-
-		image = loadImage("javaIcon.jpg");
-		javaIcon = new ImageIcon(image);
-
-		image = loadImage("jarIcon.jpg");
-		jarIcon = new ImageIcon(image);
-
-		image = loadImage("folderIcon.jpg");
-		folderIcon = new ImageIcon(image);
-
-		image = loadImage("classIcon.jpg");
-		classIcon = new ImageIcon(image);
-
-		Toolkit tk = Toolkit.getDefaultToolkit();
-		//image = null;
-		openPawCursor = null;
-
-		image = loadImage("open_paw.gif");
-		openPawCursor = tk.createCustomCursor(image, new Point(15, 15), "Paw");
-
-		closedPawCursor = null;
-
-		image = loadImage("closed_paw.gif");
-		closedPawCursor = tk.createCustomCursor(image, new Point(15, 15), "Paw");
-
-		image = loadImage("drag_icon.gif");
-		dragIcon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
-		
-		//menuBar = createMenuBar();
-		//setJMenuBar(menuBar);
-		
-		
-		setNotation(currNotn, false);
-		adjustFonts();
-		
-	}
-	
 	
 	public JMenuBar createMenuBar() {
 
 		// JMenu editMenu;
 
 		// Create the menu bar.
-		JMenuBar menuBar = new JMenuBar();
+		//JMenuBar menuBar = new JMenuBar();
 		// menuBar.add(Box.createRigidArea(new Dimension(20, 0)));
 		// menuBar.setColor(new Color(200, 255, 255));
 
@@ -1248,12 +1055,18 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		helpMenu.setBorderPainted(true);
 		// helpMenu.setColor(new Color(121, 201, 201));
 		menuBar.add(helpMenu);
+		
+		menuBar.add(Box.createHorizontalStrut(100));
+		//JPanel p = new JPanel();
+		
+		//p.add(nsLabel, BorderLayout.LINE_END);
+		//menuBar.add(p, BorderLayout.LINE_END);
 
 		Box box0 = new Box(BoxLayout.X_AXIS);
 		// JPanel jp1 = new JPanel();
 		//Dimension dim = jtf.getPreferredSize();
 		//jtf.setPreferredSize(new Dimension(gFontWidth * 20, dim.height));  // let it float...?
-
+		
 		box0.add(Box.createRigidArea(new Dimension(20, 0)));
 		box0.add(jtf); // languages
 
@@ -1268,6 +1081,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 		box0.add(Box.createRigidArea(new Dimension(10, 0)));
 
 		box0.add(jfv);
+		
 		menuBar.add(box0);
 
 		setNotation(currNotn, false);
@@ -1304,6 +1118,229 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		return menuBar;
 	}
+	
+
+	private void buildUI(Container container) {
+
+		buildPropDescTable();
+
+		if (diagramName == null)
+			diagramName = properties.get("currentDiagram");
+
+		
+		getNewDiag();
+		curDiag.desc = "Click anywhere on selection area";
+
+		// jtp.addMouseListener(mouseListener);
+		jtp.addMouseListener(this);
+
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		Box vbox1 = new Box(BoxLayout.Y_AXIS);
+		//container.add(vbox1);
+		container.add(vbox1, BorderLayout.WEST);
+
+		Box hbox4 = new Box(BoxLayout.X_AXIS);
+		vbox1.add(hbox4);
+		Box vbox45 = new Box(BoxLayout.Y_AXIS);
+		Box hbox46 = new Box(BoxLayout.X_AXIS);
+		Box hbox5 = new Box(BoxLayout.X_AXIS);
+		Box hbox61 = new Box(BoxLayout.X_AXIS);
+		Box hbox62 = new Box(BoxLayout.X_AXIS);
+		Box vbox6 = new Box(BoxLayout.Y_AXIS);
+
+		hbox5.add(Box.createRigidArea(new Dimension(10, 0)));
+
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+
+		// scaleLab = new JLabel();
+		hbox61.add(scaleLabel);
+		hbox61.add(Box.createRigidArea(new Dimension(5, 0)));
+
+		hbox62.add(zoom);
+		hbox62.add(Box.createRigidArea(new Dimension(5, 0)));
+
+		vbox6.add(zoomSlider);
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+
+		scaleLabel.setForeground(Color.BLUE);
+		// String scale = "100%";
+		// scaleLab.setText(scale);
+
+		saveProp("scalingfactor", Double.toString(scalingFactor));
+
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox6.add(hbox61);
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox6.add(hbox62);
+		hbox5.add(vbox6);
+		hbox5.add(Box.createRigidArea(new Dimension(10, 0)));
+		// grid.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+		grid.setFont(fontg);
+		grid.setSelected(true);
+		// box.add(grid);
+		grid.setActionCommand("Toggle Click to Grid");
+		grid.addActionListener(this);
+		grid.setBackground(slateGray1);
+		grid.setBorderPaintedFlat(false);
+		vbox6.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox45.add(hbox5);
+		vbox45.add(Box.createRigidArea(new Dimension(0, 10)));
+
+		hbox46.add(grid);
+		hbox46.add(Box.createRigidArea(new Dimension(0, 10)));
+		vbox45.add(hbox46);
+		// scaleLab.setFont(fontg);
+
+		hbox4.add(vbox45);
+		//Point p = jtp.getLocation();
+		//jtp.setLocation(p.x + 100, p.y);
+		
+		//Box vbox7 = new Box(BoxLayout.Y_AXIS);
+		//vbox7.add(jtp);
+		//vbox7.add(curDiag.area);  
+		//hbox4.add(vbox7);
+		hbox4.add(jtp);
+		hbox4.add(Box.createRigidArea(new Dimension(50, 0)));
+		// jtp.setBackground(Color.WHITE);
+		// Align the left edges of the components.
+		// curDiag.area.setAlignmentX(Component.LEFT_ALIGNMENT);
+		diagDesc.setAlignmentX(Component.CENTER_ALIGNMENT);
+		// label.setLabelFor(area);
+		vbox1.add(diagDesc);
+		Font ft = fontg.deriveFont(Font.BOLD);
+		diagDesc.setFont(ft);
+		diagDesc.setPreferredSize(new Dimension(0, gFontHeight * 2));
+		diagDesc.setForeground(Color.BLUE);
+
+		vbox1.add(Box.createRigidArea(new Dimension(0, 4)));
+		Box hbox2 = new Box(BoxLayout.X_AXIS);
+		// JScrollPane jsp = new JScrollPane();
+		// box2.add(jsp);
+		hbox2.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+		// box1.add(box2);
+		// box2.add(Box.createHorizontalGlue());
+		// box2.add(Box.createHorizontalStrut(0));
+		hbox2.add(pan);
+		hbox2.add(Box.createRigidArea(new Dimension(10, 0)));
+		pan.setSelected(false);
+		pan.setFont(fontg);
+		pan.setActionCommand("Toggle Pan Switch");
+		pan.addActionListener(this);
+		pan.setBackground(slateGray1);
+		pan.setBorderPaintedFlat(false);
+
+		up.setFont(fontg);
+		up.setActionCommand("Go to Dir");
+		up.addActionListener(this);
+		up.setBackground(slateGray1);
+		up.setMinimumSize(new Dimension(11 * gFontWidth, up.getHeight()));
+		// up.setEnabled(false);
+
+		// pan.setBorder(null);
+		// pan.setPreferredSize(new Dimension(50, 20));
+		ButtonGroup butGroup = new ButtonGroup();
+
+		box21 = new Box(BoxLayout.X_AXIS);
+		hbox2.add(box21);
+		hbox2.add(Box.createRigidArea(new Dimension(10, 0)));
+		hbox2.add(up);
+		// box2.add(Box.createHorizontalStrut(0));
+		//pack();
+
+		up.setText("Go to Dir");
+		
+		but = new MyRadioButton[11];
+		for (int j = 0; j < but.length; j++) {
+			but[j] = new MyRadioButton();
+			but[j].addActionListener(this);
+			butGroup.add(but[j]);
+			box21.add(but[j]);
+			if (j < but.length - 1)
+				box21.add(Box.createHorizontalGlue());
+			but[j].setText(blockNames[j]);
+			but[j].setFocusable(true);
+		}
+		
+		but[but.length - 1].setAlignmentX(Component.RIGHT_ALIGNMENT);
+		
+		but[BUT_PROCESS].code = Block.Types.PROCESS_BLOCK;
+		but[BUT_IIP].code = Block.Types.IIP_BLOCK;
+		but[BUT_ENCL].code = Block.Types.ENCL_BLOCK;
+		but[BUT_SUBNET].code = Block.Types.PROCESS_BLOCK;
+		but[BUT_EXTPORT_IN].code = Block.Types.EXTPORT_IN_BLOCK;
+		but[BUT_EXTPORT_OUT].code = Block.Types.EXTPORT_OUT_BLOCK;
+		but[BUT_EXTPORT_OI].code = Block.Types.EXTPORT_OUTIN_BLOCK;
+		but[BUT_LEGEND].code = Block.Types.LEGEND_BLOCK;
+		but[BUT_FILE].code = Block.Types.FILE_BLOCK;
+		but[BUT_PERSON].code = Block.Types.PERSON_BLOCK;
+		but[BUT_REPORT].code = Block.Types.REPORT_BLOCK;
+		
+		but[BUT_PERSON].oneLine = true; 
+		but[BUT_EXTPORT_IN].oneLine = true; 
+		but[BUT_EXTPORT_OUT].oneLine = true; 
+		but[BUT_EXTPORT_OI].oneLine = true; 
+		but[BUT_IIP].oneLine = true; 
+		but[BUT_ENCL].oneLine = true; 
+		
+		selRB = but[BUT_PROCESS];  // set selected RadioButton to "Process"	
+
+		vbox1.add(hbox2);
+
+		// box21.add(Box.createRigidArea(new Dimension(10,0)));
+		// box21.add(Box.createHorizontalStrut(10));
+		//adjustFonts();
+
+		but[0].setSelected(true); // "Process"
+
+		hbox2.add(Box.createRigidArea(new Dimension(10, 0)));
+		// box2.add(Box.createHorizontalGlue());
+		//for (int j = 0; j < but.length; j++) {
+		//	but[j].getInputMap().put(escapeKS, "CLOSE");
+		//	but[j].getActionMap().put("CLOSE", escapeAction);
+		//}
+
+		BufferedImage image = loadImage("DrawFBP-logo-small.jpg");
+		// loadImage("javaIcon.jpg");
+		setIconImage(image);
+		leafIcon = new ImageIcon(image);
+
+		image = loadImage("javaIcon.jpg");
+		javaIcon = new ImageIcon(image);
+
+		image = loadImage("jarIcon.jpg");
+		jarIcon = new ImageIcon(image);
+
+		image = loadImage("folderIcon.jpg");
+		folderIcon = new ImageIcon(image);
+
+		image = loadImage("classIcon.jpg");
+		classIcon = new ImageIcon(image);
+
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		//image = null;
+		openPawCursor = null;
+
+		image = loadImage("open_paw.gif");
+		openPawCursor = tk.createCustomCursor(image, new Point(15, 15), "Paw");
+
+		closedPawCursor = null;
+
+		image = loadImage("closed_paw.gif");
+		closedPawCursor = tk.createCustomCursor(image, new Point(15, 15), "Paw");
+
+		image = loadImage("drag_icon.gif");
+		dragIcon = tk.createCustomCursor(image, new Point(4, 5), "Drag");
+		
+		//menuBar = createMenuBar();
+		//setJMenuBar(menuBar);
+		
+		
+		//setNotation(currNotn, false);
+		//adjustFonts();
+		
+	}
+	
+	
 	
 	void modMenuItems() {
 	//fileMenu.remove(menuItem1);
@@ -5474,15 +5511,11 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	public static void main(final String[] args) {
 
 		
-		Runnable myRunnable = createRunnable(args);
+		///Runnable myRunnable = createRunnable(args);
 
-		SwingUtilities.invokeLater(myRunnable);
+		SwingUtilities.invokeLater(new Runnable() {
 
-	}
-
-	private static Runnable createRunnable(final String[] paramStr) {
-
-		Runnable aRunnable = new Runnable() {
+	
 			public void run() {
 				//String[] runArgs = paramStr;
 				
@@ -5504,14 +5537,12 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 				
 
-				new DrawFBP(paramStr);
+				new DrawFBP(args);
 				//setDefaultLookAndFeelDecorated(true);
 				// System.out.println(runArgs);
 
 			}
-		};
-
-		return aRunnable;
+		});
 
 	}
 
@@ -5585,6 +5616,10 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	public void mouseMoved(MouseEvent e) {
 		// selBlockM = null;
 
+	}
+	
+	public void repaint() {
+		super.repaint();
 	}
 
 			
@@ -6311,7 +6346,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 
 		public SelectionArea(boolean b) {
 
-			setOpaque(true);
+			//setOpaque(true);
 			//boolean b2 = isDoubleBuffered();
 
 			/*
@@ -6358,28 +6393,29 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 	
 		public void paintComponent(Graphics g) {
 			
-			
+		  
 			// Paint background if we're opaque.
-			super.paintComponent(g);
-
+			super.paintComponent(g);			 
+			 
 			Graphics2D g2d = (Graphics2D) g;
 			
 			//if (zoomSw) {
 			g2d.scale(scalingFactor, scalingFactor); 
 			//	zoomSw = false;
 			//}
-
+ 
 			
 			int w = getWidth();
-		  
-			 
+		   
+ 	 
 			//if (isOpaque()) {
 				// g.setColor(getBackground());
 				g.setColor(Color.WHITE);
 				int h = getHeight();
 				g.fillRect(0, 0, (int) (w), (int) (h));
 			//}
-			 
+				
+ 		  
   
 			int i = jtp.getSelectedIndex();
 
@@ -6437,25 +6473,14 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			// else
 			// s = "(no description)";
+			
+			 
 
 			diagDesc.setText(s);
+			 
+			
 
-		
-
-
-			//Graphics2D g2d = (Graphics2D) g;
-
-			// g2d.scale(scalingFactor, scalingFactor);
-			// osg.scale(scalingFactor, scalingFactor);
-
-			// g2d.translate(xTranslate, yTranslate);
-
-			// Now copy that off-screen image onto the screen
-			// g2d.drawImage(buffer, 0, 0, null);
-			//g2d.scale(scalingFactor, scalingFactor);  
-			// g2d.scale(.8, .8);
-			//g.drawImage(buffer, 0, 0, null);
-			//setVisible(true);
+		 
 
 		}
  
@@ -7054,7 +7079,7 @@ public class DrawFBP extends JFrame implements ActionListener, ComponentListener
 			}
 			*/
 
-			repaint();
+			//repaint();
 		}
 
 		public void mouseDragged(MouseEvent e) {
